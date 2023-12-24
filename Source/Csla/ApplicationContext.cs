@@ -168,12 +168,6 @@ namespace Csla
     public static bool UseReflectionFallback { get; set; } = false;
 
     /// <summary>
-    /// Gets a value representing the application version
-    /// for use in server-side data portal routing.
-    /// </summary>
-    public static string VersionRoutingTag { get; internal set; }
-
-    /// <summary>
     /// Gets the authentication type being used by the
     /// CSLA .NET framework.
     /// </summary>
@@ -236,7 +230,7 @@ namespace Csla
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public PropertyChangedModes PropertyChangedMode 
+    public PropertyChangedModes PropertyChangedMode
     {
       get
       {
@@ -341,7 +335,7 @@ namespace Csla
     /// used to create new TransactionScope objects.
     /// </summary>
     public static System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
-      { get; internal set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
+    { get; internal set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
 
     #endregion
 
@@ -410,11 +404,11 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T GetRequiredService<T>()
     {
-      if (CurrentServiceProvider == null) 
+      if (CurrentServiceProvider == null)
         throw new NullReferenceException(nameof(CurrentServiceProvider));
 
       try
-      { 
+      {
         var result = CurrentServiceProvider.GetRequiredService<T>();
         return result;
       }
@@ -474,16 +468,16 @@ namespace Csla
       {
         throw new ObjectDisposedException($"CreateInstanceDI({objectType.FullName})", ex);
       }
-}
+    }
 
-/// <summary>
-/// Creates an instance of a generic type
-/// using its default constructor.
-/// </summary>
-/// <param name="type">Generic type to create</param>
-/// <param name="paramTypes">Type parameters</param>
-/// <returns></returns>
-internal object CreateGenericInstanceDI(Type type, params Type[] paramTypes)
+    /// <summary>
+    /// Creates an instance of a generic type
+    /// using its default constructor.
+    /// </summary>
+    /// <param name="type">Generic type to create</param>
+    /// <param name="paramTypes">Type parameters</param>
+    /// <returns></returns>
+    internal object CreateGenericInstanceDI(Type type, params Type[] paramTypes)
     {
       var genericType = type.GetGenericTypeDefinition();
       var gt = genericType.MakeGenericType(paramTypes);

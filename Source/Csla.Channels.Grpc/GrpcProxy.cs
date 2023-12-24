@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System.Threading.Tasks;
+using Csla.Configuration;
 using Csla.DataPortalClient;
 using Google.Protobuf;
 using Grpc.Net.Client;
@@ -25,15 +26,18 @@ namespace Csla.Channels.Grpc
     /// <param name="applicationContext"></param>
     /// <param name="channel">GrpcChannel instance</param>
     /// <param name="options">Proxy options</param>
-    public GrpcProxy(ApplicationContext applicationContext, GrpcChannel channel, GrpcProxyOptions options)
+    /// <param name="dataPortalOptions">Data portal options</param>
+    public GrpcProxy(ApplicationContext applicationContext, GrpcChannel channel, GrpcProxyOptions options, DataPortalOptions dataPortalOptions)
       : base(applicationContext)
     {
       _channel = channel;
       DataPortalUrl = options.DataPortalUrl;
+      VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
     private GrpcChannel _channel;
     private static GrpcChannel _defaultChannel;
+    private string VersionRoutingTag { get; set; }
 
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
@@ -84,7 +88,7 @@ namespace Csla.Channels.Grpc
       var request = new RequestMessage
       {
         Body = outbound,
-        Operation = CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)
+        Operation = CreateOperationTag(operation, VersionRoutingTag, routingToken)
       };
       ResponseMessage response;
       if (isSync)
@@ -99,11 +103,11 @@ namespace Csla.Channels.Grpc
       return await GetGrpcClient().InvokeAsync(request);
     }
 
-    private string CreateOperationTag(string operatation, string versionToken, string routingToken)
+    private string CreateOperationTag(string operation, string versionToken, string routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
-        return $"{operatation}/{routingToken}-{versionToken}";
-      return operatation;
+        return $"{operation}/{routingToken}-{versionToken}";
+      return operation;
     }
   }
 }

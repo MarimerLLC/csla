@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
+using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
 using System;
@@ -28,12 +29,14 @@ namespace Csla.Channels.Http
     /// <param name="applicationContext"></param>
     /// <param name="httpClient">HttpClient instance</param>
     /// <param name="options">Options for HttpProxy</param>
-    public HttpProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options)
+    /// <param name="dataPortalOptions">Data portal options</param>
+    public HttpProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options, DataPortalOptions dataPortalOptions)
       : base(applicationContext)
     {
       _httpClient = httpClient;
       Options = options;
       DataPortalUrl = options.DataPortalUrl;
+      VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
     /// <summary>
@@ -41,6 +44,7 @@ namespace Csla.Channels.Http
     /// </summary>
     protected HttpProxyOptions Options { get; set; }
     private HttpClient _httpClient;
+    private string VersionRoutingTag { get; set; }
 
     /// <summary>
     /// Gets an HttpClientHandler for use
@@ -119,7 +123,7 @@ namespace Csla.Channels.Http
       HttpRequestMessage httpRequest;
       httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
-        $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}");
+        $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
       SetHttpRequestHeaders(httpRequest);
       if (Options.UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
@@ -141,7 +145,7 @@ namespace Csla.Channels.Http
         throw new NotSupportedException(Resources.SyncDataAccessNotSupportedException);
       }
       WebClient client = GetWebClient();
-      var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)}";
+      var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}";
       try
       {
         if (Options.UseTextSerialization)

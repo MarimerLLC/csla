@@ -37,19 +37,6 @@ namespace Csla.Configuration
     /// </summary>
     public Type ContextManagerType { get; set; }
 
-    ///// <summary>
-    ///// Registers a specific ApplicationContext manager service,
-    ///// overriding the default service registration.
-    ///// </summary>
-    ///// <typeparam name="T">IContextManager implementation type.</typeparam>
-    ///// <returns></returns>
-    //public CslaOptions RegisterContextManager<T>() 
-    //  where T : IContextManager
-    //{
-    //  Services.AddScoped(typeof(IContextManager), typeof(T));
-    //  return this;
-    //}
-
     /// <summary>
     /// Sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
@@ -59,30 +46,6 @@ namespace Csla.Configuration
     public CslaOptions UseReflectionFallback(bool value)
     {
       ApplicationContext.UseReflectionFallback = value;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets a value representing the application version
-    /// for use in server-side data portal routing.
-    /// </summary>
-    /// <param name="version">
-    /// Application version used to create data portal
-    /// routing tag (can not contain '-').
-    /// </param>
-    /// <remarks>
-    /// If this value is set then you must use the
-    /// .NET Core server-side Http data portal endpoint
-    /// as a router so the request can be routed to
-    /// another app server that is running the correct
-    /// version of the application's assemblies.
-    /// </remarks>
-    public CslaOptions VersionRoutingTag(string version)
-    {
-      if (!string.IsNullOrWhiteSpace(version))
-        if (version.Contains("-") || version.Contains("/"))
-          throw new ArgumentException("VersionRoutingTag");
-      ApplicationContext.VersionRoutingTag = version;
       return this;
     }
 
@@ -115,5 +78,9 @@ namespace Csla.Configuration
     /// Gets the DataOptions instance.
     /// </summary>
     public BindingOptions BindingOptions { get; private set; } = new BindingOptions();
+    /// <summary>
+    /// Gets the CoreOptions instance.
+    /// </summary>
+    internal CoreOptions CoreOptions { get; private set; } = new CoreOptions();
   }
 }

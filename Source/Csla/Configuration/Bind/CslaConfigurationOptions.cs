@@ -17,32 +17,6 @@ namespace Csla.Configuration
   public class CslaConfigurationOptions
   {
     /// <summary>
-    /// Gets or sets a value representing the application version
-    /// for use in server-side data portal routing.
-    /// </summary>
-    /// <remarks>
-    /// Application version used to create data portal
-    /// routing tag (can not contain '-').
-    /// If this value is set then you must use the
-    /// .NET Core server-side Http data portal endpoint
-    /// as a router so the request can be routed to
-    /// another app server that is running the correct
-    /// version of the application's assemblies.
-    /// </remarks>
-    public string VersionRoutingTag
-    {
-      get { return ConfigurationManager.AppSettings["CslaVersionRoutingTag"]; }
-      set
-      {
-        if (!string.IsNullOrWhiteSpace(value))
-          if (value.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("valueRoutingToken");
-        ConfigurationManager.AppSettings["CslaVersionRoutingTag"] = value;
-        ApplicationContext.VersionRoutingTag = null;
-      }
-    }
-
-    /// <summary>
     /// Gets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc).

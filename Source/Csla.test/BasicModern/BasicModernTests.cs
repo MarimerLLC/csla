@@ -28,7 +28,10 @@ namespace Csla.Test.BasicModern
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      var serviceProvider = services.BuildServiceProvider();
+      _testDIContext = new TestDIContext(serviceProvider);
     }
 
     [TestMethod]
@@ -109,8 +112,6 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MakeOldMetastateEvents()
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
@@ -133,8 +134,6 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void MarkDeletedMetastateEvents()
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var graph = NewRoot();
       graph.Name = "abc";
       graph = graph.Save();
@@ -158,8 +157,6 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsId()
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
@@ -182,8 +179,6 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsName()
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
@@ -228,8 +223,6 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsChild()
     {
-      IServiceCollection services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
 
       IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 

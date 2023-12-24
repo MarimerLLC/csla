@@ -15,12 +15,12 @@ namespace Csla.Test.DataPortal
   {
 
     [TestMethod]
-    public void Test_Scope_DoesNotDispose()
+    public void Test_Scope_DoesNotDisposeWithNoLocalScope()
     {
       // CSLA should not dispose of the default service provider.
       IServiceCollection serviceCollection = new ServiceCollection();
       serviceCollection.AddScoped<DisposableClass>();
-      serviceCollection.AddCsla();
+      serviceCollection.AddCsla(o => o.DataPortal((dpo => dpo.UseLocalProxy(lpo => lpo.UseLocalScope = false))));
 
       var services = serviceCollection.BuildServiceProvider();
       IDataPortal<ClassA> dataPortal = services.GetRequiredService<IDataPortal<ClassA>>();
@@ -32,6 +32,23 @@ namespace Csla.Test.DataPortal
       Assert.IsFalse(classA.DisposableClass.IsDisposed, "Object must not be disposed");
     }
 
+    [TestMethod]
+    public void Test_Scope_DoesDisposeWithLocalScope()
+    {
+      // CSLA should dispose of the temporary server-side service provider.
+      IServiceCollection serviceCollection = new ServiceCollection();
+      serviceCollection.AddScoped<DisposableClass>();
+      serviceCollection.AddCsla();
+
+      var services = serviceCollection.BuildServiceProvider();
+      IDataPortal<ClassA> dataPortal = services.GetRequiredService<IDataPortal<ClassA>>();
+
+      var classA = dataPortal.Fetch();
+      var classB = classA.ChildB;
+
+      Assert.AreEqual(classA.DisposableClass.Id, classB.DisposableClass.Id, "Ids must be the same");
+      Assert.IsTrue(classA.DisposableClass.IsDisposed, "Object must not be disposed");
+    }
   }
 
   public class DisposableClass

@@ -19,7 +19,7 @@ namespace Csla.Test
   /// </summary>
   public class TestResults
   {
-    private static AsyncLocal<Dictionary<string, string>> _testResults = new AsyncLocal<Dictionary<string, string>>();
+    private static readonly AsyncLocal<Dictionary<string, string>> _testResults = new();
 
     /// <summary>
     /// Add an item to the test results, to indicate an outcome of a particular operation

@@ -205,37 +205,6 @@ namespace Csla.Test.DataPortal
       Assert.Fail("Expected exception");
     }
 
-    // TODO: Is this a relevant concept any more? These events do not seem to be exposed
-    [TestMethod()]
-    public void DataPortalEvents()
-    {
-      IDataPortal<DpRoot> dataPortal = _testDIContext.CreateDataPortal<DpRoot>();
-
-      // TODO: Not sure how to replicate this in Csla 6
-      //dataPortal.DataPortalInvoke += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
-      //dataPortal.DataPortalInvokeComplete += new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
-
-      try
-      {
-        DpRoot root = dataPortal.Create(new DpRoot.Criteria());
-
-        root.Data = "saved";
-        TestResults.Reinitialise();
-        root = root.Save();
-
-        Assert.AreEqual("true", TestResults.GetResult("dpinvoke"), "DataPortalInvoke not called");
-        Assert.AreEqual("true", TestResults.GetResult("dpinvokecomplete"), "DataPortalInvokeComplete not called");
-        Assert.AreEqual("true", TestResults.GetResult("serverinvoke"), "Server DataPortalInvoke not called");
-        Assert.AreEqual("true", TestResults.GetResult("serverinvokecomplete"), "Server DataPortalInvokeComplete not called");
-      }
-      finally
-      {
-        // TODO: Not sure how to replicate this in Csla 6
-        //dataPortal.DataPortalInvoke -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvoke);
-        //dataPortal.DataPortalInvokeComplete -= new Action<DataPortalEventArgs>(ClientPortal_DataPortalInvokeComplete);
-      }
-    }
-
     [TestMethod]
     public void DataPortalBrokerTests()
     {

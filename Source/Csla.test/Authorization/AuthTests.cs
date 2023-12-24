@@ -20,6 +20,8 @@ using System.Diagnostics;
 using System.Security.Claims;
 using Csla.TestHelpers;
 using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
 
 #if NUNIT
 using NUnit.Framework;
@@ -483,7 +485,6 @@ namespace Csla.Test.Authorization
     /// the data portal with an interface and have that translate
     /// to a concrete type is missing. Should be resolved in #3557
     /// </summary>
-    [Ignore]
     [TestMethod]
     public void PerTypeAuthEditObjectViaInterface()
     {
@@ -581,27 +582,14 @@ namespace Csla.Test.Authorization
     }
   }
 
-  public class PerTypeAuthDPActivator : Server.IDataPortalActivator
+  public class PerTypeAuthDPActivator(IServiceProvider serviceProvider) : Server.DefaultDataPortalActivator(serviceProvider)
   {
-    public object CreateInstance(Type requestedType)
-    {
-      return Activator.CreateInstance(ResolveType(requestedType));
-    }
-
-    public void FinalizeInstance(object obj)
-    {
-    }
-
-    public void InitializeInstance(object obj)
-    {
-    }
-
-    public Type ResolveType(Type requestedType)
+    public override Type ResolveType(Type requestedType)
     {
       if (requestedType.Equals(typeof(IPerTypeAuthRoot)))
         return typeof(PerTypeAuthRoot);
       else
-        return requestedType;
+        return base.ResolveType(requestedType);
     }
   }
 

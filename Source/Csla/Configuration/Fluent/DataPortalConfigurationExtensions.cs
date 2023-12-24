@@ -54,7 +54,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">The configuration that is to be affected</param>
     /// <param name="options">The action that is to be used to influence the configuration options</param>
-    public static DataPortalOptions ServerSideDataPortal(this DataPortalOptions config, Action<DataPortalServerOptions> options)
+    public static DataPortalOptions AddServerSideDataPortal(this DataPortalOptions config, Action<DataPortalServerOptions> options)
     {
       options?.Invoke(config.DataPortalServerOptions);
       return config;

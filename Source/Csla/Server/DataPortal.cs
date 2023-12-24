@@ -64,7 +64,7 @@ namespace Csla.Server
     {
       ApplicationContext = applicationContext;
       Dashboard = dashboard;
-      Options = options.DataPortalServerOptions;
+      Options = options.DataPortalOptions.DataPortalServerOptions;
       Authorizer = authorizer;
       InterceptorManager = interceptors;
       FactoryLoader = factoryLoader;

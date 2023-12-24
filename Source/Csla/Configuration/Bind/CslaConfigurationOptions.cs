@@ -17,15 +17,6 @@ namespace Csla.Configuration
   public class CslaConfigurationOptions
   {
     /// <summary>
-    /// Gets or sets a value specifying how CSLA .NET should
-    /// raise PropertyChanged events.
-    /// </summary>
-    public ApplicationContext.PropertyChangedModes PropertyChangedMode
-    {
-      get => ApplicationContext.PropertyChangedMode; set => ApplicationContext.PropertyChangedMode = value;
-    }
-
-    /// <summary>
     /// Gets or sets a value representing the application version
     /// for use in server-side data portal routing.
     /// </summary>

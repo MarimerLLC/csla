@@ -1,5 +1,7 @@
-﻿using Csla.Core;
+﻿using Csla.Configuration;
+using Csla.Core;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -221,7 +223,9 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth0()
     {
-      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+
       var result = Fetch();
 
       result.Name = "Keith";
@@ -237,7 +241,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth1()
     {
-      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var result = Fetch();
 
       result.Child.Name = "Keith";
@@ -254,7 +259,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth2()
     {
-      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var result = Fetch();
 
       result.Child.Child.Name = "Keith";
@@ -272,7 +278,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_Name_Depth3()
     {
-      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var result = Fetch();
 
       _SequenceID = 0;
@@ -294,7 +301,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_List_Name_Depth1()
     {
-      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var result = Fetch();
 
       result.ChildList[0].Name = "Keith";
@@ -311,7 +319,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_List_Name_Depth2()
     {
-      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var result = Fetch();
 
       result.ChildList[0].ChildList[0].Name = "Keith";
@@ -330,7 +339,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void OptimizeChildChangedTests_List_Name_Depth3()
     {
-      ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
       var result = Fetch();
 
       _SequenceID = 0;

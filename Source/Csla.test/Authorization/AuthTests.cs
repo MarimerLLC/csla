@@ -472,7 +472,7 @@ namespace Csla.Test.Authorization
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(
         options => options.DataPortal(
-          dp => dp.AddServerSideDataPortal(
+          dp => dp.ServerSideDataPortal(
             cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
         ));
       ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
@@ -490,7 +490,7 @@ namespace Csla.Test.Authorization
     {
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(
         options => options.DataPortal(
-          dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
+          dp => dp.ServerSideDataPortal(cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
       ));
       ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 

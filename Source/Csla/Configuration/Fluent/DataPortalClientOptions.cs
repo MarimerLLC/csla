@@ -6,6 +6,7 @@
 // <summary>Client-side data portal options.</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.DataPortalClient;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -18,23 +19,17 @@ namespace Csla.Configuration
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="options"></param>
-    public DataPortalClientOptions(CslaOptions options)
+    public DataPortalClientOptions(DataPortalOptions dataPortalOptions)
     {
-      CslaOptions = options;
+      _parent = dataPortalOptions;
     }
 
-    /// <summary>
-    /// Gets the current configuration object.
-    /// </summary>
-    internal CslaOptions CslaOptions { get; set; }
+    private readonly DataPortalOptions _parent;
 
     /// <summary>
-    /// Gets the current service collection.
+    /// Gets a reference to the current services collection.
     /// </summary>
-    public IServiceCollection Services { get => CslaOptions.Services; }
-
-    internal DataPortalServerOptions ServerOptions { get => CslaOptions.DataPortalServerOptions; }
+    public IServiceCollection Services => _parent.CslaOptions.Services;
 
     /// <summary>
     /// Sets a value indicating whether objects should be
@@ -95,15 +90,9 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Sets the concrete type of the client-side 
-    /// data portal cache service.
+    /// Gets or sets the type that implements 
+    /// IDataPortalCache for client-side caching.
     /// </summary>
-    /// <param name="dataPortalCache"></param>
-    /// <returns></returns>
-    public DataPortalClientOptions RegisterDataPortalCache(Type dataPortalCache)
-    {
-      Services.AddScoped(typeof(DataPortalClient.IDataPortalCache), dataPortalCache);
-      return this;
-    }
+    public Type DataPortalCacheType { get; set; } = typeof(DataPortalCacheDefault);
   }
 }

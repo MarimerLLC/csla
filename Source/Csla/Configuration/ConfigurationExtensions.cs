@@ -46,18 +46,21 @@ namespace Csla.Configuration
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
       RegisterContextManager(services);
+      if (cslaOptions.ContextManagerType != null)
+        services.AddScoped(typeof(Csla.Core.IContextManager), cslaOptions.ContextManagerType);
       services.TryAddScoped<IDataPortalCache, DataPortalCacheDefault>();
 
       // Runtime Info defaults
       services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));
 
-      cslaOptions.AddRequiredDataPortalServices();
+      services.AddScoped(typeof(IDataPortalCache), cslaOptions.DataPortalOptions.DataPortalClientOptions.DataPortalCacheType);
+      cslaOptions.AddRequiredDataPortalServices(services);
 
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
       if (!proxyInit)
       {
-        cslaOptions.DataPortal((options) => options.UseLocalProxy());
+        cslaOptions.DataPortal((options) => options.DataPortalClientOptions.UseLocalProxy());
       }
 
       return services;

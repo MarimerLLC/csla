@@ -17,32 +17,38 @@ namespace Csla.Configuration
   public class CslaOptions
   {
     /// <summary>
-    /// Gets the current service collection.
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="services">Services collection</param>
+    public CslaOptions(IServiceCollection services)
+    {
+      Services = services;
+      DataPortalOptions = new DataPortalOptions(this);
+    }
+
+    /// <summary>
+    /// Gets a reference to the current services collection.
     /// </summary>
     public IServiceCollection Services { get; private set; }
 
     /// <summary>
-    /// Creates an instance of the type.
+    /// Gets or sets the type for the IContextManager to
+    /// be used by ApplicationContext.
     /// </summary>
-    /// <param name="services">Service collection</param>
-    public CslaOptions(IServiceCollection services)
-    {
-      Services = services;
-      DataPortalClientOptions = new DataPortalClientOptions(this);
-    }
+    public Type ContextManagerType { get; set; }
 
-    /// <summary>
-    /// Registers a specific ApplicationContext manager service,
-    /// overriding the default service registration.
-    /// </summary>
-    /// <typeparam name="T">IContextManager implementation type.</typeparam>
-    /// <returns></returns>
-    public CslaOptions RegisterContextManager<T>() 
-      where T : IContextManager
-    {
-      Services.AddScoped(typeof(IContextManager), typeof(T));
-      return this;
-    }
+    ///// <summary>
+    ///// Registers a specific ApplicationContext manager service,
+    ///// overriding the default service registration.
+    ///// </summary>
+    ///// <typeparam name="T">IContextManager implementation type.</typeparam>
+    ///// <returns></returns>
+    //public CslaOptions RegisterContextManager<T>() 
+    //  where T : IContextManager
+    //{
+    //  Services.AddScoped(typeof(IContextManager), typeof(T));
+    //  return this;
+    //}
 
     /// <summary>
     /// Sets a value indicating whether CSLA
@@ -53,17 +59,6 @@ namespace Csla.Configuration
     public CslaOptions UseReflectionFallback(bool value)
     {
       ApplicationContext.UseReflectionFallback = value;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets a value specifying how CSLA .NET should
-    /// raise PropertyChanged events.
-    /// </summary>
-    /// <param name="mode">Property changed mode</param>
-    public CslaOptions PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
-    {
-      ApplicationContext.PropertyChangedMode = mode;
       return this;
     }
 
@@ -103,22 +98,22 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the SecurityOptions instance.
     /// </summary>
-    internal SecurityOptions SecurityOptions { get; set; } = new SecurityOptions();
+    internal SecurityOptions SecurityOptions { get; private set; } = new SecurityOptions();
     /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
-    internal SerializationOptions SerializationOptions { get; set; } = new SerializationOptions();
+    internal SerializationOptions SerializationOptions { get; private set; } = new SerializationOptions();
     /// <summary>
     /// Gets the DataPortalClientOptions instance.
     /// </summary>
-    internal DataPortalClientOptions DataPortalClientOptions { get; private set; }
-    /// <summary>
-    /// Gets the DataPortalServerOptions instance.
-    /// </summary>
-    internal DataPortalServerOptions DataPortalServerOptions { get; private set; } = new DataPortalServerOptions();
+    internal DataPortalOptions DataPortalOptions { get; private set; }
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>
-    internal DataOptions DataOptions { get; set; } = new DataOptions();
+    internal DataOptions DataOptions { get; private set; } = new DataOptions();
+    /// <summary>
+    /// Gets the DataOptions instance.
+    /// </summary>
+    public BindingOptions BindingOptions { get; private set; } = new BindingOptions();
   }
 }

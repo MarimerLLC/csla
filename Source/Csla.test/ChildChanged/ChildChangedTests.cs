@@ -10,6 +10,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnitDriven;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
+using Csla.Configuration;
+
+
 
 #if NUNIT
 using NUnit.Framework;
@@ -33,20 +37,11 @@ namespace Csla.Test.ChildChanged
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
+      IServiceCollection services = new ServiceCollection();
+      var options = new CslaOptions(services);
+
+      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows));
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
-    }
-
-    [TestInitialize]
-    public void Initialize()
-    {
-      _mode = Csla.ApplicationContext.PropertyChangedMode;
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
-    }
-
-    [TestCleanup]
-    public void Cleanup()
-    {
-      Csla.ApplicationContext.PropertyChangedMode = _mode;
     }
 
     [TestMethod]
@@ -160,8 +155,6 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void SingleList_Serialized()
     {
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
-
       var listDataPortal = _testDIContext.CreateDataPortal<SingleList>();
       var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
 
@@ -229,8 +222,6 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void ContainedList_Serialized()
     {
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
-
       var listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
       var singleRootPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
       

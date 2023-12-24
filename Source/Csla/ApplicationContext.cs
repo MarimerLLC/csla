@@ -229,11 +229,26 @@ namespace Csla
     /// </summary>
     public static Type SerializationFormatter { get; internal set; } = typeof(Serialization.Mobile.MobileFormatter);
 
+    private PropertyChangedModes _propertyChangedMode;
+    private bool _propertyChangedModeSet;
+
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public static PropertyChangedModes PropertyChangedMode { get; set; }
+    public PropertyChangedModes PropertyChangedMode 
+    {
+      get
+      {
+        if (!_propertyChangedModeSet)
+        {
+          var options = GetRequiredService<Configuration.CslaOptions>();
+          _propertyChangedMode = options.BindingOptions.PropertyChangedMode;
+          _propertyChangedModeSet = true;
+        }
+        return _propertyChangedMode;
+      }
+    }
 
     /// <summary>
     /// Enum representing the way in which CSLA .NET

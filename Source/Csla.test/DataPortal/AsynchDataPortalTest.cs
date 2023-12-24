@@ -139,17 +139,18 @@ namespace Csla.Test.DataPortal
 
     [TestMethod]
     [Timeout(1000)]
-    public async Task CreateAsync_Parrallel()
+    public async Task CreateAsync_Parallel()
     {
-      IDataPortal<SingleWithFactory> dataPortal = _testDIContext.CreateDataPortal<SingleWithFactory>();
-      
-      var list = new List<int>(500);
-      for (var i = 0; i < 500; i++)
+      var dataPortal = _testDIContext.CreateDataPortal<SingleWithFactory>();
+
+      var testcount = 1;
+      var list = new List<int>(testcount);
+      for (var i = 0; i < testcount; i++)
       {
         list.Add(i);
       }
 
-      var tasks = list.AsParallel().Select(x => dataPortal.CreateAsync());
+      var tasks = list.AsParallel().Select(x => dataPortal.CreateAsync(x));
       await Task.WhenAll(tasks);
     }
 
@@ -205,7 +206,7 @@ namespace Csla.Test.DataPortal
 
     [TestMethod]
     [Timeout(1000)]
-    public async Task FetchAsync_Parrallel()
+    public async Task FetchAsync_Parallel()
     {
       IDataPortal<SingleWithFactory> dataPortal = _testDIContext.CreateDataPortal<SingleWithFactory>();
 

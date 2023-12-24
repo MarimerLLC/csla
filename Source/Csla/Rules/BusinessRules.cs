@@ -920,7 +920,7 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 || NET6_0_OR_GREATER
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
       if (classAttList.Length > 0)

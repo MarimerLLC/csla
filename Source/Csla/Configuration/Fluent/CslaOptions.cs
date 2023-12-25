@@ -50,6 +50,12 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Gets or sets the default timeout in seconds
+    /// for the WaitForIdle method.
+    /// </summary>
+    public int DefaultWaitForIdleTimeoutInSeconds { get; set; } = 90;
+
+    /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
     public CslaOptions RegisterPropertyInfoFactory<T>() where T : IPropertyInfoFactory
@@ -73,7 +79,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>
-    internal DataOptions DataOptions { get; private set; } = new DataOptions();
+    public DataOptions DataOptions { get; private set; } = new DataOptions();
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>

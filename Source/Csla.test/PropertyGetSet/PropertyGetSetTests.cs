@@ -36,7 +36,6 @@ namespace Csla.Test.PropertyGetSet
   [TestClass]
   public class PropertyGetSetTests
   {
-    private ApplicationContext.PropertyChangedModes _mode;
     private static TestDIContext _testDIContext;
 
     [ClassInitialize]

@@ -13,7 +13,6 @@ using Csla.Properties;
 using Csla.Core;
 using Csla.Reflection;
 using System.Threading.Tasks;
-using Csla.Configuration;
 
 namespace Csla
 {
@@ -93,7 +92,8 @@ namespace Csla
     /// <returns></returns>
     public async Task WaitForIdle()
     {
-      await WaitForIdle(TimeSpan.FromSeconds(ApplicationContext.DefaultWaitForIdleTimeoutInSeconds));
+      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds));
     }
 
     /// <summary>
@@ -218,7 +218,7 @@ namespace Csla
         }
         else
         {
-          var dataPortalOptions = ApplicationContext.GetRequiredService<DataPortalOptions>();
+          var dataPortalOptions = ApplicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
           if (dataPortalOptions.DataPortalClientOptions.AutoCloneOnUpdate)
             MarkBusy();
           try

@@ -65,8 +65,8 @@ namespace Csla
         transactionType == TransactionalTypes.EnterpriseServices)
 #endif
       {
-        TransactionIsolationLevel = ApplicationContext.DefaultTransactionIsolationLevel;
-        TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+        TransactionIsolationLevel = Configuration.DataOptions.GetDefaultTransactionIsolationLevel();
+        TimeoutInSeconds = Configuration.DataOptions.GetDefaultTransactionTimeoutInSeconds();
       }
     }
 
@@ -120,7 +120,7 @@ namespace Csla
         transactionType == TransactionalTypes.EnterpriseServices)
 #endif
       {
-        TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+        TimeoutInSeconds = Csla.Configuration.DataOptions.GetDefaultTransactionTimeoutInSeconds();
       }
     }
 
@@ -154,7 +154,7 @@ namespace Csla
         transactionType == TransactionalTypes.EnterpriseServices)
 #endif
       {
-        TimeoutInSeconds = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+        TimeoutInSeconds = Configuration.DataOptions.GetDefaultTransactionTimeoutInSeconds();
       }
       AsyncFlowOption = asyncFlowOption;
     }

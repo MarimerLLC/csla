@@ -255,7 +255,7 @@ namespace Csla
     public const string DefaultRuleSet = "default";
 
     /// <summary>
-    /// Gets or sets the RuleSet name to use for static HasPermission calls.
+    /// Gets or sets the RuleSet name to use for HasPermission calls.
     /// </summary>
     /// <value>The rule set.</value>
     public string RuleSet
@@ -270,38 +270,6 @@ namespace Csla
         ClientContext["__ruleSet"] = value;
       }
     }
-
-    /// <summary>
-    /// Gets or sets the default transaction isolation level.
-    /// </summary>
-    /// <value>
-    /// The default transaction isolation level.
-    /// </value>
-    public static TransactionIsolationLevel DefaultTransactionIsolationLevel { get; internal set; } = TransactionIsolationLevel.Unspecified;
-
-    /// <summary>
-    /// Gets or sets the default transaction timeout in seconds.
-    /// </summary>
-    /// <value>
-    /// The default transaction timeout in seconds.
-    /// </value>
-    public static int DefaultTransactionTimeoutInSeconds { get; internal set; } = 30;
-
-    /// <summary>
-    /// Gets or sets the default timeout in seconds
-    /// for the WaitForIdle method.
-    /// </summary>
-    /// <value>
-    /// The default timeout in seconds.
-    /// </value>
-    public static int DefaultWaitForIdleTimeoutInSeconds { get; internal set; } = 90;
-
-    /// <summary>
-    /// Gets or sets the default transaction async flow option
-    /// used to create new TransactionScope objects.
-    /// </summary>
-    public static System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
-    { get; internal set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
 
     #endregion
 

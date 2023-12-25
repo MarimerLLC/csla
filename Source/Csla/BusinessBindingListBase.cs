@@ -112,7 +112,8 @@ namespace Csla
     /// <returns></returns>
     public async Task WaitForIdle()
     {
-      await WaitForIdle(TimeSpan.FromSeconds(ApplicationContext.DefaultWaitForIdleTimeoutInSeconds));
+      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds));
     }
 
     /// <summary>

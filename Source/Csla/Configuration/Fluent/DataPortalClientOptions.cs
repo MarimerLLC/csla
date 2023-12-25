@@ -32,28 +32,11 @@ namespace Csla.Configuration
     public IServiceCollection Services => _parent.CslaOptions.Services;
 
     /// <summary>
-    /// Sets a value indicating whether objects should be
+    /// Gets or sets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.
     /// </summary>
-    /// <param name="autoCloneOnUpdate"></param>
-    public DataPortalClientOptions AutoCloneOnUpdate(bool autoCloneOnUpdate)
-    {
-      ApplicationContext.AutoCloneOnUpdate = autoCloneOnUpdate;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets a value indicating whether the
-    /// server-side business object should be returned to
-    /// the client as part of the DataPortalException.
-    /// </summary>
-    /// <param name="returnObjectOnException"></param>
-    public DataPortalClientOptions DataPortalReturnObjectOnException(bool returnObjectOnException)
-    {
-      ApplicationContext.DataPortalReturnObjectOnException = returnObjectOnException;
-      return this;
-    }
+    public bool AutoCloneOnUpdate { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the type that implements 

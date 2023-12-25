@@ -140,5 +140,13 @@ namespace Csla.Configuration
       ObjectFactoryLoaderType = typeof(T);
       return this;
     }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// server-side business object should be returned to
+    /// the client as part of the DataPortalException
+    /// (default is false).
+    /// </summary>
+    public bool DataPortalReturnObjectOnException { get; set; } = false;
   }
 }

@@ -339,7 +339,7 @@ namespace Csla.Xaml
 
       if (ManageObjectLifetime && result != null)
       {
-        Csla.Core.ISupportUndo undo = result as Csla.Core.ISupportUndo;
+        var undo = result as Csla.Core.ISupportUndo;
         if (undo != null)
           undo.BeginEdit();
       }
@@ -391,7 +391,7 @@ namespace Csla.Xaml
 
       if (ManageObjectLifetime && result != null)
       {
-        Csla.Core.ISupportUndo undo = result as Csla.Core.ISupportUndo;
+        var undo = result as Csla.Core.ISupportUndo;
         if (undo != null)
           undo.BeginEdit();
       }
@@ -474,7 +474,7 @@ namespace Csla.Xaml
 
       if (request.ManageObjectLifetime && result != null)
       {
-        Csla.Core.ISupportUndo undo = result as Csla.Core.ISupportUndo;
+        var undo = result as Csla.Core.ISupportUndo;
         if (undo != null)
           undo.BeginEdit();
       }
@@ -543,7 +543,7 @@ namespace Csla.Xaml
     /// </remarks>
     public void Cancel()
     {
-      Csla.Core.ISupportUndo undo = this.Data as Csla.Core.ISupportUndo;
+      var undo = this.Data as Csla.Core.ISupportUndo;
       if (undo != null && _manageLifetime)
       {
         IsBusy = true;
@@ -577,8 +577,7 @@ namespace Csla.Xaml
     {
       // only do something if the object implements
       // ISavable
-      Csla.Core.ISavable savable = this.Data as Csla.Core.ISavable;
-      if (savable != null)
+      if (this.Data is Csla.Core.ISavable savable)
       {
         object result = savable;
         Exception exceptionResult = null;
@@ -587,25 +586,22 @@ namespace Csla.Xaml
           IsBusy = true;
 
           // clone the object if possible
-          ICloneable clonable = savable as ICloneable;
-          if (clonable != null)
-            savable = (Csla.Core.ISavable)clonable.Clone();
+          if (savable is ICloneable cloneable)
+            savable = (Csla.Core.ISavable)cloneable.Clone();
 
           // apply edits in memory
-          Csla.Core.ISupportUndo undo = savable as Csla.Core.ISupportUndo;
-          if (undo != null && _manageLifetime)
+          if (savable is Csla.Core.ISupportUndo undo && _manageLifetime)
             undo.ApplyEdit();
 
 
           // save the clone
           result = savable.Save();
 
-          if (!ReferenceEquals(savable, this.Data) && !Csla.ApplicationContext.AutoCloneOnUpdate)
+          if (!ReferenceEquals(savable, this.Data))
           {
             // raise Saved event from original object
-            Core.ISavable original = this.Data as Core.ISavable;
-            if (original != null)
-              original.SaveComplete(result);
+            var original = this.Data as Core.ISavable;
+            original?.SaveComplete(result);
           }
 
           // start editing the resulting object
@@ -658,7 +654,7 @@ namespace Csla.Xaml
       // only do something if the object implements
       // IBindingList
       IBindingList list;
-      Csla.Core.BusinessBase bb = item as Csla.Core.BusinessBase;
+      var bb = item as Csla.Core.BusinessBase;
       if (bb != null)
         list = bb.Parent as IBindingList;
       else

@@ -24,16 +24,19 @@ namespace Csla.Server
     /// <param name="applicationContext">ApplicationContext</param>
     /// <param name="activator"></param>
     /// <param name="exceptionInspector"></param>
-    public SimpleDataPortal(ApplicationContext applicationContext, IDataPortalActivator activator, IDataPortalExceptionInspector exceptionInspector)
+    /// <param name="dataPortalOptions"></param>
+    public SimpleDataPortal(ApplicationContext applicationContext, IDataPortalActivator activator, IDataPortalExceptionInspector exceptionInspector, Configuration.DataPortalOptions dataPortalOptions)
     {
       ApplicationContext = applicationContext;
       Activator = activator;
       ExceptionInspector = exceptionInspector;
+      DataPortalOptions = dataPortalOptions;
     }
 
     private ApplicationContext ApplicationContext { get; set; }
     private IDataPortalActivator Activator { get; set; }
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
+    private Csla.Configuration.DataPortalOptions DataPortalOptions { get; set; }
 
     /// <summary>
     /// Create a new business object.
@@ -77,7 +80,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
               ApplicationContext, "DataPortal.Create " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Create", ex),
-              outval);
+              outval, DataPortalOptions);
       }
       finally
       {
@@ -135,7 +138,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
               ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
-              outval);
+              outval, DataPortalOptions);
       }
       finally
       {
@@ -177,7 +180,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
               ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Execute", ex),
-              outval);
+              outval, DataPortalOptions);
       }
       finally
       {
@@ -229,7 +232,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
               ApplicationContext, "DataPortal.Update " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
-              obj);
+              obj, DataPortalOptions);
       }
       finally
       {
@@ -269,7 +272,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
               ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(reference.GetType(), reference, null, "DataPortal.Execute", ex),
-              reference);       
+              reference, DataPortalOptions);
       }
       finally
       {
@@ -316,7 +319,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
               ApplicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, obj, null, "DataPortal.Delete", ex),
-              null);
+              null, DataPortalOptions);
       }
       finally
       {

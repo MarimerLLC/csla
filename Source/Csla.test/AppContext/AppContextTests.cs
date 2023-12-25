@@ -164,8 +164,8 @@ namespace Csla.Test.AppContext
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(opts => opts.
         DataPortal(cfg => cfg.
-          ClientSideDataPortal(dpc => dpc.
-            DataPortalReturnObjectOnException(true))));
+          AddServerSideDataPortal(dpc => dpc.
+            DataPortalReturnObjectOnException =true)));
       IDataPortal<ExceptionRoot> dataPortal = testDIContext.CreateDataPortal<ExceptionRoot>();
       
       try

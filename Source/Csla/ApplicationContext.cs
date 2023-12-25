@@ -168,21 +168,6 @@ namespace Csla
     public static bool UseReflectionFallback { get; set; } = false;
 
     /// <summary>
-    /// Gets a value indicating whether objects should be
-    /// automatically cloned by the data portal Update()
-    /// method when using a local data portal configuration.
-    /// </summary>
-    public static bool AutoCloneOnUpdate { get; internal set; } = true;
-
-    /// <summary>
-    /// Gets a value indicating whether the
-    /// server-side business object should be returned to
-    /// the client as part of the DataPortalException
-    /// (default is false).
-    /// </summary>
-    public static bool DataPortalReturnObjectOnException { get; internal set; }
-
-    /// <summary>
     /// Enum representing the locations code can execute.
     /// </summary>
     public enum ExecutionLocations

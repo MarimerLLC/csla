@@ -168,14 +168,6 @@ namespace Csla
     public static bool UseReflectionFallback { get; set; } = false;
 
     /// <summary>
-    /// Gets the authentication type being used by the
-    /// CSLA .NET framework.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    public static string AuthenticationType { get; internal set; } = "Csla";
-
-    /// <summary>
     /// Gets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.

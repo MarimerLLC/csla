@@ -694,7 +694,7 @@ namespace Csla.Server
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
-        if (ApplicationContext.AuthenticationType == "Windows")
+        if (SecurityOptions.AuthenticationType == "Windows")
         {
           // Set .NET to use integrated security
           AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);

@@ -28,5 +28,13 @@ namespace Csla.Configuration
     /// weakness, including impersonation or elevation of privileges.
     /// </remarks>
     public bool FlowSecurityPrincipalFromClient { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets the authentication type being used by the
+    /// CSLA .NET framework.
+    /// </summary>
+    /// <value></value>
+    /// <returns></returns>
+    public string AuthenticationType { get; set; } = "Csla";
   }
 }

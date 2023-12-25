@@ -57,7 +57,7 @@ namespace Csla.Configuration
     /// that should be executed by the server-side data portal.
     /// injection.
     /// </summary>
-    internal List<Type> InterceptorProviders { get; } = new List<Type>() { typeof(Csla.Server.Interceptors.ServerSide.RevalidatingInterceptor) };
+    internal List<Type> InterceptorProviders { get; } = [typeof(Csla.Server.Interceptors.ServerSide.RevalidatingInterceptor)];
 
     /// <summary>
     /// Adds the type of an IInterceptDataPortal that will
@@ -140,5 +140,13 @@ namespace Csla.Configuration
       ObjectFactoryLoaderType = typeof(T);
       return this;
     }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the
+    /// server-side business object should be returned to
+    /// the client as part of the DataPortalException
+    /// (default is false).
+    /// </summary>
+    public bool DataPortalReturnObjectOnException { get; set; } = false;
   }
 }

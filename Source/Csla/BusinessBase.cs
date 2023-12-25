@@ -92,7 +92,8 @@ namespace Csla
     /// <returns></returns>
     public async Task WaitForIdle()
     {
-      await WaitForIdle(TimeSpan.FromSeconds(ApplicationContext.DefaultWaitForIdleTimeoutInSeconds));
+      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds));
     }
 
     /// <summary>
@@ -217,7 +218,8 @@ namespace Csla
         }
         else
         {
-          if (ApplicationContext.AutoCloneOnUpdate)
+          var dataPortalOptions = ApplicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
+          if (dataPortalOptions.DataPortalClientOptions.AutoCloneOnUpdate)
             MarkBusy();
           try
           {
@@ -225,7 +227,7 @@ namespace Csla
           }
           finally
           {
-            if (ApplicationContext.AutoCloneOnUpdate)
+            if (dataPortalOptions.DataPortalClientOptions.AutoCloneOnUpdate)
             {
               if (result != null)
                 result.MarkIdle();

@@ -80,7 +80,8 @@ namespace Csla.Channels.Grpc
       {
         var options = new GrpcProxyOptions { DataPortalUrl = $"{route}?operation={operation}" };
         var channel = ApplicationContext.CreateInstanceDI<global::Grpc.Net.Client.GrpcChannel>();
-        var proxy = new GrpcProxy(ApplicationContext, channel, options);
+        var dataPortalOptions = ApplicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
+        var proxy = new GrpcProxy(ApplicationContext, channel, options, dataPortalOptions);
         var clientRequest = new RequestMessage
         {
           Body = request.Body,

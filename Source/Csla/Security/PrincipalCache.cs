@@ -5,9 +5,9 @@
 // </copyright>
 // <summary>Provides a cache for a limited number of</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Collections.Generic;
 using System.Security.Principal;
+using Csla.Configuration;
 
 namespace Csla.Security
 {
@@ -15,14 +15,15 @@ namespace Csla.Security
   /// Provides a cache for a limited number of
   /// principal objects at the AppDomain level.
   /// </summary>
-  public static class PrincipalCache
+  /// <param name="options"></param>
+  public class PrincipalCache(SecurityOptions options)
   {
-    private static List<IPrincipal> _cache = new List<IPrincipal>();
+    private readonly List<IPrincipal> _cache = [];
 
     /// <summary>
     /// Gets the maximum cache size
     /// </summary>
-    public static int MaxCacheSize { get; internal set; } = 10;
+    public int MaxCacheSize { get; internal set; } = options.PrincipalCacheMaxCacheSize;
 
     /// <summary>
     /// Gets a principal from the cache based on
@@ -32,7 +33,7 @@ namespace Csla.Security
     /// <param name="name">
     /// The identity name associated with the principal.
     /// </param>
-    public static IPrincipal GetPrincipal(string name)
+    public IPrincipal GetPrincipal(string name)
     {
       lock (_cache)
       {
@@ -49,7 +50,7 @@ namespace Csla.Security
     /// <param name="principal">
     /// IPrincipal object to be added.
     /// </param>
-    public static void AddPrincipal(IPrincipal principal)
+    public void AddPrincipal(IPrincipal principal)
     {
       lock (_cache)
       {
@@ -65,7 +66,7 @@ namespace Csla.Security
     /// <summary>
     /// Clears the cache.
     /// </summary>
-    public static void Clear()
+    public void Clear()
     {
       lock (_cache)
         _cache.Clear();

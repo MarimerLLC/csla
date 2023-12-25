@@ -42,6 +42,7 @@ namespace Csla.Test.ChildChanged
     }
 
     [Fetch]
+    [FetchChild]
     private void Fetch(bool child, [Inject] IChildDataPortal<SingleList> childDataPortal)
     {
       LoadProperty(ListProperty, childDataPortal.FetchChild(true));

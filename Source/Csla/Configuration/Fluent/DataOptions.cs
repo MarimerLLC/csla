@@ -19,33 +19,45 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
-    /// <param name="level">The default transaction isolation level</param>
-    public DataOptions DefaultTransactionIsolationLevel(TransactionIsolationLevel level)
+    public TransactionIsolationLevel DefaultTransactionIsolationLevel 
     {
-      ApplicationContext.DefaultTransactionIsolationLevel = level;
-      return this;
+      get => defaultTransactionIsolationLevel;
+      set => defaultTransactionIsolationLevel = value; 
     }
 
     /// <summary>
     /// Sets the default transaction timeout in seconds.
     /// </summary>
-    /// <param name="seconds">The default transaction timeout in seconds</param>
-    public DataOptions DefaultTransactionTimeoutInSeconds(int seconds)
+    public int DefaultTransactionTimeoutInSeconds
     {
-      ApplicationContext.DefaultTransactionTimeoutInSeconds = seconds;
-      return this;
+      get => defaultTransactionTimeoutInSeconds;
+      set => defaultTransactionTimeoutInSeconds = value;
     }
+
+    internal static TransactionIsolationLevel defaultTransactionIsolationLevel = TransactionIsolationLevel.Unspecified;
+    internal static int defaultTransactionTimeoutInSeconds = 30;
+
+    /// <summary>
+    /// Gets or sets the default transaction isolation level.
+    /// </summary>
+    /// <value>
+    /// The default transaction isolation level.
+    /// </value>
+    internal static TransactionIsolationLevel GetDefaultTransactionIsolationLevel() => defaultTransactionIsolationLevel;
+
+    /// <summary>
+    /// Gets or sets the default transaction timeout in seconds.
+    /// </summary>
+    /// <value>
+    /// The default transaction timeout in seconds.
+    /// </value>
+    internal static int GetDefaultTransactionTimeoutInSeconds() => defaultTransactionTimeoutInSeconds;
 
     /// <summary>
     /// Sets the default transaction async flow option
     /// used to create new TransactionScope objects.
     /// </summary>
-    /// <param name="asyncFlowOption">Async flow option</param>
-    public DataOptions DefaultTransactionAsyncFlowOption(TransactionScopeAsyncFlowOption asyncFlowOption)
-    {
-      ApplicationContext.DefaultTransactionAsyncFlowOption = asyncFlowOption;
-      return this;
-    }
+    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption { get; set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
 
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
     /// <summary>

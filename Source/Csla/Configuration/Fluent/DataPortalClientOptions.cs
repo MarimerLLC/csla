@@ -6,6 +6,7 @@
 // <summary>Client-side data portal options.</summary>
 //-----------------------------------------------------------------------
 using System;
+using Csla.DataPortalClient;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -18,92 +19,29 @@ namespace Csla.Configuration
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="options"></param>
-    public DataPortalClientOptions(CslaOptions options)
+    public DataPortalClientOptions(DataPortalOptions dataPortalOptions)
     {
-      CslaOptions = options;
+      _parent = dataPortalOptions;
     }
 
+    private readonly DataPortalOptions _parent;
+
     /// <summary>
-    /// Gets the current configuration object.
+    /// Gets a reference to the current services collection.
     /// </summary>
-    internal CslaOptions CslaOptions { get; set; }
+    public IServiceCollection Services => _parent.CslaOptions.Services;
 
     /// <summary>
-    /// Gets the current service collection.
-    /// </summary>
-    public IServiceCollection Services { get => CslaOptions.Services; }
-
-    internal DataPortalServerOptions ServerOptions { get => CslaOptions.DataPortalServerOptions; }
-
-    /// <summary>
-    /// Sets a value indicating whether objects should be
+    /// Gets or sets a value indicating whether objects should be
     /// automatically cloned by the data portal Update()
     /// method when using a local data portal configuration.
     /// </summary>
-    /// <param name="autoCloneOnUpdate"></param>
-    public DataPortalClientOptions AutoCloneOnUpdate(bool autoCloneOnUpdate)
-    {
-      ApplicationContext.AutoCloneOnUpdate = autoCloneOnUpdate;
-      return this;
-    }
+    public bool AutoCloneOnUpdate { get; set; } = true;
 
     /// <summary>
-    /// Sets the authentication type being used by the
-    /// CSLA .NET framework.
+    /// Gets or sets the type that implements 
+    /// IDataPortalCache for client-side caching.
     /// </summary>
-    /// <param name="authenticationType"></param>
-    /// <remarks>
-    /// Set to "Windows" to use OS impersonation. Any other
-    /// value causes the data portal to flow the client-side
-    /// user principal to the server. Client and server must
-    /// use the same authentication type.
-    /// </remarks>
-    public DataPortalClientOptions AuthenticationType(string authenticationType)
-    {
-      ApplicationContext.AuthenticationType = authenticationType;
-      return this;
-    }
-
-    /// <summary>
-    /// Enable flow of user's security principal from client to server.
-    /// </summary>
-    /// <returns>This instance, to support method chaining</returns>
-    /// <remarks>
-    /// You should avoid enabling this flow wherever possible. Anything on 
-    /// the client can be manipulated, and using any data flowed from the 
-    /// client to make security decisions on the server could make your 
-    /// application vulnerable to impersonation exploits or elevation
-    /// of privilege attacks.
-    /// </remarks>
-    public DataPortalClientOptions EnableSecurityPrincipalFlowFromClient()
-    {
-      ApplicationContext.FlowSecurityPrincipalFromClient = true;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets a value indicating whether the
-    /// server-side business object should be returned to
-    /// the client as part of the DataPortalException.
-    /// </summary>
-    /// <param name="returnObjectOnException"></param>
-    public DataPortalClientOptions DataPortalReturnObjectOnException(bool returnObjectOnException)
-    {
-      ApplicationContext.DataPortalReturnObjectOnException = returnObjectOnException;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets the concrete type of the client-side 
-    /// data portal cache service.
-    /// </summary>
-    /// <param name="dataPortalCache"></param>
-    /// <returns></returns>
-    public DataPortalClientOptions RegisterDataPortalCache(Type dataPortalCache)
-    {
-      Services.AddScoped(typeof(DataPortalClient.IDataPortalCache), dataPortalCache);
-      return this;
-    }
+    public Type DataPortalCacheType { get; set; } = typeof(DataPortalCacheDefault);
   }
 }

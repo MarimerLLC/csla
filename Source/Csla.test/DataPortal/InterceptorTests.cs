@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Csla.Configuration;
+using Csla.Core;
 using Csla.TestHelpers;
 #if !NUNIT && !ANDROID
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,7 +28,7 @@ namespace Csla.Test.DataPortal
     {
       _testDIContext = TestDIContextFactory.CreateContext(
         options => options
-        .DataPortal(dp => dp.AddServerSideDataPortal(config => 
+        .DataPortal(dpo => dpo.AddServerSideDataPortal(config => 
         {
           config.AddInterceptorProvider<TestInterceptor>();
           config.RegisterActivator<TestActivator>();
@@ -121,7 +122,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeListRoot"), "InitializeInstance (list) should have run");
 
       Assert.IsFalse(TestResults.ContainsResult("Activate1+InitializeRoot"), "CreateInstance should not have run");
-      Assert.AreEqual("InitializeInstance", TestResults.GetResult("Activate2+InitializeRoot"), "InitializeInstance should have run");
+      Assert.IsFalse(TestResults.ContainsResult("Activate2+InitializeRoot"), "InitializeInstance should not have run");
     }
 
     [TestMethod]
@@ -261,27 +262,39 @@ namespace Csla.Test.DataPortal
     }
   }
 
-  public class TestActivator : Csla.Server.IDataPortalActivator
+  public class TestActivator(IServiceProvider serviceProvider) : Csla.Server.DefaultDataPortalActivator(serviceProvider)
   {
-    public object CreateInstance(Type requestedType)
+    public override object CreateInstance(Type requestedType, params object[] parameters)
     {
-      TestResults.Add("Activate1+" + requestedType.Name, "CreateInstance");
-      return Activator.CreateInstance(requestedType);
+      if (requestedType.IsAssignableTo(typeof(IBusinessObject)))
+      {
+        TestResults.AddOrOverwrite("Activate1+" + requestedType.Name, "CreateInstance");
+      }
+      return base.CreateInstance(requestedType, parameters);
     }
 
-    public void InitializeInstance(object obj)
+    public override void InitializeInstance(object obj)
     {
-      TestResults.Add("Activate2+" + obj.GetType().Name, "InitializeInstance");
+      if (obj.GetType().IsAssignableTo(typeof(IBusinessObject)))
+      {
+        TestResults.AddOrOverwrite("Activate2+" + obj.GetType().Name, "InitializeInstance");
+      }
     }
 
-    public void FinalizeInstance(object obj)
+    public override void FinalizeInstance(object obj)
     {
-      TestResults.Add("Activate3+" + obj.GetType().Name, "FinalizeInstance");
+      if (obj.GetType().IsAssignableTo(typeof(IBusinessObject)))
+      {
+        TestResults.AddOrOverwrite("Activate3+" + obj.GetType().Name, "FinalizeInstance");
+      }
     }
 
-    public Type ResolveType(Type requestedType)
+    public override Type ResolveType(Type requestedType)
     {
-      TestResults.Add("Activate4+" + requestedType.Name, "ResolveType");
+      if (requestedType.IsAssignableTo(typeof(IBusinessObject)))
+      {
+        TestResults.AddOrOverwrite("Activate4+" + requestedType.Name, "ResolveType");
+      }
       return requestedType;
     }
   }

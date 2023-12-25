@@ -239,7 +239,8 @@ namespace Csla.Test.DataAnnotations
       public System.Int32 Quantity { get; set; }
 
   }
-	  /// <summary>
+
+  /// <summary>
   /// Non-Generate code that can be modified
   /// </summary>
   [MetadataType(typeof(MultipleMetaDataClass))]

@@ -69,7 +69,7 @@ namespace Csla.Test.DataPortal
         if (ex.InnerException != null)
           throw ex.InnerException;
         else
-          throw ex;
+          throw;
       }
     }
 
@@ -88,7 +88,7 @@ namespace Csla.Test.DataPortal
         if (ex.InnerException != null)
           throw ex.InnerException;
         else
-          throw ex;
+          throw;
       }
     }
 

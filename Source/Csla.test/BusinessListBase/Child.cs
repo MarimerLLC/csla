@@ -24,12 +24,18 @@ namespace Csla.Test.BusinessListBase
       set { SetProperty(DataProperty, value); }
     }
 
+    [CreateChild]
+    private void CreateChild() { }
+
+    [InsertChild]
     private void Child_Insert()
     { }
 
+    [UpdateChild]
     private void Child_Update()
     { }
 
+    [DeleteSelfChild]
     private void Child_DeleteSelf()
     { }
   }

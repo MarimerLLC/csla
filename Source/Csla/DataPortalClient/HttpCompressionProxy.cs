@@ -8,6 +8,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using Csla.Configuration;
 
 namespace Csla.Channels.Http
 {
@@ -23,8 +24,9 @@ namespace Csla.Channels.Http
     /// <param name="applicationContext"></param>
     /// <param name="httpClient">HttpClient instance</param>
     /// <param name="options">Options for HttpProxy</param>
-    public HttpCompressionProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options)
-      : base(applicationContext, httpClient, options)
+    /// <param name="dataPortalOptions">Data portal options</param>
+    public HttpCompressionProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options, DataPortalOptions dataPortalOptions)
+      : base(applicationContext, httpClient, options, dataPortalOptions)
     { }
 
     /// <summary>

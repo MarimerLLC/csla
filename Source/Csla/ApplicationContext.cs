@@ -11,6 +11,7 @@ using Csla.Core;
 using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
+using Csla.Server;
 
 namespace Csla
 {
@@ -85,7 +86,7 @@ namespace Csla
         ContextDictionary ctx = ContextManager.GetLocalContext();
         if (ctx == null)
         {
-          ctx = new ContextDictionary();
+          ctx = [];
           ContextManager.SetLocalContext(ctx);
         }
         return ctx;
@@ -122,7 +123,7 @@ namespace Csla
           ContextDictionary ctx = ContextManager.GetClientContext(ExecutionLocation);
           if (ctx == null)
           {
-            ctx = new ContextDictionary();
+            ctx = [];
             ContextManager.SetClientContext(ctx, ExecutionLocation);
           }
           return ctx;
@@ -167,46 +168,6 @@ namespace Csla
     public static bool UseReflectionFallback { get; set; } = false;
 
     /// <summary>
-    /// Gets a value representing the application version
-    /// for use in server-side data portal routing.
-    /// </summary>
-    public static string VersionRoutingTag { get; internal set; }
-
-    /// <summary>
-    /// Gets the authentication type being used by the
-    /// CSLA .NET framework.
-    /// </summary>
-    /// <value></value>
-    /// <returns></returns>
-    public static string AuthenticationType { get; internal set; } = "Csla";
-
-    /// <summary>
-    /// Get whether we are to flow User Principal to the server
-    /// </summary>
-    /// <remarks>
-    /// This should generally be left at the default of false. Values on 
-    /// the client can be manipulated, and therefore allowing the principal 
-    /// to flow from client to server could result in an exploitable security 
-    /// weakness, including impersonation or elevation of privileges.
-    /// </remarks>
-    public static bool FlowSecurityPrincipalFromClient { get; internal set; } = false;
-
-    /// <summary>
-    /// Gets a value indicating whether objects should be
-    /// automatically cloned by the data portal Update()
-    /// method when using a local data portal configuration.
-    /// </summary>
-    public static bool AutoCloneOnUpdate { get; internal set; } = true;
-
-    /// <summary>
-    /// Gets a value indicating whether the
-    /// server-side business object should be returned to
-    /// the client as part of the DataPortalException
-    /// (default is false).
-    /// </summary>
-    public static bool DataPortalReturnObjectOnException { get; internal set; }
-
-    /// <summary>
     /// Enum representing the locations code can execute.
     /// </summary>
     public enum ExecutionLocations
@@ -228,11 +189,26 @@ namespace Csla
     /// </summary>
     public static Type SerializationFormatter { get; internal set; } = typeof(Serialization.Mobile.MobileFormatter);
 
+    private PropertyChangedModes _propertyChangedMode;
+    private bool _propertyChangedModeSet;
+
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public static PropertyChangedModes PropertyChangedMode { get; set; }
+    public PropertyChangedModes PropertyChangedMode
+    {
+      get
+      {
+        if (!_propertyChangedModeSet)
+        {
+          var options = GetRequiredService<Configuration.CslaOptions>();
+          _propertyChangedMode = options.BindingOptions.PropertyChangedMode;
+          _propertyChangedModeSet = true;
+        }
+        return _propertyChangedMode;
+      }
+    }
 
     /// <summary>
     /// Enum representing the way in which CSLA .NET
@@ -279,7 +255,7 @@ namespace Csla
     public const string DefaultRuleSet = "default";
 
     /// <summary>
-    /// Gets or sets the RuleSet name to use for static HasPermission calls.
+    /// Gets or sets the RuleSet name to use for HasPermission calls.
     /// </summary>
     /// <value>The rule set.</value>
     public string RuleSet
@@ -295,45 +271,13 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Gets or sets the default transaction isolation level.
-    /// </summary>
-    /// <value>
-    /// The default transaction isolation level.
-    /// </value>
-    public static TransactionIsolationLevel DefaultTransactionIsolationLevel { get; internal set; } = TransactionIsolationLevel.Unspecified;
-
-    /// <summary>
-    /// Gets or sets the default transaction timeout in seconds.
-    /// </summary>
-    /// <value>
-    /// The default transaction timeout in seconds.
-    /// </value>
-    public static int DefaultTransactionTimeoutInSeconds { get; internal set; } = 30;
-
-    /// <summary>
-    /// Gets or sets the default timeout in seconds
-    /// for the WaitForIdle method.
-    /// </summary>
-    /// <value>
-    /// The default timeout in seconds.
-    /// </value>
-    public static int DefaultWaitForIdleTimeoutInSeconds { get; internal set; } = 90;
-
-    /// <summary>
-    /// Gets or sets the default transaction async flow option
-    /// used to create new TransactionScope objects.
-    /// </summary>
-    public static System.Transactions.TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
-      { get; internal set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
-
     #endregion
 
     #region Logical Execution Location
     /// <summary>
     /// Enum representing the logical execution location
-    /// The setting is set to server when server is execting
-    /// a CRUD opertion, otherwise the setting is always client
+    /// The setting is set to server when server is executing
+    /// a CRUD operation, otherwise the setting is always client
     /// </summary>
     public enum LogicalExecutionLocations
     {
@@ -387,19 +331,6 @@ namespace Csla
     internal IServiceProvider CurrentServiceProvider => ApplicationContextAccessor.ServiceProvider;
 
     /// <summary>
-    /// Creates an object using 'Activator.CreateInstance' using
-    /// service provider (if one is available) to populate any parameters 
-    /// in CTOR that are not manually passed in.
-    /// </summary>
-    /// <typeparam name="T">Type of object to create.</typeparam>
-    /// <param name="parameters">Parameters for constructor</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstanceDI<T>(params object[] parameters)
-    {
-      return (T)CreateInstanceDI(typeof(T), parameters);
-    }
-
-    /// <summary>
     /// Attempts to get service via DI using ServiceProviderServiceExtensions.GetRequiredService. 
     /// Throws exception if service not properly registered with DI.
     /// </summary>
@@ -407,11 +338,11 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T GetRequiredService<T>()
     {
-      if (CurrentServiceProvider == null) 
+      if (CurrentServiceProvider == null)
         throw new NullReferenceException(nameof(CurrentServiceProvider));
 
       try
-      { 
+      {
         var result = CurrentServiceProvider.GetRequiredService<T>();
         return result;
       }
@@ -443,9 +374,18 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an object using 'Activator.CreateInstance' using
-    /// service provider (if one is available) to populate any parameters 
-    /// in CTOR that are not manually passed in.
+    /// Creates an object using the IDataPortalActivator.
+    /// </summary>
+    /// <typeparam name="T">Type of object to create.</typeparam>
+    /// <param name="parameters">Parameters for constructor</param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public T CreateInstanceDI<T>(params object[] parameters)
+    {
+      return (T)CreateInstanceDI(typeof(T), parameters);
+    }
+
+    /// <summary>
+    /// Creates an object using the IDataPortalActivator.
     /// </summary>
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Manually passed in parameters for constructor</param>
@@ -454,31 +394,24 @@ namespace Csla
     {
       try
       {
-        object result;
-        if (CurrentServiceProvider != null)
-          result = ActivatorUtilities.CreateInstance(CurrentServiceProvider, objectType, parameters);
-        else
-          result = Activator.CreateInstance(objectType, parameters);
-        if (result is IUseApplicationContext tmp)
-        {
-          tmp.ApplicationContext = this;
-        }
+        var activator = CurrentServiceProvider.GetRequiredService<IDataPortalActivator>();
+        var result = activator.CreateInstance(objectType, parameters);
         return result;
       }
       catch (ObjectDisposedException ex)
       {
         throw new ObjectDisposedException($"CreateInstanceDI({objectType.FullName})", ex);
       }
-}
+    }
 
-/// <summary>
-/// Creates an instance of a generic type
-/// using its default constructor.
-/// </summary>
-/// <param name="type">Generic type to create</param>
-/// <param name="paramTypes">Type parameters</param>
-/// <returns></returns>
-internal object CreateGenericInstanceDI(Type type, params Type[] paramTypes)
+    /// <summary>
+    /// Creates an instance of a generic type
+    /// using its default constructor.
+    /// </summary>
+    /// <param name="type">Generic type to create</param>
+    /// <param name="paramTypes">Type parameters</param>
+    /// <returns></returns>
+    internal object CreateGenericInstanceDI(Type type, params Type[] paramTypes)
     {
       var genericType = type.GetGenericTypeDefinition();
       var gt = genericType.MakeGenericType(paramTypes);

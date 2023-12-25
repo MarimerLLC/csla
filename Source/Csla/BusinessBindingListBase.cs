@@ -112,7 +112,8 @@ namespace Csla
     /// <returns></returns>
     public async Task WaitForIdle()
     {
-      await WaitForIdle(TimeSpan.FromSeconds(ApplicationContext.DefaultWaitForIdleTimeoutInSeconds));
+      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds));
     }
 
     /// <summary>
@@ -674,7 +675,7 @@ namespace Csla
 
     private static PropertyDescriptorCollection _propertyDescriptors;
 
-    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
       if (_propertyDescriptors == null)
         _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));

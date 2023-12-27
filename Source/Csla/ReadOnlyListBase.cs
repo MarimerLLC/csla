@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 using System;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -204,6 +205,8 @@ namespace Csla
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }
+
+    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }

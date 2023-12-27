@@ -3429,6 +3429,8 @@ namespace Csla.Core
       BusinessRules.CheckRules();
     }
 
+    async Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => await BusinessRules.CheckRulesAsync();
+
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     {
       this.MarkAsChild();

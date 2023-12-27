@@ -6,6 +6,7 @@
 // <summary>Base class to be used when creating a data portal</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -57,6 +58,22 @@ namespace Csla.Server
       var target = obj as IDataPortalTarget;
       if (target != null)
         target.CheckRules();
+      else
+        MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
+    }
+
+    /// <summary>
+    /// Calls the ValidationRules.CheckRules() method 
+    /// on the specified object, if possible.
+    /// </summary>
+    /// <param name="obj">
+    /// Object on which to call the method.
+    /// </param>
+    protected async Task CheckRulesAsync(object obj)
+    {
+      var target = obj as IDataPortalTarget;
+      if (target != null)
+        await target.CheckRulesAsync();
       else
         MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
     }

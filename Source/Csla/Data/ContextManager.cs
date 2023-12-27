@@ -32,7 +32,7 @@ namespace Csla.Data
   /// dispose the object when the last consumer
   /// has called Dispose."
   /// </remarks>
-  [Obsolete("Use dependency injection", false)]
+  [Obsolete("Use dependency injection", true)]
   public class ContextManager<C> : IDisposable, Core.IUseApplicationContext 
     where C : DataContext
   {

@@ -34,7 +34,7 @@ namespace Csla.Data
   /// dispose the transaction when the last consumer
   /// has called Dispose."
   /// </remarks>
-  [Obsolete("Use dependency injection", false)]
+  [Obsolete("Use dependency injection", true)]
   public class TransactionManager<C, T> : IDisposable, Core.IUseApplicationContext
     where C : IDbConnection, new()
     where T : IDbTransaction

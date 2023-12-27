@@ -66,7 +66,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="dbProvider"></param>
     /// <returns></returns>
-    [Obsolete("Use dependency injection", false)]
+    [Obsolete("Use dependency injection", true)]
     public DataOptions DbProvider(string dbProvider)
     {
       Data.ConnectionManager.DbProvider = dbProvider;

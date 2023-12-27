@@ -19,7 +19,7 @@ namespace Csla.Data
   /// <typeparam name="C">
   /// Type of context object to use.
   /// </typeparam>
-  [Obsolete("Use dependency injection", false)]
+  [Obsolete("Use dependency injection", true)]
   public class DataServiceContextManager<C> : Core.IUseApplicationContext
     where C : System.Data.Services.Client.DataServiceContext
   {

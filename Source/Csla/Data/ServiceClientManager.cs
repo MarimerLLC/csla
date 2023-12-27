@@ -21,7 +21,7 @@ namespace Csla.Data
   /// <typeparam name="T">
   /// Channel type for the ClientBase object.
   /// </typeparam>
-  [Obsolete("Use dependency injection", false)]
+  [Obsolete("Use dependency injection", true)]
   public class ServiceClientManager<C, T> : Core.IUseApplicationContext
     where C : System.ServiceModel.ClientBase<T>
     where T : class

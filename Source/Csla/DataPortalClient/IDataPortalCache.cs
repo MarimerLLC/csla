@@ -19,14 +19,13 @@ namespace Csla.DataPortalClient
   public interface IDataPortalCache
   {
     /// <summary>
-    /// Try to get object from cache.
+    /// Try to get result from cache.
     /// </summary>
     /// <param name="objectType">Type of domain object to retrieve</param>
     /// <param name="criteria">Criteria for domain type being retrieved</param>
     /// <param name="operation">Data portal operation</param>
-    /// <param name="result">Cached data portal result</param>
-    /// <returns>true if success, false if object isn't returned</returns>
-    Task<bool> TryGetObject(Type objectType, object criteria, DataPortalOperations operation, out Server.DataPortalResult result);
+    /// <returns>null if not in cache</returns>
+    Task<Server.DataPortalResult?> GetDataPortalResultAsync(Type objectType, object criteria, DataPortalOperations operation);
     /// <summary>
     /// Add object to cache.
     /// </summary>
@@ -35,7 +34,7 @@ namespace Csla.DataPortalClient
     /// <param name="operation">Data portal operation</param>
     /// <param name="result">Data portal result to cache</param>
     /// <returns></returns>
-    Task AddObject(Type objectType, object criteria, DataPortalOperations operation, Server.DataPortalResult result);
+    Task AddDataPortalResultAsync(Type objectType, object criteria, DataPortalOperations operation, Server.DataPortalResult result);
     /// <summary>
     /// Gets a value indicating whether the domain type 
     /// can be cached.

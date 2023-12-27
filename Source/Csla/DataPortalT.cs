@@ -126,10 +126,11 @@ namespace Csla
             try
             {
               await Cache.Semaphore.WaitAsync();
-              if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Create, out result))
+              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create);
+              if (result is null)
               {
                 result = await proxy.Create(objectType, criteria, dpContext, isSync);
-                await Cache.AddObject(objectType, criteria, DataPortalOperations.Create, result);
+                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create, result);
               }
             }
             finally
@@ -246,10 +247,11 @@ namespace Csla
             try
             {
               await Cache.Semaphore.WaitAsync();
-              if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Fetch, out result))
+              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch);
+              if (result is null)
               {
                 result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-                await Cache.AddObject(objectType, criteria, DataPortalOperations.Fetch, result);
+                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch, result);
               }
             }
             finally
@@ -310,10 +312,11 @@ namespace Csla
             try
             {
               await Cache.Semaphore.WaitAsync();
-              if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Execute, out result))
+              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute);
+              if (result is null)
               {
                 result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-                await Cache.AddObject(objectType, criteria, DataPortalOperations.Execute, result);
+                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute, result);
               }
             }
             finally
@@ -543,10 +546,11 @@ namespace Csla
             try
             {
               await Cache.Semaphore.WaitAsync();
-              if (!await Cache.TryGetObject(objectType, obj, operation, out result))
+              result = await Cache.GetDataPortalResultAsync(objectType, obj, operation);
+              if (result is null)
               {
                 result = await proxy.Update(obj, dpContext, isSync);
-                await Cache.AddObject(objectType, obj, operation, result);
+                await Cache.AddDataPortalResultAsync(objectType, obj, operation, result);
               }
             }
             finally
@@ -651,10 +655,11 @@ namespace Csla
             try
             {
               await Cache.Semaphore.WaitAsync();
-              if (!await Cache.TryGetObject(objectType, criteria, DataPortalOperations.Delete, out result))
+              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete);
+              if (result is null)
               {
                 result = await proxy.Delete(objectType, criteria, dpContext, isSync);
-                await Cache.AddObject(objectType, criteria, DataPortalOperations.Delete, result);
+                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete, result);
               }
             }
             finally

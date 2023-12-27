@@ -9,6 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+#nullable enable
 namespace Csla.DataPortalClient
 {
   /// <summary>
@@ -54,3 +55,4 @@ namespace Csla.DataPortalClient
     SemaphoreSlim Semaphore { get; }
   }
 }
+#nullable disable

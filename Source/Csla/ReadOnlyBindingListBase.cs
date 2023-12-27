@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Csla.Properties;
 
 namespace Csla
@@ -210,6 +211,8 @@ namespace Csla
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }
+
+    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }

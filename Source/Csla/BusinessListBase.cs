@@ -1283,6 +1283,8 @@ namespace Csla
     void IDataPortalTarget.CheckRules()
     { }
 
+    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+
     void IDataPortalTarget.MarkAsChild()
     {
       this.MarkAsChild();

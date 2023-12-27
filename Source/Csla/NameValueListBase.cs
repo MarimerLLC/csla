@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Csla.Properties;
 using Csla.Core;
 using Csla.Serialization.Mobile;
+using System.Threading.Tasks;
 
 namespace Csla
 {
@@ -327,6 +328,8 @@ namespace Csla
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }
+
+    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }

@@ -30,7 +30,7 @@ namespace Csla.Web.Mvc
     /// Bind the form data to a new instance of an IBusinessBase object.
     /// </summary>
     /// <param name="bindingContext">Binding context</param>
-    public Task BindModelAsync(ModelBindingContext bindingContext)
+    public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
       ApplicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetService(typeof(ApplicationContext));
       if (bindingContext == null)
@@ -49,14 +49,13 @@ namespace Csla.Web.Mvc
         }
         else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(bindingContext.ModelType))
         {
-          BindBusinessBase(bindingContext, result);
+          await BindBusinessBase(bindingContext, result);
           bindingContext.Result = ModelBindingResult.Success(result);
         }
       }
-      return Task.CompletedTask;
     }
 
-    private void BindBusinessBase(ModelBindingContext bindingContext, object result)
+    private async Task BindBusinessBase(ModelBindingContext bindingContext, object result)
     {
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(bindingContext.ModelType);
       foreach (var item in properties)
@@ -68,7 +67,7 @@ namespace Csla.Web.Mvc
           index = $"{bindingContext.ModelName}.{item.Name}";
         BindSingleProperty(bindingContext, result, item, index);
       }
-      CheckRules(result);
+      await CheckRulesAsync(result);
     }
 
     private void BindBusinessListBase(ModelBindingContext bindingContext, object result)

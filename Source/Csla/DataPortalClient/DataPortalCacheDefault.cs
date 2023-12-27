@@ -33,8 +33,7 @@ namespace Csla.DataPortalClient
     /// <param name="criteria">Criteria for domain type being added</param>
     /// <param name="operation">Data portal operation</param>
     /// <param name="result">Data portal result to cache</param>
-    /// <returns></returns>
-    public Task AddObject(Type objectType, object criteria, DataPortalOperations operation, DataPortalResult result) 
+    public Task AddDataPortalResultAsync(Type objectType, object criteria, DataPortalOperations operation, DataPortalResult result) 
       => throw new NotImplementedException();
 
     /// <summary>
@@ -54,9 +53,8 @@ namespace Csla.DataPortalClient
     /// <param name="objectType">Type of domain object to retrieve</param>
     /// <param name="criteria">Criteria for domain type being retrieved</param>
     /// <param name="operation">Data portal operation</param>
-    /// <param name="result">Cached data portal result</param>
     /// <returns>true if success, false if object isn't returned</returns>
-    public Task<bool> TryGetObject(Type objectType, object criteria, DataPortalOperations operation, out DataPortalResult result)
+    public Task<DataPortalResult> GetDataPortalResultAsync(Type objectType, object criteria, DataPortalOperations operation) 
       => throw new NotImplementedException();
   }
 }

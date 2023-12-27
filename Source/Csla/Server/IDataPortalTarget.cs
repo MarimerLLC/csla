@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 
 namespace Csla.Server
 {
@@ -15,6 +16,7 @@ namespace Csla.Server
     void MarkNew();
     void MarkOld();
     void CheckRules();
+    Task CheckRulesAsync();
     void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e);
     void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e);
     void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex);

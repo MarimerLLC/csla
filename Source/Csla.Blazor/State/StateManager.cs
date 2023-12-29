@@ -27,6 +27,12 @@ namespace Csla.Blazor.State
     /// <param name="calledFrom">Location method is invoked in page</param>
     /// <param name="firstRender">firstRender value from OnAfterRender method</param>
     /// <returns></returns>
+    /// <remarks>
+    /// Normally this is called in both the initialize and after render
+    /// methods of a Blazor page. This way the page can be flexibly
+    /// rendered in server-rendered, server-interactive, and wasm-interactive
+    /// modes and the state will always be available.
+    /// </remarks>
     public bool GetState(CalledFrom calledFrom, bool firstRender)
     {
       bool result = false;
@@ -51,9 +57,17 @@ namespace Csla.Blazor.State
     /// Saves state from Blazor wasm to web server. Must call
     /// as user navigates to any server-side Blazor page.
     /// </summary>
+    /// <remarks>
+    /// Normally this method is called from the Dispose method
+    /// of a Blazor wasm page, which is the only reliable point
+    /// at which you know the user is navigating to another
+    /// page.
+    /// </remarks>
     public void SaveState()
     {
-      _sessionManager.SendSession();
+      var isBrowser = (Environment.OSVersion.Platform == PlatformID.Other);
+      if (isBrowser)
+        _sessionManager.SendSession();
     }
 
     /// <summary>

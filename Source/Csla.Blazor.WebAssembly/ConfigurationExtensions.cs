@@ -52,6 +52,7 @@ namespace Csla.Configuration
       // use Blazor state management
       config.Services.AddScoped((p) 
         => (ISessionManager)ActivatorUtilities.CreateInstance(p, blazorOptions.SessionManagerType));
+      config.Services.AddTransient<Blazor.State.StateManager>();
 #endif
       return config;
     }

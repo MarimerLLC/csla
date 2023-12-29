@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -35,7 +36,12 @@ namespace Csla.Blazor.WebAssembly.State
     /// current user from the web server
     /// or local cache.
     /// </summary>
-    public Session GetSession() => _session;
+    public Session GetSession()
+    {
+      Console.WriteLine("GetSession");
+      _session ??= [];
+      return _session;
+    }
 
     /// <summary>
     /// Updates the current user's session 

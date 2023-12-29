@@ -54,6 +54,7 @@ namespace Csla.Configuration
       // use Blazor state management
       config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
       config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
+      config.Services.AddTransient<Blazor.State.StateManager>();
 
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
@@ -81,11 +82,11 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the ISessionManager service.
     /// </summary>
-    public Type SessionManagerType { get; set; } = Type.GetType("Csla.Blazor.Server.SessionManager, Csla.AspNetCore", true);
+    public Type SessionManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionManager, Csla.AspNetCore", true);
 
     /// <summary>
     /// Gets or sets the type of the ISessionIdManager service.
     /// </summary>
-    public Type SessionIdManagerType { get; set; } = Type.GetType("Csla.Blazor.Server.SessionIdManager, Csla.AspNetCore", true);
+    public Type SessionIdManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionIdManager, Csla.AspNetCore", true);
   }
 }

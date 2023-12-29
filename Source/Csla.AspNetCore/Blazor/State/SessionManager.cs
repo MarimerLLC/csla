@@ -31,9 +31,6 @@ namespace Csla.Blazor.State
       if (!_sessions.ContainsKey(key))
         _sessions.Add(key, []);
       var session = _sessions[key];
-      // ensure session isn't checked out by wasm
-      while (session.IsCheckedOut)
-        Task.Delay(5);
       return session;
     }
 
@@ -69,7 +66,13 @@ namespace Csla.Blazor.State
     /// Retrieves the current user's session from
     /// the web server to the wasm client.
     /// </summary>
-    public Task<Session> RetrieveSession() => throw new NotSupportedException();
+    public async Task<Session> RetrieveSession()
+    {
+      var session = GetSession();
+      while (session.IsCheckedOut)
+        await Task.Delay(5);
+      return session;
+    }
 
     /// <summary>
     /// Sends the current user's session from

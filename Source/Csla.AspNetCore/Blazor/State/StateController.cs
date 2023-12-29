@@ -1,5 +1,11 @@
-﻿using System.IO;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="StateController.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Gets and puts the current user session data</summary>
+//-----------------------------------------------------------------------
+using System.IO;
 using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Mvc;
 using Csla.State;
@@ -24,10 +30,10 @@ namespace Csla.AspNetCore.Blazor.State
     /// format.
     /// </summary>
     /// <returns></returns>
-    [HttpGet(Name = "GetState")]
-    public async Task<byte[]> Get()
+    [HttpGet]
+    public byte[] Get()
     {
-      var session = await _sessionManager.GetSession();
+      var session = _sessionManager.GetSession();
       var formatter = new MobileFormatter(ApplicationContext);
       var buffer = new MemoryStream();
       formatter.Serialize(buffer, session);
@@ -41,8 +47,8 @@ namespace Csla.AspNetCore.Blazor.State
     /// </summary>
     /// <param name="updatedSessionData"></param>
     /// <returns></returns>
-    [HttpPut(Name = "UpdateState")]
-    public async Task Put(byte[] updatedSessionData)
+    [HttpPut]
+    public void Put(byte[] updatedSessionData)
     {
       var formatter = new MobileFormatter(ApplicationContext);
       var buffer = new MemoryStream(updatedSessionData)
@@ -50,8 +56,7 @@ namespace Csla.AspNetCore.Blazor.State
         Position = 0
       };
       var updatedSession = (Session)formatter.Deserialize(buffer);
-      await _sessionManager.UpdateSession(updatedSession);
-      
+      _sessionManager.UpdateSession(updatedSession);
     }
   }
 }

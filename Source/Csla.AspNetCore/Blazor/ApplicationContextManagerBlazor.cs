@@ -31,10 +31,8 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="hca">IHttpContextAccessor service</param>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
     /// <param name="activeCircuitState"></param>
-    /// <param name="sessionManager"></param>
-    public ApplicationContextManagerBlazor(IHttpContextAccessor hca, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState, ISessionManager sessionManager)
+    public ApplicationContextManagerBlazor(IHttpContextAccessor hca, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
-      _sessionManager = sessionManager;
       HttpContext = hca.HttpContext;
       AuthenticationStateProvider = authenticationStateProvider;
       ActiveCircuitState = activeCircuitState;
@@ -48,7 +46,6 @@ namespace Csla.AspNetCore.Blazor
     private IPrincipal CurrentPrincipal { get; set; }
     private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
     private bool disposedValue;
-    private readonly ISessionManager _sessionManager;
 
     /// <summary>
     /// Gets the current HttpContext instance.
@@ -192,7 +189,8 @@ namespace Csla.AspNetCore.Blazor
     {
       if (LocalContext is null)
       {
-        var session = _sessionManager.GetSession().Result;
+        var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+        var session = sessionManager.GetSession();
         session.TryGetValue("localContext", out var result);
         if (result is ContextDictionary context)
           LocalContext = context;
@@ -210,7 +208,8 @@ namespace Csla.AspNetCore.Blazor
     public void SetLocalContext(ContextDictionary localContext)
     {
       LocalContext = localContext;
-      var session = _sessionManager.GetSession().Result;
+      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+      var session = sessionManager.GetSession();
       session["localContext"] = localContext;
     }
 
@@ -222,7 +221,8 @@ namespace Csla.AspNetCore.Blazor
     {
       if (ClientContext is null)
       {
-        var session = _sessionManager.GetSession().Result;
+        var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+        var session = sessionManager.GetSession();
         session.TryGetValue("clientContext", out var result);
         if (result is ContextDictionary context)
           ClientContext = context;
@@ -241,7 +241,8 @@ namespace Csla.AspNetCore.Blazor
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ClientContext = clientContext;
-      var session = _sessionManager.GetSession().Result;
+      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+      var session = sessionManager.GetSession();
       session["clientContext"] = clientContext;
     }
 

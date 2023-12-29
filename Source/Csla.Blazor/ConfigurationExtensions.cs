@@ -51,11 +51,9 @@ namespace Csla.Configuration
       config.Services.AddScoped(typeof(IContextManager), managerType);
 #endif
 
-#if NET8_0_OR_GREATER
       // use Blazor state management
       config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
       config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
-#endif
 
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));

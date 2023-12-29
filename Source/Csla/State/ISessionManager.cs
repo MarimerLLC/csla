@@ -19,12 +19,23 @@ namespace Csla.State
     /// Gets the session data for the
     /// current user.
     /// </summary>
-    Task<Session> GetSession();
+    Session GetSession();
     /// <summary>
     /// Updates the current user's
     /// session data.
     /// </summary>
     /// <param name="session">Current user session data</param>
-    Task UpdateSession(Session session);
+    void UpdateSession(Session session);
+    /// <summary>
+    /// Retrieves the current user's session from
+    /// the web server to the wasm client.
+    /// </summary>
+    Task<Session> RetrieveSession();
+    /// <summary>
+    /// Sends the current user's session from
+    /// the wasm client to the web server.
+    /// </summary>
+    /// <returns></returns>
+    Task SendSession();
   }
 }

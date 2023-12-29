@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Csla.State;
@@ -22,32 +23,29 @@ namespace Csla.Blazor.State
     private readonly ISessionIdManager _sessionIdManager = sessionIdManager;
 
     /// <summary>
-    /// Gets the session data for the
-    /// current user.
+    /// Gets the session data for the current user.
     /// </summary>
-    public async Task<Session> GetSession()
+    public Session GetSession()
     {
-      var key = await _sessionIdManager.GetSessionId();
+      var key = _sessionIdManager.GetSessionId();
       if (!_sessions.ContainsKey(key))
         _sessions.Add(key, []);
       var session = _sessions[key];
       // ensure session isn't checked out by wasm
       while (session.IsCheckedOut)
-        await Task.Delay(5);
-
+        Task.Delay(5);
       return session;
     }
 
     /// <summary>
-    /// Updates the current user's
-    /// session data.
+    /// Updates the current user's session data.
     /// </summary>
     /// <param name="session">Current user session data</param>
-    public async Task UpdateSession(Session session)
+    public void UpdateSession(Session session)
     {
       if (session != null)
       {
-        var key = await _sessionIdManager.GetSessionId();
+        var key = _sessionIdManager.GetSessionId();
         session.SessionId = key;
         Replace(session, _sessions[key]);
         _sessions[key].IsCheckedOut = false;
@@ -66,5 +64,18 @@ namespace Csla.Blazor.State
       foreach (var key in newSession.Keys)
         oldSession.Add(key, newSession[key]);
     }
+
+    /// <summary>
+    /// Retrieves the current user's session from
+    /// the web server to the wasm client.
+    /// </summary>
+    public Task<Session> RetrieveSession() => throw new NotSupportedException();
+
+    /// <summary>
+    /// Sends the current user's session from
+    /// the wasm client to the web server.
+    /// </summary>
+    /// <returns></returns>
+    public Task SendSession() => throw new NotSupportedException();
   }
 }

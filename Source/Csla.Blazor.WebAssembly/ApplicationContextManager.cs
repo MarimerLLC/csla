@@ -113,7 +113,7 @@ namespace Csla.Blazor.WebAssembly
     {
       if (LocalContext is null)
       {
-        var session = _sessionManager.GetSession().Result;
+        var session = _sessionManager.GetSession();
         session.TryGetValue("localContext", out var result);
         if (result is ContextDictionary context)
           LocalContext = context;
@@ -131,7 +131,7 @@ namespace Csla.Blazor.WebAssembly
     public void SetLocalContext(ContextDictionary localContext)
     {
       LocalContext = localContext;
-      var session = _sessionManager.GetSession().Result;
+      var session = _sessionManager.GetSession();
       session["localContext"] = localContext;
     }
 
@@ -143,7 +143,7 @@ namespace Csla.Blazor.WebAssembly
     {
       if (ClientContext is null)
       {
-        var session = _sessionManager.GetSession().Result;
+        var session = _sessionManager.GetSession();
         session.TryGetValue("clientContext", out var result);
         if (result is ContextDictionary context)
           ClientContext = context;
@@ -162,7 +162,7 @@ namespace Csla.Blazor.WebAssembly
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ClientContext = clientContext;
-      var session = _sessionManager.GetSession().Result;
+      var session = _sessionManager.GetSession();
       session["clientContext"] = clientContext;
     }
 

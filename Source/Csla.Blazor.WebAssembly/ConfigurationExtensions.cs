@@ -25,6 +25,16 @@ namespace Csla.Configuration
     /// Registers services necessary for Blazor WebAssembly.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
+    /// <returns></returns>
+    public static CslaOptions AddBlazorWebAssembly(this CslaOptions config)
+    {
+      return AddBlazorWebAssembly(config, null);
+    }
+
+    /// <summary>
+    /// Registers services necessary for Blazor WebAssembly.
+    /// </summary>
+    /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">Options object</param>
     /// <returns></returns>
     public static CslaOptions AddBlazorWebAssembly(this CslaOptions config, Action<BlazorWebAssemblyConfigurationOptions> options)
@@ -32,6 +42,7 @@ namespace Csla.Configuration
       var blazorOptions = new BlazorWebAssemblyConfigurationOptions();
       options?.Invoke(blazorOptions);
 
+      config.Services.AddScoped((p) => blazorOptions);
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       config.Services.TryAddScoped<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
       config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
@@ -39,7 +50,7 @@ namespace Csla.Configuration
       config.Services.TryAddScoped(typeof(AuthenticationStateProvider), typeof(Csla.Blazor.Authentication.CslaAuthenticationStateProvider));
 #if NET8_0_OR_GREATER
       // use Blazor state management
-      config.Services.AddSingleton((p) 
+      config.Services.AddScoped((p) 
         => (ISessionManager)ActivatorUtilities.CreateInstance(p, blazorOptions.SessionManagerType));
 #endif
       return config;
@@ -55,5 +66,11 @@ namespace Csla.Configuration
     /// Gets or sets the type of the ISessionManager service.
     /// </summary>
     public Type SessionManagerType { get; set; } = typeof(SessionManager);
+
+    /// <summary>
+    /// Gets or sets the name of the controller providing state
+    /// data from the Blazor web server.
+    /// </summary>
+    public string StateControllerName { get; set; } = "CslaState";
   }
 }

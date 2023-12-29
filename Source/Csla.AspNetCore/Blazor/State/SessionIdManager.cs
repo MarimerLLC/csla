@@ -6,7 +6,6 @@
 // <summary>Manages the per-user id value</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Threading.Tasks;
 using Csla.State;
 using Microsoft.AspNetCore.Http;
 
@@ -32,7 +31,7 @@ namespace Csla.Blazor.State
     /// maintained in a browser cookie for the
     /// current user.
     /// </remarks>
-    public Task<string?> GetSessionId()
+    public string? GetSessionId()
     {
       const string sessionIdName = "cslaSessionId"; // must match Csla.Blazor.WebAssembly.State value
       var httpContext = HttpContextAccessor.HttpContext;
@@ -54,7 +53,7 @@ namespace Csla.Blazor.State
       {
         throw new InvalidOperationException("HttpContext == null");
       }
-      return Task.FromResult(result);
+      return result;
     }
   }
 }

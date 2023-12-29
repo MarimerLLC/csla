@@ -53,6 +53,16 @@ namespace Csla.Configuration
     /// data portal.
     /// </summary>
     /// <param name="config">The configuration that is to be affected</param>
+    public static DataPortalOptions AddServerSideDataPortal(this DataPortalOptions config)
+    {
+      return AddServerSideDataPortal(config, null);
+    }
+
+    /// <summary>
+    /// Add services required to host the server-side
+    /// data portal.
+    /// </summary>
+    /// <param name="config">The configuration that is to be affected</param>
     /// <param name="options">The action that is to be used to influence the configuration options</param>
     public static DataPortalOptions AddServerSideDataPortal(this DataPortalOptions config, Action<DataPortalServerOptions> options)
     {

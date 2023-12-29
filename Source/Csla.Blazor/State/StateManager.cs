@@ -6,6 +6,7 @@
 // <summary>Get and save state from Blazor pages</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Threading.Tasks;
 using Csla.State;
 
 namespace Csla.Blazor.State
@@ -33,24 +34,63 @@ namespace Csla.Blazor.State
     /// rendered in server-rendered, server-interactive, and wasm-interactive
     /// modes and the state will always be available.
     /// </remarks>
-    public bool GetState(CalledFrom calledFrom, bool firstRender)
+    public async Task GetState(CalledFrom calledFrom, bool firstRender)
     {
-      bool result = false;
-      var isBrowser = (Environment.OSVersion.Platform == PlatformID.Other);
-      if (isBrowser && calledFrom == CalledFrom.AfterRender)
+      await GetState(calledFrom, firstRender, 10);
+    }
+
+    /// <summary>
+    /// Get state from web server for use in Blazor wasm. Must call
+    /// as user navigates from any server-side Blazor page to a wasm
+    /// Blazor page.
+    /// client.
+    /// </summary>
+    /// <param name="calledFrom">Location method is invoked in page</param>
+    /// <param name="firstRender">firstRender value from OnAfterRender method</param>
+    /// <param name="timeout">Milliseconds to wait before timing out</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Normally this is called in both the initialize and after render
+    /// methods of a Blazor page. This way the page can be flexibly
+    /// rendered in server-rendered, server-interactive, and wasm-interactive
+    /// modes and the state will always be available.
+    /// </remarks>
+    public async Task GetState(CalledFrom calledFrom, bool firstRender, int timeout)
+    {
+      var isBrowser = OperatingSystem.IsBrowser();
+      if (isBrowser)
       {
-        if (firstRender)
+        if (calledFrom == CalledFrom.AfterRender && firstRender)
         {
-          _sessionManager.RetrieveSession();
-          result = true;
+            await _sessionManager.RetrieveSession();
         }
       }
-      else if (!isBrowser && calledFrom == CalledFrom.Initialize)
+      else
       {
-        _sessionManager.RetrieveSession();
-        result = true;
+        if (calledFrom == CalledFrom.Initialize)
+        {
+          await WaitForState(timeout);
+        }
       }
-      return result;
+    }
+
+    /// <summary>
+    /// Waits for state to be available as it is transferred
+    /// from Blazor wasm to the web server.
+    /// </summary>
+    /// <param name="timeout">Milliseconds to wait before timing out</param>
+    private async Task WaitForState(int timeout)
+    {
+      var session = _sessionManager.GetSession();
+      timeout *= 10;
+      var count = 0;
+      while (session.IsCheckedOut)
+      {
+        count++;
+        if (count == timeout)
+          throw new TimeoutException();
+        await Task.Delay(1000);
+      }
     }
 
     /// <summary>
@@ -63,11 +103,11 @@ namespace Csla.Blazor.State
     /// at which you know the user is navigating to another
     /// page.
     /// </remarks>
-    public void SaveState()
+    public async Task SaveState()
     {
-      var isBrowser = (Environment.OSVersion.Platform == PlatformID.Other);
+      var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
-        _sessionManager.SendSession();
+        await _sessionManager.SendSession();
     }
 
     /// <summary>

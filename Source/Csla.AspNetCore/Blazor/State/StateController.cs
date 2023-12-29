@@ -34,10 +34,10 @@ namespace Csla.AspNetCore.Blazor.State
     public byte[] Get()
     {
       var session = _sessionManager.GetSession();
+      session.IsCheckedOut = true;
       var formatter = new MobileFormatter(ApplicationContext);
       var buffer = new MemoryStream();
       formatter.Serialize(buffer, session);
-      session.IsCheckedOut = true;
       return buffer.ToArray();
     }
 
@@ -55,8 +55,9 @@ namespace Csla.AspNetCore.Blazor.State
       {
         Position = 0
       };
-      var updatedSession = (Session)formatter.Deserialize(buffer);
-      _sessionManager.UpdateSession(updatedSession);
+      var session = (Session)formatter.Deserialize(buffer);
+      session.IsCheckedOut = false;
+      _sessionManager.UpdateSession(session);
     }
   }
 }

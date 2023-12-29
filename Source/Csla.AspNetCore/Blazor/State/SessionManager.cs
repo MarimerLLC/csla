@@ -45,7 +45,6 @@ namespace Csla.Blazor.State
         var key = _sessionIdManager.GetSessionId();
         session.SessionId = key;
         Replace(session, _sessions[key]);
-        _sessions[key].IsCheckedOut = false;
       }
     }
 
@@ -66,12 +65,10 @@ namespace Csla.Blazor.State
     /// Retrieves the current user's session from
     /// the web server to the wasm client.
     /// </summary>
-    public async Task<Session> RetrieveSession()
+    public Task<Session> RetrieveSession()
     {
       var session = GetSession();
-      while (session.IsCheckedOut)
-        await Task.Delay(5);
-      return session;
+      return Task.FromResult(session);
     }
 
     /// <summary>

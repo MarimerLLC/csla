@@ -48,12 +48,11 @@ namespace Csla.Configuration
       config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
       config.Services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
       config.Services.TryAddScoped(typeof(AuthenticationStateProvider), typeof(Csla.Blazor.Authentication.CslaAuthenticationStateProvider));
-#if NET8_0_OR_GREATER
+
       // use Blazor state management
-      config.Services.AddScoped((p) 
-        => (ISessionManager)ActivatorUtilities.CreateInstance(p, blazorOptions.SessionManagerType));
+      config.Services.AddScoped(typeof(ISessionManager), blazorOptions.SessionManagerType);
       config.Services.AddTransient<Blazor.State.StateManager>();
-#endif
+
       return config;
     }
   }

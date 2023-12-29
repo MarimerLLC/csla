@@ -27,10 +27,8 @@ namespace Csla.Blazor.WebAssembly
     /// with the required IServiceProvider.
     /// </summary>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
-    /// <param name="sessionManager"></param>
-    public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider, ISessionManager sessionManager)
+    public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
     {
-      _sessionManager = sessionManager;
       AuthenticationStateProvider = authenticationStateProvider;
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
       InitializeUser();
@@ -41,7 +39,6 @@ namespace Csla.Blazor.WebAssembly
     private Task<AuthenticationState> AuthenticationState { get; set; }
     private ClaimsPrincipal _currentPrincipal;
     private bool disposedValue;
-    private readonly ISessionManager _sessionManager;
 
     /// <summary>
     /// Gets the current AuthenticationStateProvider instance.
@@ -113,7 +110,8 @@ namespace Csla.Blazor.WebAssembly
     {
       if (LocalContext is null)
       {
-        var session = _sessionManager.GetSession();
+        var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+        var session = sessionManager.GetSession();
         session.TryGetValue("localContext", out var result);
         if (result is ContextDictionary context)
           LocalContext = context;
@@ -131,7 +129,8 @@ namespace Csla.Blazor.WebAssembly
     public void SetLocalContext(ContextDictionary localContext)
     {
       LocalContext = localContext;
-      var session = _sessionManager.GetSession();
+      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+      var session = sessionManager.GetSession();
       session["localContext"] = localContext;
     }
 
@@ -143,7 +142,8 @@ namespace Csla.Blazor.WebAssembly
     {
       if (ClientContext is null)
       {
-        var session = _sessionManager.GetSession();
+        var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+        var session = sessionManager.GetSession();
         session.TryGetValue("clientContext", out var result);
         if (result is ContextDictionary context)
           ClientContext = context;
@@ -162,7 +162,8 @@ namespace Csla.Blazor.WebAssembly
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ClientContext = clientContext;
-      var session = _sessionManager.GetSession();
+      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+      var session = sessionManager.GetSession();
       session["clientContext"] = clientContext;
     }
 

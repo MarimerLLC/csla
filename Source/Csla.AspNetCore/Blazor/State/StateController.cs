@@ -59,5 +59,16 @@ namespace Csla.AspNetCore.Blazor.State
       session.IsCheckedOut = false;
       _sessionManager.UpdateSession(session);
     }
+
+    /// <summary>
+    /// Sets the current user session data as checked out,
+    /// indicating that it is in use by a Blazor wasm client.
+    /// </summary>
+    [HttpPatch]
+    public void Patch()
+    {
+      var session = _sessionManager.GetSession();
+      session.IsCheckedOut = true;
+    }
   }
 }

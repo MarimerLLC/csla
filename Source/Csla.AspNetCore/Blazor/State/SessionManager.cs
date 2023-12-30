@@ -29,9 +29,11 @@ namespace Csla.Blazor.State
     {
       var key = _sessionIdManager.GetSessionId();
       if (!_sessions.ContainsKey(key))
+      {
         _sessions.Add(key, []);
-      var session = _sessions[key];
-      return session;
+        _sessions[key].SessionId = key;
+      }
+      return _sessions[key];
     }
 
     /// <summary>
@@ -65,11 +67,7 @@ namespace Csla.Blazor.State
     /// Retrieves the current user's session from
     /// the web server to the wasm client.
     /// </summary>
-    public Task<Session> RetrieveSession()
-    {
-      var session = GetSession();
-      return Task.FromResult(session);
-    }
+    public Task<Session> RetrieveSession() => throw new NotSupportedException();
 
     /// <summary>
     /// Sends the current user's session from

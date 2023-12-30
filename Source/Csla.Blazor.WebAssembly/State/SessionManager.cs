@@ -38,8 +38,12 @@ namespace Csla.Blazor.WebAssembly.State
     /// </summary>
     public Session GetSession()
     {
-      Console.WriteLine("GetSession");
-      _session ??= [];
+      if (_session == null)
+      {
+        _session = [];
+        _session.Initialize();
+        _session.Initialize();
+      }
       return _session;
     }
 
@@ -66,6 +70,12 @@ namespace Csla.Blazor.WebAssembly.State
         };
         _session = (Session)formatter.Deserialize(buffer);
       }
+      else
+      {
+        await client.PatchAsync(_options.StateControllerName, null);
+      }
+      _session.Initialize();
+      _session.Initialize();
       return _session;
     }
 

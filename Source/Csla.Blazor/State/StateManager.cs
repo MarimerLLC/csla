@@ -8,6 +8,7 @@
 using System;
 using System.Threading.Tasks;
 using Csla.State;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Csla.Blazor.State
 {
@@ -20,23 +21,77 @@ namespace Csla.Blazor.State
     private readonly ISessionManager _sessionManager = sessionManager;
 
     /// <summary>
-    /// Get state from web server for use in Blazor wasm. Must call
-    /// as user navigates from any server-side Blazor page to a wasm
-    /// Blazor page.
+    /// Gets a value indicating whether state is valid
+    /// for use in the current component.
+    /// </summary>
+    public bool IsStateAvailable { get; private set; } = false;
+
+    /// <summary>
+    /// Get state from web server for use in Blazor wasm.
     /// client.
     /// </summary>
-    /// <param name="calledFrom">Location method is invoked in page</param>
-    /// <param name="firstRender">firstRender value from OnAfterRender method</param>
     /// <returns></returns>
     /// <remarks>
-    /// Normally this is called in both the initialize and after render
-    /// methods of a Blazor page. This way the page can be flexibly
+    /// This is called in Initialize methods of a Blazor page (sync
+    /// or async). This way the page can be flexibly
     /// rendered in server-rendered, server-interactive, and wasm-interactive
     /// modes and the state will always be available.
     /// </remarks>
-    public async Task GetState(CalledFrom calledFrom, bool firstRender)
+    public async Task Initialize()
     {
-      await GetState(calledFrom, firstRender, 10);
+      await Initialize(TimeSpan.FromSeconds(10));
+    }
+
+    /// <summary>
+    /// Get state from web server for use in Blazor wasm.
+    /// client.
+    /// </summary>
+    /// <param name="timeout">Time to wait before timing out</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// This is called in Initialize methods of a Blazor page (sync
+    /// or async). This way the page can be flexibly
+    /// rendered in server-rendered, server-interactive, and wasm-interactive
+    /// modes and the state will always be available.
+    /// </remarks>
+    public async Task Initialize(TimeSpan timeout)
+    {
+      await GetState(CalledFrom.Initialize, true, timeout);
+    }
+
+    /// <summary>
+    /// Get state from web server for use in Blazor wasm.
+    /// client.
+    /// </summary>
+    /// <param name="firstRender">firstRender value from OnAfterRender method</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// This is called in OnAfterRender methods of a Blazor page (sync
+    /// or async). This way the page can be flexibly
+    /// rendered in server-rendered, server-interactive, and wasm-interactive
+    /// modes and the state will always be available.
+    /// </remarks>
+    public async Task AfterRender(bool firstRender)
+    {
+      await AfterRender(firstRender, TimeSpan.FromSeconds(10));
+    }
+
+    /// <summary>
+    /// Get state from web server for use in Blazor wasm.
+    /// client.
+    /// </summary>
+    /// <param name="firstRender">firstRender value from OnAfterRender method</param>
+    /// <param name="timeout">Time to wait before timing out</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// This is called in OnAfterRender methods of a Blazor page (sync
+    /// or async). This way the page can be flexibly
+    /// rendered in server-rendered, server-interactive, and wasm-interactive
+    /// modes and the state will always be available.
+    /// </remarks>
+    public async Task AfterRender(bool firstRender, TimeSpan timeout)
+    {
+      await GetState(CalledFrom.AfterRender, firstRender, timeout);
     }
 
     /// <summary>
@@ -47,7 +102,7 @@ namespace Csla.Blazor.State
     /// </summary>
     /// <param name="calledFrom">Location method is invoked in page</param>
     /// <param name="firstRender">firstRender value from OnAfterRender method</param>
-    /// <param name="timeout">Milliseconds to wait before timing out</param>
+    /// <param name="timeout">Time to wait before timing out</param>
     /// <returns></returns>
     /// <remarks>
     /// Normally this is called in both the initialize and after render
@@ -55,14 +110,15 @@ namespace Csla.Blazor.State
     /// rendered in server-rendered, server-interactive, and wasm-interactive
     /// modes and the state will always be available.
     /// </remarks>
-    public async Task GetState(CalledFrom calledFrom, bool firstRender, int timeout)
+    private async Task GetState(CalledFrom calledFrom, bool firstRender, TimeSpan timeout)
     {
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
       {
-        if (calledFrom == CalledFrom.AfterRender && firstRender)
+        if (calledFrom == CalledFrom.Initialize && firstRender)
         {
-            await _sessionManager.RetrieveSession();
+          var session = await _sessionManager.RetrieveSession();
+          IsStateAvailable = session.IsFullyInitialized;
         }
       }
       else
@@ -78,19 +134,22 @@ namespace Csla.Blazor.State
     /// Waits for state to be available as it is transferred
     /// from Blazor wasm to the web server.
     /// </summary>
-    /// <param name="timeout">Milliseconds to wait before timing out</param>
-    private async Task WaitForState(int timeout)
+    /// <param name="timeout">Time to wait before timing out</param>
+    private async Task WaitForState(TimeSpan timeout)
     {
       var session = _sessionManager.GetSession();
-      timeout *= 10;
-      var count = 0;
-      while (session.IsCheckedOut)
+      session.Initialize();
+      if (session != null && session.IsCheckedOut)
       {
-        count++;
-        if (count == timeout)
-          throw new TimeoutException();
-        await Task.Delay(1000);
+        var endTime = DateTime.Now + timeout;
+        while (session.IsCheckedOut)
+        {
+          if (DateTime.Now > endTime)
+            throw new TimeoutException();
+          await Task.Delay(5);
+        }
       }
+      IsStateAvailable = session.IsFullyInitialized;
     }
 
     /// <summary>
@@ -99,22 +158,25 @@ namespace Csla.Blazor.State
     /// </summary>
     /// <remarks>
     /// Normally this method is called from the Dispose method
-    /// of a Blazor wasm page, which is the only reliable point
+    /// of a Blazor page, which is the only reliable point
     /// at which you know the user is navigating to another
     /// page.
     /// </remarks>
-    public async Task SaveState()
+    public void SaveState()
     {
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
-        await _sessionManager.SendSession();
+      {
+        _sessionManager.SendSession();
+        IsStateAvailable = false;
+      }
     }
 
     /// <summary>
     /// Indicate the location from which the StateManager 
     /// is invoked.
     /// </summary>
-    public enum CalledFrom
+    private enum CalledFrom
     {
       /// <summary>
       /// Blazor page initialize method (sync or async).

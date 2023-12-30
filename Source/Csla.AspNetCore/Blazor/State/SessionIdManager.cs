@@ -33,7 +33,7 @@ namespace Csla.Blazor.State
     /// </remarks>
     public string? GetSessionId()
     {
-      const string sessionIdName = "cslaSessionId"; // must match Csla.Blazor.WebAssembly.State value
+      const string sessionIdName = "cslaSessionId";
       var httpContext = HttpContextAccessor.HttpContext;
       string? result;
 

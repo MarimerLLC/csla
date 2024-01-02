@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
-using System.Runtime.Serialization;
 using Csla.Core;
+using Csla.Serialization.Mobile;
 
 namespace Csla.State
 {
@@ -17,12 +17,15 @@ namespace Csla.State
   /// serializable via MobileFormatter.
   /// </summary>
   [Serializable]
-  public class Session : MobileDictionary<string, object>
+  public class Session : MobileDictionary<string, object>, INotifyPropertyChanged
   {
     /// <summary>
     /// Gets a unique id for this object.
     /// </summary>
     public Guid Id { get; private set; } = Guid.NewGuid();
+
+    private bool _isCheckedOut;
+
     /// <summary>
     /// Gets or sets a value indicating whether
     /// the session is currently checked out to
@@ -32,7 +35,15 @@ namespace Csla.State
     /// true if in use by a wasm component, 
     /// false if available for use on the server
     /// </value>
-    public bool IsCheckedOut { get; set; }
+    public bool IsCheckedOut
+    {
+      get => _isCheckedOut;
+      set
+      {
+        _isCheckedOut = value;
+        OnPropertyChanged(nameof(IsCheckedOut));
+      }
+    }
     /// <summary>
     /// Gets or sets a value indicating the last
     /// time (UTC) this object was interacted with.
@@ -52,6 +63,18 @@ namespace Csla.State
     private int _initializationState;
 
     /// <summary>
+    /// Event raised when a property has changed.
+    /// </summary>
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    /// <summary>
+    /// Raise PropertyChanged event.
+    /// </summary>
+    /// <param name="propertyName"></param>
+    protected virtual void OnPropertyChanged(string propertyName) 
+      => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    /// <summary>
     /// Sets the initialization state of the object.
     /// FOR INTERNAL USE ONLY.
     /// </summary>
@@ -66,7 +89,7 @@ namespace Csla.State
     /// 
     /// </summary>
     /// <param name="info"></param>
-    protected override void GetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void GetState(SerializationInfo info)
     {
       info.AddValue("id", Id);
       info.AddValue("_initializationState", _initializationState);
@@ -76,7 +99,7 @@ namespace Csla.State
     /// 
     /// </summary>
     /// <param name="info"></param>
-    protected override void SetState(Serialization.Mobile.SerializationInfo info)
+    protected override void SetState(SerializationInfo info)
     {
       Id = info.GetValue<Guid>("id");
       _initializationState = info.GetValue<int>("_initializationState");

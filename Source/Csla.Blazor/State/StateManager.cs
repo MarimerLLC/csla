@@ -71,13 +71,14 @@ namespace Csla.Blazor.State
       var session = _sessionManager.GetSession();
       if (session.IsCheckedOut)
       {
-        var endTime = DateTime.Now + timeout;
-        while (session.IsCheckedOut)
+        var tcs = new TaskCompletionSource();
+        session.PropertyChanged += (s, e) =>
         {
-          if (DateTime.Now > endTime)
-            throw new TimeoutException();
-          await Task.Delay(5);
-        }
+          if (e.PropertyName == "IsCheckedOut" && !session.IsCheckedOut)
+            tcs.SetResult();
+        };
+        if (session.IsCheckedOut)
+          await tcs.Task.WaitAsync(timeout);
       }
       return session;
     }

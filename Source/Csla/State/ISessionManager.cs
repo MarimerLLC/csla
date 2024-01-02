@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
+using System;
 using System.Threading.Tasks;
 
 namespace Csla.State
@@ -37,5 +38,14 @@ namespace Csla.State
     /// </summary>
     /// <returns></returns>
     Task SendSession();
+    /// <summary>
+    /// Remove all expired session data.
+    /// </summary>
+    /// <param name="expiration">Expiration duration</param>
+    /// <remarks>
+    /// Remove all session data that has not been touched
+    /// in the last "expiration" timeframe.
+    /// </remarks>
+    void PurgeSessions(TimeSpan expiration);
   }
 }

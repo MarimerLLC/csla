@@ -97,5 +97,14 @@ namespace Csla.Blazor.WebAssembly.State
         await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray());
       }
     }
+
+    /// <summary>
+    /// Remove all expired session data.
+    /// </summary>
+    /// <param name="expiration">Expiration duration</param>
+    public void PurgeSessions(TimeSpan expiration)
+    { 
+      // do nothing, because this is a single-item cache
+    }
   }
 }

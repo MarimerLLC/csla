@@ -27,13 +27,16 @@ namespace Csla.Blazor.State
     /// </summary>
     public Session GetSession()
     {
-      Session result;
-      var key = _sessionIdManager.GetSessionId();
-      if (!_sessions.ContainsKey(key))
-        _sessions.Add(key, new Session());
-      result = _sessions[key];
-      result.LastTouched = DateTimeOffset.UtcNow;
-      return result;
+      lock (_sessions)
+      {
+        Session result;
+        var key = _sessionIdManager.GetSessionId();
+        if (!_sessions.ContainsKey(key))
+          _sessions.Add(key, new Session());
+        result = _sessions[key];
+        result.LastTouched = DateTimeOffset.UtcNow;
+        return result;
+      }
     }
 
     /// <summary>
@@ -42,13 +45,16 @@ namespace Csla.Blazor.State
     /// <param name="newSession">Current user session data</param>
     public void UpdateSession(Session newSession)
     {
-      if (newSession != null)
+      lock (_sessions)
       {
-        var key = _sessionIdManager.GetSessionId();
-        var existingSession = _sessions[key];
-        Replace(newSession, existingSession);
-        existingSession.LastTouched = DateTimeOffset.UtcNow;
-        existingSession.IsCheckedOut = false;
+        if (newSession != null)
+        {
+          var key = _sessionIdManager.GetSessionId();
+          var existingSession = _sessions[key];
+          Replace(newSession, existingSession);
+          existingSession.LastTouched = DateTimeOffset.UtcNow;
+          existingSession.IsCheckedOut = false;
+        }
       }
     }
 
@@ -77,5 +83,23 @@ namespace Csla.Blazor.State
     /// </summary>
     /// <returns></returns>
     public Task SendSession() => throw new NotSupportedException();
+
+    /// <summary>
+    /// Remove all expired session data.
+    /// </summary>
+    /// <param name="expiration">Expiration duration</param>
+    public void PurgeSessions(TimeSpan expiration)
+    {
+      var expirationTime = DateTimeOffset.UtcNow - expiration;
+      List<string> toRemove = [];
+      lock (_sessions)
+      {
+        foreach (var session in _sessions)
+          if (session.Value.LastTouched < expirationTime)
+            toRemove.Add(session.Key);
+        foreach (var key in toRemove)
+          _sessions.Remove(key);
+      }
+    }
   }
 }

@@ -6,6 +6,7 @@
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Csla.State;
@@ -19,7 +20,7 @@ namespace Csla.Blazor.State
   /// <param name="sessionIdManager"></param>
   public class SessionManager(ISessionIdManager sessionIdManager) : ISessionManager
   {
-    private readonly Dictionary<string, Session> _sessions = [];
+    private readonly ConcurrentDictionary<string, Session> _sessions = [];
     private readonly ISessionIdManager _sessionIdManager = sessionIdManager;
 
     /// <summary>
@@ -27,16 +28,13 @@ namespace Csla.Blazor.State
     /// </summary>
     public Session GetSession()
     {
-      lock (_sessions)
-      {
-        Session result;
-        var key = _sessionIdManager.GetSessionId();
-        if (!_sessions.ContainsKey(key))
-          _sessions.Add(key, new Session());
-        result = _sessions[key];
-        result.LastTouched = DateTimeOffset.UtcNow;
-        return result;
-      }
+      Session result;
+      var key = _sessionIdManager.GetSessionId();
+      if (!_sessions.ContainsKey(key))
+        _sessions.TryAdd(key, []);
+      result = _sessions[key];
+      result.LastTouched = DateTimeOffset.UtcNow;
+      return result;
     }
 
     /// <summary>
@@ -45,16 +43,13 @@ namespace Csla.Blazor.State
     /// <param name="newSession">Current user session data</param>
     public void UpdateSession(Session newSession)
     {
-      lock (_sessions)
+      if (newSession != null)
       {
-        if (newSession != null)
-        {
-          var key = _sessionIdManager.GetSessionId();
-          var existingSession = _sessions[key];
-          Replace(newSession, existingSession);
-          existingSession.LastTouched = DateTimeOffset.UtcNow;
-          existingSession.IsCheckedOut = false;
-        }
+        var key = _sessionIdManager.GetSessionId();
+        var existingSession = _sessions[key];
+        Replace(newSession, existingSession);
+        existingSession.LastTouched = DateTimeOffset.UtcNow;
+        existingSession.IsCheckedOut = false;
       }
     }
 
@@ -92,14 +87,11 @@ namespace Csla.Blazor.State
     {
       var expirationTime = DateTimeOffset.UtcNow - expiration;
       List<string> toRemove = [];
-      lock (_sessions)
-      {
-        foreach (var session in _sessions)
-          if (session.Value.LastTouched < expirationTime)
-            toRemove.Add(session.Key);
-        foreach (var key in toRemove)
-          _sessions.Remove(key);
-      }
+      foreach (var session in _sessions)
+        if (session.Value.LastTouched < expirationTime)
+          toRemove.Add(session.Key);
+      foreach (var key in toRemove)
+        _sessions.TryRemove(key, out var x);
     }
   }
 }

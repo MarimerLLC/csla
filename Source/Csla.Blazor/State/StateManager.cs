@@ -8,7 +8,6 @@
 using System;
 using System.Threading.Tasks;
 using Csla.State;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Csla.Blazor.State
 {

@@ -72,5 +72,16 @@ namespace Csla.Configuration
     /// data from the Blazor web server.
     /// </summary>
     public string StateControllerName { get; set; } = "CslaState";
+    /// <summary>
+    /// Gets or sets a value indicating whether the LocalContext
+    /// and ClientContext values on ApplicationContext should be
+    /// synchronized with a Blazor web server host.
+    /// </summary>
+    /// <remarks>
+    /// If this value is true, the Blazor web server host must
+    /// provide a state controller to allow the wasm client to
+    /// get and send the state from/to the server as necessary.
+    /// </remarks>
+    public bool SyncContextWithServer {  get; set; } = false;
   }
 }

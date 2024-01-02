@@ -62,19 +62,26 @@ namespace Csla.Blazor.WebAssembly.State
     /// </summary>
     public async Task<Session> RetrieveSession()
     {
-      if (_session == null)
+      if (_options.SyncContextWithServer)
       {
-        var result = await client.GetFromJsonAsync<byte[]>(_options.StateControllerName);
-        var formatter = new MobileFormatter(ApplicationContext);
-        var buffer = new MemoryStream(result)
+        if (_session == null)
         {
-          Position = 0
-        };
-        _session = (Session)formatter.Deserialize(buffer);
+          var result = await client.GetFromJsonAsync<byte[]>(_options.StateControllerName);
+          var formatter = new MobileFormatter(ApplicationContext);
+          var buffer = new MemoryStream(result)
+          {
+            Position = 0
+          };
+          _session = (Session)formatter.Deserialize(buffer);
+        }
+        else
+        {
+          await client.PatchAsync(_options.StateControllerName, null);
+        }
       }
       else
       {
-        await client.PatchAsync(_options.StateControllerName, null);
+        _session = GetSession();
       }
       _session.LastTouched = DateTimeOffset.UtcNow;
       return _session;
@@ -87,7 +94,7 @@ namespace Csla.Blazor.WebAssembly.State
     /// <returns></returns>
     public async Task SendSession()
     {
-      if (_session is not null)
+      if (_options.SyncContextWithServer)
       {
         _session.LastTouched = DateTimeOffset.UtcNow;
         var formatter = new MobileFormatter(ApplicationContext);
@@ -99,12 +106,9 @@ namespace Csla.Blazor.WebAssembly.State
     }
 
     /// <summary>
-    /// Remove all expired session data.
+    /// Remove all expired session data. Not supported on wasm.
     /// </summary>
     /// <param name="expiration">Expiration duration</param>
-    public void PurgeSessions(TimeSpan expiration)
-    { 
-      // do nothing, because this is a single-item cache
-    }
+    public void PurgeSessions(TimeSpan expiration) => throw new NotSupportedException();
   }
 }

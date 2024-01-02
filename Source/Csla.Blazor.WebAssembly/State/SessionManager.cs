@@ -38,12 +38,10 @@ namespace Csla.Blazor.WebAssembly.State
     /// </summary>
     public Session GetSession()
     {
-      if (_session == null)
-      {
-        _session = [];
-        _session.Initialize();
-        _session.Initialize();
-      }
+      _session ??= [];
+      _session.Initialize();
+      _session.Initialize();
+      _session.LastTouched = DateTimeOffset.UtcNow;
       return _session;
     }
 
@@ -52,7 +50,11 @@ namespace Csla.Blazor.WebAssembly.State
     /// data locally and on the web server.
     /// </summary>
     /// <param name="session">Current user session data</param>
-    public void UpdateSession(Session session) => _session = session;
+    public void UpdateSession(Session session)
+    {
+      _session.LastTouched = DateTimeOffset.UtcNow;
+      _session = session;
+    }
 
     /// <summary>
     /// Retrieves the current user's session from
@@ -74,8 +76,7 @@ namespace Csla.Blazor.WebAssembly.State
       {
         await client.PatchAsync(_options.StateControllerName, null);
       }
-      _session.Initialize();
-      _session.Initialize();
+      _session.LastTouched = DateTimeOffset.UtcNow;
       return _session;
     }
 
@@ -88,6 +89,7 @@ namespace Csla.Blazor.WebAssembly.State
     {
       if (_session is not null)
       {
+        _session.LastTouched = DateTimeOffset.UtcNow;
         var formatter = new MobileFormatter(ApplicationContext);
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);

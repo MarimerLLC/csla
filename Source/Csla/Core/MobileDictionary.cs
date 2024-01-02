@@ -97,7 +97,15 @@ namespace Csla.Core
     void IMobileObject.GetState(SerializationInfo info)
     {
       info.AddValue("count", this.Keys.Count);
+      GetState(info);
     }
+
+    /// <summary>
+    /// Add property values to the serialization stream.
+    /// </summary>
+    /// <param name="info"></param>
+    protected virtual void GetState(SerializationInfo info)
+    { }
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
@@ -129,6 +137,15 @@ namespace Csla.Core
     }
 
     void IMobileObject.SetState(SerializationInfo info)
+    {
+      SetState(info);
+    }
+
+    /// <summary>
+    /// Set property values from serialization stream.
+    /// </summary>
+    /// <param name="info"></param>
+    protected virtual void SetState(SerializationInfo info)
     { }
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)

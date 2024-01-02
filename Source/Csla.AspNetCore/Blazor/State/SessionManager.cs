@@ -27,26 +27,28 @@ namespace Csla.Blazor.State
     /// </summary>
     public Session GetSession()
     {
+      Session result;
       var key = _sessionIdManager.GetSessionId();
       if (!_sessions.ContainsKey(key))
-      {
-        _sessions.Add(key, []);
-        _sessions[key].SessionId = key;
-      }
-      return _sessions[key];
+        _sessions.Add(key, new Session());
+      result = _sessions[key];
+      result.LastTouched = DateTimeOffset.UtcNow;
+      return result;
     }
 
     /// <summary>
     /// Updates the current user's session data.
     /// </summary>
-    /// <param name="session">Current user session data</param>
-    public void UpdateSession(Session session)
+    /// <param name="newSession">Current user session data</param>
+    public void UpdateSession(Session newSession)
     {
-      if (session != null)
+      if (newSession != null)
       {
         var key = _sessionIdManager.GetSessionId();
-        session.SessionId = key;
-        Replace(session, _sessions[key]);
+        var existingSession = _sessions[key];
+        Replace(newSession, existingSession);
+        existingSession.LastTouched = DateTimeOffset.UtcNow;
+        existingSession.IsCheckedOut = false;
       }
     }
 

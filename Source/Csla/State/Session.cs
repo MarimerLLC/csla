@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
+using System.Runtime.Serialization;
 using Csla.Core;
 
 namespace Csla.State
@@ -19,9 +20,9 @@ namespace Csla.State
   public class Session : MobileDictionary<string, object>
   {
     /// <summary>
-    /// Gets or sets the Session Id value.
+    /// Gets a unique id for this object.
     /// </summary>
-    public string SessionId { get; set; } = string.Empty;
+    public Guid Id { get; private set; } = Guid.NewGuid();
     /// <summary>
     /// Gets or sets a value indicating whether
     /// the session is currently checked out to
@@ -32,6 +33,11 @@ namespace Csla.State
     /// false if available for use on the server
     /// </value>
     public bool IsCheckedOut { get; set; }
+    /// <summary>
+    /// Gets or sets a value indicating the last
+    /// time (UTC) this object was interacted with.
+    /// </summary>
+    public DateTimeOffset LastTouched { get; set; } = DateTimeOffset.MinValue;
     /// <summary>
     /// Gets a value indicating whether the session
     /// is fully initialized and ready for use.
@@ -54,6 +60,26 @@ namespace Csla.State
     {
       if (_initializationState < 2) 
         _initializationState++;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    protected override void GetState(Csla.Serialization.Mobile.SerializationInfo info)
+    {
+      info.AddValue("id", Id);
+      info.AddValue("_initializationState", _initializationState);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    protected override void SetState(Serialization.Mobile.SerializationInfo info)
+    {
+      Id = info.GetValue<Guid>("id");
+      _initializationState = info.GetValue<int>("_initializationState");
     }
   }
 }

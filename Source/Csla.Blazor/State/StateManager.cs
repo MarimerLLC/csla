@@ -6,6 +6,7 @@
 // <summary>Get and save state from Blazor pages</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Csla.State;
 
@@ -68,19 +69,29 @@ namespace Csla.Blazor.State
     /// <param name="timeout">Time to wait before timing out</param>
     private async Task<Session> WaitForState(TimeSpan timeout)
     {
+      TaskCompletionSource tcs;
       var session = _sessionManager.GetSession();
       if (session.IsCheckedOut)
       {
-        var tcs = new TaskCompletionSource();
-        session.PropertyChanged += (s, e) =>
+        tcs = new TaskCompletionSource();
+        try
         {
-          if (e.PropertyName == "IsCheckedOut" && !session.IsCheckedOut && !tcs.Task.IsCompleted)
-            tcs.SetResult();
-        };
-        if (session.IsCheckedOut)
-          await tcs.Task.WaitAsync(timeout);
+          session.PropertyChanged += HandleIsCheckedOutChanged;
+          if (session.IsCheckedOut)
+            await tcs.Task.WaitAsync(timeout);
+        }
+        finally
+        {
+          session.PropertyChanged -= HandleIsCheckedOutChanged;
+        }
       }
       return session;
+
+      void HandleIsCheckedOutChanged(object sender, PropertyChangedEventArgs e) 
+      {
+        if (e.PropertyName == "IsCheckedOut" && !session.IsCheckedOut && !tcs.Task.IsCompleted)
+          tcs.SetResult();
+      }
     }
 
     /// <summary>

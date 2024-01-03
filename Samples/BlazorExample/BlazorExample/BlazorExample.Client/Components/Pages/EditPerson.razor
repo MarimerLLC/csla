@@ -1,0 +1,93 @@
+﻿@page "/editperson"
+@page "/editperson/{id}"
+@rendermode InteractiveWebAssembly
+@implements IDisposable /* CSLA wasm pages must be IDisposable */
+@inject Csla.Blazor.State.StateManager StateManager
+@inject Csla.IDataPortal<PersonEdit> personEditPortal
+@inject Csla.Blazor.ViewModel<PersonEdit> vm
+@inject NavigationManager NavigationManager
+
+<h1>Edit Person</h1>
+
+<p>This component demonstrates editing a BusinessBase-derived object.</p>
+
+<p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+  <AuthorizeView>
+    <Authorized>
+      <p>Loading Person...</p>
+    </Authorized>
+    <NotAuthorized>
+      <p>Not authorized</p>
+    </NotAuthorized>
+  </AuthorizeView>
+}
+else
+{
+  <p>
+    <a href="listpersons">List of people</a>
+  </p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Id</td>
+        <td>@vm.Model.Id</td>
+      </tr>
+      @if (vm.GetPropertyInfo(() => vm.Model.Name).CanRead)
+      {
+        <tr>
+          <td>@(vm.GetPropertyInfo(() => vm.Model.Name).FriendlyName)</td>
+          <td>
+            <TextInput Property="@(vm.GetPropertyInfo(() => vm.Model.Name))" />
+          </td>
+        </tr>
+      }
+      <tr>
+        <td>Name length</td>
+        <td>@vm.Model.NameLength</td>
+      </tr>
+      <tr>
+        <td>IsNew</td>
+        <td>@vm.Model.IsNew</td>
+      </tr>
+      <tr>
+        <td>IsSavable</td>
+        <td>@vm.Model.IsSavable</td>
+      </tr>
+    </tbody>
+  </table>
+  <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
+}
+
+@code {
+    [Parameter]
+    public string? id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+
+        vm.Saved += () => NavigationManager.NavigateTo("listpersons");
+        vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+
+        if (string.IsNullOrWhiteSpace(id))
+            await vm.RefreshAsync(() => personEditPortal.CreateAsync());
+        else
+            await vm.RefreshAsync(() => personEditPortal.FetchAsync(int.Parse(id)));
+    }
+
+    public void Dispose()
+    {
+        // wasm pages _must_ save state back to server
+        StateManager.SaveState();
+    }
+}

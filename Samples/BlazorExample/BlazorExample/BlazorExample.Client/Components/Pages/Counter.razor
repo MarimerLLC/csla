@@ -1,0 +1,33 @@
+﻿@page "/counter"
+@rendermode InteractiveAuto
+@implements IDisposable /* CSLA wasm pages must be IDisposable */
+@inject Csla.Blazor.State.StateManager StateManager
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+    }
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    public void Dispose()
+    {
+        // wasm pages _must_ save state back to server
+        StateManager.SaveState();
+    }
+}

@@ -1,0 +1,24 @@
+﻿@page "/"
+@attribute [StreamRendering] /* server-static pages must be streaming */
+@inject Csla.Blazor.State.StateManager StateManager
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, CSLA developer!</h1>
+
+<p>Welcome to your new CSLA Blazor app.</p>
+
+<p>CSLA state is ready: @IsStateReady</p>
+
+@code
+{
+    private bool IsStateReady;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+        // CSLA state is not available until this page has rendered one time
+        IsStateReady = StateManager.IsStateAvailable;
+    }
+}

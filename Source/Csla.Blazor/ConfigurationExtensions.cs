@@ -6,6 +6,7 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Linq;
 using Csla.Blazor;
 using Csla.Core;
 using Csla.State;
@@ -44,12 +45,14 @@ namespace Csla.Configuration
       // minimize PropertyChanged events
       config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
 
-#if NET5_0_OR_GREATER
       var managerType = Type.GetType("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");
       if (managerType is null)
         throw new TypeLoadException("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");
+      var contextManagerType = typeof(Core.IContextManager);
+      var managers = config.Services.Where(i => i.ServiceType.Equals(contextManagerType)).ToList();
+      foreach ( var manager in managers )
+        config.Services.Remove(manager);
       config.Services.AddScoped(typeof(IContextManager), managerType);
-#endif
 
       // use Blazor state management
       config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);

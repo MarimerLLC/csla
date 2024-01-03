@@ -13,7 +13,6 @@ using Csla.Serialization.Mobile;
 using Csla.Core;
 using System.Threading.Tasks;
 using Csla.Threading;
-using System.Security.Principal;
 using Csla.Server;
 
 namespace Csla.Rules

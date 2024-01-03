@@ -8,9 +8,8 @@
 using System;
 using Csla.Blazor;
 using Csla.Core;
-using Csla.Runtime;
+using Csla.State;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -52,6 +51,11 @@ namespace Csla.Configuration
       config.Services.AddScoped(typeof(IContextManager), managerType);
 #endif
 
+      // use Blazor state management
+      config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
+      config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
+      config.Services.AddTransient<Blazor.State.StateManager>();
+
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       if (blazorOptions.UseCslaPermissionsPolicy)
@@ -64,15 +68,25 @@ namespace Csla.Configuration
   }
 
   /// <summary>
-  /// Options that can be provided to the WithBlazorServerSupport
-  /// method.
+  /// Options for Blazor server-rendered and server-interactive.
   /// </summary>
   public class BlazorServerConfigurationOptions
   {
     /// <summary>
-    /// Indicates whether the app should be configured to
-    /// use CSLA permissions policies (default = true).
+    /// Gets or sets a value indicating whether the app 
+    /// should be configured to use CSLA permissions 
+    /// policies (default = true).
     /// </summary>
     public bool UseCslaPermissionsPolicy { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the type of the ISessionManager service.
+    /// </summary>
+    public Type SessionManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionManager, Csla.AspNetCore", true);
+
+    /// <summary>
+    /// Gets or sets the type of the ISessionIdManager service.
+    /// </summary>
+    public Type SessionIdManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionIdManager, Csla.AspNetCore", true);
   }
 }

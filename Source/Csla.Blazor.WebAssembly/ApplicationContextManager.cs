@@ -6,8 +6,10 @@
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
+using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -20,22 +22,6 @@ namespace Csla.Blazor.WebAssembly
   /// </summary>
   public class ApplicationContextManager : IContextManager, IDisposable
   {
-    private ContextDictionary LocalContext { get; set; }
-    private ContextDictionary ClientContext { get; set; }
-    private Task<AuthenticationState> AuthenticationState { get; set; }
-    private IPrincipal _currentPrincipal;
-    private bool disposedValue;
-
-    /// <summary>
-    /// Gets the current AuthenticationStateProvider instance.
-    /// </summary>
-    protected AuthenticationStateProvider AuthenticationStateProvider { get; private set; }
-
-    /// <summary>
-    /// Gets or sets a reference to the current ApplicationContext.
-    /// </summary>
-    public ApplicationContext ApplicationContext { get; set; }
-
     /// <summary>
     /// Creates an instance of the object, initializing it
     /// with the required IServiceProvider.
@@ -47,6 +33,22 @@ namespace Csla.Blazor.WebAssembly
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
       InitializeUser();
     }
+
+    private ContextDictionary LocalContext { get; set; }
+    private ContextDictionary ClientContext { get; set; }
+    private Task<AuthenticationState> AuthenticationState { get; set; }
+    private ClaimsPrincipal _currentPrincipal;
+    private bool disposedValue;
+
+    /// <summary>
+    /// Gets the current AuthenticationStateProvider instance.
+    /// </summary>
+    protected AuthenticationStateProvider AuthenticationStateProvider { get; private set; }
+
+    /// <summary>
+    /// Gets or sets a reference to the current ApplicationContext.
+    /// </summary>
+    public ApplicationContext ApplicationContext { get; set; }
 
     private void InitializeUser()
     {
@@ -87,8 +89,6 @@ namespace Csla.Blazor.WebAssembly
         else
           _currentPrincipal = new ClaimsPrincipal();
       }
-      var identity = _currentPrincipal.Identity;
-      var isAdmin = _currentPrincipal.IsInRole("Admin");
       return _currentPrincipal;
     }
 
@@ -108,8 +108,17 @@ namespace Csla.Blazor.WebAssembly
     /// </summary>
     public ContextDictionary GetLocalContext()
     {
-      if (LocalContext == null)
-        LocalContext = new ContextDictionary();
+      if (LocalContext is null)
+      {
+        var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+        var session = sessionManager.GetSession();
+        session.TryGetValue("localContext", out var result);
+        if (result is ContextDictionary context)
+          LocalContext = context;
+        else
+          LocalContext = [];
+        SetLocalContext(LocalContext);
+      }
       return LocalContext;
     }
 
@@ -120,6 +129,9 @@ namespace Csla.Blazor.WebAssembly
     public void SetLocalContext(ContextDictionary localContext)
     {
       LocalContext = localContext;
+      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+      var session = sessionManager.GetSession();
+      session["localContext"] = localContext;
     }
 
     /// <summary>
@@ -128,8 +140,17 @@ namespace Csla.Blazor.WebAssembly
     /// <param name="executionLocation"></param>
     public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      if (ClientContext == null)
-        ClientContext = new ContextDictionary();
+      if (ClientContext is null)
+      {
+        var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+        var session = sessionManager.GetSession();
+        session.TryGetValue("clientContext", out var result);
+        if (result is ContextDictionary context)
+          ClientContext = context;
+        else
+          ClientContext = [];
+        SetClientContext(ClientContext, ApplicationContext.ExecutionLocation);
+      }
       return ClientContext;
     }
 
@@ -141,6 +162,9 @@ namespace Csla.Blazor.WebAssembly
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ClientContext = clientContext;
+      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+      var session = sessionManager.GetSession();
+      session["clientContext"] = clientContext;
     }
 
     /// <summary>

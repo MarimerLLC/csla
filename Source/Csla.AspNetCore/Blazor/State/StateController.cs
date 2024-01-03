@@ -31,7 +31,7 @@ namespace Csla.AspNetCore.Blazor.State
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public byte[] Get()
+    public virtual byte[] Get()
     {
       var session = _sessionManager.GetSession();
       session.IsCheckedOut = true;
@@ -48,7 +48,7 @@ namespace Csla.AspNetCore.Blazor.State
     /// <param name="updatedSessionData"></param>
     /// <returns></returns>
     [HttpPut]
-    public void Put(byte[] updatedSessionData)
+    public virtual void Put(byte[] updatedSessionData)
     {
       var formatter = new MobileFormatter(ApplicationContext);
       var buffer = new MemoryStream(updatedSessionData)
@@ -65,7 +65,7 @@ namespace Csla.AspNetCore.Blazor.State
     /// indicating that it is in use by a Blazor wasm client.
     /// </summary>
     [HttpPatch]
-    public void Patch()
+    public virtual void Patch()
     {
       var session = _sessionManager.GetSession();
       session.IsCheckedOut = true;

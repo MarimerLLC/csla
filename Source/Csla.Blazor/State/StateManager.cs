@@ -74,7 +74,7 @@ namespace Csla.Blazor.State
         var tcs = new TaskCompletionSource();
         session.PropertyChanged += (s, e) =>
         {
-          if (e.PropertyName == "IsCheckedOut" && !session.IsCheckedOut)
+          if (e.PropertyName == "IsCheckedOut" && !session.IsCheckedOut && !tcs.Task.IsCompleted)
             tcs.SetResult();
         };
         if (session.IsCheckedOut)

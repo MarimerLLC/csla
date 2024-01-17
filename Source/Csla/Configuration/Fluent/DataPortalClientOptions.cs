@@ -42,6 +42,6 @@ namespace Csla.Configuration
     /// Gets or sets the type that implements 
     /// IDataPortalCache for client-side caching.
     /// </summary>
-    public Type DataPortalCacheType { get; set; } = typeof(DataPortalCacheDefault);
+    public Type DataPortalCacheType { get; set; } = typeof(DataPortalNoCache);
   }
 }

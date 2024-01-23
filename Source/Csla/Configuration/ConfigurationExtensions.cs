@@ -50,7 +50,6 @@ namespace Csla.Configuration
       RegisterContextManager(services);
       if (cslaOptions.ContextManagerType != null)
         services.AddScoped(typeof(Csla.Core.IContextManager), cslaOptions.ContextManagerType);
-      services.TryAddScoped<IDataPortalCache, DataPortalNoCache>();
 
       // Runtime Info defaults
       services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));

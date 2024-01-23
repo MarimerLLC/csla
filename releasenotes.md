@@ -17,6 +17,7 @@ CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.
 * [#3622](https://github.com/MarimerLLC/csla/issues/3662) Add WaitForIdle method to base types with IsBusy property
 * [#3623](https://github.com/MarimerLLC/csla/issues/3623) Add client-side data portal cache capability
 * [#3635](https://github.com/MarimerLLC/csla/issues/3635) Ensure IDataPortalCache interface works with async/await
+* [#3655](https://github.com/MarimerLLC/csla/issues/3655) Improve IDataPortalCache API to be atomic
 * [#3338](https://github.com/MarimerLLC/csla/issues/3338) `IDataPortalTarget` now includes `CheckRulesAsync`; `CslaModelBinder` now calls `CheckRulesAsync` instead of `CheckRules`
 * [#3596](https://github.com/MarimerLLC/csla/issues/3596) Implement Blazor 8 state management for `ClientContext` and `LocalContext`
 

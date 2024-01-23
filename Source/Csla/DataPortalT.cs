@@ -121,27 +121,8 @@ namespace Csla
 
         try
         {
-          if (Cache.IsCacheable(objectType, criteria, DataPortalOperations.Create))
-          {
-            try
-            {
-              await Cache.Semaphore.WaitAsync();
-              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create);
-              if (result is null)
-              {
-                result = await proxy.Create(objectType, criteria, dpContext, isSync);
-                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create, result);
-              }
-            }
-            finally
-            {
-              Cache.Semaphore.Release();
-            }
-          }
-          else
-          {
-            result = await proxy.Create(objectType, criteria, dpContext, isSync);
-          }
+          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create, 
+            async () => await proxy.Create(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
         {
@@ -242,27 +223,8 @@ namespace Csla
 
         try
         {
-          if (Cache.IsCacheable(objectType, criteria, DataPortalOperations.Fetch))
-          {
-            try
-            {
-              await Cache.Semaphore.WaitAsync();
-              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch);
-              if (result is null)
-              {
-                result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch, result);
-              }
-            }
-            finally
-            {
-              Cache.Semaphore.Release();
-            }
-          }
-          else
-          {
-            result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-          }
+          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch,
+            async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
         {
@@ -307,27 +269,8 @@ namespace Csla
 
         try
         {
-          if (Cache.IsCacheable(objectType, criteria, DataPortalOperations.Execute))
-          {
-            try
-            {
-              await Cache.Semaphore.WaitAsync();
-              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute);
-              if (result is null)
-              {
-                result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute, result);
-              }
-            }
-            finally
-            {
-              Cache.Semaphore.Release();
-            }
-          }
-          else
-          {
-            result = await proxy.Fetch(objectType, criteria, dpContext, isSync);
-          }
+          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute,
+            async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
         {
@@ -541,27 +484,8 @@ namespace Csla
             if (obj is ICloneable cloneable)
               obj = (T)cloneable.Clone();
           }
-          if (Cache.IsCacheable(objectType, obj, operation))
-          {
-            try
-            {
-              await Cache.Semaphore.WaitAsync();
-              result = await Cache.GetDataPortalResultAsync(objectType, obj, operation);
-              if (result is null)
-              {
-                result = await proxy.Update(obj, dpContext, isSync);
-                await Cache.AddDataPortalResultAsync(objectType, obj, operation, result);
-              }
-            }
-            finally
-            {
-              Cache.Semaphore.Release();
-            }
-          }
-          else
-          {
-            result = await proxy.Update(obj, dpContext, isSync);
-          }
+          result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
+            async () => await proxy.Update(obj, dpContext, isSync));
         }
         catch (AggregateException ex)
         {
@@ -650,27 +574,8 @@ namespace Csla
 
         try
         {
-          if (Cache.IsCacheable(objectType, criteria, DataPortalOperations.Delete))
-          {
-            try
-            {
-              await Cache.Semaphore.WaitAsync();
-              result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete);
-              if (result is null)
-              {
-                result = await proxy.Delete(objectType, criteria, dpContext, isSync);
-                await Cache.AddDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete, result);
-              }
-            }
-            finally
-            {
-              Cache.Semaphore.Release();
-            }
-          }
-          else
-          {
-            result = await proxy.Delete(objectType, criteria, dpContext, isSync);
-          }
+          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete,
+            async () => await proxy.Delete(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
         {

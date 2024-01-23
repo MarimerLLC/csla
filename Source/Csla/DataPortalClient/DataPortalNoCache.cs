@@ -3,39 +3,29 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Defines interface for a client-side cache service</summary>
+// <summary>Null implementation of a client-side cache service</summary>
 //-----------------------------------------------------------------------
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Csla.Server;
 
-#nullable enable
 namespace Csla.DataPortalClient
 {
   /// <summary>
-  /// Defines interface for a client-side cache service
-  /// used by the create and fetch operations in the
-  /// client-side data portal.
+  /// Null implementation of a client-side cache service.
   /// </summary>
-  public interface IDataPortalCache
+  public class DataPortalNoCache : IDataPortalCache
   {
     /// <summary>
-    /// Get result from cache or data portal.
+    /// Always invokes the data portal delegate with
+    /// no caching.
     /// </summary>
     /// <param name="objectType">Type of domain object to retrieve</param>
     /// <param name="criteria">Criteria for domain type being retrieved</param>
     /// <param name="operation">Data portal operation</param>
     /// <param name="portal">Data portal delegate</param>
-    /// <remarks>
-    /// The data portal invokes this method for each operation. The cache
-    /// implementation may choose to return a result from the cache, 
-    /// or return a result by invoking the data portal delegate.
-    /// </remarks>
-    Task<Server.DataPortalResult> GetDataPortalResultAsync(
-      Type objectType, 
-      object criteria, 
-      DataPortalOperations operation, 
-      Func<Task<Server.DataPortalResult>> portal);
+    public async Task<DataPortalResult> GetDataPortalResultAsync(Type objectType, object criteria, DataPortalOperations operation, Func<Task<Server.DataPortalResult>> portal) 
+      => await portal();
   }
 }
-#nullable disable

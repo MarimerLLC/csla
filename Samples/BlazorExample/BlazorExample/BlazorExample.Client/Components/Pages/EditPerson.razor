@@ -1,6 +1,6 @@
 ﻿@page "/editperson"
 @page "/editperson/{id}"
-@rendermode InteractiveWebAssembly
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 @implements IDisposable /* CSLA wasm pages must be IDisposable */
 @inject Csla.Blazor.State.StateManager StateManager
 @inject Csla.IDataPortal<PersonEdit> personEditPortal
@@ -70,6 +70,8 @@ else
 @code {
     [Parameter]
     public string? id { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

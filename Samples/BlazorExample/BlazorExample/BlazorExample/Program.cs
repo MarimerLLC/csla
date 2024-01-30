@@ -11,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+builder.Services.AddCascadingAuthenticationState();
 
 // CSLA requires AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();

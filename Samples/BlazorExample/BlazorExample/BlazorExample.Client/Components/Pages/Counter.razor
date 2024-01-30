@@ -1,5 +1,5 @@
 ﻿@page "/counter"
-@rendermode InteractiveAuto
+@rendermode @(new InteractiveAutoRenderMode(prerender: false))
 @implements IDisposable /* CSLA wasm pages must be IDisposable */
 @inject Csla.Blazor.State.StateManager StateManager
 
@@ -12,6 +12,8 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
     private int currentCount = 0;
 
     protected override async Task OnInitializedAsync()

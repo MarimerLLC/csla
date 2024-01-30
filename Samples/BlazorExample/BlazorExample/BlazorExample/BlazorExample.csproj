@@ -12,8 +12,8 @@
     <ProjectReference Include="..\DataAccess.EF\DataAccess.EF.csproj" />
     <ProjectReference Include="..\DataAccess.Mock\DataAccess.Mock.csproj" />
     <ProjectReference Include="..\DataAccess\DataAccess.csproj" />
-    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24010305" />
-    <PackageReference Include="Csla.Blazor" Version="8.0.0-R24010305" />
+    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24012202" />
+    <PackageReference Include="Csla.Blazor" Version="8.0.0-R24012202" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
   </ItemGroup>
 

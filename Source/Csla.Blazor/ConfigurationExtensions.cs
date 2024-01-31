@@ -45,9 +45,14 @@ namespace Csla.Configuration
       // minimize PropertyChanged events
       config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
 
-      var managerType = Type.GetType("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");
+      string managerTypeName;
+      if (blazorOptions.UseInMemoryApplicationContextManager)
+        managerTypeName = "Csla.AspNetCore.Blazor.ApplicationContextManagerInMemory,Csla.AspNetCore";
+      else
+        managerTypeName = "Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore";
+      var managerType = Type.GetType(managerTypeName);
       if (managerType is null)
-        throw new TypeLoadException("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");
+        throw new TypeLoadException(managerTypeName);
       var contextManagerType = typeof(Core.IContextManager);
       var managers = config.Services.Where(i => i.ServiceType.Equals(contextManagerType)).ToList();
       foreach ( var manager in managers )
@@ -81,6 +86,12 @@ namespace Csla.Configuration
     /// policies (default = true).
     /// </summary>
     public bool UseCslaPermissionsPolicy { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to use the
+    /// pre-Blazor 8 in-memory context manager.
+    /// </summary>
+    public bool UseInMemoryApplicationContextManager { get; set; }
 
     /// <summary>
     /// Gets or sets the type of the ISessionManager service.

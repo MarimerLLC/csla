@@ -551,12 +551,20 @@ namespace Csla.Xaml
       try
       {
         UnhookChangedEvents(Model);
+        var savable = Model as ISavable;
+        if (ManageObjectLifetime)
+        {
+          // clone the object if possible
+          if (Model is ICloneable clonable)
+            savable = (ISavable)clonable.Clone();
 
-        if (ManageObjectLifetime && Model is ISupportUndo undoable)
-          undoable.ApplyEdit();
+          //apply changes
+          if (savable is ISupportUndo undoable)
+            undoable.ApplyEdit();
+        }
 
         IsBusy = true;
-        Model = await DoSaveAsync();
+        Model = await DoSaveAsync(savable);
       }
       finally
       {
@@ -570,15 +578,15 @@ namespace Csla.Xaml
     /// Override to provide custom Model save behavior.
     /// </summary>
     /// <returns></returns>
-    protected virtual async Task<T> DoSaveAsync()
+    protected virtual async Task<T> DoSaveAsync(ISavable cloned)
     {
-      if (Model is ISavable savable)
+      if (cloned != null)
       {
-        var result = (T)await savable.SaveAsync();
+        var saved = (T)await cloned.SaveAsync();
         if (Model is IEditableBusinessObject editable)
-          new GraphMerger(ApplicationContext).MergeGraph(editable, (IEditableBusinessObject)result);
+          new GraphMerger(ApplicationContext).MergeGraph(editable, (IEditableBusinessObject)saved);
         else
-          Model = result;
+          Model = saved;
       }
       return Model;
     }

@@ -16,30 +16,30 @@
     <description>UI helpers for using CSLA .NET business types with Maui.</description>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework="net6.0">
+      <group targetFramework="net7.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="net6.0-android21.0">
+      <group targetFramework="net7.0-android21.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="net6.0-ios14.2">
+      <group targetFramework="net7.0-ios14.2">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="net6.0-maccatalyst14.0">
+      <group targetFramework="net7.0-maccatalyst14.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
-      <group targetFramework="net6.0-windows10.0.19041.0">
+      <group targetFramework="net7.0-windows10.0.19041.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <!-- Maui Csla.Xaml -->
-    <file src="..\..\Bin\Maui\Release\net6.0\**\Csla.Xaml.*" target="lib\net6.0"/>
-    <file src="..\..\Bin\Maui\Release\net6.0-android\**\Csla.Xaml.*" target="lib\net6.0-android21.0"/>
-    <file src="..\..\Bin\Maui\Release\net6.0-ios\**\Csla.Xaml.*" target="lib\net6.0-ios14.2"/>
-    <file src="..\..\Bin\Maui\Release\net6.0-maccatalyst\**\Csla.Xaml.*" target="lib\net6.0-maccatalyst14.0"/>
-    <file src="..\..\Bin\Maui\Release\net6.0-windows10.0.19041.0\**\Csla.Xaml.*" target="lib\net6.0-windows10.0.19041.0"/>
+    <file src="..\..\Bin\Maui\Release\net7.0\**\Csla.Xaml.*" target="lib\net7.0"/>
+    <file src="..\..\Bin\Maui\Release\net7.0-android\**\Csla.Xaml.*" target="lib\net7.0-android21.0"/>
+    <file src="..\..\Bin\Maui\Release\net7.0-ios\**\Csla.Xaml.*" target="lib\net7.0-ios14.2"/>
+    <file src="..\..\Bin\Maui\Release\net7.0-maccatalyst\**\Csla.Xaml.*" target="lib\net7.0-maccatalyst14.0"/>
+    <file src="..\..\Bin\Maui\Release\net7.0-windows10.0.19041.0\**\Csla.Xaml.*" target="lib\net7.0-windows10.0.19041.0"/>
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
     <file src="..\..\Support\readme.md" target="docs\" />

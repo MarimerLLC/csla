@@ -2,6 +2,34 @@
 
 CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other enhancements.
 
+## CSLA .NET version 7.0.3 release
+
+CSLA .NET version 7.0.3 fixes bugs and updates the MAUI build target.
+
+* [#3581](https://github.com/MarimerLLC/csla/issues/3581) Fix bug with GraphMerger
+* [#3594](https://github.com/MarimerLLC/csla/issues/3594) Update MAUI project to .NET 7
+
+### Change List
+
+* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=project%3Amarimerllc%2F12+)
+
+### Dependency Updates
+
+* Updated some .NET 7 RC references to the released versions
+* Update gRPC dependencies to current
+* Update RabbitMQ dependencies to current
+* Update `Microsoft.Data.SqlClient` to version 5.1.2
+* Update ASP.NET MVC 5 dependencies to version 5.3.0
+* Update `Xamarin.Forms` dependency version to 5.0.0.2622
+
+### Contributors
+
+* @russblair
+* @michaelcsikos
+* @rockfordlhotka
+
+Thank you so much for your support!
+
 ## CSLA .NET version 7.0.2 release
 
 CSLA .NET version 7.0.2 fixes bugs.

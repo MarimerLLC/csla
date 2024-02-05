@@ -257,11 +257,20 @@ namespace Csla.Blazor
 
         UnhookChangedEvents(Model);
 
-        if (ManageObjectLifetime && Model is Core.ISupportUndo undoable)
+        var savable = Model as Core.ISavable;
+        if (ManageObjectLifetime)
+        {
+          // clone the object if possible
+          if (Model is ICloneable clonable)
+            savable = (Core.ISavable)clonable.Clone();
+
+          //apply changes
+          if (savable is Core.ISupportUndo undoable)
             undoable.ApplyEdit();
+        }
 
         IsBusy = true;
-        Model = await DoSaveAsync();
+        Model = await DoSaveAsync(savable);
         Saved?.Invoke();
       }
       catch (DataPortalException ex)
@@ -285,15 +294,15 @@ namespace Csla.Blazor
     /// Override to provide custom Model save behavior.
     /// </summary>
     /// <returns></returns>
-    protected virtual async Task<T> DoSaveAsync()
+    protected virtual async Task<T> DoSaveAsync(Core.ISavable cloned)
     {
-      if (Model is Core.ISavable savable)
+      if (cloned != null)
       {
-        var result = (T)await savable.SaveAsync();
+        var saved = (T)await cloned.SaveAsync();
         if (Model is Core.IEditableBusinessObject editable)
-          new Core.GraphMerger(ApplicationContext).MergeGraph(editable, (Core.IEditableBusinessObject)result);
+          new Core.GraphMerger(ApplicationContext).MergeGraph(editable, (Core.IEditableBusinessObject)saved);
         else
-          Model = result;
+          Model = saved;
       }
       return Model;
     }

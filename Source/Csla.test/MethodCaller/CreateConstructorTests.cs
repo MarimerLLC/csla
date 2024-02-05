@@ -8,6 +8,8 @@
 using System;
 using System.ComponentModel;
 using UnitDriven;
+using Microsoft.Extensions.DependencyInjection;
+using Csla.Configuration;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -27,29 +29,38 @@ namespace Csla.Test.MethodCaller
     [TestMethod]
     public void CreateInstanceSuccess()
     {
-      // TODO: Not sure what the equivalent of this is in Csla 6
-      //var t1 = Csla.Reflection.MethodCaller.CreateInstance(typeof(TestClass));
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetService<ApplicationContext>();
+      var t1 = applicationContext.CreateInstance(typeof(TestClass));
 #if MSTEST
-      //Assert.IsInstanceOfType(t1, typeof(TestClass));
+      Assert.IsInstanceOfType(t1, typeof(TestClass));
 #else
-      //Assert.IsInstanceOfType(typeof(TestClass), t1);
+      Assert.IsInstanceOfType(typeof(TestClass), t1);
 #endif
     }
 
     [TestMethod]
     public void CreateInstanceNonPublicNestedTypeSuccess()
     {
-      // TODO: Not sure how to recreate this in Csla 6
-      //var instance = (NonPublic2)Csla.Reflection.MethodCaller.CreateInstance(typeof(NonPublic2));
-      //Assert.IsNotNull(instance);
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetService<ApplicationContext>();
+      var instance = (NonPublic2)applicationContext.CreateInstanceDI(typeof(NonPublic2));
+      Assert.IsNotNull(instance);
     }
 
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void CreateInstanceNotClassFail()
     {
-      // TODO: Not sure how to do this now
-      //Csla.Reflection.MethodCaller.CreateInstance(typeof(TestStruct));
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetService<ApplicationContext>();
+      var obj = applicationContext.CreateInstanceDI(typeof(TestStruct));
     }
 
     public class NonPublic1

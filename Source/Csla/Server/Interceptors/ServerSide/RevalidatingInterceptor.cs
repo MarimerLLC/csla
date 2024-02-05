@@ -37,7 +37,7 @@ namespace Csla.Server.Interceptors.ServerSide
     /// </summary>
     /// <param name="e">The interception arguments from the DataPortal</param>
     /// <exception cref="Rules.ValidationException"></exception>
-    public void Initialize(InterceptArgs e)
+    public async Task Initialize(InterceptArgs e)
     {
       ITrackStatus checkableObject;
 
@@ -50,7 +50,7 @@ namespace Csla.Server.Interceptors.ServerSide
       checkableObject = e.Parameter as ITrackStatus;
       if (checkableObject is null) return;
 
-      RevalidateObject(checkableObject);
+      await RevalidateObject(checkableObject);
       if (!checkableObject.IsValid)
       {
         throw new Rules.ValidationException(Resources.NoSaveInvalidException);
@@ -69,14 +69,14 @@ namespace Csla.Server.Interceptors.ServerSide
     /// Perform revalidation of business rules on any supporting type
     /// </summary>
     /// <param name="parameter">The parameter that was passed to the DataPortal as part of the operation</param>
-    private void RevalidateObject(object parameter)
+    private async Task RevalidateObject(object parameter)
     {
       if (parameter is IEnumerable list)
       {
         // Handle the object being a collection
         foreach (object item in list)
         {
-          RevalidateObject(item);
+          await RevalidateObject(item);
         }
       }
       else
@@ -84,10 +84,8 @@ namespace Csla.Server.Interceptors.ServerSide
         if (parameter is ICheckRules checkableObject)
         {
           // object not a collection, see if it has rules
-          var task = checkableObject.CheckRulesAsync();
           // wait for all async rules to complete before proceeding
-          while (!task.IsCompleted)
-            Task.Delay(1);
+          await checkableObject.CheckRulesAsync();
         }
 
         // Cascade to any child objects
@@ -96,14 +94,14 @@ namespace Csla.Server.Interceptors.ServerSide
           var properties = fieldHolder.FieldManager.GetRegisteredProperties();
           foreach (var property in properties.Where(r=>r.IsChild && fieldHolder.FieldManager.FieldExists(r)))
           {
-            RevalidateObject(fieldHolder.FieldManager.GetFieldData(property).Value);
+            await RevalidateObject(fieldHolder.FieldManager.GetFieldData(property).Value);
           }
         }
         else if (parameter is IManageProperties propertyHolder)
         {
           foreach (object child in propertyHolder.GetChildren())
           {
-            RevalidateObject(child);
+            await RevalidateObject(child);
           }
         }
       }

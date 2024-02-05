@@ -6,6 +6,7 @@
 // <summary>Cascades DataPortal interception requests to registered interceptors</summary>
 //-----------------------------------------------------------------------
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Csla.Server
 {
@@ -29,11 +30,11 @@ namespace Csla.Server
     /// Cascade the initial interception request prior to the main DataPortal operation
     /// </summary>
     /// <param name="e">The interception arguments provided by the consumer</param>
-    public void Initialize(InterceptArgs e)
+    public async Task Initialize(InterceptArgs e)
     {
       foreach (IInterceptDataPortal interceptor in _interceptors)
       {
-        interceptor.Initialize(e);
+        await interceptor.Initialize(e);
       }
     }
 

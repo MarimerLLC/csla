@@ -2,6 +2,22 @@
 
 CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other enhancements.
 
+## CSLA .NET version 7.0.4 release
+
+CSLA .NET version 7.0.4 fixes bugs.
+
+* [#3668](https://github.com/MarimerLLC/csla/issues/3668) Fix bug with ViewModel save behavior
+
+### Change List
+
+* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=project%3Amarimerllc%2F12+)
+
+### Contributors
+
+* @russblair
+
+Thank you so much for your support!
+
 ## CSLA .NET version 7.0.3 release
 
 CSLA .NET version 7.0.3 fixes bugs and updates the MAUI build target.

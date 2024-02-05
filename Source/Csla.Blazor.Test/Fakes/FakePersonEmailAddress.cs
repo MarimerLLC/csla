@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Csla.Blazor.Test.Fakes
 {
+  [Serializable]
   public class FakePersonEmailAddress : BusinessBase<FakePersonEmailAddress>
   {
     public static Csla.PropertyInfo<string> EmailAddressProperty = RegisterProperty<string>(nameof(EmailAddress));

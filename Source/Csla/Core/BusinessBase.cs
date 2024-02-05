@@ -1927,8 +1927,10 @@ namespace Csla.Core
     {
       if (!(FieldManager.FieldExists(property)))
       {
+        OnPropertyChanging(property.Name);
         var result = valueGenerator();
         LoadProperty(property, result);
+        OnPropertyChanged(property.Name);
       }
       return GetProperty<P>(property);
     }

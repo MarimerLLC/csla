@@ -20,6 +20,10 @@ CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.
 * [#3655](https://github.com/MarimerLLC/csla/issues/3655) Improve IDataPortalCache API to be atomic
 * [#3338](https://github.com/MarimerLLC/csla/issues/3338) `IDataPortalTarget` now includes `CheckRulesAsync`; `CslaModelBinder` now calls `CheckRulesAsync` instead of `CheckRules`
 * [#3596](https://github.com/MarimerLLC/csla/issues/3596) Implement Blazor 8 state management for `ClientContext` and `LocalContext`
+* [#3657](https://github.com/MarimerLLC/csla/issues/3657) Support legacy Blazor 7 state management
+* [#3676](https://github.com/MarimerLLC/csla/issues/3676) Fix spin waiting for rule completion at the server
+* [#3668](https://github.com/MarimerLLC/csla/issues/3668) Fixed: Blazor ViewModel Save doesn't call begin edit after save
+* [#3395](https://github.com/MarimerLLC/csla/issues/3395) Update unit tests for CSLA 8
 
 * Numerous updates to dependencies
 
@@ -32,7 +36,7 @@ CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.
 * @Inmobilis
 * @michaelcsikos
 * mtavares628
-* @ossendorf-at-hoelscher
+* @ossendorf-at-hoelscher / @StefanOssendorf
 * @rockfordlhotka
 * @russblair
 * @swegele

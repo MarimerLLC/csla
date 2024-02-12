@@ -190,10 +190,6 @@ namespace Csla.Test.PropertyGetSet
       base.MarkClean();
     }
 
-    public EditableGetSet()
-    {
-    }
-
     #region Factory Methods
 
     public static EditableGetSet NewObject(IDataPortal<EditableGetSet> dataPortal)
@@ -326,37 +322,7 @@ namespace Csla.Test.PropertyGetSet
       get { return base.EditLevel; }
     }
 
-    public new void MarkClean()
-    {
-      base.MarkClean();
-    }
-
-    public EditableGetSetNFI()
-    {
-      MarkNew();
-      MarkClean();
-    }
-
-    public EditableGetSetNFI(bool isChild)
-    {
-      if (isChild)
-      {
-        MarkAsChild();
-        MarkNew();
-      }
-    }
-
-    #region Factory Methods
-
-    public static EditableGetSetNFI GetObject(IDataPortal<EditableGetSetNFI> dataPortal)
-    {
-      return dataPortal.Fetch();
-    }
-
-    #endregion
-
-    #region Data Access
-
+    [Fetch]
     private void DataPortal_Fetch()
     {
       LoadProperty(DataProperty, "Hi");
@@ -383,7 +349,5 @@ namespace Csla.Test.PropertyGetSet
     {
       MarkOld();
     }
-
-    #endregion
   }
 }

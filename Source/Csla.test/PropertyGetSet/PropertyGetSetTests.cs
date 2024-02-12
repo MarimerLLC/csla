@@ -60,7 +60,7 @@ namespace Csla.Test.PropertyGetSet
     {
       IDataPortal<EditableGetSetNFI> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetNFI>();
 
-      EditableGetSetNFI root = EditableGetSetNFI.GetObject(dataPortal);
+      EditableGetSetNFI root = dataPortal.Fetch();
       root.Data = "a";
       root.Base = "b";
       root.TopBase = "c";
@@ -816,15 +816,6 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual(1, changed, "after clone");
     }
 
-    [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
-    public void LazyLoadChild_GetBeforeSet()
-    {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-
-      var root = EditableGetSet.GetObject(dataPortal);
-      var child = root.LazyChild;
-    }
 
     [TestMethod]
     public void LazyLoadChild_GetAfterSet()

@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Wpf" Version="7.0.0" />
+    <PackageReference Include="Csla.Wpf" Version="8.0.0-R24021201" />
   </ItemGroup>
 
   <ItemGroup>

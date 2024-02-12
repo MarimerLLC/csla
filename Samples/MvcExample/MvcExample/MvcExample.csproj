@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="7.0.0" />
+    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24021201" />
   </ItemGroup>
 
   <ItemGroup>

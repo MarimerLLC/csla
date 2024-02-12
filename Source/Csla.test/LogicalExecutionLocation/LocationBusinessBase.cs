@@ -59,8 +59,7 @@ namespace Csla.Test.LogicalExecutionLocation
       protected override void Execute(Rules.IRuleContext context)
       {
 #pragma warning disable CS0436 // Type conflicts with imported type
-        // TODO: Not sure how to replicate this functionality in Csla 6
-        // ((LocationBusinessBase)context.Target).Rule = ApplicationContext.LogicalExecutionLocation.ToString();
+        ((LocationBusinessBase)context.Target).Rule = context.ApplicationContext.LogicalExecutionLocation.ToString();
 #pragma warning restore CS0436 // Type conflicts with imported type
       }
     }

@@ -556,22 +556,23 @@ namespace Csla.Core.FieldManager
           {
             if (item.Value is IUndoableObject undoable)
             {
-              // current value is undoable
-              var doUndo = (oldItem != null);
-              if (!doUndo)
+              if (oldItem is null)
               {
                 var propInfo = _propertyList.Where(r => r.Index == index).First();
-                doUndo = propInfo.RelationshipType.HasFlag(RelationshipTypes.LazyLoad);
-              }
-              if (doUndo)
-                undoable.UndoChanges(parentEditLevel, parentBindingEdit);
-              else
+                if (propInfo.RelationshipType.HasFlag(RelationshipTypes.LazyLoad))
+                  undoable.UndoChanges(parentEditLevel, parentBindingEdit);
                 _fieldData[index] = null;
-              continue;
+              }
+              else
+              {
+                undoable.UndoChanges(parentEditLevel, parentBindingEdit);
+              }
+            }
+            else
+            {
+              _fieldData[index] = oldItem;
             }
           }
-          // restore IFieldData object into field collection
-          _fieldData[index] = oldItem;
         }
       }
     }

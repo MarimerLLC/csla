@@ -374,7 +374,7 @@ namespace Csla.Test.DataPortal
 
     public FactoryBusy Fetch()
     {
-      var obj = new FactoryBusy();
+      var obj = (FactoryBusy)ApplicationContext.CreateInstance(typeof(FactoryBusy));
       MarkOld(obj);
       obj.MarkObjectBusy();
       return obj;

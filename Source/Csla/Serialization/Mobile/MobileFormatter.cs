@@ -159,14 +159,10 @@ namespace Csla.Serialization.Mobile
           if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var principal = (Security.CslaClaimsPrincipal)obj;
-            using (var buffer = new System.IO.MemoryStream())
-            {
-              using (var writer = new System.IO.BinaryWriter(buffer))
-              {
-                principal.WriteTo(writer);
-                info.AddValue("s", buffer.ToArray());
-              }
-            }
+            using var buffer = new System.IO.MemoryStream();
+            using var writer = new System.IO.BinaryWriter(buffer);
+            principal.WriteTo(writer);
+            info.AddValue("s", buffer.ToArray());
           }
           else
           {

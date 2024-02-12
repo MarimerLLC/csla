@@ -194,11 +194,11 @@ namespace Csla.Channels.Http
       }
     }
 
-    private string CreateOperationTag(string operatation, string versionToken, string routingToken)
+    private string CreateOperationTag(string operation, string versionToken, string routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
-        return $"{operatation}/{routingToken}-{versionToken}";
-      return operatation;
+        return $"{operation}/{routingToken}-{versionToken}";
+      return operation;
     }
 
 #pragma warning disable SYSLIB0014

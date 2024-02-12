@@ -16,8 +16,8 @@ namespace RoutedDataPortal.Controllers
     public DataPortalController(ApplicationContext applicationContext)
       : base(applicationContext)
     {
-      RoutingTagUrls["v1"] = "http://appserver1/api/DataPortal";
-      RoutingTagUrls["v2"] = "http://appserver2/api/DataPortal";
+      RoutingTagUrls["-v1"] = "http://localhost:64897/api/DataPortal";
+      RoutingTagUrls["-v2"] = "http://localhost:64903/api/DataPortal";
       applicationContext.LocalContext.Add("dpv", "v0");
     }
 
@@ -27,6 +27,7 @@ namespace RoutedDataPortal.Controllers
       await base.PostAsync(operation).ConfigureAwait(false);
     }
 
+    [HttpPost]
     protected override async Task PostAsync(string operation, string version)
     {
       await base.PostAsync(operation, version);

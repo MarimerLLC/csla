@@ -1,5 +1,6 @@
 ﻿using System.Net.Http;
 using Csla;
+using Csla.Configuration;
 
 namespace ClientApp
 {
@@ -7,8 +8,8 @@ namespace ClientApp
   {
     public static string ServerUrl { get; set; }
 
-    public CustomProxy(ApplicationContext applicationContext, HttpClient httpClient, Csla.Channels.Http.HttpProxyOptions options)
-      : base(applicationContext, httpClient, options)
+    public CustomProxy(ApplicationContext applicationContext, HttpClient httpClient, Csla.Channels.Http.HttpProxyOptions options, DataPortalOptions dataPortalOptions)
+      : base(applicationContext, httpClient, options, dataPortalOptions)
     {
       base.DataPortalUrl = ServerUrl;
     }

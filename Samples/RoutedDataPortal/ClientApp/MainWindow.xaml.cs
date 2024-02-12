@@ -2,19 +2,7 @@
 using Csla;
 using Csla.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ClientApp
 {
@@ -26,6 +14,8 @@ namespace ClientApp
     public MainWindow()
     {
       InitializeComponent();
+
+      ServerUrl.Text = "http://localhost:64877/api/DataPortal";
     }
 
     private async void Button_Click(object sender, RoutedEventArgs e)
@@ -47,8 +37,8 @@ namespace ClientApp
         // is normally not allowed - it should be set at app
         // startup using the fluent API only.
         // This code may not work in future versions of CSLA.
-        var options = new CslaOptions(new Microsoft.Extensions.DependencyInjection.ServiceCollection());
-        options.VersionRoutingTag(version);
+        var dpo = App.ApplicationContext.GetRequiredService<DataPortalOptions>();
+        dpo.VersionRoutingTag = version;
 
         var portal = App.ApplicationContext.GetRequiredService<IDataPortal<TestClass>>();
         var obj = await portal.FetchAsync();

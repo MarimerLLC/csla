@@ -18,9 +18,9 @@ namespace WindowsUI
       services.AddTransient<System.Net.Http.HttpClient>();
       services.AddCsla(o => o
         .AddWindowsForms()
-        .DataPortal(dpo => dpo
+        .DataPortal(dpo => dpo.ClientSideDataPortal(cso => cso
           .UseHttpProxy(hpo => hpo
-            .DataPortalUrl = "https://localhost:44364/api/dataportal")));
+            .DataPortalUrl = "https://localhost:44364/api/dataportal"))));
       var provider = services.BuildServiceProvider();
       App.ApplicationContext = provider.GetRequiredService<Csla.ApplicationContext>();
 

@@ -12,5 +12,6 @@ Only CslaGenFork is affiliated directly with the CSLA .NET project, the others c
 * [CslaExtension](https://archive.codeplex.com/?p=t4csla) - Generates CSLA classes from an EF model diagram
 * [CSLA Class Diagram and Code](https://marketplace.visualstudio.com/items?itemName=HeinzErnst.CSLAClassDiagramsCode) - Visual Studio extension
 * [Sculpture](https://archive.codeplex.com/?p=Sculpture) - Open source code generator for numerous frameworks, including CSLA .NET
+* [DataPortal Extensions](https://github.com/StefanOssendorf/Csla.DataPortalExtensions) - Generates extension methods for CSLA.NET attributed methods (e.g. Fetch) for type and compile-time safety
 
 If you are aware of a generator or template missing from this list, please let me know and I'll add it.

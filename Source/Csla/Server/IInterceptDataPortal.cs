@@ -18,7 +18,7 @@ namespace Csla.Server
     /// authorization.
     /// </summary>
     /// <param name="e"></param>
-    Task Initialize(InterceptArgs e);
+    Task InitializeAsync(InterceptArgs e);
     /// <summary>
     /// Invoked at the end of each server-side
     /// data portal invocation for success

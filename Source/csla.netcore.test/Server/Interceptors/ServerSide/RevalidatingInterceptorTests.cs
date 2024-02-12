@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Csla.DataPortalClient;
 using Csla.Server;
 using Csla.Server.Interceptors.ServerSide;
@@ -23,7 +24,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     }
 
     [TestMethod]
-    public void Initialize_PrimitiveCriteria_NoExceptionRaised()
+    public async Task Initialize_PrimitiveCriteria_NoExceptionRaised()
     {
       // Arrange
       bool executed = false;
@@ -41,7 +42,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      sut.Initialize(args);
+      await sut.InitializeAsync(args);
       executed = true;
 
       // Assert
@@ -50,7 +51,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     }
 
     [TestMethod]
-    public void Initialize_ValidRootObjectNoChildren_NoExceptionRaised()
+    public async Task Initialize_ValidRootObjectNoChildren_NoExceptionRaised()
     {
       // Arrange
       bool executed = false;
@@ -68,7 +69,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      sut.Initialize(args);
+      await sut.InitializeAsync(args);
       executed = true;
 
       // Assert
@@ -77,7 +78,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     }
 
     [TestMethod]
-    public void Initialize_ValidRootObjectWithChild_NoExceptionRaised()
+    public async Task Initialize_ValidRootObjectWithChild_NoExceptionRaised()
     {
       // Arrange
       bool executed = false;
@@ -98,7 +99,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      sut.Initialize(args);
+      await sut.InitializeAsync(args);
       executed = true;
 
       // Assert
@@ -107,7 +108,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     }
 
     [TestMethod]
-    public void Initialize_ValidRootObjectWithChildAndGrandChild_NoExceptionRaised()
+    public async Task Initialize_ValidRootObjectWithChildAndGrandChild_NoExceptionRaised()
     {
       // Arrange
       bool executed = false;
@@ -130,7 +131,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      sut.Initialize(args);
+      await sut.InitializeAsync(args);
       executed = true;
 
       // Assert
@@ -139,7 +140,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     }
 
     [TestMethod]
-    public void Initialize_InvalidRootObject_ExceptionRaised()
+    public async Task Initialize_InvalidRootObject_ExceptionRaised()
     {
       // Arrange
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
@@ -157,12 +158,12 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act and Assert
-      Assert.ThrowsException<Rules.ValidationException>(() => sut.Initialize(args));
+      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
 
     }
 
     [TestMethod]
-    public void Initialize_InvalidChildObject_ExceptionRaised()
+    public async Task Initialize_InvalidChildObject_ExceptionRaised()
     {
       // Arrange
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
@@ -181,12 +182,12 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act and Assert
-      Assert.ThrowsException<Rules.ValidationException>(() => sut.Initialize(args));
+      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
 
     }
 
     [TestMethod]
-    public void Initialize_InvalidGrandChildObject_ExceptionRaised()
+    public async Task Initialize_InvalidGrandChildObject_ExceptionRaised()
     {
       // Arrange
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
@@ -207,7 +208,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act and Assert
-      Assert.ThrowsException<Rules.ValidationException>(() => sut.Initialize(args));
+      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
 
     }
   }

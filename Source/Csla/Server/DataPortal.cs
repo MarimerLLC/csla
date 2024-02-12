@@ -127,7 +127,7 @@ namespace Csla.Server
 
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
 
-        await Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Create, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Create, IsSync = isSync });
 
         DataPortalResult result;
         DataPortalMethodInfo method;
@@ -228,7 +228,7 @@ namespace Csla.Server
 
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
 
-        await Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, IsSync = isSync });
 
         DataPortalResult result;
         DataPortalMethodInfo method;
@@ -322,7 +322,7 @@ namespace Csla.Server
 
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Execute));
 
-        await Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Execute, IsSync = isSync });
 
         DataPortalResult result;
         DataPortalMethodInfo method;
@@ -423,7 +423,7 @@ namespace Csla.Server
 
         AuthorizeRequest(new AuthorizeRequest(objectType, obj, operation));
 
-        await Initialize(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
 
         DataPortalResult result;
         DataPortalMethodInfo method;
@@ -549,7 +549,7 @@ namespace Csla.Server
 
         AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
 
-        await Initialize(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Delete, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Delete, IsSync = isSync });
 
         DataPortalResult result;
         DataPortalMethodInfo method;
@@ -647,12 +647,12 @@ namespace Csla.Server
       Dashboard.CompleteCall(e);
     }
 
-    internal async Task Initialize(InterceptArgs e)
+    internal async Task InitializeAsync(InterceptArgs e)
     {
       ApplicationContext.ClientContext["__dataportaltimer"] = DateTimeOffset.Now;
       Dashboard.InitializeCall(e);
 
-      await InterceptorManager.Initialize(e);
+      await InterceptorManager.InitializeAsync(e);
     }
 
 #endregion

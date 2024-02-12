@@ -247,7 +247,7 @@ namespace Csla.Test.DataPortal
 
   public class TestInterceptor : Csla.Server.IInterceptDataPortal
   {
-    public Task Initialize(Server.InterceptArgs e)
+    public Task InitializeAsync(Server.InterceptArgs e)
     {
       TestResults.Add("Intercept1+" + e.ObjectType.Name, "Initialize");
       TestResults.Add("InterceptOp1+" + e.ObjectType.Name, e.Operation.ToString());

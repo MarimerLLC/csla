@@ -37,7 +37,7 @@ namespace Csla.Server.Interceptors.ServerSide
     /// </summary>
     /// <param name="e">The interception arguments from the DataPortal</param>
     /// <exception cref="Rules.ValidationException"></exception>
-    public async Task Initialize(InterceptArgs e)
+    public async Task InitializeAsync(InterceptArgs e)
     {
       ITrackStatus checkableObject;
 
@@ -50,7 +50,7 @@ namespace Csla.Server.Interceptors.ServerSide
       checkableObject = e.Parameter as ITrackStatus;
       if (checkableObject is null) return;
 
-      await RevalidateObject(checkableObject);
+      await RevalidateObjectAsync(checkableObject);
       if (!checkableObject.IsValid)
       {
         throw new Rules.ValidationException(Resources.NoSaveInvalidException);
@@ -69,14 +69,14 @@ namespace Csla.Server.Interceptors.ServerSide
     /// Perform revalidation of business rules on any supporting type
     /// </summary>
     /// <param name="parameter">The parameter that was passed to the DataPortal as part of the operation</param>
-    private async Task RevalidateObject(object parameter)
+    private async Task RevalidateObjectAsync(object parameter)
     {
       if (parameter is IEnumerable list)
       {
         // Handle the object being a collection
         foreach (object item in list)
         {
-          await RevalidateObject(item);
+          await RevalidateObjectAsync(item);
         }
       }
       else
@@ -94,14 +94,14 @@ namespace Csla.Server.Interceptors.ServerSide
           var properties = fieldHolder.FieldManager.GetRegisteredProperties();
           foreach (var property in properties.Where(r=>r.IsChild && fieldHolder.FieldManager.FieldExists(r)))
           {
-            await RevalidateObject(fieldHolder.FieldManager.GetFieldData(property).Value);
+            await RevalidateObjectAsync(fieldHolder.FieldManager.GetFieldData(property).Value);
           }
         }
         else if (parameter is IManageProperties propertyHolder)
         {
           foreach (object child in propertyHolder.GetChildren())
           {
-            await RevalidateObject(child);
+            await RevalidateObjectAsync(child);
           }
         }
       }

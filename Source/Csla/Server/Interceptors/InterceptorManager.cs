@@ -30,11 +30,11 @@ namespace Csla.Server
     /// Cascade the initial interception request prior to the main DataPortal operation
     /// </summary>
     /// <param name="e">The interception arguments provided by the consumer</param>
-    public async Task Initialize(InterceptArgs e)
+    public async Task InitializeAsync(InterceptArgs e)
     {
       foreach (IInterceptDataPortal interceptor in _interceptors)
       {
-        await interceptor.Initialize(e);
+        await interceptor.InitializeAsync(e);
       }
     }
 

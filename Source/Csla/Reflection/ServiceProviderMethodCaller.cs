@@ -17,6 +17,7 @@ using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
 using Csla.Properties;
+using Csla.Server;
 
 namespace Csla.Reflection
 {
@@ -70,6 +71,9 @@ namespace Csla.Reflection
     {
       if (targetType == null)
         throw new ArgumentNullException(nameof(targetType));
+
+      var activator = ApplicationContext.GetRequiredService<IDataPortalActivator>();
+      targetType = activator.ResolveType(targetType);
 
       var typeOfOperation = typeof(T);
 

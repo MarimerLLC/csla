@@ -103,13 +103,6 @@ namespace BusinessRuleDemo
 
       BusinessRules.AddRule(new SetStateName(StateProperty, StateNameProperty));
     }
-    
-    protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      base.OnDeserialized(context);
-
-      this.ChildChanged += MyChildChanged;
-    }
 
     private void MyChildChanged(object sender, ChildChangedEventArgs e)
     {

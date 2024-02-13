@@ -19,7 +19,7 @@ namespace CustomActivator
           )
         );
       var provider = services.BuildServiceProvider();
-      var portal = provider.GetRequiredService<IDataPortal<TestItem>>();
+      var portal = provider.GetRequiredService<IDataPortal<ITestItem>>();
 
       var obj = portal.Fetch("Rocky");
       Console.WriteLine(obj.Name);

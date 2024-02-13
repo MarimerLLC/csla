@@ -18,11 +18,11 @@
       <TextBox Name="ServerUrl" HorizontalAlignment="Stretch" MinWidth="300"/>
     </StackPanel>
     <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5" HorizontalAlignment="Stretch">
-      <TextBlock Text="Version "/>
+      <TextBlock Text="Version (v1 or v2)"/>
       <TextBox Name="AppVersion" HorizontalAlignment="Stretch" MinWidth="300"/>
     </StackPanel>
     <Button Content="Call server" Grid.Row="2" Margin="5" Click="Button_Click"/>
-    <ScrollViewer Grid.Row="3" Margin="5">
+    <ScrollViewer Grid.Row="3" Margin="5" HorizontalScrollBarVisibility="Auto">
       <TextBlock Name="OutputText"/>
     </ScrollViewer>
   </Grid>

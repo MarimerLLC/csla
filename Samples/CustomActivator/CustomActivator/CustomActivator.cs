@@ -1,5 +1,7 @@
 ﻿using System;
 using Csla;
+using Csla.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CustomActivator
 {
@@ -14,24 +16,36 @@ namespace CustomActivator
 
     public void InitializeInstance(object obj)
     {
-      Console.WriteLine("InitializeInstance");
+      Console.WriteLine($"InitializeInstance({obj.GetType().Name})");
     }
 
     public void FinalizeInstance(object obj)
     {
-      Console.WriteLine("FinalizeInstance");
+      Console.WriteLine($"FinalizeInstance({obj.GetType().Name})");
     }
 
-    public object CreateInstance(Type requestedType)
+    public object CreateInstance(Type requestedType, params object[] parameters)
     {
-      // no longer invoked in CSLA 6
-      throw new NotImplementedException(nameof(CreateInstance));
+      Console.WriteLine($"{nameof(CreateInstance)}({requestedType.Name})");
+      object result;
+      var realType = ResolveType(requestedType);
+      var serviceProvider = (IServiceProvider)ApplicationContext.GetRequiredService<IServiceProvider>();
+      result = ActivatorUtilities.CreateInstance(serviceProvider, realType, parameters);
+      if (result is IUseApplicationContext tmp)
+      {
+        tmp.ApplicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+      }
+      InitializeInstance(result);
+      return result;
     }
 
     public Type ResolveType(Type requestedType)
     {
-      // no longer invoked in CSLA 6
-      throw new NotImplementedException(nameof(CreateInstance));
+      var resolvedType = requestedType;
+      if (requestedType.Equals(typeof(ITestItem)))
+        resolvedType = typeof(TestItem);
+      Console.WriteLine($"{nameof(ResolveType)}({requestedType.Name})->{resolvedType.Name}");
+      return resolvedType;
     }
   }
 }

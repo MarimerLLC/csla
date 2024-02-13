@@ -6,12 +6,12 @@ namespace CustomActivator
   {
     public void Complete(Csla.Server.InterceptArgs e)
     {
-      Console.WriteLine("Complete");
+      Console.WriteLine("Interceptor Complete");
     }
 
     public void Initialize(Csla.Server.InterceptArgs e)
     {
-      Console.WriteLine("Initialize");
+      Console.WriteLine("Interceptor Initialize");
     }
   }
 }

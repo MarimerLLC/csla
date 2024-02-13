@@ -10,7 +10,7 @@
         <DataTemplate>
           <ViewCell>
             <StackLayout Orientation="Horizontal">
-              <Label Text="{Binding Name}" WidthRequest="100" Margin="5" TextColor="White" />
+              <Label Text="{Binding Name}" WidthRequest="100" Margin="5" TextColor="Black" />
               <Button Text="Edit" Clicked="EditPerson" />
             </StackLayout>
           </ViewCell>

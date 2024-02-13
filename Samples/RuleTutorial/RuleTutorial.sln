@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.12
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1.01 AuthzFactoryMethods", "AuthzFactoryMethods\1.01 AuthzFactoryMethods.csproj", "{6FCDCE11-1FFD-4FEF-9089-4C8653A79FAA}"
 EndProject
@@ -68,8 +68,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4.1 CustomAuthzRules.Test", "CustomAuthzRules.Test\4.1 CustomAuthzRules.Test.csproj", "{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2.14 RuleBaseClasses", "RuleBaseClasses\2.14 RuleBaseClasses.csproj", "{51646F74-7982-4564-80D1-AD52A5E55764}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4.4 TransformationRules.Test", "TransformationRules.Test\4.4 TransformationRules.Test.csproj", "{7DF84A84-658E-488B-BFA0-6B02799F4273}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "4.5 IntegrationRules.Test", "IntegrationRules.Test\4.5 IntegrationRules.Test.csproj", "{F7991972-B729-48DC-B1AA-BAADB57A61B9}"
 EndProject
@@ -505,24 +503,6 @@ Global
 		{51646F74-7982-4564-80D1-AD52A5E55764}.Release|Mixed Platforms.Build.0 = Release|x86
 		{51646F74-7982-4564-80D1-AD52A5E55764}.Release|x86.ActiveCfg = Release|x86
 		{51646F74-7982-4564-80D1-AD52A5E55764}.Release|x86.Build.0 = Release|x86
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Debug|x86.ActiveCfg = Debug|x86
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Debug|x86.Build.0 = Debug|x86
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.MONO|Any CPU.ActiveCfg = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.MONO|Any CPU.Build.0 = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.MONO|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.MONO|Mixed Platforms.Build.0 = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.MONO|x86.ActiveCfg = Release|x86
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.MONO|x86.Build.0 = Release|x86
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Release|x86.ActiveCfg = Release|x86
-		{7DF84A84-658E-488B-BFA0-6B02799F4273}.Release|x86.Build.0 = Release|x86
 		{F7991972-B729-48DC-B1AA-BAADB57A61B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F7991972-B729-48DC-B1AA-BAADB57A61B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7991972-B729-48DC-B1AA-BAADB57A61B9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -569,7 +549,6 @@ Global
 		{C5000F34-6E0F-4E2A-95B4-FE71CC7E3ACD} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
 		{3A4C93CA-AFE4-42A5-8F04-8A7F752213F7} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
 		{51646F74-7982-4564-80D1-AD52A5E55764} = {E279D9A8-0FAA-4AA4-B33C-E6C392F0C596}
-		{7DF84A84-658E-488B-BFA0-6B02799F4273} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
 		{F7991972-B729-48DC-B1AA-BAADB57A61B9} = {114E88A2-B458-49C7-95AC-FD4953CE6A04}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -10,6 +10,8 @@ There are three categories of samples
 
 [ProjectTracker](https://github.com/MarimerLLC/csla/tree/master/Samples/ProjectTracker) is the most comprehensive sample, including numerous UI projects all built against a common business layer. It has a data portal appserver project, and provides both mock and SQL data access layers.
 
+> 🛑 currently out of date
+
 This sample is updated concurrent with the *Using CSLA* books, and so does not always use the latest features of CSLA. It turns out that it is harder to write and debug prose than code.
 
 ## *Example Samples

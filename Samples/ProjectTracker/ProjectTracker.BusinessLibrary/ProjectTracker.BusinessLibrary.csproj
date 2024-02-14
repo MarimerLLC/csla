@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <AssemblyName>ProjectTracker.DalMock</AssemblyName>
-    <RootNamespace>ProjectTracker.DalMock</RootNamespace>
+    <AssemblyName>ProjectTracker.BusinessLibrary</AssemblyName>
+    <RootNamespace>ProjectTracker.BusinessLibrary</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -26,5 +26,5 @@ jobs:
     - name: Build
       run: dotnet build Source\csla.test.sln
 
-#    - name: Test
-#      run: dotnet test --no-build --verbosity normal
+    - name: Test
+      run: dotnet test --no-build --verbosity normal

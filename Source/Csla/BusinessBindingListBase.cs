@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Properties;
@@ -26,15 +26,14 @@ namespace Csla
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable()]
   public abstract class BusinessBindingListBase<T, C> :
-      Core.ExtendedBindingList<C>, IContainsDeletedList,
-      Core.IEditableCollection, Core.IUndoableObject, ICloneable,
-      Core.ISavable, Core.ISavable<T>, Core.IParent, Server.IDataPortalTarget,
+      ExtendedBindingList<C>, IContainsDeletedList,
+      IEditableCollection, Core.IUndoableObject, ICloneable,
+      ISavable, ISavable<T>, Core.IParent, Server.IDataPortalTarget,
       INotifyBusy,
-      Core.IUseApplicationContext
+      IUseApplicationContext
     where T : BusinessBindingListBase<T, C>
     where C : Core.IEditableBusinessObject
   {
-
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -45,8 +44,8 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext 
-    { 
+    ApplicationContext IUseApplicationContext.ApplicationContext
+    {
       get => ApplicationContext;
       set
       {
@@ -339,18 +338,26 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, C item)
     {
-      // set parent reference
-      item.SetParent(this);
-      // ensure child uses same context as parent
-      if (item is IUseApplicationContext iuac)
-        iuac.ApplicationContext = ApplicationContext;
-      // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
-      // when an object is inserted we assume it is
-      // a new object and so the edit level when it was
-      // added must be set
-      item.EditLevelAdded = _editLevel;
-      base.InsertItem(index, item);
+      if (item.IsChild)
+      {
+        // set parent reference
+        item.SetParent(this);
+        // ensure child uses same context as parent
+        if (item is IUseApplicationContext iuac)
+          iuac.ApplicationContext = ApplicationContext;
+        // set child edit level
+        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+        // when an object is inserted we assume it is
+        // a new object and so the edit level when it was
+        // added must be set
+        item.EditLevelAdded = _editLevel;
+        base.InsertItem(index, item);
+      }
+      else
+      {
+        // item must be marked as a child object
+        throw new InvalidOperationException(Resources.ListItemNotAChildException);
+      }
     }
 
     /// <summary>
@@ -423,6 +430,7 @@ namespace Csla
         RemoveItem(0);
       base.ClearItems();
     }
+
     #endregion
 
     #region Edit level tracking
@@ -780,7 +788,7 @@ namespace Csla
     [System.ComponentModel.DataAnnotations.Display(AutoGenerateField = false)]
     public virtual bool IsSavable
     {
-      get 
+      get
       {
         bool auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
         return (IsDirty && IsValid && auth && !IsBusy);
@@ -797,14 +805,13 @@ namespace Csla
     {
       get
       {
-        // any non-new deletions make us dirty
+        // run through all the child objects
+        // and if any are busy then then
+        // collection is busy
         foreach (C item in DeletedList)
           if (item.IsBusy)
             return true;
 
-        // run through all the child objects
-        // and if any are dirty then then
-        // collection is dirty
         foreach (C child in this)
           if (child.IsBusy)
             return true;
@@ -835,7 +842,7 @@ namespace Csla
 
     #endregion
 
-#region Serialization Notification
+    #region Serialization Notification
 
     [NonSerialized]
     [NotUndoable]
@@ -855,14 +862,14 @@ namespace Csla
       {
         child.SetParent(this);
       }
-      
+
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
     }
 
-#endregion
+    #endregion
 
-#region  Child Data Access
+    #region  Child Data Access
 
     /// <summary>
     /// Initializes a new instance of the object
@@ -896,9 +903,9 @@ namespace Csla
       }
     }
 
-#endregion
+    #endregion
 
-#region Data Access
+    #region Data Access
 
     /// <summary>
     /// Saves the object to the database.
@@ -1062,9 +1069,9 @@ namespace Csla
     protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
 
-#endregion
+    #endregion
 
-#region ISavable Members
+    #region ISavable Members
 
     object Csla.Core.ISavable.Save()
     {
@@ -1170,10 +1177,9 @@ namespace Csla
       if (_serializableSavedHandlers != null)
         _serializableSavedHandlers.Invoke(this, args);
     }
+    #endregion
 
-#endregion
-
-#region  Parent/Child link
+    #region  Parent/Child link
 
     [NotUndoable(), NonSerialized()]
     private Core.IParent _parent;
@@ -1205,9 +1211,29 @@ namespace Csla
     /// <param name="parent">A reference to the parent collection object.</param>
     protected virtual void SetParent(Core.IParent parent)
     {
-      _parent = parent;
-      _identityManager = null;
-      InitializeIdentity();
+      // ensure parent & _identity manager not null for case to check
+      if (parent != null && _identityManager != null)
+      {
+        // changed GetNextIdentity to accept optional parameter to return next identity
+        int current = _identityManager.GetNextIdentity();
+        // attempt to find case where we decrement next identity so none are skipped - not necessary
+        if (current > 0)
+          --current;
+
+        // ensure parent next identity accounts for this (child collection) next identity
+        parent.GetNextIdentity(current);
+
+        _parent = parent;
+        _identityManager = null;
+      }
+      else
+      {
+        // case when current identity manager has next identity of > 1
+        // parent next identity incremented by 1 not accounting for this (child collection) next identity
+        _parent = parent;
+        _identityManager = null;
+        InitializeIdentity();
+      }
     }
 
     /// <summary>
@@ -1221,9 +1247,9 @@ namespace Csla
       this.SetParent(parent);
     }
 
-#endregion
+    #endregion
 
-#region ToArray
+    #region ToArray
 
     /// <summary>
     /// Get an array containing all items in the list.
@@ -1235,9 +1261,9 @@ namespace Csla
         result.Add(item);
       return result.ToArray();
     }
-#endregion
+    #endregion
 
-#region IDataPortalTarget Members
+    #region IDataPortalTarget Members
 
     void IDataPortalTarget.CheckRules()
     { }
@@ -1283,7 +1309,8 @@ namespace Csla
       this.Child_OnDataPortalException(e, ex);
     }
 
-#endregion
+    #endregion
+
 
     #region Cascade child events
 
@@ -1316,7 +1343,7 @@ namespace Csla
 
     private static PropertyDescriptorCollection _propertyDescriptors;
 
-    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
       if (_propertyDescriptors == null)
         _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));
@@ -1331,6 +1358,5 @@ namespace Csla
     }
 
     #endregion
-
   }
 }

@@ -44,8 +44,8 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext 
-    { 
+    ApplicationContext IUseApplicationContext.ApplicationContext
+    {
       get => ApplicationContext;
       set
       {
@@ -195,7 +195,7 @@ namespace Csla
 
     #endregion
 
-#region Begin/Cancel/ApplyEdit
+    #region Begin/Cancel/ApplyEdit
 
     /// <summary>
     /// Starts a nested edit on the object.
@@ -338,18 +338,26 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, C item)
     {
-      // set parent reference
-      item.SetParent(this);
-      // ensure child uses same context as parent
-      if (item is IUseApplicationContext iuac)
-        iuac.ApplicationContext = ApplicationContext;
-      // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
-      // when an object is inserted we assume it is
-      // a new object and so the edit level when it was
-      // added must be set
-      item.EditLevelAdded = _editLevel;
-      base.InsertItem(index, item);
+      if (item.IsChild)
+      {
+        // set parent reference
+        item.SetParent(this);
+        // ensure child uses same context as parent
+        if (item is IUseApplicationContext iuac)
+          iuac.ApplicationContext = ApplicationContext;
+        // set child edit level
+        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+        // when an object is inserted we assume it is
+        // a new object and so the edit level when it was
+        // added must be set
+        item.EditLevelAdded = _editLevel;
+        base.InsertItem(index, item);
+      }
+      else
+      {
+        // item must be marked as a child object
+        throw new InvalidOperationException(Resources.ListItemNotAChildException);
+      }
     }
 
     /// <summary>
@@ -815,6 +823,27 @@ namespace Csla
       }
     }
 
+    /// <summary>
+    /// Gets the busy status for this object and its child objects.
+    /// </summary>
+    public override bool IsBusy
+    {
+      get
+      {
+        // run through all the child objects
+        // and if any are busy then then
+        // collection is busy
+        foreach (C item in DeletedList)
+          if (item.IsBusy)
+            return true;
+
+        foreach (C child in this)
+          if (child.IsBusy)
+            return true;
+
+        return false;
+      }
+    }
 
     #endregion
 
@@ -858,7 +887,7 @@ namespace Csla
       {
         child.SetParent(this);
       }
-      
+
       foreach (Core.IEditableBusinessObject child in DeletedList)
         child.SetParent(this);
     }
@@ -899,9 +928,33 @@ namespace Csla
       }
     }
 
-#endregion
+    /// <summary>
+    /// Asynchronously saves all items in the list, automatically
+    /// performing insert, update or delete operations as necessary.
+    /// </summary>
+    /// <param name="parameters">
+    /// Optional parameters passed to child update
+    /// methods.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [UpdateChild]
+    protected virtual async Task Child_UpdateAsync(params object[] parameters)
+    {
+      using (LoadListMode)
+      {
+        var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
+        foreach (var child in DeletedList)
+          await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
+        DeletedList.Clear();
 
-#region Data Access
+        foreach (var child in this)
+          if (child.IsDirty) await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
+      }
+    }
+
+    #endregion
+
+    #region Data Access
 
     /// <summary>
     /// Saves the object to the database.
@@ -1169,9 +1222,9 @@ namespace Csla
       if (_serializableSavedHandlers != null)
         _serializableSavedHandlers.Invoke(this, args);
     }
-#endregion
+    #endregion
 
-#region  Parent/Child link
+    #region  Parent/Child link
 
     [NotUndoable(), NonSerialized()]
     private Core.IParent _parent;
@@ -1184,7 +1237,7 @@ namespace Csla
     /// This value will be Nothing for root objects.
     /// </remarks>
     [Browsable(false)]
-    [Display(AutoGenerateField=false)]
+    [Display(AutoGenerateField = false)]
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
@@ -1203,9 +1256,29 @@ namespace Csla
     /// <param name="parent">A reference to the parent collection object.</param>
     protected virtual void SetParent(Core.IParent parent)
     {
-      _parent = parent;
-      _identityManager = null;
-      InitializeIdentity();
+      // ensure parent & _identity manager not null for case to check
+      if (parent != null && _identityManager != null)
+      {
+        // changed GetNextIdentity to accept optional parameter to return next identity
+        int current = _identityManager.GetNextIdentity();
+        // attempt to find case where we decrement next identity so none are skipped - not necessary
+        if (current > 0)
+          --current;
+
+        // ensure parent next identity accounts for this (child collection) next identity
+        parent.GetNextIdentity(current);
+
+        _parent = parent;
+        _identityManager = null;
+      }
+      else
+      {
+        // case when current identity manager has next identity of > 1
+        // parent next identity incremented by 1 not accounting for this (child collection) next identity
+        _parent = parent;
+        _identityManager = null;
+        InitializeIdentity();
+      }
     }
 
     /// <summary>
@@ -1219,9 +1292,9 @@ namespace Csla
       this.SetParent(parent);
     }
 
-#endregion
+    #endregion
 
-#region ToArray
+    #region ToArray
 
     /// <summary>
     /// Get an array containing all items in the list.
@@ -1233,9 +1306,9 @@ namespace Csla
         result.Add(item);
       return result.ToArray();
     }
-#endregion
+    #endregion
 
-#region IDataPortalTarget Members
+    #region IDataPortalTarget Members
 
     void IDataPortalTarget.CheckRules()
     { }

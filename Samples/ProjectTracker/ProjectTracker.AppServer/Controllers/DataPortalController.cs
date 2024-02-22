@@ -1,7 +1,7 @@
 ﻿using Csla;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DataPortalServer.Controllers
+namespace ProjectTracker.AppServer.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]

@@ -335,7 +335,7 @@ namespace Csla.Test.Authorization
       Assert.AreEqual(false, applicationContext.Principal.IsInRole("Admin"));
     }
 
-    [Ignore] // fails on ci build
+    [Ignore] // fails on ci build 
     [TestMethod]
     public void TestAuthExecute()
     {

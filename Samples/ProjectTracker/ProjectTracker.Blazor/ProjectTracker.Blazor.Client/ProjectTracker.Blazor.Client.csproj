@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -11,8 +11,11 @@
   <ItemGroup>
     <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary\ProjectTracker.BusinessLibrary.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
-    <PackageReference Include="Csla.Blazor" Version="8.0.0-R24021601" />
-    <PackageReference Include="Csla.Blazor.WebAssembly" Version="8.0.0-R24021601" />
+    <PackageReference Include="Csla.Blazor" Version="8.0.0-R24022301" />
+    <PackageReference Include="Csla.Blazor.WebAssembly" Version="8.0.0-R24022301" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
   </ItemGroup>
 
 </Project>

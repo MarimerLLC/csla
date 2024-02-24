@@ -3,26 +3,29 @@ using Csla;
 
 namespace ProjectTracker.Library
 {
+  /// <summary>
+  /// Command object that creates a project-resource link.
+  /// </summary>
   [Serializable]
   public class ProjectResourceEditCreator : ReadOnlyBase<ProjectResourceEditCreator>
   {
-    public static readonly PropertyInfo<ProjectResourceEdit> ResultProperty = RegisterProperty<ProjectResourceEdit>(c => c.Result);
-    public ProjectResourceEdit Result
+    public static readonly PropertyInfo<ProjectResourceEdit> ProjectResourceProperty = RegisterProperty<ProjectResourceEdit>(c => c.ProjectResource);
+    public ProjectResourceEdit ProjectResource
     {
-      get { return GetProperty(ResultProperty); }
-      private set { LoadProperty(ResultProperty, value); }
+      get { return GetProperty(ProjectResourceProperty); }
+      private set { LoadProperty(ProjectResourceProperty, value); }
     }
 
-    [Fetch]
-    private void Fetch(int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
+    [Execute]
+    private void Execute(int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
     {
-      Result = portal.CreateChild(resourceId);
+      ProjectResource = portal.CreateChild(resourceId);
     }
 
-    [Fetch]
-    private void Fetch(int projectId, int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
+    [Execute]
+    private void Execute(int projectId, int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
     {
-      Result = portal.FetchChild(projectId, resourceId);
+      ProjectResource = portal.FetchChild(projectId, resourceId);
     }
   }
 }

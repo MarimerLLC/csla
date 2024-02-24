@@ -1,0 +1,33 @@
+﻿@page "/login"
+@attribute [StreamRendering] /* server-static pages must be streaming */
+@inject Csla.Blazor.State.StateManager StateManager
+
+<h1>Login</h1>
+
+<table>
+  <tr>
+    <td>Username</td>
+    <td><input type="text" /> </td>
+  </tr>
+    <tr>
+        <td>Username</td>
+        <td><input type="text" /> </td>
+    </tr>
+    <tr>
+        <td>Password</td>
+        <td><input type="password" /> </td>
+    </tr>
+</table>
+<button @onclick="LoginUser">Login</button>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await StateManager.InitializeAsync();
+    }
+
+    private void LoginUser()
+    {
+        
+    }
+}

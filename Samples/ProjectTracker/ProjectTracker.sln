@@ -26,9 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.AppServer", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.BusinessLibrary", "ProjectTracker.BusinessLibrary\ProjectTracker.BusinessLibrary.csproj", "{9439E435-9133-42B7-84E4-AFA960295588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Blazor", "ProjectTracker.Blazor\ProjectTracker.Blazor\ProjectTracker.Blazor.csproj", "{F07DFB25-1914-4B0E-B435-4073ED65C58C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.Blazor", "ProjectTracker.Blazor\ProjectTracker.Blazor\ProjectTracker.Blazor.csproj", "{F07DFB25-1914-4B0E-B435-4073ED65C58C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTracker.Blazor.Client", "ProjectTracker.Blazor\ProjectTracker.Blazor.Client\ProjectTracker.Blazor.Client.csproj", "{7C310356-21A8-488B-9146-64EDFC67261B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProjectTracker.Blazor.Client", "ProjectTracker.Blazor\ProjectTracker.Blazor.Client\ProjectTracker.Blazor.Client.csproj", "{7C310356-21A8-488B-9146-64EDFC67261B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

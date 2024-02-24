@@ -8,7 +8,12 @@
 
 <p>Welcome to the CSLA reference app - Blazor client.</p>
 
-<p>CSLA state is ready: @IsStateReady</p>
+<p>CSLA state is ready: @IsStateReady 
+  @if (!IsStateReady)
+    {
+        <span> (though by the time you see this it is ready)</span>
+    }
+</p>
 
 @code
 {

@@ -1,7 +1,7 @@
 using Csla.Configuration;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using ProjectTracker.Blazor.Client.Pages;
 using ProjectTracker.Blazor.Components;
+using ProjectTracker.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +24,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddCsla(o => o
   .AddAspNetCore()
   .AddServerSideBlazor()
-  .Security(so => so.FlowSecurityPrincipalFromClient = true)
-  .DataPortal(dpo => dpo
-    .AddServerSideDataPortal()
-    .ClientSideDataPortal(co => co
-      .UseHttpProxy(hp => hp.DataPortalUrl = "https://localhost:7291/api/dataportal"))));
+  .Security(so => so.FlowSecurityPrincipalFromClient = true));
+
+builder.Services.AddDalMock();
+//builder.Services.AddDalEfCore();
 
 // Required by CSLA data portal controller. If using Kestrel:
 builder.Services.Configure<KestrelServerOptions>(options =>

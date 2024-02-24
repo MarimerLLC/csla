@@ -13,7 +13,7 @@ namespace ProjectTracker.Library
     {
       var portal = ApplicationContext.GetRequiredService<IDataPortal<ProjectResourceEditCreator>>();
       var resourceCreator = await portal.FetchAsync(resourceId);
-      var resourceEdit = resourceCreator.Result;
+      var resourceEdit = resourceCreator.ProjectResource;
       this.Add(resourceEdit);
       return resourceEdit;
     }

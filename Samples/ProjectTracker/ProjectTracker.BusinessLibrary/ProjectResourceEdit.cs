@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using Csla.Rules;
 using ProjectTracker.Dal;
+using System.Linq;
 
 namespace ProjectTracker.Library
 {
@@ -70,6 +71,21 @@ namespace ProjectTracker.Library
       set { SetProperty(RoleProperty, value); }
     }
 
+    public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(nameof(RoleList));
+    public RoleList RoleList
+    {
+      get => GetProperty(RoleListProperty);
+      private set => LoadProperty(RoleListProperty, value);
+    }
+
+    public string RoleName
+    {
+      get
+      {
+        return RoleList.Where(r => r.Key == Role).First().Value;
+      }
+    }
+
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
@@ -80,7 +96,7 @@ namespace ProjectTracker.Library
     }
 
     [CreateChild]
-    private void Create(int resourceId, [Inject] IResourceDal dal)
+    private void Create(int resourceId, [Inject]IResourceDal dal, [Inject]IDataPortal<RoleList> rolePortal)
     {
       using (BypassPropertyChecks)
       {
@@ -89,19 +105,14 @@ namespace ProjectTracker.Library
         var person = dal.Fetch(resourceId);
         FirstName = person.FirstName;
         LastName = person.LastName;
+        RoleList = rolePortal.Fetch();
       }
       BusinessRules.CheckRules();
     }
 
-    [FetchChild]
-    private void Fetch(int projectId, int resourceId, [Inject] IAssignmentDal dal, [Inject] IResourceDal rdal)
-    {
-      var data = dal.Fetch(projectId, resourceId);
-      Fetch(data, rdal);
-    }
 
     [FetchChild]
-    private void Fetch(ProjectTracker.Dal.AssignmentDto data, [Inject] IResourceDal dal)
+    private void Fetch(ProjectTracker.Dal.AssignmentDto data, [Inject] IResourceDal dal, [Inject] IDataPortal<RoleList> rolePortal)
     {
       using (BypassPropertyChecks)
       {
@@ -112,6 +123,7 @@ namespace ProjectTracker.Library
         var person = dal.Fetch(data.ResourceId);
         FirstName = person.FirstName;
         LastName = person.LastName;
+        RoleList = rolePortal.Fetch();
       }
     }
 

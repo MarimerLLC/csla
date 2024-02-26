@@ -1,5 +1,4 @@
 ﻿@page "/login"
-@* @attribute [StreamRendering] *@
 @using ProjectTracker.Library.Security
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authentication.Cookies
@@ -13,18 +12,6 @@
 
 <h1>Login</h1>
 
-<p>
-    @if (httpContextAccessor.HttpContext?.User?.Identity is not null &&
-    httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-    {
-        @httpContextAccessor.HttpContext.User.Identity.Name
-    }
-    else
-    {
-        <span>Not logged in</span>
-    }
-</p>
-
 <EditForm Model="userInfo" OnSubmit="LoginUser" FormName="loginform">
     <div>
         <label>Username</label>
@@ -37,8 +24,7 @@
     <button>Login</button>
 </EditForm>
 
-<div><p class="@MessageClass">@Message</p></div>
-
+<div><p class="alert-danger">@Message</p></div>
 
 @code {
 
@@ -46,29 +32,16 @@
     public UserInfo userInfo { get; set; } = new();
 
     public string Message { get; set; } = "";
-    public string MessageClass { get; set; } = "alert-info";
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     await StateManager.InitializeAsync();
-    // }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            await StateManager.InitializeAsync();
-        }
-    }
 
     private async Task LoginUser()
     {
+        await StateManager.InitializeAsync();
         Message = "";
-        MessageClass = "alert-info";
         var userValidation = await portal.ExecuteAsync(userInfo.Username, userInfo.Password);
         ClaimsPrincipal principal;
         if (userValidation.IsValid)
         {
+            // create authenticated principal
             var identity = new ClaimsIdentity("custom");
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, userInfo.Username, ClaimValueTypes.String));
@@ -76,35 +49,28 @@
                 claims.Add(new Claim(ClaimTypes.Role, item, ClaimValueTypes.String));
             identity.AddClaims(claims);
             principal = new ClaimsPrincipal(identity);
-            Message = $"Logged in as {userInfo.Username}";
-        }
-        else
-        {
-            // create unauthenticated principal
-            principal = new ClaimsPrincipal();
-            Message = "Invalid credentials";
-            MessageClass = "alert-danger";
-        }
-        var httpContext = httpContextAccessor.HttpContext;
-        if (httpContext is not null)
-        {
-            if (principal.Identity is not null && principal.Identity.IsAuthenticated)
+            var httpContext = httpContextAccessor.HttpContext;
+            if (httpContext is not null)
             {
                 AuthenticationProperties authProperties = new AuthenticationProperties();
                 await httpContext.SignInAsync(
                   CookieAuthenticationDefaults.AuthenticationScheme,
                   principal,
                   authProperties);
+                NavigationManager.NavigateTo("/");
             }
         }
-        StateHasChanged();
-        NavigationManager.NavigateTo("/");
+        else
+        {
+            Message = "Invalid credentials";
+            //StateHasChanged();
+        }
     }
 
 
     public class UserInfo
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

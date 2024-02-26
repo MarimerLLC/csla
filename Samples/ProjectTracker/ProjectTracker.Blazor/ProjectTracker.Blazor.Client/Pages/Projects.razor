@@ -3,8 +3,9 @@
 
 @using ProjectTracker.Library
 @inject Csla.Blazor.State.StateManager StateManager
-@inject Csla.IDataPortal<ProjectList> projectListPortal
-@inject Csla.Blazor.ViewModel<ProjectList> vm
+@inject IDataPortal<ProjectList> projectListPortal
+@inject ViewModel<ProjectList> vm
+@inject ViewModel<ProjectEdit> pevm
 
 <h1>List of Projects</h1>
 
@@ -17,7 +18,10 @@
 else
 {
     <p>
-        <a href="editproject">Add project</a>
+        @if (pevm.CanCreateObject)
+        {
+            <a href="editproject">Add project</a>
+        }
     </p>
     <table class="table">
         <thead>
@@ -31,7 +35,14 @@ else
             {
                 <tr>
                     <td>@item.Name</td>
-                    <td><a href="editproject/@item.Id">Edit</a></td>
+                    @if (pevm.CanEditObject)
+                    {
+                        <td><a href="editproject/@item.Id">Edit</a></td>
+                    }
+                    else if (pevm.CanGetObject)
+                    {
+                        <td><a href="editproject/@item.Id">Details</a></td>
+                    }
                 </tr>
             }
         </tbody>

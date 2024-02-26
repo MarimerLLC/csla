@@ -3,8 +3,6 @@
 @rendermode InteractiveAuto
 @implements IDisposable /* CSLA wasm pages must be IDisposable */
 
-@using Csla
-@using ProjectTracker.Library
 @inject NavigationManager NavigationManager
 @inject Csla.Blazor.State.StateManager StateManager
 @inject Csla.IDataPortal<ProjectEdit> projectEditPortal
@@ -151,7 +149,10 @@ else
                 <p>Error in page - please contact support</p>
             }
         </div>
-        <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save</button>
+        @if (vm.CanEditObject)
+        {
+            <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable && !IsInteractive)">Save</button>
+        }
     }
 }
 

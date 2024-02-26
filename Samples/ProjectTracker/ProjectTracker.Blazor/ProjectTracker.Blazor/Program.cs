@@ -1,4 +1,5 @@
 using Csla.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using ProjectTracker.Blazor.Components;
 using ProjectTracker.Configuration;
@@ -13,9 +14,9 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddCookie();
 builder.Services.AddCascadingAuthenticationState();
-
-builder.Services.AddScoped<HttpClient>();
 
 // CSLA requires AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
@@ -56,6 +57,9 @@ else
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseStaticFiles();
 app.UseAntiforgery();

@@ -1,33 +1,110 @@
 ﻿@page "/login"
-@attribute [StreamRendering] /* server-static pages must be streaming */
+@* @attribute [StreamRendering] *@
+@using ProjectTracker.Library.Security
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using System.Security.Claims
 @inject Csla.Blazor.State.StateManager StateManager
+@inject IHttpContextAccessor httpContextAccessor
+@inject IDataPortal<UserValidation> portal
+@inject NavigationManager NavigationManager
+
+<PageTitle>Project Tracker - Login</PageTitle>
 
 <h1>Login</h1>
 
-<table>
-  <tr>
-    <td>Username</td>
-    <td><input type="text" /> </td>
-  </tr>
-    <tr>
-        <td>Username</td>
-        <td><input type="text" /> </td>
-    </tr>
-    <tr>
-        <td>Password</td>
-        <td><input type="password" /> </td>
-    </tr>
-</table>
-<button @onclick="LoginUser">Login</button>
+<p>
+    @if (httpContextAccessor.HttpContext?.User?.Identity is not null &&
+    httpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+    {
+        @httpContextAccessor.HttpContext.User.Identity.Name
+    }
+    else
+    {
+        <span>Not logged in</span>
+    }
+</p>
+
+<EditForm Model="userInfo" OnSubmit="LoginUser" FormName="loginform">
+    <div>
+        <label>Username</label>
+        <InputText @bind-Value="userInfo.Username" />
+    </div>
+    <div>
+        <label>Password</label>
+        <InputText type="password" @bind-Value="userInfo.Password" />
+    </div>
+    <button>Login</button>
+</EditForm>
+
+<div><p class="@MessageClass">@Message</p></div>
+
 
 @code {
-    protected override async Task OnInitializedAsync()
+
+    [SupplyParameterFromForm]
+    public UserInfo userInfo { get; set; } = new();
+
+    public string Message { get; set; } = "";
+    public string MessageClass { get; set; } = "alert-info";
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     await StateManager.InitializeAsync();
+    // }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await StateManager.InitializeAsync();
+        if (firstRender)
+        {
+            await StateManager.InitializeAsync();
+        }
     }
 
-    private void LoginUser()
+    private async Task LoginUser()
     {
-        
+        Message = "";
+        MessageClass = "alert-info";
+        var userValidation = await portal.ExecuteAsync(userInfo.Username, userInfo.Password);
+        ClaimsPrincipal principal;
+        if (userValidation.IsValid)
+        {
+            var identity = new ClaimsIdentity("custom");
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, userInfo.Username, ClaimValueTypes.String));
+            foreach (var item in userValidation.Roles)
+                claims.Add(new Claim(ClaimTypes.Role, item, ClaimValueTypes.String));
+            identity.AddClaims(claims);
+            principal = new ClaimsPrincipal(identity);
+            Message = $"Logged in as {userInfo.Username}";
+        }
+        else
+        {
+            // create unauthenticated principal
+            principal = new ClaimsPrincipal();
+            Message = "Invalid credentials";
+            MessageClass = "alert-danger";
+        }
+        var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext is not null)
+        {
+            if (principal.Identity is not null && principal.Identity.IsAuthenticated)
+            {
+                AuthenticationProperties authProperties = new AuthenticationProperties();
+                await httpContext.SignInAsync(
+                  CookieAuthenticationDefaults.AuthenticationScheme,
+                  principal,
+                  authProperties);
+            }
+        }
+        StateHasChanged();
+        NavigationManager.NavigateTo("/");
+    }
+
+
+    public class UserInfo
+    {
+        public string Username { get; set; }
+        public string Password { get; set; }
     }
 }

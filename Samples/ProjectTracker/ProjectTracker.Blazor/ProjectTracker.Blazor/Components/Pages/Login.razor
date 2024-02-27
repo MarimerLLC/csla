@@ -12,17 +12,24 @@
 
 <h1>Login</h1>
 
-<EditForm Model="userInfo" OnSubmit="LoginUser" FormName="loginform">
-    <div>
-        <label>Username</label>
-        <InputText @bind-Value="userInfo.Username" />
-    </div>
-    <div>
-        <label>Password</label>
-        <InputText type="password" @bind-Value="userInfo.Password" />
-    </div>
-    <button>Login</button>
-</EditForm>
+<div>
+  <EditForm Model="userInfo" OnSubmit="LoginUser" FormName="loginform">
+      <div>
+          <label>Username</label>
+          <InputText @bind-Value="userInfo.Username" />
+      </div>
+      <div>
+          <label>Password</label>
+          <InputText type="password" @bind-Value="userInfo.Password" />
+      </div>
+      <button>Login</button>
+  </EditForm>
+</div>
+
+<div style="background-color:lightgray">
+  <p>User identities:</p>
+  <p>admin, admin<br />manager, manager</p>
+</div>
 
 <div><p class="alert-danger">@Message</p></div>
 

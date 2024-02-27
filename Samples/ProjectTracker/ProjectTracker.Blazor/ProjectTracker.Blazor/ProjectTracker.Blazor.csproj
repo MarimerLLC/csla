@@ -13,8 +13,12 @@
     <ProjectReference Include="..\..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
     <ProjectReference Include="..\ProjectTracker.Blazor.Client\ProjectTracker.Blazor.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
-    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24022501" />
-    <PackageReference Include="Csla.Blazor" Version="8.0.0-R24022501" />
+    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24022602" />
+    <PackageReference Include="Csla.Blazor" Version="8.0.0-R24022602" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Identity\" />
   </ItemGroup>
 
 </Project>

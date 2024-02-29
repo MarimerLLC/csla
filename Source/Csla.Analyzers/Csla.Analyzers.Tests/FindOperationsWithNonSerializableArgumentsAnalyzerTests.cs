@@ -200,5 +200,39 @@ public class B : BusinessBase<B>
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
         code, Array.Empty<string>());
     }
+
+    [DataTestMethod]
+    [DataRow("bool")]
+    [DataRow("byte")]
+    [DataRow("sbyte")]
+    [DataRow("char")]
+    [DataRow("decimal")]
+    [DataRow("double")]
+    [DataRow("float")]
+    [DataRow("int")]
+    [DataRow("uint")]
+    [DataRow("long")]
+    [DataRow("ulong")]
+    [DataRow("short")]
+    [DataRow("ushort")]
+    public async Task AnalyzeWithNullableSerializablePrimitiveArgument(string primitiveType)
+    {
+      var code =
+$@"
+using Csla;
+
+namespace TestingNamespace {{
+
+  public class A : BusinessBase<Foo>
+  {{
+    [Create]
+    private void Create({primitiveType}? a) {{ }}
+  }}
+
+}}";
+
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        code, Array.Empty<string>());
+    }
   }
 }

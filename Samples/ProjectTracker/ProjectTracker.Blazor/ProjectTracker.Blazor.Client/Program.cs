@@ -12,7 +12,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 
 builder.Services.AddCsla(o => o
   .AddBlazorWebAssembly(o => o.SyncContextWithServer = true)
-  .Security(o => o.FlowSecurityPrincipalFromClient = true)
   .DataPortal(o => o.ClientSideDataPortal(o => o
     .UseHttpProxy(o => o.DataPortalUrl = "/api/dataportal"))));
 

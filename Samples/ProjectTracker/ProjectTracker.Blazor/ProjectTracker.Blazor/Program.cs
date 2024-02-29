@@ -24,8 +24,7 @@ builder.Services.AddHttpContextAccessor();
 // Add CSLA
 builder.Services.AddCsla(o => o
   .AddAspNetCore()
-  .AddServerSideBlazor()
-  .Security(so => so.FlowSecurityPrincipalFromClient = true));
+  .AddServerSideBlazor());
 
 builder.Services.AddDalMock();
 //builder.Services.AddDalEfCore();

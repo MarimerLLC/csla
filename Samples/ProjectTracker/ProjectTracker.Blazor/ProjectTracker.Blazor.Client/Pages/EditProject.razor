@@ -208,7 +208,7 @@ else
     private async void AssignRole(int resourceId)
     {
         var portal = ApplicationContext.GetRequiredService<IDataPortal<ProjectResourceEditCreator>>();
-        var creator = await portal.ExecuteAsync(resourceId);
+        var creator = await portal.FetchAsync(resourceId);
         selectedResource = creator.ProjectResource;
         selectedResource.BeginEdit();
         viewMode = SubViewModes.Details;

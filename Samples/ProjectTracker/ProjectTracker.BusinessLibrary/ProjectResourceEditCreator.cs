@@ -16,13 +16,13 @@ namespace ProjectTracker.Library
       private set { LoadProperty(ProjectResourceProperty, value); }
     }
 
-    [Execute]
+    [Execute, Fetch]
     private void Execute(int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
     {
       ProjectResource = portal.CreateChild(resourceId);
     }
 
-    [Execute]
+    [Execute, Fetch]
     private void Execute(int projectId, int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
     {
       ProjectResource = portal.FetchChild(projectId, resourceId);

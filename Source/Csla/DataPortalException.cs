@@ -113,7 +113,7 @@ namespace Csla
       get
       {
         var result = ErrorInfo;
-        while (result.InnerError != null)
+        while (result?.InnerError != null)
           result = result.InnerError;
         return result;
       }

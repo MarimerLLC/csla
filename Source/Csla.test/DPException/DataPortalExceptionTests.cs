@@ -14,6 +14,7 @@ using System.Data.SqlClient;
 using Csla.TestHelpers;
 using Csla.Configuration;
 
+
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -158,6 +159,23 @@ namespace Csla.Test.DPException
       //verify that the implemented method, DataPortal_OnDataPortal 
       //was called for the business object that threw the exception
       Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
+    }
+
+    [TestMethod]
+    public void CheckBusinessErrorInfoIsNullWhennErrorInfoIsNull() {
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+
+      try 
+      {
+        Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
+
+        Assert.Fail("The previous operation should have thrown an Exception and not executed successfully.");
+      } 
+      catch (DataPortalException ex) 
+      {
+        Assert.IsNull(ex.ErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.ErrorInfo)} should have been null but is not.");
+        Assert.IsNull(ex.BusinessErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.BusinessErrorInfo)} should have been null but is not.");
+      }
     }
   }
 }

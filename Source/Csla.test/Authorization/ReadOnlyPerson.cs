@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using Csla.Serialization;
 using System.Diagnostics;
+using Csla.Rules;
 
 namespace Csla.Test.Authorization
 {
@@ -20,6 +21,9 @@ namespace Csla.Test.Authorization
   [Serializable()]
   public class ReadOnlyPerson : ReadOnlyBase<ReadOnlyPerson>
   {
+    private bool _authorizationCheckDisabled;
+    protected override bool IsCanReadPropertyAuthorizationCheckDisabled => _authorizationCheckDisabled;
+
     private ReadOnlyPerson() 
     {
       LoadProperty(FirstNameProperty, "John");
@@ -76,6 +80,9 @@ namespace Csla.Test.Authorization
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.ReadProperty, MiddleNameProperty, new List<string> { "Admin" }));
     }
+
+    internal void SetDisableCanReadAuthorizationChecks(bool isCanReadAuthorizationChecksDisabled) => _authorizationCheckDisabled = isCanReadAuthorizationChecksDisabled;
+
     //protected override void AddInstanceAuthorizationRules()
     //{
     //  base.AddInstanceAuthorizationRules();

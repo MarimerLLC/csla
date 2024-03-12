@@ -1,0 +1,13 @@
+﻿﻿@if (Property.CanRead)
+{
+    <tr>
+        <td>@Property.FriendlyName</td>
+        <td>@Property.Value</td>
+    </tr>
+}
+
+@code {
+#nullable disable
+    [Parameter]
+    public Csla.Blazor.IPropertyInfo Property { get; set; }
+}

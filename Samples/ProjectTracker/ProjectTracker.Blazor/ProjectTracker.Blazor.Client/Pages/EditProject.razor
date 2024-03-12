@@ -1,0 +1,247 @@
+﻿@page "/editproject"
+@page "/editproject/{id:int}"
+@using Microsoft.AspNetCore.Components.Authorization
+@rendermode InteractiveAuto
+@implements IDisposable /* CSLA wasm pages must be IDisposable */
+
+@inject NavigationManager NavigationManager
+@inject Csla.Blazor.State.StateManager StateManager
+@inject Csla.IDataPortal<ProjectEdit> projectEditPortal
+@inject Csla.Blazor.ViewModel<ProjectEdit> vm
+@inject Csla.ApplicationContext ApplicationContext
+@inject Csla.IDataPortal<RoleList> roleListPortal
+
+<p class="alert-danger">@vm.ViewModelErrorText</p>
+@if (vm.Exception is not null)
+{
+    <p class="alert-danger">@vm.Exception.ToString()</p>
+}
+
+@if (!IsInteractive)
+{
+    <h1>Edit Project</h1>
+    <p>Loading Blazor wasm runtime...</p>
+}
+else if (vm.Model == null)
+{
+    <h1>Edit Project</h1>
+    <p>Loading...</p>
+}
+else
+{
+    <h1>@vm.Model.Name</h1>
+    <p>
+        <a href="projects">Project list</a>
+    </p>
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <LabelRow Property="vm.GetPropertyInfo(() => vm.Model.Id)" />
+                <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.Name)" />
+                <TextAreaRow rows="5" Property="@(vm.GetPropertyInfo(() => vm.Model.Description))" />
+                <DateInputRow Property="@(vm.GetPropertyInfo(() => vm.Model.Started))" />
+                <DateInputRow Property="@(vm.GetPropertyInfo(() => vm.Model.Ended))" EmptyIsMin="false" />
+            </tbody>
+        </table>
+        <div style="background-color:lightgray">
+            @if (viewMode == SubViewModes.Details)
+            {
+                <a href="javascript: void(0);" @onclick="ShowDefaultView">Cancel assignment</a>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@selectedResource.FirstName @selectedResource.LastName</td>
+                            <td>
+                                <select @bind="selectedResource.Role">
+                                    @foreach (var item in RoleList)
+                                    {
+                                        <option value="@item.Key">@item.Value</option>
+                                    }
+                                </select>
+                            </td>
+                            @if (vm.CanEditObject)
+                            {
+                                <td><a href="javascript: void(0);" @onclick="() => AddResource()">Assign</a></td>
+                            }
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            else if (viewMode == SubViewModes.Select)
+            {
+                @if (_resourceList == null)
+                {
+                    <p>Loading resource list...</p>
+                }
+                else
+                {
+                    <a href="javascript: void(0);" @onclick="ShowDefaultView">Cancel assignment</a>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Resource</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in _resourceList)
+                            {
+                                <tr>
+                                    <td>@item.Name</td>
+                                    <td><a href="javascript: void(0);" @onclick="() => AssignRole(item.Id)">Select</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            }
+            else if (viewMode == SubViewModes.Default)
+            {
+                @if (vm.CanEditObject)
+                {
+                    <a href="javascript: void(0);" @onclick="SelectResource">Add resource</a>
+                }
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>First name</th>
+                            <th>Last name</th>
+                            <th>Role</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in vm.Model.Resources)
+                        {
+                            <tr>
+                                <td>@item.FirstName</td>
+                                <td>@item.LastName</td>
+                                <td>@item.RoleName</td>
+                                @if (vm.CanEditObject)
+                                {
+                                    <td>
+                                        <a href="javascript: void(0);"
+                                        @onclick="() => EditResource(item.ResourceId)">Edit</a>
+                                        | <a href="javascript: void(0);"
+                                        @onclick="() => RemoveResource(item.ResourceId)">Remove</a>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Error in page - please contact support</p>
+            }
+        </div>
+        @if (vm.CanEditObject)
+        {
+            <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable && !IsInteractive)">Save</button>
+        }
+    }
+}
+
+@code {
+    #nullable disable
+    [Parameter]
+    public int? Id { get; set; }
+    public bool IsInteractive { get; set; }
+
+    private SubViewModes viewMode = SubViewModes.Default;
+    private ProjectTracker.Library.ProjectResourceEdit selectedResource;
+    private List<ProjectTracker.Library.ResourceInfo> _resourceList;
+    private RoleList RoleList { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+
+        vm.Saved += () => NavigationManager.NavigateTo("projects");
+        vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+
+        if (Id.HasValue)
+            await vm.RefreshAsync(() => projectEditPortal.FetchAsync(Id));
+        else
+            await vm.RefreshAsync(() => projectEditPortal.CreateAsync());
+
+        RoleList = await roleListPortal.FetchAsync();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        IsInteractive = true;
+    }
+
+    private async void SelectResource()
+    {
+        viewMode = SubViewModes.Select;
+        var portal = ApplicationContext.GetRequiredService<IDataPortal<ResourceList>>();
+        _resourceList = (await portal.FetchAsync())
+                          .Where(r => !vm.Model.Resources.Contains(r.Id)).ToList();
+        StateHasChanged();
+    }
+
+    private void ShowDefaultView()
+    {
+        if (selectedResource != null)
+            selectedResource.CancelEdit();
+        viewMode = SubViewModes.Default;
+    }
+
+    private async void AssignRole(int resourceId)
+    {
+        var portal = ApplicationContext.GetRequiredService<IDataPortal<ProjectResourceEditCreator>>();
+        var creator = await portal.FetchAsync(resourceId);
+        selectedResource = creator.ProjectResource;
+        selectedResource.BeginEdit();
+        viewMode = SubViewModes.Details;
+        StateHasChanged();
+    }
+
+    private void AddResource()
+    {
+        selectedResource.ApplyEdit();
+        if (!vm.Model.Resources.Contains(selectedResource.ResourceId))
+            vm.Model.Resources.Add(selectedResource);
+        ShowDefaultView();
+    }
+
+    private void EditResource(int resourceId)
+    {
+        selectedResource = vm.Model.Resources
+          .Where(r => r.ResourceId == resourceId).FirstOrDefault();
+        if (selectedResource != null)
+        {
+            selectedResource.BeginEdit();
+            viewMode = SubViewModes.Details;
+        }
+    }
+
+    private void RemoveResource(int resourceId)
+    {
+        vm.Model.Resources.Remove(resourceId);
+    }
+
+    public void Dispose()
+    {
+        // wasm pages _must_ save state back to server
+        StateManager.SaveState();
+    }
+}

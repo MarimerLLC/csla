@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary\ProjectTracker.BusinessLibrary.csproj" />
+    <ProjectReference Include="..\..\ProjectTracker.DalEfCore\ProjectTracker.DalEfCore.csproj" />
+    <ProjectReference Include="..\..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj" />
+    <ProjectReference Include="..\..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
+    <ProjectReference Include="..\ProjectTracker.Blazor.Client\ProjectTracker.Blazor.Client.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24031201" />
+    <PackageReference Include="Csla.Blazor" Version="8.0.0-R24031201" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Identity\" />
+  </ItemGroup>
+
+</Project>

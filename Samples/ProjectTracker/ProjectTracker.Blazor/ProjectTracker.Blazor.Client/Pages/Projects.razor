@@ -1,0 +1,59 @@
+﻿@page "/projects"
+@attribute [StreamRendering] /* server-static pages must be streaming */
+
+@using ProjectTracker.Library
+@inject Csla.Blazor.State.StateManager StateManager
+@inject IDataPortal<ProjectList> projectListPortal
+@inject ViewModel<ProjectList> vm
+@inject ViewModel<ProjectEdit> pevm
+
+<h1>List of Projects</h1>
+
+<p class="alert-danger">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+    <p>Loading List...</p>
+}
+else
+{
+    <p>
+        @if (pevm.CanCreateObject)
+        {
+            <a href="editproject">Add project</a>
+        }
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in vm.Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    @if (pevm.CanEditObject)
+                    {
+                        <td><a href="editproject/@item.Id">Edit</a></td>
+                    }
+                    else if (pevm.CanGetObject)
+                    {
+                        <td><a href="editproject/@item.Id">Details</a></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+        await vm.RefreshAsync(() => projectListPortal.FetchAsync());
+    }
+}

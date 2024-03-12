@@ -1,0 +1,21 @@
+﻿@if (Property.CanRead)
+{
+    <tr>
+        <td>@(Property.FriendlyName)</td>
+        <td>
+            <TextInput Property="@Property" />
+        </td>
+    </tr>
+}
+
+@code {
+#nullable disable
+    [Parameter]
+    public Csla.Blazor.IPropertyInfo Property { get; set; }
+
+    private string TextValue
+    {
+        get => (string)Property.Value;
+        set => Property.Value = value;
+    }
+}

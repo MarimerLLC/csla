@@ -47,7 +47,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public async Task ExecuteWithParamters()
+    public async Task ExecuteWithParameters()
     {
       var dp = _testDIContext.CreateDataPortal<ExecuteCommand>();
       var cmd = await dp.ExecuteAsync("xyz");

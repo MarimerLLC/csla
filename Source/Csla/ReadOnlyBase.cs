@@ -129,6 +129,12 @@ namespace Csla
 
     #region Authorization
 
+    /// <summary>
+    /// Gets or sets if <see cref="CanReadProperty(IPropertyInfo)"/> performs an authorization check or not. <br/>
+    /// <see langword="true"/> means read is <i>always</i> allowed. <see langword="false"/> means an authorization check is always performed.
+    /// </summary>
+    protected virtual bool IsCanReadPropertyAuthorizationCheckDisabled { get; } = false;
+
     [NotUndoable()]
     [NonSerialized()]
     private ConcurrentDictionary<string, bool> _readResultCache;
@@ -215,6 +221,10 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
+      if (IsCanReadPropertyAuthorizationCheckDisabled) {
+        return true;
+      }
+
       bool result = true;
 
       VerifyAuthorizationCache();

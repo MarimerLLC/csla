@@ -41,10 +41,12 @@ namespace Csla.Analyzers
         foreach(var argument in methodSymbol.Parameters)
         {
           var argumentType = argument.Type;
+
           if (!argumentType.IsMobileObject() && !argumentType.IsSpecialTypeSerializable() &&
-            !argumentType.IsSerializableByMobileFormatter(context.Compilation) &&
-            !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) &&
-            argumentType is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable)
+              !argumentType.IsSerializableByMobileFormatter(context.Compilation) &&
+              !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) && 
+              argumentType is not { ContainingNamespace.Name: "System", Name: "Nullable" } &&
+              argumentType is INamedTypeSymbol namedArgument && !namedArgument.IsSerializable)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               shouldUseSerializableTypesRule, argument.Locations[0]));

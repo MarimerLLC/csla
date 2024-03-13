@@ -62,5 +62,23 @@ public class A : BusinessBase<A>{ }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
         code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
     }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsDerivedFromReadOnlyListBaseAndIsNotSerializable() {
+      var code = @"
+using Csla;
+using System;
+
+namespace Testnamespace 
+{
+  [Serializable]
+  public class B : BusinessBase<B> {}
+
+  public class A : ReadOnlyListBase<A,B> {}
+}
+";
+
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
+    }
   }
 }

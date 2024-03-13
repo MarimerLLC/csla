@@ -10,9 +10,11 @@ using System.IO;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Csla.Blazor.Authentication;
 using Csla.Configuration;
 using Csla.Serialization.Mobile;
 using Csla.State;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Csla.Blazor.WebAssembly.State
 {
@@ -72,7 +74,13 @@ namespace Csla.Blazor.WebAssembly.State
           {
             Position = 0
           };
-          _session = (Session)formatter.Deserialize(buffer);
+          var message = (SessionMessage)formatter.Deserialize(buffer);
+          _session = message.Session;
+          if (message.Principal is not null &&
+              ApplicationContext.GetRequiredService<AuthenticationStateProvider>() is CslaAuthenticationStateProvider provider)
+          {
+            provider.SetPrincipal(message.Principal);
+          }
         }
         else
         {

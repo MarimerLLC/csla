@@ -9,6 +9,7 @@ using System.IO;
 using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Mvc;
 using Csla.State;
+using Csla.Security;
 
 namespace Csla.AspNetCore.Blazor.State
 {
@@ -26,6 +27,13 @@ namespace Csla.AspNetCore.Blazor.State
     private readonly ISessionManager _sessionManager = sessionManager;
 
     /// <summary>
+    /// Gets or sets a value indicating whether to flow the
+    /// current user principal from the Blazor server to the
+    /// Blazor WebAssembly client.
+    /// </summary>
+    protected bool FlowUserIdentityToWebAssembly { get; set; } = true;
+
+    /// <summary>
     /// Gets current user session data in a serialized
     /// format.
     /// </summary>
@@ -35,9 +43,16 @@ namespace Csla.AspNetCore.Blazor.State
     {
       var session = _sessionManager.GetSession();
       session.IsCheckedOut = true;
+      var message = (SessionMessage)ApplicationContext.CreateInstanceDI(typeof(SessionMessage));
+      message.Session = session;
+      if (FlowUserIdentityToWebAssembly)
+      {
+        var principal = new CslaClaimsPrincipal(ApplicationContext.Principal);
+        message.Principal = principal;
+      }
       var formatter = new MobileFormatter(ApplicationContext);
       var buffer = new MemoryStream();
-      formatter.Serialize(buffer, session);
+      formatter.Serialize(buffer, message);
       return buffer.ToArray();
     }
 

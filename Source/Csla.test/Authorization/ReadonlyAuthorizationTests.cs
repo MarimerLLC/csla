@@ -12,6 +12,8 @@ using Csla.Test.Security;
 using UnitDriven;
 using System.Diagnostics;
 using System.Security.Claims;
+using Csla.Core;
+using Csla.TestHelpers;
 
 #if NUNIT
 using NUnit.Framework;
@@ -32,12 +34,30 @@ namespace Csla.Test.Authorization
   [TestClass()]
   public class ReadonlyAuthorizationTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context) {
+      _ = context;
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
     private static ClaimsPrincipal GetPrincipal(params string[] roles)
     {
       var identity = new ClaimsIdentity();
       foreach (var item in roles)
         identity.AddClaim(new Claim(ClaimTypes.Role, item));
       return new ClaimsPrincipal(identity);
+    }
+
+    [TestMethod]
+    public void WhenReadOnlyBaseHasAuthorizationRuleChecksDisabledThePropertiesShouldBeReadableEvenThoughIDontHaveTheNeededRule() {
+      var person = ReadOnlyPerson.GetReadOnlyPerson();
+      ((IUseApplicationContext)person).ApplicationContext = _testDIContext.CreateTestApplicationContext();
+
+      person.SetDisableCanReadAuthorizationChecks(isCanReadAuthorizationChecksDisabled: true);
+
+      _ = person.FirstName; // When no exception happens this test is successful
     }
 
     //[TestMethod()]

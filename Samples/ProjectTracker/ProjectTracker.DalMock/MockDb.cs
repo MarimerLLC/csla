@@ -18,7 +18,7 @@ namespace ProjectTracker.DalMock
     {
       Projects = new List<ProjectData>
         {
-          new ProjectData { Id = 1, Name = "Update ProjectTracker", Description = "Update ProjectTracker for CSLA 4", Started = new DateTime(2011, 3, 22), LastChanged = GetTimeStamp() }
+          new ProjectData { Id = 1, Name = "Update ProjectTracker", Description = "Update ProjectTracker for CSLA 8", Started = new DateTime(2024, 2, 10), LastChanged = GetTimeStamp() }
         };
       Resources = new List<ResourceData>
         {

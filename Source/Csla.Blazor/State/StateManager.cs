@@ -21,12 +21,6 @@ namespace Csla.Blazor.State
     private readonly ISessionManager _sessionManager = sessionManager;
 
     /// <summary>
-    /// Gets a value indicating whether state is valid
-    /// for use in the current component.
-    /// </summary>
-    public bool IsStateAvailable { get; private set; } = false;
-
-    /// <summary>
     /// Get state from cache.
     /// </summary>
     /// <returns></returns>
@@ -58,8 +52,6 @@ namespace Csla.Blazor.State
         session = await _sessionManager.RetrieveSession();
       else
         session = await WaitForState(timeout);
-      session.Initialize();
-      IsStateAvailable = session.IsFullyInitialized;
     }
 
     /// <summary>
@@ -110,7 +102,6 @@ namespace Csla.Blazor.State
       if (isBrowser)
       {
         _sessionManager.SendSession();
-        IsStateAvailable = false;
       }
     }
   }

@@ -43,10 +43,15 @@ namespace Csla.Blazor.State
         {
           result = httpContext.Request.Cookies[sessionIdName];
         }
+        else if (httpContext.Items.ContainsKey(sessionIdName)) 
+        {
+          result = httpContext.Items[sessionIdName] as string;
+        }
         else
         {
           result = Guid.NewGuid().ToString();
           httpContext.Response.Cookies.Append(sessionIdName, result);
+          httpContext.Items[sessionIdName] = result;
         }
       }
       else

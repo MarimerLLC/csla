@@ -24,6 +24,12 @@ namespace Csla.Rules
     private RuleUri _ruleUri;
 
     /// <summary>
+    /// If true, rule will only cascade if the primary property
+    /// is dirty.
+    /// </summary>
+    public bool CascadeIfDirty { get; protected set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether
     /// property values should be locked because
     /// an async operation is running.

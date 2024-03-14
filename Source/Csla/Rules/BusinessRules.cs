@@ -675,21 +675,21 @@ namespace Csla.Rules
                 propertiesToRun.Add(p);
           }
 
-        // gets a list of "affected" properties by adding
+        // gets a list rules of of "affected" properties by adding
         // PrimaryProperty where property is in InputProperties
-        var input = from r in TypeRules.Rules
+        var inputRules = from r in TypeRules.Rules
                     where !ReferenceEquals(r.PrimaryProperty, property)
                           && r.PrimaryProperty != null
                           && r.InputProperties != null
                           && r.InputProperties.Contains(property)
-                    select r.PrimaryProperty;
+                    select r;
 
         var dirtyProperties = primaryResult.DirtyProperties;
-        input = from r in input
-                where dirtyProperties.Contains(r.Name)
-                select r;
+        var inputProperties = from r in inputRules
+                              where !r.CascadeIfDirty || dirtyProperties.Contains(r.PrimaryProperty.Name)
+                              select r.PrimaryProperty;
 
-        foreach (var p in input)
+        foreach (var p in inputProperties)
         {
             if (!ReferenceEquals(property, p))
                 propertiesToRun.Add(p);

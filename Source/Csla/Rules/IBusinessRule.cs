@@ -42,6 +42,11 @@ namespace Csla.Rules
   public interface IBusinessRuleBase
   {
     /// <summary>
+    /// If true, rule will only cascade if the primary property
+    /// is dirty.
+    /// </summary>
+    bool CascadeIfDirty { get; }
+    /// <summary>
     /// Gets a list of secondary property values to be supplied to the
     /// rule when it is executed.
     /// </summary>

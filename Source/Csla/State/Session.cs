@@ -8,7 +8,6 @@
 using System;
 using System.ComponentModel;
 using Csla.Core;
-using Csla.Serialization.Mobile;
 
 namespace Csla.State
 {
@@ -19,11 +18,6 @@ namespace Csla.State
   [Serializable]
   public class Session : MobileDictionary<string, object>, INotifyPropertyChanged
   {
-    /// <summary>
-    /// Gets a unique id for this object.
-    /// </summary>
-    public Guid Id { get; private set; } = Guid.NewGuid();
-
     private bool _isCheckedOut;
 
     /// <summary>
@@ -49,18 +43,6 @@ namespace Csla.State
     /// time (UTC) this object was interacted with.
     /// </summary>
     public DateTimeOffset LastTouched { get; set; } = DateTimeOffset.MinValue;
-    /// <summary>
-    /// Gets a value indicating whether the session
-    /// is fully initialized and ready for use.
-    /// </summary>
-    public bool IsFullyInitialized => _initializationState == 2;
-    
-    /// <summary>
-    /// 0 = entirely uninitialized
-    /// 1 = initialized once, not yet available
-    /// 2 = initialized 2+ times, ready for use
-    /// </summary>
-    private int _initializationState;
 
     /// <summary>
     /// Event raised when a property has changed.
@@ -73,36 +55,5 @@ namespace Csla.State
     /// <param name="propertyName"></param>
     protected virtual void OnPropertyChanged(string propertyName) 
       => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-    /// <summary>
-    /// Sets the initialization state of the object.
-    /// FOR INTERNAL USE ONLY.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public void Initialize()
-    {
-      if (_initializationState < 2) 
-        _initializationState++;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="info"></param>
-    protected override void GetState(SerializationInfo info)
-    {
-      info.AddValue("id", Id);
-      info.AddValue("_initializationState", _initializationState);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="info"></param>
-    protected override void SetState(SerializationInfo info)
-    {
-      Id = info.GetValue<Guid>("id");
-      _initializationState = info.GetValue<int>("_initializationState");
-    }
   }
 }

@@ -41,8 +41,6 @@ namespace Csla.Blazor.WebAssembly.State
     public Session GetSession()
     {
       _session ??= [];
-      _session.Initialize();
-      _session.Initialize();
       _session.LastTouched = DateTimeOffset.UtcNow;
       return _session;
     }

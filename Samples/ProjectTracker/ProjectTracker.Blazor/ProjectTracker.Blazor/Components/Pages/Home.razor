@@ -8,13 +8,6 @@
 
 <p>Welcome to the CSLA reference app - Blazor client.</p>
 
-<p>CSLA state is ready: @IsStateReady 
-  @if (!IsStateReady)
-    {
-        <span> (though by the time you see this it is ready)</span>
-    }
-</p>
-
 @code
 {
     private bool IsStateReady;
@@ -23,7 +16,5 @@
     {
         // Every page _must_ initialize the state manager
         await StateManager.InitializeAsync();
-        // CSLA state is not available until this page has fully rendered one time
-        IsStateReady = StateManager.IsStateAvailable;
     }
 }

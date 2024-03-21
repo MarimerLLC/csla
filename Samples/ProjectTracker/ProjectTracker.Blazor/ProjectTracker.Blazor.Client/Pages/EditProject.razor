@@ -175,18 +175,21 @@ else
 
         vm.Saved += () => NavigationManager.NavigateTo("projects");
         vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+    }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+      if (firstRender)
+      {
+        IsInteractive = true;
         if (Id.HasValue)
             await vm.RefreshAsync(() => projectEditPortal.FetchAsync(Id));
         else
             await vm.RefreshAsync(() => projectEditPortal.CreateAsync());
 
         RoleList = await roleListPortal.FetchAsync();
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        IsInteractive = true;
+        StateHasChanged();
+      }
     }
 
     private async void SelectResource()

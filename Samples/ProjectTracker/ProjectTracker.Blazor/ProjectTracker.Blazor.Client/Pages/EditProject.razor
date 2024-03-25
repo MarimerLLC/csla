@@ -192,7 +192,7 @@ else
       }
     }
 
-    private async void SelectResource()
+    private async Task SelectResource()
     {
         viewMode = SubViewModes.Select;
         var portal = ApplicationContext.GetRequiredService<IDataPortal<ResourceList>>();
@@ -208,7 +208,7 @@ else
         viewMode = SubViewModes.Default;
     }
 
-    private async void AssignRole(int resourceId)
+    private async Task AssignRole(int resourceId)
     {
         var portal = ApplicationContext.GetRequiredService<IDataPortal<ProjectResourceEditCreator>>();
         var creator = await portal.FetchAsync(resourceId);

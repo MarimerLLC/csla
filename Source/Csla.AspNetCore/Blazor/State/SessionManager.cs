@@ -33,7 +33,7 @@ namespace Csla.Blazor.State
       if (!_sessions.ContainsKey(key))
         _sessions.TryAdd(key, []);
       result = _sessions[key];
-      result.LastTouched = DateTimeOffset.UtcNow;
+      result.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
       return result;
     }
 
@@ -48,8 +48,7 @@ namespace Csla.Blazor.State
         var key = _sessionIdManager.GetSessionId();
         var existingSession = _sessions[key];
         Replace(newSession, existingSession);
-        existingSession.LastTouched = DateTimeOffset.UtcNow;
-        existingSession.IsCheckedOut = false;
+        existingSession.LastTouched = newSession.LastTouched;
       }
     }
 
@@ -77,7 +76,14 @@ namespace Csla.Blazor.State
     /// the wasm client to the web server.
     /// </summary>
     /// <returns></returns>
-    public Task SendSession() => throw new NotSupportedException();
+    public Task SendSession()
+    {
+      var key = _sessionIdManager.GetSessionId();
+      var existingSession = _sessions[key];
+      if (existingSession != null)
+        _sessions[key].LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+      return Task.CompletedTask;
+    }
 
     /// <summary>
     /// Remove all expired session data.
@@ -85,7 +91,7 @@ namespace Csla.Blazor.State
     /// <param name="expiration">Expiration duration</param>
     public void PurgeSessions(TimeSpan expiration)
     {
-      var expirationTime = DateTimeOffset.UtcNow - expiration;
+      var expirationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - expiration.TotalSeconds;
       List<string> toRemove = [];
       foreach (var session in _sessions)
         if (session.Value.LastTouched < expirationTime)

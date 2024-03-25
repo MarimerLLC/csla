@@ -40,8 +40,11 @@ namespace Csla.Blazor.WebAssembly.State
     /// </summary>
     public Session GetSession()
     {
-      _session ??= [];
-      _session.LastTouched = DateTimeOffset.UtcNow;
+      if (_session == null)
+      {
+        _session ??= [];
+        _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+      }
       return _session;
     }
 
@@ -52,7 +55,7 @@ namespace Csla.Blazor.WebAssembly.State
     /// <param name="session">Current user session data</param>
     public void UpdateSession(Session session)
     {
-      _session.LastTouched = DateTimeOffset.UtcNow;
+      _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
       _session = session;
     }
 
@@ -64,11 +67,13 @@ namespace Csla.Blazor.WebAssembly.State
     {
       if (_options.SyncContextWithServer)
       {
-        if (_session == null)
+        if (_session == null) _session = GetSession(); // make sure we have a session
+        var url = $"{_options.StateControllerName}?lastTouched={_session.LastTouched}";
+        var stateResult = await client.GetFromJsonAsync<StateResult>(url);
+        if (stateResult.ResultStatus == ResultStatuses.Success)
         {
-          var result = await client.GetFromJsonAsync<byte[]>(_options.StateControllerName);
           var formatter = new MobileFormatter(ApplicationContext);
-          var buffer = new MemoryStream(result)
+          var buffer = new MemoryStream(stateResult.SessionData)
           {
             Position = 0
           };
@@ -80,16 +85,15 @@ namespace Csla.Blazor.WebAssembly.State
             provider.SetPrincipal(message.Principal);
           }
         }
-        else
+        else // NoResult
         {
-          await client.PatchAsync(_options.StateControllerName, null);
+          _session = GetSession();
         }
       }
       else
       {
         _session = GetSession();
       }
-      _session.LastTouched = DateTimeOffset.UtcNow;
       return _session;
     }
 
@@ -102,7 +106,7 @@ namespace Csla.Blazor.WebAssembly.State
     {
       if (_options.SyncContextWithServer)
       {
-        _session.LastTouched = DateTimeOffset.UtcNow;
+        _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var formatter = new MobileFormatter(ApplicationContext);
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);
@@ -116,5 +120,36 @@ namespace Csla.Blazor.WebAssembly.State
     /// </summary>
     /// <param name="expiration">Expiration duration</param>
     public void PurgeSessions(TimeSpan expiration) => throw new NotSupportedException();
+  }
+
+  /// <summary>
+  /// Message type for communication between StateController
+  /// and the Blazor wasm client.
+  /// </summary>
+  public class StateResult
+  {
+    /// <summary>
+    /// Gets or sets the result status of the message.
+    /// </summary>
+    public ResultStatuses ResultStatus { get; set; }
+    /// <summary>
+    /// Gets or sets the serialized session data.
+    /// </summary>
+    public byte[] SessionData { get; set; }
+  }
+
+  /// <summary>
+  /// Result status values for StateResult.
+  /// </summary>
+  public enum ResultStatuses
+  {
+    /// <summary>
+    /// Success
+    /// </summary>
+    Success = 0,
+    /// <summary>
+    /// No updates
+    /// </summary>
+    NoUpdates = 1,
   }
 }

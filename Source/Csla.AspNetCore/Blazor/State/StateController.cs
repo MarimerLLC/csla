@@ -10,6 +10,7 @@ using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Mvc;
 using Csla.State;
 using Csla.Security;
+using System;
 
 namespace Csla.AspNetCore.Blazor.State
 {
@@ -37,23 +38,33 @@ namespace Csla.AspNetCore.Blazor.State
     /// Gets current user session data in a serialized
     /// format.
     /// </summary>
+    /// <param name="lastTouched">Last touched value from session</param>
     /// <returns></returns>
     [HttpGet]
-    public virtual byte[] Get()
+    public virtual StateResult Get(long lastTouched)
     {
+      var result = new StateResult();
       var session = _sessionManager.GetSession();
-      session.IsCheckedOut = true;
-      var message = (SessionMessage)ApplicationContext.CreateInstanceDI(typeof(SessionMessage));
-      message.Session = session;
-      if (FlowUserIdentityToWebAssembly)
+      if (session.LastTouched == lastTouched)
       {
-        var principal = new CslaClaimsPrincipal(ApplicationContext.Principal);
-        message.Principal = principal;
+        result.ResultStatus = ResultStatuses.NoUpdates;
       }
-      var formatter = new MobileFormatter(ApplicationContext);
-      var buffer = new MemoryStream();
-      formatter.Serialize(buffer, message);
-      return buffer.ToArray();
+      else
+      {
+        var message = (SessionMessage)ApplicationContext.CreateInstanceDI(typeof(SessionMessage));
+        message.Session = session;
+        if (FlowUserIdentityToWebAssembly)
+        {
+          var principal = new CslaClaimsPrincipal(ApplicationContext.Principal);
+          message.Principal = principal;
+        }
+        var formatter = new MobileFormatter(ApplicationContext);
+        var buffer = new MemoryStream();
+        formatter.Serialize(buffer, message);
+        result.ResultStatus = ResultStatuses.Success;
+        result.SessionData = buffer.ToArray();
+      }
+      return result;
     }
 
     /// <summary>
@@ -71,19 +82,38 @@ namespace Csla.AspNetCore.Blazor.State
         Position = 0
       };
       var session = (Session)formatter.Deserialize(buffer);
-      session.IsCheckedOut = false;
       _sessionManager.UpdateSession(session);
     }
+  }
 
+  /// <summary>
+  /// Message type for communication between StateController
+  /// and the Blazor wasm client.
+  /// </summary>
+  public class StateResult
+  {
     /// <summary>
-    /// Sets the current user session data as checked out,
-    /// indicating that it is in use by a Blazor wasm client.
+    /// Gets or sets the result status of the message.
     /// </summary>
-    [HttpPatch]
-    public virtual void Patch()
-    {
-      var session = _sessionManager.GetSession();
-      session.IsCheckedOut = true;
-    }
+    public ResultStatuses ResultStatus { get; set; }
+    /// <summary>
+    /// Gets or sets the serialized session data.
+    /// </summary>
+    public byte[] SessionData { get; set; }
+  }
+
+  /// <summary>
+  /// Result status values for StateResult.
+  /// </summary>
+  public enum ResultStatuses
+  {
+    /// <summary>
+    /// Success
+    /// </summary>
+    Success = 0,
+    /// <summary>
+    /// No updates
+    /// </summary>
+    NoUpdates = 1,
   }
 }

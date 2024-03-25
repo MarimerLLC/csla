@@ -58,7 +58,7 @@ namespace Csla.AspNetCore.Blazor.State
           var principal = new CslaClaimsPrincipal(ApplicationContext.Principal);
           message.Principal = principal;
         }
-        var formatter = new MobileFormatter(ApplicationContext);
+        var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext);
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, message);
         result.ResultStatus = ResultStatuses.Success;
@@ -76,7 +76,7 @@ namespace Csla.AspNetCore.Blazor.State
     [HttpPut]
     public virtual void Put(byte[] updatedSessionData)
     {
-      var formatter = new MobileFormatter(ApplicationContext);
+      var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext);
       var buffer = new MemoryStream(updatedSessionData)
       {
         Position = 0

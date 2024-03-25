@@ -12,6 +12,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Csla.Blazor.Authentication;
 using Csla.Configuration;
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -72,7 +73,7 @@ namespace Csla.Blazor.WebAssembly.State
         var stateResult = await client.GetFromJsonAsync<StateResult>(url);
         if (stateResult.ResultStatus == ResultStatuses.Success)
         {
-          var formatter = new MobileFormatter(ApplicationContext);
+          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
           var buffer = new MemoryStream(stateResult.SessionData)
           {
             Position = 0
@@ -104,10 +105,10 @@ namespace Csla.Blazor.WebAssembly.State
     /// <returns></returns>
     public async Task SendSession()
     {
+      _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
       if (_options.SyncContextWithServer)
       {
-        _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-        var formatter = new MobileFormatter(ApplicationContext);
+        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);
         buffer.Position = 0;

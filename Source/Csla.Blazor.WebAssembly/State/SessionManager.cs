@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using Csla.Blazor.Authentication;
 using Csla.Configuration;
 using Csla.Serialization;
-using Csla.Serialization.Mobile;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
 
@@ -51,7 +50,7 @@ namespace Csla.Blazor.WebAssembly.State
 
     /// <summary>
     /// Updates the current user's session 
-    /// data locally and on the web server.
+    /// data locally.
     /// </summary>
     /// <param name="session">Current user session data</param>
     public void UpdateSession(Session session)
@@ -62,14 +61,18 @@ namespace Csla.Blazor.WebAssembly.State
 
     /// <summary>
     /// Retrieves the current user's session from
-    /// the web server to the wasm client.
+    /// the web server to the wasm client
+    /// if SyncContextWithServer is true.
     /// </summary>
     public async Task<Session> RetrieveSession()
     {
       if (_options.SyncContextWithServer)
       {
-        if (_session == null) _session = GetSession(); // make sure we have a session
-        var url = $"{_options.StateControllerName}?lastTouched={_session.LastTouched}";
+        long lastTouched = 0;
+        if (_session != null)
+          lastTouched = _session.LastTouched;
+        var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
+
         var stateResult = await client.GetFromJsonAsync<StateResult>(url);
         if (stateResult.ResultStatus == ResultStatuses.Success)
         {
@@ -86,7 +89,7 @@ namespace Csla.Blazor.WebAssembly.State
             provider.SetPrincipal(message.Principal);
           }
         }
-        else // NoResult
+        else // NoUpdates
         {
           _session = GetSession();
         }
@@ -100,7 +103,8 @@ namespace Csla.Blazor.WebAssembly.State
 
     /// <summary>
     /// Sends the current user's session from
-    /// the wasm client to the web server.
+    /// the wasm client to the web server 
+    /// if SyncContextWithServer is true.
     /// </summary>
     /// <returns></returns>
     public async Task SendSession()

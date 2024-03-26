@@ -92,7 +92,7 @@ namespace Csla.Blazor.WebAssembly.State
     /// <returns></returns>
     public async Task SendSession()
     {
-      _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+      _session.Touch();
       if (_options.SyncContextWithServer)
       {
         var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
@@ -117,7 +117,7 @@ namespace Csla.Blazor.WebAssembly.State
       else
       {
         result = [];
-        result.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        result.Touch();
       }
       return result;
     }

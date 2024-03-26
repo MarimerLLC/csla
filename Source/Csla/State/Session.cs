@@ -22,7 +22,12 @@ namespace Csla.State
     /// Gets or sets a value indicating the last
     /// time (UTC) this object was interacted with.
     /// </summary>
-    public long LastTouched { get; set; } = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+    public long LastTouched { get; private set; } = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+    /// <summary>
+    /// Indicate that the session object has been changed.
+    /// </summary>
+    public void Touch() => LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
     /// <summary>
     /// Event raised when a property has changed.

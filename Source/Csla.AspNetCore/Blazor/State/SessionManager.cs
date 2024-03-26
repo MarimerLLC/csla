@@ -33,7 +33,7 @@ namespace Csla.Blazor.State
       if (!_sessions.ContainsKey(key))
         _sessions.TryAdd(key, []);
       result = _sessions[key];
-      result.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+      result.Touch();
       return result;
     }
 
@@ -48,7 +48,7 @@ namespace Csla.Blazor.State
         var key = _sessionIdManager.GetSessionId();
         var existingSession = _sessions[key];
         Replace(newSession, existingSession);
-        existingSession.LastTouched = newSession.LastTouched;
+        existingSession.Touch();
       }
     }
 

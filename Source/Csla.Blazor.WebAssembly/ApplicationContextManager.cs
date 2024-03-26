@@ -107,7 +107,7 @@ namespace Csla.Blazor.WebAssembly
     {
       ContextDictionary localContext;
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-      var session = sessionManager.GetSession();
+      var session = sessionManager.GetCachedSession();
       session.TryGetValue("localContext", out var result);
       if (result is ContextDictionary context)
       {
@@ -128,7 +128,7 @@ namespace Csla.Blazor.WebAssembly
     public void SetLocalContext(ContextDictionary localContext)
     {
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-      var session = sessionManager.GetSession();
+      var session = sessionManager.GetCachedSession();
       session["localContext"] = localContext;
     }
 
@@ -140,7 +140,7 @@ namespace Csla.Blazor.WebAssembly
     {
       ContextDictionary clientContext;
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-      var session = sessionManager.GetSession();
+      var session = sessionManager.GetCachedSession();
       session.TryGetValue("clientContext", out var result);
       if (result is ContextDictionary context)
       {
@@ -162,7 +162,7 @@ namespace Csla.Blazor.WebAssembly
     public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-      var session = sessionManager.GetSession();
+      var session = sessionManager.GetCachedSession();
       session["clientContext"] = clientContext;
     }
 

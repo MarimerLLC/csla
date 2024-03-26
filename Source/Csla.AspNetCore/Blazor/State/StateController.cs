@@ -6,11 +6,10 @@
 // <summary>Gets and puts the current user session data</summary>
 //-----------------------------------------------------------------------
 using System.IO;
-using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Mvc;
 using Csla.State;
 using Csla.Security;
-using System;
+using Csla.Blazor.State.Messages;
 
 namespace Csla.AspNetCore.Blazor.State
 {
@@ -24,9 +23,6 @@ namespace Csla.AspNetCore.Blazor.State
   [Route("[controller]")]
   public class StateController(ApplicationContext applicationContext, ISessionManager sessionManager) : ControllerBase
   {
-    private readonly ApplicationContext ApplicationContext = applicationContext;
-    private readonly ISessionManager _sessionManager = sessionManager;
-
     /// <summary>
     /// Gets or sets a value indicating whether to flow the
     /// current user principal from the Blazor server to the
@@ -44,21 +40,21 @@ namespace Csla.AspNetCore.Blazor.State
     public virtual StateResult Get(long lastTouched)
     {
       var result = new StateResult();
-      var session = _sessionManager.GetSession();
+      var session = sessionManager.GetSession();
       if (session.LastTouched == lastTouched)
       {
         result.ResultStatus = ResultStatuses.NoUpdates;
       }
       else
       {
-        var message = (SessionMessage)ApplicationContext.CreateInstanceDI(typeof(SessionMessage));
+        var message = (SessionMessage)applicationContext.CreateInstanceDI(typeof(SessionMessage));
         message.Session = session;
         if (FlowUserIdentityToWebAssembly)
         {
-          var principal = new CslaClaimsPrincipal(ApplicationContext.Principal);
+          var principal = new CslaClaimsPrincipal(applicationContext.Principal);
           message.Principal = principal;
         }
-        var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext);
+        var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, message);
         result.ResultStatus = ResultStatuses.Success;
@@ -76,44 +72,13 @@ namespace Csla.AspNetCore.Blazor.State
     [HttpPut]
     public virtual void Put(byte[] updatedSessionData)
     {
-      var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext);
+      var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
       var buffer = new MemoryStream(updatedSessionData)
       {
         Position = 0
       };
       var session = (Session)formatter.Deserialize(buffer);
-      _sessionManager.UpdateSession(session);
+      sessionManager.UpdateSession(session);
     }
-  }
-
-  /// <summary>
-  /// Message type for communication between StateController
-  /// and the Blazor wasm client.
-  /// </summary>
-  public class StateResult
-  {
-    /// <summary>
-    /// Gets or sets the result status of the message.
-    /// </summary>
-    public ResultStatuses ResultStatus { get; set; }
-    /// <summary>
-    /// Gets or sets the serialized session data.
-    /// </summary>
-    public byte[] SessionData { get; set; }
-  }
-
-  /// <summary>
-  /// Result status values for StateResult.
-  /// </summary>
-  public enum ResultStatuses
-  {
-    /// <summary>
-    /// Success
-    /// </summary>
-    Success = 0,
-    /// <summary>
-    /// No updates
-    /// </summary>
-    NoUpdates = 1,
   }
 }

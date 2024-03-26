@@ -66,26 +66,6 @@ namespace Csla.Blazor.State
     }
 
     /// <summary>
-    /// Retrieves the current user's session from
-    /// the web server to the wasm client.
-    /// </summary>
-    public Task<Session> RetrieveSession() => throw new NotSupportedException();
-
-    /// <summary>
-    /// Sends the current user's session from
-    /// the wasm client to the web server.
-    /// </summary>
-    /// <returns></returns>
-    public Task SendSession()
-    {
-      var key = _sessionIdManager.GetSessionId();
-      var existingSession = _sessions[key];
-      if (existingSession != null)
-        _sessions[key].LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-      return Task.CompletedTask;
-    }
-
-    /// <summary>
     /// Remove all expired session data.
     /// </summary>
     /// <param name="expiration">Expiration duration</param>
@@ -99,5 +79,9 @@ namespace Csla.Blazor.State
       foreach (var key in toRemove)
         _sessions.TryRemove(key, out var x);
     }
+
+    Task<Session> ISessionManager.RetrieveSession() => throw new NotImplementedException();
+    Session ISessionManager.GetCachedSession() => throw new NotImplementedException();
+    Task ISessionManager.SendSession() => throw new NotImplementedException();
   }
 }

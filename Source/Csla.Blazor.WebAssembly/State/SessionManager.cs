@@ -11,10 +11,11 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Csla.Blazor.Authentication;
-using Csla.Configuration;
+using Csla.Blazor.WebAssembly.Configuration;
 using Csla.Serialization;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
+using Csla.Blazor.State.Messages;
 
 namespace Csla.Blazor.WebAssembly.State
 {
@@ -34,29 +35,11 @@ namespace Csla.Blazor.WebAssembly.State
     private Session _session;
 
     /// <summary>
-    /// Gets the session data for the
-    /// current user from the web server
-    /// or local cache.
+    /// Gets the current user's session from the cache.
     /// </summary>
-    public Session GetSession()
+    public Session GetCachedSession()
     {
-      if (_session == null)
-      {
-        _session ??= [];
-        _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-      }
       return _session;
-    }
-
-    /// <summary>
-    /// Updates the current user's session 
-    /// data locally.
-    /// </summary>
-    /// <param name="session">Current user session data</param>
-    public void UpdateSession(Session session)
-    {
-      _session.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-      _session = session;
     }
 
     /// <summary>
@@ -120,41 +103,27 @@ namespace Csla.Blazor.WebAssembly.State
       }
     }
 
-    /// <summary>
-    /// Remove all expired session data. Not supported on wasm.
-    /// </summary>
-    /// <param name="expiration">Expiration duration</param>
-    public void PurgeSessions(TimeSpan expiration) => throw new NotSupportedException();
-  }
 
-  /// <summary>
-  /// Message type for communication between StateController
-  /// and the Blazor wasm client.
-  /// </summary>
-  public class StateResult
-  {
     /// <summary>
-    /// Gets or sets the result status of the message.
+    /// Gets or creates the session data.
     /// </summary>
-    public ResultStatuses ResultStatus { get; set; }
-    /// <summary>
-    /// Gets or sets the serialized session data.
-    /// </summary>
-    public byte[] SessionData { get; set; }
-  }
+    private Session GetSession()
+    {
+      Session result;
+      if (_session != null)
+      {
+        result = _session;
+      }
+      else
+      {
+        result = [];
+        result.LastTouched = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+      }
+      return result;
+    }
 
-  /// <summary>
-  /// Result status values for StateResult.
-  /// </summary>
-  public enum ResultStatuses
-  {
-    /// <summary>
-    /// Success
-    /// </summary>
-    Success = 0,
-    /// <summary>
-    /// No updates
-    /// </summary>
-    NoUpdates = 1,
+    Session ISessionManager.GetSession() => throw new NotImplementedException();
+    void ISessionManager.UpdateSession(Session newSession) => throw new NotImplementedException();
+    void ISessionManager.PurgeSessions(TimeSpan expiration) => throw new NotImplementedException();
   }
 }

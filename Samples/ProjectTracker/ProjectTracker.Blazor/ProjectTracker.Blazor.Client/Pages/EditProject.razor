@@ -2,10 +2,10 @@
 @page "/editproject/{id:int}"
 @using Microsoft.AspNetCore.Components.Authorization
 @rendermode InteractiveAuto
-@implements IDisposable /* CSLA wasm pages must be IDisposable */
 
 @inject NavigationManager NavigationManager
 @inject Csla.Blazor.State.StateManager StateManager
+@inject ProjectTracker.Blazor.RenderModeProvider renderModeProvider
 @inject Csla.IDataPortal<ProjectEdit> projectEditPortal
 @inject Csla.Blazor.ViewModel<ProjectEdit> vm
 @inject Csla.ApplicationContext ApplicationContext
@@ -20,12 +20,12 @@
 @if (!IsInteractive)
 {
     <h1>Edit Project</h1>
-    <p>Loading Blazor wasm runtime...</p>
+    <p>Loading app...</p>
 }
 else if (vm.Model == null)
 {
     <h1>Edit Project</h1>
-    <p>Loading...</p>
+    <p>Loading data...</p>
 }
 else
 {
@@ -175,21 +175,18 @@ else
 
         vm.Saved += () => NavigationManager.NavigateTo("projects");
         vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
-    }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-      if (firstRender)
-      {
-        IsInteractive = true;
-        if (Id.HasValue)
-            await vm.RefreshAsync(() => projectEditPortal.FetchAsync(Id));
-        else
-            await vm.RefreshAsync(() => projectEditPortal.CreateAsync());
+        var renderMode = renderModeProvider.GetRenderMode(this);
+        if (renderMode == RenderModes.WasmInteractive || renderMode == RenderModes.ServerInteractive)
+        {
+            IsInteractive = true;
+            if (Id.HasValue)
+                await vm.RefreshAsync(() => projectEditPortal.FetchAsync(Id));
+            else
+                await vm.RefreshAsync(() => projectEditPortal.CreateAsync());
 
-        RoleList = await roleListPortal.FetchAsync();
-        StateHasChanged();
-      }
+            RoleList = await roleListPortal.FetchAsync();
+        }
     }
 
     private async Task SelectResource()
@@ -240,11 +237,5 @@ else
     private void RemoveResource(int resourceId)
     {
         vm.Model.Resources.Remove(resourceId);
-    }
-
-    public void Dispose()
-    {
-        // wasm pages _must_ save state back to server
-        StateManager.SaveState();
     }
 }

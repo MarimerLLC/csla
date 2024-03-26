@@ -1729,7 +1729,7 @@ namespace Csla
 
     /// <summary>
     /// Override this method to insert your child object
-    /// references into the MobileFormatter serialzation stream.
+    /// references into the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.
@@ -1751,7 +1751,7 @@ namespace Csla
 
     /// <summary>
     /// Override this method to retrieve your child object
-    /// references from the MobileFormatter serialzation stream.
+    /// references from the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.

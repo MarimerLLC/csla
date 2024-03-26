@@ -88,10 +88,11 @@ namespace Csla.Configuration
     public bool UseCslaPermissionsPolicy { get; set; } = true;
 
     /// <summary>
-    /// Gets or sets a value indicating whether to use the
-    /// pre-Blazor 8 in-memory context manager.
+    /// Gets or sets a value indicating whether to use a
+    /// scoped DI container to manage the ApplicationContext; 
+    /// false to use the Blazor 8 state management subsystem.
     /// </summary>
-    public bool UseInMemoryApplicationContextManager { get; set; }
+    public bool UseInMemoryApplicationContextManager { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the type of the ISessionManager service.

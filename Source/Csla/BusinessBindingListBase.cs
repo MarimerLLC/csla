@@ -594,7 +594,7 @@ namespace Csla
 
     /// <summary>
     /// Override this method to insert your field values
-    /// into the MobileFormatter serialzation stream.
+    /// into the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.
@@ -610,7 +610,7 @@ namespace Csla
 
     /// <summary>
     /// Override this method to retrieve your field values
-    /// from the MobileFormatter serialzation stream.
+    /// from the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.

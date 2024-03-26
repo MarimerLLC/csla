@@ -1,6 +1,8 @@
 using Csla.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ProjectTracker.Blazor;
 using ProjectTracker.Blazor.Components;
 using ProjectTracker.Configuration;
 
@@ -18,13 +20,18 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
   .AddCookie();
 builder.Services.AddCascadingAuthenticationState();
 
+// Add render mode detection services
+builder.Services.AddTransient<RenderModeProvider>();
+builder.Services.AddScoped<ActiveCircuitState>();
+builder.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
+
 // CSLA requires AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();
 
 // Add CSLA
 builder.Services.AddCsla(o => o
   .AddAspNetCore()
-  .AddServerSideBlazor());
+  .AddServerSideBlazor(ssb => ssb.UseInMemoryApplicationContextManager = false));
 
 builder.Services.AddDalMock();
 //builder.Services.AddDalEfCore();

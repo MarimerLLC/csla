@@ -122,6 +122,7 @@ namespace Csla.Blazor.WebAssembly.State
       return result;
     }
 
+    // server-side methods
     Session ISessionManager.GetSession() => throw new NotImplementedException();
     void ISessionManager.UpdateSession(Session newSession) => throw new NotImplementedException();
     void ISessionManager.PurgeSessions(TimeSpan expiration) => throw new NotImplementedException();

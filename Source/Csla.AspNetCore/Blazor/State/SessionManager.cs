@@ -80,6 +80,7 @@ namespace Csla.Blazor.State
         _sessions.TryRemove(key, out var x);
     }
 
+    // wasm client-side methods
     Task<Session> ISessionManager.RetrieveSession() => throw new NotImplementedException();
     Session ISessionManager.GetCachedSession() => throw new NotImplementedException();
     Task ISessionManager.SendSession() => throw new NotImplementedException();

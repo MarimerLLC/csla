@@ -91,7 +91,7 @@ namespace Csla.Configuration
     /// Gets or sets a value indicating whether to use the
     /// pre-Blazor 8 in-memory context manager.
     /// </summary>
-    public bool UseInMemoryApplicationContextManager { get; set; }
+    public bool UseInMemoryApplicationContextManager { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the type of the ISessionManager service.

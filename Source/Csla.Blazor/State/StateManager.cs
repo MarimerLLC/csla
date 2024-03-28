@@ -6,7 +6,6 @@
 // <summary>Get and save state from Blazor pages</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using Csla.State;
 
@@ -50,40 +49,6 @@ namespace Csla.Blazor.State
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
         session = await _sessionManager.RetrieveSession();
-      else
-        session = await WaitForState(timeout);
-    }
-
-    /// <summary>
-    /// Waits for state to be available as it is transferred
-    /// from Blazor wasm to the web server.
-    /// </summary>
-    /// <param name="timeout">Time to wait before timing out</param>
-    private async Task<Session> WaitForState(TimeSpan timeout)
-    {
-      TaskCompletionSource tcs;
-      var session = _sessionManager.GetSession();
-      if (session.IsCheckedOut)
-      {
-        tcs = new TaskCompletionSource();
-        try
-        {
-          session.PropertyChanged += HandleIsCheckedOutChanged;
-          if (session.IsCheckedOut)
-            await tcs.Task.WaitAsync(timeout);
-        }
-        finally
-        {
-          session.PropertyChanged -= HandleIsCheckedOutChanged;
-        }
-      }
-      return session;
-
-      void HandleIsCheckedOutChanged(object sender, PropertyChangedEventArgs e) 
-      {
-        if (e.PropertyName == "IsCheckedOut" && !session.IsCheckedOut && !tcs.Task.IsCompleted)
-          tcs.SetResult();
-      }
     }
 
     /// <summary>

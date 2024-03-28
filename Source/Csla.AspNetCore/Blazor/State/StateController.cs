@@ -6,10 +6,10 @@
 // <summary>Gets and puts the current user session data</summary>
 //-----------------------------------------------------------------------
 using System.IO;
-using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Mvc;
 using Csla.State;
 using Csla.Security;
+using Csla.Blazor.State.Messages;
 
 namespace Csla.AspNetCore.Blazor.State
 {
@@ -23,9 +23,6 @@ namespace Csla.AspNetCore.Blazor.State
   [Route("[controller]")]
   public class StateController(ApplicationContext applicationContext, ISessionManager sessionManager) : ControllerBase
   {
-    private readonly ApplicationContext ApplicationContext = applicationContext;
-    private readonly ISessionManager _sessionManager = sessionManager;
-
     /// <summary>
     /// Gets or sets a value indicating whether to flow the
     /// current user principal from the Blazor server to the
@@ -37,23 +34,33 @@ namespace Csla.AspNetCore.Blazor.State
     /// Gets current user session data in a serialized
     /// format.
     /// </summary>
+    /// <param name="lastTouched">Last touched value from session</param>
     /// <returns></returns>
     [HttpGet]
-    public virtual byte[] Get()
+    public virtual StateResult Get(long lastTouched)
     {
-      var session = _sessionManager.GetSession();
-      session.IsCheckedOut = true;
-      var message = (SessionMessage)ApplicationContext.CreateInstanceDI(typeof(SessionMessage));
-      message.Session = session;
-      if (FlowUserIdentityToWebAssembly)
+      var result = new StateResult();
+      var session = sessionManager.GetSession();
+      if (session.LastTouched == lastTouched)
       {
-        var principal = new CslaClaimsPrincipal(ApplicationContext.Principal);
-        message.Principal = principal;
+        result.ResultStatus = ResultStatuses.NoUpdates;
       }
-      var formatter = new MobileFormatter(ApplicationContext);
-      var buffer = new MemoryStream();
-      formatter.Serialize(buffer, message);
-      return buffer.ToArray();
+      else
+      {
+        var message = (SessionMessage)applicationContext.CreateInstanceDI(typeof(SessionMessage));
+        message.Session = session;
+        if (FlowUserIdentityToWebAssembly)
+        {
+          var principal = new CslaClaimsPrincipal(applicationContext.Principal);
+          message.Principal = principal;
+        }
+        var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
+        var buffer = new MemoryStream();
+        formatter.Serialize(buffer, message);
+        result.ResultStatus = ResultStatuses.Success;
+        result.SessionData = buffer.ToArray();
+      }
+      return result;
     }
 
     /// <summary>
@@ -65,25 +72,13 @@ namespace Csla.AspNetCore.Blazor.State
     [HttpPut]
     public virtual void Put(byte[] updatedSessionData)
     {
-      var formatter = new MobileFormatter(ApplicationContext);
+      var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
       var buffer = new MemoryStream(updatedSessionData)
       {
         Position = 0
       };
       var session = (Session)formatter.Deserialize(buffer);
-      session.IsCheckedOut = false;
-      _sessionManager.UpdateSession(session);
-    }
-
-    /// <summary>
-    /// Sets the current user session data as checked out,
-    /// indicating that it is in use by a Blazor wasm client.
-    /// </summary>
-    [HttpPatch]
-    public virtual void Patch()
-    {
-      var session = _sessionManager.GetSession();
-      session.IsCheckedOut = true;
+      sessionManager.UpdateSession(session);
     }
   }
 }

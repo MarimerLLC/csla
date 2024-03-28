@@ -15,8 +15,5 @@ namespace ProjectTracker.AppServer.Controllers
   public class CslaStateController(ApplicationContext applicationContext, ISessionManager sessionManager) :
       Csla.AspNetCore.Blazor.State.StateController(applicationContext, sessionManager)
   {
-    public override byte[] Get() => base.Get();
-
-    public override void Put(byte[] updatedSessionData) => base.Put(updatedSessionData);
   }
 }

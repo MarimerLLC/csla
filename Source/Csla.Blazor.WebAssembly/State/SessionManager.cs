@@ -11,10 +11,11 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Csla.Blazor.Authentication;
-using Csla.Configuration;
-using Csla.Serialization.Mobile;
+using Csla.Blazor.WebAssembly.Configuration;
+using Csla.Serialization;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
+using Csla.Blazor.State.Messages;
 
 namespace Csla.Blazor.WebAssembly.State
 {
@@ -34,41 +35,32 @@ namespace Csla.Blazor.WebAssembly.State
     private Session _session;
 
     /// <summary>
-    /// Gets the session data for the
-    /// current user from the web server
-    /// or local cache.
+    /// Gets the current user's session from the cache.
     /// </summary>
-    public Session GetSession()
+    public Session GetCachedSession()
     {
-      _session ??= [];
-      _session.LastTouched = DateTimeOffset.UtcNow;
       return _session;
     }
 
     /// <summary>
-    /// Updates the current user's session 
-    /// data locally and on the web server.
-    /// </summary>
-    /// <param name="session">Current user session data</param>
-    public void UpdateSession(Session session)
-    {
-      _session.LastTouched = DateTimeOffset.UtcNow;
-      _session = session;
-    }
-
-    /// <summary>
     /// Retrieves the current user's session from
-    /// the web server to the wasm client.
+    /// the web server to the wasm client
+    /// if SyncContextWithServer is true.
     /// </summary>
     public async Task<Session> RetrieveSession()
     {
       if (_options.SyncContextWithServer)
       {
-        if (_session == null)
+        long lastTouched = 0;
+        if (_session != null)
+          lastTouched = _session.LastTouched;
+        var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
+
+        var stateResult = await client.GetFromJsonAsync<StateResult>(url);
+        if (stateResult.ResultStatus == ResultStatuses.Success)
         {
-          var result = await client.GetFromJsonAsync<byte[]>(_options.StateControllerName);
-          var formatter = new MobileFormatter(ApplicationContext);
-          var buffer = new MemoryStream(result)
+          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+          var buffer = new MemoryStream(stateResult.SessionData)
           {
             Position = 0
           };
@@ -80,30 +72,30 @@ namespace Csla.Blazor.WebAssembly.State
             provider.SetPrincipal(message.Principal);
           }
         }
-        else
+        else // NoUpdates
         {
-          await client.PatchAsync(_options.StateControllerName, null);
+          _session = GetSession();
         }
       }
       else
       {
         _session = GetSession();
       }
-      _session.LastTouched = DateTimeOffset.UtcNow;
       return _session;
     }
 
     /// <summary>
     /// Sends the current user's session from
-    /// the wasm client to the web server.
+    /// the wasm client to the web server 
+    /// if SyncContextWithServer is true.
     /// </summary>
     /// <returns></returns>
     public async Task SendSession()
     {
+      _session.Touch();
       if (_options.SyncContextWithServer)
       {
-        _session.LastTouched = DateTimeOffset.UtcNow;
-        var formatter = new MobileFormatter(ApplicationContext);
+        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);
         buffer.Position = 0;
@@ -111,10 +103,28 @@ namespace Csla.Blazor.WebAssembly.State
       }
     }
 
+
     /// <summary>
-    /// Remove all expired session data. Not supported on wasm.
+    /// Gets or creates the session data.
     /// </summary>
-    /// <param name="expiration">Expiration duration</param>
-    public void PurgeSessions(TimeSpan expiration) => throw new NotSupportedException();
+    private Session GetSession()
+    {
+      Session result;
+      if (_session != null)
+      {
+        result = _session;
+      }
+      else
+      {
+        result = [];
+        result.Touch();
+      }
+      return result;
+    }
+
+    // server-side methods
+    Session ISessionManager.GetSession() => throw new NotImplementedException();
+    void ISessionManager.UpdateSession(Session newSession) => throw new NotImplementedException();
+    void ISessionManager.PurgeSessions(TimeSpan expiration) => throw new NotImplementedException();
   }
 }

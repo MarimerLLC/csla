@@ -33,7 +33,7 @@ namespace Csla.Blazor.State
       if (!_sessions.ContainsKey(key))
         _sessions.TryAdd(key, []);
       result = _sessions[key];
-      result.LastTouched = DateTimeOffset.UtcNow;
+      result.Touch();
       return result;
     }
 
@@ -48,8 +48,7 @@ namespace Csla.Blazor.State
         var key = _sessionIdManager.GetSessionId();
         var existingSession = _sessions[key];
         Replace(newSession, existingSession);
-        existingSession.LastTouched = DateTimeOffset.UtcNow;
-        existingSession.IsCheckedOut = false;
+        existingSession.Touch();
       }
     }
 
@@ -67,25 +66,12 @@ namespace Csla.Blazor.State
     }
 
     /// <summary>
-    /// Retrieves the current user's session from
-    /// the web server to the wasm client.
-    /// </summary>
-    public Task<Session> RetrieveSession() => throw new NotSupportedException();
-
-    /// <summary>
-    /// Sends the current user's session from
-    /// the wasm client to the web server.
-    /// </summary>
-    /// <returns></returns>
-    public Task SendSession() => throw new NotSupportedException();
-
-    /// <summary>
     /// Remove all expired session data.
     /// </summary>
     /// <param name="expiration">Expiration duration</param>
     public void PurgeSessions(TimeSpan expiration)
     {
-      var expirationTime = DateTimeOffset.UtcNow - expiration;
+      var expirationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - expiration.TotalSeconds;
       List<string> toRemove = [];
       foreach (var session in _sessions)
         if (session.Value.LastTouched < expirationTime)
@@ -93,5 +79,10 @@ namespace Csla.Blazor.State
       foreach (var key in toRemove)
         _sessions.TryRemove(key, out var x);
     }
+
+    // wasm client-side methods
+    Task<Session> ISessionManager.RetrieveSession() => throw new NotImplementedException();
+    Session ISessionManager.GetCachedSession() => throw new NotImplementedException();
+    Task ISessionManager.SendSession() => throw new NotImplementedException();
   }
 }

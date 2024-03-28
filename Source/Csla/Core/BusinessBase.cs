@@ -1336,7 +1336,7 @@ namespace Csla.Core
 
     IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
     {
-      return BusinessRules.GetBrokenRules().Where(r => r.Property == propertyName).Select(r => r.Description);
+      return BusinessRules.GetBrokenRules().Where(r => r.Property == propertyName && r.Severity == RuleSeverity.Error).Select(r => r.Description);
     }
 
     bool INotifyDataErrorInfo.HasErrors => !IsSelfValid;
@@ -3532,7 +3532,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Override this method to insert your field values
-    /// into the MobileFormatter serialzation stream.
+    /// into the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.
@@ -3556,7 +3556,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Override this method to retrieve your field values
-    /// from the MobileFormatter serialzation stream.
+    /// from the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.
@@ -3581,7 +3581,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Override this method to insert your child object
-    /// references into the MobileFormatter serialzation stream.
+    /// references into the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.
@@ -3611,7 +3611,7 @@ namespace Csla.Core
 
     /// <summary>
     /// Override this method to retrieve your child object
-    /// references from the MobileFormatter serialzation stream.
+    /// references from the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.

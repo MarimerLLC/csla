@@ -298,7 +298,6 @@ namespace cslalighttest.BusyStatus
       context.Complete();
     }
 
-
     [TestMethod]
     public void ListTestSaveWhileNotBusyNoActiveRuleNetOnly()
     {
@@ -314,6 +313,18 @@ namespace cslalighttest.BusyStatus
       context.Assert.AreEqual("DataPortal_Update", items[0].OperationResult);
       context.Assert.Success();
       context.Complete();
+    }
+
+    [TestMethod]
+    public async Task WaitForIdle_WhenBusyWillWaitUntilNotBusyAnymore() {
+      IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
+
+      UnitTestContext context = GetContext();
+      var item = await dataPortal.FetchAsync("an id");
+      item.RuleField = "some value";
+      await item.WaitForIdle(TimeSpan.FromSeconds(60)); // Timeout should _never_ happen
+
+      Assert.IsFalse(item.IsBusy, $"{nameof(ItemWithAsynchRule.IsBusy)} is still true even though we waited with {nameof(ItemWithAsynchRule.WaitForIdle)}.");
     }
   }
 }

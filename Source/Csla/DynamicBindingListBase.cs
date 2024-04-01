@@ -571,13 +571,7 @@ namespace Csla
     /// <returns></returns>
     public async Task WaitForIdle(TimeSpan timeout)
     {
-      var endTime = DateTime.Now + timeout;
-      while (IsBusy)
-      {
-        if (DateTime.Now > endTime)
-          throw new TimeoutException($"{this.GetType().FullName}.WaitForIdle");
-        await Task.Delay(1);
-      }
+      await BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>

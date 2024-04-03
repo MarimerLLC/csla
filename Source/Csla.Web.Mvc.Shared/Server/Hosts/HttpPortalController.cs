@@ -207,7 +207,7 @@ namespace Csla.Server.Hosts
       SetHttpResponseHeaders(Response);
       try
       {
-        var request = serializer.Deserialize(requestStream);
+        var request = await DeserializeRequestBody(requestStream, serializer);
         result = await CallPortal(operation, request);
       }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -219,7 +219,8 @@ namespace Csla.Server.Hosts
       var portalResult = ApplicationContext.CreateInstanceDI<DataPortalResponse>();
       portalResult.ErrorData = errorData;
       portalResult.ObjectData = result.ObjectData;
-      serializer.Serialize(responseStream, portalResult);
+
+      await SerializeToResponse(portalResult, responseStream, serializer);
     }
 
     private async Task InvokeTextPortal(string operation, Stream requestStream, Stream responseStream)
@@ -298,6 +299,20 @@ namespace Csla.Server.Hosts
         _ => throw new InvalidOperationException(operation),
       };
       return result;
+    }
+
+    private async Task<object> DeserializeRequestBody(Stream requestBody, ISerializationFormatter serializer) {
+      using var requestBodyBuffer = new MemoryStream();
+      await requestBody.CopyToAsync(requestBodyBuffer).ConfigureAwait(false);
+      requestBodyBuffer.Seek(0, SeekOrigin.Begin);
+      return serializer.Deserialize(requestBodyBuffer);
+    }
+
+    private async Task SerializeToResponse(DataPortalResponse portalResult, Stream responseStream, ISerializationFormatter serializer) {
+      using var responseBodyBuffer = new MemoryStream();
+      serializer.Serialize(responseBodyBuffer, portalResult);
+      responseBodyBuffer.Seek(0, SeekOrigin.Begin);
+      await responseBodyBuffer.CopyToAsync(responseStream).ConfigureAwait(false);
     }
   }
 }

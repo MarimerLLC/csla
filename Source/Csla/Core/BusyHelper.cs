@@ -38,9 +38,8 @@ namespace Csla.Core {
         source.BusyChanged -= ObserverForIsBusyChange;
       }
 
-      void ObserverForIsBusyChange(object sender, BusyChangedEventArgs e) {
-        // e.PropertyName == string.Empty means CSLA itself raised the busy-changed event
-        if (!source.IsBusy && !e.Busy && (string.IsNullOrEmpty(e.PropertyName) || e.PropertyName == nameof(INotifyBusy.IsBusy))) {
+      void ObserverForIsBusyChange(object sender, BusyChangedEventArgs e) {        
+        if (!source.IsBusy && !e.Busy) {
           tcs.TrySetResult(null);
         }
       }

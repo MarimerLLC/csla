@@ -18,7 +18,7 @@
     <dependencies>
       <group targetFramework="netstandard2.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="System.Data.SqlClient" version="4.8.3" />    
+        <dependency id="System.Data.SqlClient" version="4.8.6" />    
       </group>
     </dependencies>
   </metadata>

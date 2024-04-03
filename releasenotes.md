@@ -24,12 +24,13 @@ CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.
 * [#3676](https://github.com/MarimerLLC/csla/issues/3676) Fix spin waiting for rule completion at the server
 * [#3668](https://github.com/MarimerLLC/csla/issues/3668) Fixed: Blazor ViewModel Save doesn't call begin edit after save
 * [#3395](https://github.com/MarimerLLC/csla/issues/3395) Update unit tests for CSLA 8
-
 * Numerous updates to dependencies
 
 ### Change List
 
-* [Changes in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3Amarimerllc%2F9+)
+**Full Changelog**: https://github.com/MarimerLLC/csla/compare/v7.0.3...v8.0.0
+
+* [Issues closed in this release](https://github.com/MarimerLLC/csla/issues?q=is%3Aclosed+project%3Amarimerllc%2F9+)
 
 ### Contributors
 
@@ -37,9 +38,11 @@ CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.
 * @michaelcsikos
 * mtavares628
 * @ossendorf-at-hoelscher / @StefanOssendorf
+* @prodinfo
 * @rockfordlhotka
 * @russblair
 * @swegele
 * @TanguyIngels
+* @tony20221
 
 Thank you all so much for your support!

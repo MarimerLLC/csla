@@ -97,11 +97,11 @@ namespace Csla.Channels.Http
     /// <summary>
     /// Select client to make request based on isSync parameter and return response from server
     /// </summary>
-    /// <param name="serialized">Serialised request</param>
+    /// <param name="serialized">Serialized request</param>
     /// <param name="operation">DataPortal operation</param>
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    /// <returns>Serialised response from server</returns>
+    /// <returns>Serialized response from server</returns>
     protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
       return isSync
@@ -121,7 +121,7 @@ namespace Csla.Channels.Http
     /// Override to set headers or other properties of the
     /// WebClient before it is sent to the server.
     /// </summary>
-    /// <param name=client">WebClient instance</param>
+    /// <param name="client">WebClient instance</param>
     protected virtual void SetWebClientHeaders(WebClient client)
     { }
 

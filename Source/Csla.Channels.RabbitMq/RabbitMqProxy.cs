@@ -211,11 +211,11 @@ namespace Csla.Channels.RabbitMq
     /// Create message and send to Rabbit MQ server.
     /// Return Response from server
     /// </summary>
-    /// <param name="serialized">Serialised request</param>
+    /// <param name="serialized">Serialized request</param>
     /// <param name="operation">DataPortal operation</param>
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    /// <returns>Serialised response from server</returns>
+    /// <returns>Serialized response from server</returns>
     protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
       var correlationId = Guid.NewGuid().ToString();

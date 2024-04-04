@@ -26,11 +26,6 @@
         <dependency id="Microsoft.Extensions.Hosting" version="6.0.0" />
         <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="6.0.0" />
       </group>
-      <group targetFramework="net7.0-windows10.0.19041.0">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.Extensions.Hosting" version="7.0.1" />
-        <dependency id="Microsoft.Extensions.Hosting.Abstractions" version="7.0.0" />
-      </group>
       <group targetFramework="net8.0-windows10.0.19041">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.Extensions.Hosting" version="8.0.0" />
@@ -41,8 +36,6 @@
   <files>
      <!-- net8.0-windows Assembly -->
     <file src="..\..\bin\Release\net8.0-windows\**\Csla.Windows.*" target="lib\net8.0-windows10.0.19041.0" />
-     <!-- net7.0-windows10.0.19041.0 Assembly -->
-    <file src="..\..\bin\Release\net7.0-windows10.0.19041.0\**\Csla.Windows.*" target="lib\net7.0-windows10.0.19041.0" />
      <!-- net6.0-windows10.0.19041.0 Assembly -->
     <file src="..\..\bin\Release\net6.0-windows10.0.19041.0\**\Csla.Windows.*" target="lib\net6.0-windows10.0.19041.0" />
     <!-- .NET 4.6 Client -->

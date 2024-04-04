@@ -117,6 +117,14 @@ namespace Csla.Channels.Http
     protected virtual void SetHttpRequestHeaders(HttpRequestMessage request)
     { }
 
+    /// <summary>
+    /// Override to set headers or other properties of the
+    /// WebClient before it is sent to the server.
+    /// </summary>
+    /// <param name=client">WebClient instance</param>
+    protected virtual void SetWebClientHeaders(WebClient client)
+    { }
+
     private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
     {
       HttpClient client = GetHttpClient();
@@ -124,6 +132,7 @@ namespace Csla.Channels.Http
       httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
+      httpRequest.Headers.Add("Content-Type", Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream");
       SetHttpRequestHeaders(httpRequest);
       if (Options.UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
@@ -146,6 +155,8 @@ namespace Csla.Channels.Http
       }
       WebClient client = GetWebClient();
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}";
+      client.Headers.Add("Content-Type", Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream");
+      SetWebClientHeaders(client);
       try
       {
         if (Options.UseTextSerialization)

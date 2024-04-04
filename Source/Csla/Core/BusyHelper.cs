@@ -13,33 +13,42 @@ namespace Csla.Core {
   /// <summary>
   /// Helper class for busy related functionality spread across different business type implementations.
   /// </summary>
-  internal static class BusyHelper {
-    public static async Task WaitForIdle(INotifyBusy source, TimeSpan timeout, [CallerMemberName] string methodName = "") {
-      if (!source.IsBusy) {
+  internal static class BusyHelper 
+  {
+    public static async Task WaitForIdle(INotifyBusy source, TimeSpan timeout, [CallerMemberName] string methodName = "") 
+    {
+      if (!source.IsBusy) 
+      {
         return;
       }
 
       var tcs = new TaskCompletionSource<object>();
-      try {
+      try 
+      {
         source.BusyChanged += ObserverForIsBusyChange;
 
-        if (!source.IsBusy) {
+        if (!source.IsBusy) 
+        {
           return;
         }
 
         var timeoutTask = Task.Delay(timeout);
         var finishedTask = await Task.WhenAny(tcs.Task, timeoutTask).ConfigureAwait(false);
 
-        if (finishedTask == timeoutTask) {
+        if (finishedTask == timeoutTask)
+        {
           throw new TimeoutException($"{source.GetType().FullName}.{methodName} after {timeout}.");
         }
       }
-      finally {
+      finally 
+      {
         source.BusyChanged -= ObserverForIsBusyChange;
       }
 
-      void ObserverForIsBusyChange(object sender, BusyChangedEventArgs e) {        
-        if (!source.IsBusy && !e.Busy) {
+      void ObserverForIsBusyChange(object sender, BusyChangedEventArgs e)
+      {
+        if (!source.IsBusy && !e.Busy) 
+        {
           tcs.TrySetResult(null);
         }
       }

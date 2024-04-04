@@ -59,8 +59,8 @@ namespace Csla.Server
         obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkNew();
-        await obj.CreateAsync(criteria, isSync);
-        await obj.WaitForIdle();
+        await obj.CreateAsync(criteria, isSync).ConfigureAwait(false);
+        await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -118,8 +118,8 @@ namespace Csla.Server
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
-        await obj.FetchAsync(criteria, isSync);
-        await obj.WaitForIdle();
+        await obj.FetchAsync(criteria, isSync).ConfigureAwait(false);
+        await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -161,8 +161,8 @@ namespace Csla.Server
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
-        await obj.ExecuteAsync(criteria, isSync);
-        await obj.WaitForIdle();
+        await obj.ExecuteAsync(criteria, isSync).ConfigureAwait(false);
+        await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -217,8 +217,8 @@ namespace Csla.Server
       {
         Activator.InitializeInstance(lb.Instance);
         lb.OnDataPortalInvoke(eventArgs);
-        await lb.UpdateAsync(isSync);
-        await lb.WaitForIdle();
+        await lb.UpdateAsync(isSync).ConfigureAwait(false);
+        await lb.WaitForIdle().ConfigureAwait(false);
         lb.ThrowIfBusy();
         lb.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, lb.Instance);
@@ -256,8 +256,8 @@ namespace Csla.Server
       {
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
-        await obj.ExecuteAsync(isSync);
-        await obj.WaitForIdle();
+        await obj.ExecuteAsync(isSync).ConfigureAwait(false);
+        await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -306,8 +306,8 @@ namespace Csla.Server
         obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
-        await obj.DeleteAsync(criteria, isSync);
-        await obj.WaitForIdle();
+        await obj.DeleteAsync(criteria, isSync).ConfigureAwait(false);
+        await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult {  ApplicationContext = ApplicationContext };

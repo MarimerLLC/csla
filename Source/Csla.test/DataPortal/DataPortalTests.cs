@@ -374,22 +374,27 @@ namespace Csla.Test.DataPortal
     }
 
     [Create]
-    protected void Create() {
+    protected void Create() 
+    {
       RuleTrigger = Guid.NewGuid().ToString();
     }
 
-    protected override void AddBusinessRules() {
+    protected override void AddBusinessRules() 
+    {
       base.AddBusinessRules();
 
       BusinessRules.AddRule(new TwoSecondAsyncRule(RuleTriggerProperty));
     }
 
-    private sealed class TwoSecondAsyncRule : BusinessRuleAsync {
-      public TwoSecondAsyncRule(IPropertyInfo primaryProperty) : base(primaryProperty) {
+    private sealed class TwoSecondAsyncRule : BusinessRuleAsync 
+    {
+      public TwoSecondAsyncRule(IPropertyInfo primaryProperty) : base(primaryProperty) 
+      {
       }
 
       /// <inheritdoc />
-      protected override async Task ExecuteAsync(IRuleContext context) {
+      protected override async Task ExecuteAsync(IRuleContext context) 
+      {
         await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
       }
     }

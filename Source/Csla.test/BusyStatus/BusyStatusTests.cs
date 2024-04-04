@@ -317,7 +317,8 @@ namespace cslalighttest.BusyStatus
     }
 
     [TestMethod]
-    public async Task WaitForIdle_WhenBusyWillWaitUntilNotBusyAnymore() {
+    public async Task WaitForIdle_WhenBusyWillWaitUntilNotBusyAnymore() 
+    {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
       UnitTestContext context = GetContext();
@@ -330,7 +331,8 @@ namespace cslalighttest.BusyStatus
     }
 
     [TestMethod]
-    public async Task WaitForIdle_WhenReachingTheTimeoutATimeoutExceptionIsThrown() {
+    public async Task WaitForIdle_WhenReachingTheTimeoutATimeoutExceptionIsThrown() 
+    {
 
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 

@@ -99,11 +99,11 @@ namespace Csla.Server
     {
       if (obj is IDataPortalTarget target) 
       {
-        await target.WaitForIdle(timeout);
+        await target.WaitForIdle(timeout).ConfigureAwait(false);
       }
       else if(obj is INotifyBusy notifyBusy) 
       {
-        await BusyHelper.WaitForIdle(notifyBusy, timeout);
+        await BusyHelper.WaitForIdle(notifyBusy, timeout).ConfigureAwait(false);
       }
       else 
       {

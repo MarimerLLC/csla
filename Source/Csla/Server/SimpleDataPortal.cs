@@ -60,6 +60,7 @@ namespace Csla.Server
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkNew();
         await obj.CreateAsync(criteria, isSync);
+        await obj.WaitForIdle();
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -118,6 +119,7 @@ namespace Csla.Server
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
         await obj.FetchAsync(criteria, isSync);
+        await obj.WaitForIdle();
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -160,6 +162,7 @@ namespace Csla.Server
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
         await obj.ExecuteAsync(criteria, isSync);
+        await obj.WaitForIdle();
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -215,6 +218,7 @@ namespace Csla.Server
         Activator.InitializeInstance(lb.Instance);
         lb.OnDataPortalInvoke(eventArgs);
         await lb.UpdateAsync(isSync);
+        await lb.WaitForIdle();
         lb.ThrowIfBusy();
         lb.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, lb.Instance);
@@ -253,6 +257,7 @@ namespace Csla.Server
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.ExecuteAsync(isSync);
+        await obj.WaitForIdle();
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(ApplicationContext, obj.Instance);
@@ -302,6 +307,7 @@ namespace Csla.Server
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.DeleteAsync(criteria, isSync);
+        await obj.WaitForIdle();
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult {  ApplicationContext = ApplicationContext };

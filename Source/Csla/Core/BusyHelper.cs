@@ -28,7 +28,7 @@ namespace Csla.Core {
         }
 
         var timeoutTask = Task.Delay(timeout);
-        var finishedTask = await Task.WhenAny(tcs.Task, timeoutTask);
+        var finishedTask = await Task.WhenAny(tcs.Task, timeoutTask).ConfigureAwait(false);
 
         if (finishedTask == timeoutTask) {
           throw new TimeoutException($"{source.GetType().FullName}.{methodName} after {timeout}.");

@@ -79,6 +79,39 @@ namespace Csla.Server
     }
 
     /// <summary>
+    /// Calls the WaitForIdle() method on the specified object with the default timeout, if possible.
+    /// </summary>
+    /// <param name="obj">Object on which to call the method.</param>
+    /// <returns>void</returns>
+    protected async Task WaitForIdle(object obj) 
+    {
+      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds));
+    }
+
+    /// <summary>
+    /// Calls the WaitForIdle() method on the specified object with the given timeout, if possible.
+    /// </summary>
+    /// <param name="obj">Object on which to call the method.</param>
+    /// <param name="timeout">The timeout.</param>
+    /// <returns>void</returns>
+    protected async Task WaitForIdle(object obj, TimeSpan timeout) 
+    {
+      if (obj is IDataPortalTarget target) 
+      {
+        await target.WaitForIdle(timeout);
+      }
+      else if(obj is INotifyBusy notifyBusy) 
+      {
+        await BusyHelper.WaitForIdle(notifyBusy, timeout);
+      }
+      else 
+      {
+        MethodCaller.CallMethodIfImplemented(obj, nameof(IDataPortalTarget.WaitForIdle), timeout);
+      }
+    }
+
+    /// <summary>
     /// Calls the MarkOld method on the specified
     /// object, if possible.
     /// </summary>

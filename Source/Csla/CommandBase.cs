@@ -158,6 +158,8 @@ namespace Csla
 
     Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
+    Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => Task.CompletedTask;
+
     void IDataPortalTarget.MarkAsChild()
     { }
 

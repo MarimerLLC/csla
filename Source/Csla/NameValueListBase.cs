@@ -331,6 +331,8 @@ namespace Csla
 
     Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }
 

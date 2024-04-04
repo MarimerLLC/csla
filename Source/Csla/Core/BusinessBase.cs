@@ -3431,7 +3431,9 @@ namespace Csla.Core
       BusinessRules.CheckRules();
     }
 
-    async Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => await BusinessRules.CheckRulesAsync();
+    async Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => await BusinessRules.CheckRulesAsync().ConfigureAwait(false);
+
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     {

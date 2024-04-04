@@ -73,7 +73,7 @@ namespace Csla.Server
     {
       var target = obj as IDataPortalTarget;
       if (target != null)
-        await target.CheckRulesAsync();
+        await target.CheckRulesAsync().ConfigureAwait(false);
       else
         MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
     }
@@ -86,7 +86,7 @@ namespace Csla.Server
     protected async Task WaitForIdle(object obj) 
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
-      await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds));
+      await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
     }
 
     /// <summary>

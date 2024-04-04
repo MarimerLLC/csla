@@ -155,7 +155,7 @@ namespace Csla.Channels.Http
       }
       WebClient client = GetWebClient();
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}";
-      client.Headers.Add("Content-Type", Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream");
+      client.Headers["Content-Type"] = Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream";
       SetWebClientHeaders(client);
       try
       {

@@ -73,8 +73,8 @@ namespace Csla.Core.FieldManager
 #if NET5_0_OR_GREATER
       var list = cache.GetOrAdd(objectType, type => 
       {
-        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, new PropertyInfoList(), OnAssemblyLoadContextUnload);
-        FieldDataManager.ForceStaticFieldInit(objectType);
+        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(type, new PropertyInfoList(), OnAssemblyLoadContextUnload);
+        FieldDataManager.ForceStaticFieldInit(type);
         return cacheInstance;
       }).Item2;
 #else

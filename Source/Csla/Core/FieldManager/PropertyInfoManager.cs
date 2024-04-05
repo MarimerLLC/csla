@@ -6,6 +6,7 @@
 // <summary>Indicates that the specified property belongs</summary>
 //-----------------------------------------------------------------------
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 #if NET5_0_OR_GREATER
@@ -36,13 +37,13 @@ namespace Csla.Core.FieldManager
     private static object _cacheLock = new object();
 
 #if NET5_0_OR_GREATER
-    private static Dictionary<Type, Tuple<string, PropertyInfoList>> _propertyInfoCache;
+    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> _propertyInfoCache;
 
-    private static Dictionary<Type, Tuple<string, PropertyInfoList>> PropertyInfoCache
+    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> PropertyInfoCache
 #else
-    private static Dictionary<Type, PropertyInfoList> _propertyInfoCache;
+    private static ConcurrentDictionary<Type, PropertyInfoList> _propertyInfoCache;
 
-    private static Dictionary<Type, PropertyInfoList> PropertyInfoCache
+    private static ConcurrentDictionary<Type, PropertyInfoList> PropertyInfoCache
 #endif
     {
       get
@@ -53,10 +54,10 @@ namespace Csla.Core.FieldManager
           {
 #if NET5_0_OR_GREATER
             if (_propertyInfoCache == null)
-              _propertyInfoCache = new Dictionary<Type, Tuple<string, PropertyInfoList>>();
+              _propertyInfoCache = new ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>>();
 #else
             if (_propertyInfoCache == null)
-              _propertyInfoCache = new Dictionary<Type, PropertyInfoList>();
+              _propertyInfoCache = new ConcurrentDictionary<Type, PropertyInfoList>();
 #endif
           }
         }
@@ -70,47 +71,18 @@ namespace Csla.Core.FieldManager
       var cache = PropertyInfoCache;
 
 #if NET5_0_OR_GREATER
-      var found = cache.TryGetValue(objectType, out var listInfo);
-
-      var list = listInfo?.Item2;
-
-      if (!found)
+      var list = cache.GetOrAdd(objectType, type => 
       {
-        lock (cache)
-        {
-          found = cache.TryGetValue(objectType, out listInfo);
-
-          if (!found)
-          {
-            list = new PropertyInfoList();
-
-            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, list, OnAssemblyLoadContextUnload);
-
-            cache.Add(objectType, cacheInstance);
-
-            FieldDataManager.ForceStaticFieldInit(objectType);
-          }
-        }
-      }
+        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, new PropertyInfoList(), OnAssemblyLoadContextUnload);
+        FieldDataManager.ForceStaticFieldInit(objectType);
+        return cacheInstance;
+      }).Item2;
 #else
-      var found = cache.TryGetValue(objectType, out PropertyInfoList list);
-
-      if (!found)
+      var list = cache.GetOrAdd(objectType, type => 
       {
-        lock (cache)
-        {
-          found = cache.TryGetValue(objectType, out list);
-
-          if (!found)
-          {
-            list = new PropertyInfoList();
-
-            cache.Add(objectType, list);
-
-            FieldDataManager.ForceStaticFieldInit(objectType);
-          }
-        }
-      }
+        FieldDataManager.ForceStaticFieldInit(type);
+        return new PropertyInfoList();
+      });
 #endif
 
       return list;

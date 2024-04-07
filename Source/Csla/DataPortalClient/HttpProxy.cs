@@ -57,7 +57,7 @@ namespace Csla.Channels.Http
 
     /// <summary>
     /// Gets an HttpClient object for use in
-    /// communication with the server.
+    /// asynchronous communication with the server.
     /// </summary>
     protected virtual HttpClient GetHttpClient()
     {
@@ -87,7 +87,7 @@ namespace Csla.Channels.Http
 
     /// <summary>
     /// Gets an WebClient object for use in
-    /// communication with the server.
+    /// synchronous communication with the server.
     /// </summary>
     protected virtual WebClient GetWebClient()
     {
@@ -111,7 +111,8 @@ namespace Csla.Channels.Http
 
     /// <summary>
     /// Override to set headers or other properties of the
-    /// HttpRequestMessage before it is sent to the server.
+    /// HttpRequestMessage before it is sent to the server
+    /// (asynchronous only).
     /// </summary>
     /// <param name="request">HttpRequestMessage instance</param>
     protected virtual void SetHttpRequestHeaders(HttpRequestMessage request)
@@ -119,7 +120,8 @@ namespace Csla.Channels.Http
 
     /// <summary>
     /// Override to set headers or other properties of the
-    /// WebClient before it is sent to the server.
+    /// WebClient before it is sent to the server
+    /// (synchronous only).
     /// </summary>
     /// <param name="client">WebClient instance</param>
     protected virtual void SetWebClientHeaders(WebClient client)

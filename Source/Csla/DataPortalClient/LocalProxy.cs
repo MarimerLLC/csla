@@ -362,11 +362,11 @@ namespace Csla.Channels.Local
     /// <summary>
     /// Not needed/implemented for Local Data Portal - throws not implemented exception
     /// </summary>
-    /// <param name="serialized">Serialised request</param>
+    /// <param name="serialized">Serialized request</param>
     /// <param name="operation">DataPortal operation</param>
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    /// <returns>Serialised response from server</returns>
+    /// <returns>Serialized response from server</returns>
     protected override Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
       throw new NotImplementedException();

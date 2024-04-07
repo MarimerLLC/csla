@@ -57,7 +57,7 @@ namespace Csla.Channels.Http
 
     /// <summary>
     /// Gets an HttpClient object for use in
-    /// communication with the server.
+    /// asynchronous communication with the server.
     /// </summary>
     protected virtual HttpClient GetHttpClient()
     {
@@ -87,7 +87,7 @@ namespace Csla.Channels.Http
 
     /// <summary>
     /// Gets an WebClient object for use in
-    /// communication with the server.
+    /// synchronous communication with the server.
     /// </summary>
     protected virtual WebClient GetWebClient()
     {
@@ -97,11 +97,11 @@ namespace Csla.Channels.Http
     /// <summary>
     /// Select client to make request based on isSync parameter and return response from server
     /// </summary>
-    /// <param name="serialized">Serialised request</param>
+    /// <param name="serialized">Serialized request</param>
     /// <param name="operation">DataPortal operation</param>
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    /// <returns>Serialised response from server</returns>
+    /// <returns>Serialized response from server</returns>
     protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
       return isSync
@@ -111,10 +111,20 @@ namespace Csla.Channels.Http
 
     /// <summary>
     /// Override to set headers or other properties of the
-    /// HttpRequestMessage before it is sent to the server.
+    /// HttpRequestMessage before it is sent to the server
+    /// (asynchronous only).
     /// </summary>
     /// <param name="request">HttpRequestMessage instance</param>
     protected virtual void SetHttpRequestHeaders(HttpRequestMessage request)
+    { }
+
+    /// <summary>
+    /// Override to set headers or other properties of the
+    /// WebClient before it is sent to the server
+    /// (synchronous only).
+    /// </summary>
+    /// <param name="client">WebClient instance</param>
+    protected virtual void SetWebClientHeaders(WebClient client)
     { }
 
     private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
@@ -124,6 +134,7 @@ namespace Csla.Channels.Http
       httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
+      httpRequest.Headers.Add("Content-Type", Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream");
       SetHttpRequestHeaders(httpRequest);
       if (Options.UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
@@ -146,6 +157,8 @@ namespace Csla.Channels.Http
       }
       WebClient client = GetWebClient();
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}";
+      client.Headers["Content-Type"] = Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream";
+      SetWebClientHeaders(client);
       try
       {
         if (Options.UseTextSerialization)

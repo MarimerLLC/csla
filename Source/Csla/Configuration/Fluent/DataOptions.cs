@@ -34,11 +34,21 @@ namespace Csla.Configuration
       set => defaultTransactionTimeoutInSeconds = value;
     }
 
-    internal static TransactionIsolationLevel defaultTransactionIsolationLevel = TransactionIsolationLevel.Unspecified;
-    internal static int defaultTransactionTimeoutInSeconds = 30;
+    /// <summary>
+    /// Sets the default transaction async flow option
+    /// used to create new TransactionScope objects.
+    /// </summary>
+    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption {
+      get => defaultTransactionScopeAsyncFlowOption;
+      set => defaultTransactionScopeAsyncFlowOption = value;
+    }
+
+    private static TransactionIsolationLevel defaultTransactionIsolationLevel = TransactionIsolationLevel.Unspecified;
+    private static int defaultTransactionTimeoutInSeconds = 30;
+    private static TransactionScopeAsyncFlowOption defaultTransactionScopeAsyncFlowOption = TransactionScopeAsyncFlowOption.Suppress;
 
     /// <summary>
-    /// Gets or sets the default transaction isolation level.
+    /// Gets the default transaction isolation level.
     /// </summary>
     /// <value>
     /// The default transaction isolation level.
@@ -46,7 +56,7 @@ namespace Csla.Configuration
     internal static TransactionIsolationLevel GetDefaultTransactionIsolationLevel() => defaultTransactionIsolationLevel;
 
     /// <summary>
-    /// Gets or sets the default transaction timeout in seconds.
+    /// Gets default transaction timeout in seconds.
     /// </summary>
     /// <value>
     /// The default transaction timeout in seconds.
@@ -54,10 +64,10 @@ namespace Csla.Configuration
     internal static int GetDefaultTransactionTimeoutInSeconds() => defaultTransactionTimeoutInSeconds;
 
     /// <summary>
-    /// Sets the default transaction async flow option
-    /// used to create new TransactionScope objects.
+    /// Gets the default transaction scope async flow option.
     /// </summary>
-    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption { get; set; } = System.Transactions.TransactionScopeAsyncFlowOption.Suppress;
+    /// <returns>The default transaction scope async flow option.</returns>
+    internal static TransactionScopeAsyncFlowOption GetDefaultTransactionScopeAsyncFlowOption() => defaultTransactionScopeAsyncFlowOption;
 
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
     /// <summary>

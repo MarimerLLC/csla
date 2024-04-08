@@ -34,7 +34,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   public static class PropertyInfoManager
   {
-    private static object _cacheLock = new object();
+    private static readonly object _cacheLock = new object();
 
 #if NET5_0_OR_GREATER
     private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> _propertyInfoCache;
@@ -73,15 +73,31 @@ namespace Csla.Core.FieldManager
 #if NET5_0_OR_GREATER
       var list = cache.GetOrAdd(objectType, type => 
       {
-        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(type, new PropertyInfoList(), OnAssemblyLoadContextUnload);
-        FieldDataManager.ForceStaticFieldInit(type);
-        return cacheInstance;
+        lock (_cacheLock) 
+        {
+          if (cache.TryGetValue(type, out var alreadyCachedInstance))
+          {
+            return alreadyCachedInstance;
+          }
+
+          var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(type, new PropertyInfoList(), OnAssemblyLoadContextUnload);
+          FieldDataManager.ForceStaticFieldInit(type);
+          return cacheInstance;
+        }
       }).Item2;
 #else
       var list = cache.GetOrAdd(objectType, type => 
       {
-        FieldDataManager.ForceStaticFieldInit(type);
-        return new PropertyInfoList();
+        lock (_cacheLock) 
+        {
+          if (cache.TryGetValue(type, out var alreadyCachedInstance)) 
+          {
+            return alreadyCachedInstance;
+          }
+
+          FieldDataManager.ForceStaticFieldInit(type);
+          return new PropertyInfoList();
+        }
       });
 #endif
 

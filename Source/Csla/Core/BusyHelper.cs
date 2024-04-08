@@ -37,7 +37,7 @@ namespace Csla.Core {
 
         if (finishedTask == timeoutTask)
         {
-          throw new TimeoutException($"{source.GetType().FullName}.{methodName} after {timeout}.");
+          throw new TimeoutException($"{source.GetType().FullName}.{methodName} - {timeout}.");
         }
       }
       finally 

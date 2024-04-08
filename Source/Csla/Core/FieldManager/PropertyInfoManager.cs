@@ -197,6 +197,8 @@ namespace Csla.Core.FieldManager
 
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
+      context.Unloading -= OnAssemblyLoadContextUnload;
+
       var cache = PropertyInfoCache;
 
       lock (cache)

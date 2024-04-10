@@ -11,6 +11,7 @@ using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 using System;
 using System.Threading.Tasks;
+using Csla.Core;
 
 namespace Csla
 {
@@ -207,6 +208,8 @@ namespace Csla
     { }
 
     Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
 
     void Csla.Server.IDataPortalTarget.MarkAsChild()
     { }

@@ -8,6 +8,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using Csla.Core;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
@@ -27,12 +29,14 @@ namespace Csla.Server
 #endif
 
     private readonly IDataPortalTarget _target;
+    private readonly TimeSpan _waitForIdleTimeout;
     private readonly DataPortalMethodNames _methodNames;
 
-    public DataPortalTarget(object obj)
+    public DataPortalTarget(object obj, Csla.Configuration.CslaOptions cslaOptions)
       : base(obj)
     {
       _target = obj as IDataPortalTarget;
+      _waitForIdleTimeout = TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds);
 
 #if NET5_0_OR_GREATER
       var objectType = obj.GetType();
@@ -107,6 +111,22 @@ namespace Csla.Server
     {
       if (Instance is Csla.Core.ITrackStatus busy && busy.IsBusy)
         throw new InvalidOperationException(string.Format("{0}.IsBusy == true", Instance.GetType().Name));
+    }
+
+    public async Task WaitForIdle()
+    {
+      if (_target is not null) 
+      {
+        await _target.WaitForIdle(_waitForIdleTimeout).ConfigureAwait(false);
+      }
+      else if(Instance is INotifyBusy notifyBusy) 
+      {
+        await BusyHelper.WaitForIdle(notifyBusy, _waitForIdleTimeout).ConfigureAwait(false);
+      }
+      else 
+      {
+        CallMethodIfImplemented(nameof(IDataPortalTarget.WaitForIdle), _waitForIdleTimeout);
+      }
     }
 
     public void MarkNew()

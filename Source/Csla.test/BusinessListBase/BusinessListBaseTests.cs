@@ -11,6 +11,9 @@ using System.Linq;
 using System.Text;
 using UnitDriven;
 using Csla.TestHelpers;
+using FluentAssertions;
+using System.Threading.Tasks;
+using FluentAssertions.Execution;
 
 
 #if NUNIT
@@ -209,6 +212,42 @@ namespace Csla.Test.BusinessListBase
       Assert.IsFalse(changed, "Should not raise ListChanged event");
       Assert.IsTrue(obj.RaiseListChangedEvents);
       Assert.AreEqual(child, obj[0]);
+    }
+
+    [TestMethod]
+    public async Task WaitForIdle_WhenAChildIsBusyTheListWillBeNonBusyWhenAllChildsAreNotBusyAnymore() 
+    {
+      var obj = CreateRootList();
+      var child1 = obj.AddNew();
+
+      child1.AsyncRuleText = "Trigger rule";
+
+      await obj.WaitForIdle(TimeSpan.FromSeconds(4));
+
+      obj.IsBusy.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task WaitForIdle_WhenMultipleChildsAreBusyItShouldOnlyBeIdlingWhenAllChildsAreNotBusyAnymore() 
+    {
+      var obj = CreateRootList();
+      var child1 = obj.AddNew();
+      var child2 = obj.AddNew();
+
+      child1.AsyncRuleText = "Trigger rule";
+
+      await Task.Delay(TimeSpan.FromMilliseconds(500));
+
+      child2.AsyncRuleText = "2nd rule triggered";
+
+      await obj.WaitForIdle(TimeSpan.FromSeconds(2));
+
+      using (new AssertionScope()) 
+      {
+        child2.IsBusy.Should().BeFalse();
+        child1.IsBusy.Should().BeFalse();
+        obj.IsBusy.Should().BeFalse();
+      }
     }
 
     private Root CreateRoot()

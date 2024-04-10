@@ -17,6 +17,7 @@ namespace Csla.Server
     void MarkOld();
     void CheckRules();
     Task CheckRulesAsync();
+    Task WaitForIdle(TimeSpan timeout);
     void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e);
     void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e);
     void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex);

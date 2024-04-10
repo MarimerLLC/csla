@@ -13,6 +13,11 @@ using System.Data;
 using System.Data.SqlClient;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
+using Csla.Configuration;
+using FluentAssertions;
+using System.Threading.Tasks;
+using Csla.Rules;
+using Csla.Core;
 
 #if NUNIT
 using NUnit.Framework;
@@ -174,18 +179,10 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void EncapsulatedIsBusyFails()
     {
+      _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>().DefaultWaitForIdleTimeoutInSeconds = 1;
       IDataPortal<EncapsulatedBusy> dataPortal = _testDIContext.CreateDataPortal<EncapsulatedBusy>();
 
-      try
-      {
-        var obj = dataPortal.Fetch();
-      }
-      catch (DataPortalException ex)
-      {
-        Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
-        return;
-      }
-      Assert.Fail("Expected exception");
+      dataPortal.Invoking(dp => dp.Fetch()).Should().Throw<DataPortalException>().WithInnerException<TimeoutException>();
     }
 
     [TestMethod]
@@ -307,6 +304,16 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual("Fetched", TestResults.GetResult("ParentEntity"));
     }
 
+    [TestMethod]
+    public async Task WhenCreatingANewObjectThePortalMustWaitAfterCreateUntilTheObjectIsNotBusyAnymore()
+    {
+      var dataPortal = _testDIContext.CreateDataPortal<ObjectStillBusyAfterCreate>();
+
+      var obj = await dataPortal.CreateAsync();
+
+      obj.IsBusy.Should().BeFalse();
+    }
+
     private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)
     {
       TestResults.Add("dpinvoke", "true");
@@ -353,6 +360,43 @@ namespace Csla.Test.DataPortal
     private void DataPortal_Fetch()
     {
       MarkBusy();
+    }
+  }
+
+  [Serializable]
+  public class ObjectStillBusyAfterCreate : BusinessBase<ObjectStillBusyAfterCreate> 
+  {
+    public static PropertyInfo<string> RuleTriggerProperty = RegisterProperty<string>(nameof(RuleTrigger));
+    public string RuleTrigger 
+    { 
+      get => ReadProperty(RuleTriggerProperty); 
+      set => SetProperty(RuleTriggerProperty, value);
+    }
+
+    [Create]
+    protected void Create() 
+    {
+      RuleTrigger = Guid.NewGuid().ToString();
+    }
+
+    protected override void AddBusinessRules() 
+    {
+      base.AddBusinessRules();
+
+      BusinessRules.AddRule(new TwoSecondAsyncRule(RuleTriggerProperty));
+    }
+
+    private sealed class TwoSecondAsyncRule : BusinessRuleAsync 
+    {
+      public TwoSecondAsyncRule(IPropertyInfo primaryProperty) : base(primaryProperty) 
+      {
+      }
+
+      /// <inheritdoc />
+      protected override async Task ExecuteAsync(IRuleContext context) 
+      {
+        await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
+      }
     }
   }
 

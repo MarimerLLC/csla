@@ -73,9 +73,42 @@ namespace Csla.Server
     {
       var target = obj as IDataPortalTarget;
       if (target != null)
-        await target.CheckRulesAsync();
+        await target.CheckRulesAsync().ConfigureAwait(false);
       else
         MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
+    }
+
+    /// <summary>
+    /// Calls the WaitForIdle() method on the specified object with the default timeout, if possible.
+    /// </summary>
+    /// <param name="obj">Object on which to call the method.</param>
+    /// <returns>void</returns>
+    protected async Task WaitForIdle(object obj) 
+    {
+      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Calls the WaitForIdle() method on the specified object with the given timeout, if possible.
+    /// </summary>
+    /// <param name="obj">Object on which to call the method.</param>
+    /// <param name="timeout">The timeout.</param>
+    /// <returns>void</returns>
+    protected async Task WaitForIdle(object obj, TimeSpan timeout) 
+    {
+      if (obj is IDataPortalTarget target) 
+      {
+        await target.WaitForIdle(timeout).ConfigureAwait(false);
+      }
+      else if(obj is INotifyBusy notifyBusy) 
+      {
+        await BusyHelper.WaitForIdle(notifyBusy, timeout).ConfigureAwait(false);
+      }
+      else 
+      {
+        MethodCaller.CallMethodIfImplemented(obj, nameof(IDataPortalTarget.WaitForIdle), timeout);
+      }
     }
 
     /// <summary>

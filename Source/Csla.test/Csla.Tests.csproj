@@ -64,6 +64,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />

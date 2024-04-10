@@ -2,6 +2,17 @@
 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
+## CSLA .NET version 8.0.1 release
+
+CSLA .NET version 8.0.1 fixes a NuGet bug in the 8.0.0 release.
+
+.NET 8 Windows Forms and WPF projects can now reference the CSLA .NET NuGet packages.
+
+### Contributors
+
+* @prodinfo
+* @rockfordlhotka
+
 ## CSLA .NET version 8.0.0 release
 
 CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.

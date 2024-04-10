@@ -11,6 +11,7 @@ using Csla.Properties;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -134,12 +135,20 @@ namespace Csla.Channels.Http
       httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
-      httpRequest.Headers.Add("Content-Type", Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream");
       SetHttpRequestHeaders(httpRequest);
+#if NET8_0_OR_GREATER
+      if (Options.UseTextSerialization)
+        httpRequest.Content = new StringContent(
+          System.Convert.ToBase64String(serialized), 
+          mediaType: new MediaTypeHeaderValue("application/base64,text/plain"));
+      else
+        httpRequest.Content = new ByteArrayContent(serialized);
+#else
       if (Options.UseTextSerialization)
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
       else
         httpRequest.Content = new ByteArrayContent(serialized);
+#endif
       var httpResponse = await client.SendAsync(httpRequest);
       await VerifyResponseSuccess(httpResponse);
       if (Options.UseTextSerialization)

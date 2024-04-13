@@ -14,6 +14,7 @@ using Csla.Core;
 using System.Threading.Tasks;
 using Csla.Threading;
 using Csla.Server;
+using System.Threading;
 
 namespace Csla.Rules
 {
@@ -453,25 +454,36 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Invokes all rules for the business type.
+    /// Invokes all rules for a specific property of the business type.
     /// </summary>
-    /// <param name="timeout">Timeout value in milliseconds</param>
+    /// <param name="property">Property to check.</param>
     /// <returns>
     /// Returns a list of property names affected by the invoked rules.
     /// The PropertyChanged event should be raised for each affected
-    /// property. Does not return until all async rules are complete.
+    /// property.
     /// </returns>
-    public async Task<List<string>> CheckRulesAsync(int timeout)
+    /// <exception cref="System.ArgumentNullException">If property is null</exception>
+    public async Task<List<string>> CheckRulesAsync(IPropertyInfo property) 
     {
-      var result = CheckRules();
-      if (RunningAsyncRules)
-      {
-        var tasks = new Task[] { BusyChanged.WaitAsync(), Task.Delay(timeout) };
-        var final = await Task.WhenAny(tasks);
-        if (final == tasks[1])
-          throw new TimeoutException(nameof(CheckRulesAsync));
-      }
-      return result;
+      return await CheckRulesAsync(property, Timeout.InfiniteTimeSpan);
+    }
+
+    /// <summary>
+    /// Invokes all rules for a specific property of the business type.
+    /// </summary>
+    /// <param name="property">Property to check.</param>
+    /// <param name="timeout">Timeout to wait for the rule completion.</param>
+    /// <returns>
+    /// Returns a list of property names affected by the invoked rules.
+    /// The PropertyChanged event should be raised for each affected
+    /// property.
+    /// </returns>
+    /// <exception cref="System.ArgumentNullException">If property is null</exception>
+    public async Task<List<string>> CheckRulesAsync(IPropertyInfo property, TimeSpan timeout)
+    {
+      var affectedProperties = CheckRules(property);
+      await WaitForAsyncRulesToComplete(timeout);
+      return affectedProperties;
     }
 
     /// <summary>
@@ -482,9 +494,50 @@ namespace Csla.Rules
     /// The PropertyChanged event should be raised for each affected
     /// property. Does not return until all async rules are complete.
     /// </returns>
-    public async Task<List<string>> CheckRulesAsync()
+    public async Task<List<string>> CheckRulesAsync() 
     {
       return await CheckRulesAsync(int.MaxValue);
+    }
+
+    /// <summary>
+    /// Invokes all rules for the business type.
+    /// </summary>
+    /// <param name="timeout">Timeout value in milliseconds</param>
+    /// <returns>
+    /// Returns a list of property names affected by the invoked rules.
+    /// The PropertyChanged event should be raised for each affected
+    /// property. Does not return until all async rules are complete.
+    /// </returns>
+    public async Task<List<string>> CheckRulesAsync(int timeout)
+    {
+      return await CheckRulesAsync(TimeSpan.FromMilliseconds(timeout));
+    }
+
+    /// <summary>
+    /// Invokes all rules for the business type.
+    /// </summary>
+    /// <param name="timeout">Timeout value.</param>
+    /// <returns>
+    /// Returns a list of property names affected by the invoked rules.
+    /// The PropertyChanged event should be raised for each affected
+    /// property. Does not return until all async rules are complete.
+    /// </returns>
+    public async Task<List<string>> CheckRulesAsync(TimeSpan timeout)
+    {
+      var result = CheckRules();
+      await WaitForAsyncRulesToComplete(timeout);
+      return result;
+    }
+
+    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout) 
+    {
+      if (RunningAsyncRules) 
+      {
+        var tasks = new Task[] { BusyChanged.WaitAsync(), Task.Delay(timeout) };
+        var final = await Task.WhenAny(tasks);
+        if (final == tasks[1])
+          throw new TimeoutException(nameof(CheckRulesAsync));
+      }
     }
 
     /// <summary>
@@ -526,7 +579,6 @@ namespace Csla.Rules
     {
       return CheckObjectRules(RuleContextModes.CheckObjectRules, true);
     }
-
 
     /// <summary>
     /// Invokes all rules attached at the class level

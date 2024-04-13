@@ -111,5 +111,15 @@ namespace Csla.Test.ValidationRules
     {
       BusinessRules.CheckRules();
     }
+
+    [Create]
+    private void Create(string asyncAwaitValue) 
+    {
+      using (BypassPropertyChecks) {
+        AsyncAwait = asyncAwaitValue;
+      }
+    }
+
+    public Task<List<string>> CheckRulesForPropertyAsyncAwait() => BusinessRules.CheckRulesAsync(AsyncAwaitProperty);
   }
 }

@@ -529,15 +529,16 @@ namespace Csla.Rules
       return result;
     }
 
-    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout) 
-    {
-      if (RunningAsyncRules) 
+    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout) {
+      if (!RunningAsyncRules) 
       {
-        var tasks = new Task[] { BusyChanged.WaitAsync(), Task.Delay(timeout) };
-        var final = await Task.WhenAny(tasks);
-        if (final == tasks[1])
-          throw new TimeoutException(nameof(CheckRulesAsync));
+        return;
       }
+
+      var tasks = new Task[] { BusyChanged.WaitAsync(), Task.Delay(timeout) };
+      var final = await Task.WhenAny(tasks);
+      if (final == tasks[1])
+        throw new TimeoutException(nameof(CheckRulesAsync));
     }
 
     /// <summary>

@@ -13,6 +13,12 @@ using System.Threading;
 using UnitDriven;
 using System.Threading.Tasks;
 using Csla.TestHelpers;
+using Csla.Rules;
+using FluentAssertions.Execution;
+using FluentAssertions;
+
+
+
 
 #if NUNIT
 using NUnit.Framework;
@@ -179,5 +185,21 @@ namespace Csla.Test.ValidationRules
       await tcs.Task;
     }
 
+
+    [TestMethod]
+    public async Task MyTestMethod()
+    {
+      IDataPortal<AsyncRuleRoot> dataPortal = _testDIContext.CreateDataPortal<AsyncRuleRoot>();
+
+      var har = dataPortal.Create("SomeRandomText");
+      await har.WaitForIdle();
+
+      var affectedProperties = await har.CheckRulesForPropertyAsyncAwait();
+      using (new AssertionScope()) 
+      {
+        har.AsyncAwait.Should().Be("abc");
+        affectedProperties.Should().ContainSingle().Which.Should().Be(nameof(AsyncRuleRoot.AsyncAwait));
+      }
+    }
   }
 }

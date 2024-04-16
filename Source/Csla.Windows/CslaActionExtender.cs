@@ -196,8 +196,8 @@ namespace Csla.Windows
     [DefaultValue(CslaFormAction.None)]
     public CslaFormAction GetActionType(Control ctl)
     {
-      if (_sources.ContainsKey(ctl))
-        return _sources[ctl].ActionType;
+      if (_sources.TryGetValue(ctl, out var source))
+        return source.ActionType;
 
       return CslaActionExtenderProperties.ActionTypeDefault;
     }
@@ -213,8 +213,8 @@ namespace Csla.Windows
     [DefaultValue(CslaFormAction.None)]
     public void SetActionType(Control ctl, CslaFormAction value)
     {
-      if (_sources.ContainsKey(ctl))
-        _sources[ctl].ActionType = value;
+      if (_sources.TryGetValue(ctl, out var source))
+        source.ActionType = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
@@ -238,8 +238,8 @@ namespace Csla.Windows
     [DefaultValue(PostSaveActionType.None)]
     public PostSaveActionType GetPostSaveAction(Control ctl)
     {
-      if (_sources.ContainsKey(ctl))
-        return _sources[ctl].PostSaveAction;
+      if (_sources.TryGetValue(ctl, out var source))
+        return source.PostSaveAction;
 
       return CslaActionExtenderProperties.PostSaveActionDefault;
     }
@@ -255,8 +255,8 @@ namespace Csla.Windows
     [DefaultValue(PostSaveActionType.None)]
     public void SetPostSaveAction(Control ctl, PostSaveActionType value)
     {
-      if (_sources.ContainsKey(ctl))
-        _sources[ctl].PostSaveAction = value;
+      if (_sources.TryGetValue(ctl, out var source))
+        source.PostSaveAction = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
@@ -279,8 +279,8 @@ namespace Csla.Windows
     [DefaultValue(true)]
     public bool GetRebindAfterSave(Control ctl)
     {
-      if (_sources.ContainsKey(ctl))
-        return _sources[ctl].RebindAfterSave;
+      if (_sources.TryGetValue(ctl, out var source))
+        return source.RebindAfterSave;
 
       return CslaActionExtenderProperties.RebindAfterSaveDefault;
     }
@@ -296,8 +296,8 @@ namespace Csla.Windows
     [DefaultValue(true)]
     public void SetRebindAfterSave(Control ctl, bool value)
     {
-      if (_sources.ContainsKey(ctl))
-        _sources[ctl].RebindAfterSave = value;
+      if (_sources.TryGetValue(ctl, out var source))
+        source.RebindAfterSave = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
@@ -320,8 +320,8 @@ namespace Csla.Windows
     [DefaultValue(false)]
     public bool GetDisableWhenUseless(Control ctl)
     {
-      if (_sources.ContainsKey(ctl))
-        return _sources[ctl].DisableWhenUseless;
+      if (_sources.TryGetValue(ctl, out var source))
+        return source.DisableWhenUseless;
 
       return CslaActionExtenderProperties.DisableWhenUselessDefault;
     }
@@ -337,8 +337,8 @@ namespace Csla.Windows
     [DefaultValue(true)]
     public void SetDisableWhenUseless(Control ctl, bool value)
     {
-      if (_sources.ContainsKey(ctl))
-        _sources[ctl].DisableWhenUseless = value;
+      if (_sources.TryGetValue(ctl, out var source))
+        source.DisableWhenUseless = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();
@@ -361,8 +361,8 @@ namespace Csla.Windows
     [DefaultValue("")]
     public string GetCommandName(Control ctl)
     {
-      if (_sources.ContainsKey(ctl))
-        return _sources[ctl].CommandName;
+      if (_sources.TryGetValue(ctl, out var source))
+        return source.CommandName;
 
       return CslaActionExtenderProperties.CommandNameDefault;
     }
@@ -378,8 +378,8 @@ namespace Csla.Windows
     [DefaultValue("")]
     public void SetCommandName(Control ctl, string value)
     {
-      if (_sources.ContainsKey(ctl))
-        _sources[ctl].CommandName = value;
+      if (_sources.TryGetValue(ctl, out var source))
+        source.CommandName = value;
       else
       {
         CslaActionExtenderProperties props = new CslaActionExtenderProperties();

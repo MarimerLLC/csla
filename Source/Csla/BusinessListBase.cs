@@ -680,10 +680,9 @@ namespace Csla
     /// </param>
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
-      if (info.Children.ContainsKey("_deletedList"))
+      if (info.Children.TryGetValue("_deletedList", out var child))
       {
-        var childData = info.Children["_deletedList"];
-        _deletedList = (MobileList<C>)formatter.GetObject(childData.ReferenceId);
+        _deletedList = (MobileList<C>)formatter.GetObject(child.ReferenceId);
       }
       base.OnSetChildren(info, formatter);
     }

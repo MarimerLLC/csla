@@ -1756,10 +1756,9 @@ namespace Csla
     /// </param>
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
-      if (info.Children.ContainsKey("_fieldManager"))
+      if (info.Children.TryGetValue("_fieldManager", out var child))
       {
-        var childData = info.Children["_fieldManager"];
-        _fieldManager = (FieldDataManager)formatter.GetObject(childData.ReferenceId);
+        _fieldManager = (FieldDataManager)formatter.GetObject(child.ReferenceId);
       }
       base.OnSetChildren(info, formatter);
     }

@@ -141,9 +141,9 @@ namespace Csla.Core.FieldManager
         lock (_consolidatedLists)
         {
 #if NET5_0_OR_GREATER
-          if (_consolidatedLists.ContainsKey(type))
+          if (_consolidatedLists.TryGetValue(type, out var list))
           {
-            result = _consolidatedLists[type].Item2;
+            result = list.Item2;
           }
           else
           {
@@ -792,10 +792,8 @@ namespace Csla.Core.FieldManager
 
       foreach (IPropertyInfo property in _propertyList)
       {
-        if (info.Values.ContainsKey(property.Name))
+        if (info.Values.TryGetValue(property.Name, out var value))
         {
-          SerializationInfo.FieldData value = info.Values[property.Name];
-
           IFieldData data = GetOrCreateFieldData(property);
           if (value.Value != null &&
             mode == StateMode.Undo &&
@@ -835,13 +833,11 @@ namespace Csla.Core.FieldManager
     {
       foreach (IPropertyInfo property in _propertyList)
       {
-        if (info.Children.ContainsKey(property.Name))
+        if (info.Children.TryGetValue(property.Name, out var child))
         {
-          SerializationInfo.ChildData childData = info.Children[property.Name];
-
           IFieldData data = GetOrCreateFieldData(property);
-          data.Value = formatter.GetObject(childData.ReferenceId);
-          if (!childData.IsDirty)
+          data.Value = formatter.GetObject(child.ReferenceId);
+          if (!child.IsDirty)
             data.MarkClean();
         }
       }

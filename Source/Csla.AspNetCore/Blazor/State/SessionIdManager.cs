@@ -43,9 +43,9 @@ namespace Csla.Blazor.State
         {
           result = httpContext.Request.Cookies[sessionIdName];
         }
-        else if (httpContext.Items.ContainsKey(sessionIdName)) 
+        else if (httpContext.Items.TryGetValue(sessionIdName, out var item))
         {
-          result = httpContext.Items[sessionIdName] as string;
+          result = item as string;
         }
         else
         {

@@ -471,13 +471,13 @@ namespace Csla.Rules
     /// <returns>true if value exists else false</returns>
     public bool TryGetInputValue<T>(PropertyInfo<T> propertyInfo, ref T value)
     {
-      if (!InputPropertyValues.ContainsKey(propertyInfo))
+      if (!InputPropertyValues.TryGetValue(propertyInfo, out var propertyValue))
       {
         value = default(T);
         return false;
       }
 
-      value = (T)InputPropertyValues[propertyInfo];
+      value = (T)propertyValue;
       return true;
     }
 
@@ -490,13 +490,13 @@ namespace Csla.Rules
     /// <returns>true if value exists else false</returns>
     public bool TryGetInputValue<T>(IPropertyInfo propertyInfo, ref T value)
     {
-      if (!InputPropertyValues.ContainsKey(propertyInfo))
+      if (!InputPropertyValues.TryGetValue(propertyInfo, out var propertyValue))
       {
         value = default(T);
         return false;
       }
 
-      value = (T)InputPropertyValues[propertyInfo];
+      value = (T)propertyValue;
       return true;
     }
 

@@ -178,9 +178,9 @@ namespace Csla.Core
       if (!typeof(IMobileObject).IsAssignableFrom(typeof(T)))
         throw new InvalidOperationException(Resources.CannotSerializeCollectionsNotOfIMobileObject);
 
-      if (info.Values.ContainsKey("$list"))
+      if (info.Values.TryGetValue("$list", out var value))
       {
-        List<int> references = (List<int>)info.Values["$list"].Value;
+        var references = (List<int>)value.Value;
         foreach (int reference in references)
         {
           T child = (T)formatter.GetObject(reference);

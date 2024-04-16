@@ -3625,15 +3625,14 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
     {
-      if (info.Children.ContainsKey("_fieldManager"))
+      if (info.Children.TryGetValue("_fieldManager", out var child))
       {
-        var childData = info.Children["_fieldManager"];
-        _fieldManager = (FieldManager.FieldDataManager)formatter.GetObject(childData.ReferenceId);
+        _fieldManager = (FieldManager.FieldDataManager)formatter.GetObject(child.ReferenceId);
       }
 
-      if (info.Children.ContainsKey("_businessRules"))
+      if (info.Children.TryGetValue("_businessRules", out child))
       {
-        int refId = info.Children["_businessRules"].ReferenceId;
+        int refId = child.ReferenceId;
         _businessRules = (BusinessRules)formatter.GetObject(refId);
       }
 

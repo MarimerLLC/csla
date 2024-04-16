@@ -217,9 +217,9 @@ namespace Csla.Core
       {
         this.RaiseListChangedEvents = false;
 
-        if (info.Values.ContainsKey("$list"))
+        if (info.Values.TryGetValue("$list", out var value))
         {
-          List<int> references = (List<int>)info.Values["$list"].Value;
+          List<int> references = (List<int>)value.Value;
           foreach (int reference in references)
           {
             T child = (T)formatter.GetObject(reference);

@@ -1093,9 +1093,9 @@ namespace Csla.Rules
     /// </param>
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (info.Children.ContainsKey("_brokenRules"))
+      if (info.Children.TryGetValue("_brokenRules", out var child))
       {
-        int referenceId = info.Children["_brokenRules"].ReferenceId;
+        int referenceId = child.ReferenceId;
         _brokenRules = (BrokenRulesCollection)formatter.GetObject(referenceId);
       }
 

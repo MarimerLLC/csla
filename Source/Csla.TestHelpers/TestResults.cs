@@ -48,9 +48,9 @@ namespace Csla.Test
     /// <returns>The value recorded against the operation, or an empty string if no result is found</returns>
     public static string GetResult(string key)
     {
-      if (!_testResults.Value.ContainsKey(key)) return string.Empty;
+      if (!_testResults.Value.TryGetValue(key, out var result)) return string.Empty;
 
-      return _testResults.Value[key];
+      return result;
     }
 
     /// <summary>

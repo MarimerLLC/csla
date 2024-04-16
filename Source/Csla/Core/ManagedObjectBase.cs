@@ -475,9 +475,9 @@ namespace Csla.Core
     /// <param name="formatter">Reference to the SerializationFormatterFactory.GetFormatter().</param>
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (info.Children.ContainsKey("_fieldManager"))
+      if (info.Children.TryGetValue("_fieldManager", out var child))
       {
-        int referenceId = info.Children["_fieldManager"].ReferenceId;
+        int referenceId = child.ReferenceId;
         _fieldManager = (FieldDataManager)formatter.GetObject(referenceId);
       }
 

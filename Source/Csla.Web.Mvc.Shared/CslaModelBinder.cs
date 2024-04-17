@@ -11,6 +11,7 @@ using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Web.Mvc
 {
@@ -32,7 +33,7 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-      ApplicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetService(typeof(ApplicationContext));
+      ApplicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetRequiredService(typeof(ApplicationContext));
       if (bindingContext == null)
       {
         throw new ArgumentNullException(nameof(bindingContext));
@@ -72,7 +73,7 @@ namespace Csla.Web.Mvc
 
     private void BindBusinessListBase(ModelBindingContext bindingContext, object result)
     {
-      var applicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetService(typeof(ApplicationContext));
+      var applicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetRequiredService(typeof(ApplicationContext));
       var formKeys = bindingContext.ActionContext.HttpContext.Request.Form.Keys.Where(_ => _.StartsWith(bindingContext.ModelName));
       var childType = Utilities.GetChildItemType(bindingContext.ModelType);
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);

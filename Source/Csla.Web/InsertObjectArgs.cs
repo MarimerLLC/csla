@@ -14,10 +14,6 @@ namespace Csla.Web
   /// </summary>
   public class InsertObjectArgs : EventArgs
   {
-
-    private System.Collections.IDictionary _values;
-    private int _rowsAffected;
-
     /// <summary>
     /// Gets or sets the number of rows affected
     /// while handling this event.
@@ -29,11 +25,7 @@ namespace Csla.Web
     /// value to indicate the number of rows affected
     /// by the operation.
     /// </remarks>
-    public int RowsAffected
-    {
-      get { return _rowsAffected; }
-      set { _rowsAffected = value; }
-    }
+    public int RowsAffected { get; set; }
 
     /// <summary>
     /// The list of data values entered by the user.
@@ -42,17 +34,14 @@ namespace Csla.Web
     /// web page to take the list of values, put them
     /// into a business object and to save that object
     /// into the database.</remarks>
-    public System.Collections.IDictionary Values
-    {
-      get { return _values; }
-    }
+    public System.Collections.IDictionary Values { get; }
 
     /// <summary>
     /// Create an instance of the object.
     /// </summary>
     public InsertObjectArgs(System.Collections.IDictionary values)
     {
-      _values = values;
+      Values = values;
     }
 
   }

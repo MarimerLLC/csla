@@ -15,8 +15,6 @@ namespace Csla.Test.Basic
   [Serializable()]
   public class Child : BusinessBase<Child>
   {
-    private Guid _guid = System.Guid.NewGuid();
-
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
@@ -24,10 +22,7 @@ namespace Csla.Test.Basic
       set { SetProperty(DataProperty, value); }
     }
 
-    public Guid Guid
-    {
-      get { return _guid; }
-    }
+    public Guid Guid { get; } = System.Guid.NewGuid();
 
     public static readonly PropertyInfo<GrandChildren> GrandChildrenProperty = RegisterProperty<GrandChildren>(c => c.GrandChildren);
     public GrandChildren GrandChildren

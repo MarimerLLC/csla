@@ -27,7 +27,6 @@ namespace Csla.Data
     where T : class
   {
     private static object _lock = new object();
-    private C _client;
     private string _name = string.Empty;
 
     ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
@@ -57,19 +56,13 @@ namespace Csla.Data
 
     private ServiceClientManager(string name)
     {
-      _client = (C)(ApplicationContext.CreateInstanceDI(typeof(C)));
+      Client = (C)(ApplicationContext.CreateInstanceDI(typeof(C)));
     }
 
     /// <summary>
     /// Gets a reference to the current client proxy object.
     /// </summary>
-    public C Client
-    {
-      get
-      {
-        return _client;
-      }
-    }
+    public C Client { get; }
   }
 }
 #endif

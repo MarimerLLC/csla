@@ -29,7 +29,6 @@ namespace Csla
     public event System.Collections.Specialized.NotifyCollectionChangedEventHandler CollectionChanged;
 
     private System.Collections.ObjectModel.ObservableCollection<T> _baseCollection;
-    private List<T> _filteredCollection;
     private bool _suppressEvents = false;
         /// <summary>
     /// Creates a new instance of the observable
@@ -49,7 +48,7 @@ namespace Csla
     /// <param name="queryResult">Filtered query result over source list.</param>
     public LinqObservableCollection(System.Collections.ObjectModel.ObservableCollection<T> source, List<T> queryResult)
     {
-      _filteredCollection = queryResult;
+      QueryResult = queryResult;
       _baseCollection = source;
       _baseCollection.CollectionChanged += (o, e) =>
         {
@@ -63,26 +62,26 @@ namespace Csla
               case NotifyCollectionChangedAction.Add:
                 item = (T)e.NewItems[0];
                 index = e.NewStartingIndex;
-                if (index > _filteredCollection.Count)
-                  index = _filteredCollection.Count;
-                _filteredCollection.Insert(index, item);
+                if (index > QueryResult.Count)
+                  index = QueryResult.Count;
+                QueryResult.Insert(index, item);
                 newE = new NotifyCollectionChangedEventArgs(
-                  e.Action, item, _filteredCollection.IndexOf(item));
+                  e.Action, item, QueryResult.IndexOf(item));
                 break;
               case NotifyCollectionChangedAction.Remove:
                 item = (T)e.OldItems[0];
-                index = _filteredCollection.IndexOf(item);
+                index = QueryResult.IndexOf(item);
                 if (index > -1)
                 {
-                  _filteredCollection.Remove(item);
+                  QueryResult.Remove(item);
                   newE = new NotifyCollectionChangedEventArgs(e.Action, item, index);
                 }
                 break;
               case NotifyCollectionChangedAction.Replace:
-                index = _filteredCollection.IndexOf((T)e.OldItems[0]);
+                index = QueryResult.IndexOf((T)e.OldItems[0]);
                 if (index > -1)
                 {
-                  _filteredCollection[index] = (T)e.NewItems[0];
+                  QueryResult[index] = (T)e.NewItems[0];
                   newE = new NotifyCollectionChangedEventArgs(
                     e.Action,
                     e.NewItems, e.OldItems, index);
@@ -91,7 +90,7 @@ namespace Csla
               case NotifyCollectionChangedAction.Reset:
                 if (source.Count == 0)
                 {
-                  _filteredCollection.Clear();
+                  QueryResult.Clear();
                   newE = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 }
                 break;
@@ -128,10 +127,7 @@ namespace Csla
     /// Gets the query result object used to
     /// filter the view.
     /// </summary>
-    public List<T> QueryResult
-    {
-      get { return _filteredCollection; }
-    }
+    public List<T> QueryResult { get; }
 
     /// <summary>
     /// Gets the positional index of the item.
@@ -139,7 +135,7 @@ namespace Csla
     /// <param name="item">Item to find.</param>
     public int IndexOf(T item)
     {
-      return _filteredCollection.IndexOf(item);
+      return QueryResult.IndexOf(item);
     }
 
     /// <summary>
@@ -158,7 +154,7 @@ namespace Csla
     /// <param name="index">Index of item to remove.</param>
     public void RemoveAt(int index)
     {
-      _baseCollection.Remove(_filteredCollection[index]);
+      _baseCollection.Remove(QueryResult[index]);
     }
 
     /// <summary>
@@ -170,11 +166,11 @@ namespace Csla
     {
       get
       {
-        return _filteredCollection[index];
+        return QueryResult[index];
       }
       set
       {
-        var idx = _baseCollection.IndexOf(_filteredCollection[index]);
+        var idx = _baseCollection.IndexOf(QueryResult[index]);
         _baseCollection[idx] = value;
       }
     }
@@ -199,10 +195,10 @@ namespace Csla
     public void Clear()
     {
       _suppressEvents = true;
-      foreach (var item in _filteredCollection)
+      foreach (var item in QueryResult)
         _baseCollection.Remove(item);
       _suppressEvents = false;
-      _filteredCollection.Clear();
+      QueryResult.Clear();
       OnCollectionChanged(
         new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
@@ -214,7 +210,7 @@ namespace Csla
     /// <param name="item">Item to find.</param>
     public bool Contains(T item)
     {
-      return _filteredCollection.Contains(item);
+      return QueryResult.Contains(item);
     }
 
     /// <summary>
@@ -224,7 +220,7 @@ namespace Csla
     /// <param name="arrayIndex">Index in array where copying begins.</param>
     public void CopyTo(T[] array, int arrayIndex)
     {
-      _filteredCollection.CopyTo(array, arrayIndex);
+      QueryResult.CopyTo(array, arrayIndex);
     }
 
     /// <summary>
@@ -232,7 +228,7 @@ namespace Csla
     /// </summary>
     public int Count
     {
-      get { return _filteredCollection.Count; }
+      get { return QueryResult.Count; }
     }
 
     /// <summary>
@@ -265,7 +261,7 @@ namespace Csla
     /// </summary>
     public IEnumerator<T> GetEnumerator()
     {
-      return _filteredCollection.GetEnumerator();
+      return QueryResult.GetEnumerator();
     }
 
     /// <summary>
@@ -273,7 +269,7 @@ namespace Csla
     /// </summary>
     IEnumerator IEnumerable.GetEnumerator()
     {
-      return _filteredCollection.GetEnumerator();
+      return QueryResult.GetEnumerator();
     }
 
     /// <summary>
@@ -292,7 +288,7 @@ namespace Csla
     /// <param name="value">Item to find.</param>
     public bool Contains(object value)
     {
-      return _filteredCollection.Contains((T)value);
+      return QueryResult.Contains((T)value);
     }
 
     /// <summary>
@@ -301,7 +297,7 @@ namespace Csla
     /// <param name="value">Item to find.</param>
     public int IndexOf(object value)
     {
-      return _filteredCollection.IndexOf((T)value);
+      return QueryResult.IndexOf((T)value);
     }
 
     /// <summary>
@@ -351,7 +347,7 @@ namespace Csla
     /// <param name="index">Index in array where copying begins.</param>
     public void CopyTo(Array array, int index)
     {
-      ((IList)_filteredCollection).CopyTo(array, index);
+      ((IList)QueryResult).CopyTo(array, index);
     }
 
     /// <summary>

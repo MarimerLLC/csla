@@ -18,16 +18,12 @@ namespace Csla.Server
   [Serializable]
   public class DataPortalException : Exception
   {
-    private DataPortalResult _result;
     private string _innerStackTrace;
 
     /// <summary>
     /// Returns the DataPortalResult object from the server.
     /// </summary>
-    public DataPortalResult Result
-    {
-      get { return _result; }
-    }
+    public DataPortalResult Result { get; }
 
     /// <summary>
     /// Get the server-side stack trace from the
@@ -51,7 +47,7 @@ namespace Csla.Server
       : base(message, ex)
     {
       _innerStackTrace = ex.StackTrace;
-      _result = result;
+      Result = result;
     }
   }
 }

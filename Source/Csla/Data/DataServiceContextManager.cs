@@ -25,7 +25,6 @@ namespace Csla.Data
   {
 
     private static object _lock = new object();
-    private C _context;
 
     ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
     private ApplicationContext ApplicationContext { get; set; }
@@ -59,19 +58,13 @@ namespace Csla.Data
 
     private DataServiceContextManager(Uri path)
     {
-      _context = (C)(ApplicationContext.CreateInstanceDI(typeof(C), path));
+      DataServiceContext = (C)(ApplicationContext.CreateInstanceDI(typeof(C), path));
     }
 
     /// <summary>
     /// Gets the DataServiceContext object.
     /// </summary>
-    public C DataServiceContext
-    {
-      get
-      {
-        return _context;
-      }
-    }
+    public C DataServiceContext { get; }
 
     private static string GetContextName(string path)
     {
@@ -89,7 +82,7 @@ namespace Csla.Data
     public List<T> GetEntities<T>()
     {
       List<T> returnValue = new List<T>();
-      foreach (var oneEntityDescriptor in _context.Entities)
+      foreach (var oneEntityDescriptor in DataServiceContext.Entities)
       {
         if (oneEntityDescriptor.Entity is T)
         {

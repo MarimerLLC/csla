@@ -28,17 +28,12 @@ namespace Csla.Windows
     public CslaActionCancelEventArgs(bool cancel, string commandName)
       : base(cancel)
     {
-      _commandName = commandName;
+      CommandName = commandName;
     }
-
-    private string _commandName;
 
     /// <summary>
     /// Gets the name of the command.
     /// </summary>
-    public string CommandName
-    {
-      get { return _commandName; }
-    }
+    public string CommandName { get; }
   }
 }

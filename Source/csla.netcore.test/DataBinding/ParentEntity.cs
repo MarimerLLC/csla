@@ -18,7 +18,6 @@ namespace Csla.Test.DataBinding
   {
     #region "Business methods"
 
-    private ChildEntityList _children;
     [NotUndoable()]
     private string _notUndoable;
 
@@ -42,16 +41,13 @@ namespace Csla.Test.DataBinding
       set { SetProperty(DataProperty, value); }
     }
 
-    public ChildEntityList Children
-    {
-      get { return _children; }
-    }
+    public ChildEntityList Children { get; private set; }
 
     public override bool IsDirty
     {
       get
       {
-        return base.IsDirty || _children.IsDirty;
+        return base.IsDirty || Children.IsDirty;
       }
     }
 
@@ -103,7 +99,7 @@ namespace Csla.Test.DataBinding
     {
       TestResults.Reinitialise();
       TestResults.Add("ParentEntity", "Created");
-      _children = dataPortal.CreateChild();
+      Children = dataPortal.CreateChild();
       BusinessRules.CheckRules();
       Console.WriteLine("DataPortal_Create");
     }
@@ -111,7 +107,7 @@ namespace Csla.Test.DataBinding
     [Fetch]
     protected void DataPortal_Fetch(object criteria, [Inject] IChildDataPortal<ChildEntityList> dataPortal)
     {
-      _children = dataPortal.CreateChild();
+      Children = dataPortal.CreateChild();
       Console.WriteLine("DataPortal_Fetch");
       TestResults.Reinitialise();
       TestResults.Add("ParentEntity", "Fetched");

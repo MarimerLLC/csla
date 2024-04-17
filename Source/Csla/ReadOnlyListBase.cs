@@ -124,7 +124,7 @@ namespace Csla
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [Delete]
-		private void DataPortal_Delete(object criteria)
+    private void DataPortal_Delete(object criteria)
     {
       throw new NotSupportedException(Resources.DeleteNotSupportedException);
     }

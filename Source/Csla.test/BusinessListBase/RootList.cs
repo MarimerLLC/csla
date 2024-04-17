@@ -23,7 +23,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       Child_Update();
     }

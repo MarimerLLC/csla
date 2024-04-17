@@ -98,7 +98,7 @@ namespace Csla.Test.Nullable
         }
 
         [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
         {
             if (IsDeleted)
             {
@@ -123,7 +123,7 @@ namespace Csla.Test.Nullable
         }
 
         [Delete]
-		protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
         {
             //we would delete here
             TestResults.Add("NullableObject", "Deleted");

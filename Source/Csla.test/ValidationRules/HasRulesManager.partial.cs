@@ -35,7 +35,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       if (IsDeleted)
       {

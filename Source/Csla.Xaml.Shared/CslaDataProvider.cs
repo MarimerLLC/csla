@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Data;
 using System.Reflection;
 using Csla.Reflection;
@@ -396,7 +397,7 @@ namespace Csla.Xaml
       QueryRequest request = (QueryRequest)state;
       object result = null;
       Exception exceptionResult = null;
-      object[] parameters = new List<object>(request.FactoryParameters).ToArray();
+      object[] parameters = request.FactoryParameters.ToArray();
 
       try
       {

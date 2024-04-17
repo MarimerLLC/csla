@@ -84,8 +84,8 @@ namespace Csla.Test.CommandBase
       IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
-      IPropertyInfo nameProperty = (IPropertyInfo) CommandObject.NameProperty;
-      IPropertyInfo numProperty = (IPropertyInfo)CommandObject.NumProperty;
+      IPropertyInfo nameProperty = CommandObject.NameProperty;
+      IPropertyInfo numProperty = CommandObject.NumProperty;
 
       LoadProperty(cmd, nameProperty, "Rocky");
       LoadProperty(cmd, numProperty, 8);
@@ -118,8 +118,8 @@ namespace Csla.Test.CommandBase
       IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
-      IPropertyInfo nameProperty = (IPropertyInfo)CommandObject.NameProperty;
-      IPropertyInfo numProperty = (IPropertyInfo)CommandObject.NumProperty;
+      IPropertyInfo nameProperty = CommandObject.NameProperty;
+      IPropertyInfo numProperty = CommandObject.NumProperty;
 
       LoadProperty(cmd, nameProperty, "Rocky");
       LoadProperty(cmd, numProperty, 8);

@@ -62,7 +62,7 @@ namespace Csla.Test.PropertyGetSet
 
     [RunLocal]
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       BusinessRules.CheckRules();
     }

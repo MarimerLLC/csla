@@ -114,13 +114,10 @@ namespace Csla.Test.DataPortalTest
       MethodCalled = insertOrUpdate;
     }
 
-
-
     #endregion
 
-
     [Delete]
-		private void DataPortal_Delete(int id)
+    private void DataPortal_Delete(int id)
     {
       TestResults.Reinitialise();
       TestResults.Add("PrimitiveCriteriaSingle", "Deleted");

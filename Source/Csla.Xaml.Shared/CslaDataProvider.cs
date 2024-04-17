@@ -31,7 +31,7 @@ namespace Csla.Xaml
     /// </summary>
     public CslaDataProvider()
     {
-      CommandManager = new CslaDataProviderCommandManager(this);
+      _commandManager = new CslaDataProviderCommandManager(this);
       _factoryParameters = new ObservableCollection<object>();
       _factoryParameters.CollectionChanged += 
         new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
@@ -67,6 +67,8 @@ namespace Csla.Xaml
     private bool _manageLifetime;
     private string _factoryMethod = string.Empty;
     private ObservableCollection<object> _factoryParameters;
+    private bool _isAsynchronous;
+    private CslaDataProviderCommandManager _commandManager;
     private bool _isBusy;
 
     /// <summary>
@@ -74,7 +76,13 @@ namespace Csla.Xaml
     /// Save and Undo commands on this CslaDataProvider 
     /// through XAML command bindings.
     /// </summary>
-    public CslaDataProviderCommandManager CommandManager { get; }
+    public CslaDataProviderCommandManager CommandManager
+    {
+      get
+      {
+        return _commandManager;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the type of object 
@@ -175,7 +183,11 @@ namespace Csla.Xaml
     /// whether to perform object creation in 
     /// a worker thread or in the active context.
     /// </summary>
-    public bool IsAsynchronous { get; set; }
+    public bool IsAsynchronous
+    {
+      get { return _isAsynchronous; }
+      set { _isAsynchronous = value; }
+    }
 
     /// <summary>
     /// Gets or sets a reference to the data
@@ -479,11 +491,23 @@ namespace Csla.Xaml
 
     private class QueryRequest
     {
-      public Type ObjectType { get; set; }
+      private Type _objectType;
+
+      public Type ObjectType
+      {
+        get { return _objectType; }
+        set { _objectType = value; }
+      }
 
       public Func<object[], Task<object>> Factory {  get; set; }
 
-      public string FactoryMethod { get; set; }
+      private string _factoryMethod;
+
+      public string FactoryMethod
+      {
+        get { return _factoryMethod; }
+        set { _factoryMethod = value; }
+      }
 
       private ObservableCollection<object> _factoryParameters;
 
@@ -493,8 +517,14 @@ namespace Csla.Xaml
         set { _factoryParameters = 
           new ObservableCollection<object>(new List<object>(value)); }
       }
+      private bool _manageLifetime;
 
-      public bool ManageObjectLifetime { get; set; }
+      public bool ManageObjectLifetime
+      {
+        get { return _manageLifetime; }
+        set { _manageLifetime = value; }
+      }
+
     }
 
 #endregion

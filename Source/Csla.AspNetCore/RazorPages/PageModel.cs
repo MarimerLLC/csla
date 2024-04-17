@@ -87,8 +87,7 @@ namespace Csla.AspNetCore.RazorPages
           }
           else
           {
-            var modelItem = ModelState
-              .Where(r => r.Key == rule.Property || r.Key.EndsWith($".{rule.Property}")).FirstOrDefault();
+            var modelItem = ModelState.FirstOrDefault(r => r.Key == rule.Property || r.Key.EndsWith($".{rule.Property}"));
             var key = modelItem.Key ?? string.Empty;
             ModelState.AddModelError(key, rule.Description);
           }

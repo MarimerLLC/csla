@@ -250,7 +250,7 @@ namespace Csla.Rules
     /// </returns>
     public BrokenRule GetFirstMessage(Csla.Core.IPropertyInfo property)
     {
-      return this.Where(c => c.Property == property.Name).FirstOrDefault();
+      return this.FirstOrDefault(c => c.Property == property.Name);
     }
 
     /// <summary>
@@ -282,7 +282,7 @@ namespace Csla.Rules
     /// </returns>
     public BrokenRule GetFirstMessage(string property, RuleSeverity severity)
     {
-      return this.Where(c => c.Property == property && c.Severity == severity).FirstOrDefault();
+      return this.FirstOrDefault(c => c.Property == property && c.Severity == severity);
     }
 
     /// <summary>

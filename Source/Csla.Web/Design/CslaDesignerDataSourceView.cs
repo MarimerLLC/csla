@@ -80,7 +80,7 @@ namespace Csla.Web.Design
       }
 
       isSampleData = true;
-      return (IEnumerable)result.DefaultView;
+      return result.DefaultView;
     }
 
     /// <summary>

@@ -139,7 +139,7 @@ namespace Csla.Analyzers
       {
         var setterStatements = setter.Statements;
 
-        if (setterStatements.Count() != 1)
+        if (setterStatements.Count != 1)
         {
           context.ReportDiagnostic(Diagnostic.Create(
             onlyUseCslaPropertyMethodsInGetSetRule,

@@ -176,7 +176,7 @@ namespace Csla.Xaml
 
     private void GoToState(bool useTransitions)
     {
-      if ((bool)IsRunning)
+      if (IsRunning)
       {
         VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
       }
@@ -212,7 +212,7 @@ namespace Csla.Xaml
         FrameworkElement item = (FrameworkElement)FindChild(this, "part" + (n + 1));
         if (item != null)
         {
-          double itemTheta = theta * (double)n;
+          double itemTheta = theta * n;
 
           double itemScale = scale / 4.0;
           double radius = (scale - itemScale) / 2.0;

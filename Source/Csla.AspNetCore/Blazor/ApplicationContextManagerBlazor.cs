@@ -76,7 +76,7 @@ namespace Csla.AspNetCore.Blazor
         }
         catch (InvalidOperationException ex)
         {
-          task = Task.FromResult(new AuthenticationState((ClaimsPrincipal)UnauthenticatedPrincipal));
+          task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
           string message = ex.Message;
           if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
               && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState)))

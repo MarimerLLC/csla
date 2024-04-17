@@ -69,7 +69,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       using (BypassPropertyChecks)
         Id = 0;
@@ -113,13 +113,13 @@ namespace Csla.Test.DataPortalTest
       TestResults.Add("SingleOverload", "Fetched1");
     }
     [Delete]
-		private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(Criteria criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("SingleOverload", "Deleted");
     }
     [Delete]
-		private void DataPortal_Delete(OtherCriteria criteria)
+    private void DataPortal_Delete(OtherCriteria criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("SingleOverload", "Deleted1");

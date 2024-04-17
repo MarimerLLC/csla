@@ -74,7 +74,7 @@ namespace Csla.Threading
     {
       try
       {
-        _target.BusyChanged += new BusyChangedEventHandler(notify_BusyChanged);
+        _target.BusyChanged += notify_BusyChanged;
 
         // Do nothing if this object is not currently busy
         // otherwise wait for the event to be signaled.
@@ -89,7 +89,7 @@ namespace Csla.Threading
       }
       finally
       {
-        _target.BusyChanged -= new BusyChangedEventHandler(notify_BusyChanged);
+        _target.BusyChanged -= notify_BusyChanged;
         _event.Close();
       }
     }

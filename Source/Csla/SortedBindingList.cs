@@ -711,8 +711,7 @@ namespace Csla
       {
         _supportsBinding = true;
         _bindingList = (IBindingList)SourceList;
-        _bindingList.ListChanged +=
-          new ListChangedEventHandler(SourceChanged);
+        _bindingList.ListChanged += SourceChanged;
       }
     }
 

@@ -435,7 +435,7 @@ namespace Csla
         child.SetParent(this);
         INotifyPropertyChanged c = child as INotifyPropertyChanged;
         if (c != null)
-          c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+          c.PropertyChanged += Child_PropertyChanged;
       }
       base.OnDeserialized();
     }

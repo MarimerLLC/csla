@@ -55,8 +55,8 @@ namespace Csla.Test.ValidationRules
     protected override void Initialize()
     {
       base.Initialize();
-      ChildList.ListChanged += new System.ComponentModel.ListChangedEventHandler(ChildList_ListChanged);
-      this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);
+      ChildList.ListChanged += ChildList_ListChanged;
+      this.ChildChanged += HasChildren_ChildChanged;
     }
 
     void ChildList_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)

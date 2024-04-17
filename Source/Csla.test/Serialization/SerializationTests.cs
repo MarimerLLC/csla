@@ -155,17 +155,13 @@ namespace Csla.Test.Serialization
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       TestEventSink handler = new TestEventSink();
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (OnIsDirtyChanged);
+      root.PropertyChanged += OnIsDirtyChanged;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (StaticOnIsDirtyChanged);
+      root.PropertyChanged += StaticOnIsDirtyChanged;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (PublicStaticOnIsDirtyChanged);
+      root.PropertyChanged += PublicStaticOnIsDirtyChanged;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (OnIsDirtyChanged);  //will call this method twice since it is assigned twice
+      root.PropertyChanged += OnIsDirtyChanged;  //will call this method twice since it is assigned twice
 
       handler.Reg(root);
 

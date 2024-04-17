@@ -686,7 +686,7 @@ namespace Csla.Test.PropertyGetSet
       IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.ChildChanged += (o, e) => { throw new InvalidOperationException(); };
+      root.ChildChanged += (_, _) => { throw new InvalidOperationException(); };
       root.ManagedStringField = "test";
     }
 
@@ -697,8 +697,8 @@ namespace Csla.Test.PropertyGetSet
       int changed = 0;
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.ChildChanged += (o, e) => { changed++; };
-      root.ManagedChild.ChildChanged += (o, e) => { throw new InvalidOperationException();};
+      root.ChildChanged += (_, _) => { changed++; };
+      root.ManagedChild.ChildChanged += (_, _) => { throw new InvalidOperationException();};
       root.ManagedChild.FieldBackedString = "changed";
 
       Assert.AreEqual(1, changed);
@@ -714,10 +714,10 @@ namespace Csla.Test.PropertyGetSet
       int listChanged = 0;
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.ChildChanged += (o, e) => { rootChanged++; };
+      root.ChildChanged += (_, _) => { rootChanged++; };
 
       var list = root.ManagedChildList;
-      list.ChildChanged += (o, e) => { listChanged++; };
+      list.ChildChanged += (_, _) => { listChanged++; };
 
       list.Add(EditableGetSet.NewChildObject(childDataPortal));
       list[0].FieldBackedString = "child change";
@@ -741,18 +741,18 @@ namespace Csla.Test.PropertyGetSet
       int grandChildPropertyChanged = 0;
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
-      root.ChildChanged += (o, e) => { rootChanged++; };
-      root.ManagedChildList.ChildChanged += (o, e) => { childListChanged++; };
+      root.PropertyChanged += (_, _) => { throw new InvalidOperationException(); };
+      root.ChildChanged += (_, _) => { rootChanged++; };
+      root.ManagedChildList.ChildChanged += (_, _) => { childListChanged++; };
 
       var child = EditableGetSet.NewChildObject(childDataPortal);
-      child.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
-      child.ChildChanged += (o, e) => { childChanged++; };
-      child.ManagedChildList.ChildChanged += (o, e) => { grandChildListChanged++; };
+      child.PropertyChanged += (_, _) => { throw new InvalidOperationException(); };
+      child.ChildChanged += (_, _) => { childChanged++; };
+      child.ManagedChildList.ChildChanged += (_, _) => { grandChildListChanged++; };
 
       var grandChild = EditableGetSet.NewChildObject(childDataPortal);
-      grandChild.ChildChanged += (o, e) => { throw new InvalidOperationException(); }; // ChildChange only fires when child of self changes
-      grandChild.PropertyChanged += (o, e) => { grandChildPropertyChanged++; };
+      grandChild.ChildChanged += (_, _) => { throw new InvalidOperationException(); }; // ChildChange only fires when child of self changes
+      grandChild.PropertyChanged += (_, _) => { grandChildPropertyChanged++; };
 
       root.ManagedChildList.Add(child);
       child.ManagedChildList.Add(grandChild);
@@ -781,7 +781,7 @@ namespace Csla.Test.PropertyGetSet
       root.CancelEdit();
 
       int changed = 0;
-      root.ChildChanged += (o, e) => { changed++;};
+      root.ChildChanged += (_, _) => { changed++;};
       child.FieldBackedString = "changed";
 
       Assert.AreEqual(1, changed);
@@ -807,13 +807,13 @@ namespace Csla.Test.PropertyGetSet
       root = (EditableGetSet)formatter.Deserialize(stream);
 
       int changed = 0;
-      root.ChildChanged += (o, e) => { changed++; };
+      root.ChildChanged += (_, _) => { changed++; };
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed";
       Assert.AreEqual(1, changed, "after MobileFormatter");
 
       changed = 0;
       root = root.Clone();
-      root.ChildChanged += (o, e) => { changed++; };
+      root.ChildChanged += (_, _) => { changed++; };
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed again";
       Assert.AreEqual(1, changed, "after clone");
     }

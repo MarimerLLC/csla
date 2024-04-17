@@ -99,7 +99,7 @@ namespace Csla.Xaml
       DependencyProperty.RegisterAttached("TriggerEvent",
       typeof(string),
       typeof(InvokeMethod),
-      new PropertyMetadata((o, e) =>
+      new PropertyMetadata((o, _) =>
       {
         var ctrl = o as UIElement;
         if (ctrl != null)

@@ -78,14 +78,14 @@ namespace Csla.Xaml
 
       // In WPF - Loaded fires when form is loaded even if control is not visible.
       // but will only fire once when control gets visible in Silverlight
-      Loaded += (o, e) =>
+      Loaded += (_, _) =>
       {
         _loading = false;
         UpdateState();
       };
       // IsVisibleChanged fires when control first gets visible in WPF 
       // Does not exisit in Silverlight -  see Loaded event.
-      IsVisibleChanged += (o, e) =>
+      IsVisibleChanged += (_, _) =>
                               {
                                 // update status if we are not loading 
                                 // and control is visible
@@ -94,7 +94,7 @@ namespace Csla.Xaml
                                   UpdateState();
                                 }
                               };
-      DataContextChanged += (o, e) =>
+      DataContextChanged += (_, e) =>
       {
         if (!_loading) SetSource(e.NewValue);
       };

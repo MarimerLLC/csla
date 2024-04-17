@@ -348,7 +348,7 @@ namespace Csla.Xaml
         _endInitError = true;
 
       // return result to base class
-      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+      OnQueryFinished(result, exceptionResult, _ => { IsBusy = false; return null; }, null);
     }
 
     /// <summary>
@@ -400,7 +400,7 @@ namespace Csla.Xaml
         _endInitError = true;
 
       // return result to base class
-      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+      OnQueryFinished(result, exceptionResult, _ => { IsBusy = false; return null; }, null);
     }
 
     private void DoQuery(object state)
@@ -483,7 +483,7 @@ namespace Csla.Xaml
         _endInitError = true;
 
       // return result to base class
-      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+      OnQueryFinished(result, exceptionResult, _ => { IsBusy = false; return null; }, null);
     }
 
 

@@ -516,7 +516,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ReadProperty, property))
         {
           // store value in cache
-          _readResultCache.AddOrUpdate(property.Name, result, (a,b) => { return result; });
+          _readResultCache.AddOrUpdate(property.Name, result, (_, _) => { return result; });
         }
       }
       return result;
@@ -591,7 +591,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.WriteProperty, property))
         {
           // store value in cache
-          _writeResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
+          _writeResultCache.AddOrUpdate(property.Name, result, (_, _) => { return result; });
         }
       }
       return result;
@@ -684,7 +684,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ExecuteMethod, method))
         {
           // store value in cache
-          _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
+          _executeResultCache.AddOrUpdate(method.Name, result, (_, _) => { return result; });
         }
       }
       return result;

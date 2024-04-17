@@ -105,7 +105,7 @@ namespace Csla.Channels.RabbitMq
         arguments: null);
 
       var consumer = new EventingBasicConsumer(Channel);
-      consumer.Received += (model, ea) =>
+      consumer.Received += (_, ea) =>
       {
         Console.WriteLine($"Received {ea.BasicProperties.Type} for {ea.BasicProperties.CorrelationId} from {ea.BasicProperties.ReplyTo}");
         InvokePortal(ea, ea.Body.ToArray());

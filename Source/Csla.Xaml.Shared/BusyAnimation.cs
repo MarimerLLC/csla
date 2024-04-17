@@ -127,7 +127,7 @@ namespace Csla.Xaml
     public BusyAnimation()
     {
       DefaultStyleKey = typeof(BusyAnimation);
-      Loaded += (o, e) =>
+      Loaded += (_, _) =>
       {
         ArrangeParts();
         GoToState(true);
@@ -202,8 +202,6 @@ namespace Csla.Xaml
 
     private void ArrangeParts()
     {
-      double width = ActualWidth;
-      double height = ActualHeight;
       double scale = Math.Min(ActualWidth, ActualHeight);
       double theta = (2.0 * Math.PI) / NUM_STATES;
 

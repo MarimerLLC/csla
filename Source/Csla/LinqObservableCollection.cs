@@ -51,7 +51,7 @@ namespace Csla
     {
       _filteredCollection = queryResult;
       _baseCollection = source;
-      _baseCollection.CollectionChanged += (o, e) =>
+      _baseCollection.CollectionChanged += (_, e) =>
         {
           if (!_suppressEvents)
           {

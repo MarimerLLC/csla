@@ -51,7 +51,7 @@ namespace Csla.Test.AppContext
       // TODO: How do we do this test in Csla 6?
       //ApplicationContext.ClientContext["v1"] = "client";
 
-      SimpleRoot root = dataPortal.Fetch(new SimpleRoot.Criteria("data"));
+      dataPortal.Fetch(new SimpleRoot.Criteria("data"));
 
       //Assert.AreEqual("client", ApplicationContext.ClientContext["v1"], "client context didn't roundtrip");
       Assert.AreEqual("Fetched", TestResults.GetResult("Root"), "global context missing server value");

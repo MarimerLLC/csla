@@ -235,7 +235,7 @@ namespace Csla.Test.Serialization
 
       var root = SerializationRoot.NewSerializationRoot(dataPortal);
       var nonSerClass = new NonSerializedClass();
-      Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
+      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
       var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
       var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
@@ -260,12 +260,12 @@ namespace Csla.Test.Serialization
       var root = OverrideSerializationRoot.NewOverrideSerializationRoot(dataPortal);
       var nonSerClass = new NonSerializedClass();
 
-      Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
+      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
       var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
       var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
 
-      Action<object, PropertyChangingEventArgs> h1 = (sender, eventArgs) => { nonSerClass.Do(); };
+      Action<object, PropertyChangingEventArgs> h1 = (_, _) => { nonSerClass.Do(); };
       var method1 = typeof(Action<object, PropertyChangingEventArgs>).GetMethod("Invoke");
       var delgate1 = (PropertyChangingEventHandler)(object)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
       root.PropertyChanging += delgate1;

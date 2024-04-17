@@ -41,7 +41,6 @@ namespace Csla.Analyzers
 
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
-      var runLocalAttributeSymbol = methodSymbol.GetAttributes().First(_ => _.AttributeClass.IsRunLocalAttribute());
 
       foreach(var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
       {

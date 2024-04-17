@@ -43,7 +43,7 @@ namespace Csla.Server
 
       var methodNameListInfo = _methodNameList.GetOrAdd(
         objectType,
-        (t) => AssemblyLoadContextManager.CreateCacheInstance(
+        (_) => AssemblyLoadContextManager.CreateCacheInstance(
           objectType,
           DataPortalMethodNames.Default,
           OnAssemblyLoadContextUnload
@@ -53,7 +53,7 @@ namespace Csla.Server
       _methodNames = methodNameListInfo.Item2;
 #else
       _methodNames = _methodNameList.GetOrAdd(obj.GetType(),
-        (t) => DataPortalMethodNames.Default);
+        (_) => DataPortalMethodNames.Default);
 #endif
     }
 

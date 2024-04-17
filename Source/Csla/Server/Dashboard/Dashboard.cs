@@ -62,7 +62,7 @@ namespace Csla.Server.Dashboard
         }
         // trim list to most recent items
         while (_recentActivity.Count > RecentActivityCount)
-          _recentActivity.TryDequeue(out Activity discard);
+          _recentActivity.TryDequeue(out _);
       }
       finally
       {
@@ -78,7 +78,7 @@ namespace Csla.Server.Dashboard
       _timerInitialize.Change(Timeout.Infinite, Timeout.Infinite);
       try
       {
-        while (_initializeQueue.TryDequeue(out InterceptArgs result))
+        while (_initializeQueue.TryDequeue(out _))
         {
           Interlocked.Add(ref _totalCalls, 1);
         }

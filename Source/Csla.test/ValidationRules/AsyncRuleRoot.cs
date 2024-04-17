@@ -78,13 +78,13 @@ namespace Csla.Test.ValidationRules
 
         var bw = new System.ComponentModel.BackgroundWorker();
 
-        bw.RunWorkerCompleted += (o, e) =>
+        bw.RunWorkerCompleted += (_, _) =>
         {
           context.AddOutValue(_nameProperty, string.Format("customer name {0}", cn));
 
           context.Complete();
         };
-        bw.DoWork += (o, e) =>
+        bw.DoWork += (_, _) =>
         {
           Thread.Sleep(50);
         };

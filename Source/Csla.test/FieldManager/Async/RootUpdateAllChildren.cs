@@ -50,7 +50,7 @@ namespace Csla.Test.FieldManager.Async
     }
 
     [Update]
-	protected async Task UpdateAsync()
+    protected async Task UpdateAsync()
     {
       await FieldManager.UpdateAllChildrenAsync();
     }

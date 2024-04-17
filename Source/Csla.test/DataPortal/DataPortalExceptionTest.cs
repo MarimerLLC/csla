@@ -67,7 +67,7 @@ namespace Csla.Test.DataPortal
 
     [RunLocal]
     [Create]
-	protected void DataPortal_Create([Inject] IChildDataPortal<EditableChild1> childDataPortal)
+    protected void DataPortal_Create([Inject] IChildDataPortal<EditableChild1> childDataPortal)
     {
       using (BypassPropertyChecks)
       {

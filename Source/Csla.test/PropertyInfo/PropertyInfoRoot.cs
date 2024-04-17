@@ -26,7 +26,7 @@ namespace Csla.Test.PropertyInfo
     #region DataPortal Methods
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
     }
 

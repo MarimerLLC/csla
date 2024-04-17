@@ -95,7 +95,7 @@ namespace Csla.Test.Basic
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       TestResults.Add("Root", "Deleted");
     }

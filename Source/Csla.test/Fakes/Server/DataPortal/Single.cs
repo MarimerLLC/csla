@@ -40,7 +40,7 @@ namespace Csla.Test.DataPortalTest
     { }
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       DoCreate(0);
       BusinessRules.CheckRules();
@@ -90,7 +90,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       DoInsertUpdate(true);
     }
@@ -113,7 +113,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Delete]
-		private void DataPortal_Delete(int id)
+    private void DataPortal_Delete(int id)
     {
       TestResults.Reinitialise();
       TestResults.Add("Single", "Deleted");
@@ -186,7 +186,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       if (Id == 555)
         throw new Exception("bad value");
@@ -200,7 +200,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Delete]
-		private void DataPortal_Delete(int id)
+    private void DataPortal_Delete(int id)
     {
       if (Id == 555)
         throw new Exception("bad value");
@@ -231,7 +231,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Execute]
-	protected void DataPortal_Execute()
+    protected void DataPortal_Execute()
     {
       if (Value == 555)
         throw new Exception("bad value");

@@ -117,7 +117,7 @@ namespace Csla.Test.DataBinding
     #region "Data Access"
 
     [Create]
-	protected void DataPortal_Create([Inject] IChildDataPortal<ChildEntityList> childDataPortal)
+    protected void DataPortal_Create([Inject] IChildDataPortal<ChildEntityList> childDataPortal)
     {
       SetProperty(ChildrenProperty, childDataPortal.CreateChild());
       TestResults.Reinitialise();
@@ -145,7 +145,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Update]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       Console.WriteLine("DataPortal_Update");
       TestResults.Reinitialise();
@@ -161,7 +161,7 @@ namespace Csla.Test.DataBinding
     }
 
     [Delete]
-	protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       Console.WriteLine("DataPortal_Delete");
       TestResults.Reinitialise();

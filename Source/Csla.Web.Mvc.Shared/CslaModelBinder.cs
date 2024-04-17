@@ -79,7 +79,7 @@ namespace Csla.Web.Mvc
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);
       var list = (IList)result;
 
-      var itemCount = formKeys.Count() / properties.Count();
+      var itemCount = formKeys.Count() / properties.Count;
       for (int i = 0; i < itemCount; i++)
       {
         var child = applicationContext.CreateInstanceDI(childType);

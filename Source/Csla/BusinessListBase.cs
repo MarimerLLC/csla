@@ -404,7 +404,7 @@ namespace Csla
     protected override void SetItem(int index, C item)
     {
       C child = default(C);
-      if (!(ReferenceEquals((C)(this[index]), item)))
+      if (!(ReferenceEquals(this[index], item)))
         child = this[index];
       // replace the original object with this new
       // object

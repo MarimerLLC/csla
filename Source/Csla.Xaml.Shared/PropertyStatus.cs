@@ -509,9 +509,9 @@ namespace Csla.Xaml
     void popup_Loaded(object sender, RoutedEventArgs e)
     {
       (sender as Popup).Loaded -= popup_Loaded;
-      if (((sender as Popup).Child as UIElement).DesiredSize.Height > 0)
+      if ((sender as Popup).Child.DesiredSize.Height > 0)
       {
-        _lastPopupSize = ((sender as Popup).Child as UIElement).DesiredSize;
+        _lastPopupSize = (sender as Popup).Child.DesiredSize;
       }
       if (_lastAppSize.Width < _lastPosition.X + _popupLastPosition.X + _lastPopupSize.Width)
       {

@@ -295,7 +295,7 @@ namespace Csla.Serialization.Mobile
       try
       {
         var value = _values[name].Value;
-        return (value != null ? (T)Utilities.CoerceValue<T>(value.GetType(), null, value) : (T)value);
+        return (value != null ? Utilities.CoerceValue<T>(value.GetType(), null, value) : (T)value);
       }
       catch (Exception ex)
       {

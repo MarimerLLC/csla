@@ -63,12 +63,12 @@ namespace Csla.Test.Nullable
 
         public static NullableObject NewNullableObject(IDataPortal<NullableObject> dataPortal)
         {
-          return dataPortal.Create(new Criteria()) as NullableObject;
+          return dataPortal.Create(new Criteria());
         }
 
         public static NullableObject GetNullableObject(string name, IDataPortal<NullableObject> dataPortal)
         {
-          return dataPortal.Fetch(new Criteria(name)) as NullableObject;
+          return dataPortal.Fetch(new Criteria(name));
         }
 
         public static void DeleteNullableObject(string name, IDataPortal<NullableObject> dataPortal)

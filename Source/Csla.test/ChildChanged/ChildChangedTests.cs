@@ -302,7 +302,7 @@ namespace Csla.Test.ChildChanged
       };
       child.List[0].Name = "abc";
       Assert.IsFalse(lc, "CollectionChanged should not have fired");
-			Assert.IsTrue(rcc, "root.ChildChanged should have fired");
+      Assert.IsTrue(rcc, "root.ChildChanged should have fired");
       Assert.IsTrue(ccc, "child.ChildChanged should have fired");
       Assert.IsTrue(cc, "list.ChildChanged should have fired");
       Assert.IsTrue(ReferenceEquals(child.List[0], cca.ChildObject), "Ref should be equal");

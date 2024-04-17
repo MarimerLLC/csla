@@ -29,7 +29,7 @@ namespace Csla.Testing.Business.DataPortal
     }
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       MethodCalled = "Created";
       BusinessRules.CheckRules();
@@ -43,7 +43,7 @@ namespace Csla.Testing.Business.DataPortal
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       MethodCalled = "Updated";
       throw new DataException("boom");
@@ -56,7 +56,7 @@ namespace Csla.Testing.Business.DataPortal
     }
 
     [Delete]
-		private void DataPortal_Delete(int id)
+    private void DataPortal_Delete(int id)
     {
       throw new DataException("boom");
     }

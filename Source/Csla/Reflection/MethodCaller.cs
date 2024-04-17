@@ -1105,9 +1105,9 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public async static Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
+    public static Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
     {
-      return await CallMethodTryAsync(obj, method, true, parameters);
+      return CallMethodTryAsync(obj, method, true, parameters);
     }
 
     /// <summary>
@@ -1118,9 +1118,9 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public async static Task<object> CallMethodTryAsync(object obj, string method)
+    public static Task<object> CallMethodTryAsync(object obj, string method)
     {
-      return await CallMethodTryAsync(obj, method, false, null);
+      return CallMethodTryAsync(obj, method, false, null);
     }
 
     private async static Task<object> CallMethodTryAsync(object obj, string method, bool hasParameters, params object[] parameters)

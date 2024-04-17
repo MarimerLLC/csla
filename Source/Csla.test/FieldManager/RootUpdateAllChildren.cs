@@ -49,7 +49,7 @@ namespace Csla.Test.FieldManager
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       FieldManager.UpdateAllChildren();
     }

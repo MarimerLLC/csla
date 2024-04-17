@@ -508,19 +508,18 @@ namespace Csla.Xaml
 
     void popup_Loaded(object sender, RoutedEventArgs e)
     {
-      var popup = (Popup)sender;
-      popup.Loaded -= popup_Loaded;
-      if (popup.Child.DesiredSize.Height > 0)
+      (sender as Popup).Loaded -= popup_Loaded;
+      if ((sender as Popup).Child.DesiredSize.Height > 0)
       {
-        _lastPopupSize = popup.Child.DesiredSize;
+        _lastPopupSize = (sender as Popup).Child.DesiredSize;
       }
       if (_lastAppSize.Width < _lastPosition.X + _popupLastPosition.X + _lastPopupSize.Width)
       {
-        popup.HorizontalOffset = _lastAppSize.Width - _lastPosition.X - _popupLastPosition.X - _lastPopupSize.Width;
+        (sender as Popup).HorizontalOffset = _lastAppSize.Width - _lastPosition.X - _popupLastPosition.X - _lastPopupSize.Width;
       }
       if (_lastAppSize.Height < _lastPosition.Y + _popupLastPosition.Y + _lastPopupSize.Height)
       {
-        popup.VerticalOffset = _lastAppSize.Height - _lastPosition.Y - _popupLastPosition.Y - _lastPopupSize.Height;
+        (sender as Popup).VerticalOffset = _lastAppSize.Height - _lastPosition.Y - _popupLastPosition.Y - _lastPopupSize.Height;
       }
     }
 

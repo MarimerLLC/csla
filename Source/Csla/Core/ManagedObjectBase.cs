@@ -258,7 +258,7 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue), false);
+        LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
       }
       catch (Exception ex)
       {
@@ -303,7 +303,7 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, newValue, false);
+        LoadPropertyValue<P>(propertyInfo, oldValue, newValue);
       }
       catch (Exception ex)
       {
@@ -330,7 +330,7 @@ namespace Csla.Core
           else
             oldValue = (P)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, newValue, false);
+        LoadPropertyValue<P>(propertyInfo, oldValue, newValue);
         return !oldValue.Equals(newValue);
       }
       catch (Exception ex)
@@ -339,13 +339,13 @@ namespace Csla.Core
       }
     }
 
-    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
+    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue)
     {
-      var valuesDiffer = false;
+      bool valuesDiffer;
       if (oldValue == null)
         valuesDiffer = newValue != null;
       else
-        valuesDiffer = !(oldValue.Equals(newValue));
+        valuesDiffer = !oldValue.Equals(newValue);
 
       if (valuesDiffer)
         FieldManager.LoadFieldData<P>(propertyInfo, newValue);

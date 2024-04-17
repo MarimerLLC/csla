@@ -97,7 +97,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       //we would update here
     }
@@ -109,7 +109,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Delete]
-	protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
     }

@@ -162,7 +162,7 @@ namespace Csla.Core
       var deleted = new List<C>();
       foreach (var item in target)
       {
-        var sourceItem = source.Where(_ => _.Identity == item.Identity).FirstOrDefault();
+        var sourceItem = source.FirstOrDefault(_ => _.Identity == item.Identity);
         if (sourceItem != null)
           MergeGraph(item, sourceItem);
         else
@@ -192,7 +192,7 @@ namespace Csla.Core
       var deleted = new List<C>();
       foreach (var item in target)
       {
-        var sourceItem = source.Where(_ => _.Identity == item.Identity).FirstOrDefault();
+        var sourceItem = source.FirstOrDefault(_ => _.Identity == item.Identity);
         if (sourceItem != null)
           MergeGraph(item, sourceItem);
         else

@@ -33,7 +33,7 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-      ApplicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetRequiredService(typeof(ApplicationContext));
+      ApplicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
       if (bindingContext == null)
       {
         throw new ArgumentNullException(nameof(bindingContext));
@@ -73,7 +73,7 @@ namespace Csla.Web.Mvc
 
     private void BindBusinessListBase(ModelBindingContext bindingContext, object result)
     {
-      var applicationContext = (ApplicationContext)bindingContext.HttpContext.RequestServices.GetRequiredService(typeof(ApplicationContext));
+      var applicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
       var formKeys = bindingContext.ActionContext.HttpContext.Request.Form.Keys.Where(_ => _.StartsWith(bindingContext.ModelName));
       var childType = Utilities.GetChildItemType(bindingContext.ModelType);
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);

@@ -228,13 +228,16 @@ namespace Csla
       Xaml
     }
 
-#endif
-
     /// <summary>
     /// Returns a value indicating whether the application code
     /// is currently executing on the client or server.
     /// </summary>
-    public ExecutionLocations ExecutionLocation { get; private set; } = ExecutionLocations.Client;
+    public ExecutionLocations ExecutionLocation { get; private set; } =
+#if (ANDROID || IOS || NETFX_CORE) && !NETSTANDARD
+      ExecutionLocations.MobileClient;
+#else
+      ExecutionLocations.Client;
+#endif
 
     internal void SetExecutionLocation(ExecutionLocations location)
     {

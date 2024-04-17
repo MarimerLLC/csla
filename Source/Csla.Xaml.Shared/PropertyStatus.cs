@@ -36,7 +36,6 @@ namespace Csla.Xaml
   [TemplateVisualState(Name = "Information", GroupName = "CommonStates")]
   public class PropertyStatus : ContentControl, INotifyPropertyChanged
   {
-    private bool _isReadOnly = false;
     private FrameworkElement _lastImage;
     private Point _lastPosition;
     private Point _popupLastPosition;
@@ -49,20 +48,10 @@ namespace Csla.Xaml
     /// <value>
     /// <c>true</c> if this DependencyProperty is read only; otherwise, <c>false</c>.
     /// </value>
-    protected bool IsReadOnly
-    {
-      get
-      {
-        return _isReadOnly;
-      }
-      set
-      {
-        _isReadOnly = value;
-      }
-    }
+    protected bool IsReadOnly { get; set; } = false;
 
 
-#region Constructors
+    #region Constructors
 
     private bool _loading = true;
 
@@ -147,41 +136,17 @@ namespace Csla.Xaml
       set { SetValue(PropertyProperty, value); }
     }
 
-    private object _source = null;
     /// <summary>
     /// Gets or sets the Source.
     /// </summary>
     /// <value>The source.</value>
-    protected object Source
-    {
-      get
-      {
-        return _source;
-      }
-      set
-      {
-        _source = value;
-      }
-    }
+    protected object Source { get; set; } = null;
 
-    private string _bindingPath = string.Empty;
     /// <summary>
     /// Gets or sets the binding path.
     /// </summary>
     /// <value>The binding path.</value>
-    protected string BindingPath
-    {
-      get
-      {
-        return _bindingPath;
-      }
-      set
-      {
-        _bindingPath = value;
-      }
-    }
-
-    private string _propertyName = string.Empty;
+    protected string BindingPath { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the name of the property.
@@ -189,11 +154,7 @@ namespace Csla.Xaml
     /// <value>
     /// The name of the property.
     /// </value>
-    protected string PropertyName
-    {
-      get { return _propertyName; }
-      set { _propertyName = value; }
-    }
+    protected string PropertyName { get; set; } = string.Empty;
 
     /// <summary>
     /// Sets the source binding and updates status.

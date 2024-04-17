@@ -18,24 +18,13 @@ namespace Csla.Test.CommandBase
     {
     }
 
-    private TestContext _testContextInstance;
     private TestDIContext _testDIContext = TestDIContextFactory.CreateDefaultContext();
 
     /// <summary>
     ///Gets or sets the test context which provides
     ///information about and functionality for the current test run.
     ///</summary>
-    public TestContext TestContext
-    {
-      get
-      {
-        return _testContextInstance;
-      }
-      set
-      {
-        _testContextInstance = value;
-      }
-    }
+    public TestContext TestContext { get; set; }
 
     [ClassInitialize()]
     public static void ClassInitialize(TestContext testContext) 

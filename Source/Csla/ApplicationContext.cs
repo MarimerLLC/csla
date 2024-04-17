@@ -228,25 +228,17 @@ namespace Csla
       Xaml
     }
 
-    private ExecutionLocations _executionLocation =
-#if (ANDROID || IOS || NETFX_CORE) && !NETSTANDARD
-      ExecutionLocations.MobileClient;
-#else
-      ExecutionLocations.Client;
 #endif
 
     /// <summary>
     /// Returns a value indicating whether the application code
     /// is currently executing on the client or server.
     /// </summary>
-    public ExecutionLocations ExecutionLocation
-    {
-      get { return _executionLocation; }
-    }
+    public ExecutionLocations ExecutionLocation { get; private set; } = ExecutionLocations.Client;
 
     internal void SetExecutionLocation(ExecutionLocations location)
     {
-      _executionLocation = location;
+      ExecutionLocation = location;
     }
 
     /// <summary>

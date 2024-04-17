@@ -169,7 +169,6 @@ namespace Csla
     [Serializable()]
     public class NameValuePair : MobileObject
     {
-      private K _key;
       private V _value;
 
       /// <summary>
@@ -181,10 +180,7 @@ namespace Csla
       /// <summary>
       /// The Key or Name value.
       /// </summary>
-      public K Key
-      {
-        get { return _key; }
-      }
+      public K Key { get; private set; }
 
       /// <summary>
       /// The Value corresponding to the key/name.
@@ -201,7 +197,7 @@ namespace Csla
       /// <param name="value">The value.</param>
       public NameValuePair(K key, V value)
       {
-        _key = key;
+        Key = key;
         _value = value;
       }
 
@@ -223,7 +219,7 @@ namespace Csla
       protected override void OnGetState(SerializationInfo info, StateMode mode)
       {
         base.OnGetState(info, mode);
-        info.AddValue("NameValuePair._key", _key);
+        info.AddValue("NameValuePair._key", Key);
         info.AddValue("NameValuePair._value", _value);
       }
 
@@ -236,7 +232,7 @@ namespace Csla
       protected override void OnSetState(SerializationInfo info, StateMode mode)
       {
         base.OnSetState(info, mode);
-        _key = info.GetValue<K>("NameValuePair._key");
+        Key = info.GetValue<K>("NameValuePair._key");
         _value = info.GetValue<V>("NameValuePair._value");
       }
 

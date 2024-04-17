@@ -25,11 +25,7 @@ namespace Csla.Test.Serialization
       set { SetProperty(DataProperty, ref _data, value); }
     }
 
-    private NonCslaChild _child = new NonCslaChild();
-    public NonCslaChild Child
-    {
-      get { return _child; }
-    }
+    public NonCslaChild Child { get; } = new NonCslaChild();
 
     public static DCRoot NewDCRoot(IDataPortal<DCRoot> dataPortal)
     {

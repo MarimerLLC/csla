@@ -28,22 +28,18 @@ namespace Csla.Test.FieldManager
       get { return this.Parent; }
     }
 
-    private string _status;
-    public string Status
-    {
-      get { return _status; }
-    }
+    public string Status { get; private set; }
 
     [FetchChild]
     protected void Child_Fetch()
     {
-      _status = "Fetched";
+      Status = "Fetched";
     }
 
     protected override void Child_Update(params object[] p)
     {
       base.Child_Update();
-      _status = "Updated";
+      Status = "Updated";
     }
   }
 }

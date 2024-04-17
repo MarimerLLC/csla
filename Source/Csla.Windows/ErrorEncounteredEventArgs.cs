@@ -26,17 +26,12 @@ namespace Csla.Windows
     public ErrorEncounteredEventArgs(string commandName, Exception ex)
       : base(commandName)
     {
-      _ex = ex;
+      Ex = ex;
     }
-
-    private Exception _ex;
 
     /// <summary>
     /// Gets a reference to the exception object.
     /// </summary>
-    public Exception Ex
-    {
-      get { return _ex; }
-    }
+    public Exception Ex { get; }
   }
 }

@@ -73,7 +73,6 @@ namespace Csla.Server.Hosts
       }
     }
 
-    private static Dictionary<string, string> routingTagUrls = new Dictionary<string, string>();
     private static HttpClient _client;
 
     /// <summary>
@@ -81,7 +80,7 @@ namespace Csla.Server.Hosts
     /// data portal route, where each key is the
     /// routing tag identifying the route URL.
     /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls { get => routingTagUrls; set => routingTagUrls = value; }
+    protected static Dictionary<string, string> RoutingTagUrls { get; set; } = new Dictionary<string, string>();
 
     /// <summary>
     /// Gets or sets the HttpClient timeout

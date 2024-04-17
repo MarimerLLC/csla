@@ -15,28 +15,16 @@ namespace Csla
   /// </summary>
   public class DataPortalEventArgs : EventArgs
   {
-    private Server.DataPortalContext _dataPortalContext;
-    private DataPortalOperations _operation;
-    private Exception _exception;
-    private Type _objectType;
-    private object _object;
-
     /// <summary>
     /// The DataPortalContext object passed to the
     /// server-side DataPortal.
     /// </summary>
-    public Server.DataPortalContext DataPortalContext
-    {
-      get { return _dataPortalContext; }
-    }
+    public Server.DataPortalContext DataPortalContext { get; }
 
     /// <summary>
     /// Gets the requested data portal operation.
     /// </summary>
-    public DataPortalOperations Operation
-    {
-      get { return _operation; }
-    }
+    public DataPortalOperations Operation { get; }
 
     /// <summary>
     /// Gets a reference to any exception that occurred
@@ -47,28 +35,19 @@ namespace Csla
     /// exception occurred. Exceptions are returned only as part
     /// of a data portal complete event or method.
     /// </remarks>
-    public Exception Exception
-    {
-      get { return _exception; }
-    }
+    public Exception Exception { get; }
 
     /// <summary>
     /// Gets the object type being processed by the 
     /// data portal.
     /// </summary>
-    public Type ObjectType
-    {
-      get { return _objectType; }
-    }
+    public Type ObjectType { get; }
 
     /// <summary>
     /// Gets the criteria object or business object
     /// being processed by the data portal.
     /// </summary>
-    public object Object
-    {
-      get { return _object; }
-    }
+    public object Object { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -87,10 +66,10 @@ namespace Csla
     /// </param>
     public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object obj, DataPortalOperations operation)
     {
-      _dataPortalContext = dataPortalContext;
-      _operation = operation;
-      _objectType = objectType;
-      _object = obj;
+      DataPortalContext = dataPortalContext;
+      Operation = operation;
+      ObjectType = objectType;
+      Object = obj;
     }
 
     /// <summary>
@@ -114,7 +93,7 @@ namespace Csla
     public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object obj, DataPortalOperations operation, Exception exception)
       : this(dataPortalContext, objectType, obj, operation)
     {
-      _exception = exception;
+      Exception = exception;
     }
   }
 }

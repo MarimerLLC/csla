@@ -22,17 +22,12 @@ namespace Csla.Windows
     /// </param>
     public CslaActionEventArgs(string commandName)
     {
-      _commandName = commandName;
+      CommandName = commandName;
     }
-
-    private string _commandName;
 
     /// <summary>
     /// Gets the name of the command.
     /// </summary>
-    public string CommandName
-    {
-      get { return _commandName; }
-    }
+    public string CommandName { get; }
   }
 }

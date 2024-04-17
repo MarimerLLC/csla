@@ -28,24 +28,20 @@ namespace Csla.Test.FieldManager.Async
       get { return this.Parent; }
     }
 
-    private string _status;
-    public string Status
-    {
-      get { return _status; }
-    }
+    public string Status { get; private set; }
 
     [FetchChild]
     private async Task Child_FetchAsync()
     {
       await Task.Delay(5);
-      _status = "Fetched";
+      Status = "Fetched";
     }
 
     [UpdateChild]
     protected override async Task Child_UpdateAsync(params object[] p)
     {
       await base.Child_UpdateAsync(p);
-      _status = "Updated";
+      Status = "Updated";
     }
   }
 }

@@ -32,13 +32,10 @@ namespace Csla.Test.DataPortalTest
     [Serializable()]
     internal class Criteria : CriteriaBase<Criteria>
     {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-      }
+      public int Id { get; }
+
       public Criteria(int id)
-      { _id = id; }
+      { Id = id; }
     }
 
     [Create]

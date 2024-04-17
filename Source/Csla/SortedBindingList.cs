@@ -30,25 +30,14 @@ namespace Csla
 
     private class ListItem : IComparable<ListItem>
     {
+      public object Key { get; }
 
-      private object _key;
-      private int _baseIndex;
-
-      public object Key
-      {
-        get { return _key; }
-      }
-
-      public int BaseIndex
-      {
-        get { return _baseIndex; }
-        set { _baseIndex = value; }
-      }
+      public int BaseIndex { get; set; }
 
       public ListItem(object key, int baseIndex)
       {
-        _key = key;
-        _baseIndex = baseIndex;
+        Key = key;
+        BaseIndex = baseIndex;
       }
 
       public int CompareTo(ListItem other)
@@ -195,9 +184,9 @@ namespace Csla
       int index = 0;
       _sortIndex.Clear();
 
-      if (_sortBy == null)
+      if (SortProperty == null)
       {
-        foreach (T obj in _list)
+        foreach (T obj in SourceList)
         {
           _sortIndex.Add(new ListItem(obj, index));
           index++;
@@ -205,15 +194,15 @@ namespace Csla
       }
       else
       {
-        foreach (T obj in _list)
+        foreach (T obj in SourceList)
         {
-          _sortIndex.Add(new ListItem(_sortBy.GetValue(obj), index));
+          _sortIndex.Add(new ListItem(SortProperty.GetValue(obj), index));
           index++;
         }
       }
 
       _sortIndex.Sort();
-      _sorted = true;
+      IsSorted = true;
 
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
 
@@ -222,9 +211,9 @@ namespace Csla
     private void UndoSort()
     {
       _sortIndex.Clear();
-      _sortBy = null;
-      _sortOrder = ListSortDirection.Ascending;
-      _sorted = false;
+      SortProperty = null;
+      SortDirection = ListSortDirection.Ascending;
+      IsSorted = false;
 
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
 
@@ -240,10 +229,10 @@ namespace Csla
     /// </summary>
     public IEnumerator<T> GetEnumerator()
     {
-      if (_sorted)
-        return new SortedEnumerator(_list, _sortIndex, _sortOrder);
+      if (IsSorted)
+        return new SortedEnumerator(SourceList, _sortIndex, SortDirection);
       else
-        return _list.GetEnumerator();
+        return SourceList.GetEnumerator();
     }
 
     #endregion
@@ -331,9 +320,9 @@ namespace Csla
     /// <param name="direction">The direction to sort the data.</param>
     public void ApplySort(string propertyName, ListSortDirection direction)
     {
-      _sortBy = GetPropertyDescriptor(propertyName);
+      SortProperty = GetPropertyDescriptor(propertyName);
 
-      ApplySort(_sortBy, direction);
+      ApplySort(SortProperty, direction);
     }
 
     /// <summary>
@@ -344,8 +333,8 @@ namespace Csla
     public void ApplySort(
       PropertyDescriptor property, ListSortDirection direction)
     {
-      _sortBy = property;
-      _sortOrder = direction;
+      SortProperty = property;
+      SortDirection = direction;
       DoSort();
     }
 
@@ -406,10 +395,7 @@ namespace Csla
     /// <summary>
     /// Gets a value indicating whether the view is currently sorted.
     /// </summary>
-    public bool IsSorted
-    {
-      get { return _sorted; }
-    }
+    public bool IsSorted { get; private set; }
 
     /// <summary>
     /// Raised to indicate that the list's data has changed.
@@ -455,18 +441,12 @@ namespace Csla
     /// <summary>
     /// Returns the direction of the current sort.
     /// </summary>
-    public ListSortDirection SortDirection
-    {
-      get { return _sortOrder; }
-    }
+    public ListSortDirection SortDirection { get; private set; } = ListSortDirection.Ascending;
 
     /// <summary>
     /// Returns the PropertyDescriptor of the current sort.
     /// </summary>
-    public PropertyDescriptor SortProperty
-    {
-      get { return _sortBy; }
-    }
+    public PropertyDescriptor SortProperty { get; private set; }
 
     /// <summary>
     /// Returns true since this object does raise the
@@ -526,7 +506,7 @@ namespace Csla
     /// </summary>
     public int Count
     {
-      get { return _list.Count; }
+      get { return SourceList.Count; }
     }
 
     bool System.Collections.ICollection.IsSynchronized
@@ -536,7 +516,7 @@ namespace Csla
 
     object System.Collections.ICollection.SyncRoot
     {
-      get { return _list; }
+      get { return SourceList; }
     }
 
     IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -550,13 +530,13 @@ namespace Csla
     /// <param name="item">Item to add to the list.</param>
     public void Add(T item)
     {
-      _list.Add(item);
+      SourceList.Add(item);
     }
 
     int System.Collections.IList.Add(object value)
     {
       Add((T)value);
-      return SortedIndex(_list.Count - 1);
+      return SortedIndex(SourceList.Count - 1);
     }
 
     /// <summary>
@@ -564,7 +544,7 @@ namespace Csla
     /// </summary>
     public void Clear()
     {
-      _list.Clear();
+      SourceList.Clear();
     }
 
     /// <summary>
@@ -573,7 +553,7 @@ namespace Csla
     /// <param name="item">Item for which to search.</param>
     public bool Contains(T item)
     {
-      return _list.Contains(item);
+      return SourceList.Contains(item);
     }
 
     bool System.Collections.IList.Contains(object value)
@@ -587,7 +567,7 @@ namespace Csla
     /// <param name="item">Item for which to search.</param>
     public int IndexOf(T item)
     {
-      return SortedIndex(_list.IndexOf(item));
+      return SortedIndex(SourceList.IndexOf(item));
     }
 
     int System.Collections.IList.IndexOf(object value)
@@ -603,7 +583,7 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     public void Insert(int index, T item)
     {
-      _list.Insert(index, item);
+      SourceList.Insert(index, item);
     }
 
     void System.Collections.IList.Insert(int index, object value)
@@ -621,7 +601,7 @@ namespace Csla
     /// </summary>
     public bool IsReadOnly
     {
-      get { return _list.IsReadOnly; }
+      get { return SourceList.IsReadOnly; }
     }
 
     object System.Collections.IList.this[int index]
@@ -642,7 +622,7 @@ namespace Csla
     /// <param name="item">Item to be removed.</param>
     public bool Remove(T item)
     {
-      return _list.Remove(item);
+      return SourceList.Remove(item);
     }
 
     void System.Collections.IList.Remove(object value)
@@ -661,18 +641,18 @@ namespace Csla
     /// </remarks>
     public void RemoveAt(int index)
     {
-      if (_sorted)
+      if (IsSorted)
       {
         _initiatedLocally = true;
         int baseIndex = OriginalIndex(index);
 
         // remove the item from the source list
-        _list.RemoveAt(baseIndex);
+        SourceList.RemoveAt(baseIndex);
 
         _initiatedLocally = false;
       }
       else
-        _list.RemoveAt(index);
+        SourceList.RemoveAt(index);
     }
 
     /// <summary>
@@ -684,17 +664,17 @@ namespace Csla
     {
       get
       {
-        if (_sorted)
-          return _list[OriginalIndex(index)];
+        if (IsSorted)
+          return SourceList[OriginalIndex(index)];
         else
-          return _list[index];
+          return SourceList[index];
       }
       set
       {
-        if (_sorted)
-          _list[OriginalIndex(index)] = value;
+        if (IsSorted)
+          SourceList[OriginalIndex(index)] = value;
         else
-          _list[index] = value;
+          SourceList[index] = value;
       }
     }
 
@@ -707,24 +687,14 @@ namespace Csla
     /// SortedBindingList is a view.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public IList<T> SourceList
-    {
-      get
-      {
-        return _list;
-      }
-    }
+    public IList<T> SourceList { get; }
 
     #endregion
 
-    private IList<T> _list;
     private bool _supportsBinding;
     private IBindingList _bindingList;
-    private bool _sorted;
     private bool _initiatedLocally;
-    private PropertyDescriptor _sortBy;
-    private ListSortDirection _sortOrder =
-      ListSortDirection.Ascending;
+
     private List<ListItem> _sortIndex =
       new List<ListItem>();
 
@@ -735,12 +705,12 @@ namespace Csla
     /// <param name="list">The IList (collection) containing the data.</param>
     public SortedBindingList(IList<T> list)
     {
-      _list = list;
+      SourceList = list;
 
-      if (_list is IBindingList)
+      if (SourceList is IBindingList)
       {
         _supportsBinding = true;
-        _bindingList = (IBindingList)_list;
+        _bindingList = (IBindingList)SourceList;
         _bindingList.ListChanged +=
           new ListChangedEventHandler(SourceChanged);
       }
@@ -749,21 +719,21 @@ namespace Csla
     private void SourceChanged(
       object sender, ListChangedEventArgs e)
     {
-      if (_sorted)
+      if (IsSorted)
       {
         switch (e.ListChangedType)
         {
           case ListChangedType.ItemAdded:
-            T newItem = _list[e.NewIndex];
-            if (e.NewIndex == _list.Count - 1)
+            T newItem = SourceList[e.NewIndex];
+            if (e.NewIndex == SourceList.Count - 1)
             {
               object newKey;
-              if (_sortBy != null)
-                newKey = _sortBy.GetValue(newItem);
+              if (SortProperty != null)
+                newKey = SortProperty.GetValue(newItem);
               else
                 newKey = newItem;
 
-              if (_sortOrder == ListSortDirection.Ascending)
+              if (SortDirection == ListSortDirection.Ascending)
                 _sortIndex.Add(
                   new ListItem(newKey, e.NewIndex));
               else
@@ -790,7 +760,7 @@ namespace Csla
           case ListChangedType.ItemDeleted:
             var internalIndex = InternalIndex(e.NewIndex);
             var sortedIndex = internalIndex;
-            if ((_sorted) && (_sortOrder == ListSortDirection.Descending))
+            if ((IsSorted) && (SortDirection == ListSortDirection.Descending))
               sortedIndex = _sortIndex.Count - 1 - internalIndex;
 
             // remove from internal list 
@@ -825,9 +795,9 @@ namespace Csla
     {
       if (sortedIndex == -1) return -1;
 
-      if (_sorted)
+      if (IsSorted)
       {
-        if (_sortOrder == ListSortDirection.Ascending)
+        if (SortDirection == ListSortDirection.Ascending)
           return _sortIndex[sortedIndex].BaseIndex;
         else
           return _sortIndex[_sortIndex.Count - 1 - sortedIndex].BaseIndex;
@@ -841,7 +811,7 @@ namespace Csla
       if (originalIndex == -1) return -1;
 
       int result = 0;
-      if (_sorted)
+      if (IsSorted)
       {
         for (int index = 0; index < _sortIndex.Count; index++)
         {
@@ -851,7 +821,7 @@ namespace Csla
             break;
           }
         }
-        if (_sortOrder == ListSortDirection.Descending)
+        if (SortDirection == ListSortDirection.Descending)
           result = _sortIndex.Count - 1 - result;
       }
       else
@@ -862,7 +832,7 @@ namespace Csla
     private int InternalIndex(int originalIndex)
     {
       int result = 0;
-      if (_sorted)
+      if (IsSorted)
       {
         for (int index = 0; index < _sortIndex.Count; index++)
         {
@@ -885,16 +855,16 @@ namespace Csla
     {
       if (itemIndex <= -1) return;
 
-      ICancelAddNew can = _list as ICancelAddNew;
+      ICancelAddNew can = SourceList as ICancelAddNew;
       if (can != null)
         can.CancelNew(OriginalIndex(itemIndex));
       else
-        _list.RemoveAt(OriginalIndex(itemIndex));
+        SourceList.RemoveAt(OriginalIndex(itemIndex));
     }
 
     void ICancelAddNew.EndNew(int itemIndex)
     {
-      ICancelAddNew can = _list as ICancelAddNew;
+      ICancelAddNew can = SourceList as ICancelAddNew;
       if (can != null)
         can.EndNew(OriginalIndex(itemIndex));
     }

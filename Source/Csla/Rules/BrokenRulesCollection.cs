@@ -25,10 +25,6 @@ namespace Csla.Rules
   [Serializable]
   public class BrokenRulesCollection : Core.ReadOnlyObservableBindingList<BrokenRule>
   {
-    private int _errorCount;
-    private int _warnCount;
-    private int _infoCount;
-
     private object _syncRoot = new object();
 
 
@@ -51,7 +47,7 @@ namespace Csla.Rules
       {
         IsReadOnly = false;
         base.Clear();
-        _errorCount = _warnCount = _infoCount = 0;
+        ErrorCount = WarningCount = InformationCount = 0;
         IsReadOnly = true;
       }
     }
@@ -163,13 +159,13 @@ namespace Csla.Rules
         switch (severity)
         {
             case RuleSeverity.Error:
-                _errorCount += one;
+                ErrorCount += one;
                 break;
             case RuleSeverity.Warning:
-                _warnCount += one;
+                WarningCount += one;
                 break;
             case RuleSeverity.Information:
-                _infoCount += one;
+                InformationCount += one;
                 break;
             default:
                 throw new Exception("unhandled severity=" + severity);
@@ -182,10 +178,7 @@ namespace Csla.Rules
     /// of Error.
     /// </summary>
     /// <value>An integer value.</value>
-    public int ErrorCount
-    {
-      get { return _errorCount; }
-    }
+    public int ErrorCount { get; private set; }
 
     /// <summary>
     /// Gets the number of broken rules in
@@ -193,10 +186,7 @@ namespace Csla.Rules
     /// of Warning.
     /// </summary>
     /// <value>An integer value.</value>
-    public int WarningCount
-    {
-      get { return _warnCount; }
-    }
+    public int WarningCount { get; private set; }
 
     /// <summary>
     /// Gets the number of broken rules in
@@ -204,10 +194,7 @@ namespace Csla.Rules
     /// of Information.
     /// </summary>
     /// <value>An integer value.</value>
-    public int InformationCount
-    {
-      get { return _infoCount; }
-    }
+    public int InformationCount { get; private set; }
 
     /// <summary>
     /// Returns the first <see cref="BrokenRule" /> object
@@ -446,9 +433,9 @@ namespace Csla.Rules
     /// </param>
     protected override void OnGetState(SerializationInfo info)
     {
-      info.AddValue("_errorCount", _errorCount);
-      info.AddValue("_warnCount", _warnCount);
-      info.AddValue("_infoCount", _infoCount);
+      info.AddValue("_errorCount", ErrorCount);
+      info.AddValue("_warnCount", WarningCount);
+      info.AddValue("_infoCount", InformationCount);
       base.OnGetState(info);
     }
 
@@ -461,9 +448,9 @@ namespace Csla.Rules
     /// </param>
     protected override void OnSetState(SerializationInfo info)
     {
-      _errorCount = info.GetValue<int>("_errorCount");
-      _warnCount = info.GetValue<int>("_warnCount");
-      _infoCount = info.GetValue<int>("_infoCount");
+      ErrorCount = info.GetValue<int>("_errorCount");
+      WarningCount = info.GetValue<int>("_warnCount");
+      InformationCount = info.GetValue<int>("_infoCount");
       base.OnSetState(info);
     }
   }

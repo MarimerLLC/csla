@@ -25,8 +25,6 @@ namespace Csla.Xaml
   /// </summary>
   public class DataDecoratorBase : Decorator
   {
-    private object _dataObject;
-
     /// <summary>
     /// Gets a reference to the current
     /// data object.
@@ -38,13 +36,7 @@ namespace Csla.Xaml
     /// <b>data object</b>, not necessarily the DataContext
     /// itself.
     /// </remarks>
-    protected object DataObject
-    {
-      get
-      {
-        return _dataObject;
-      }
-    }
+    protected object DataObject { get; private set; }
 
     /// <summary>
     /// Creates an instance of the object.
@@ -57,7 +49,7 @@ namespace Csla.Xaml
 
     private void Panel_Loaded(object sender, RoutedEventArgs e)
     {
-      UpdateDataObject(null, _dataObject);
+      UpdateDataObject(null, DataObject);
     }
 
     /// <summary>
@@ -92,7 +84,7 @@ namespace Csla.Xaml
     /// </summary>
     private void DataProvider_DataChanged(object sender, EventArgs e)
     {
-      UpdateDataObject(_dataObject, ((DataSourceProvider)sender).Data);
+      UpdateDataObject(DataObject, ((DataSourceProvider)sender).Data);
     }
 
     private void UpdateDataObject(object oldObject, object newObject)
@@ -103,7 +95,7 @@ namespace Csla.Xaml
           UnHookDataContextEvents(oldObject);
 
         // store a ref to the data object
-        _dataObject = GetDataObject(newObject);
+        DataObject = GetDataObject(newObject);
 
         if (newObject != null)
           HookDataContextEvents(newObject);

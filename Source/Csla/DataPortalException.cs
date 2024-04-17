@@ -29,7 +29,7 @@ namespace Csla
       : base(message)
     {
       _innerStackTrace = String.Empty;
-      _businessObject = businessObject;
+      BusinessObject = businessObject;
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ namespace Csla
       : base(message, ex)
     {
       _innerStackTrace = ex.StackTrace;
-      _businessObject = businessObject;
+      BusinessObject = businessObject;
     }
 
     /// <summary>
@@ -119,7 +119,6 @@ namespace Csla
       }
     }
 
-    private object _businessObject;
     private string _innerStackTrace;
 
     /// <summary>
@@ -134,10 +133,7 @@ namespace Csla
     /// state may have been altered by the server and
     /// may no longer reflect data in the database.
     /// </remarks>
-    public object BusinessObject
-    {
-      get { return _businessObject; }
-    }
+    public object BusinessObject { get; }
 
     private Exception _businessException;
 

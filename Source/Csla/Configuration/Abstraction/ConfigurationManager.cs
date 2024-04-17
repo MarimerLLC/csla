@@ -16,8 +16,6 @@ namespace Csla.Configuration
   /// </summary>
   public static class ConfigurationManager
   {
-    private static NameValueCollection _settings = new NameValueCollection();
-
     static ConfigurationManager()
     {
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
@@ -37,17 +35,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the app settings for the application's default settings.
     /// </summary>
-    public static NameValueCollection AppSettings
-    {
-      get
-      {
-        return _settings;
-      }
-      set
-      {
-        _settings = value;
-      }
-    }
+    public static NameValueCollection AppSettings { get; set; } = new NameValueCollection();
 
     /// <summary>
     /// Gets or sets the connection strings from the 

@@ -88,7 +88,7 @@ namespace Csla.Test.AppContext
     }
 
     [Delete]
-	  protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       TestResults.AddOrOverwrite("Root", "Deleted");
       TestResults.AddOrOverwrite("create", "create");

@@ -50,7 +50,7 @@ namespace Csla.Test.EditableRootList
     }
 
     [Update]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       TestResults.Add("DP", "Update");
     }
@@ -62,7 +62,7 @@ namespace Csla.Test.EditableRootList
     }
 
     [Delete]
-	protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       TestResults.Add("DP", "Delete");
     }

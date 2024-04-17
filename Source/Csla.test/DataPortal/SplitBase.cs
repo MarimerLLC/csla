@@ -62,7 +62,7 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       _id = 0;
       TestResults.Reinitialise();
@@ -84,14 +84,14 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       TestResults.Reinitialise();
       TestResults.Add("Split", "Updated");
     }
 
     [Delete]
-		private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(Criteria criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("Split", "Deleted");

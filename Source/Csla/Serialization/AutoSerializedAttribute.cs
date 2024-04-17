@@ -10,12 +10,12 @@ using System;
 namespace Csla.Serialization
 {
 
-	/// <summary>
-	/// Indicate that a non-public field or property should be included in auto serialization
-	/// </summary>
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-	public class AutoSerializedAttribute : Attribute
-	{
-	}
+  /// <summary>
+  /// Indicate that a non-public field or property should be included in auto serialization
+  /// </summary>
+  [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+  public class AutoSerializedAttribute : Attribute
+  {
+  }
 
 }

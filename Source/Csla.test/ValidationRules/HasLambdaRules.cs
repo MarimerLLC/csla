@@ -32,7 +32,7 @@ namespace Csla.Test.ValidationRules
 
     [RunLocal]
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       LoadProperty(SsnProperty, string.Empty);
       LoadProperty(Ssn2Property, string.Empty);

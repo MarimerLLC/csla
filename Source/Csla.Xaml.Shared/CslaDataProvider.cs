@@ -524,7 +524,7 @@ namespace Csla.Xaml
         get { return _manageLifetime; }
         set { _manageLifetime = value; }
       }
-	
+
     }
 
 #endregion

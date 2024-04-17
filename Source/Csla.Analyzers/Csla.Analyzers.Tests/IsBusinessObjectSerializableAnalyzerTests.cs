@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
-	[TestClass]
+  [TestClass]
   public sealed class IsBusinessObjectSerializableAnalyzerTests
   {
     [TestMethod]

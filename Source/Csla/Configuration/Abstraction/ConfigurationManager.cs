@@ -21,7 +21,7 @@ namespace Csla.Configuration
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
       try
       {
-        _settings = System.Configuration.ConfigurationManager.AppSettings;
+        AppSettings = System.Configuration.ConfigurationManager.AppSettings;
         foreach (System.Configuration.ConnectionStringSettings item in System.Configuration.ConfigurationManager.ConnectionStrings)
           ConnectionStrings.Add(item.Name, new ConnectionStringSettings(item));
       }

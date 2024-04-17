@@ -175,6 +175,7 @@ namespace Csla.Web.Mvc
                                     HtmlString granted,
                                     HtmlString denied)
     {
+      _ = htmlHelper;
       if (target is not Csla.Security.IAuthorizeReadWrite instance) return denied;
 
       if ((action == Rules.AuthorizationActions.ReadProperty && instance.CanReadProperty(member.Name)) ||
@@ -203,6 +204,7 @@ namespace Csla.Web.Mvc
                                     HtmlString granted,
                                     string denied)
     {
+      _ = htmlHelper;
       if (target is not Csla.Security.IAuthorizeReadWrite instance) return new HtmlString(denied);
 
       if ((action == Rules.AuthorizationActions.ReadProperty && instance.CanReadProperty(member.Name)) ||
@@ -231,6 +233,7 @@ namespace Csla.Web.Mvc
                                     string granted,
                                     string denied)
     {
+      _ = htmlHelper;
       var instance = target as Csla.Security.IAuthorizeReadWrite;
       if (instance == null) return new HtmlString(denied);
 
@@ -400,6 +403,7 @@ namespace Csla.Web.Mvc
                                     MvcHtmlString granted,
                                     MvcHtmlString denied)
     {
+      _ = htmlHelper;
       var instance = target as Csla.Security.IAuthorizeReadWrite;
       if (instance == null) return denied;
 
@@ -429,6 +433,7 @@ namespace Csla.Web.Mvc
                                     MvcHtmlString granted,
                                     string denied)
     {
+      _ = htmlHelper;
       var instance = target as Csla.Security.IAuthorizeReadWrite;
       if (instance == null) return MvcHtmlString.Create(denied);
 
@@ -458,6 +463,7 @@ namespace Csla.Web.Mvc
                                     string granted,
                                     string denied)
     {
+      _ = htmlHelper;
       var instance = target as Csla.Security.IAuthorizeReadWrite;
       if (instance == null) return MvcHtmlString.Create(denied);
 

@@ -103,11 +103,10 @@ namespace Csla.Rules
 
     private static System.Reflection.MethodInfo FindObjectAuthorizationRulesMethod(Type type)
     {
-      System.Reflection.MethodInfo method;
-      method = type.GetMethods().Where(
-        m => m.IsStatic && m.CustomAttributes.Where(
-        a => a.AttributeType == typeof(ObjectAuthorizationRulesAttribute)).Any()).
-        FirstOrDefault();
+      var method = type.GetMethods().FirstOrDefault(
+        m => m.IsStatic &&
+             m.CustomAttributes.Any(
+               a => a.AttributeType == typeof(ObjectAuthorizationRulesAttribute)));
       if (method == null)
       {
         const BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy;

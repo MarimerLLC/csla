@@ -209,7 +209,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
     }
 
@@ -230,7 +230,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       base.Child_Update();
     }
@@ -245,7 +245,7 @@ namespace Csla.Test.DataPortal
     { }
 
     [Execute]
-	protected void DataPortal_Execute()
+    protected void DataPortal_Execute()
     {
       TestResults.Add("InterceptorCommand", "Execute");
     }

@@ -247,7 +247,7 @@ namespace Csla.Test.ValidationRules
       //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
       Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
-      root = (HasRulesManager)(root.Clone());
+      root = root.Clone();
       context.Assert.AreEqual(false, root.IsValid, "should not be valid after clone");
       context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
       //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;

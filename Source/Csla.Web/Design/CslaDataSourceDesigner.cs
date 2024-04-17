@@ -105,11 +105,11 @@ namespace Csla.Web.Design
       bool result = false;
 
       string oldTypeName;
-      if (string.IsNullOrEmpty(((CslaDataSource)DataSourceControl).TypeAssemblyName))
-        oldTypeName = ((CslaDataSource)DataSourceControl).TypeName;
+      if (string.IsNullOrEmpty(DataSourceControl.TypeAssemblyName))
+        oldTypeName = DataSourceControl.TypeName;
       else
         oldTypeName = string.Format("{0}, {1}", 
-          ((CslaDataSource)DataSourceControl).TypeName, ((CslaDataSource)DataSourceControl).TypeAssemblyName);
+          DataSourceControl.TypeName, DataSourceControl.TypeAssemblyName);
 
       IUIService uiService = (IUIService)_control.Site.GetService(typeof(IUIService));
       CslaDataSourceConfiguration cfg = new CslaDataSourceConfiguration(_control, oldTypeName);
@@ -118,8 +118,8 @@ namespace Csla.Web.Design
         SuppressDataSourceEvents();
         try
         {
-          ((CslaDataSource)DataSourceControl).TypeAssemblyName = string.Empty;
-          ((CslaDataSource)DataSourceControl).TypeName = cfg.TypeName;
+          DataSourceControl.TypeAssemblyName = string.Empty;
+          DataSourceControl.TypeName = cfg.TypeName;
           OnDataSourceChanged(EventArgs.Empty);
           result = true;
         }

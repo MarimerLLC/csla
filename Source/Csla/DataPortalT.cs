@@ -129,7 +129,7 @@ namespace Csla
           if (ex.InnerExceptions.Count > 0)
           {
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleCreateDataPortalException(dpe, isSync, proxy);
+              HandleCreateDataPortalException(dpe);
           }
           throw new DataPortalException(
             string.Format("DataPortal.Create {0}", Resources.Failed),
@@ -137,7 +137,7 @@ namespace Csla
         }
         catch (Server.DataPortalException ex)
         {
-          HandleCreateDataPortalException(ex, isSync, proxy);
+          HandleCreateDataPortalException(ex);
         }
       }
       catch
@@ -147,9 +147,9 @@ namespace Csla
       return result.ReturnObject;
     }
 
-    private void HandleCreateDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    private void HandleCreateDataPortalException(Server.DataPortalException ex)
     {
-      HandleDataPortalException("Create", ex, isSync, proxy);
+      HandleDataPortalException("Create", ex);
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ namespace Csla
           if (ex.InnerExceptions.Count > 0)
           {
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleFetchDataPortalException(dpe, isSync, proxy);
+              HandleFetchDataPortalException(dpe);
           }
           throw new DataPortalException(
             string.Format("DataPortal.Fetch {0}", Resources.Failed),
@@ -239,7 +239,7 @@ namespace Csla
         }
         catch (Server.DataPortalException ex)
         {
-          HandleFetchDataPortalException(ex, isSync, proxy);
+          HandleFetchDataPortalException(ex);
         }
       }
       catch
@@ -277,7 +277,7 @@ namespace Csla
           if (ex.InnerExceptions.Count > 0)
           {
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleDataPortalException("Execute", dpe, isSync, proxy);
+              HandleDataPortalException("Execute", dpe);
           }
           throw new DataPortalException(
             string.Format("DataPortal.Execute {0}", Resources.Failed),
@@ -285,7 +285,7 @@ namespace Csla
         }
         catch (Server.DataPortalException ex)
         {
-          HandleDataPortalException("Execute", ex, isSync, proxy);
+          HandleDataPortalException("Execute", ex);
         }
       }
       catch
@@ -295,9 +295,9 @@ namespace Csla
       return result.ReturnObject;
     }
 
-    private void HandleFetchDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    private void HandleFetchDataPortalException(Server.DataPortalException ex)
     {
-      HandleDataPortalException("Fetch", ex, isSync, proxy);
+      HandleDataPortalException("Fetch", ex);
     }
 
     /// <summary>
@@ -488,7 +488,7 @@ namespace Csla
           if (ex.InnerExceptions.Count > 0)
           {
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleUpdateDataPortalException(dpe, isSync, proxy);
+              HandleUpdateDataPortalException(dpe);
           }
           throw new DataPortalException(
             string.Format("DataPortal.Update {0}", Resources.Failed),
@@ -496,7 +496,7 @@ namespace Csla
         }
         catch (Server.DataPortalException ex)
         {
-          HandleUpdateDataPortalException(ex, isSync, proxy);
+          HandleUpdateDataPortalException(ex);
         }
       }
       catch
@@ -506,12 +506,12 @@ namespace Csla
       return (T)result.ReturnObject;
     }
 
-    private void HandleUpdateDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    private void HandleUpdateDataPortalException(Server.DataPortalException ex)
     {
-      HandleDataPortalException("Update", ex, isSync, proxy);
+      HandleDataPortalException("Update", ex);
     }
 
-    private void HandleDataPortalException(string operation, Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    private void HandleDataPortalException(string operation, Server.DataPortalException ex)
     {
       var result = ex.Result;
       var original = ex.InnerException;
@@ -547,9 +547,9 @@ namespace Csla
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
-    public async Task<T> UpdateAsync(T obj)
+    public Task<T> UpdateAsync(T obj)
     {
-      return await DoUpdateAsync(obj, false);
+      return DoUpdateAsync(obj, false);
     }
 
     internal async Task DoDeleteAsync(Type objectType, object criteria, bool isSync)
@@ -579,7 +579,7 @@ namespace Csla
           {
             var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
             if (dpe != null)
-              HandleDeleteDataPortalException(dpe, isSync, proxy);
+              HandleDeleteDataPortalException(dpe);
           }
           throw new DataPortalException(
             string.Format("DataPortal.Delete {0}", Resources.Failed),
@@ -587,7 +587,7 @@ namespace Csla
         }
         catch (Server.DataPortalException ex)
         {
-          HandleDeleteDataPortalException(ex, isSync, proxy);
+          HandleDeleteDataPortalException(ex);
         }
       }
       catch
@@ -596,9 +596,9 @@ namespace Csla
       }
     }
 
-    private void HandleDeleteDataPortalException(Server.DataPortalException ex, bool isSync, Csla.DataPortalClient.IDataPortalProxy proxy)
+    private void HandleDeleteDataPortalException(Server.DataPortalException ex)
     {
-      HandleDataPortalException("Delete", ex, isSync, proxy);
+      HandleDataPortalException("Delete", ex);
     }
 
     /// <summary>
@@ -661,9 +661,9 @@ namespace Csla
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
-    public async Task<T> ExecuteAsync(T command)
+    public Task<T> ExecuteAsync(T command)
     {
-      return await DoUpdateAsync(command, false);
+      return DoUpdateAsync(command, false);
     }
 
     /// <summary>

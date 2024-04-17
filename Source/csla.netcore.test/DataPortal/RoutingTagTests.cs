@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Csla;
 using Csla.TestHelpers;
@@ -52,11 +53,11 @@ namespace csla.netcore.test.DataPortal
     public void GetRoutingTag()
     {
       var proxy = CreateTestHttpProxy();
-      var method = proxy.GetType().BaseType.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-        .Where(r => r.Name == "GetRoutingToken")
-        .FirstOrDefault();
+      var method = proxy.GetType().BaseType
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .FirstOrDefault(r => r.Name == "GetRoutingToken");
 
-      string result = (string)method.Invoke(proxy, [typeof(RoutingTest)]);
+      string result = (string)method.Invoke(proxy, new object[] { typeof(RoutingTest) });
       Assert.AreEqual("mytag", result);
     }
 
@@ -64,10 +65,10 @@ namespace csla.netcore.test.DataPortal
     public void CreateTagNoVersionNoRoute()
     {
       var proxy = CreateTestHttpProxy();
-      var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-        .Where(r => r.Name == "CreateOperationTag")
-        .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, ["create", "", ""]);
+      var method = proxy.GetType()
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .First(r => r.Name == "CreateOperationTag");
+      string result = (string)method.Invoke(proxy, new object[] { "create", "", "" });
       Assert.AreEqual("create", result);
     }
 
@@ -75,10 +76,10 @@ namespace csla.netcore.test.DataPortal
     public void CreateTagNoVersion()
     {
       var proxy = CreateTestHttpProxy();
-      var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-        .Where(r => r.Name == "CreateOperationTag")
-        .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, ["create", "", "mytag"]);
+      var method = proxy.GetType()
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .First(r => r.Name == "CreateOperationTag");
+      string result = (string)method.Invoke(proxy, new object[] { "create", "", "mytag" });
       Assert.AreEqual("create/mytag-", result);
     }
 
@@ -86,10 +87,10 @@ namespace csla.netcore.test.DataPortal
     public void CreateTagNoRoute()
     {
       var proxy = CreateTestHttpProxy();
-      var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-        .Where(r => r.Name == "CreateOperationTag")
-        .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, ["create", "v1", ""]);
+      var method = proxy.GetType()
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .First(r => r.Name == "CreateOperationTag");
+      string result = (string)method.Invoke(proxy, new object[] { "create", "v1", "" });
       Assert.AreEqual("create/-v1", result);
     }
 
@@ -97,10 +98,10 @@ namespace csla.netcore.test.DataPortal
     public void CreateTag()
     {
       var proxy = CreateTestHttpProxy();
-      var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-        .Where(r => r.Name == "CreateOperationTag")
-        .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, ["create", "v1", "mytag"]);
+      var method = proxy.GetType()
+        .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
+        .First(r => r.Name == "CreateOperationTag");
+      string result = (string)method.Invoke(proxy, new object[] { "create", "v1", "mytag" });
       Assert.AreEqual("create/mytag-v1", result);
     }
 

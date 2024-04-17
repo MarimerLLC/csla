@@ -20,12 +20,7 @@ namespace Csla.Server
     [Serializable()]
     public class GenericBusinessException : Exception
     {
-
-        private string _stackTrace;
-        private IDictionary _data;
-        private string _type;
-
-        /// <summary>
+      /// <summary>
         /// Gets a string representation of the immediate frames on the call stack.
         /// </summary>
         /// <value></value>
@@ -33,38 +28,20 @@ namespace Csla.Server
         /// <PermissionSet>
         /// 	<IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" PathDiscovery="*AllFiles*"/>
         /// </PermissionSet>
-        public override string StackTrace
-        {
-            get
-            {
-                return _stackTrace;
-            }
-        }
+        public override string StackTrace { get; }
 
         /// <summary>
         /// Gets a collection of key/value pairs that provide additional user-defined information about the exception.
         /// </summary>
         /// <value></value>
         /// <returns>An object that implements the <see cref="T:System.Collections.IDictionary"/> interface and contains a collection of user-defined key/value pairs. The default is an empty collection.</returns>
-        public override IDictionary Data
-        {
-            get
-            {
-                return _data;
-            }
-        }
+        public override IDictionary Data { get; }
 
         /// <summary>
         /// Gets the name of the type.
         /// </summary>
         /// <value>The name of the type.</value>
-        public string TypeName
-        {
-            get
-            {
-                return _type;
-            }
-        }
+        public string TypeName { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GenericBusinessException"/> class.
@@ -76,9 +53,9 @@ namespace Csla.Server
         {
             this.Source = wrappedException.Source;
             this.HelpLink = wrappedException.HelpLink;
-            _data = wrappedException.Data;
-            _stackTrace = wrappedException.StackTrace;
-            _type = wrappedException.GetType().ToString();
+            Data = wrappedException.Data;
+            StackTrace = wrappedException.StackTrace;
+            TypeName = wrappedException.GetType().ToString();
         }
 
         /// <summary>
@@ -91,9 +68,9 @@ namespace Csla.Server
         {
             this.Source = wrappedException.Source;
             this.HelpLink = wrappedException.HelpLink;
-            _data = wrappedException.Data;
-            _stackTrace = wrappedException.StackTrace;
-            _type = wrappedException.GetType().ToString();
+            Data = wrappedException.Data;
+            StackTrace = wrappedException.StackTrace;
+            TypeName = wrappedException.GetType().ToString();
         }
 
         /// <summary>
@@ -111,11 +88,11 @@ namespace Csla.Server
             string message = this.Message;
             if ((message == null) || (message.Length <= 0))
             {
-                className = _type;
+                className = TypeName;
             }
             else
             {
-                className = _type + ": " + message;
+                className = TypeName + ": " + message;
             }
             string stackTrace = this.StackTrace;
             if (stackTrace != null)

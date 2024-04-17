@@ -174,7 +174,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
       if (crit._id == 13)

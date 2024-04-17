@@ -92,7 +92,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       TestResults.Add("StronglyTypedDP", "Updated");
     }
@@ -104,7 +104,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Delete]
-	protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
+    protected void DataPortal_Delete(StronglyTypedDP.Criteria criteria)
     {
       TestResults.Add("StronglyTypedDP_Criteria", criteria._ID.ToString());
     }

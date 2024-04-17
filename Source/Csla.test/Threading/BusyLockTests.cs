@@ -32,21 +32,16 @@ namespace Csla.Test.Threading
   {
     private class BusyBO : INotifyBusy
     {
-      private bool _busy;
-
-      public bool IsBusy
-      {
-        get { return _busy; }
-      }
+      public bool IsBusy { get; private set; }
 
       public bool IsSelfBusy
       {
-        get { return _busy; }
+        get { return IsBusy; }
       }
 
       public void MarkBusy(bool busy)
       {
-        _busy = busy;
+        IsBusy = busy;
         if (BusyChanged != null)
           BusyChanged(this, new BusyChangedEventArgs("", busy));
       }

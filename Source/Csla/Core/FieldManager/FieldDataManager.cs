@@ -94,7 +94,7 @@ namespace Csla.Core.FieldManager
     /// property name doesn't correspond to a registered property.</exception>
     public IPropertyInfo GetRegisteredProperty(string propertyName)
     {
-      var result = GetRegisteredProperties().Where(c => c.Name == propertyName).FirstOrDefault();
+      var result = GetRegisteredProperties().FirstOrDefault(c => c.Name == propertyName);
       if (result == null)
         throw new ArgumentOutOfRangeException(string.Format(Resources.PropertyNameNotRegisteredException, propertyName));
       return result;

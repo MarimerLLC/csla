@@ -158,9 +158,9 @@ namespace Csla
     /// <summary>
     /// Saves the object to the database.
     /// </summary>
-    public async Task<T> SaveAsync()
+    public Task<T> SaveAsync()
     {
-      return await SaveAsync(false);
+      return SaveAsync(false);
     }
 
     /// <summary>
@@ -170,9 +170,9 @@ namespace Csla
     /// If true, triggers overriding IsNew and IsDirty. 
     /// If false then it is the same as calling Save().
     /// </param>
-    public async Task<T> SaveAsync(bool forceUpdate)
+    public Task<T> SaveAsync(bool forceUpdate)
     {
-      return await SaveAsync(forceUpdate, null, false);
+      return SaveAsync(forceUpdate, null, false);
     }
 
     /// <summary>

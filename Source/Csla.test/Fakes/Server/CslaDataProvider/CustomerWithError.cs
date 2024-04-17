@@ -152,7 +152,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [Delete]
-		protected void DataPortal_Delete(int criteria)
+    protected void DataPortal_Delete(int criteria)
     {
       Method = "Deleted CustomerWithError ID " + criteria.ToString();
     }
@@ -164,7 +164,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       Method = "Updating CustomerWithError " + GetProperty<string>(NameProperty);
     }

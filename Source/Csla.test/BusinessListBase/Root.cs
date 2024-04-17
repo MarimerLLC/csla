@@ -32,7 +32,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [Create]
-	protected void DataPortal_Create([Inject] IChildDataPortal<ChildList> childDataPortal)
+    protected void DataPortal_Create([Inject] IChildDataPortal<ChildList> childDataPortal)
     {
       Children = childDataPortal.CreateChild();
       BusinessRules.CheckRules();
@@ -45,7 +45,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       FieldManager.UpdateChildren();
     }

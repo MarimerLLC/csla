@@ -58,7 +58,7 @@ namespace Csla.Test.FieldManager.Async
     }
 
     [Update]
-	private async Task UpdateAsync()
+    private async Task UpdateAsync()
     {
       await FieldManager.UpdateChildrenAsync();
     }

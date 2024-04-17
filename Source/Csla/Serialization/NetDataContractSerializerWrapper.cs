@@ -18,9 +18,6 @@ namespace Csla.Serialization
   /// manner.
   public class NetDataContractSerializerWrapper : ISerializationFormatter
   {
-    private readonly NetDataContractSerializer _formatter =
-      new NetDataContractSerializer();
-
     /// <summary>
     /// Converts a serialization stream into an
     /// object graph.
@@ -30,7 +27,7 @@ namespace Csla.Serialization
     /// <returns>A deserialized object graph.</returns>
     public object Deserialize(System.IO.Stream serializationStream)
     {
-      return _formatter.Deserialize(serializationStream);
+      return Formatter.Deserialize(serializationStream);
     }
 
     /// <summary>
@@ -43,7 +40,7 @@ namespace Csla.Serialization
     public object Deserialize(byte[] buffer)
     {
       using var serializationStream = new MemoryStream(buffer);
-      return _formatter.Deserialize(serializationStream);
+      return Formatter.Deserialize(serializationStream);
     }
 
     /// <summary>
@@ -54,7 +51,7 @@ namespace Csla.Serialization
     /// <param name="graph">Object graph to be serialized.</param>
     public void Serialize(System.IO.Stream serializationStream, object graph)
     {
-      _formatter.Serialize(serializationStream, graph);
+      Formatter.Serialize(serializationStream, graph);
     }
 
     /// <summary>
@@ -64,7 +61,7 @@ namespace Csla.Serialization
     public byte[] Serialize(object graph)
     {
       using var buffer = new MemoryStream();
-      _formatter.Serialize(buffer, graph);
+      Formatter.Serialize(buffer, graph);
       buffer.Position = 0;
       return buffer.ToArray();
     }
@@ -74,13 +71,7 @@ namespace Csla.Serialization
     /// <see cref="NetDataContractSerializer"/>
     /// object.
     /// </summary>
-    public NetDataContractSerializer Formatter
-    {
-      get
-      {
-        return _formatter;
-      }
-    }
+    public NetDataContractSerializer Formatter { get; } = new NetDataContractSerializer();
   }
 }
 #endif

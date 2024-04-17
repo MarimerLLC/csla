@@ -14,9 +14,9 @@ namespace Csla.Test.FieldManager.Async
   [Serializable]
   public class Child : BusinessBase<Child>
   {
-    public static async Task<Child> NewChildAsync(IChildDataPortal<Child> childDataPortal)
+    public static Task<Child> NewChildAsync(IChildDataPortal<Child> childDataPortal)
     {
-      return await childDataPortal.CreateChildAsync();
+      return childDataPortal.CreateChildAsync();
     }
 
     public static async Task<Child> GetChildAsync(IChildDataPortal<Child> childDataPortal)

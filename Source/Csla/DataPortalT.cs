@@ -551,9 +551,9 @@ namespace Csla
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
-    public async Task<T> UpdateAsync(T obj)
+    public Task<T> UpdateAsync(T obj)
     {
-      return await DoUpdateAsync(obj, false);
+      return DoUpdateAsync(obj, false);
     }
 
     internal async Task DoDeleteAsync(Type objectType, object criteria, bool isSync)
@@ -665,9 +665,9 @@ namespace Csla
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
-    public async Task<T> ExecuteAsync(T command)
+    public Task<T> ExecuteAsync(T command)
     {
-      return await DoUpdateAsync(command, false);
+      return DoUpdateAsync(command, false);
     }
 
     /// <summary>

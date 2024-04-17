@@ -493,7 +493,7 @@ namespace Csla.Test.SmartDate
 
       // uses buildin parser
       var date2 = new Csla.SmartDate("t");
-      Assert.AreEqual(DateTime.Now.Date, date.Date.Date);
+      Assert.AreEqual(DateTime.Now.Date, date2.Date.Date);
     }
   }
 

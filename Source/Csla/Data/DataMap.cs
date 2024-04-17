@@ -63,7 +63,7 @@ namespace Csla.Data
     /// Type of target object.
     /// </param>
     /// <param name="includedPropertyNames">List of property names to map 1:1.</param>
-    public DataMap(Type sourceType, Type targetType, IEnumerable<string> includedPropertyNames)
+    public DataMap(Type sourceType, Type targetType, IEnumerable<string> includedPropertyNames) : this(sourceType, targetType)
     {
       foreach (var item in includedPropertyNames)
         AddPropertyMapping(item, item);

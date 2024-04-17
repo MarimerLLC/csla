@@ -40,9 +40,7 @@ namespace Csla.Test.Serialization
     private static TestDIContext _testDIContext;
 
     [Serializable]
-    private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>
-    {
-    }
+    private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>;
 
     [Serializable]
     private class TestItem : BusinessBase<TestItem>

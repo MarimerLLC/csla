@@ -64,9 +64,7 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  public class PersonList : PersonListBase
-  {
-  }
+  public class PersonList : PersonListBase;
 
   [Serializable]
   public class PersonListBase : Csla.BusinessBindingListBase<PersonList, PersonEdit>
@@ -76,9 +74,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Serializable()]
-    public class Criteria : Csla.CriteriaBase<Criteria>
-    {
-    }
+    public class Criteria : Csla.CriteriaBase<Criteria>;
   }
 
   [Serializable]

@@ -172,8 +172,6 @@ namespace cslalighttest.CslaDataProvider
 
 
   [Serializable]
-  public class CustomerWithErrorWO_DP_XYZ : BusinessBase<CustomerWithErrorWO_DP_XYZ>
-  {
-  }
+  public class CustomerWithErrorWO_DP_XYZ : BusinessBase<CustomerWithErrorWO_DP_XYZ>;
 
 }

@@ -79,8 +79,6 @@ namespace Csla.Test.MethodCaller
       public TestClass(int unsupported) { }
     }
 
-    public struct TestStruct
-    {
-    }
+    public struct TestStruct;
   }
 }

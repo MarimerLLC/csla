@@ -593,8 +593,7 @@ namespace Csla.Test.Authorization
     }
   }
 
-  public interface IPerTypeAuthRoot
-  { }
+  public interface IPerTypeAuthRoot;
 
   [Serializable]
   public class PerTypeAuthRoot : BusinessBase<PerTypeAuthRoot>, IPerTypeAuthRoot

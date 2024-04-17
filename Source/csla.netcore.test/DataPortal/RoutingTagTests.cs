@@ -126,7 +126,5 @@ namespace csla.netcore.test.DataPortal
 
   [Serializable]
   [DataPortalServerRoutingTag("mytag")]
-  public class RoutingTest : BusinessBase<RoutingTest>
-  {
-  }
+  public class RoutingTest : BusinessBase<RoutingTest>;
 }

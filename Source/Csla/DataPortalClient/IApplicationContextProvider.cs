@@ -7,7 +7,5 @@
 //-----------------------------------------------------------------------
 namespace Csla.Channels.Local
 {
-  internal interface IApplicationContextProvider
-  {
-  }
+  internal interface IApplicationContextProvider;
 }

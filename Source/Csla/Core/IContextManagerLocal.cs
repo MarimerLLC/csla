@@ -10,7 +10,5 @@ namespace Csla.Core
   /// <summary>
   /// Subtype of IContextManager for use by LocalProxy.
   /// </summary>
-  public interface IContextManagerLocal : IContextManager
-  {
-  }
+  public interface IContextManagerLocal : IContextManager;
 }

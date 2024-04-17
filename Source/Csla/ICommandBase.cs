@@ -15,6 +15,5 @@ namespace Csla
   /// </summary>
   public interface ICommandBase
     : ICommandObject, IBusinessObject, IMobileObject, ICloneable,
-      INotifyPropertyChanged
-  { }
+      INotifyPropertyChanged;
 }

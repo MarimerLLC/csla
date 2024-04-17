@@ -123,9 +123,7 @@ namespace Csla.Test.DataPortalTest
 
   [Serializable]
   [ObjectFactory(typeof(SingleWithFactoryFactory))]
-  public class SingleWithFactory : BusinessBase<SingleWithFactory>
-  {
-  }
+  public class SingleWithFactory : BusinessBase<SingleWithFactory>;
 
   public class SingleWithFactoryFactory : ObjectFactoryLoader
   {

@@ -12,7 +12,5 @@ using System.Text;
 namespace Csla.Test.Basic
 {
   [Serializable()]
-  public class GenRoot : GenRootBase
-  {
-  }
+  public class GenRoot : GenRootBase;
 }

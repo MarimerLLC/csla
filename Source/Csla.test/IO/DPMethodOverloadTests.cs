@@ -176,14 +176,10 @@ namespace Csla.Test.IO
     }
 
     [Serializable]
-    private class Criteria
-    {
-    }
+    private class Criteria;
 
     [Serializable]
-    private class OtherCriteria
-    {
-    }
+    private class OtherCriteria;
 
     [Create]
 		protected void DataPortal_Create()

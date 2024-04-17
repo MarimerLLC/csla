@@ -10,15 +10,9 @@ using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
 {
-  public class AddressEdit : Csla.BusinessBase<AddressEdit>
-  {
-    
-  }
+  public class AddressEdit : Csla.BusinessBase<AddressEdit>;
 
-  public class GenericRule<T> : ObjectRule
-  {
-    
-  }
+  public class GenericRule<T> : ObjectRule;
 
 
   [TestClass]

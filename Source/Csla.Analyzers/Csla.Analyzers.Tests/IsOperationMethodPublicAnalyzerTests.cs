@@ -52,8 +52,7 @@ namespace Csla.Analyzers.Tests
   [Fetch]
   public void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -68,8 +67,7 @@ public class A : BusinessBase<A>
 {
   public void AMethod() { }
 }";
-      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -84,8 +82,7 @@ public class A : BusinessBase<A>
 {
   private void DataPortal_Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -101,8 +98,8 @@ public class A : BusinessBase<A>
   [Fetch]
   public void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, 
-        new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublic },
+      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.IsOperationMethodPublic],
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
 
@@ -119,8 +116,8 @@ public sealed class A : BusinessBase<A>
   [Fetch]
   public void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, 
-        new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublic },
+      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.IsOperationMethodPublic],
         diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
     }
 
@@ -137,8 +134,8 @@ public interface A
   [Fetch]
   void Fetch();
 }";
-      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, 
-        new[] { Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface });
+      await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface]);
     }
   }
 }

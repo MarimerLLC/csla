@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWithNotMobileObject()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -49,8 +48,7 @@ public class A : BusinessBase<A>
 {
   public void Foo() { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -64,8 +62,7 @@ public class A : BusinessBase<A>
   [Fetch]
   private void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -80,8 +77,7 @@ public class A : BusinessBase<A>
   [Fetch]
   private async Task FetchAsync() { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -96,7 +92,7 @@ public class A : BusinessBase<A>
   private string Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes });
+        code, [Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes]);
     }
   }
 }

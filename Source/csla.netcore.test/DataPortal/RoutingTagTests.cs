@@ -56,7 +56,7 @@ namespace csla.netcore.test.DataPortal
         .Where(r => r.Name == "GetRoutingToken")
         .FirstOrDefault();
 
-      string result = (string)method.Invoke(proxy, new object[] { typeof(RoutingTest) });
+      string result = (string)method.Invoke(proxy, [typeof(RoutingTest)]);
       Assert.AreEqual("mytag", result);
     }
 
@@ -67,7 +67,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
         .Where(r => r.Name == "CreateOperationTag")
         .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, new object[] { "create", "", "" });
+      string result = (string)method.Invoke(proxy, ["create", "", ""]);
       Assert.AreEqual("create", result);
     }
 
@@ -78,7 +78,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
         .Where(r => r.Name == "CreateOperationTag")
         .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, new object[] { "create", "", "mytag" });
+      string result = (string)method.Invoke(proxy, ["create", "", "mytag"]);
       Assert.AreEqual("create/mytag-", result);
     }
 
@@ -89,7 +89,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
         .Where(r => r.Name == "CreateOperationTag")
         .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, new object[] { "create", "v1", "" });
+      string result = (string)method.Invoke(proxy, ["create", "v1", ""]);
       Assert.AreEqual("create/-v1", result);
     }
 
@@ -100,7 +100,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType().GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
         .Where(r => r.Name == "CreateOperationTag")
         .FirstOrDefault();
-      string result = (string)method.Invoke(proxy, new object[] { "create", "v1", "mytag" });
+      string result = (string)method.Invoke(proxy, ["create", "v1", "mytag"]);
       Assert.AreEqual("create/mytag-v1", result);
     }
 

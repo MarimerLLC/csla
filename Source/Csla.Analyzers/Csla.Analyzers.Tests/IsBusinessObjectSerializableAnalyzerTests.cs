@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotMobileObject()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -48,8 +47,7 @@ using System;
 
 [Serializable]
 public class A : BusinessBase<A>{ }";
-      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -60,7 +58,7 @@ public class A : BusinessBase<A>{ }";
 
 public class A : BusinessBase<A>{ }";
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
+        code, [Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable]);
     }
 
     [TestMethod]
@@ -78,7 +76,7 @@ namespace Testnamespace
 }
 ";
 
-      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, [Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable]);
     }
   }
 }

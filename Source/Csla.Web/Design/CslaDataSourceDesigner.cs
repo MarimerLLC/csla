@@ -66,7 +66,7 @@ namespace Csla.Web.Design
     /// </remarks>
     public override string[] GetViewNames()
     {
-      return new string[] { "Default" };
+      return ["Default"];
     }
 
     /// <summary>

@@ -468,7 +468,7 @@ namespace Csla.Reflection
 
       if (method.TakesParamArray)
       {
-        plist = new object[] { parameters };
+        plist = [parameters];
       }
       else
       {

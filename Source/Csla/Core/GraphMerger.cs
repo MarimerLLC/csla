@@ -146,7 +146,7 @@ namespace Csla.Core
       else
         methodReference = this.GetType().GetMethod("MergeBusinessListGraph");
       var gr = methodReference.MakeGenericMethod(genericTypeParams);
-      gr.Invoke(this, new object[] { target, source });
+      gr.Invoke(this, [target, source]);
 #endif
     }
 

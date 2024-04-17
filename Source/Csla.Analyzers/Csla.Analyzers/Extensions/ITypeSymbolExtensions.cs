@@ -8,7 +8,7 @@ namespace Csla.Analyzers.Extensions
   internal static class ITypeSymbolExtensions
   {
     private static readonly Type[] SerializableTypesByMobileFormatter =
-      new[] { typeof(TimeSpan), typeof(DateTimeOffset), typeof(byte[]), typeof(byte[][]), typeof(char[]), typeof(Guid), typeof(List<int>) };
+      [typeof(TimeSpan), typeof(DateTimeOffset), typeof(byte[]), typeof(byte[][]), typeof(char[]), typeof(Guid), typeof(List<int>)];
 
     internal static bool IsBusinessRule(this ITypeSymbol @this)
     {

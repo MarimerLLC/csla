@@ -76,12 +76,14 @@ namespace Csla.Xaml
         else
           parameterValue = MethodParameter;
 
-        targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
+        targetMethod.Invoke(target, [
+          this, new ExecuteEventArgs
             {
               MethodParameter = parameterValue,
               TriggerParameter = e,
               TriggerSource = TargetControl
-            }});
+            }
+        ]);
       }
       else
         throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);

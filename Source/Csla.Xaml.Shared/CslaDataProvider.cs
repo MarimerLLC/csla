@@ -32,7 +32,7 @@ namespace Csla.Xaml
     public CslaDataProvider()
     {
       _commandManager = new CslaDataProviderCommandManager(this);
-      _factoryParameters = new ObservableCollection<object>();
+      _factoryParameters = [];
       _factoryParameters.CollectionChanged += 
         new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
     }
@@ -515,7 +515,7 @@ namespace Csla.Xaml
       {
         get { return _factoryParameters; }
         set { _factoryParameters = 
-          new ObservableCollection<object>(new List<object>(value)); }
+          new ObservableCollection<object>([..value]); }
       }
       private bool _manageLifetime;
 

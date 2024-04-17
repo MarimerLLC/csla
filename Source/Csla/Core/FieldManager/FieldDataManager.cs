@@ -81,7 +81,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public List<IPropertyInfo> GetRegisteredProperties()
     {
-      return new List<IPropertyInfo>(_propertyList);
+      return [.._propertyList];
     }
 
     /// <summary>
@@ -179,11 +179,11 @@ namespace Csla.Core.FieldManager
     private static List<IPropertyInfo> CreateConsolidatedList(Type type)
     {
       ForceStaticFieldInit(type);
-      List<IPropertyInfo> result = new List<IPropertyInfo>();
+      List<IPropertyInfo> result = [];
 
       // get inheritance hierarchy
       Type current = type;
-      List<Type> hierarchy = new List<Type>();
+      List<Type> hierarchy = [];
       do
       {
         hierarchy.Add(current);
@@ -618,7 +618,7 @@ namespace Csla.Core.FieldManager
     /// </remarks>
     public List<object> GetChildren()
     {
-      List<object> result = new List<object>();
+      List<object> result = [];
       foreach (var item in _fieldData)
         if (item != null && (item.Value is IEditableBusinessObject || item.Value is IEditableCollection))
           result.Add(item.Value);

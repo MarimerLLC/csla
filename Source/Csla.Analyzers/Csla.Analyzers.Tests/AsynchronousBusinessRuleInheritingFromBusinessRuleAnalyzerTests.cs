@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotABusinessRule()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -46,8 +45,7 @@ namespace Csla.Analyzers.Tests
 @"using Csla.Rules;
 
 public class A : BusinessRule { }";
-      await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -63,8 +61,7 @@ public class A : BusinessRule
     base.Execute(context);
   }
 }";
-      await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -83,7 +80,7 @@ public class A : BusinessRule
   }
 }";
       await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance });
+        code, [Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance]);
     }
   }
 }

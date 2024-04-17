@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotABusinessRule()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -51,7 +50,7 @@ public class A
   protected override void Execute(IRuleContext context) { }
 }";
       await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.BusinessRuleContextUsage });
+        code, [Constants.AnalyzerIdentifiers.BusinessRuleContextUsage]);
     }
 
     [TestMethod]
@@ -68,8 +67,7 @@ public class A
     context.AddDirtyProperty(null);
   }
 }";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -85,7 +83,7 @@ public class A
   protected override async Task ExecuteAsync(IRuleContext context) { }
 }";
       await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.BusinessRuleContextUsage });
+        code, [Constants.AnalyzerIdentifiers.BusinessRuleContextUsage]);
     }
 
     [TestMethod]
@@ -103,8 +101,7 @@ public class A
     context.AddDirtyProperty(null);
   }
 }";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -122,8 +119,7 @@ public class A
     context.AddDirtyProperty(null);
   }
 }";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
   }
 }

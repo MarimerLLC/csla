@@ -115,7 +115,7 @@ namespace Csla.Generators.CSharp.AutoSerialization
     /// <returns>A hashset of all of the namespaces required for generation</returns>
     private HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
     {
-      HashSet<string> requiredNamespaces = new HashSet<string>() { "System", "Csla.Serialization.Mobile" };
+      HashSet<string> requiredNamespaces = ["System", "Csla.Serialization.Mobile"];
 
       foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
       {

@@ -178,7 +178,7 @@ namespace Csla.Windows
             GetEmptyValue(
             Utilities.GetPropertyType(
               propertyInfo.PropertyType)),
-            new object[] { });
+            []);
         }
       }
 
@@ -202,9 +202,9 @@ namespace Csla.Windows
       {
         bool couldWrite =
           (!(bool)propertyInfo.GetValue(
-          ctl, new object[] { }));
+          ctl, []));
         propertyInfo.SetValue(
-          ctl, !canWrite, new object[] { });
+          ctl, !canWrite, []);
         if ((!couldWrite) && (canWrite))
           binding.ReadValue();
       }

@@ -150,7 +150,7 @@ namespace Csla.Test.ValidationRules
     {
       if (InputProperties == null)
       {
-        InputProperties = new List<IPropertyInfo>();
+        InputProperties = [];
       }
       InputProperties.AddRange(inputProperties);
 
@@ -220,7 +220,7 @@ namespace Csla.Test.ValidationRules
       : base(primaryProperty)
     {
       CompareTo = compareToProperty;
-      InputProperties = new List<IPropertyInfo>() { primaryProperty, compareToProperty };
+      InputProperties = [primaryProperty, compareToProperty];
       AffectedProperties.Add(compareToProperty);
     }
 
@@ -248,7 +248,7 @@ namespace Csla.Test.ValidationRules
       : base(primaryProperty)
     {
       NameProperty = nameProperty;
-      InputProperties = new List<IPropertyInfo>() { primaryProperty };
+      InputProperties = [primaryProperty];
       AffectedProperties.Add(NameProperty);
 
       CanRunOnServer = false;

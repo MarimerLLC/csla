@@ -35,7 +35,7 @@ namespace Csla.Reflection
         object[] inParams = null;
         if (parameters == null)
         {
-          inParams = new object[] { null };
+          inParams = [null];
 
         }
         else

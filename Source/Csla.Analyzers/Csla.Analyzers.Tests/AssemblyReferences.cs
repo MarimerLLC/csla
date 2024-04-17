@@ -89,7 +89,7 @@ namespace Csla.Analyzers.Tests
            LoadDependencies(assemblies, assembly);
          }
 
-         return new HashSet<MetadataReference>(assemblies.Transform());
+         return [..assemblies.Transform()];
        });
   }
 }

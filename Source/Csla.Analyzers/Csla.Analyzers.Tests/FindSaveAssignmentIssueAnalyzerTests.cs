@@ -60,8 +60,7 @@ public class B
     x.Save();
   }
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -83,8 +82,7 @@ public class B
     await x.SaveAsync();
   }
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -103,8 +101,7 @@ public class B
     x = x.Save();
   }
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -124,8 +121,7 @@ public class B
     x = await x.SaveAsync();
   }
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -145,7 +141,7 @@ public class B
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue });
+        code, [Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue]);
     }
 
     [TestMethod]
@@ -166,7 +162,7 @@ public class B
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue });
+        code, [Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue]);
     }
 
     [TestMethod]
@@ -185,8 +181,7 @@ public class B
     return x.Save();
   }
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -206,8 +201,7 @@ public class B
     return await x.SaveAsync();
   }
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -230,8 +224,7 @@ public class B
 
   private B Run(Func<B> code) => code();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -255,8 +248,7 @@ public class B
 
   private async Task<A> Run(Func<Task<A>> code) => await code();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -282,8 +274,7 @@ public class B
   private A Run(Func<A> code) => code();
 }
 ";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -309,8 +300,7 @@ public class B
 
   private async Task<A> Run(Func<Task<A>> code) => await code();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -323,8 +313,7 @@ public class A : BusinessBase<A>
 {
   public void Foo() => Save();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -338,8 +327,7 @@ public class A : BusinessBase<A>
 {
   public async Task Foo() => await SaveAsync();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -352,8 +340,7 @@ public class A : BusinessBase<A>
 {
   public void Foo() => this.Save();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -367,8 +354,7 @@ public class A : BusinessBase<A>
 {
   public async Task Foo() => this.SaveAsync();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -382,8 +368,7 @@ public class A
 {
   public void Foo() => base.Save();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -397,8 +382,7 @@ public class A : BusinessBase<A>
 {
   public async Task Foo() => await base.SaveAsync();
 }";
-      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindSaveAssignmentIssueAnalyzer>(code, []);
     }
   }
 }

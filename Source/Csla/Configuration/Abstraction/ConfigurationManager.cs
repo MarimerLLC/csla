@@ -30,7 +30,7 @@ namespace Csla.Configuration
         throw new ConfigurationErrorsException(ex.Message, ex);
       }
 #else
-      _settings = new NameValueCollection();
+      AppSettings = new NameValueCollection();
 #endif
     }
 

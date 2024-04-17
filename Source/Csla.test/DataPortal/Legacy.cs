@@ -31,17 +31,14 @@ namespace Csla.Test.DataPortalTest
     [Serializable()]
     internal class Criteria
     {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-      }
+      public int Id { get; }
+
       public Criteria(int id)
-      { _id = id; }
+      { Id = id; }
     }
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       _id = 0;
       TestResults.Reinitialise();
@@ -63,14 +60,14 @@ namespace Csla.Test.DataPortalTest
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       TestResults.Reinitialise();
       TestResults.Add("Legacy", "Updated");
     }
 
     [Delete]
-		protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("Legacy", "Deleted");

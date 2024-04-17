@@ -13,7 +13,6 @@ namespace Csla
     private readonly object _syncRoot = new object();
     private T _value;
     private readonly Func<T> _delegate;
-    private bool _isValueCreated;
 
     ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
     private ApplicationContext ApplicationContext { get; set; }
@@ -43,10 +42,7 @@ namespace Csla
     /// <value>
     /// 	<c>true</c> if this instance is value created; otherwise, <c>false</c>.
     /// </value>
-    public bool IsValueCreated
-    {
-      get { return _isValueCreated; }
-    }
+    public bool IsValueCreated { get; private set; }
 
     /// <summary>
     /// Gets the instance.
@@ -56,14 +52,14 @@ namespace Csla
     {
       get
       {
-        if (!_isValueCreated) // not initialized 
+        if (!IsValueCreated) // not initialized 
         {
           lock (_syncRoot)       // lock syncobject
           {
-            if (!_isValueCreated) // recheck for initialized after lock is taken
+            if (!IsValueCreated) // recheck for initialized after lock is taken
             {
                _value = _delegate.Invoke();
-              _isValueCreated = true;   // mark as initialized
+              IsValueCreated = true;   // mark as initialized
             }
           }
         }

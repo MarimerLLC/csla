@@ -264,75 +264,22 @@ namespace Csla.Test.DataMapper
 
   public class DataMapTarget
   {
-    private int _int;
+    public int MyInt { get; set; }
 
-    public int MyInt
-    {
-      get { return _int; }
-      set { _int = value; }
-    }
+    public double MyDouble { get; set; }
 
-    private double _double;
+    public bool MyBool { get; set; }
 
-    public double MyDouble
-    {
-      get { return _double; }
-      set { _double = value; }
-    }
+    public Nullable<int> MyNInt { get; set; }
 
-    private bool _bool;
+    public DataMapEnum MyEnum { get; set; }
 
-    public bool MyBool
-    {
-      get { return _bool; }
-      set { _bool = value; }
-    }
+    public DateTime MyDate { get; set; }
 
-    private Nullable<int> _nint;
+    public Csla.SmartDate MySmartDate { get; set; }
 
-    public Nullable<int> MyNInt
-    {
-      get { return _nint; }
-      set { _nint = value; }
-    }
+    public Guid MyGuid { get; set; }
 
-    private DataMapEnum _enum;
-
-    public DataMapEnum MyEnum
-    {
-      get { return _enum; }
-      set { _enum = value; }
-    }
-
-    private DateTime _date;
-
-    public DateTime MyDate
-    {
-      get { return _date; }
-      set { _date = value; }
-    }
-
-    private Csla.SmartDate _smartDate;
-
-    public Csla.SmartDate MySmartDate
-    {
-      get { return _smartDate; }
-      set { _smartDate = value; }
-    }
-
-    private Guid _guid;
-
-    public Guid MyGuid
-    {
-      get { return _guid; }
-      set { _guid = value; }
-    }
-
-    private string _string;
-    public string MyString 
-    {
-      get { return _string; }
-      set { _string = value; }
-    }
+    public string MyString { get; set; }
   }
 }

@@ -93,8 +93,8 @@ namespace Csla.Core.TypeConverters
     public override object ConvertTo(
       System.ComponentModel.ITypeDescriptorContext context,
       System.Globalization.CultureInfo culture, object value, System.Type destinationType)
-  	{
-	    SmartDate sd = (SmartDate)value;
+    {
+      SmartDate sd = (SmartDate)value;
       if (destinationType == typeof(string))
         return sd.Text;
       else if (destinationType == typeof(DateTime))

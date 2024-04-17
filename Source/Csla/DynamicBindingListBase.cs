@@ -190,8 +190,7 @@ namespace Csla
         if (!ReferenceEquals(savable, item))
         {
           // raise Saved event from original object
-          Core.ISavable original = item as Core.ISavable;
-          if (original != null)
+          if (item is ISavable original)
             original.SaveComplete(result);
         }
 

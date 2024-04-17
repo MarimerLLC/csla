@@ -118,7 +118,7 @@ namespace Csla.Test.EditableRootList
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       
       // simulate grid edit
-      System.ComponentModel.IEditableObject obj = (System.ComponentModel.IEditableObject)item;
+      System.ComponentModel.IEditableObject obj = item;
       obj.BeginEdit();
       list[0].Data = "test";
       obj.EndEdit();
@@ -143,7 +143,7 @@ namespace Csla.Test.EditableRootList
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
 
       // simulate grid edit
-      System.ComponentModel.IEditableObject obj = (System.ComponentModel.IEditableObject)item;
+      System.ComponentModel.IEditableObject obj = item;
       obj.BeginEdit();
       item.Data = "new data";
       Assert.IsFalse(list[0].IsNew, "Object should not be new");

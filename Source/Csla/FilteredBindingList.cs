@@ -27,24 +27,14 @@ namespace Csla
 
     private class ListItem 
     {
-      private object _key;
-      private int _baseIndex;
+      public object Key { get; }
 
-      public object Key
-      {
-        get { return _key; }
-      }
-
-      public int BaseIndex
-      {
-        get { return _baseIndex; }
-        set { _baseIndex = value; }
-      }
+      public int BaseIndex { get; set; }
 
       public ListItem(object key, int baseIndex)
       {
-        _key = key;
-        _baseIndex = baseIndex;
+        Key = key;
+        BaseIndex = baseIndex;
       }
 
       public override string ToString()
@@ -143,30 +133,30 @@ namespace Csla
       int index = 0;
       _filterIndex.Clear();
 
-      if (_provider == null)
-        _provider = DefaultFilter.Filter;
+      if (FilterProvider == null)
+        FilterProvider = DefaultFilter.Filter;
 
-      if (_filterBy == null)
+      if (FilterProperty == null)
       {
-        foreach (T obj in _list)
+        foreach (T obj in SourceList)
         {
-          if (_provider.Invoke(obj, _filter))
+          if (FilterProvider.Invoke(obj, _filter))
             _filterIndex.Add(new ListItem(obj, index));
           index++;
         }
       }
       else
       {
-        foreach (T obj in _list)
+        foreach (T obj in SourceList)
         {
-          object tmp = _filterBy.GetValue(obj);
-          if (_provider.Invoke(tmp, _filter))
+          object tmp = FilterProperty.GetValue(obj);
+          if (FilterProvider.Invoke(tmp, _filter))
             _filterIndex.Add(new ListItem(tmp, index));
           index++;
         }
       }
 
-      _filtered = true;
+      IsFiltered = true;
 
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
 
@@ -175,9 +165,9 @@ namespace Csla
     private void UnDoFilter()
     {
       _filterIndex.Clear();
-      _filterBy = null;
+      FilterProperty = null;
       _filter = null;
-      _filtered = false;
+      IsFiltered = false;
 
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
 
@@ -193,10 +183,10 @@ namespace Csla
     /// <returns></returns>
     public IEnumerator<T> GetEnumerator()
     {
-      if (_filtered)
-        return new FilteredEnumerator(_list, _filterIndex);
+      if (IsFiltered)
+        return new FilteredEnumerator(SourceList, _filterIndex);
       else
-        return _list.GetEnumerator();
+        return SourceList.GetEnumerator();
     }
 
     #endregion
@@ -524,10 +514,10 @@ namespace Csla
     {
       get 
       {
-        if (_filtered)
+        if (IsFiltered)
           return _filterIndex.Count;
         else
-          return _list.Count; 
+          return SourceList.Count; 
       }
     }
 
@@ -538,7 +528,7 @@ namespace Csla
 
     object System.Collections.ICollection.SyncRoot
     {
-      get { return _list; }
+      get { return SourceList; }
     }
 
     IEnumerator System.Collections.IEnumerable.GetEnumerator()
@@ -552,13 +542,13 @@ namespace Csla
     /// <param name="item">Item to be added.</param>
     public void Add(T item)
     {
-      _list.Add(item);
+      SourceList.Add(item);
     }
 
     int System.Collections.IList.Add(object value)
     {
       Add((T)value);
-      int index = FilteredIndex(_list.Count - 1);
+      int index = FilteredIndex(SourceList.Count - 1);
       if (index > -1)
         return index;
       else
@@ -570,11 +560,11 @@ namespace Csla
     /// </summary>
     public void Clear()
     {
-      if (_filtered)
+      if (IsFiltered)
         for (int index = Count - 1; index >= 0; index--)
           RemoveAt(index);
       else
-        _list.Clear();
+        SourceList.Clear();
     }
 
     /// <summary>
@@ -586,7 +576,7 @@ namespace Csla
     /// contained in the list.</returns>
     public bool Contains(T item)
     {
-      return _list.Contains(item);
+      return SourceList.Contains(item);
     }
 
     bool System.Collections.IList.Contains(object value)
@@ -603,7 +593,7 @@ namespace Csla
     /// in the list.</returns>
     public int IndexOf(T item)
     {
-      return FilteredIndex(_list.IndexOf(item));
+      return FilteredIndex(SourceList.IndexOf(item));
     }
 
     int System.Collections.IList.IndexOf(object value)
@@ -619,7 +609,7 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     public void Insert(int index, T item)
     {
-      _list.Insert(index, item);
+      SourceList.Insert(index, item);
     }
 
     void System.Collections.IList.Insert(int index, object value)
@@ -638,7 +628,7 @@ namespace Csla
     /// </summary>
     public bool IsReadOnly
     {
-      get { return _list.IsReadOnly; }
+      get { return SourceList.IsReadOnly; }
     }
 
     object System.Collections.IList.this[int index]
@@ -661,7 +651,7 @@ namespace Csla
     /// remove succeeds.</returns>
     public bool Remove(T item)
     {
-      return _list.Remove(item);
+      return SourceList.Remove(item);
     }
 
     void System.Collections.IList.Remove(object value)
@@ -676,12 +666,12 @@ namespace Csla
     /// to be removed.</param>
     public void RemoveAt(int index)
     {
-      if (_filtered)
+      if (IsFiltered)
       {
-        _list.RemoveAt(OriginalIndex(index));
+        SourceList.RemoveAt(OriginalIndex(index));
       }
       else
-        _list.RemoveAt(index);
+        SourceList.RemoveAt(index);
     }
 
     /// <summary>
@@ -694,20 +684,20 @@ namespace Csla
     {
       get
       {
-        if (_filtered)
+        if (IsFiltered)
         {
           int src = OriginalIndex(index);
-          return _list[src];
+          return SourceList[src];
         }
         else
-          return _list[index];
+          return SourceList[index];
       }
       set
       {
-        if (_filtered)
-          _list[OriginalIndex(index)] = value;
+        if (IsFiltered)
+          SourceList[OriginalIndex(index)] = value;
         else
-          _list[index] = value;
+          SourceList[index] = value;
       }
     }
 
@@ -720,23 +710,14 @@ namespace Csla
     /// SortedBindingList is a view.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public IList<T> SourceList
-    {
-      get
-      {
-        return _list;
-      }
-    }
+    public IList<T> SourceList { get; }
 
     #endregion
 
-    private IList<T> _list;
     private bool _supportsBinding;
     private IBindingList _bindingList;
-    private bool _filtered;
-    private PropertyDescriptor _filterBy;
     private object _filter;
-    FilterProvider _provider = null;
+
     private List<ListItem> _filterIndex = 
       new List<ListItem>();
 
@@ -746,12 +727,12 @@ namespace Csla
     /// <param name="list">The IList (collection) containing the data.</param>
     public FilteredBindingList(IList<T> list)
     {
-      _list = list;
+      SourceList = list;
 
-      if (_list is IBindingList)
+      if (SourceList is IBindingList)
       {
         _supportsBinding = true;
-        _bindingList = (IBindingList)_list;
+        _bindingList = (IBindingList)SourceList;
         _bindingList.ListChanged += 
           new ListChangedEventHandler(SourceChanged);
       }
@@ -766,7 +747,7 @@ namespace Csla
     /// </param>
     public FilteredBindingList(IList<T> list, FilterProvider filterProvider) : this(list)
     {
-      _provider = filterProvider;
+      FilterProvider = filterProvider;
     }
 
     /// <summary>
@@ -782,17 +763,7 @@ namespace Csla
     /// If this value is set to Nothing (null in C#) then the default
     /// filter provider, <see cref="DefaultFilter" /> will be used.
     /// </remarks>
-    public FilterProvider FilterProvider
-    {
-      get
-      {
-        return _provider;
-      }
-      set
-      {
-        _provider = value;
-      }
-    }
+    public FilterProvider FilterProvider { get; set; } = null;
 
     /// <summary>
     /// The property on which the items will be filtered.
@@ -801,18 +772,12 @@ namespace Csla
     /// the items in the collection will be filtered.</value>
     /// <returns></returns>
     /// <remarks></remarks>
-    public PropertyDescriptor FilterProperty
-    {
-      get { return _filterBy; }
-    }
+    public PropertyDescriptor FilterProperty { get; private set; }
 
     /// <summary>
     /// Returns True if the view is currently filtered.
     /// </summary>
-    public bool IsFiltered
-    {
-      get { return _filtered; }
-    }
+    public bool IsFiltered { get; private set; }
 
     /// <summary>
     /// Applies a filter to the view using the
@@ -821,7 +786,7 @@ namespace Csla
     /// </summary>
     public void ApplyFilter()
     {
-      if (_filterBy == null || _filter == null)
+      if (FilterProperty == null || _filter == null)
         throw new ArgumentNullException(Resources.FilterRequiredException);
       DoFilter();
     }
@@ -833,7 +798,7 @@ namespace Csla
     /// <param name="filter">The filter criteria.</param>
     public void ApplyFilter(string propertyName, object filter)
     {
-      _filterBy = null;
+      FilterProperty = null;
       _filter = filter;
 
       if (!String.IsNullOrEmpty(propertyName))
@@ -844,13 +809,13 @@ namespace Csla
         {
           if (prop.Name == propertyName)
           {
-            _filterBy = prop;
+            FilterProperty = prop;
             break;
           }
         }
       }
 
-      ApplyFilter(_filterBy, filter);
+      ApplyFilter(FilterProperty, filter);
 
     }
 
@@ -862,7 +827,7 @@ namespace Csla
     public void ApplyFilter(
       PropertyDescriptor property, object filter)
     {
-      _filterBy = property;
+      FilterProperty = property;
       _filter = filter;
       DoFilter();
     }
@@ -880,7 +845,7 @@ namespace Csla
     private void SourceChanged(
       object sender, ListChangedEventArgs e)
     {
-      if (_filtered)
+      if (IsFiltered)
       {
         int listIndex;
         int filteredIndex = -1;
@@ -891,9 +856,9 @@ namespace Csla
           case ListChangedType.ItemAdded:
             listIndex = e.NewIndex;
             // add new value to index
-            newItem = _list[listIndex];
-            if (_filterBy != null)
-              newKey = _filterBy.GetValue(newItem);
+            newItem = SourceList[listIndex];
+            if (FilterProperty != null)
+              newKey = FilterProperty.GetValue(newItem);
             else
               newKey = newItem;
             _filterIndex.Add(
@@ -911,9 +876,9 @@ namespace Csla
             filteredIndex = FilteredIndex(listIndex);
             if (filteredIndex != -1)
             {
-              newItem = _list[listIndex];
-              if (_filterBy != null)
-                newKey = _filterBy.GetValue(newItem);
+              newItem = SourceList[listIndex];
+              if (FilterProperty != null)
+                newKey = FilterProperty.GetValue(newItem);
               else
                 newKey = newItem;
               _filterIndex[filteredIndex] =
@@ -964,7 +929,7 @@ namespace Csla
 
     private int OriginalIndex(int filteredIndex)
     {
-      if (_filtered)
+      if (IsFiltered)
         return _filterIndex[filteredIndex].BaseIndex;
       else
         return filteredIndex;
@@ -973,7 +938,7 @@ namespace Csla
     private int FilteredIndex(int originalIndex)
     {
       int result = -1;
-      if (_filtered)
+      if (IsFiltered)
       {
         for (int index = 0; index < _filterIndex.Count; index++)
         {
@@ -1008,16 +973,16 @@ namespace Csla
     {
       if (itemIndex <= -1) return;
 
-      ICancelAddNew can = _list as ICancelAddNew;
+      ICancelAddNew can = SourceList as ICancelAddNew;
       if (can != null)
         can.CancelNew(OriginalIndex(itemIndex));
       else
-        _list.RemoveAt(OriginalIndex(itemIndex));
+        SourceList.RemoveAt(OriginalIndex(itemIndex));
     }
 
     void ICancelAddNew.EndNew(int itemIndex)
     {
-      ICancelAddNew can = _list as ICancelAddNew;
+      ICancelAddNew can = SourceList as ICancelAddNew;
       if (can != null)
         can.EndNew(OriginalIndex(itemIndex));
     }

@@ -53,29 +53,23 @@ namespace Csla.Test.DataPortalTest
     [Serializable()]
     private class Criteria
     {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-      }
+      public int Id { get; }
+
       public Criteria(int id)
-      { _id = id; }
+      { Id = id; }
     }
 
     [Serializable()]
     private class OtherCriteria
     {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-      }
+      public int Id { get; }
+
       public OtherCriteria(int id)
-      { _id = id; }
+      { Id = id; }
     }
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       using (BypassPropertyChecks)
         Id = 0;
@@ -119,13 +113,13 @@ namespace Csla.Test.DataPortalTest
       TestResults.Add("SingleOverload", "Fetched1");
     }
     [Delete]
-		private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(Criteria criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("SingleOverload", "Deleted");
     }
     [Delete]
-		private void DataPortal_Delete(OtherCriteria criteria)
+    private void DataPortal_Delete(OtherCriteria criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("SingleOverload", "Deleted1");

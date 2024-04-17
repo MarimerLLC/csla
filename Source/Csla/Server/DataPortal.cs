@@ -792,9 +792,8 @@ namespace Csla.Server
         return Array.Empty<object>();
       else if (criteria is NullCriteria)
         return new object[] { null };
-      else if (criteria.GetType().Equals(typeof(object[])))
+      else if (criteria is object[] array)
       {
-        var array = (object[])criteria;
         var clength = array.GetLength(0);
         if (clength == 1 && array[0] is EmptyCriteria)
           return Array.Empty<object>();

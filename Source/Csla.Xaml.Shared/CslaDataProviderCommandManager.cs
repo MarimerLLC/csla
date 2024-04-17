@@ -23,16 +23,11 @@ namespace Csla.Xaml
   /// </remarks>
   public class CslaDataProviderCommandManager : System.Windows.UIElement
   {
-    private CslaDataProvider _provider;
-
-    private CslaDataProvider Provider
-    {
-      get { return _provider; }
-    }
+    private CslaDataProvider Provider { get; }
 
     internal CslaDataProviderCommandManager(CslaDataProvider provider)
     {
-      _provider = provider;
+      Provider = provider;
     }
 
     static CslaDataProviderCommandManager()

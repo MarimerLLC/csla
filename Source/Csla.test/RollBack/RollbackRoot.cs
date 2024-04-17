@@ -107,7 +107,7 @@ namespace Csla.Test.RollBack
     }
 
     [Delete]
-	protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       //we would delete here
       TestResults.AddOrOverwrite("Root", "Deleted");

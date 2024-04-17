@@ -63,12 +63,12 @@ namespace Csla.Test.Nullable
 
         public static NullableObject NewNullableObject(IDataPortal<NullableObject> dataPortal)
         {
-          return dataPortal.Create(new Criteria()) as NullableObject;
+          return dataPortal.Create(new Criteria());
         }
 
         public static NullableObject GetNullableObject(string name, IDataPortal<NullableObject> dataPortal)
         {
-          return dataPortal.Fetch(new Criteria(name)) as NullableObject;
+          return dataPortal.Fetch(new Criteria(name));
         }
 
         public static void DeleteNullableObject(string name, IDataPortal<NullableObject> dataPortal)
@@ -98,7 +98,7 @@ namespace Csla.Test.Nullable
         }
 
         [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
         {
             if (IsDeleted)
             {
@@ -123,7 +123,7 @@ namespace Csla.Test.Nullable
         }
 
         [Delete]
-		protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
         {
             //we would delete here
             TestResults.Add("NullableObject", "Deleted");

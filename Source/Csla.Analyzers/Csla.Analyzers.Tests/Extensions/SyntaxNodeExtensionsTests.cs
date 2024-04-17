@@ -73,9 +73,9 @@ public class A
       Assert.IsNull(rootNode.FindParent<AwaitExpressionSyntax>());
     }
 
-    private async Task<SyntaxNode> GetRootAsync(string code)
+    private Task<SyntaxNode> GetRootAsync(string code)
     {
-      return await CSharpSyntaxTree.ParseText(code).GetRootAsync();
+      return CSharpSyntaxTree.ParseText(code).GetRootAsync();
     }
   }
 }

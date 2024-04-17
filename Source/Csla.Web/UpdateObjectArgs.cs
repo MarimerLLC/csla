@@ -14,12 +14,6 @@ namespace Csla.Web
   /// </summary>
   public class UpdateObjectArgs : EventArgs
   {
-
-    private System.Collections.IDictionary _keys;
-    private System.Collections.IDictionary _values;
-    private System.Collections.IDictionary _oldValues;
-    private int _rowsAffected;
-
     /// <summary>
     /// Gets or sets the number of rows affected
     /// while handling this event.
@@ -31,11 +25,7 @@ namespace Csla.Web
     /// value to indicate the number of rows affected
     /// by the operation.
     /// </remarks>
-    public int RowsAffected
-    {
-      get { return _rowsAffected; }
-      set { _rowsAffected = value; }
-    }
+    public int RowsAffected { get; set; }
 
     /// <summary>
     /// The list of key values entered by the user.
@@ -44,10 +34,7 @@ namespace Csla.Web
     /// web page to take the list of values, put them
     /// into a business object and to save that object
     /// into the database.</remarks>
-    public System.Collections.IDictionary Keys
-    {
-      get { return _keys; }
-    }
+    public System.Collections.IDictionary Keys { get; }
 
     /// <summary>
     /// The list of data values entered by the user.
@@ -56,10 +43,7 @@ namespace Csla.Web
     /// web page to take the list of values, put them
     /// into a business object and to save that object
     /// into the database.</remarks>
-    public System.Collections.IDictionary Values
-    {
-      get { return _values; }
-    }
+    public System.Collections.IDictionary Values { get; }
 
     /// <summary>
     /// The list of old data values maintained by
@@ -69,19 +53,16 @@ namespace Csla.Web
     /// web page to take the list of values, put them
     /// into a business object and to save that object
     /// into the database.</remarks>
-    public System.Collections.IDictionary OldValues
-    {
-      get { return _oldValues; }
-    }
+    public System.Collections.IDictionary OldValues { get; }
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     public UpdateObjectArgs(System.Collections.IDictionary keys, System.Collections.IDictionary values, System.Collections.IDictionary oldValues)
     {
-      _keys = keys;
-      _values = values;
-      _oldValues = oldValues;
+      Keys = keys;
+      Values = values;
+      OldValues = oldValues;
     }
 
   }

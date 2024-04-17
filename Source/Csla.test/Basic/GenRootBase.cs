@@ -65,7 +65,7 @@ namespace Csla.Test.Basic
         }
 
         [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
         {
             if (IsDeleted)
             {
@@ -90,7 +90,7 @@ namespace Csla.Test.Basic
         }
 
         [Delete]
-		protected void DataPortal_Delete(object Criteria)
+    protected void DataPortal_Delete(object Criteria)
         {
             //we would delete here
             TestResults.Add("GenRoot", "Deleted");

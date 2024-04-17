@@ -50,7 +50,7 @@ namespace Csla.Test.Reflection
       if (paramTypes.Length > 0)
         throw new NotImplementedException();
       var ti = t.GetTypeInfo();
-      var m = ti.DeclaredConstructors.Where(r => r.GetParameters().Count() == 0);
+      var m = ti.DeclaredConstructors.Where(r => r.GetParameters().Length == 0);
       if (!((bindingFlags & BindingFlags.Instance) > 0))
         m = m.Where(r => r.IsStatic);
       if (!((bindingFlags & BindingFlags.Static) > 0))

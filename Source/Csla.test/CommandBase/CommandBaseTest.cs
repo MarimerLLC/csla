@@ -18,24 +18,13 @@ namespace Csla.Test.CommandBase
     {
     }
 
-    private TestContext _testContextInstance;
     private TestDIContext _testDIContext = TestDIContextFactory.CreateDefaultContext();
 
     /// <summary>
     ///Gets or sets the test context which provides
     ///information about and functionality for the current test run.
     ///</summary>
-    public TestContext TestContext
-    {
-      get
-      {
-        return _testContextInstance;
-      }
-      set
-      {
-        _testContextInstance = value;
-      }
-    }
+    public TestContext TestContext { get; set; }
 
     [ClassInitialize()]
     public static void ClassInitialize(TestContext testContext) 
@@ -95,8 +84,8 @@ namespace Csla.Test.CommandBase
       IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
-      IPropertyInfo nameProperty = (IPropertyInfo) CommandObject.NameProperty;
-      IPropertyInfo numProperty = (IPropertyInfo)CommandObject.NumProperty;
+      IPropertyInfo nameProperty = CommandObject.NameProperty;
+      IPropertyInfo numProperty = CommandObject.NumProperty;
 
       LoadProperty(cmd, nameProperty, "Rocky");
       LoadProperty(cmd, numProperty, 8);
@@ -129,8 +118,8 @@ namespace Csla.Test.CommandBase
       IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
-      IPropertyInfo nameProperty = (IPropertyInfo)CommandObject.NameProperty;
-      IPropertyInfo numProperty = (IPropertyInfo)CommandObject.NumProperty;
+      IPropertyInfo nameProperty = CommandObject.NameProperty;
+      IPropertyInfo numProperty = CommandObject.NumProperty;
 
       LoadProperty(cmd, nameProperty, "Rocky");
       LoadProperty(cmd, numProperty, 8);

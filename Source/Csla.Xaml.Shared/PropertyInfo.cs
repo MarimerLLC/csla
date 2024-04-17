@@ -74,6 +74,7 @@ namespace Csla.Xaml
     public PropertyInfo(bool testing)
       : this()
     {
+      _ = testing;
       _loading = false;
       UpdateState();
     }

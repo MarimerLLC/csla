@@ -337,31 +337,17 @@ namespace Csla.Windows
   /// </summary>
   public class BindingErrorEventArgs : EventArgs
   {
-
-    #region Property Fields
-
-    private Exception _exception = null;
-    private Binding _binding = null;
-
-    #endregion
-
     #region Properties
 
     /// <summary>
     /// Exception gets the exception that caused the binding error.
     /// </summary>
-    public Exception Exception
-    {
-      get { return (_exception); }
-    }
+    public Exception Exception { get; }
 
     /// <summary>
     /// Binding gets the binding that caused the exception.
     /// </summary>
-    public Binding Binding
-    {
-      get { return (_binding); }
-    }
+    public Binding Binding { get; }
 
     #endregion
 
@@ -374,8 +360,8 @@ namespace Csla.Windows
     /// <param name="exception">The exception that caused the error.</param>
     public BindingErrorEventArgs(Binding binding, Exception exception)
     {
-      _binding = binding;
-      _exception = exception;
+      Binding = binding;
+      Exception = exception;
     }
 
     #endregion

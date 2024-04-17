@@ -188,7 +188,7 @@ namespace Csla
         var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
         try
         {
-          result = await dp.UpdateAsync((T)savable);
+          result = await dp.UpdateAsync(savable);
         }
         catch (AggregateException ex)
         {

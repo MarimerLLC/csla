@@ -48,12 +48,6 @@ namespace Csla.Windows
       new Dictionary<Control, CslaActionExtenderProperties>();
 
     private object _dataSource = null;
-    private bool _autoShowBrokenRules = true;
-    private bool _warnIfCloseOnDirty = true;
-    private string _dirtyWarningMessage = Resources.ActionExtenderDirtyWarningMessagePropertyDefault;
-    private bool _warnOnCancel = false;
-    private string _warnOnCancelMessage = Resources.ActionExtenderWarnOnCancelMessagePropertyDefault;
-    private string _objectIsValidMessage = Resources.ActionExtenderObjectIsValidMessagePropertyDefault;
     private IContainer _container = null;
     private BindingSourceNode _bindingSourceTree = null;
     private bool _closeForm = false;
@@ -100,11 +94,7 @@ namespace Csla.Windows
     [Description("If True, then the broken rules will be displayed in a message box, should the object be invalid.")]
     [Bindable(true)]
     [DefaultValue(true)]
-    public bool AutoShowBrokenRules
-    {
-      get { return _autoShowBrokenRules; }
-      set { _autoShowBrokenRules = value; }
-    }
+    public bool AutoShowBrokenRules { get; set; } = true;
 
     /// <summary>
     /// Gets or sets a value indicating whether to warn the
@@ -114,11 +104,7 @@ namespace Csla.Windows
     [Description("If True, then the control (when set to Close mode) will warn the user if the object is currently dirty.")]
     [Bindable(true)]
     [DefaultValue(true)]
-    public bool WarnIfCloseOnDirty
-    {
-      get { return _warnIfCloseOnDirty; }
-      set { _warnIfCloseOnDirty = value; }
-    }
+    public bool WarnIfCloseOnDirty { get; set; } = true;
 
     /// <summary>
     /// Gets or sets the message shown to the user
@@ -129,11 +115,7 @@ namespace Csla.Windows
     [Bindable(true)]
     [DefaultValue("Object is currently in a dirty changed.")]
     [Localizable(true)]
-    public string DirtyWarningMessage
-    {
-      get { return _dirtyWarningMessage; }
-      set { _dirtyWarningMessage = value; }
-    }
+    public string DirtyWarningMessage { get; set; } = Resources.ActionExtenderDirtyWarningMessagePropertyDefault;
 
     /// <summary>
     /// Gets or sets a value indicating whether to warn
@@ -143,11 +125,7 @@ namespace Csla.Windows
     [Description("If True, then the Cancel button will warn when pressed and the object is dirty.")]
     [Bindable(true)]
     [DefaultValue(false)]
-    public bool WarnOnCancel
-    {
-      get { return _warnOnCancel; }
-      set { _warnOnCancel = value; }
-    }
+    public bool WarnOnCancel { get; set; } = false;
 
     /// <summary>
     /// Gets or sets the message shown to the user
@@ -158,11 +136,7 @@ namespace Csla.Windows
     [Bindable(true)]
     [DefaultValue("Are you sure you want to revert to the previous values?")]
     [Localizable(true)]
-    public string WarnOnCancelMessage
-    {
-      get { return _warnOnCancelMessage; }
-      set { _warnOnCancelMessage = value; }
-    }
+    public string WarnOnCancelMessage { get; set; } = Resources.ActionExtenderWarnOnCancelMessagePropertyDefault;
 
     /// <summary>
     /// Gets or sets the message shown to the user when a button with a 
@@ -173,11 +147,7 @@ namespace Csla.Windows
     [Bindable(true)]
     [DefaultValue("Object is valid.")]
     [Localizable(true)]
-    public string ObjectIsValidMessage
-    {
-      get { return _objectIsValidMessage; }
-      set { _objectIsValidMessage = value; }
-    }
+    public string ObjectIsValidMessage { get; set; } = Resources.ActionExtenderObjectIsValidMessagePropertyDefault;
 
     #endregion
 
@@ -663,9 +633,9 @@ namespace Csla.Windows
                 case CslaFormAction.Cancel:
 
                   diagResult = DialogResult.Yes;
-                  if (_warnOnCancel && trackableObject.IsDirty)
+                  if (WarnOnCancel && trackableObject.IsDirty)
                     diagResult = MessageBox.Show(
-                      _warnOnCancelMessage, Resources.Warning,
+                      WarnOnCancelMessage, Resources.Warning,
                       MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                   if (diagResult == DialogResult.Yes)
@@ -679,9 +649,9 @@ namespace Csla.Windows
                   diagResult = DialogResult.Yes;
                   if (trackableObject.IsDirty || trackableObject.IsNew)
                   {
-                    if (_warnIfCloseOnDirty)
+                    if (WarnIfCloseOnDirty)
                       diagResult = MessageBox.Show(
-                        _dirtyWarningMessage + Environment.NewLine + Resources.ActionExtenderCloseConfirmation,
+                        DirtyWarningMessage + Environment.NewLine + Resources.ActionExtenderCloseConfirmation,
                         Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                   }
 
@@ -715,7 +685,7 @@ namespace Csla.Windows
                     }
                     else
                     {
-                      MessageBox.Show(_objectIsValidMessage, Resources.ActionExtenderInformationCaption,
+                      MessageBox.Show(ObjectIsValidMessage, Resources.ActionExtenderInformationCaption,
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                   }
@@ -785,13 +755,13 @@ namespace Csla.Windows
             businessObject.GetBrokenRules().ErrorCount > 0,
             businessObject.GetBrokenRules().WarningCount > 0,
             businessObject.GetBrokenRules().InformationCount > 0,
-            _autoShowBrokenRules);
+            AutoShowBrokenRules);
 
           OnHasBrokenRules(argsHasBrokenRules);
 
           okToContinue = !argsHasBrokenRules.Cancel;
           //in case the client changed it
-          _autoShowBrokenRules = argsHasBrokenRules.AutoShowBrokenRules;
+          AutoShowBrokenRules = argsHasBrokenRules.AutoShowBrokenRules;
         }
       }
 
@@ -799,7 +769,7 @@ namespace Csla.Windows
       {
         if (savableObjectIsBusinessBase)
         {
-          if (_autoShowBrokenRules && !businessObject.IsValid)
+          if (AutoShowBrokenRules && !businessObject.IsValid)
           {
             string brokenRules = string.Empty;
             foreach (var brokenRule in businessObject.GetBrokenRules())

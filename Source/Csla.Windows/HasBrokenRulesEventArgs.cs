@@ -36,10 +36,10 @@ namespace Csla.Windows
     public HasBrokenRulesEventArgs(string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)
       : base(false, commandName)
     {
-      _hasErrors = hasErrors;
-      _hasWarnings = hasWarnings;
-      _hasInformation = hasInformation;
-      _autoShowBrokenRules = autoShowBrokenRules;
+      HasErrors = hasErrors;
+      HasWarning = hasWarnings;
+      HasInformation = hasInformation;
+      AutoShowBrokenRules = autoShowBrokenRules;
     }
 
     /// <summary>
@@ -66,52 +66,34 @@ namespace Csla.Windows
     public HasBrokenRulesEventArgs(bool cancel, string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)
       : base(cancel, commandName)
     {
-      _hasErrors = hasErrors;
-      _hasWarnings = hasWarnings;
-      _hasInformation = hasInformation;
-      _autoShowBrokenRules = autoShowBrokenRules;
+      HasErrors = hasErrors;
+      HasWarning = hasWarnings;
+      HasInformation = hasInformation;
+      AutoShowBrokenRules = autoShowBrokenRules;
     }
-
-    private bool _hasErrors = false;
-    private bool _hasWarnings = false;
-    private bool _hasInformation = false;
-    private bool _autoShowBrokenRules = false;
 
     /// <summary>
     /// Gets a value indicating whether
     /// an error severity rule exists.
     /// </summary>
-    public bool HasErrors
-    {
-      get { return _hasErrors; }
-    }
+    public bool HasErrors { get; } = false;
 
     /// <summary>
     /// Gets a value indicating whether
     /// a warning severity rule exists.
     /// </summary>
-    public bool HasWarning
-    {
-      get { return _hasWarnings; }
-    }
+    public bool HasWarning { get; } = false;
 
     /// <summary>
     /// Gets a value indicating whether
     /// an information severity rule exists.
     /// </summary>
-    public bool HasInformation
-    {
-      get { return _hasInformation; }
-    }
+    public bool HasInformation { get; } = false;
 
     /// <summary>
     /// Gets a value indicating whether
     /// to show broken rules.
     /// </summary>
-    public bool AutoShowBrokenRules
-    {
-      get { return _autoShowBrokenRules; }
-    }
-
+    public bool AutoShowBrokenRules { get; } = false;
   }
 }

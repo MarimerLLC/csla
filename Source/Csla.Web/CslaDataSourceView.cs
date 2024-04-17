@@ -20,10 +20,6 @@ namespace Csla.Web
   {
 
     private CslaDataSource _owner;
-    private string _typeAssemblyName;
-    private string _typeName;
-    private bool _typeSupportsPaging;
-    private bool _typeSupportsSorting;
 
     /// <summary>
     /// Creates an instance of the object.
@@ -41,22 +37,14 @@ namespace Csla.Web
     /// Get or set the name of the assembly (no longer used).
     /// </summary>
     /// <value>Obsolete - do not use.</value>
-    public string TypeAssemblyName
-    {
-      get { return _typeAssemblyName; }
-      set { _typeAssemblyName = value; }
-    }
+    public string TypeAssemblyName { get; set; }
 
     /// <summary>
     /// Get or set the full type name of the business object
     /// class to be used as a data source.
     /// </summary>
     /// <value>Full type name of the business class.</value>
-    public string TypeName
-    {
-      get { return _typeName; }
-      set { _typeName = value; }
-    }
+    public string TypeName { get; set; }
 
     /// <summary>
     /// Get or set a value indicating whether the
@@ -67,21 +55,13 @@ namespace Csla.Web
     /// (collection) must implement 
     /// <see cref="Csla.Core.IReportTotalRowCount"/>.
     /// </remarks>
-    public bool TypeSupportsPaging
-    {
-      get { return _typeSupportsPaging; }
-      set { _typeSupportsPaging = value; }
-    }
+    public bool TypeSupportsPaging { get; set; }
 
     /// <summary>
     /// Get or set a value indicating whether the
     /// business object data source supports sorting.
     /// </summary>
-    public bool TypeSupportsSorting
-    {
-      get { return _typeSupportsSorting; }
-      set { _typeSupportsSorting = value; }
-    }
+    public bool TypeSupportsSorting { get; set; }
 
     #region Select
 
@@ -149,7 +129,7 @@ namespace Csla.Web
       get
       {
         if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
-          CslaDataSource.GetType(_typeAssemblyName, _typeName)))
+          CslaDataSource.GetType(TypeAssemblyName, TypeName)))
           return true;
         else
           return false;
@@ -187,7 +167,7 @@ namespace Csla.Web
       get
       {
         if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
-          CslaDataSource.GetType(_typeAssemblyName, _typeName)))
+          CslaDataSource.GetType(TypeAssemblyName, TypeName)))
           return true;
         else
           return false;
@@ -226,7 +206,7 @@ namespace Csla.Web
       get
       {
         if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
-          CslaDataSource.GetType(_typeAssemblyName, _typeName)))
+          CslaDataSource.GetType(TypeAssemblyName, TypeName)))
           return true;
         else
           return false;
@@ -265,7 +245,7 @@ namespace Csla.Web
     {
       get 
       {
-        return _typeSupportsPaging;
+        return TypeSupportsPaging;
       }
     }
 
@@ -287,7 +267,7 @@ namespace Csla.Web
     {
       get 
       {
-        return _typeSupportsSorting;
+        return TypeSupportsSorting;
       }
     }
 

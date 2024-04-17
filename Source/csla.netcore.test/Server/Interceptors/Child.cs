@@ -16,8 +16,6 @@ namespace Csla.Test.Server.Interceptors
   [Serializable()]
   public class Child : BusinessBase<Child>
   {
-    private Guid _guid = System.Guid.NewGuid();
-
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
 
     [Required]
@@ -27,10 +25,7 @@ namespace Csla.Test.Server.Interceptors
       set { SetProperty(DataProperty, value); }
     }
 
-    public Guid Guid
-    {
-      get { return _guid; }
-    }
+    public Guid Guid { get; } = System.Guid.NewGuid();
 
     public static readonly PropertyInfo<GrandChildren> GrandChildrenProperty = RegisterProperty<GrandChildren>(c => c.GrandChildren);
     public GrandChildren GrandChildren

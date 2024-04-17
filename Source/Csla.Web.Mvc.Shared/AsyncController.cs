@@ -27,9 +27,9 @@ namespace Csla.Web.Mvc
         /// <param name="item">The business object to insert.</param>
         /// <param name="forceUpdate">true to force Save() to be an update.</param>
         /// <returns>true the Save() succeeds, false if not.</returns>
-        protected async Task<bool> SaveObjectAsync<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
+        protected Task<bool> SaveObjectAsync<T>(T item, bool forceUpdate) where T : class, Csla.Core.ISavable
         {
-            return await SaveObjectAsync(item,
+            return SaveObjectAsync(item,
               null,
               forceUpdate);
         }

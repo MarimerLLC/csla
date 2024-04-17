@@ -16,36 +16,21 @@ namespace Csla.Core
   /// </summary>
   public class SavedEventArgs : EventArgs
   {
-    private object _newObject;
     /// <summary>
     /// Gets the object that was returned
     /// as a result of the Save() operation.
     /// </summary>
-    public object NewObject
-    {
-      get { return _newObject; }
-    }
+    public object NewObject { get; }
 
-    private Exception _error;
     /// <summary>
     /// Gets any exception that occurred during the save.
     /// </summary>
-    public Exception Error
-    {
-      get
-      {
-        return _error;
-      }
-    }
+    public Exception Error { get; }
 
-    private object _userState;
     /// <summary>
     /// Gets the user state object.
     /// </summary>
-    public object UserState
-    {
-      get { return _userState; }
-    }
+    public object UserState { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -56,9 +41,9 @@ namespace Csla.Core
     /// </param>
     public SavedEventArgs(object newObject)
     {
-      _newObject = newObject;
-      _error = null;
-      _userState = null;
+      NewObject = newObject;
+      Error = null;
+      UserState = null;
     }
 
     /// <summary>
@@ -72,9 +57,9 @@ namespace Csla.Core
     /// <param name="userState">User state object.</param>
     public SavedEventArgs(object newObject, Exception error, object userState)
     {
-      _newObject = newObject;
-      _error = error;
-      _userState = userState;
+      NewObject = newObject;
+      Error = error;
+      UserState = userState;
     }
   }
 }

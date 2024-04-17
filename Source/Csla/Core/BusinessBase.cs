@@ -160,8 +160,6 @@ namespace Csla.Core
     #region IsNew, IsDeleted, IsDirty, IsSavable
 
     // keep track of whether we are new, deleted or dirty
-    private bool _isNew = true;
-    private bool _isDeleted;
     private bool _isDirty = true;
 
     /// <summary>
@@ -180,10 +178,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public bool IsNew
-    {
-      get { return _isNew; }
-    }
+    public bool IsNew { get; private set; } = true;
 
     /// <summary>
     /// Returns true if this object is marked for deletion.
@@ -202,10 +197,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public bool IsDeleted
-    {
-      get { return _isDeleted; }
-    }
+    public bool IsDeleted { get; private set; }
 
     /// <summary>
     /// Returns true if this object's 
@@ -276,8 +268,8 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void MarkNew()
     {
-      _isNew = true;
-      _isDeleted = false;
+      IsNew = true;
+      IsDeleted = false;
       MetaPropertyHasChanged("IsNew");
       MetaPropertyHasChanged("IsDeleted");
       MarkDirty();
@@ -303,7 +295,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void MarkOld()
     {
-      _isNew = false;
+      IsNew = false;
       MetaPropertyHasChanged("IsNew");
       MarkClean();
     }
@@ -319,7 +311,7 @@ namespace Csla.Core
     /// </remarks>
     protected void MarkDeleted()
     {
-      _isDeleted = true;
+      IsDeleted = true;
       MetaPropertyHasChanged("IsDeleted");
       MarkDirty();
     }
@@ -3546,8 +3538,8 @@ namespace Csla.Core
     protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
     {
       base.OnGetState(info, mode);
-      info.AddValue("Csla.Core.BusinessBase._isNew", _isNew);
-      info.AddValue("Csla.Core.BusinessBase._isDeleted", _isDeleted);
+      info.AddValue("Csla.Core.BusinessBase._isNew", IsNew);
+      info.AddValue("Csla.Core.BusinessBase._isDeleted", IsDeleted);
       info.AddValue("Csla.Core.BusinessBase._isDirty", _isDirty);
       info.AddValue("Csla.Core.BusinessBase._neverCommitted", _neverCommitted);
       info.AddValue("Csla.Core.BusinessBase._disableIEditableObject", _disableIEditableObject);
@@ -3570,8 +3562,8 @@ namespace Csla.Core
     protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
     {
       base.OnSetState(info, mode);
-      _isNew = info.GetValue<bool>("Csla.Core.BusinessBase._isNew");
-      _isDeleted = info.GetValue<bool>("Csla.Core.BusinessBase._isDeleted");
+      IsNew = info.GetValue<bool>("Csla.Core.BusinessBase._isNew");
+      IsDeleted = info.GetValue<bool>("Csla.Core.BusinessBase._isDeleted");
       _isDirty = info.GetValue<bool>("Csla.Core.BusinessBase._isDirty");
       _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
       _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
@@ -3728,20 +3720,15 @@ namespace Csla.Core
 
 #region  Reference counting
 
-      private int _refCount;
-
-      /// <summary>
+/// <summary>
       /// Gets the current reference count for this
       /// object.
       /// </summary>
-      public int RefCount
-      {
-        get { return _refCount; }
-      }
+      public int RefCount { get; private set; }
 
       private void AddRef()
       {
-        _refCount += 1;
+        RefCount += 1;
       }
 
       private void DeRef()
@@ -3749,8 +3736,8 @@ namespace Csla.Core
 
         lock (_lock)
         {
-          _refCount -= 1;
-          if (_refCount == 0)
+          RefCount -= 1;
+          if (RefCount == 0)
           {
             _businessObject._bypassPropertyChecks = false;
             _businessObject._bypassPropertyChecksObject = null;

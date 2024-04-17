@@ -124,11 +124,11 @@ namespace Csla
     {
       Name = name;
       _friendlyName = friendlyName;
-      _relationshipType = relationship;
+      RelationshipType = relationship;
       if (containingType != null)
         _propertyInfo = containingType.GetProperty(Name);
 
-      _defaultValue = defaultValue;
+      DefaultValue = defaultValue;
     }
 
     /// <summary>
@@ -185,7 +185,6 @@ namespace Csla
       }
     }
 
-    private readonly T _defaultValue;
     /// <summary>
     /// Gets the default initial value for the property.
     /// </summary>
@@ -195,10 +194,7 @@ namespace Csla
     /// if the user is not authorized to 
     /// read the property.
     /// </remarks>
-    public virtual T DefaultValue
-    {
-      get { return _defaultValue; }
-    }
+    public virtual T DefaultValue { get; }
 
     object Core.IPropertyInfo.DefaultValue
     {
@@ -225,29 +221,19 @@ namespace Csla
 
 
     // Default value is ManagedField
-    private RelationshipTypes _relationshipType = RelationshipTypes.None;
 
     /// <summary>
     /// Gets the relationship between the declaring object
     /// and the object reference in the property.
     /// </summary>
-    public RelationshipTypes RelationshipType
-    {
-      get { return _relationshipType; }
-    }
-
-    private int _index = -1;
+    public RelationshipTypes RelationshipType { get; } = RelationshipTypes.None;
 
     /// <summary>
     /// Gets or sets the index position for the managed
     /// field storage behind the property. FOR
     /// INTERNAL CSLA .NET USE ONLY.
     /// </summary>
-    int Core.IPropertyInfo.Index
-    {
-      get { return _index; }
-      set { _index = value; }
-    }
+    int Core.IPropertyInfo.Index { get; set; } = -1;
 
     /// <summary>
     /// Gets a value indicating whether this property

@@ -42,11 +42,11 @@ namespace Csla.Core
     /// and the object reference in the property.
     /// </summary>
     RelationshipTypes RelationshipType { get; }
-	  /// <summary>
-	  /// Gets or sets the index position for the managed
-	  /// field storage behind the property. FOR
-	  /// INTERNAL CSLA .NET USE ONLY.
-	  /// </summary>
+    /// <summary>
+    /// Gets or sets the index position for the managed
+    /// field storage behind the property. FOR
+    /// INTERNAL CSLA .NET USE ONLY.
+    /// </summary>
     int Index { get; set; }
     /// <summary>
     /// Gets a value indicating whether this property

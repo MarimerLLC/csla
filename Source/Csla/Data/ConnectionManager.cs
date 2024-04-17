@@ -32,7 +32,6 @@ namespace Csla.Data
   public class ConnectionManager : IDisposable, Core.IUseApplicationContext
   {
     private static object _lock = new object();
-    private IDbConnection _connection;
     private string _connectionString;
     private string _label;
 
@@ -153,9 +152,9 @@ namespace Csla.Data
       DbProviderFactory factory = DbProviderFactories.GetFactory(DbProvider);
 
       // open connection
-      _connection = factory.CreateConnection();
-      _connection.ConnectionString = connectionString;
-      _connection.Open();
+      Connection = factory.CreateConnection();
+      Connection.ConnectionString = connectionString;
+      Connection.Open();
 #endif
     }
 
@@ -169,37 +168,26 @@ namespace Csla.Data
     /// disposing the connection it is
     /// managing.
     /// </summary>
-    public IDbConnection Connection
-    {
-      get
-      {
-        return _connection;
-      }
-    }
-
-    private int _refCount;
+    public IDbConnection Connection { get; }
 
     /// <summary>
     /// Gets the current reference count for this
     /// object.
     /// </summary>
-    public int RefCount
-    {
-      get { return _refCount; }
-    }
+    public int RefCount { get; private set; }
 
     private void AddRef()
     {
-      _refCount += 1;
+      RefCount += 1;
     }
 
     private void DeRef()
     {
-      _refCount -= 1;
-      if (_refCount == 0)
+      RefCount -= 1;
+      if (RefCount == 0)
       {
-        _connection.Close();
-        _connection.Dispose();
+        Connection.Close();
+        Connection.Dispose();
         lock (_lock)
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
       }

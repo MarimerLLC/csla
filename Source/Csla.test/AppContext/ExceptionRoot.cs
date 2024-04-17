@@ -30,22 +30,20 @@ namespace Csla.Test.AppContext
     {
       public const string DefaultData = "<new>";
 
-      private string _Data;
-
       public string Data
       {
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-        get { return this._Data; }
+        get;
       }
 
       public Criteria()
       {
-        this._Data = Criteria.DefaultData;
+        this.Data = Criteria.DefaultData;
       }
 
       public Criteria(string Data)
       {
-        this._Data = Data;
+        this.Data = Data;
       }
     }
 
@@ -88,7 +86,7 @@ namespace Csla.Test.AppContext
     }
 
     [Delete]
-	  protected void DataPortal_Delete(object criteria)
+    protected void DataPortal_Delete(object criteria)
     {
       TestResults.AddOrOverwrite("Root", "Deleted");
       TestResults.AddOrOverwrite("create", "create");

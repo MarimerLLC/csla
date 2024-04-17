@@ -273,7 +273,7 @@ namespace Csla.Serialization.Mobile
             {
               using (var reader = new System.IO.BinaryReader(buffer))
               {
-                IMobileObject mobile = (IMobileObject)new Security.CslaClaimsPrincipal(reader);
+                var mobile = new Security.CslaClaimsPrincipal(reader);
                 _deserializationReferences.Add(info.ReferenceId, mobile);
               }
             }

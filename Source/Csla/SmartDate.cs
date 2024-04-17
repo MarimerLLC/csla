@@ -1272,7 +1272,7 @@ namespace Csla
 
     System.TypeCode IConvertible.GetTypeCode()
     {
-      return ((IConvertible)_date).GetTypeCode();
+      return _date.GetTypeCode();
     }
 
     bool IConvertible.ToBoolean(System.IFormatProvider provider)
@@ -1332,7 +1332,7 @@ namespace Csla
 
     string IConvertible.ToString(System.IFormatProvider provider)
     {
-      return ((IConvertible)Text).ToString(provider);
+      return Text.ToString(provider);
     }
 
     object IConvertible.ToType(System.Type conversionType, System.IFormatProvider provider)

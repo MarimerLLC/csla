@@ -57,7 +57,7 @@ public class A : BusinessBase<A>
         (model, newRoot) =>
         {
           var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
-          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var classSymbol = model.GetDeclaredSymbol(classNode);
           var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
             .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
           Assert.IsTrue(methodSymbol.Parameters.Length == 0);
@@ -94,7 +94,7 @@ public class A : BusinessBase<A>
         (model, newRoot) =>
         {
           var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
-          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var classSymbol = model.GetDeclaredSymbol(classNode);
           var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
             .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
           Assert.IsTrue(methodSymbol.Parameters.Length == 0);
@@ -131,7 +131,7 @@ public class A : BusinessBase<A>
         (model, newRoot) =>
         {
           var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
-          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var classSymbol = model.GetDeclaredSymbol(classNode);
           var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
             .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
           Assert.IsTrue(methodSymbol.Parameters.Length == 0);
@@ -170,7 +170,7 @@ public class A : BusinessBase<A>
         (model, newRoot) =>
         {
           var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
-          var classSymbol = model.GetDeclaredSymbol(classNode) as INamedTypeSymbol;
+          var classSymbol = model.GetDeclaredSymbol(classNode);
           var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
             .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
           Assert.IsTrue(methodSymbol.Parameters.Length == 0);
@@ -215,7 +215,7 @@ public class A : BusinessBase<A>
         (model, newRoot) =>
         {
           var classBNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single(_ => _.Identifier.Text == "B");
-          var classBSymbol = model.GetDeclaredSymbol(classBNode) as INamedTypeSymbol;
+          var classBSymbol = model.GetDeclaredSymbol(classBNode);
           var methodBSymbol = classBSymbol.GetMembers().OfType<IMethodSymbol>()
             .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
           Assert.IsTrue(methodBSymbol.Parameters.Length == 0);

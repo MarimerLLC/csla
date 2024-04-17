@@ -64,6 +64,7 @@ namespace Csla.Server
     /// </param>
     public DataPortalResult(ApplicationContext applicationContext, object returnObject, Exception ex)
     {
+      ApplicationContext = applicationContext;
       ReturnObject = returnObject;
       Error = ex;
     }

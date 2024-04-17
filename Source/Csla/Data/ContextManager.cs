@@ -37,7 +37,6 @@ namespace Csla.Data
     where C : DataContext
   {
     private static object _lock = new object();
-    private C _context;
     private string _connectionString;
     private string _label;
 
@@ -140,7 +139,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      _context = (C)(ApplicationContext.CreateInstanceDI(typeof(C), connectionString));
+      DataContext = (C)(ApplicationContext.CreateInstanceDI(typeof(C), connectionString));
 
     }
 
@@ -152,30 +151,19 @@ namespace Csla.Data
     /// <summary>
     /// Gets the LINQ data context object.
     /// </summary>
-    public C DataContext
-    {
-      get
-      {
-        return _context;
-      }
-    }
+    public C DataContext { get; }
 
-#region  Reference counting
-
-    private int _refCount;
+    #region  Reference counting
 
     /// <summary>
     /// Gets the current reference count for this
     /// object.
     /// </summary>
-    public int RefCount
-    {
-      get { return _refCount; }
-    }
+    public int RefCount { get; private set; }
 
     private void AddRef()
     {
-      _refCount += 1;
+      RefCount += 1;
     }
 
     private void DeRef()
@@ -183,10 +171,10 @@ namespace Csla.Data
 
       lock (_lock)
       {
-        _refCount -= 1;
-        if (_refCount == 0)
+        RefCount -= 1;
+        if (RefCount == 0)
         {
-          _context.Dispose();
+          DataContext.Dispose();
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }
       }

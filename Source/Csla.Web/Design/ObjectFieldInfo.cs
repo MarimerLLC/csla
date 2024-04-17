@@ -18,14 +18,7 @@ namespace Csla.Web.Design
   [Serializable]
   public class ObjectFieldInfo : IDataSourceFieldSchema
   {
-    private Type _dataType;
-    private bool _primaryKey;
-    private bool _isIdentity;
     private bool _isNullable;
-    private int _length;
-    private bool _isReadOnly;
-    private string _name;
-    private bool _nullable;
 
     /// <summary>
     /// Creates an instance of the object.
@@ -39,39 +32,33 @@ namespace Csla.Web.Design
         field.Attributes[typeof(DataObjectFieldAttribute)];
       if (attribute != null)
       {
-        _primaryKey = attribute.PrimaryKey;
-        _isIdentity = attribute.IsIdentity;
+        IsUnique = attribute.PrimaryKey;
+        Identity = attribute.IsIdentity;
         _isNullable = attribute.IsNullable;
-        _length = attribute.Length;
+        Length = attribute.Length;
       }
-      _dataType = Utilities.GetPropertyType(
+      DataType = Utilities.GetPropertyType(
           field.PropertyType);
-      _isReadOnly = field.IsReadOnly;
-      _name = field.Name;
+      IsReadOnly = field.IsReadOnly;
+      Name = field.Name;
 
       // nullable
       Type t = field.PropertyType;
       if (!t.IsValueType || _isNullable)
-        _nullable = true;
+        Nullable = true;
       else
       {
         if (t.IsGenericType)
-          _nullable = (t.GetGenericTypeDefinition() == typeof(Nullable<>));
+          Nullable = (t.GetGenericTypeDefinition() == typeof(Nullable<>));
         else
-          _nullable = false;
+          Nullable = false;
       }
     }
 
     /// <summary>
     /// Gets the data type of the property.
     /// </summary>
-    public Type DataType
-    {
-      get
-      {
-        return _dataType;
-      }
-    }
+    public Type DataType { get; }
 
     /// <summary>
     /// Gets a value indicating whether this property
@@ -82,19 +69,13 @@ namespace Csla.Web.Design
     /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
     /// attribute on the property.
     /// </remarks>
-    public bool Identity
-    {
-      get { return _isIdentity; }
-    }
+    public bool Identity { get; }
 
     /// <summary>
     /// Gets a value indicating whether this property
     /// is readonly.
     /// </summary>
-    public bool IsReadOnly
-    {
-      get { return _isReadOnly; }
-    }
+    public bool IsReadOnly { get; }
 
     /// <summary>
     /// Gets a value indicating whether this property
@@ -105,10 +86,7 @@ namespace Csla.Web.Design
     /// is marked as a primary key, otherwise
     /// returns False.
     /// </returns>
-    public bool IsUnique
-    {
-      get { return _primaryKey; }
-    }
+    public bool IsUnique { get; }
 
     /// <summary>
     /// Gets the length of the property value.
@@ -118,18 +96,12 @@ namespace Csla.Web.Design
     /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
     /// attribute on the property.
     /// </remarks>
-    public int Length
-    {
-      get { return _length; }
-    }
+    public int Length { get; }
 
     /// <summary>
     /// Gets the property name.
     /// </summary>
-    public string Name
-    {
-      get { return _name; }
-    }
+    public string Name { get; }
 
     /// <summary>
     /// Gets a value indicating whether the property
@@ -142,11 +114,7 @@ namespace Csla.Web.Design
     /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
     /// attribute on the property.
     /// </remarks>
-    public bool Nullable
-    {
-      get
-      { return _nullable; }
-    }
+    public bool Nullable { get; }
 
     /// <summary>
     /// Gets the property's numeric precision.
@@ -168,7 +136,7 @@ namespace Csla.Web.Design
     /// </remarks>
     public bool PrimaryKey
     {
-      get { return _primaryKey; }
+      get { return IsUnique; }
     }
 
     /// <summary>

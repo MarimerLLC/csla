@@ -22,21 +22,17 @@ namespace Csla.Core.LoadManager
   /// <typeparam name="T"></typeparam>
   internal class AsyncLoader<T> : IAsyncLoader
   {
-    private readonly IPropertyInfo _property;
     private readonly Delegate _factory;
     private readonly object[] _parameters;
 
-    public IPropertyInfo Property
-    {
-      get { return _property; }
-    }
+    public IPropertyInfo Property { get; }
 
     public AsyncLoader(
       IPropertyInfo property,
       Delegate factory, 
       params object[] parameters)
     {
-      _property = property;
+      Property = property;
       _factory = factory;
       _parameters = parameters;
     }

@@ -168,26 +168,21 @@ namespace Csla.Data
       }
     }
 
-    private int _refCount;
-
     /// <summary>
     /// Gets the current reference count for this
     /// object.
     /// </summary>
-    public int RefCount
-    {
-      get { return _refCount; }
-    }
+    public int RefCount { get; private set; }
 
     private void AddRef()
     {
-      _refCount += 1;
+      RefCount += 1;
     }
 
     private void DeRef()
     {
-      _refCount -= 1;
-      if (_refCount == 0)
+      RefCount -= 1;
+      if (RefCount == 0)
       {
         _connection.Close();
         _connection.Dispose();

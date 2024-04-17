@@ -34,7 +34,7 @@ namespace Csla.Testing.Business.BusyStatus
     }
 
     [Update]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       foreach (var oneItem in this)
       {

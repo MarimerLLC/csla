@@ -36,7 +36,6 @@ namespace Csla.Data
     where C : ObjectContext
   {
     private static object _lock = new object();
-    private C _context;
     private string _connectionString;
     private string _label;
 
@@ -139,8 +138,8 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      _context = (C)(ApplicationContext.CreateInstanceDI(typeof(C), connectionString));
-      _context.Connection.Open();
+      ObjectContext = (C)(ApplicationContext.CreateInstanceDI(typeof(C), connectionString));
+      ObjectContext.Connection.Open();
     }
 
     private static string GetContextName(string connectionString, string label)
@@ -152,30 +151,19 @@ namespace Csla.Data
     /// <summary>
     /// Gets the EF object context object.
     /// </summary>
-    public C ObjectContext
-    {
-      get
-      {
-        return _context;
-      }
-    }
+    public C ObjectContext { get; }
 
-#region  Reference counting
-
-    private int _refCount;
+    #region  Reference counting
 
     /// <summary>
     /// Gets the current reference count for this
     /// object.
     /// </summary>
-    public int RefCount
-    {
-      get { return _refCount; }
-    }
+    public int RefCount { get; private set; }
 
     private void AddRef()
     {
-      _refCount += 1;
+      RefCount += 1;
     }
 
     private void DeRef()
@@ -183,11 +171,11 @@ namespace Csla.Data
 
       lock (_lock)
       {
-        _refCount -= 1;
-        if (_refCount == 0)
+        RefCount -= 1;
+        if (RefCount == 0)
         {
-          _context.Connection.Close();
-          _context.Dispose();
+          ObjectContext.Connection.Close();
+          ObjectContext.Dispose();
           ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }
       }

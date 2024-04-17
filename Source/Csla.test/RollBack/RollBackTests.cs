@@ -56,6 +56,7 @@ namespace Csla.Test.RollBack
       Assert.AreEqual(true, root.IsNew, "isnew is true");
 
       TestResults.Reinitialise();
+      RollbackRoot tmp = root.Clone();
       root.ApplyEdit();
       root = root.Save();
 
@@ -85,11 +86,11 @@ namespace Csla.Test.RollBack
       Assert.AreEqual(true, root.IsNew, "isnew is true");
 
       TestResults.Reinitialise();
-      RollbackRoot tmp = (RollbackRoot)(root.Clone());
+      RollbackRoot tmp = root.Clone();
       try
       {
         root.ApplyEdit();
-        root = (RollbackRoot)(root.Save());
+        root = root.Save();
         Assert.Fail("exception didn't occur");
       }
       catch
@@ -125,11 +126,11 @@ namespace Csla.Test.RollBack
       Assert.AreEqual(true, root.IsNew, "isnew is true");
 
       TestResults.Reinitialise();
-      RollbackRoot tmp = (RollbackRoot)(root.Clone());
+      RollbackRoot tmp = root.Clone();
       try
       {
         root.ApplyEdit();
-        root = (RollbackRoot)(root.Save());
+        root = root.Save();
         Assert.Fail("exception didn't occur");
       }
       catch

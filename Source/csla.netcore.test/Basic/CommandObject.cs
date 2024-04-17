@@ -18,14 +18,7 @@ namespace Csla.Test.Basic
 
     private static object locker = new object();
 
-    private string _property = "";
-    public string AProperty
-    {
-      get
-      {
-        return _property;
-      }
-    }
+    public string AProperty { get; private set; } = "";
 
     [Create]
     protected void DataPortal_Create()
@@ -33,12 +26,12 @@ namespace Csla.Test.Basic
     }
 
     [Execute]
-	protected void DataPortal_Execute()
+    protected void DataPortal_Execute()
     {
       lock (locker)
       {
         TestResults.Add("CommandObject", "DataPortal_Execute called");
-        _property = "Executed";
+        AProperty = "Executed";
       }
     }
 

@@ -27,13 +27,11 @@ namespace Csla.Windows
     /// </param>
     public BindingSourceNode(BindingSource source)
     {
-      _source = source;
-      _source.CurrentChanged += BindingSource_CurrentChanged;
+      Source = source;
+      Source.CurrentChanged += BindingSource_CurrentChanged;
     }
 
-    private BindingSource _source;
     private List<BindingSourceNode> _children;
-    private BindingSourceNode _parent;
 
     private void BindingSource_CurrentChanged(object sender, EventArgs e)
     {
@@ -42,10 +40,7 @@ namespace Csla.Windows
           child.Source.EndEdit();
     }
 
-    internal BindingSource Source
-    {
-      get { return _source; }
-    }
+    internal BindingSource Source { get; }
 
     internal List<BindingSourceNode> Children
     {
@@ -58,25 +53,21 @@ namespace Csla.Windows
       }
     }
 
-    internal BindingSourceNode Parent
-    {
-      get { return _parent; }
-      set { _parent = value; }
-    }
+    internal BindingSourceNode Parent { get; set; }
 
     internal void Unbind(bool cancel)
     {
-      if (_source == null)
+      if (Source == null)
         return;
 
       if (_children.Count > 0)
         foreach (BindingSourceNode child in _children)
           child.Unbind(cancel);
 
-      IEditableObject current = _source.Current as IEditableObject;
+      IEditableObject current = Source.Current as IEditableObject;
 
-      if (!(_source.DataSource is BindingSource))
-        _source.DataSource = null;
+      if (!(Source.DataSource is BindingSource))
+        Source.DataSource = null;
 
       if (current != null)
       {
@@ -86,8 +77,8 @@ namespace Csla.Windows
           current.EndEdit();
       }
 
-      if (_source.DataSource is BindingSource)
-        _source.DataSource = _parent.Source;
+      if (Source.DataSource is BindingSource)
+        Source.DataSource = Parent.Source;
     }
 
     internal void EndEdit()
@@ -99,15 +90,15 @@ namespace Csla.Windows
         foreach (BindingSourceNode child in _children)
           child.EndEdit();
 
-      _source.EndEdit();
+      Source.EndEdit();
     }
 
     internal void SetEvents(bool value)
     {
-      if (_source == null)
+      if (Source == null)
         return;
 
-      _source.RaiseListChangedEvents = value;
+      Source.RaiseListChangedEvents = value;
 
       if (_children.Count > 0)
         foreach (BindingSourceNode child in _children)
@@ -116,14 +107,14 @@ namespace Csla.Windows
 
     internal void ResetBindings(bool refreshMetadata)
     {
-      if (_source == null)
+      if (Source == null)
         return;
 
       if (_children.Count > 0)
         foreach (BindingSourceNode child in _children)
           child.ResetBindings(refreshMetadata);
 
-      _source.ResetBindings(refreshMetadata);
+      Source.ResetBindings(refreshMetadata);
     }
 
     /// <summary>
@@ -139,7 +130,7 @@ namespace Csla.Windows
       if (root != null)
         root.BeginEdit();
 
-      _source.DataSource = objectToBind;
+      Source.DataSource = objectToBind;
       SetEvents(true);
       ResetBindings(false);
     }
@@ -151,7 +142,7 @@ namespace Csla.Windows
     {
       SetEvents(false);
 
-      ISupportUndo root = _source.DataSource as ISupportUndo;
+      ISupportUndo root = Source.DataSource as ISupportUndo;
 
       Unbind(false);
       EndEdit();
@@ -168,7 +159,7 @@ namespace Csla.Windows
     {
       SetEvents(false);
 
-      ISupportUndo root = _source.DataSource as ISupportUndo;
+      ISupportUndo root = Source.DataSource as ISupportUndo;
 
       Unbind(true);
 

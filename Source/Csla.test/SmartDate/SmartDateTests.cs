@@ -236,7 +236,7 @@ namespace Csla.Test.SmartDate
       d3 = new Csla.SmartDate(d2.Subtract(new TimeSpan(30, 0, 0, 0)));
       Assert.AreEqual(d2.Date.AddDays(-30), d3.Date, "Dates should be equal");
 
-      Assert.AreEqual(30, ((TimeSpan)(d2 - d3)).Days, "Should be 30 days different");
+      Assert.AreEqual(30, (d2 - d3).Days, "Should be 30 days different");
       Assert.AreEqual(d3, d2 - new TimeSpan(30, 0, 0, 0, 0), "Should be equal");
     }
     #endregion
@@ -493,7 +493,7 @@ namespace Csla.Test.SmartDate
 
       // uses buildin parser
       var date2 = new Csla.SmartDate("t");
-      Assert.AreEqual(DateTime.Now.Date, date.Date.Date);
+      Assert.AreEqual(DateTime.Now.Date, date2.Date.Date);
     }
   }
 

@@ -16,22 +16,12 @@ namespace Csla.Windows
   /// </summary>
   public class HostPropertyAttribute : Attribute
   {
-
-    #region Property Fields
-
-    private string _hostPropertyName = string.Empty;
-
-    #endregion
-
     #region Properties
 
     /// <summary>
     /// HostPropertyName gets the host property name.
     /// </summary>
-    public string HostPropertyName
-    {
-      get { return (_hostPropertyName); }
-    }
+    public string HostPropertyName { get; }
 
     #endregion
 
@@ -43,7 +33,7 @@ namespace Csla.Windows
     /// <param name="hostPropertyName">The name of the host property.</param>
     public HostPropertyAttribute(string hostPropertyName)
     {
-      _hostPropertyName = hostPropertyName;
+      HostPropertyName = hostPropertyName;
     }
 
     #endregion

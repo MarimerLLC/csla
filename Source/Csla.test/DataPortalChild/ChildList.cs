@@ -25,23 +25,19 @@ namespace Csla.Test.DataPortalChild
       get { return this.Parent; }
     }
 
-    private string _status;
-    public string Status
-    {
-      get { return _status; }
-    }
+    public string Status { get; private set; }
 
     [FetchChild]
     protected void Child_Fetch()
     {
-      _status = "Fetched";
+      Status = "Fetched";
     }
 
     [UpdateChild]
     protected override void Child_Update(params object[] p)
     {
       base.Child_Update(p);
-      _status = "Updated";
+      Status = "Updated";
     }
   }
 }

@@ -15,16 +15,11 @@ namespace Csla.Core
   /// </summary>
   public class RemovingItemEventArgs : EventArgs
   {
-    private object _removingItem;
-
     /// <summary>
     /// Gets a reference to the item that was
     /// removed from the list.
     /// </summary>
-    public object RemovingItem
-    {
-      get { return _removingItem; }
-    }
+    public object RemovingItem { get; }
 
     /// <summary>
     /// Create an instance of the object.
@@ -35,7 +30,7 @@ namespace Csla.Core
     /// </param>
     public RemovingItemEventArgs(object removingItem)
     {
-      _removingItem = removingItem;
+      RemovingItem = removingItem;
     }
   }
 }

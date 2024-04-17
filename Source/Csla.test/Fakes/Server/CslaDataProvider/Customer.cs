@@ -239,7 +239,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [Delete]
-		protected void DataPortal_Delete(int criteria)
+    protected void DataPortal_Delete(int criteria)
     {
       Method = "Deleted Customer ID " + criteria.ToString();
     }
@@ -252,7 +252,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
     [Update]
-	protected void DataPortal_Update([Inject] IChildDataPortal<CustomerContactList> contactsListDataPortal)
+    protected void DataPortal_Update([Inject] IChildDataPortal<CustomerContactList> contactsListDataPortal)
     {
       Method = "Updating Customer " + GetProperty<string>(NameProperty);
       contactsListDataPortal.UpdateChild(ReadProperty(ContactsProperty));

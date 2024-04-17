@@ -116,7 +116,7 @@ namespace Csla.Reflection
         targetExpression,
         parametersExpression);
 
-      return (DynamicMethodDelegate)lambda.Compile();
+      return lambda.Compile();
     }
 
     public static DynamicMemberGetDelegate CreatePropertyGetter(PropertyInfo property)

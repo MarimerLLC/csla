@@ -54,8 +54,8 @@ namespace Csla.Testing.Business.DataPortal
     { }
 
     [Execute]
-	protected void DataPortal_Execute()
-    {    
+    protected void DataPortal_Execute()
+    {
       CurrentCulture = Thread.CurrentThread.CurrentCulture.Name;
       CurrentUICulture = Thread.CurrentThread.CurrentUICulture.Name;
     }

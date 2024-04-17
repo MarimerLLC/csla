@@ -38,7 +38,7 @@ namespace Csla.Server
     {
       try
       { 
-        return Create(objectType, false).Result;
+        return DoCreateAsync(objectType).Result;
       }
       catch (AggregateException ex)
       {
@@ -57,7 +57,7 @@ namespace Csla.Server
     {
       try
       { 
-        return Create(objectType, true, parameters).Result;
+        return DoCreateAsync(objectType, parameters).Result;
       }
       catch (AggregateException ex)
       {
@@ -70,7 +70,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> CreateAsync<T>()
     {
-      return (T) await Create(typeof(T), false).ConfigureAwait(false);
+      return (T) await DoCreateAsync(typeof(T)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -81,10 +81,10 @@ namespace Csla.Server
     /// </param>
     public async Task<T> CreateAsync<T>(params object[] parameters)
     {
-      return (T)await Create(typeof(T), true, parameters).ConfigureAwait(false);
+      return (T)await DoCreateAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> Create(Type objectType, bool hasParameters, params object[] parameters)
+    private async Task<object> DoCreateAsync(Type objectType, params object[] parameters)
     {
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
@@ -133,7 +133,7 @@ namespace Csla.Server
     {
       try
       {
-        return Fetch(objectType, false, null).Result;
+        return DoFetchAsync(objectType, null).Result;
       }
       catch (AggregateException ex)
       {
@@ -152,7 +152,7 @@ namespace Csla.Server
     {
       try
       {
-        return Fetch(objectType, true, parameters).Result;
+        return DoFetchAsync(objectType, parameters).Result;
       }
       catch (AggregateException ex)
       {
@@ -165,7 +165,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> FetchAsync<T>()
     {
-      return (T)await Fetch(typeof(T), false).ConfigureAwait(false);
+      return (T)await DoFetchAsync(typeof(T)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -176,10 +176,10 @@ namespace Csla.Server
     /// </param>
     public async Task<T> FetchAsync<T>(params object[] parameters)
     {
-      return (T)await Fetch(typeof(T), true, parameters).ConfigureAwait(false);
+      return (T)await DoFetchAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> Fetch(Type objectType, bool hasParameters, params object[] parameters)
+    private async Task<object> DoFetchAsync(Type objectType, params object[] parameters)
     {
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
@@ -226,7 +226,7 @@ namespace Csla.Server
     {
       try
       {
-        Update(obj, false, false, null).Wait();
+        DoUpdateAsync(obj, false, null).Wait();
       }
       catch (AggregateException ex)
       {
@@ -245,7 +245,7 @@ namespace Csla.Server
     {
       try
       { 
-        Update(obj, true, false, parameters).Wait();
+        DoUpdateAsync(obj, false, parameters).Wait();
       }
       catch (AggregateException ex)
       {
@@ -259,7 +259,7 @@ namespace Csla.Server
     /// <param name="obj">Business object to update.</param>
     public async Task UpdateAsync(object obj)
     {
-      await Update(obj, false, false, null).ConfigureAwait(false);
+      await DoUpdateAsync(obj, false, null).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -271,7 +271,7 @@ namespace Csla.Server
     /// </param>
     public async Task UpdateAsync(object obj, params object[] parameters)
     {
-      await Update(obj, true, false, parameters).ConfigureAwait(false);
+      await DoUpdateAsync(obj, false, parameters).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -280,7 +280,7 @@ namespace Csla.Server
     /// <param name="obj">Business object to update.</param>
     public void UpdateAll(object obj)
     {
-      Update(obj, false, true, null).Wait();
+      DoUpdateAsync(obj, true, null).Wait();
     }
 
     /// <summary>
@@ -292,7 +292,7 @@ namespace Csla.Server
     /// </param>
     public void UpdateAll(object obj, params object[] parameters)
     {
-      Update(obj, true, true, parameters).Wait();
+      DoUpdateAsync(obj, true, parameters).Wait();
     }
 
     /// <summary>
@@ -301,7 +301,7 @@ namespace Csla.Server
     /// <param name="obj">Business object to update.</param>
     public async Task UpdateAllAsync(object obj)
     {
-      await Update(obj, false, true, null).ConfigureAwait(false);
+      await DoUpdateAsync(obj, true, null).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -313,10 +313,10 @@ namespace Csla.Server
     /// </param>
     public async Task UpdateAllAsync(object obj, params object[] parameters)
     {
-      await Update(obj, true, true, parameters).ConfigureAwait(false);
+      await DoUpdateAsync(obj, true, parameters).ConfigureAwait(false);
     }
 
-    private async Task Update(object obj, bool hasParameters, bool bypassIsDirtyTest, params object[] parameters)
+    private async Task DoUpdateAsync(object obj, bool bypassIsDirtyTest, params object[] parameters)
     {
       if (obj == null)
         return;

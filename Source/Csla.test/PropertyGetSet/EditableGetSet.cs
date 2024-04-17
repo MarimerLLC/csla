@@ -249,7 +249,7 @@ namespace Csla.Test.PropertyGetSet
 
     [Update]
     [UpdateChild]
-	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       FieldManager.UpdateChildren();
     }
@@ -334,7 +334,7 @@ namespace Csla.Test.PropertyGetSet
     }
 
     [Update]
-		protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       //FieldManager.UpdateChildren();
     }

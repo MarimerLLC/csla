@@ -624,11 +624,9 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     public string MessageText
     {
-      get { return _messageDelegate.Invoke(); }
+      get { return MessageDelegate.Invoke(); }
       protected set { MessageDelegate = () => value; }
     }
-
-    private Func<string> _messageDelegate;
 
     /// <summary>
     /// Gets or sets the localizable message function.
@@ -637,11 +635,7 @@ namespace Csla.Rules.CommonRules
     /// <value>
     /// The localizable message.
     /// </value>
-    public Func<string> MessageDelegate
-    {
-      get { return _messageDelegate; }
-      set { _messageDelegate = value; }
-    }
+    public Func<string> MessageDelegate { get; set; }
 
     /// <summary>
     /// Creates an instance of the rule.

@@ -463,9 +463,9 @@ namespace Csla.Rules
     /// property.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">If property is null</exception>
-    public async Task<List<string>> CheckRulesAsync(IPropertyInfo property) 
+    public Task<List<string>> CheckRulesAsync(IPropertyInfo property)
     {
-      return await CheckRulesAsync(property, Timeout.InfiniteTimeSpan);
+      return CheckRulesAsync(property, Timeout.InfiniteTimeSpan);
     }
 
     /// <summary>
@@ -494,9 +494,9 @@ namespace Csla.Rules
     /// The PropertyChanged event should be raised for each affected
     /// property. Does not return until all async rules are complete.
     /// </returns>
-    public async Task<List<string>> CheckRulesAsync() 
+    public Task<List<string>> CheckRulesAsync()
     {
-      return await CheckRulesAsync(int.MaxValue);
+      return CheckRulesAsync(int.MaxValue);
     }
 
     /// <summary>
@@ -508,9 +508,9 @@ namespace Csla.Rules
     /// The PropertyChanged event should be raised for each affected
     /// property. Does not return until all async rules are complete.
     /// </returns>
-    public async Task<List<string>> CheckRulesAsync(int timeout)
+    public Task<List<string>> CheckRulesAsync(int timeout)
     {
-      return await CheckRulesAsync(TimeSpan.FromMilliseconds(timeout));
+      return CheckRulesAsync(TimeSpan.FromMilliseconds(timeout));
     }
 
     /// <summary>

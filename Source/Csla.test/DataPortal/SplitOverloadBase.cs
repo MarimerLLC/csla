@@ -55,28 +55,22 @@ namespace Csla.Test.DataPortalTest
     [Serializable()]
     private class Criteria : CriteriaBase<Criteria>
     {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-      }
+      public int Id { get; }
+
       public Criteria(int id)
-      { _id = id; }
+      { Id = id; }
     }
     [Serializable()]
     private class Criteria1 : CriteriaBase<Criteria1>
     {
-      private int _id;
-      public int Id
-      {
-        get { return _id; }
-      }
+      public int Id { get; }
+
       public Criteria1(int id)
-      { _id = id; }
+      { Id = id; }
     }
 
     [Create]
-		protected void DataPortal_Create()
+    protected void DataPortal_Create()
     {
       _id = 0;
       TestResults.Reinitialise();
@@ -106,13 +100,13 @@ namespace Csla.Test.DataPortalTest
       TestResults.Add("SplitOverload", "Fetched1");
     }
     [Delete]
-		private void DataPortal_Delete(Criteria criteria)
+    private void DataPortal_Delete(Criteria criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("SplitOverload", "Deleted");
     }
     [Delete]
-		private void DataPortal_Delete(Criteria1 criteria)
+    private void DataPortal_Delete(Criteria1 criteria)
     {
       TestResults.Reinitialise();
       TestResults.Add("SplitOverload", "Deleted1");

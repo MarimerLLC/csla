@@ -198,7 +198,7 @@ namespace Csla.Test.Serialization
         TestResults.GetResult("Test.PrivateOnIsDirtyChanged"),
         "Didn't call serializable private handler");
 
-      root = (SerializationRoot)root.Clone();
+      root = root.Clone();
 
       TestResults.Reinitialise();
 
@@ -237,7 +237,7 @@ namespace Csla.Test.Serialization
       var nonSerClass = new NonSerializedClass();
       Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
       var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
+      var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
       // TODO: Should this test target another formatter, or just be deleted?
       //var b = new BinaryFormatterWrapper();
@@ -262,12 +262,12 @@ namespace Csla.Test.Serialization
 
       Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
       var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)(object)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
+      var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
 
       Action<object, PropertyChangingEventArgs> h1 = (sender, eventArgs) => { nonSerClass.Do(); };
       var method1 = typeof(Action<object, PropertyChangingEventArgs>).GetMethod("Invoke");
-      var delgate1 = (PropertyChangingEventHandler)(object)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
+      var delgate1 = (PropertyChangingEventHandler)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
       root.PropertyChanging += delgate1;
 
       // TODO: Would this test make sense if upgraded to MobileFormatter?

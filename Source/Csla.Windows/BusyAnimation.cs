@@ -142,7 +142,7 @@ namespace Csla.Windows
     {
       if (IsInDesignMode)
       {
-        this.BusyProgressBar.Value = (int)(this.BusyProgressBar.Maximum / 2);
+        this.BusyProgressBar.Value = this.BusyProgressBar.Maximum / 2;
         this.BusyProgressBar.Visible = true;
       }
     }

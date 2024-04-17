@@ -44,8 +44,8 @@ namespace Csla
       {
         object target = other.Key;
 
-        if (Key is IComparable)
-          return ((IComparable)Key).CompareTo(target);
+        if (Key is IComparable comparable)
+          return comparable.CompareTo(target);
 
         else
         {
@@ -707,10 +707,10 @@ namespace Csla
     {
       SourceList = list;
 
-      if (SourceList is IBindingList)
+      if (SourceList is IBindingList sourceList)
       {
         _supportsBinding = true;
-        _bindingList = (IBindingList)SourceList;
+        _bindingList = sourceList;
         _bindingList.ListChanged +=
           new ListChangedEventHandler(SourceChanged);
       }

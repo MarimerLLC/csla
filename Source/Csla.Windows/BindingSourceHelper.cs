@@ -53,9 +53,8 @@ namespace Csla.Windows
 
       foreach (Component component in container.Components)
       {
-        if (component is BindingSource)
+        if (component is BindingSource temp)
         {
-          BindingSource temp = component as BindingSource;
           if (temp.DataSource != null && temp.DataSource.Equals(parent))
           {
             BindingSourceNode childNode = new BindingSourceNode(temp);

@@ -458,10 +458,10 @@ namespace Csla.Xaml
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
-      if (popup != null && sender is UIElement)
+      if (popup != null && sender is UIElement element)
       {
         popup.Placement = PlacementMode.Mouse;
-        popup.PlacementTarget = (UIElement)sender;
+        popup.PlacementTarget = element;
         ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
         popup.IsOpen = true;
       }

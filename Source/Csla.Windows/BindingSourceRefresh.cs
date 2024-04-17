@@ -272,8 +272,8 @@ namespace Csla.Windows
       {
         case BindingCompleteState.Exception:
           if ((RefreshOnException)
-        && e.Binding.DataSource is BindingSource
-        && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))
+        && e.Binding.DataSource is BindingSource source
+        && GetReadValuesOnChange(source))
           {
             e.Binding.ReadValue();
           }
@@ -284,8 +284,8 @@ namespace Csla.Windows
           break;
         default:
           if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate)
-                  && e.Binding.DataSource is BindingSource
-                  && GetReadValuesOnChange((BindingSource)e.Binding.DataSource))
+                  && e.Binding.DataSource is BindingSource dataSource
+                  && GetReadValuesOnChange(dataSource))
           {
             e.Binding.ReadValue();
           }

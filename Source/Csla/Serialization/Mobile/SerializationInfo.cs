@@ -413,9 +413,9 @@ namespace Csla.Serialization.Mobile
       {
         int referenceId = info.Children[key].ReferenceId;
         object serialized = formatter.GetObject(referenceId);
-        if (serialized is ChildData)
+        if (serialized is ChildData data)
         {
-          _children.Add(key, (ChildData)serialized);
+          _children.Add(key, data);
         }
         else
         {

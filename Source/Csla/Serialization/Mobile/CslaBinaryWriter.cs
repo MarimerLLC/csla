@@ -112,26 +112,26 @@ namespace Csla.Serialization.Mobile
           writer.Write(data);
         }
       }
-      else if (target is CslaKnownTypes)
+      else if (target is CslaKnownTypes types)
       {
-        writer.Write((byte)((CslaKnownTypes)target));
+        writer.Write((byte)types);
       }
-      else if (target is TimeSpan)
+      else if (target is TimeSpan span)
       {
         Write(CslaKnownTypes.TimeSpan, writer);
-        writer.Write(((TimeSpan)target).Ticks);
+        writer.Write(span.Ticks);
       }
-      else if (target is DateTimeOffset)
+      else if (target is DateTimeOffset offset)
       {
         Write(CslaKnownTypes.DateTimeOffset, writer);
-        writer.Write(((DateTimeOffset)target).Ticks);
-        writer.Write(((DateTimeOffset)target).Offset.Ticks);
+        writer.Write(offset.Ticks);
+        writer.Write(offset.Offset.Ticks);
       }
-      else if (target is byte[])
+      else if (target is byte[] bytes)
       {
         Write(CslaKnownTypes.ByteArray, writer);
-        writer.Write(((byte[])target).Length);
-        writer.Write((byte[])target);
+        writer.Write(bytes.Length);
+        writer.Write(bytes);
       }
       else if (target is byte[][] outerArray)
       {
@@ -143,22 +143,22 @@ namespace Csla.Serialization.Mobile
           writer.Write(item);
         }
       }
-      else if (target is char[])
+      else if (target is char[] chars)
       {
         Write(CslaKnownTypes.CharArray, writer);
-        writer.Write(((char[])target).Length);
-        writer.Write((char[])target);
+        writer.Write(chars.Length);
+        writer.Write(chars);
       }
-      else if (target is Guid)
+      else if (target is Guid guid)
       {
         Write(CslaKnownTypes.Guid, writer);
-        writer.Write(((Guid)target).ToByteArray());
+        writer.Write(guid.ToByteArray());
       }
-      else if (target is List<int>)
+      else if (target is List<int> ints)
       {
         Write(CslaKnownTypes.ListOfInt, writer);
-        writer.Write(((List<int>)target).Count);
-        foreach (var oneInt in ((List<int>)target))
+        writer.Write(ints.Count);
+        foreach (var oneInt in ints)
         {
           writer.Write(oneInt);
         }

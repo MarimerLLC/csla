@@ -85,13 +85,12 @@ namespace Csla.Web
         int rowCount;
         if (result == null)
           rowCount = 0;
-        else if (result is Csla.Core.IReportTotalRowCount)
-          rowCount = ((Csla.Core.IReportTotalRowCount)result).TotalRowCount;
-        else if (result is IList)
-          rowCount = ((IList)result).Count;
-        else if (result is IEnumerable)
+        else if (result is Csla.Core.IReportTotalRowCount totalRowCount)
+          rowCount = totalRowCount.TotalRowCount;
+        else if (result is IList list)
+          rowCount = list.Count;
+        else if (result is IEnumerable temp)
         {
-          IEnumerable temp = (IEnumerable)result;
           int count = 0;
           foreach (object item in temp)
             count++;

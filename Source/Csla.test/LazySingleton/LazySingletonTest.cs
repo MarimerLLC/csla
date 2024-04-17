@@ -13,16 +13,14 @@ using TestSetup = NUnit.Framework.SetUpAttribute;
 #elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #endif
-namespace Csla.Test.LazySingelton
+namespace Csla.Test.LazySingleton
 {
-    
-    
-    /// <summary>
-    ///This is a test class for LazySingeltonTest and is intended
-    ///to contain all LazySingeltonTest Unit Tests
-    ///</summary>
+  /// <summary>
+  ///This is a test class for LazySingletonTest and is intended
+  ///to contain all LazySingletonTest Unit Tests
+  ///</summary>
   [TestClass]
-  public class LazySingeltonTest
+  public class LazySingletonTest
   {
 
     private static TestDIContext _testDIContext;
@@ -34,17 +32,17 @@ namespace Csla.Test.LazySingelton
     }
 
     [TestMethod]
-    public void LazySingeltonDefaultConstructorCreatesObject()
+    public void LazySingletonDefaultConstructorCreatesObject()
     {
       var lazy = new LazySingleton<Dictionary<string, object>>();
-      Assert.IsNotNull(lazy, "new LazySingelton can not be null.");
+      Assert.IsNotNull(lazy, "new LazySingleton can not be null.");
     }
 
     [TestMethod]
-    public void LazySingeltonConstructorWithOverloadConstructorCreatesObject()
+    public void LazySingletonConstructorWithOverloadConstructorCreatesObject()
     {
       var lazy = new LazySingleton<Dictionary<string, object>>(() => new Dictionary<string, object>());
-      Assert.IsNotNull(lazy, "new LazySingelton can not be null.");
+      Assert.IsNotNull(lazy, "new LazySingleton can not be null.");
     }
 
     [TestMethod]

@@ -16,7 +16,7 @@ namespace Csla.Configuration
   /// </summary>
   public static class ConfigurationManager
   {
-    private static NameValueCollection _settings = new NameValueCollection();
+    private static NameValueCollection _settings;
 
     static ConfigurationManager()
     {
@@ -31,6 +31,8 @@ namespace Csla.Configuration
       {
         throw new ConfigurationErrorsException(ex.Message, ex);
       }
+#else
+      _settings = new NameValueCollection();
 #endif
     }
 

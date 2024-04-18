@@ -12,6 +12,10 @@ using Csla.Core;
 using Csla.Rules;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using System;
+using System.Linq;
+
+
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;

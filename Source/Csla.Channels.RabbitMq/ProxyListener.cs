@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Handles replies from data portal server</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 

@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>The contract which a member definition must fulfil</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Generators.CSharp.AutoSerialization
 {

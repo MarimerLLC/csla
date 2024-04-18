@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Base class used to create common rules.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
-using Csla.Properties;
 using System.Text.RegularExpressions;
 
 namespace Csla.Rules.CommonRules

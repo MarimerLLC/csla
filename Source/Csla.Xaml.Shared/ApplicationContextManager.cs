@@ -5,11 +5,9 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Security.Principal;
-using System.Threading;
 using Csla.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Xaml
 {

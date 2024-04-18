@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Contains event data for the RemovingItem</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

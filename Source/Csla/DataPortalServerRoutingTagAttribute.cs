@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Specifies a routing tag for use by the server-side data portal.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

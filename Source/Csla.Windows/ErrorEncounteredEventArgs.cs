@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Event args indicating an error.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Windows
 {

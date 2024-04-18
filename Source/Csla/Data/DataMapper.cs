@@ -5,12 +5,10 @@
 // </copyright>
 // <summary>Map data from a source into a target object</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
-using System.Linq;
 
 namespace Csla.Data
 {

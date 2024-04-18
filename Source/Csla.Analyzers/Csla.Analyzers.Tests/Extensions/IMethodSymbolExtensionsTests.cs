@@ -2,9 +2,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using static Csla.Analyzers.Extensions.IMethodSymbolExtensions;
 
 namespace Csla.Analyzers.Tests.Extensions

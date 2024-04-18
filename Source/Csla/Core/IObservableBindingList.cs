@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines additional elements for an</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

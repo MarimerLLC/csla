@@ -5,11 +5,7 @@
 // </copyright>
 // <summary>Object containing the serialization</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
+
 using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile

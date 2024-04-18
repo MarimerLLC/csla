@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Provides a filtered view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Collections;
 using Csla.Properties;
 

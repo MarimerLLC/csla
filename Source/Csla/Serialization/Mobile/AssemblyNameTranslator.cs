@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Translates assembly names to and from short</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Serialization.Mobile
 {

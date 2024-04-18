@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Implements the server-side Serviced </summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using System.Transactions;
 
 namespace Csla.Server

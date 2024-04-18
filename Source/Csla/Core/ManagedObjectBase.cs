@@ -5,16 +5,13 @@
 // </copyright>
 // <summary>Base class for an object that is serializable</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.Linq.Expressions;
 using System.Reflection;
 using Csla.Core.FieldManager;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Csla.Core
 {

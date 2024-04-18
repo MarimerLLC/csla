@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.Collections.ObjectModel;
 using Csla.Properties;
 

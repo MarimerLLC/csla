@@ -5,12 +5,8 @@
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.IO;
+
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;

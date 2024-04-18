@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Provides the functionality of a WPF</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows.Data;
 
 namespace Csla.Xaml

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Marks a DataPortal_XYZ method to</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

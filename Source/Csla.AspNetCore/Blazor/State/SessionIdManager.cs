@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Manages the per-user id value</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.State;
 using Microsoft.AspNetCore.Http;
 

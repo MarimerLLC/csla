@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Parses a rule:// URI to provide</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Text;
 
 namespace Csla.Rules

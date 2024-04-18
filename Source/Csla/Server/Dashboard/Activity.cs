@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Csla.Server.Dashboard
+﻿namespace Csla.Server.Dashboard
 {
   /// <summary>
   /// Information about a server-side data portal 

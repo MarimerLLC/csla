@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Interface defining callback methods used</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Serialization.Mobile
 {

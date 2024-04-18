@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Exception indicating a problem with the</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

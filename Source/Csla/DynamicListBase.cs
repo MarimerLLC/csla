@@ -5,11 +5,9 @@
 // </copyright>
 // <summary>This is the base class from which collections</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;

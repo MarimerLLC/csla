@@ -7,9 +7,6 @@
 //-----------------------------------------------------------------------
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Net.Mime;
 using System.Text;
 
 namespace Csla.Generators.CSharp.AutoSerialization.Discovery

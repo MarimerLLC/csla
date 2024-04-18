@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>This class provides a hoook for developers to add custom error handling in the DataPortal. </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
 using Csla.Reflection;
 

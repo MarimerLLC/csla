@@ -6,8 +6,6 @@
 // <summary>The unique ID of this object</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Test.AppContext
 {

@@ -1,7 +1,4 @@
 ﻿using Csla.Properties;
-using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Csla.Serialization.Mobile
 {

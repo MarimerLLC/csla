@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Manages the per-user id value</summary>
 //-----------------------------------------------------------------------
-using System.Threading.Tasks;
 
 namespace Csla.State
 {

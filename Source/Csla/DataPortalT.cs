@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;

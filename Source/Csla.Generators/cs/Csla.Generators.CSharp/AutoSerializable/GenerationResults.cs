@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>The results of source generation</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Generators.CSharp.AutoSerialization
 {

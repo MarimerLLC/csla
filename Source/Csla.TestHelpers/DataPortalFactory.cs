@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>Factory for dataportal instances for use in tests</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.TestHelpers

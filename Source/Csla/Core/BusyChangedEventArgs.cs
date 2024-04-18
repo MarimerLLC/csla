@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Delegate for handling the BusyChanged event.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Core
 {

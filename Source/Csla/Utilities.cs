@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Contains utility methods used by the</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Reflection;
 using Csla.Reflection;
 using System.ComponentModel;

@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>The definition of a field, extracted from the syntax tree provided by Roslyn</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Generators.CSharp.AutoSerialization
 {

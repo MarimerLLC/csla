@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Maintains metadata about a property.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

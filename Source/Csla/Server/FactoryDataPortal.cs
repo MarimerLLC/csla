@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Server-side data portal implementation that</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Configuration;
-using System.Threading.Tasks;
 using Csla.Properties;
 
 namespace Csla.Server

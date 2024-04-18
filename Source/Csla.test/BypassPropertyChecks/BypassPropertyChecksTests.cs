@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using Csla;
-using Csla.DataPortalClient;
-using System;
+
 using UnitDriven;
 using System.Security.Claims;
 using Csla.TestHelpers;

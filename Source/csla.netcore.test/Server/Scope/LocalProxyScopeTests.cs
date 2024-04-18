@@ -5,14 +5,9 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.TestHelpers;
+
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
-using System.IO;
-using Csla.Runtime;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,8 +17,7 @@ using TestClass = NUnit.Framework.TestFixtureAttribute;
 using TestInitialize = NUnit.Framework.SetUpAttribute;
 using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
-using Csla;
+#endif
 
 namespace Csla.Test.Server.Scope
 {

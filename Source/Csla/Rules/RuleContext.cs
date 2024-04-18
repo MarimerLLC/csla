@@ -5,13 +5,10 @@
 // </copyright>
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
 using Csla.Core;
 using Csla.Properties;
-using System.Security.Principal;
-using System.Security.Claims;
 
 namespace Csla.Rules
 {

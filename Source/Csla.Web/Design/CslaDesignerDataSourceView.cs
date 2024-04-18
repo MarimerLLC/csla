@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Object responsible for providing details about</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
 using System.Web.UI.Design;
 using System.ComponentModel.Design;

@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Interface defining an object that notifies when it</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace Csla.Core {
   /// <summary>

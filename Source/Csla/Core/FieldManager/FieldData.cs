@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Contains a field value and related metadata.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Csla.Serialization.Mobile;

@@ -6,16 +6,12 @@
 // </copyright>
 // <summary>Delegate for a dynamic constructor method.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Csla.Reflection;
 #if !NETFX_CORE
 using System.Reflection.Emit;
 #endif
 using Csla.Properties;
-using System.Collections.Generic;
 
 namespace Csla.Reflection
 {

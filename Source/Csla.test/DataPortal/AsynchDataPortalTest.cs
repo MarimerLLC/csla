@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Csla.Test.Basic;
 using System.Threading.Tasks;

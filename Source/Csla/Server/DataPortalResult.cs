@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Returns data from the server-side DataPortal to the </summary>
 //-----------------------------------------------------------------------
-using System;
-using Csla.Core;
 
 namespace Csla.Server
 {

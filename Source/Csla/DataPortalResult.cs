@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>DataPortalResult defines the results of DataPortal operation.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

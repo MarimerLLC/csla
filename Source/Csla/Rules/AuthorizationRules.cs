@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>IsInRole authorization rule.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Rules.CommonRules
 {

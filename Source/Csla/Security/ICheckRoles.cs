@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Interface defining an object that</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Security
 {

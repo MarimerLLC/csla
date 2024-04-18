@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Maintains metadata about a property.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

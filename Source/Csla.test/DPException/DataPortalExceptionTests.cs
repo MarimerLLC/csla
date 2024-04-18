@@ -5,14 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Test.Security;
-using System.Data;
-using System.Data.SqlClient;
+
 using Csla.TestHelpers;
-using Csla.Configuration;
 
 
 #if !NUNIT

@@ -7,8 +7,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
 using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Stores details about a specific broken business rule.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Core;
 using Csla.Serialization.Mobile;
 

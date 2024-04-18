@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Holds Node properties for BrokenRulesTree.</summary>
 //-----------------------------------------------------------------------using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Rules
 {

@@ -5,12 +5,6 @@
 // </copyright>
 // <summary>Base class used to create business and validation</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Csla.Properties;
 
 namespace Csla.Rules
 {

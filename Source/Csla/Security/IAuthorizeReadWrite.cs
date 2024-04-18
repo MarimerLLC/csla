@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines the authorization interface through which an</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Security
 {

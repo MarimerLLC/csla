@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>An ObjectAdapter is used to convert data in an object </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.ComponentModel;
 using System.Reflection;

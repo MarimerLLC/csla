@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>This exception is returned for any errors occuring</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Security.Permissions;
+
 using Csla.Server.Hosts.DataPortalChannel;
 
 namespace Csla

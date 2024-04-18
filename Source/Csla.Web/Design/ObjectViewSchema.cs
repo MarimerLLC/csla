@@ -5,14 +5,11 @@
 // </copyright>
 // <summary>Object providing schema information for a</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Web.UI.Design;
 using System.ComponentModel;
 using System.ComponentModel.Design;
-using Csla;
-using Csla.Web.Design;
 
 namespace Csla.Web.Design
 {

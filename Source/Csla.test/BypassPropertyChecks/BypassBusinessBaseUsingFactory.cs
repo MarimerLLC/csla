@@ -7,9 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Csla.Serialization;
-using Csla.TestHelpers;
 
 namespace Csla.Test.BypassPropertyChecks
 {

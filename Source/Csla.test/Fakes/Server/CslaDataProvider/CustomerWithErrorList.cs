@@ -6,13 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla;
-using Csla.Security;
-using Csla.Core;
-using Csla.Serialization;
 using Csla.Test;
 
 namespace cslalighttest.CslaDataProvider

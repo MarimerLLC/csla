@@ -6,8 +6,6 @@
 // <summary>Request message for updating</summary>
 //-----------------------------------------------------------------------
 
-using System;
-
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Provides information about the DataPortal </summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

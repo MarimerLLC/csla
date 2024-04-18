@@ -10,10 +10,8 @@ using Csla.Core;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace Csla.AspNetCore.Blazor
 {

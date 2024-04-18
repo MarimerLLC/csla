@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Interface defining the members of the data portal type</summary>
 //-----------------------------------------------------------------------
-using System.Threading.Tasks;
 
 namespace Csla
 {

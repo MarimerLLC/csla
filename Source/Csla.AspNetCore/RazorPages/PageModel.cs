@@ -5,14 +5,11 @@
 // </copyright>
 // <summary>Custom PageModel for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Csla.Rules;
-using System.Linq;
 using Csla.Core;
-using System.Threading.Tasks;
 
 namespace Csla.AspNetCore.RazorPages
 {

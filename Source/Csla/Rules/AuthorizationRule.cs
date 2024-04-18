@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Base class providing basic authorization rule</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Csla.Properties;
 
 namespace Csla.Rules

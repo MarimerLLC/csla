@@ -5,13 +5,10 @@
 // </copyright>
 // <summary>Factory for DI context instances for use in tests</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 using Csla.Configuration;
-using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

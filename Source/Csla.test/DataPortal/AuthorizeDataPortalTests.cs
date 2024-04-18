@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Configuration;
-using Csla.DataPortalClient;
+
 using Csla.Configuration;
 using Csla.Testing.Business.DataPortal;
 using Csla.Server;

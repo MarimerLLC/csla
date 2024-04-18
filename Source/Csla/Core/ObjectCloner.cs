@@ -6,8 +6,6 @@
 // <summary>This class provides an implementation of a deep</summary>
 //-----------------------------------------------------------------------
 using Csla.Serialization;
-using System;
-using System.IO;
 
 namespace Csla.Core
 {

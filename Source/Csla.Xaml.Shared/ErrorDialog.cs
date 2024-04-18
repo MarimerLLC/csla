@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Displays an error dialog for any exceptions</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows;
 using System.Windows.Controls;
 

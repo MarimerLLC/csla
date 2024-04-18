@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines the common methods required by all</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using Csla.Blazor;
 using Csla.Core;
 using Csla.State;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Core;
-using Csla.Rules;
+﻿using Csla.Rules;
 
 namespace Csla.Blazor.Test.Rules
 {

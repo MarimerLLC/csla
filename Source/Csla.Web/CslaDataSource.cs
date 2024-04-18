@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>A Web Forms data binding control designed to support</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Web.UI;
 using System.ComponentModel;
 using System.Reflection;

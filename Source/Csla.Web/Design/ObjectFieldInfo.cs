@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Contains schema information for a single</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Web.UI.Design;
 using System.ComponentModel;
 

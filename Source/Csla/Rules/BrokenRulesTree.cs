@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Holds the tree list of broken rules (parent/child).</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Rules
 {

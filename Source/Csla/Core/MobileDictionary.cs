@@ -5,12 +5,8 @@
 // </copyright>
 // <summary>Defines a dictionary that can be serialized through</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
-using System.Linq;
+
 using Csla.Serialization.Mobile;
-using System;
-using System.Reflection;
-using Csla.Reflection;
 
 namespace Csla.Core
 {

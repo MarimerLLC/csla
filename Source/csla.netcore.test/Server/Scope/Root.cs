@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla;
-using Csla.Runtime;
-using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
-
-namespace Csla.Test.Server.Scope
+﻿namespace Csla.Test.Server.Scope
 {
   [Serializable]
   public class Root : BusinessBase<Root>

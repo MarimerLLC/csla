@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using Csla;
 using Csla.Configuration;
-using Csla.DataPortalClient;
 using System;
 using UnitDriven;
 using Csla.Testing.Business.BusyStatus;

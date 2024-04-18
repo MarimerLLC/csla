@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Csla.TestHelpers
+﻿namespace Csla.TestHelpers
 {
   public class ApplicationContextManagerUnitTests : Csla.Core.ApplicationContextManagerAsyncLocal
   {

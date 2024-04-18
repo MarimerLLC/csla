@@ -5,12 +5,10 @@
 // </copyright>
 // <summary>Base type for creating your own view model</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Csla.Reflection;
 using Csla.Rules;
 

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>A readonly version of BindingList(Of T)</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
 
 namespace Csla.Core

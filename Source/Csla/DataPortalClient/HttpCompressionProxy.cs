@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Net;
 using System.Net.Http;
 using Csla.Configuration;

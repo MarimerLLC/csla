@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Specifies a server resource required by a business type</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

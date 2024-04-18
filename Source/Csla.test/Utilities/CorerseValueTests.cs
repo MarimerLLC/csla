@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using Csla;
-using Csla.DataPortalClient;
-using Csla.Testing.Business.ReadOnlyTest;
+
 using System;
 using UnitDriven;
 

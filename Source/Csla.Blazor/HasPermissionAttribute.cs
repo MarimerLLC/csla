@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Authorizes user if they have permission</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace Csla.Blazor

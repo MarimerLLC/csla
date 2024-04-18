@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.IO;
-using System.Net.Http;
+
 using System.Net.Http.Json;
-using System.Threading.Tasks;
 using Csla.Blazor.Authentication;
 using Csla.Blazor.WebAssembly.Configuration;
 using Csla.Serialization;

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Event args object containing information about a</summary>
 //-----------------------------------------------------------------------
-using System.ComponentModel;
 
 namespace Csla.Windows
 {

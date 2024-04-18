@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Data portal dashboard</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
 
 namespace Csla.Server.Dashboard
 {

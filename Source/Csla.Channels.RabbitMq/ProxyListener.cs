@@ -76,7 +76,7 @@ namespace Csla.Channels.RabbitMq
       Channel = Connection.CreateModel();
       string[] query;
       if (string.IsNullOrWhiteSpace(QueueUri.Query))
-        query = new string[] { };
+        query = [];
       else
         query = QueueUri.Query.Substring(1).Split('&');
       if (query.Length == 0 || !query[0].StartsWith("reply="))

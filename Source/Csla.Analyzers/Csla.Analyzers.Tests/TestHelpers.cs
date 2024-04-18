@@ -47,7 +47,7 @@ namespace Csla.Analyzers.Tests
     {
       var document = Create(code);
       var compilation = (await document.Project.GetCompilationAsync())
-        .WithAnalyzers(ImmutableArray.Create(analyzer));
+        .WithAnalyzers([analyzer]);
       return (await compilation.GetAnalyzerDiagnosticsAsync()).ToList();
     }
 

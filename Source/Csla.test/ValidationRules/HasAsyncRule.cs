@@ -38,7 +38,7 @@ namespace Csla.Test.ValidationRules
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = new List<IPropertyInfo> { primaryProperty };
+        InputProperties = [primaryProperty];
       }
 
       protected override void Execute(IRuleContext context)

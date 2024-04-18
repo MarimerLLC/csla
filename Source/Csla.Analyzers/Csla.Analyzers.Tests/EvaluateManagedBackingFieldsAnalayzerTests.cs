@@ -34,8 +34,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotStereotype()
     {
       var code = "public class ClassIsNotStereotype { }";
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
     }
 
     [TestMethod]
@@ -70,8 +69,7 @@ public class A : BusinessBase<A>
     RegisterProperty<string>(_ => _.ExpressionData);
   public string ExpressionData => string.Empty;
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
     }
 
     [TestMethod]
@@ -94,8 +92,7 @@ public class A : BusinessBase<A>
     RegisterProperty<string>(_ => _.ExpressionData);
   public string ExpressionData => GetProperty(ExpressionDataProperty);
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
     }
 
     [TestMethod]
@@ -127,12 +124,12 @@ public class A : BusinessBase<A>
   public string ExpressionData => GetProperty(ExpressionDataProperty);
 }";
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        code, new[] 
-        {
+        code,
+        [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields
-        });
+        ]);
     }
 
     [TestMethod]
@@ -164,12 +161,12 @@ public class A : BusinessBase<A>
   public string ExpressionData => GetProperty(ExpressionDataProperty);
 }";
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        code, new[]
-        {
+        code,
+        [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields
-        });
+        ]);
     }
 
     [TestMethod]
@@ -201,12 +198,12 @@ public class A : BusinessBase<A>
   public string ExpressionData => GetProperty(ExpressionDataProperty);
 }";
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        code, new[]
-        {
+        code,
+        [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields
-        });
+        ]);
     }
 
     [TestMethod]
@@ -238,12 +235,12 @@ public class A : CommandBase<A>
   public string ExpressionData => ReadProperty(ExpressionDataProperty);
 }";
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
-        code, new[]
-        {
+        code,
+        [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields
-        });
+        ]);
     }
   }
 }

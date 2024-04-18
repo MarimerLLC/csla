@@ -368,7 +368,7 @@ namespace Csla
                 "execute",
                 objectType.Name));
             if (factoryType != null)
-              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, new object[] { obj });
+              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, [obj]);
           }
           else
           {
@@ -381,8 +381,7 @@ namespace Csla
                                                                             "delete",
                                                                             objectType.Name));
                 if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName,
-                                                                      new object[] { obj });
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, [obj]);
               }
               // must check the same authorization rules as for DataPortal_XYZ methods 
               else if (bbase.IsNew)
@@ -392,8 +391,7 @@ namespace Csla
                                                                             "create",
                                                                             objectType.Name));
                 if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
-                                                                    new object[] { obj });
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
               }
               else
               {
@@ -402,8 +400,7 @@ namespace Csla
                                                                             "save",
                                                                             objectType.Name));
                 if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
-                                                                    new object[] { obj });
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
               }
             }
             else
@@ -414,8 +411,7 @@ namespace Csla
                                                                           objectType.Name));
 
               if (factoryType != null)
-                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
-                                                                      new object[] { obj });
+                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
             }
           }
           if (method == null)

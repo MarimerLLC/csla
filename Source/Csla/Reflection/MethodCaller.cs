@@ -636,7 +636,7 @@ namespace Csla.Reflection
         object[] par;
         if (infoParamsCount == 1 && specialParamArray)
         {
-          par = new object[] { parameters };
+          par = [parameters];
         }
         else if (infoParamsCount > 1 && hasParamArray && specialParamArray)
         {
@@ -682,7 +682,7 @@ namespace Csla.Reflection
 
       object[] inParams;
       if (parameters == null)
-        inParams = new object[] { null };
+        inParams = [null];
       else
         inParams = parameters;
 
@@ -779,9 +779,9 @@ namespace Csla.Reflection
 
       object[] inParams;
       if (!hasParameters)
-        inParams = new object[] { };
+        inParams = [];
       else if (parameters == null)
-        inParams = new object[] { null };
+        inParams = [null];
       else
         inParams = parameters;
 
@@ -987,7 +987,7 @@ namespace Csla.Reflection
     private static Type[] GetParameterTypes(bool hasParameters, object[] parameters)
     {
       if (!hasParameters)
-        return new Type[] { };
+        return [];
 
       List<Type> result = new List<Type>();
 

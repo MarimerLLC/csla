@@ -34,8 +34,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotStereotype()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -48,8 +47,7 @@ public abstract class A : BusinessBase<A>
 {
   public abstract string Data { get; set; }
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -62,8 +60,7 @@ public class A : BusinessBase<A>
 {
   public static string Data { get; set; }
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -78,8 +75,7 @@ public class A : BusinessBase<A>
 
   public string ExpressionData => string.Empty;
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -94,8 +90,7 @@ public class A : BusinessBase<A>
 
   public string GetProperty() => null;
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -114,7 +109,7 @@ public class A : BusinessBase<A>
   public string GetX() { return _x; }
 }";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule });
+        code, [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
     }
 
     [TestMethod]
@@ -131,12 +126,11 @@ public class A : BusinessBase<A>
   public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
   public string ExpressionData => ""x"" + this.GetProperty(DataProperty);
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, 
-        new[] 
-        {
-          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+      [
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
           Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
-        });
+      ]);
     }
 
     [TestMethod]
@@ -153,8 +147,7 @@ public class A : BusinessBase<A>
   public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
   public string ExpressionData => this.GetProperty(DataProperty);
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -167,8 +160,7 @@ public class A : BusinessBase<A>
 {
   public string Data { set { } }
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -183,8 +175,7 @@ public class A : BusinessBase<A>
 
   public void SetProperty() { }
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -203,10 +194,8 @@ public class A : BusinessBase<A>
   public string GetX() { return _x; }
 }";
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, new[] 
-        {
-          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
-        });
+        code,
+        [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
     }
 
     [TestMethod]
@@ -225,8 +214,7 @@ public class A : BusinessBase<A>
     set { this.SetProperty(DataProperty, value); }
   }
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
   }
 }

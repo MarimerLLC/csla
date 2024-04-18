@@ -507,14 +507,14 @@ namespace Csla.Test.Authorization
           applicationContext,
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
-          new object[] { new PermissionRootWithCriteria.Criteria() }));
+          [new PermissionRootWithCriteria.Criteria()]));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
           applicationContext,
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
-          new[] { new object() }));
+          [new object()]));
 
 
       Assert.IsFalse(
@@ -535,14 +535,14 @@ namespace Csla.Test.Authorization
           applicationContext,
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
-          new object[] { new PermissionRootWithCriteria.Criteria() }));
+          [new PermissionRootWithCriteria.Criteria()]));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
           applicationContext,
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
-          new[] { new object() }));
+          [new object()]));
 
 
       Assert.IsFalse(
@@ -563,14 +563,14 @@ namespace Csla.Test.Authorization
           applicationContext,
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
-          new object[] { new PermissionRootWithCriteria.Criteria() }));
+          [new PermissionRootWithCriteria.Criteria()]));
 
       Assert.IsFalse(
         BusinessRules.HasPermission(
           applicationContext,
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
-          new[] { new object() }));
+          [new object()]));
 
 
       Assert.IsFalse(

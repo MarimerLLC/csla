@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWithNotMobileObject()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -49,8 +48,7 @@ public class A : BusinessBase<A>
 {
   public void Foo() { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -64,8 +62,7 @@ public class A : BusinessBase<A>
   [Fetch]
   private void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -79,8 +76,7 @@ public class A : BusinessBase<A>
   [Fetch]
   private void Fetch(int x) { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -97,7 +93,7 @@ public class B : BusinessBase<B>
   private void Fetch(A x) { }
 }";
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments });
+        code, [Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments]);
     }
 
     [TestMethod]
@@ -113,8 +109,7 @@ public class B : BusinessBase<B>
   [Fetch]
   private void Fetch(A x) { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -130,8 +125,7 @@ public class B : BusinessBase<B>
   [Fetch]
   private void Fetch([Inject] A x) { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -150,8 +144,7 @@ public class B : BusinessBase<B>
   private void Fetch(A x) { }
 }
 ";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -165,8 +158,7 @@ public class A : BusinessBase<A>
   [FetchChild]
   private void FetchChild() { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -180,8 +172,7 @@ public class A : BusinessBase<A>
   [FetchChild]
   private void FetchChild(int x) { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -197,8 +188,7 @@ public class B : BusinessBase<B>
   [FetchChild]
   private void FetchChild(A x) { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
     [DataTestMethod]
@@ -231,8 +221,7 @@ namespace TestingNamespace {{
 
 }}";
 
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
   }
 }

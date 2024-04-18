@@ -30,7 +30,7 @@ namespace Csla.Test.Reflection
     {
       var flags = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
       var obj = new HasStaticCtor();
-      var ctor = GetConstructor(obj.GetType(), flags, null, new Type[] { }, null);
+      var ctor = GetConstructor(obj.GetType(), flags, null, [], null);
       Assert.IsNotNull(ctor);
       Assert.IsTrue(ctor.IsStatic);
     }
@@ -40,7 +40,7 @@ namespace Csla.Test.Reflection
     {
       var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
       var obj = new HasStaticCtor();
-      var ctor = GetConstructor(obj.GetType(), flags, null, new Type[] { }, null);
+      var ctor = GetConstructor(obj.GetType(), flags, null, [], null);
       Assert.IsNotNull(ctor);
       Assert.IsFalse(ctor.IsStatic);
     }

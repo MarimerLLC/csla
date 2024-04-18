@@ -27,16 +27,11 @@ namespace Csla.Generators.CSharp
     /// <returns>A diagnostic suitable for exposing to the Rosyln compiler</returns>
     internal static Diagnostic ToUsageDiagnostic(this Exception ex)
     {
-      Diagnostic diagnostic;
-      DiagnosticDescriptor descriptor;
-
-      descriptor = new DiagnosticDescriptor("Csla0001",
+      var descriptor = new DiagnosticDescriptor("Csla0001",
         ex.Message, GenerateSingleLineExceptionMessage(ex), "Usage", DiagnosticSeverity.Error, true,
-        customTags: new string[] { WellKnownDiagnosticTags.Compiler, WellKnownDiagnosticTags.NotConfigurable });
+        customTags: [WellKnownDiagnosticTags.Compiler, WellKnownDiagnosticTags.NotConfigurable]);
 
-      diagnostic = Diagnostic.Create(descriptor, null);
-
-      return diagnostic;
+      return Diagnostic.Create(descriptor, null);
     }
 
     #region Private Helper Methods

@@ -42,7 +42,7 @@ public class A
   private void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<EvaluateOperationAttributeUsageAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect });
+        code, [Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect]);
     }
 
     [TestMethod]
@@ -60,7 +60,7 @@ public class A
   private static void Fetch() { }
 }";
       await TestHelpers.RunAnalysisAsync<EvaluateOperationAttributeUsageAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect });
+        code, [Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect]);
     }
 
     [TestMethod]
@@ -77,8 +77,7 @@ public class A
   [Fetch]
   private void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<EvaluateOperationAttributeUsageAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<EvaluateOperationAttributeUsageAnalyzer>(code, []);
     }
   }
 }

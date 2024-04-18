@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotABusinessRule()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -50,8 +49,7 @@ public class A : BusinessRuleAsync
 { 
   protected override Task ExecuteAsync(IRuleContext context) { } 
 }";
-      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -69,7 +67,7 @@ public class A : BusinessRuleAsync
   } 
 }";
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.CompleteInExecuteAsync });
+        code, [Constants.AnalyzerIdentifiers.CompleteInExecuteAsync]);
     }
 
     [TestMethod]
@@ -88,7 +86,7 @@ public class A : BusinessRuleAsync
   } 
 }";
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.CompleteInExecuteAsync });
+        code, [Constants.AnalyzerIdentifiers.CompleteInExecuteAsync]);
     }
   }
 }

@@ -503,7 +503,7 @@ namespace Csla.Xaml
       {
         get { return _factoryParameters; }
         set { _factoryParameters = 
-          new ObservableCollection<object>(new List<object>(value)); }
+          new ObservableCollection<object>([..value]); }
       }
       private bool _manageLifetime;
 

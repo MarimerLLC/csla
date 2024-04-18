@@ -233,12 +233,16 @@ namespace Csla.Xaml
         if (pCount == 0)
           targetMethod.Invoke(target, null);
         else if (pCount == 2)
-          targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
-        {
-          MethodParameter = p,
-          TriggerParameter = e,
-          TriggerSource = (FrameworkElement)_element
-        }});
+          targetMethod.Invoke(
+            target,
+            [
+              this, new ExecuteEventArgs
+              {
+                MethodParameter = p,
+                TriggerParameter = e,
+                TriggerSource = (FrameworkElement)_element
+              }
+            ]);
         else
           throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
       }

@@ -433,20 +433,17 @@ namespace Csla.Blazor
       return GetPropertyInfo(keyName, Model, propertyName);
     }
 
-    private readonly Dictionary<string, object> _propertyInfoCache = new Dictionary<string, object>();
-    
+    private readonly Dictionary<string, IPropertyInfo> _propertyInfoCache = new Dictionary<string, IPropertyInfo>();
+
     private IPropertyInfo GetPropertyInfo(string keyName, object model, string propertyName)
     {
-      PropertyInfo result;
-      if (_propertyInfoCache.TryGetValue(keyName, out object temp))
+      if (_propertyInfoCache.TryGetValue(keyName, out var result))
       {
-        result = (PropertyInfo)temp;
+        return result;
       }
-      else
-      {
-        result = new PropertyInfo(model, propertyName);
-        _propertyInfoCache.Add(keyName, result);
-      }
+
+      result = new PropertyInfo(model, propertyName);
+      _propertyInfoCache.Add(keyName, result);
       return result;
     }
 

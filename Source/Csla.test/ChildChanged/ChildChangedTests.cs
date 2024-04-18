@@ -32,13 +32,11 @@ namespace Csla.Test.ChildChanged
   public class ChildChangedTests
   {
     private static TestDIContext _testDIContext;
-    private ApplicationContext.PropertyChangedModes _mode;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
       IServiceCollection services = new ServiceCollection();
-      var options = new CslaOptions(services);
 
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows));
       _testDIContext = TestDIContextFactory.CreateDefaultContext();

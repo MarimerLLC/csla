@@ -40,7 +40,7 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Gets the URI for the data portal service.
     /// </summary>
-    public string DataPortalUrl { get; private set; }
+    public string DataPortalUrl { get; }
 
     private IConnection Connection;
     private IModel Channel;

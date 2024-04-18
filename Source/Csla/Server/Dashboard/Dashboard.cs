@@ -92,7 +92,7 @@ namespace Csla.Server.Dashboard
     /// <summary>
     /// Gets the time the data portal was first invoked
     /// </summary>
-    public DateTimeOffset FirstCall { get; private set; }
+    public DateTimeOffset FirstCall { get; }
     /// <summary>
     /// Gets the most recent time the data portal
     /// was invoked

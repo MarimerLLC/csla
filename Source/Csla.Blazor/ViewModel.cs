@@ -24,7 +24,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets the current ApplicationContext instance.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
+    protected ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Creates an instance of the type.

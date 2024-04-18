@@ -30,7 +30,7 @@ namespace Csla.AspNetCore
     /// <summary>
     /// Gets the active circuit state.
     /// </summary>
-    protected Blazor.ActiveCircuitState ActiveCircuitState { get; private set; }
+    protected Blazor.ActiveCircuitState ActiveCircuitState { get; }
 
     /// <summary>
     /// Creates an instance of the object, initializing it
@@ -64,7 +64,7 @@ namespace Csla.AspNetCore
     /// <summary>
     /// Gets the current HttpContext instance.
     /// </summary>
-    protected virtual HttpContext HttpContext { get; private set; }
+    protected virtual HttpContext HttpContext { get; }
 
     /// <summary>
     /// Gets a value indicating whether this

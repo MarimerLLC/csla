@@ -139,18 +139,18 @@ namespace Csla
     /// Saves the specified item in the list.
     /// </summary>
     /// <param name="item">Item to be saved.</param>
-    public async Task SaveItemAsync(T item)
+    public Task SaveItemAsync(T item)
     {
-      await SaveItemAsync(IndexOf(item));
+      return SaveItemAsync(IndexOf(item));
     }
 
     /// <summary>
     /// Saves the specified item in the list.
     /// </summary>
     /// <param name="index">Index of item to be saved.</param>
-    public async Task SaveItemAsync(int index)
+    public Task SaveItemAsync(int index)
     {
-      await SaveItemAsync(index, false);
+      return SaveItemAsync(index, false);
     }
 
     /// <summary>
@@ -452,9 +452,9 @@ namespace Csla
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
     /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>

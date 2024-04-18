@@ -128,9 +128,9 @@ namespace Csla.Test.DataAnnotations
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     public string[] GetRules()
@@ -153,9 +153,9 @@ namespace Csla.Test.DataAnnotations
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     public string[] GetRules()
@@ -176,9 +176,9 @@ namespace Csla.Test.DataAnnotations
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     public string[] GetRules()

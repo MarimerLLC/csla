@@ -62,9 +62,9 @@ namespace UnitDriven
       p.Invoke();
     }
 
-    public async Task Try(Func<Task> p)
+    public Task Try(Func<Task> p)
     {
-      await p();
+      return p();
     }
 
     public void Success() 

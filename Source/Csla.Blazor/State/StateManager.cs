@@ -23,9 +23,9 @@ namespace Csla.Blazor.State
     /// Get state from cache.
     /// </summary>
     /// <returns></returns>
-    public async Task InitializeAsync()
+    public Task InitializeAsync()
     {
-      await InitializeAsync(TimeSpan.FromSeconds(10));
+      return InitializeAsync(TimeSpan.FromSeconds(10));
     }
 
     /// <summary>
@@ -33,9 +33,9 @@ namespace Csla.Blazor.State
     /// </summary>
     /// <param name="timeout">Time to wait before timing out</param>
     /// <returns></returns>
-    public async Task InitializeAsync(TimeSpan timeout)
+    public Task InitializeAsync(TimeSpan timeout)
     {
-      await GetState(timeout);
+      return GetState(timeout);
     }
 
     /// <summary>

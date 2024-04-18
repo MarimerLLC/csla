@@ -257,9 +257,9 @@ namespace Csla.Server
     /// Update a business object.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public async Task UpdateAsync(object obj)
+    public Task UpdateAsync(object obj)
     {
-      await DoUpdateAsync(obj, false, null).ConfigureAwait(false);
+      return DoUpdateAsync(obj, false, null);
     }
 
     /// <summary>
@@ -269,9 +269,9 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public async Task UpdateAsync(object obj, params object[] parameters)
+    public Task UpdateAsync(object obj, params object[] parameters)
     {
-      await DoUpdateAsync(obj, false, parameters).ConfigureAwait(false);
+      return DoUpdateAsync(obj, false, parameters);
     }
 
     /// <summary>
@@ -299,9 +299,9 @@ namespace Csla.Server
     /// Update a business object. Include objects which are not dirty.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public async Task UpdateAllAsync(object obj)
+    public Task UpdateAllAsync(object obj)
     {
-      await DoUpdateAsync(obj, true, null).ConfigureAwait(false);
+      return DoUpdateAsync(obj, true, null);
     }
 
     /// <summary>
@@ -311,9 +311,9 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public async Task UpdateAllAsync(object obj, params object[] parameters)
+    public Task UpdateAllAsync(object obj, params object[] parameters)
     {
-      await DoUpdateAsync(obj, true, parameters).ConfigureAwait(false);
+      return DoUpdateAsync(obj, true, parameters);
     }
 
     private async Task DoUpdateAsync(object obj, bool bypassIsDirtyTest, params object[] parameters)

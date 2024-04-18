@@ -177,31 +177,14 @@ builder.Services.Configure<IISServerOptions>(options =>
 
 ### MAUI Android
 
-It turns out that the `HttpClient` behavior on Android is unable to transfer binary data over http via a `POST` operation. This is how the data portal works. Because of this, you must configure the Android client app to use text encoding for the data portal. This is done in the `MauiProgram.cs` file.
+It turns out that the default `HttpClient` behavior on Android is unable to transfer binary data over http via a `POST` operation. This is how the data portal works. Because of this, you must configure the Android client app to use a different configuration for `HttpClient`. This is done in the `MauiProgram.cs` file.
 
 ```csharp
-  builder.Services.AddCsla(o => o
-      .DataPortal(o => o
-          .ClientSideDataPortal(o => o
-              .UseHttpProxy(o =>
-              {
-                  o.UseTextSerialization = true;
-                  o.DataPortalUrl = $"https://{ServerName}/dataportal";
-              }
-      ))));
+  builder.Services.AddScoped<HttpClient>(
+    (p) => new HttpClient(new SocketsHttpHandler()));
 ```
 
-This also requires that your data portal endpoint accept text data. This is done by configuring the data portal controller to use text serialization. For example:
-
-```csharp
-  public DataPortalController(ApplicationContext applicationContext)
-    : base(applicationContext)
-  { 
-      UseTextSerialization = true;
-  }
-```
-
-If your data portal is being used by multiple clients, such as Android and also Blazor or iOS, etc. then you will need two different data portal controllers, one for text serialization and one for binary serialization.
+This code configures the `HttpClient` to use the `SocketsHttpHandler` which is able to transfer binary data over http.
 
 ## New Cache API
 

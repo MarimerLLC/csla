@@ -31,18 +31,20 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  PropertyInfo<string> DataProperty =
-    RegisterProperty<string>(_ => _.Data);
-  public string Data
-  {
-    get { return GetProperty(DataProperty); }
-    set { SetProperty(DataProperty, value); }
-  }
-}";
+        public class A : BusinessBase<A>
+        {
+          PropertyInfo<string> DataProperty =
+            RegisterProperty<string>(_ => _.Data);
+          public string Data
+          {
+            get { return GetProperty(DataProperty); }
+            set { SetProperty(DataProperty, value); }
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalayzer());
@@ -75,16 +77,18 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWithTrivia()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  #region Properties
-  private static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
-  #endregion
-
-  public string Data => GetProperty(DataProperty);
-}";
+        public class A : BusinessBase<A>
+        {
+          #region Properties
+          private static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          #endregion
+        
+          public string Data => GetProperty(DataProperty);
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalayzer());

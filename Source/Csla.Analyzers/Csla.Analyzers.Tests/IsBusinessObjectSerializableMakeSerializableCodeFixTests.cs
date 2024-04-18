@@ -30,14 +30,16 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenUsingSystemExists()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  public void Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          public void Fetch() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());
@@ -65,13 +67,15 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenUsingSystemDoesNotExists()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  public void Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          public void Fetch() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsBusinessObjectSerializableAnalyzer());

@@ -135,12 +135,14 @@ namespace Csla.Analyzers.Tests
       string expectedDescription)
     {
       var code =
-$@"{(includeUsingCsla ? "using Csla;" : string.Empty)}
+        $$"""
+{{(includeUsingCsla ? "using Csla;" : string.Empty)}}
 
-public class A : Csla.BusinessBase<A>
-{{
-  private void {operationName}() {{ }}
-}}";
+          public class A : Csla.BusinessBase<A>
+          {
+            private void {{operationName}}() { }
+          }
+          """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new DoesOperationHaveAttributeAnalyzer());

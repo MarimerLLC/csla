@@ -156,9 +156,11 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task IsBusinessRuleForTypeThatIsABusinessRule()
     {
       var code = 
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public class A : BusinessRule { }";
+        public class A : BusinessRule { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsBusinessRule());
     }
 
@@ -166,9 +168,11 @@ public class A : BusinessRule { }";
     public async Task IsBusinessRuleForTypeThatIsABusinessRuleAsync()
     {
       var code =
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public class A : BusinessRuleAsync { }";
+        public class A : BusinessRuleAsync { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsBusinessRule());
     }
 
@@ -183,9 +187,11 @@ public class A : BusinessRuleAsync { }";
     public async Task IsObjectFactoryForObjectFactoryType()
     {
       var code = 
-@"using Csla.Server;
+        """
+        using Csla.Server;
 
-public class A : ObjectFactory { }";
+        public class A : ObjectFactory { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsObjectFactory());
     }
 
@@ -200,47 +206,49 @@ public class A : ObjectFactory { }";
     public async Task IsIPropertyInfoWhenSymbolDerivesFromIPropertyInfo()
     {
       var code =
-@"using System;
-using Csla.Core;
-using Csla.Core.FieldManager;
+        """
+        using System;
+        using Csla.Core;
+        using Csla.Core.FieldManager;
 
-public class A
-  : IPropertyInfo
-{
-  public object DefaultValue
-  {
-    get => throw new NotImplementedException();
-  }
-
-  public string FriendlyName
-  {
-    get => throw new NotImplementedException();
-  }
-
-  public int Index
-  {
-    get => throw new NotImplementedException();
-    set => throw new NotImplementedException();
-  }
-
-  public string Name
-  {
-    get => throw new NotImplementedException();
-  }
-
-  public RelationshipTypes RelationshipType
-  {
-    get => throw new NotImplementedException();
-  }
-
-  public Type Type
-  {
-    get => throw new NotImplementedException();
-  }
-
-  public IFieldData NewFieldData(string name) =>
-    throw new NotImplementedException();
-}";
+        public class A
+          : IPropertyInfo
+        {
+          public object DefaultValue
+          {
+            get => throw new NotImplementedException();
+          }
+        
+          public string FriendlyName
+          {
+            get => throw new NotImplementedException();
+          }
+        
+          public int Index
+          {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+          }
+        
+          public string Name
+          {
+            get => throw new NotImplementedException();
+          }
+        
+          public RelationshipTypes RelationshipType
+          {
+            get => throw new NotImplementedException();
+          }
+        
+          public Type Type
+          {
+            get => throw new NotImplementedException();
+          }
+        
+          public IFieldData NewFieldData(string name) =>
+            throw new NotImplementedException();
+        }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsIPropertyInfo());
     }
 
@@ -248,9 +256,11 @@ public class A
     public async Task IsBusinessBaseWhenSymbolIsNotABusinessBase()
     {
       var code = 
-@"using Csla;
+        """
+        using Csla;
 
-public class A { }";
+        public class A { }
+        """;
       Assert.IsFalse((await GetTypeSymbolAsync(code, "A")).IsBusinessBase());
     }
 
@@ -258,9 +268,11 @@ public class A { }";
     public async Task IsBusinessBaseWhenSymbolIsABusinessBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> { }";
+        public class A : BusinessBase<A> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsBusinessBase());
     }
 
@@ -268,9 +280,11 @@ public class A : BusinessBase<A> { }";
     public async Task IsEditableStereotypeWhenSymbolIsABusinessBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> { }";
+        public class A : BusinessBase<A> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsEditableStereotype());
     }
 
@@ -278,11 +292,13 @@ public class A : BusinessBase<A> { }";
     public async Task IsEditableStereotypeWhenSymbolIsABusinessListBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class ABO : BusinessBase<ABO> { }
+        public class ABO : BusinessBase<ABO> { }
 
-public class A : BusinessListBase<A, ABO> { }";
+        public class A : BusinessListBase<A, ABO> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsEditableStereotype());
     }
 
@@ -290,11 +306,13 @@ public class A : BusinessListBase<A, ABO> { }";
     public async Task IsEditableStereotypeWhenSymbolIsADynamicListBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class ABO : BusinessBase<ABO> { }
+        public class ABO : BusinessBase<ABO> { }
 
-public class A : DynamicListBase<ABO> { }";
+        public class A : DynamicListBase<ABO> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsEditableStereotype());
     }
 
@@ -302,11 +320,13 @@ public class A : DynamicListBase<ABO> { }";
     public async Task IsEditableStereotypeWhenSymbolIsABusinessBindingListBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class ABO : BusinessBase<ABO> { }
+        public class ABO : BusinessBase<ABO> { }
 
-public class A : BusinessBindingListBase<A, ABO> { }";
+        public class A : BusinessBindingListBase<A, ABO> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsEditableStereotype());
     }
 
@@ -314,9 +334,11 @@ public class A : BusinessBindingListBase<A, ABO> { }";
     public async Task IsEditableStereotypeWhenSymbolIsACommandBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : CommandBase<A> { }";
+        public class A : CommandBase<A> { }
+        """;
       Assert.IsFalse((await GetTypeSymbolAsync(code, "A")).IsEditableStereotype());
     }
 
@@ -338,13 +360,15 @@ public class A : CommandBase<A> { }";
     public async Task IsStereotypeWhenSymbolIsStereotypeViaIBusinessObject()
     {
       var code =
-@"using Csla.Core;
+        """
+        using Csla.Core;
 
-public class A
-  : IBusinessObject
-{
-  public int Identity => default(int);
-}";
+        public class A
+          : IBusinessObject
+        {
+          public int Identity => default(int);
+        }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsStereotype());
     }
 
@@ -352,9 +376,11 @@ public class A
     public async Task IsStereotypeWhenSymbolIsStereotypeViaBusinessBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> { }";
+        public class A : BusinessBase<A> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsStereotype());
     }
 
@@ -362,11 +388,13 @@ public class A : BusinessBase<A> { }";
     public async Task IsStereotypeWhenSymbolIsDynamicListBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class ABO : BusinessBase<ABO> { }
+        public class ABO : BusinessBase<ABO> { }
 
-public class A : DynamicListBase<ABO> { }";
+        public class A : DynamicListBase<ABO> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsStereotype());
     }
 
@@ -374,9 +402,11 @@ public class A : DynamicListBase<ABO> { }";
     public async Task IsStereotypeWhenSymbolIsStereotypeViaCommandBase()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : CommandBase<A> { }";
+        public class A : CommandBase<A> { }
+        """;
       Assert.IsTrue((await GetTypeSymbolAsync(code, "A")).IsStereotype());
     }
 
@@ -384,13 +414,15 @@ public class A : CommandBase<A> { }";
     public async Task IsRunLocalAttribute()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> 
-{ 
-  [RunLocal]
-  private void B() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [RunLocal]
+          private void B() { }
+        }
+        """;
       Assert.IsTrue((await GetAttributeTypeSymbolAsync(code, "B")).IsRunLocalAttribute());
     }
 
@@ -398,12 +430,14 @@ public class A : BusinessBase<A>
     public async Task IsArgumentInjectableWithAttribute()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A
-{ 
-  private void B([Inject] int b) { }
-}";
+        public class A
+        {
+          private void B([Inject] int b) { }
+        }
+        """;
       Assert.IsTrue((await GetArgumentAttributeTypeSymbolAsync(code, "B")).IsInjectable());
     }
 
@@ -411,14 +445,16 @@ public class A
     public async Task IsArgumentInjectableWithoutAttribute()
     {
       var code =
-@"using System;
+        """
+        using System;
 
-public class CAttribute : Attribute { }
+        public class CAttribute : Attribute { }
 
-public class A
-{ 
-  private void B([C] int b) { }
-}";
+        public class A
+        {
+          private void B([C] int b) { }
+        }
+        """;
       Assert.IsFalse((await GetArgumentAttributeTypeSymbolAsync(code, "B")).IsInjectable());
     }
 

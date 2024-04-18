@@ -42,13 +42,15 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsABusinessRuleAndDoesNotCallComplete()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A : BusinessRuleAsync
-{ 
-  protected override Task ExecuteAsync(IRuleContext context) { } 
-}";
+        public class A : BusinessRuleAsync
+        {
+          protected override Task ExecuteAsync(IRuleContext context) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(code, []);
     }
 
@@ -56,16 +58,18 @@ public class A : BusinessRuleAsync
     public async Task AnalyzeWhenClassIsABusinessRuleAndCallsComplete()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A : BusinessRuleAsync
-{ 
-  protected override Task ExecuteAsync(IRuleContext context) 
-  { 
-    context.Complete();
-  } 
-}";
+        public class A : BusinessRuleAsync
+        {
+          protected override Task ExecuteAsync(IRuleContext context)
+          {
+            context.Complete();
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.CompleteInExecuteAsync]);
     }
@@ -74,17 +78,19 @@ public class A : BusinessRuleAsync
     public async Task AnalyzeWhenClassIsABusinessRuleAndCallsCompleteAndNameof()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A : BusinessRuleAsync
-{ 
-  protected override Task ExecuteAsync(IRuleContext context) 
-  { 
-    var c = nameof(context);
-    context.Complete();
-  } 
-}";
+        public class A : BusinessRuleAsync
+        {
+          protected override Task ExecuteAsync(IRuleContext context)
+          {
+            var c = nameof(context);
+            context.Complete();
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.CompleteInExecuteAsync]);
     }

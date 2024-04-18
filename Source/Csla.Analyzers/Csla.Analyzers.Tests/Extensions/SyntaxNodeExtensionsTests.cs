@@ -18,9 +18,11 @@ namespace Csla.Analyzers.Tests.Extensions
     public async Task HasUsingWhenNodeHasUsingStatememt()
     {
       var code =
-@"using System.Collections.Generic;
+        """
+        using System.Collections.Generic;
 
-public class A { }";
+        public class A { }
+        """;
       Assert.IsTrue((await GetRootAsync(code)).HasUsing("System.Collections.Generic"));
     }
 
@@ -35,12 +37,14 @@ public class A { }";
     public async Task FindParentWhenParentTypeExists()
     {
       var code =
-@"using System;
+        """
+        using System;
 
-public class A
-{
-  public Guid NewGuid() => Guid.NewGuid();
-}";
+        public class A
+        {
+          public Guid NewGuid() => Guid.NewGuid();
+        }
+        """;
       var rootNode = await GetRootAsync(code);
       var invocationNode = rootNode.DescendantNodes(_ => true)
         .Where(_ => _.IsKind(SyntaxKind.InvocationExpression)).First();
@@ -52,12 +56,14 @@ public class A
     public async Task FindParentWhenParentTypeDoesNotExists()
     {
       var code =
-@"using System;
+        """
+        using System;
 
-public class A
-{
-  public Guid NewGuid() => Guid.NewGuid();
-}";
+        public class A
+        {
+          public Guid NewGuid() => Guid.NewGuid();
+        }
+        """;
       var rootNode = await GetRootAsync(code);
       var invocationNode = rootNode.DescendantNodes(_ => true)
         .Where(_ => _.IsKind(SyntaxKind.InvocationExpression)).First();

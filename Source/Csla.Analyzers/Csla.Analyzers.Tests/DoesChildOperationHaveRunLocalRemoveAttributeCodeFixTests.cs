@@ -30,14 +30,16 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenRunLocalIsStandalone()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  [RunLocal]
-  [FetchChild]
-  private void FetchChild() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [RunLocal]
+          [FetchChild]
+          private void FetchChild() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new DoesChildOperationHaveRunLocalAnalyzer());
@@ -65,16 +67,18 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenRunLocalIsEmbeddedInList()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-public sealed class FooAttribute : Attribute { }
+        public sealed class FooAttribute : Attribute { }
 
-public class A : BusinessBase<A>
-{
-  [RunLocal, Foo, FetchChild]
-  private void FetchChild() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [RunLocal, Foo, FetchChild]
+          private void FetchChild() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new DoesChildOperationHaveRunLocalAnalyzer());

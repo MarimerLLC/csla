@@ -47,11 +47,13 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenTypeIsNotStereotype()
     {
       var code =
-@"public class A
-{
-  [Fetch]
-  public void Fetch() { }
-}";
+        """
+        public class A
+        {
+          [Fetch]
+          public void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, []);
     }
 
@@ -59,14 +61,16 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsNotADataPortalOperation()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A : BusinessBase<A>
-{
-  public void AMethod() { }
-}";
+        [Serializable]
+        public class A : BusinessBase<A>
+        {
+          public void AMethod() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, []);
     }
 
@@ -74,14 +78,16 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsNotPublic()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A : BusinessBase<A>
-{
-  private void DataPortal_Fetch() { }
-}";
+        [Serializable]
+        public class A : BusinessBase<A>
+        {
+          private void DataPortal_Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code, []);
     }
 
@@ -89,15 +95,17 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsNotSealed()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  public void Fetch() { }
-}";
+        [Serializable]
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          public void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code,
         [Constants.AnalyzerIdentifiers.IsOperationMethodPublic],
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
@@ -107,15 +115,17 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndClassIsSealed()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public sealed class A : BusinessBase<A>
-{
-  [Fetch]
-  public void Fetch() { }
-}";
+        [Serializable]
+        public sealed class A : BusinessBase<A>
+        {
+          [Fetch]
+          public void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code,
         [Constants.AnalyzerIdentifiers.IsOperationMethodPublic],
         diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[IsOperationMethodPublicAnalyzerConstants.IsSealed]));
@@ -125,15 +135,17 @@ public sealed class A : BusinessBase<A>
     public async Task AnalyzeWhenTypeIsStereotypeAndMethodIsADataPortalOperationThatIsPublicAndTypeIsInterface()
     {
       var code =
-@"using Csla;
-using Csla.Core;
+        """
+        using Csla;
+        using Csla.Core;
 
-public interface A
-  : IBusinessObject
-{
-  [Fetch]
-  void Fetch();
-}";
+        public interface A
+          : IBusinessObject
+        {
+          [Fetch]
+          void Fetch();
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsOperationMethodPublicAnalyzer>(code,
         [Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface]);
     }

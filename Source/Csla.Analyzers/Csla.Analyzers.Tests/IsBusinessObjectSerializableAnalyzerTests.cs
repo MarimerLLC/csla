@@ -42,11 +42,13 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsMobileObjectAndIsSerializable()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A : BusinessBase<A>{ }";
+        [Serializable]
+        public class A : BusinessBase<A>{ }
+        """;
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, []);
     }
 
@@ -54,27 +56,31 @@ public class A : BusinessBase<A>{ }";
     public async Task AnalyzeWhenClassIsMobileObjectAndIsNotSerializable()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>{ }";
+        public class A : BusinessBase<A>{ }
+        """;
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable]);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsDerivedFromReadOnlyListBaseAndIsNotSerializable() {
-      var code = @"
-using Csla;
-using System;
+      var code = """
 
-namespace Testnamespace 
-{
-  [Serializable]
-  public class B : BusinessBase<B> {}
+                 using Csla;
+                 using System;
 
-  public class A : ReadOnlyListBase<A,B> {}
-}
-";
+                 namespace Testnamespace
+                 {
+                   [Serializable]
+                   public class B : BusinessBase<B> {}
+                 
+                   public class A : ReadOnlyListBase<A,B> {}
+                 }
+
+                 """;
 
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, [Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable]);
     }

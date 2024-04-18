@@ -4,9 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#if MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 using UnitDriven;
 
 namespace Csla.Test.SourceLink

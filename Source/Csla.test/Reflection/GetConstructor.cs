@@ -8,16 +8,8 @@
 using System;
 using System.Reflection;
 using System.Linq;
-#if !NUNIT
 using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#endif
 using Csla.Reflection;
 
 namespace Csla.Test.Reflection

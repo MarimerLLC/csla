@@ -11,16 +11,8 @@ using System.Reflection;
 using Csla.Reflection;
 using UnitDriven;
 using System.Collections.Generic;
-
-#if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#endif
+
 
 namespace Csla.Test.MethodCaller
 {
@@ -55,15 +47,9 @@ namespace Csla.Test.MethodCaller
       }
       catch (Exception ex)
       {
-#if MSTEST
         Assert.IsInstanceOfType(ex, typeof(Csla.Reflection.CallMethodException), "Should be a CallMethodException");
         Assert.IsInstanceOfType(ex.InnerException, typeof(MemberAccessException), "Inner should be a MemberAccessException");
         Assert.IsInstanceOfType(ex.InnerException.InnerException, typeof(NotSupportedException), "Inner inner should be a NotSupportedException");
-#else
-        Assert.IsInstanceOfType(typeof(Csla.Reflection.CallMethodException), ex, "Should be a CallMethodException");
-        Assert.IsInstanceOfType(typeof(MemberAccessException), ex.InnerException, "Inner should be a MemberAccessException");
-        Assert.IsInstanceOfType(typeof(NotSupportedException), ex.InnerException.InnerException, "Inner inner should be a NotSupportedException");
-#endif
       }
     }
 
@@ -171,11 +157,7 @@ namespace Csla.Test.MethodCaller
     {
       // As ridiculous as this Assert seems, it's actually possible for ms
       // to be the wrong type. See bug #550.
-#if MSTEST
       Assert.IsInstanceOfType(ms, typeof(MemoryStream));
-#else
-      Assert.IsInstanceOfType(typeof(MemoryStream), ms);
-#endif
     }
 
     public void DoSuccess()

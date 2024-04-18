@@ -14,17 +14,7 @@ using Csla.TestHelpers;
 using FluentAssertions;
 using System.Threading.Tasks;
 using FluentAssertions.Execution;
-
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif 
 
 namespace Csla.Test.BusinessListBase
 {

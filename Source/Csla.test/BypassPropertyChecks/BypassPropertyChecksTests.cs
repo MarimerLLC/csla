@@ -11,18 +11,7 @@ using System;
 using UnitDriven;
 using System.Security.Claims;
 using Csla.TestHelpers;
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-using TestSetup = NUnit.Framework.SetUpAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
-
 
 namespace Csla.Test.BypassPropertyChecks
 {

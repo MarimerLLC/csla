@@ -11,17 +11,7 @@ using System;
 using UnitDriven;
 using Csla.DataPortalClient;
 using System.Threading.Tasks;
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-using TestSetup = NUnit.Framework.SetUpAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace cslalighttest.Stereotypes
 {

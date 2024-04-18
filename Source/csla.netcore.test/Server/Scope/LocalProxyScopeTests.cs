@@ -13,16 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 using System.IO;
 using Csla.Runtime;
-
-#if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
+
 using Csla;
 
 namespace Csla.Test.Server.Scope

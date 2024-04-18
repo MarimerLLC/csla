@@ -6,11 +6,6 @@
 // </copyright>
 // <summary>Interface defining the interaction between</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 namespace Csla.Xaml
 {
   /// <summary>

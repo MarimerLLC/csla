@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Client-side data portal options.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.DataPortalClient;
 using Microsoft.Extensions.DependencyInjection;
 

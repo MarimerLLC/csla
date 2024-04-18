@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines the interface that must be implemented</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

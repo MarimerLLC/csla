@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Windows Forms extender control that automatically</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Drawing;
+
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Reflection;
 
 namespace Csla.Windows

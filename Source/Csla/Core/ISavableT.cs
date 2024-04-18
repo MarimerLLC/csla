@@ -6,8 +6,6 @@
 // </copyright>
 // <summary>Specifies that the object can save</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.Core
 {

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Provides a cache for a limited number of</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
+
 using System.Security.Principal;
 using Csla.Configuration;
 

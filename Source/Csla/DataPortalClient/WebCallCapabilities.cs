@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Exposes platform-specific web call capabilities</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Runtime.InteropServices;
 
 namespace Csla.DataPortalClient

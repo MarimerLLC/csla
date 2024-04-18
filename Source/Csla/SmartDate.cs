@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Provides a date data type that understands the concept</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 

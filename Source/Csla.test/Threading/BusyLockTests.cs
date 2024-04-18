@@ -6,13 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Threading;
-using UnitDriven;
 using Csla.Core;
-using System.ComponentModel;
 
 #if NUNIT
 using NUnit.Framework;

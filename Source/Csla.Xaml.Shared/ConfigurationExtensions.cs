@@ -57,7 +57,6 @@ namespace Csla.Configuration
   }
 }
 #elif !XAMARIN && !NETFX_CORE
-using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Csla.Xaml;
 using Microsoft.Extensions.Hosting;

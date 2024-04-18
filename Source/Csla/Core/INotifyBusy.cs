@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Interface defining an object that notifies when it</summary>
 //-----------------------------------------------------------------------
-using System.ComponentModel;
 
 namespace Csla.Core
 {

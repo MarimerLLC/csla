@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.DataPortalClient;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;

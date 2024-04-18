@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using System;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {

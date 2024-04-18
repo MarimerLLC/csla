@@ -7,10 +7,7 @@
 //-----------------------------------------------------------------------
 using System;
 using System.ComponentModel;
-using UnitDriven;
 using Csla.Serialization.Mobile;
-using Csla.Core;
-using Csla.Serialization;
 using System.IO;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;

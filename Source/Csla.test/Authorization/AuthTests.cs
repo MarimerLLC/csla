@@ -6,21 +6,13 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.IsolatedStorage;
 using System.Reflection;
-using System.Text;
-using Csla;
-using Csla.Serialization;
 using Csla.Rules;
 using Csla.Test.Security;
-using UnitDriven;
 using System.Diagnostics;
 using System.Security.Claims;
 using Csla.TestHelpers;
 using Csla.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 
 #if NUNIT

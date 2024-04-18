@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>HostPropertyAttribute is used on components to </summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Windows
 {

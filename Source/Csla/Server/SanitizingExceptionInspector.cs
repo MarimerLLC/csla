@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Server-side sanitizing exception inspector.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

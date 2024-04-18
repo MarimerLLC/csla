@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Base class to be used when creating a data portal</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;

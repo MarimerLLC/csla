@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Default implementation of exception inspector.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Server
 {

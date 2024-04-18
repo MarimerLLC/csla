@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>BindingSourceRefresh contains functionality for refreshing the data bound to controls on Host as well as a mechinism for catching data</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows.Forms;
 
 // code from Bill McCarthy
 // http://msmvps.com/bill/archive/2005/10/05/69012.aspx

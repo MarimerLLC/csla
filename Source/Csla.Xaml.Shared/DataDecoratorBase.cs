@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Base class for creating WPF panel</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;

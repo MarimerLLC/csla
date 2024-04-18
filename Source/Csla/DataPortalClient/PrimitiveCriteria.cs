@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Class used as a wrapper for criteria based requests that use primitives</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Serialization.Mobile;
 
 namespace Csla.DataPortalClient

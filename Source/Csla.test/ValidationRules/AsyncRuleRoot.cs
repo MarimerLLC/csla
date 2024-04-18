@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Rules;
-using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
 {

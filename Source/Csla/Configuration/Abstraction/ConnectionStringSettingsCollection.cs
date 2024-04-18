@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Collection of connection strings.</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
 
 namespace Csla.Configuration
 {

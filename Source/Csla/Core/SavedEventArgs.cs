@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Event arguments containing a reference</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

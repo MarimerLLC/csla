@@ -5,16 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.ComponentModel;
-using System.Diagnostics;
-using Csla.Serialization;
-using Csla.Test.ValidationRules;
-using UnitDriven;
-using Csla.TestHelpers;
+
 using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
@@ -29,8 +20,6 @@ using TestCleanup = NUnit.Framework.TearDownAttribute;
 using TestMethod = NUnit.Framework.TestAttribute;
 #else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.Serialization.Mobile;
-using System.IO;
 #endif 
 
 namespace Csla.Test.Serialization

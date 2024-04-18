@@ -6,12 +6,8 @@
 // </copyright>
 // <summary>Invokes a method on a target object when a </summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.ComponentModel;
-using System.Collections.Generic;
-using Csla.Properties;
 
 namespace Csla.Xaml
 {

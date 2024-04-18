@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Implement if a class requires access to the CSLA ApplicationContext type.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Core
 {

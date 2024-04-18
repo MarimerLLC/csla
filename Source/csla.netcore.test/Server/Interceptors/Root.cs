@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Business object type for use in tests</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Csla.Test.Server.Interceptors
 {

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Extension methods to simplify lambda business rules</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Text;
 using Csla.Core;
 

@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Threading;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Runtime;

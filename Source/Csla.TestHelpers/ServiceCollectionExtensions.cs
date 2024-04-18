@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>Wiring up of DI for Csla, for enabling test projects</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using Csla.Configuration;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection.Extensions;

@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.IO;
-using System.Collections.Generic;
+
 using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
@@ -18,7 +15,6 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
-using System.Threading.Tasks;
 
 namespace Csla.Core.FieldManager
 {

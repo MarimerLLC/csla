@@ -6,11 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ComponentModel;
-using UnitDriven;
-using Csla.Serialization.Mobile;
-using Csla.Core;
-using Csla.Serialization;
 using Csla.TestHelpers;
 
 #if NUNIT

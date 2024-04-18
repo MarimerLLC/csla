@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Options for Blazor wasm-interactive</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Blazor.WebAssembly.State;
 
 namespace Csla.Blazor.WebAssembly.Configuration

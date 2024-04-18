@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Defines interface for a client-side cache service</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 #nullable enable
 namespace Csla.DataPortalClient

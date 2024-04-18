@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Provides access to the correct current application</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 

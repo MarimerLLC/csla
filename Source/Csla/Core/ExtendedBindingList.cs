@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Extends BindingList of T by adding extra</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
 #if NETFX_CORE || (ANDROID || IOS)

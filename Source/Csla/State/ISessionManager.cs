@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Manages session state</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.State
 {

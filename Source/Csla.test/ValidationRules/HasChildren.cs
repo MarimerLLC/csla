@@ -6,13 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Csla.Serialization;
-using Csla.Serialization.Mobile;
 using Csla.Core;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace Csla.Test.ValidationRules

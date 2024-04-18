@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Base class used to create property level rule</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Core;
 
 namespace Csla.Rules

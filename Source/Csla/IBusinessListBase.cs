@@ -1,9 +1,7 @@
-﻿using System;
-using Csla.Core;
+﻿using Csla.Core;
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
-using System.Collections.Generic;
 
 namespace Csla
 {

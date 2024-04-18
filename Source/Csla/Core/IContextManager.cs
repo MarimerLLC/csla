@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines the interface for an application </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Security.Principal;
 
 namespace Csla.Core

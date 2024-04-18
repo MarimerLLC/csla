@@ -6,16 +6,13 @@
 // </copyright>
 // <summary>Wraps and creates a CSLA .NET-style object </summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Reflection;
 using Csla.Reflection;
 using Csla.Properties;
-using System.Threading.Tasks;
 
 namespace Csla.Xaml
 {

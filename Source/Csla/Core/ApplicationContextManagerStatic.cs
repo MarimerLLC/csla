@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Default context manager for the user property</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Security.Principal;
 using System.Security.Claims;
 

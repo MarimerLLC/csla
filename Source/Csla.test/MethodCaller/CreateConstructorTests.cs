@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ComponentModel;
-using UnitDriven;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 

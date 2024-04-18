@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Marks a field to indicate that the value should not </summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

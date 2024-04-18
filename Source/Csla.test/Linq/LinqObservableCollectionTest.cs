@@ -5,14 +5,10 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using Csla;
+
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using Csla.Serialization;
-using UnitDriven;
 using Csla.TestHelpers;
 
 #if NUNIT

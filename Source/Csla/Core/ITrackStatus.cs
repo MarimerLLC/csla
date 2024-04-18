@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines the common properties required objects</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

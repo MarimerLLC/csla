@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Csla.DataPortalClient
+﻿namespace Csla.DataPortalClient
 {
   /// <summary>
   /// Describes the data portal proxy for use by

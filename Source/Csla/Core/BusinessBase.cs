@@ -5,24 +5,19 @@
 // </copyright>
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Rules;
-using System.Security;
 using Csla.Core.FieldManager;
 using System.Reflection;
 using System.Collections;

@@ -5,12 +5,11 @@
 // </copyright>
 // <summary>This is the base class from which readonly name/value</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Core;
 using Csla.Serialization.Mobile;
-using System.Threading.Tasks;
 
 namespace Csla
 {

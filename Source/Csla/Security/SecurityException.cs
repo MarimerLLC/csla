@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-#if !(ANDROID || IOS) && !NETFX_CORE
-using System.Security.Permissions;
+﻿#if !(ANDROID || IOS) && !NETFX_CORE
 #endif
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Csla.Security
 {

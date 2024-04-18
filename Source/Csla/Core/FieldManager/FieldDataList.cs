@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Runtime.Serialization;
 
 namespace Csla.Core.FieldManager

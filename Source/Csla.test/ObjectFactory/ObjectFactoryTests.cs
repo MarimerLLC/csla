@@ -6,13 +6,8 @@
 // <summary>Always make sure to cleanup after each test </summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Configuration;
 using Csla.TestHelpers;
-using Microsoft.Extensions.DependencyInjection;
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;

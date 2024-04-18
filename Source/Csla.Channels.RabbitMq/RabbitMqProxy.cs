@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using Csla.DataPortalClient;
 using Csla.Server;
 using RabbitMQ.Client;

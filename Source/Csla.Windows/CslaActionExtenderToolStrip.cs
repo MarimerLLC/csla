@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Extender control providing automation around</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Windows.Forms;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Properties;

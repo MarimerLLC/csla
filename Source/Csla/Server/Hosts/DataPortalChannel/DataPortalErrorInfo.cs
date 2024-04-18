@@ -6,8 +6,6 @@
 // <summary>Message containing details about any</summary>
 //-----------------------------------------------------------------------
 
-using System;
-
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>

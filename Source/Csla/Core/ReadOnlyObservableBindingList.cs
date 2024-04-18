@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>A readonly version of ObservableBindingList.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 using Csla.Properties;
 
 namespace Csla.Core

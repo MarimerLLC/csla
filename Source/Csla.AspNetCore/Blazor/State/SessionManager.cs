@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Csla.State;
 
 namespace Csla.Blazor.State

@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>A collection of currently broken rules.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.Collections.Generic;
+
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 

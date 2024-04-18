@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Extension methods for the TestDIContext type</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.TestHelpers
 {

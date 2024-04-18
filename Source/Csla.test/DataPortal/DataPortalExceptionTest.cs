@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Csla;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

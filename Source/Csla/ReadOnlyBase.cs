@@ -5,15 +5,12 @@
 // </copyright>
 // <summary>This is a base class from which readonly business classes</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;

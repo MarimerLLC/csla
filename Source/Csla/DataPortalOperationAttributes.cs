@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines the attributes used by data portal to find methods</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

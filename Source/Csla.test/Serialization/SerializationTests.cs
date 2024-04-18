@@ -6,19 +6,12 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
 using System.ComponentModel;
-using System.Diagnostics;
-using Csla.Serialization;
-using Csla.Configuration;
 using Csla.Test.ValidationRules;
 using UnitDriven;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Csla.TestHelpers;
-using Microsoft.Extensions.DependencyInjection;
 
 #if NUNIT
 using NUnit.Framework;

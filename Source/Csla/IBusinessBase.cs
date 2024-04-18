@@ -1,5 +1,4 @@
-﻿using System;
-using Csla.Core;
+﻿using Csla.Core;
 using System.ComponentModel;
 using Csla.Security;
 using Csla.Rules;

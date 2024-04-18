@@ -5,15 +5,10 @@
 // </copyright>
 // <summary>This only works on Silverlight because when run through NUnit it is not running</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+
 using UnitDriven;
 using System.Threading.Tasks;
 using Csla.TestHelpers;
-using Csla.Rules;
 using FluentAssertions.Execution;
 using FluentAssertions;
 

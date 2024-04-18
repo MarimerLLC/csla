@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Interface implemented by all read-only collection</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Exception indicating a failure to</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

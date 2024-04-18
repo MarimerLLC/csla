@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Dictionary type that is serializable</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
 

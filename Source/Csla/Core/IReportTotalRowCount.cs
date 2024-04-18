@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Implement this interface in a collection</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

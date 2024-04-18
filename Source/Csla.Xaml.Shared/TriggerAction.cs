@@ -7,12 +7,7 @@
 // <summary>Control used to invoke a method on the DataContext</summary>
 //-----------------------------------------------------------------------
 #define DEBUG
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows;
 using System.ComponentModel;
 

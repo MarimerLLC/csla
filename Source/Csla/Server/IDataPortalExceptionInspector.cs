@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Implement this interface to check a DataPortalException before returning Exception to the client. </summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Server
 {

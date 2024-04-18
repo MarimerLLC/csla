@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Creates PropertyInfo objects.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core.FieldManager
 {

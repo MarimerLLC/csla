@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Csla.Core
 {

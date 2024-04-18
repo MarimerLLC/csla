@@ -8,12 +8,10 @@
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Csla.Channels.Http
 {

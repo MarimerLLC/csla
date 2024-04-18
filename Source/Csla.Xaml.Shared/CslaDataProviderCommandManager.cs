@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Implements support for RoutedCommands that can</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows.Input;
 using System.ComponentModel;
 

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Authorization handler for CSLA permissions</summary>
 //-----------------------------------------------------------------------
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace Csla.Blazor

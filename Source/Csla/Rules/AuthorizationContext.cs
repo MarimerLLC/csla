@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Context information provided to an authorization</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Security.Claims;
-using System.Security.Principal;
-using Csla.Core;
 
 namespace Csla.Rules
 {

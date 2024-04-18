@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Base type from which Criteria classes can be</summary>
 //-----------------------------------------------------------------------
-using System;
-using Csla.Serialization.Mobile;
+
 using Csla.Core;
-using System.ComponentModel;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using System.Reflection;

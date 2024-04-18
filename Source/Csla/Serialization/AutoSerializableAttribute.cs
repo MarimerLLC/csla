@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Indicate that a type should be auto serialized</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Serialization
 {

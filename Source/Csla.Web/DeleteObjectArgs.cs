@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Argument object used in the DeleteObject event.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Web
 {

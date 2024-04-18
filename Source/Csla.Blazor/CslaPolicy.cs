@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Contains methods to manage CSLA permission policy information</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Blazor
 {

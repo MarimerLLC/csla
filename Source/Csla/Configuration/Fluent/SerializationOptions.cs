@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Use this type to configure the settings for serialization.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Serialization.Mobile;
 
 namespace Csla.Configuration

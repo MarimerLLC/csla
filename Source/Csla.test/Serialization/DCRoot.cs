@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using System.Runtime.Serialization;
-using Csla;
 
 namespace Csla.Test.Serialization
 {

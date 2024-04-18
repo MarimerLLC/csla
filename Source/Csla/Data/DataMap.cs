@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Defines a mapping between two sets of</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Csla.Reflection;
 
 namespace Csla.Data

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Authorization method identifiation attribute</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

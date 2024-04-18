@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Csla.Configuration
 {

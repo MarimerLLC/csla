@@ -6,9 +6,6 @@
 // <summary>Test to see if contexts get cleared out properly</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using Csla.Configuration;
 using Csla.TestHelpers;
 

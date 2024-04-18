@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Expose metastate information about a property.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Core;
@@ -21,7 +20,6 @@ using Xamarin.Forms;
 using System.Collections.Generic;
 #elif MAUI
 #else
-using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Data;
 #endif

@@ -5,20 +5,12 @@
 // </copyright>
 // <summary>Extends ObservableCollection with behaviors required</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using Csla.Serialization.Mobile;
-using Csla.Core.FieldManager;
-using Csla.Core;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using Csla.Properties;
-using System.Diagnostics;
 
 namespace Csla.Core
 {

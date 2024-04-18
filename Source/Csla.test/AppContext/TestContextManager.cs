@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using Csla.Core;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Test.AppContext
 {

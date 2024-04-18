@@ -1504,9 +1504,9 @@ namespace Csla
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
     /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     [NonSerialized]

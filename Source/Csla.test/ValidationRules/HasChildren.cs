@@ -64,9 +64,9 @@ namespace Csla.Test.ValidationRules
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     #region Private Helper Methods

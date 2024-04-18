@@ -739,9 +739,9 @@ namespace Csla
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
     /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>
@@ -1123,9 +1123,9 @@ namespace Csla
       return await SaveAsync();
     }
 
-    async Task ISavable.SaveAndMergeAsync(bool forceUpdate)
+    Task ISavable.SaveAndMergeAsync(bool forceUpdate)
     {
-      await SaveAndMergeAsync();
+      return SaveAndMergeAsync();
     }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
@@ -1143,9 +1143,9 @@ namespace Csla
       return await SaveAsync();
     }
 
-    async Task ISavable<T>.SaveAndMergeAsync(bool forceUpdate)
+    Task ISavable<T>.SaveAndMergeAsync(bool forceUpdate)
     {
-      await SaveAndMergeAsync();
+      return SaveAndMergeAsync();
     }
 
     void Csla.Core.ISavable<T>.SaveComplete(T newObject)

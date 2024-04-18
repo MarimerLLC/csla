@@ -52,15 +52,15 @@ namespace Csla.Test.FieldManager.Async
     }
 
     [Insert]
-    private async Task InsertAsync()
+    private Task InsertAsync()
     {
-      await FieldManager.UpdateChildrenAsync();
+      return FieldManager.UpdateChildrenAsync();
     }
 
     [Update]
-    private async Task UpdateAsync()
+    private Task UpdateAsync()
     {
-      await FieldManager.UpdateChildrenAsync();
+      return FieldManager.UpdateChildrenAsync();
     }
   }
 }

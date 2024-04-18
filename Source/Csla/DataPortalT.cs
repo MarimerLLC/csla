@@ -628,9 +628,9 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public async Task DeleteAsync(params object[] criteria)
+    public Task DeleteAsync(params object[] criteria)
     {
-      await DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
+      return DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
     /// <summary>

@@ -20,9 +20,9 @@ namespace Csla.Test.ValidationRules
     }
 
     [Create]
-    private async Task DataPortal_Create()
+    private Task DataPortal_Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
   }
 }

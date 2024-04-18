@@ -159,29 +159,29 @@ namespace Csla.Server
       await CallMethodTryAsyncDI<T>(isSync, parameters).ConfigureAwait(false);
     }
 
-    public async Task CreateAsync(object criteria, bool isSync)
+    public Task CreateAsync(object criteria, bool isSync)
     {
-      await InvokeOperationAsync<CreateAttribute>(criteria, isSync).ConfigureAwait(false);
+      return InvokeOperationAsync<CreateAttribute>(criteria, isSync);
     }
 
-    public async Task CreateChildAsync(params object[] parameters)
+    public Task CreateChildAsync(params object[] parameters)
     {
-      await CallMethodTryAsyncDI<CreateChildAttribute>(false, parameters).ConfigureAwait(false);
+      return CallMethodTryAsyncDI<CreateChildAttribute>(false, parameters);
     }
 
-    public async Task FetchAsync(object criteria, bool isSync)
+    public Task FetchAsync(object criteria, bool isSync)
     {
-      await InvokeOperationAsync<FetchAttribute>(criteria, isSync).ConfigureAwait(false);
+      return InvokeOperationAsync<FetchAttribute>(criteria, isSync);
     }
 
-    public async Task FetchChildAsync(params object[] parameters)
+    public Task FetchChildAsync(params object[] parameters)
     {
-      await CallMethodTryAsyncDI<FetchChildAttribute>(false, parameters).ConfigureAwait(false);
+      return CallMethodTryAsyncDI<FetchChildAttribute>(false, parameters);
     }
 
-    public async Task ExecuteAsync(object criteria, bool isSync)
+    public Task ExecuteAsync(object criteria, bool isSync)
     {
-      await InvokeOperationAsync<ExecuteAttribute>(criteria, isSync).ConfigureAwait(false);
+      return InvokeOperationAsync<ExecuteAttribute>(criteria, isSync);
     }
 
     public async Task UpdateAsync(bool isSync)
@@ -267,14 +267,14 @@ namespace Csla.Server
       }
     }
 
-    public async Task ExecuteAsync(bool isSync)
+    public Task ExecuteAsync(bool isSync)
     {
-      await InvokeOperationAsync<ExecuteAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
+      return InvokeOperationAsync<ExecuteAttribute>(EmptyCriteria.Instance, isSync);
     }
 
-    public async Task DeleteAsync(object criteria, bool isSync)
+    public Task DeleteAsync(object criteria, bool isSync)
     {
-      await InvokeOperationAsync<DeleteAttribute>(criteria, isSync).ConfigureAwait(false);
+      return InvokeOperationAsync<DeleteAttribute>(criteria, isSync);
     }
 #if NET5_0_OR_GREATER
 

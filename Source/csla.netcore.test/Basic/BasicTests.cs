@@ -379,7 +379,7 @@ namespace Csla.Test.Basic
       
       bool changed = false;
       var obj = new RootList();
-      obj.ListChanged += (o, e) =>
+      obj.ListChanged += (_, _) =>
       {
         changed = true;
       };

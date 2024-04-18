@@ -131,7 +131,7 @@ namespace Csla.Test.ValidationRules
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
 
       var waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
-      actual.ValidationComplete += (o, e) => waitHandle.Set();
+      actual.ValidationComplete += (_, _) => waitHandle.Set();
       waitHandle.Reset();
       actual.CustomerId = 1;
       waitHandle.WaitOne();  // wait for async lookup to complete
@@ -177,7 +177,7 @@ namespace Csla.Test.ValidationRules
       Assert.IsFalse(actual.IsSelfValid);   // is broken before we set customerid
 
       var waitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
-      actual.ValidationComplete += (o, e) => waitHandle.Set();
+      actual.ValidationComplete += (_, _) => waitHandle.Set();
       waitHandle.Reset();
       actual.CustomerId = 1;
       waitHandle.WaitOne();  // wait for async lookup to complete

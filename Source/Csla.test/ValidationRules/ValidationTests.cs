@@ -118,7 +118,7 @@ namespace Csla.Test.ValidationRules
       context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
       bool validationComplete = false;
-      root.ValidationComplete += (vo, ve) => { validationComplete = true; };
+      root.ValidationComplete += (_, _) => { validationComplete = true; };
 
       root.BeginEdit();
       root.Name = "";

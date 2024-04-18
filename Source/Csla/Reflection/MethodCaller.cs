@@ -678,7 +678,6 @@ namespace Csla.Reflection
     private static object CallMethod(object obj, DynamicMethodHandle methodHandle, bool hasParameters, params object[] parameters)
     {
       object result = null;
-      var method = methodHandle.DynamicMethod;
 
       object[] inParams;
       if (parameters == null)

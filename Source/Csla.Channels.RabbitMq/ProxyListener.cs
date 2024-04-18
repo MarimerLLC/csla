@@ -112,7 +112,7 @@ namespace Csla.Channels.RabbitMq
       InitializeRabbitMQ();
 
       var consumer = new EventingBasicConsumer(Channel);
-      consumer.Received += (model, ea) =>
+      consumer.Received += (_, ea) =>
       {
         Console.WriteLine($"Received reply for {ea.BasicProperties.CorrelationId}");
         if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem item))

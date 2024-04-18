@@ -43,7 +43,7 @@ namespace Csla.Core.LoadManager
       if (_parameters.Any())
         parameters.Add(_parameters.First());
   
-      var myCallback = new EventHandler<DataPortalResult<T>>((sender, result) => callback(this, result));
+      var myCallback = new EventHandler<DataPortalResult<T>>((_, result) => callback(this, result));
       parameters.Add(myCallback);
       _factory.DynamicInvoke(parameters.ToArray());
     }

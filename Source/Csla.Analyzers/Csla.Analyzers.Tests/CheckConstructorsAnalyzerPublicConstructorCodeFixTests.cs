@@ -40,7 +40,6 @@ public class A : BusinessBase<A>
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -78,7 +77,6 @@ public class A : BusinessBase<A>
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -117,7 +115,6 @@ public class A : BusinessBase<A>
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -157,7 +154,6 @@ public class A : BusinessBase<A>
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -203,8 +199,6 @@ public class A : BusinessBase<A>
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
-
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(

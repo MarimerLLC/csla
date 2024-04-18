@@ -139,7 +139,6 @@ namespace Csla.Core
       var listType = target.GetType();
       var childType = Utilities.GetChildItemType(listType);
       var genericTypeParams = new Type[] { listType, childType };
-      var parameterTypes = new Type[] { listType, listType };
       System.Reflection.MethodInfo methodReference;
       if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
         methodReference = this.GetType().GetMethod("MergeBusinessBindingListGraph");

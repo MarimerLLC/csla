@@ -18,6 +18,5 @@ namespace Csla
  : IReadOnlyCollection, IBusinessObject, ICloneable, IObservableBindingList,
     INotifyBusy, INotifyUnhandledAsyncException, INotifyChildChanged, ISerializationNotification,
     IMobileObject, INotifyCollectionChanged, INotifyPropertyChanged,
-    IList<C>, ICollection<C>, IEnumerable<C>
-  { }
+    IList<C>, ICollection<C>, IEnumerable<C>;
 }

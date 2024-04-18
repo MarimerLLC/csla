@@ -15,7 +15,5 @@ using Csla.Serialization;
 namespace Csla.Test.BusinessListBase
 {
   [Serializable]
-  public class ChildList : BusinessListBase<ChildList, Child>
-  {
-  }
+  public class ChildList : BusinessListBase<ChildList, Child>;
 }

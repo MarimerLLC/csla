@@ -13,7 +13,5 @@ namespace Csla.Security
   /// Defines the base requirements for the interface of any
   /// CSLA principal object.
   /// </summary>
-  public interface ICslaPrincipal : IPrincipal, Csla.Serialization.Mobile.IMobileObject
-  {
-  }
+  public interface ICslaPrincipal : IPrincipal, Csla.Serialization.Mobile.IMobileObject;
 }

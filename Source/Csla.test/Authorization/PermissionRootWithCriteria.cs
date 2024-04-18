@@ -25,6 +25,6 @@ namespace Csla.Test.Authorization
         new AuthRuleExpectsCriteria(AuthorizationActions.DeleteObject));
     }
 
-    public class Criteria { }
+    public class Criteria;
   }
 }

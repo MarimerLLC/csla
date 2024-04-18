@@ -17,6 +17,5 @@ namespace Csla
       ICloneable, ISavable, IParent, INotifyBusy, INotifyUnhandledAsyncException,
       IObservableBindingList, INotifyChildChanged, ISerializationNotification, IMobileObject,
       INotifyCollectionChanged, INotifyPropertyChanged,
-      ICollection<C>, IList<C>, IEnumerable<C>
-  { }
+      ICollection<C>, IList<C>, IEnumerable<C>;
 }

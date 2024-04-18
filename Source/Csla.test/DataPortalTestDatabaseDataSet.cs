@@ -9,7 +9,5 @@ namespace Csla.Test
 {
 
 
-  partial class DataPortalTestDatabaseDataSet
-  {
-  }
+  partial class DataPortalTestDatabaseDataSet;
 }

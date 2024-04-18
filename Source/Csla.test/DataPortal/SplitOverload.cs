@@ -13,7 +13,5 @@ using Csla.Serialization;
 namespace Csla.Test.DataPortalTest
 {
   [Serializable]
-  class SplitOverload : SplitOverloadBase<SplitOverload>
-  {
-  }
+  class SplitOverload : SplitOverloadBase<SplitOverload>;
 }

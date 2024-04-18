@@ -119,9 +119,6 @@ namespace Csla.Configuration
   /// <summary>
   /// Configuration options for AddXaml method
   /// </summary>
-  public class XamlOptions
-  {
-
-  }
+  public class XamlOptions;
 }
 #endif

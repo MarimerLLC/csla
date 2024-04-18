@@ -299,8 +299,7 @@ namespace Csla.Server
         if (type.AssemblyQualifiedName == null) return string.Empty;
 
         var elements = type.AssemblyQualifiedName.Split(',');
-        return string.Format("{0},{1}", elements[0], elements[1]);
-
+        return $"{elements[0]},{elements[1]}";
       }
     }
   }

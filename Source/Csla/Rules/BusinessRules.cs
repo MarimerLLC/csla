@@ -922,7 +922,7 @@ namespace Csla.Rules
         }
         catch (Exception ex)
         {
-          context.AddErrorResult(string.Format("{0}:{1}", rule.RuleName, ex.Message));
+          context.AddErrorResult($"{rule.RuleName}:{ex.Message}");
           if (rule.IsAsync)
             context.Complete();
         }

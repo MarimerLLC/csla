@@ -675,7 +675,7 @@ namespace Csla.Windows
                         var friendlyName =
                           PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
                             c => c.Name == lambdaBrokenRule.Property).FriendlyName;
-                        brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
+                        brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
                       }
                       MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -775,7 +775,7 @@ namespace Csla.Windows
               var friendlyName =
                 PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
                   c => c.Name == lambdaBrokenRule.Property).FriendlyName;
-              brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
+              brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
             }
             MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
               MessageBoxButtons.OK, MessageBoxIcon.Error);

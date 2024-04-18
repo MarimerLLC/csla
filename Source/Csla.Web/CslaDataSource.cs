@@ -138,8 +138,7 @@ namespace Csla.Web
       if (!string.IsNullOrEmpty(typeAssemblyName))
       {
         // explicit assembly name provided
-        result = Type.GetType(string.Format(
-          "{0}, {1}", typeName, typeAssemblyName), true, true);
+        result = Type.GetType($"{typeName}, {typeAssemblyName}", true, true);
       }
       else if (typeName.IndexOf(",") > 0)
       {

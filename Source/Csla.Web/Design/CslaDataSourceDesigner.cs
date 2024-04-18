@@ -107,8 +107,7 @@ namespace Csla.Web.Design
       if (string.IsNullOrEmpty(DataSourceControl.TypeAssemblyName))
         oldTypeName = DataSourceControl.TypeName;
       else
-        oldTypeName = string.Format("{0}, {1}", 
-          DataSourceControl.TypeName, DataSourceControl.TypeAssemblyName);
+        oldTypeName = $"{DataSourceControl.TypeName}, {DataSourceControl.TypeAssemblyName}";
 
       IUIService uiService = (IUIService)_control.Site.GetService(typeof(IUIService));
       CslaDataSourceConfiguration cfg = new CslaDataSourceConfiguration(_control, oldTypeName);

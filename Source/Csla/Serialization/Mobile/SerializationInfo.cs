@@ -295,7 +295,7 @@ namespace Csla.Serialization.Mobile
       }
       catch (Exception ex)
       {
-        throw new InvalidOperationException(string.Format("SerializationInfo.GetValue: {0}", name), ex);
+        throw new InvalidOperationException($"SerializationInfo.GetValue: {name}", ex);
       }
     }
 

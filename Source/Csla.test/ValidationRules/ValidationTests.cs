@@ -757,7 +757,7 @@ namespace Csla.Test.ValidationRules
       var v1 = (string)context.InputPropertyValues[PrimaryProperty];
       var v2 = (string)context.InputPropertyValues[SecondaryProperty];
       if (string.IsNullOrEmpty(v1) || string.IsNullOrEmpty(v2))
-        context.AddErrorResult(string.Format("v1:{0}, v2:{1}", v1, v2));
+        context.AddErrorResult($"v1:{v1}, v2:{v2}");
     }
   }
 

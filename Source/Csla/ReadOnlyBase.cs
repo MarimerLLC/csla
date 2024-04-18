@@ -351,7 +351,7 @@ namespace Csla
       if (throwOnFalse && result == false)
       {
         Csla.Security.SecurityException ex =
-          new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
+          new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({method.Name})");
         throw ex;
       }
       return result;
@@ -377,8 +377,7 @@ namespace Csla
       bool result = CanExecuteMethod(new MethodInfo(methodName));
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({methodName})");
       }
       return result;
     }

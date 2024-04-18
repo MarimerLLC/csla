@@ -109,7 +109,7 @@ namespace Csla.Server
     public void ThrowIfBusy()
     {
       if (Instance is Csla.Core.ITrackStatus busy && busy.IsBusy)
-        throw new InvalidOperationException(string.Format("{0}.IsBusy == true", Instance.GetType().Name));
+        throw new InvalidOperationException($"{Instance.GetType().Name}.IsBusy == true");
     }
 
     public async Task WaitForIdle()

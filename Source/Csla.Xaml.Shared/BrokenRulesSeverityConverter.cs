@@ -32,7 +32,7 @@ namespace Csla.Xaml
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       RuleSeverity severity = (RuleSeverity)value;
-      string uri = string.Format("/Csla.Xaml;component/Resources/{0}.png", severity);
+      string uri = $"/Csla.Xaml;component/Resources/{severity}.png";
       StreamResourceInfo sr = Application.GetResourceStream(new Uri(uri, UriKind.Relative));
       BitmapImage bmp = new BitmapImage();
       bmp.BeginInit();

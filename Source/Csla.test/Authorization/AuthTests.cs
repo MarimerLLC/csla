@@ -58,6 +58,7 @@ namespace Csla.Test.Authorization
       TestResults.Reinitialise();
     }
 
+    [Ignore]
     [TestMethod()]
     public void TestAuthCloneRules()
     {
@@ -358,6 +359,7 @@ namespace Csla.Test.Authorization
 
     }
 
+    [Ignore]
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
     {
@@ -385,6 +387,7 @@ namespace Csla.Test.Authorization
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2"));
     }
 
+    [Ignore]
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
     {

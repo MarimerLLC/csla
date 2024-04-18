@@ -89,10 +89,10 @@ namespace Csla.AspNetCore.Blazor
       }
       else
       {
-        task.ContinueWith((t) =>
+        task.ContinueWith(t =>
         {
-          if (task.IsCompletedSuccessfully && task.Result != null)
-            CurrentPrincipal = task.Result.User;
+          if (t.IsCompletedSuccessfully && t.Result != null)
+            CurrentPrincipal = t.Result.User;
           else
             CurrentPrincipal = UnauthenticatedPrincipal;
         });

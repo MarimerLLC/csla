@@ -153,7 +153,7 @@ namespace Csla.Test.RollBack
       IDataPortal<DataBinding.ParentEntity> dataPortal = _testDIContext.CreateDataPortal<DataBinding.ParentEntity>();
 
       Csla.Test.DataBinding.ParentEntity p = Csla.Test.DataBinding.ParentEntity.NewParentEntity(dataPortal);
-      p.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(p_PropertyChanged);
+      p.PropertyChanged += p_PropertyChanged;
 
       p.BeginEdit();
       p.Data = "something";

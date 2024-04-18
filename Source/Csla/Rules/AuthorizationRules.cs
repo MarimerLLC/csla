@@ -38,7 +38,7 @@ namespace Csla.Rules.CommonRules
     public IsInRole(AuthorizationActions action, params string[] roles)
       : base(action)
     {
-      _roles = new List<string>(roles);
+      _roles = [..roles];
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace Csla.Rules.CommonRules
     public IsInRole(AuthorizationActions action, Csla.Core.IMemberInfo element, params string[] roles)
       : base(action, element)
     {
-      _roles = new List<string>(roles);
+      _roles = [..roles];
     }
 
     /// <summary>
@@ -116,7 +116,7 @@ namespace Csla.Rules.CommonRules
     public IsNotInRole(AuthorizationActions action, params string[] roles)
       : base(action)
     {
-      _roles = new List<string>(roles);
+      _roles = [..roles];
     }
 
     /// <summary>
@@ -140,7 +140,7 @@ namespace Csla.Rules.CommonRules
     public IsNotInRole(AuthorizationActions action, Csla.Core.IMemberInfo element, params string[] roles)
       : base(action, element)
     {
-      _roles = new List<string>(roles);
+      _roles = [..roles];
     }
 
     /// <summary>

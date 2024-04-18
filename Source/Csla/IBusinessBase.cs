@@ -26,7 +26,5 @@ namespace Csla
     INotifyChildChanged,
     ISerializationNotification,
     INotifyDataErrorInfo,
-    IDataErrorInfo
-  {
-  }
+    IDataErrorInfo;
 }

@@ -49,17 +49,17 @@ namespace Csla.Test.ValidationRules
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+        InputProperties = [primaryProperty];
       }
 
       protected override void Execute(IRuleContext context)
       {
         var bw = new System.ComponentModel.BackgroundWorker();
-        bw.DoWork += (o, e) =>
+        bw.DoWork += (_, _) =>
           {
             throw new InvalidOperationException();
           };
-        bw.RunWorkerCompleted += (o, e) =>
+        bw.RunWorkerCompleted += (_, e) =>
           {
             if (e.Error != null)
               context.AddErrorResult(e.Error.Message);

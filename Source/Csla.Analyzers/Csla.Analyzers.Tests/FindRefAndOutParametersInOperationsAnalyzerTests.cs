@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotABusinessBase()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -53,8 +52,7 @@ public class A
   [Fetch]
   private void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -71,8 +69,7 @@ public class A
   [Fetch]
   private void Fetch(string a) { }
 }";
-      await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -90,7 +87,7 @@ public class A
   private void Fetch(ref string a) { }
 }";
       await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation });
+        code, [Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation]);
     }
 
     [TestMethod]
@@ -108,7 +105,7 @@ public class A
   private void Fetch(out string a) { a = string.Empty; }
 }";
       await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation });
+        code, [Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation]);
     }
   }
 }

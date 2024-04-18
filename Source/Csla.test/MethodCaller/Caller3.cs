@@ -12,7 +12,5 @@ using System.Text;
 
 namespace Csla.Test.MethodCaller
 {
-  public class Caller3: Caller2
-  {
-  }
+  public class Caller3: Caller2;
 }

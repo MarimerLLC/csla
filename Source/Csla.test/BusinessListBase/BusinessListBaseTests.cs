@@ -54,7 +54,7 @@ namespace Csla.Test.BusinessListBase
     {
       bool changed = false;
       var obj = CreateRootList();
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
         {
           changed = true;
         };
@@ -70,11 +70,11 @@ namespace Csla.Test.BusinessListBase
       bool childChanged = false;
       bool changed = false;
       var obj = CreateRoot();
-      obj.ChildChanged += (o, e) =>
+      obj.ChildChanged += (_, _) =>
         {
           childChanged = true;
         };
-      obj.Children.CollectionChanged += (o, e) =>
+      obj.Children.CollectionChanged += (_, _) =>
       {
         changed = true;
       };
@@ -164,7 +164,7 @@ namespace Csla.Test.BusinessListBase
 
       bool changed = false;
       var obj = CreateChildList();
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         changed = true;
       };
@@ -180,7 +180,7 @@ namespace Csla.Test.BusinessListBase
     {
       bool changed = false;
       var obj = CreateChildList();
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         changed = true;
       };
@@ -196,7 +196,7 @@ namespace Csla.Test.BusinessListBase
 
       bool changed = false;
       var obj = CreateChildList();
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         changed = true;
       };

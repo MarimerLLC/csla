@@ -20,8 +20,5 @@ namespace Csla
   /// will it be restored when CancelEdit is called.
   /// </remarks>
   [AttributeUsage(AttributeTargets.Field)]
-  public sealed class NotUndoableAttribute : Attribute
-  {
-
-  }
+  public sealed class NotUndoableAttribute : Attribute;
 }

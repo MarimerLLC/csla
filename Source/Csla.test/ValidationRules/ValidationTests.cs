@@ -118,7 +118,7 @@ namespace Csla.Test.ValidationRules
       context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
       bool validationComplete = false;
-      root.ValidationComplete += (vo, ve) => { validationComplete = true; };
+      root.ValidationComplete += (_, _) => { validationComplete = true; };
 
       root.BeginEdit();
       root.Name = "";
@@ -752,7 +752,7 @@ namespace Csla.Test.ValidationRules
     {
       SecondaryProperty = secondProperty;
       AffectedProperties.Add(SecondaryProperty);
-      InputProperties = new List<Core.IPropertyInfo> { PrimaryProperty, SecondaryProperty };
+      InputProperties = [PrimaryProperty, SecondaryProperty];
     }
 
     protected override void Execute(Rules.IRuleContext context)
@@ -816,7 +816,7 @@ namespace Csla.Test.ValidationRules
       public ToUpper(IPropertyInfo primaryProperty)
         : base(primaryProperty)
       {
-        InputProperties = new List<IPropertyInfo>(){primaryProperty};
+        InputProperties = [primaryProperty];
       }
 
       protected override void Execute(IRuleContext context)
@@ -853,7 +853,7 @@ namespace Csla.Test.ValidationRules
     public CheckLazyInputFieldExists(Csla.Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<Core.IPropertyInfo> { primaryProperty };
+      InputProperties = [primaryProperty];
     }
 
     protected override void Execute(Rules.IRuleContext context)

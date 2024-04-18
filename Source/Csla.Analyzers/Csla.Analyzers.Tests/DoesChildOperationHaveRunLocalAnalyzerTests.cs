@@ -35,8 +35,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotMobileObject()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -51,8 +50,7 @@ public class A : BusinessBase<A>
   [Fetch]
   private void Fetch() { }
 }";
-      await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -66,8 +64,7 @@ public class A : BusinessBase<A>
   [FetchChild]
   private void FetchChild() { }
 }";
-      await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -83,7 +80,7 @@ public class A : BusinessBase<A>
   private void FetchChild() { }
 }";
       await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal });
+        code, [Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal]);
     }
   }
 }

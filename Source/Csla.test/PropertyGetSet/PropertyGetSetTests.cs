@@ -114,8 +114,8 @@ namespace Csla.Test.PropertyGetSet
       IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging); 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanging += root_PropertyChanging; 
+      root.PropertyChanged += root_PropertyChanged;
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
       Assert.AreEqual("", root.FieldBackedString, "String should default to string.Empty");
       Assert.AreEqual(0, root.F02, "Numeric should default to 0");
@@ -136,8 +136,8 @@ namespace Csla.Test.PropertyGetSet
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
-      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
-      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanging -= root_PropertyChanging;
+      root.PropertyChanged -= root_PropertyChanged;
     }
 
     [TestMethod]
@@ -167,8 +167,8 @@ namespace Csla.Test.PropertyGetSet
       IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanging += root_PropertyChanging;
+      root.PropertyChanged += root_PropertyChanged;
       Assert.AreEqual("n/a", root.M03, "Default value should have been set");
       Assert.AreEqual("", root.ManagedStringField, "String should default to string.Empty");
       Assert.AreEqual(0, root.M02, "Numeric should default to 0");
@@ -193,9 +193,9 @@ namespace Csla.Test.PropertyGetSet
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
 
-      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging -= root_PropertyChanging;
 
-      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanged -= root_PropertyChanged;
     }
 
     [TestMethod]
@@ -205,9 +205,9 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
-      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging += root_PropertyChanging;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanged += root_PropertyChanged;
       Assert.AreEqual("", root.Base, "String should default to string.Empty");
       Assert.AreEqual("", root.TopBase, "TopBase should default to string.Empty");
 
@@ -229,9 +229,9 @@ namespace Csla.Test.PropertyGetSet
       Assert.AreEqual(true, root.M05, "bool should have been set");
 
 
-      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging -= root_PropertyChanging;
 
-      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanged -= root_PropertyChanged;
     }
 
     [TestMethod]
@@ -297,9 +297,9 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
-      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging += root_PropertyChanging;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanged += root_PropertyChanged;
       
       EditableGetSet child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
@@ -316,20 +316,20 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsTrue(child.IsDirty, "Child should be dirty");
 
 
-      child.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+      child.PropertyChanging += root_PropertyChanging;
 
-      child.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      child.PropertyChanged += root_PropertyChanged;
       child.FieldBackedString = "hi there";
 
       Assert.AreEqual("FieldBackedString", _changingName, "ManagedChild should NOT have been changing");
       Assert.AreEqual(false, ("ManagedChild" == _changedName), "ManagedChild should have changed");
 
 
-      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
-      child.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging -= root_PropertyChanging;
+      child.PropertyChanging -= root_PropertyChanging;
 
-      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
-      child.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanged -= root_PropertyChanged;
+      child.PropertyChanged -= root_PropertyChanged;
     }
 
     [TestMethod]
@@ -343,9 +343,9 @@ namespace Csla.Test.PropertyGetSet
 
       root = root.Clone();
 
-      root.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+      root.PropertyChanging += root_PropertyChanging;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      root.PropertyChanged += root_PropertyChanged;
 
       child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
@@ -356,10 +356,10 @@ namespace Csla.Test.PropertyGetSet
 
 
       _changingName = "";
-      child.PropertyChanging += new PropertyChangingEventHandler(root_PropertyChanging);
+      child.PropertyChanging += root_PropertyChanging;
 
       _changedName = "";
-      child.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      child.PropertyChanged += root_PropertyChanged;
       child.FieldBackedString = "I've been cloned!";
 
       Assert.AreEqual("FieldBackedString", _changingName, "ManagedChild should NOT have been changing");
@@ -367,11 +367,11 @@ namespace Csla.Test.PropertyGetSet
 
 
 
-      child.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
-      root.PropertyChanging -= new PropertyChangingEventHandler(root_PropertyChanging);
+      child.PropertyChanging -= root_PropertyChanging;
+      root.PropertyChanging -= root_PropertyChanging;
 
-      child.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
-      root.PropertyChanged -= new System.ComponentModel.PropertyChangedEventHandler(root_PropertyChanged);
+      child.PropertyChanged -= root_PropertyChanged;
+      root.PropertyChanged -= root_PropertyChanged;
     }
 
     [TestMethod]
@@ -686,7 +686,7 @@ namespace Csla.Test.PropertyGetSet
       IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.ChildChanged += (o, e) => { throw new InvalidOperationException(); };
+      root.ChildChanged += (_, _) => { throw new InvalidOperationException(); };
       root.ManagedStringField = "test";
     }
 
@@ -697,8 +697,8 @@ namespace Csla.Test.PropertyGetSet
       int changed = 0;
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.ChildChanged += (o, e) => { changed++; };
-      root.ManagedChild.ChildChanged += (o, e) => { throw new InvalidOperationException();};
+      root.ChildChanged += (_, _) => { changed++; };
+      root.ManagedChild.ChildChanged += (_, _) => { throw new InvalidOperationException();};
       root.ManagedChild.FieldBackedString = "changed";
 
       Assert.AreEqual(1, changed);
@@ -714,10 +714,10 @@ namespace Csla.Test.PropertyGetSet
       int listChanged = 0;
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.ChildChanged += (o, e) => { rootChanged++; };
+      root.ChildChanged += (_, _) => { rootChanged++; };
 
       var list = root.ManagedChildList;
-      list.ChildChanged += (o, e) => { listChanged++; };
+      list.ChildChanged += (_, _) => { listChanged++; };
 
       list.Add(EditableGetSet.NewChildObject(childDataPortal));
       list[0].FieldBackedString = "child change";
@@ -741,18 +741,18 @@ namespace Csla.Test.PropertyGetSet
       int grandChildPropertyChanged = 0;
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
-      root.ChildChanged += (o, e) => { rootChanged++; };
-      root.ManagedChildList.ChildChanged += (o, e) => { childListChanged++; };
+      root.PropertyChanged += (_, _) => { throw new InvalidOperationException(); };
+      root.ChildChanged += (_, _) => { rootChanged++; };
+      root.ManagedChildList.ChildChanged += (_, _) => { childListChanged++; };
 
       var child = EditableGetSet.NewChildObject(childDataPortal);
-      child.PropertyChanged += (o, e) => { throw new InvalidOperationException(); };
-      child.ChildChanged += (o, e) => { childChanged++; };
-      child.ManagedChildList.ChildChanged += (o, e) => { grandChildListChanged++; };
+      child.PropertyChanged += (_, _) => { throw new InvalidOperationException(); };
+      child.ChildChanged += (_, _) => { childChanged++; };
+      child.ManagedChildList.ChildChanged += (_, _) => { grandChildListChanged++; };
 
       var grandChild = EditableGetSet.NewChildObject(childDataPortal);
-      grandChild.ChildChanged += (o, e) => { throw new InvalidOperationException(); }; // ChildChange only fires when child of self changes
-      grandChild.PropertyChanged += (o, e) => { grandChildPropertyChanged++; };
+      grandChild.ChildChanged += (_, _) => { throw new InvalidOperationException(); }; // ChildChange only fires when child of self changes
+      grandChild.PropertyChanged += (_, _) => { grandChildPropertyChanged++; };
 
       root.ManagedChildList.Add(child);
       child.ManagedChildList.Add(grandChild);
@@ -781,7 +781,7 @@ namespace Csla.Test.PropertyGetSet
       root.CancelEdit();
 
       int changed = 0;
-      root.ChildChanged += (o, e) => { changed++;};
+      root.ChildChanged += (_, _) => { changed++;};
       child.FieldBackedString = "changed";
 
       Assert.AreEqual(1, changed);
@@ -807,13 +807,13 @@ namespace Csla.Test.PropertyGetSet
       root = (EditableGetSet)formatter.Deserialize(stream);
 
       int changed = 0;
-      root.ChildChanged += (o, e) => { changed++; };
+      root.ChildChanged += (_, _) => { changed++; };
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed";
       Assert.AreEqual(1, changed, "after MobileFormatter");
 
       changed = 0;
       root = root.Clone();
-      root.ChildChanged += (o, e) => { changed++; };
+      root.ChildChanged += (_, _) => { changed++; };
       root.ManagedChildList[0].ManagedChildList[0].FieldBackedString = "changed again";
       Assert.AreEqual(1, changed, "after clone");
     }

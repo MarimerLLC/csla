@@ -72,7 +72,7 @@ namespace Csla.Test.MethodCaller
     {
       Dictionary<string, List<int>> table = new Dictionary<string, List<int>>();
 
-      table.Add("Column1", new List<int>());
+      table.Add("Column1", []);
       table["Column1"].Add(1);
       table["Column1"].Add(2);
       var returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "GetData", table["Column1"]);
@@ -90,9 +90,9 @@ namespace Csla.Test.MethodCaller
     [TestMethod]
     public void CallSuccessParams()
     {
-      var returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", new object[] { 1, 2 });
+      var returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", [1, 2]);
       Assert.AreEqual(returnValue, 1);
-      returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", new object[] { 123 });
+      returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", [123]);
       Assert.AreEqual(returnValue, 1);
       returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams");
       Assert.AreEqual(returnValue, 1);

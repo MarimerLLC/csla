@@ -62,7 +62,7 @@ namespace Csla.Test.ValidationRules
       HasAsyncRule har = dataPortal.Create();
       context.Assert.IsTrue(har.IsValid, "IsValid 1");
 
-      har.ValidationComplete += (o, e) =>
+      har.ValidationComplete += (_, _) =>
       {
         context.Assert.IsTrue(har.IsValid, "IsValid 2");
         context.Assert.Success();
@@ -81,7 +81,7 @@ namespace Csla.Test.ValidationRules
       HasAsyncRule har = dataPortal.Create();
       context.Assert.IsTrue(har.IsValid, "IsValid 1");
 
-      har.ValidationComplete += (o, e) =>
+      har.ValidationComplete += (_, _) =>
       {
         context.Assert.IsFalse(har.IsValid, "IsValid 2");
         context.Assert.AreEqual(1, har.BrokenRulesCollection.Count);
@@ -98,7 +98,7 @@ namespace Csla.Test.ValidationRules
 
       UnitTestContext context = GetContext();
       var root = dataPortal.Create();
-      root.ValidationComplete += (o, e) =>
+      root.ValidationComplete += (_, _) =>
         {
           context.Assert.IsFalse(root.IsValid);
           context.Assert.AreEqual(1, root.GetBrokenRules().Count);
@@ -122,7 +122,7 @@ namespace Csla.Test.ValidationRules
           for (int x = 0; x < iterations; x++)
           {
             HasAsyncRule har = new HasAsyncRule();
-            har.ValidationComplete += (o, e) =>
+            har.ValidationComplete += (_, _) =>
             {
               context.Assert.AreEqual("error", har.Name);
               context.Assert.AreEqual(1, har.BrokenRulesCollection.Count);
@@ -156,7 +156,7 @@ namespace Csla.Test.ValidationRules
       context.Assert.IsFalse(har.IsValid, "IsValid 1");
 
 
-      har.ValidationComplete += (o, e) =>
+      har.ValidationComplete += (_, _) =>
       {
         context.Assert.IsFalse(string.IsNullOrEmpty(har.CustomerNumber));
         context.Assert.IsFalse(string.IsNullOrEmpty(har.CustomerName));
@@ -176,7 +176,7 @@ namespace Csla.Test.ValidationRules
 
       var har = dataPortal.Create();
       var tcs = new TaskCompletionSource<bool>();
-      har.ValidationComplete += (o, e) =>
+      har.ValidationComplete += (_, _) =>
       {
         Assert.AreEqual("abc", har.AsyncAwait, "ends with value");
         tcs.SetResult(true);

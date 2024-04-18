@@ -40,7 +40,6 @@ namespace Csla.Analyzers
     {
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
-      var typeSymbol = methodSymbol.ContainingType;
       var contextParameter = methodSymbol.Parameters[0];
 
       var newRoot = root;

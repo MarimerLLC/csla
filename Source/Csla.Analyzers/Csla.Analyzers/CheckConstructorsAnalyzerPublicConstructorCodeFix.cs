@@ -86,7 +86,6 @@ namespace Csla.Analyzers
     private static void AddCodeFixWithUpdatingNonPublicConstructor(CodeFixContext context, SyntaxNode root,
       Diagnostic diagnostic, ClassDeclarationSyntax classNode, SemanticModel model)
     {
-      var publicModifier = SyntaxFactory.Token(SyntaxKind.PublicKeyword);
       var classSymbol = model.GetDeclaredSymbol(classNode);
 
       if (classSymbol != null)

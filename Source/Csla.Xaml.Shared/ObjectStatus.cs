@@ -262,7 +262,6 @@ namespace Csla.Xaml
       // per-type rules
       if (DataObject != null)
       {
-        var sourceType = DataObject.GetType();
         var newValue = Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.CreateObject, DataObject);
         if (CanCreateObject != newValue)
           CanCreateObject = newValue;

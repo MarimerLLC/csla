@@ -42,12 +42,12 @@ namespace Csla.Rules
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
-          (t) => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
+          (_) => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
         );
 
       var result = rulesInfo.Item2;
 #else
-      var result = _perTypeRules.Value.GetOrAdd(key, (t) => { return new AuthorizationRuleManager(); });
+      var result = _perTypeRules.Value.GetOrAdd(key, (_) => { return new AuthorizationRuleManager(); });
 #endif
 
       InitializePerTypeRules(applicationContext, result, type);
@@ -81,7 +81,7 @@ namespace Csla.Rules
                 if (method.GetParameters().Length == 0)
                   method.Invoke(null, null);
                 else if (applicationContext != null)
-                  method.Invoke(null, new object[] { new AddObjectAuthorizationRulesContext(applicationContext) });
+                  method.Invoke(null, [new AddObjectAuthorizationRulesContext(applicationContext)]);
                 else
                   throw new InvalidOperationException(
                     $"{nameof(InitializePerTypeRules)} {nameof(applicationContext)} == null");

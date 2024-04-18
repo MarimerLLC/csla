@@ -39,7 +39,7 @@ namespace Csla.Configuration
         proxyOptions = new LocalProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy, LocalProxy>();
-      config.Services.AddTransient((p) => proxyOptions);
+      config.Services.AddTransient(_ => proxyOptions);
       return config;
     }
   }

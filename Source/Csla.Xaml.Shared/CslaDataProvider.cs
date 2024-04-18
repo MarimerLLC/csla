@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Data;
 using System.Reflection;
 using Csla.Reflection;
@@ -33,8 +34,7 @@ namespace Csla.Xaml
     {
       CommandManager = new CslaDataProviderCommandManager(this);
       _factoryParameters = new ObservableCollection<object>();
-      _factoryParameters.CollectionChanged += 
-        new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
+      _factoryParameters.CollectionChanged += _factoryParameters_CollectionChanged;
     }
 
     /// <summary>
@@ -336,7 +336,7 @@ namespace Csla.Xaml
         _endInitError = true;
 
       // return result to base class
-      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+      OnQueryFinished(result, exceptionResult, _ => { IsBusy = false; return null; }, null);
     }
 
     /// <summary>
@@ -388,7 +388,7 @@ namespace Csla.Xaml
         _endInitError = true;
 
       // return result to base class
-      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+      OnQueryFinished(result, exceptionResult, _ => { IsBusy = false; return null; }, null);
     }
 
     private void DoQuery(object state)
@@ -396,7 +396,7 @@ namespace Csla.Xaml
       QueryRequest request = (QueryRequest)state;
       object result = null;
       Exception exceptionResult = null;
-      object[] parameters = new List<object>(request.FactoryParameters).ToArray();
+      object[] parameters = request.FactoryParameters.ToArray();
 
       try
       {
@@ -471,7 +471,7 @@ namespace Csla.Xaml
         _endInitError = true;
 
       // return result to base class
-      OnQueryFinished(result, exceptionResult, (o) => { IsBusy = false; return null; }, null);
+      OnQueryFinished(result, exceptionResult, _ => { IsBusy = false; return null; }, null);
     }
 
 
@@ -503,7 +503,7 @@ namespace Csla.Xaml
       {
         get { return _factoryParameters; }
         set { _factoryParameters = 
-          new ObservableCollection<object>(new List<object>(value)); }
+          new ObservableCollection<object>([..value]); }
       }
       private bool _manageLifetime;
 

@@ -114,7 +114,7 @@ namespace Csla.Test.BasicModern
     {
       var graph = NewRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -138,7 +138,7 @@ namespace Csla.Test.BasicModern
       graph.Name = "abc";
       graph = graph.Save();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -159,7 +159,7 @@ namespace Csla.Test.BasicModern
     {
       var graph = NewRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
         {
           changed.Add(e.PropertyName);
         };
@@ -181,7 +181,7 @@ namespace Csla.Test.BasicModern
     {
       var graph = NewRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -199,7 +199,7 @@ namespace Csla.Test.BasicModern
 
       graph = graph.Save();
       changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -228,7 +228,7 @@ namespace Csla.Test.BasicModern
 
       var graph = NewRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -249,7 +249,7 @@ namespace Csla.Test.BasicModern
 
       graph = graph.Save();
       changed.Clear();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };

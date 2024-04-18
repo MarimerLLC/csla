@@ -729,12 +729,11 @@ namespace Csla
     {
       SourceList = list;
 
-      if (SourceList is IBindingList sourceList)
+      if (SourceList is IBindingList)
       {
         _supportsBinding = true;
-        _bindingList = sourceList;
-        _bindingList.ListChanged += 
-          new ListChangedEventHandler(SourceChanged);
+        _bindingList = (IBindingList)SourceList;
+        _bindingList.ListChanged += SourceChanged;
       }
     }
 

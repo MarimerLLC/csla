@@ -59,7 +59,7 @@ namespace Csla.Xaml
       Visibility = Visibility.Collapsed;
       Height = 20;
       Width = 20;
-      Loaded += (o, e) =>
+      Loaded += (_, _) =>
       {
         _loading = false;
         UpdateState();

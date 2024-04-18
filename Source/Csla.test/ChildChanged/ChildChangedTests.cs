@@ -32,13 +32,11 @@ namespace Csla.Test.ChildChanged
   public class ChildChangedTests
   {
     private static TestDIContext _testDIContext;
-    private ApplicationContext.PropertyChangedModes _mode;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
       IServiceCollection services = new ServiceCollection();
-      var options = new CslaOptions(services);
 
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows));
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
@@ -53,11 +51,11 @@ namespace Csla.Test.ChildChanged
       bool cc = false;
 
       var root = dataPortal.Fetch(false);
-      root.PropertyChanged += (o, e) =>
+      root.PropertyChanged += (_, _) =>
         {
           pc = true;
         };
-      root.ChildChanged += (o, e) =>
+      root.ChildChanged += (_, _) =>
       {
         cc = true;
       };
@@ -75,11 +73,11 @@ namespace Csla.Test.ChildChanged
       bool cc = false;
 
       var root = dataPortal.Fetch(false);
-      root.PropertyChanged += (o, e) =>
+      root.PropertyChanged += (_, _) =>
       {
         pc = true;
       };
-      root.ChildChanged += (o, e) =>
+      root.ChildChanged += (_, _) =>
       {
         cc = true;
       };
@@ -100,19 +98,19 @@ namespace Csla.Test.ChildChanged
       Csla.Core.ChildChangedEventArgs cca = null;
 
       var root = dataPortal.Fetch();
-      root.PropertyChanged += (o, e) =>
+      root.PropertyChanged += (_, _) =>
       {
         pc = true;
       };
-      root.ChildChanged += (o, e) =>
+      root.ChildChanged += (_, _) =>
       {
         cc = true;
       };
-      root.Child.PropertyChanged += (o, e) =>
+      root.Child.PropertyChanged += (_, _) =>
       {
         cpc = true;
       };
-      root.Child.ChildChanged += (o, e) =>
+      root.Child.ChildChanged += (_, e) =>
       {
         ccc = true;
         cca = e;
@@ -137,11 +135,11 @@ namespace Csla.Test.ChildChanged
 
       var root = listDataPortal.Fetch(false);
       root.Add(dataPortal.FetchChild(true));
-      root.CollectionChanged += (o, e) =>
+      root.CollectionChanged += (_, _) =>
       {
         lc++;
       };
-      root.ChildChanged += (o, e) =>
+      root.ChildChanged += (_, e) =>
       {
         cc++;
         cca = e;
@@ -166,11 +164,11 @@ namespace Csla.Test.ChildChanged
       root.Add(dataPortal.FetchChild(true));
       root = root.Clone();
 
-      root.CollectionChanged += (o, e) =>
+      root.CollectionChanged += (_, _) =>
       {
         lc++;
       };
-      root.ChildChanged += (o, e) =>
+      root.ChildChanged += (_, e) =>
       {
         cc++;
         cca = e;
@@ -195,19 +193,19 @@ namespace Csla.Test.ChildChanged
 
       var root = listDataPortal.Fetch();
       root.List.Add(dataPortal.FetchChild(true));
-      root.PropertyChanged += (o, e) =>
+      root.PropertyChanged += (_, _) =>
       {
         Assert.IsTrue(false, "root.PropertyChanged should not fire");
       };
-      root.ChildChanged += (o, e) =>
+      root.ChildChanged += (_, _) =>
       {
         rcc++;
       };
-      root.List.CollectionChanged += (o, e) =>
+      root.List.CollectionChanged += (_, _) =>
       {
         lc++;
       };
-      root.List.ChildChanged += (o, e) =>
+      root.List.ChildChanged += (_, e) =>
       {
         cc++;
         cca = e;
@@ -234,19 +232,19 @@ namespace Csla.Test.ChildChanged
       list.List.Add(singleRootPortal.FetchChild(true));
       list = list.Clone();
 
-      list.PropertyChanged += (o, e) =>
+      list.PropertyChanged += (_, _) =>
       {
         Assert.IsTrue(false, "root.PropertyChanged should not fire");
       };
-      list.ChildChanged += (o, e) =>
+      list.ChildChanged += (_, _) =>
       {
         rcc++;
       };
-      list.List.CollectionChanged += (o, e) =>
+      list.List.CollectionChanged += (_, _) =>
       {
         lc++;
       };
-      list.List.ChildChanged += (o, e) =>
+      list.List.ChildChanged += (_, e) =>
       {
         cc++;
         cca = e;
@@ -274,28 +272,28 @@ namespace Csla.Test.ChildChanged
       var child = listDataPortal.FetchChild(true);
       root.Add(child);
       child.List.Add(dataPortal.FetchChild(true));
-      root.ChildChanged += (o, e) =>
+      root.ChildChanged += (_, _) =>
       {
         rcc = true;
       };
-      root.CollectionChanged += (o, e) =>
+      root.CollectionChanged += (_, _) =>
         {
           Assert.Fail("root.CollectionChanged should not fire");
         };
-      child.ChildChanged += (o, e) =>
+      child.ChildChanged += (_, _) =>
       {
         ccc = true;
       };
-      child.PropertyChanged += (o, e) =>
+      child.PropertyChanged += (_, _) =>
       {
         Assert.IsTrue(false, "child.PropertyChanged should not fire");
       };
       bool lc = false;
-      child.List.CollectionChanged += (o, e) =>
+      child.List.CollectionChanged += (_, _) =>
       {
         lc = true;
       };
-      child.List.ChildChanged += (o, e) =>
+      child.List.ChildChanged += (_, e) =>
       {
         cc = true;
         cca = e;
@@ -315,8 +313,8 @@ namespace Csla.Test.ChildChanged
       var obj = portal.Create();
       var propertyCount = 0;
       var childCount = 0;
-      obj.PropertyChanged += (s, e) => propertyCount++;
-      obj.ChildChanged += (s, e) => childCount++;
+      obj.PropertyChanged += (_, _) => propertyCount++;
+      obj.ChildChanged += (_, _) => childCount++;
       obj.Name = "abc";
       Assert.AreEqual(1, propertyCount, "propertyCount");
       Assert.AreEqual(0, childCount, "childCount");

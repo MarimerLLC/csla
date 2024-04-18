@@ -99,8 +99,10 @@ namespace Csla.Data
       else
       {
         // this is a regular object - create a list
-        ArrayList col = new ArrayList();
-        col.Add(source);
+        ArrayList col =
+        [
+          source
+        ];
         return col;
       }
     }
@@ -169,7 +171,7 @@ namespace Csla.Data
 
     private List<string> ScanDataView(DataView ds)
     {
-      List<string> result = new List<string>();
+      List<string> result = [];
       for (int field = 0; field < ds.Table.Columns.Count; field++)
         result.Add(ds.Table.Columns[field].ColumnName);
       return result;
@@ -177,7 +179,7 @@ namespace Csla.Data
 
     private List<string> ScanObject(Type sourceType)
     {
-      List<string> result = new List<string>();
+      List<string> result = [];
 
       if (sourceType != null)
       {

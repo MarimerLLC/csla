@@ -17,7 +17,7 @@ namespace Csla.Test.Serialization
 
         public void Reg(Csla.Core.BusinessBase obj)
         {
-            obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_PropertyChanged);
+            obj.PropertyChanged += obj_PropertyChanged;
         }
 
         public void obj_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

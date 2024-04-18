@@ -40,12 +40,12 @@ namespace Csla.Rules
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
-          (t) => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
+          (_) => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
         );
 
       return rulesInfo.Item2;
 #else
-      return _perTypeRules.Value.GetOrAdd(key, (t) => { return new BusinessRuleManager(); });
+      return _perTypeRules.Value.GetOrAdd(key, (_) => { return new BusinessRuleManager(); });
 #endif
     }
 

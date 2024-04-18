@@ -444,7 +444,7 @@ namespace Csla.Server
             methodName = factoryInfo.ExecuteMethodName;
           else
             methodName = factoryInfo.UpdateMethodName;
-          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, new object[] { obj });
+          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, [obj]);
         }
         else
         {
@@ -789,21 +789,21 @@ namespace Csla.Server
       if (criteria == null)
         return null;
       else if (criteria is EmptyCriteria)
-        return Array.Empty<object>();
+        return [];
       else if (criteria is NullCriteria)
-        return new object[] { null };
+        return [null];
       else if (criteria is object[] array)
       {
         var clength = array.GetLength(0);
         if (clength == 1 && array[0] is EmptyCriteria)
-          return Array.Empty<object>();
+          return [];
         else
           return array;
       }
       else if (criteria is Core.MobileList<object> list)
         return list.ToArray();
       else
-        return new object[] { criteria };
+        return [criteria];
     }
   }
 }

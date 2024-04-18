@@ -47,7 +47,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotStereotype()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -57,7 +57,7 @@ namespace Csla.Analyzers.Tests
 @"using Csla;
 
 public class A : BusinessBase<A> { }";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -70,8 +70,8 @@ public class A : BusinessBase<A>
 {
   private A() { }
 }";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, 
-        new[] { Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
@@ -86,7 +86,7 @@ public class A : BusinessBase<A>
   private A(int a) { }
 }";
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+        [Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
@@ -101,8 +101,8 @@ public class A : BusinessBase<A>
   public A() { }
   public A(int a) { }
 }";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, 
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -117,7 +117,7 @@ public class A : BusinessBase<A>
   public A(int a) { }
 }";
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters, Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters, Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -134,7 +134,7 @@ public class A : BusinessBase<A>
   private A(int a) { }
 }";
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+        [Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
@@ -153,7 +153,7 @@ public class B : BusinessListBase<B, A>
   public B(int a) { }
 }";
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -172,7 +172,7 @@ public class B : DynamicListBase<A>
   public B(int a) { }
 }";
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -192,7 +192,7 @@ public class B
   public B(int a) { }
 }";
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -208,7 +208,7 @@ public class A : CommandBase<A>
 
   public A(int a) { }
 }";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, []);
     }
   }
 }

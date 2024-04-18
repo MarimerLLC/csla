@@ -44,7 +44,7 @@ namespace Csla.Test.Basic
     {
       string[] result = BusinessRules.GetRuleDescriptions();
       if (result == null)
-        result = new string[] { };
+        result = [];
       return result;
     }
 

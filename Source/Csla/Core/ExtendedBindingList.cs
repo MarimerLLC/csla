@@ -223,11 +223,11 @@ namespace Csla.Core
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged += new BusyChangedEventHandler(busy_BusyChanged);
+        busy.BusyChanged += busy_BusyChanged;
 
       INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException += unhandled_UnhandledAsyncException;
 
       INotifyPropertyChanged c = item as INotifyPropertyChanged;
       if (c != null)
@@ -248,19 +248,19 @@ namespace Csla.Core
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged -= new BusyChangedEventHandler(busy_BusyChanged);
+        busy.BusyChanged -= busy_BusyChanged;
 
       INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException -= unhandled_UnhandledAsyncException;
 
       INotifyPropertyChanged c = item as INotifyPropertyChanged;
       if (c != null)
-        c.PropertyChanged -= new PropertyChangedEventHandler(Child_PropertyChanged);
+        c.PropertyChanged -= Child_PropertyChanged;
 
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
-        child.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
+        child.ChildChanged -= Child_Changed;
     }
 
     /// <summary>

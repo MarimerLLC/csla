@@ -61,7 +61,7 @@ namespace Csla.Test.Serialization
     public void Setup()
     {
       this.BoolTest = true;
-      this.ByteArrayTest = new byte[] { 1, 2, 3, 4 };
+      this.ByteArrayTest = [1, 2, 3, 4];
       this.ByteTest = 3;
       this.CharArrayTest = "abc".ToArray();
       this.CharTest = "a".ToArray()[0];

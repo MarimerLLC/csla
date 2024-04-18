@@ -379,7 +379,7 @@ namespace Csla.Test.Basic
       
       bool changed = false;
       var obj = new RootList();
-      obj.ListChanged += (o, e) =>
+      obj.ListChanged += (_, _) =>
       {
         changed = true;
       };
@@ -504,7 +504,7 @@ namespace Csla.Test.Basic
 
     public FormSimulator(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Obj_IsDirtyChanged);
+      this._obj.PropertyChanged += Obj_IsDirtyChanged;
       this._obj = obj;
     }
 
@@ -519,7 +519,7 @@ namespace Csla.Test.Basic
 
     public SerializableListener(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(Obj_IsDirtyChanged);
+      this._obj.PropertyChanged += Obj_IsDirtyChanged;
       this._obj = obj;
     }
 

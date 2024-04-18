@@ -18,6 +18,5 @@ namespace Csla
   public interface IReadOnlyBase
  : ICloneable, IReadOnlyObject, IBusinessObject, ISerializationNotification,
     IAuthorizeReadWrite, INotifyBusy, INotifyUnhandledAsyncException, IHostRules,
-    INotifyPropertyChanged, INotifyPropertyChanging, IMobileObject
-  { }
+    INotifyPropertyChanged, INotifyPropertyChanging, IMobileObject;
 }

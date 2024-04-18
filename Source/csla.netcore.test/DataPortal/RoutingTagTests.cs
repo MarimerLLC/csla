@@ -57,7 +57,7 @@ namespace csla.netcore.test.DataPortal
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
         .FirstOrDefault(r => r.Name == "GetRoutingToken");
 
-      string result = (string)method.Invoke(proxy, new object[] { typeof(RoutingTest) });
+      string result = (string)method.Invoke(proxy, [typeof(RoutingTest)]);
       Assert.AreEqual("mytag", result);
     }
 
@@ -68,7 +68,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType()
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
         .First(r => r.Name == "CreateOperationTag");
-      string result = (string)method.Invoke(proxy, new object[] { "create", "", "" });
+      string result = (string)method.Invoke(proxy, ["create", "", ""]);
       Assert.AreEqual("create", result);
     }
 
@@ -79,7 +79,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType()
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
         .First(r => r.Name == "CreateOperationTag");
-      string result = (string)method.Invoke(proxy, new object[] { "create", "", "mytag" });
+      string result = (string)method.Invoke(proxy, ["create", "", "mytag"]);
       Assert.AreEqual("create/mytag-", result);
     }
 
@@ -90,7 +90,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType()
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
         .First(r => r.Name == "CreateOperationTag");
-      string result = (string)method.Invoke(proxy, new object[] { "create", "v1", "" });
+      string result = (string)method.Invoke(proxy, ["create", "v1", ""]);
       Assert.AreEqual("create/-v1", result);
     }
 
@@ -101,7 +101,7 @@ namespace csla.netcore.test.DataPortal
       var method = proxy.GetType()
         .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance)
         .First(r => r.Name == "CreateOperationTag");
-      string result = (string)method.Invoke(proxy, new object[] { "create", "v1", "mytag" });
+      string result = (string)method.Invoke(proxy, ["create", "v1", "mytag"]);
       Assert.AreEqual("create/mytag-v1", result);
     }
 
@@ -127,7 +127,5 @@ namespace csla.netcore.test.DataPortal
 
   [Serializable]
   [DataPortalServerRoutingTag("mytag")]
-  public class RoutingTest : BusinessBase<RoutingTest>
-  {
-  }
+  public class RoutingTest : BusinessBase<RoutingTest>;
 }

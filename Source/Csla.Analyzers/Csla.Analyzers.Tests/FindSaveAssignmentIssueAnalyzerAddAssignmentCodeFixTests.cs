@@ -52,7 +52,6 @@ public class VerifyGetFixes
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new FindSaveAssignmentIssueAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -67,7 +66,7 @@ public class VerifyGetFixes
 
       await TestHelpers.VerifyChangesAsync(actions,
         FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants.AddAssignmentDescription, document,
-        (model, newRoot) =>
+        (_, newRoot) =>
         {
           Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<AssignmentExpressionSyntax>().Any());
         });

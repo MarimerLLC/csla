@@ -40,9 +40,7 @@ namespace Csla.Test.Serialization
     private static TestDIContext _testDIContext;
 
     [Serializable]
-    private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>
-    {
-    }
+    private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>;
 
     [Serializable]
     private class TestItem : BusinessBase<TestItem>
@@ -155,17 +153,13 @@ namespace Csla.Test.Serialization
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       TestEventSink handler = new TestEventSink();
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (OnIsDirtyChanged);
+      root.PropertyChanged += OnIsDirtyChanged;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (StaticOnIsDirtyChanged);
+      root.PropertyChanged += StaticOnIsDirtyChanged;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (PublicStaticOnIsDirtyChanged);
+      root.PropertyChanged += PublicStaticOnIsDirtyChanged;
 
-      root.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-          (OnIsDirtyChanged);  //will call this method twice since it is assigned twice
+      root.PropertyChanged += OnIsDirtyChanged;  //will call this method twice since it is assigned twice
 
       handler.Reg(root);
 
@@ -235,7 +229,7 @@ namespace Csla.Test.Serialization
 
       var root = SerializationRoot.NewSerializationRoot(dataPortal);
       var nonSerClass = new NonSerializedClass();
-      Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
+      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
       var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
       var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
@@ -260,12 +254,12 @@ namespace Csla.Test.Serialization
       var root = OverrideSerializationRoot.NewOverrideSerializationRoot(dataPortal);
       var nonSerClass = new NonSerializedClass();
 
-      Action<object, PropertyChangedEventArgs> h = (sender, eventArgs) => { nonSerClass.Do(); };
+      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
       var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
       var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
 
-      Action<object, PropertyChangingEventArgs> h1 = (sender, eventArgs) => { nonSerClass.Do(); };
+      Action<object, PropertyChangingEventArgs> h1 = (_, _) => { nonSerClass.Do(); };
       var method1 = typeof(Action<object, PropertyChangingEventArgs>).GetMethod("Invoke");
       var delgate1 = (PropertyChangingEventHandler)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
       root.PropertyChanging += delgate1;

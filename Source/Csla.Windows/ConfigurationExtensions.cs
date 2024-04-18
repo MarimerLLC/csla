@@ -47,8 +47,5 @@ namespace Csla.Configuration
   /// <summary>
   /// Configuration options for AddWindowsForms method
   /// </summary>
-  public class WindowsFormsOptions
-  {
-
-  }
+  public class WindowsFormsOptions;
 }

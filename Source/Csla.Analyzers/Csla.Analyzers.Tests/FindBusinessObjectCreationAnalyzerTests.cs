@@ -45,8 +45,7 @@ namespace Csla.Analyzers.Tests
       var a = new A();
     }
   }";
-      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -65,8 +64,7 @@ public class B : ObjectFactory
     var a = new A();
   }
 }";
-      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -86,7 +84,7 @@ public class B
   }
 }";
       await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.FindBusinessObjectCreation });
+        code, [Constants.AnalyzerIdentifiers.FindBusinessObjectCreation]);
     }
   }
 }

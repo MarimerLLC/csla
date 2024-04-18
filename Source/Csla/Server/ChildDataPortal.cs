@@ -22,13 +22,13 @@ namespace Csla.Server
     /// <param name="applicationContext"></param>
     public ChildDataPortal(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
     }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Create a new business object.
@@ -90,7 +90,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
+        obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
         //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
@@ -186,7 +186,7 @@ namespace Csla.Server
       try
       {
         // create an instance of the business object
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
+        obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
         //ApplicationContext.DataPortalActivator.InitializeInstance(obj.Instance);
 
         obj.Child_OnDataPortalInvoke(eventArgs);
@@ -329,7 +329,7 @@ namespace Csla.Server
 
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      DataPortalTarget lb = ApplicationContext.CreateInstanceDI<DataPortalTarget>(obj);
+      DataPortalTarget lb = _applicationContext.CreateInstanceDI<DataPortalTarget>(obj);
       //ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
 
       try

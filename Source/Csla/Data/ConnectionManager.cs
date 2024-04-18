@@ -35,8 +35,8 @@ namespace Csla.Data
     private string _connectionString;
     private string _label;
 
-    private ApplicationContext ApplicationContext { get; set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext _applicationContext;
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
 
     /// <summary>
     /// Gets the ConnectionManager object for the 
@@ -115,7 +115,7 @@ namespace Csla.Data
       var ctxName = GetContextName(database, label);
       lock (_lock)
       {
-        var cached = ApplicationContext.LocalContext.GetValueOrNull(ctxName);
+        var cached = _applicationContext.LocalContext.GetValueOrNull(ctxName);
         if (cached != null)
         {
           mgr = (ConnectionManager)cached;
@@ -128,7 +128,7 @@ namespace Csla.Data
         mgr = new ConnectionManager(database, label);
         lock (_lock)
         {
-          ApplicationContext.LocalContext[ctxName] = mgr;
+          _applicationContext.LocalContext[ctxName] = mgr;
           mgr.AddRef();
         }
       }
@@ -189,7 +189,7 @@ namespace Csla.Data
         Connection.Close();
         Connection.Dispose();
         lock (_lock)
-          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
+          _applicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
       }
     }
 

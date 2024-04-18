@@ -39,8 +39,8 @@ namespace Csla.Data
     private string _connectionString;
     private string _label;
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Gets the ObjectContextManager object for the 
@@ -118,15 +118,15 @@ namespace Csla.Data
       {
         var contextLabel = GetContextName(database, label);
         ObjectContextManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains(contextLabel))
+        if (_applicationContext.LocalContext.Contains(contextLabel))
         {
-          mgr = (ObjectContextManager<C>)(ApplicationContext.LocalContext[contextLabel]);
+          mgr = (ObjectContextManager<C>)(_applicationContext.LocalContext[contextLabel]);
 
         }
         else
         {
           mgr = new ObjectContextManager<C>(database, label);
-          ApplicationContext.LocalContext[contextLabel] = mgr;
+          _applicationContext.LocalContext[contextLabel] = mgr;
         }
         mgr.AddRef();
         return mgr;
@@ -138,7 +138,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      ObjectContext = (C)(ApplicationContext.CreateInstanceDI(typeof(C), connectionString));
+      ObjectContext = (C)(_applicationContext.CreateInstanceDI(typeof(C), connectionString));
       ObjectContext.Connection.Open();
     }
 
@@ -176,7 +176,7 @@ namespace Csla.Data
         {
           ObjectContext.Connection.Close();
           ObjectContext.Dispose();
-          ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
+          _applicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
         }
       }
 

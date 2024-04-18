@@ -15,7 +15,7 @@ namespace Csla.Blazor
   /// </summary>
   public class CslaPermissionsHandler : AuthorizationHandler<CslaPermissionRequirement>
   {
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates an instance of the type.
@@ -23,7 +23,7 @@ namespace Csla.Blazor
     /// <param name="applicationContext"></param>
     public CslaPermissionsHandler(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ namespace Csla.Blazor
     /// <returns></returns>
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CslaPermissionRequirement requirement)
     {
-      if (Rules.BusinessRules.HasPermission(ApplicationContext, requirement.Action, requirement.ObjectType))
+      if (Rules.BusinessRules.HasPermission(_applicationContext, requirement.Action, requirement.ObjectType))
         context.Succeed(requirement);
       else
         context.Fail();

@@ -19,10 +19,10 @@ namespace Csla.Threading
   {
     public ContextParams(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     public IPrincipal User { get; private set; }
     public Csla.Core.ContextDictionary ClientContext { get; private set; }
@@ -31,16 +31,16 @@ namespace Csla.Threading
 
     public ContextParams()
     {
-      this.User = ApplicationContext.User;
-      this.ClientContext = ApplicationContext.ClientContext;
+      this.User = _applicationContext.User;
+      this.ClientContext = _applicationContext.ClientContext;
       this.Culture = System.Globalization.CultureInfo.CurrentCulture;
       this.UICulture = System.Globalization.CultureInfo.CurrentUICulture;
     }
 
     internal void SetThreadContext()
     {
-      ApplicationContext.User = User;
-      ApplicationContext.SetContext(ClientContext);
+      _applicationContext.User = User;
+      _applicationContext.SetContext(ClientContext);
       Thread.CurrentThread.CurrentUICulture = UICulture;
       Thread.CurrentThread.CurrentCulture = Culture;
     }

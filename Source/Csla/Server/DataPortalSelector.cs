@@ -26,13 +26,13 @@ namespace Csla.Server
     /// <param name="dataPortalOptions"></param>
     public DataPortalSelector(ApplicationContext applicationContext, SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal, Configuration.DataPortalOptions dataPortalOptions)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       SimpleDataPortal = simpleDataPortal;
       FactoryDataPortal = factoryDataPortal;
       DataPortalOptions = dataPortalOptions;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
     private SimpleDataPortal SimpleDataPortal { get; set; }
     private FactoryDataPortal FactoryDataPortal { get; set; }
     private Csla.Configuration.DataPortalOptions DataPortalOptions { get; set; }
@@ -67,7 +67,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          ApplicationContext, "DataPortal.Create " + Resources.FailedOnServer,
+          _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
           ex, null, DataPortalOptions);
       }
     }
@@ -103,11 +103,11 @@ namespace Csla.Server
       {
         if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
           throw DataPortal.NewDataPortalException(
-            ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
+            _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
             ex, null, DataPortalOptions);
         else
           throw DataPortal.NewDataPortalException(
-            ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
+            _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             ex, null, DataPortalOptions);
       }
     }
@@ -141,7 +141,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          ApplicationContext, "DataPortal.Update " + Resources.FailedOnServer,
+          _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
           ex, obj, DataPortalOptions);
       }
     }
@@ -176,7 +176,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          ApplicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
+          _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
           ex, null, DataPortalOptions);
       }
     }

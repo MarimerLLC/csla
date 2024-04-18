@@ -23,10 +23,10 @@ namespace Csla.Server
     /// <param name="applicationContext"></param>
     public ObjectFactoryLoader(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Gets the type of the object factory.
@@ -62,7 +62,7 @@ namespace Csla.Server
       if (ft == null)
         throw new InvalidOperationException(
           string.Format(Resources.FactoryTypeNotFoundException, factoryName));
-      return ApplicationContext.CreateInstanceDI(ft);
+      return _applicationContext.CreateInstanceDI(ft);
     }
   }
 }

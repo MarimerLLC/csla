@@ -18,7 +18,7 @@ namespace Csla.Core
   /// </summary>
   public class ObjectCloner
   {
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates an instance of the type.
@@ -26,7 +26,7 @@ namespace Csla.Core
     /// <param name="applicationContext"></param>
     public ObjectCloner(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ namespace Csla.Core
     {
       using var buffer = new MemoryStream();
       ISerializationFormatter formatter =
-        SerializationFormatterFactory.GetFormatter(ApplicationContext);
+        SerializationFormatterFactory.GetFormatter(_applicationContext);
       formatter.Serialize(buffer, obj);
       buffer.Position = 0;
       return formatter.Deserialize(buffer);

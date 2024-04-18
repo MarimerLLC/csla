@@ -25,10 +25,10 @@ namespace Csla.Server
     /// <param name="applicationContext"></param>
     public ActiveAuthorizer(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Checks authorization rules for the request.
@@ -38,14 +38,14 @@ namespace Csla.Server
     /// </param>
     public void Authorize(AuthorizeRequest clientRequest)
     {
-      if (ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server &&
-          ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
+      if (_applicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server &&
+          _applicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
       {
         if (clientRequest.Operation == DataPortalOperations.Update ||
             clientRequest.Operation == DataPortalOperations.Execute)
         {
           // Per-Instance checks
-          if (!BusinessRules.HasPermission(ApplicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.RequestObject))
+          if (!BusinessRules.HasPermission(_applicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.RequestObject))
           {
             throw new SecurityException(
                string.Format(Resources.UserNotAuthorizedException,
@@ -56,7 +56,7 @@ namespace Csla.Server
         }
 
         // Per-Type checks
-        if (!BusinessRules.HasPermission(ApplicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.ObjectType))
+        if (!BusinessRules.HasPermission(_applicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.ObjectType))
         {
           throw new SecurityException(
              string.Format(Resources.UserNotAuthorizedException,

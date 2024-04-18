@@ -1175,16 +1175,16 @@ namespace Csla.Rules
       }
 
       // or a list of EditableObject (both BindingList and ObservableCollection)
-      else if (obj is IEditableCollection)
+      else if (obj is IEditableCollection collection)
       {
         var nodeKey = counter++;
-        var isValid = ((ITrackStatus)obj).IsValid;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj, BrokenRules = new BrokenRulesCollection(true) };
+        var isValid = collection.IsValid;
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = collection, BrokenRules = new BrokenRulesCollection(true) };
         long myChildBrokenRuleCount = 0;
 
         list.Add(node);
 
-        foreach (var child in (IEnumerable)obj)
+        foreach (var child in (IEnumerable)collection)
         {
           AddNodeToBrukenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
         }

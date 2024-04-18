@@ -324,9 +324,8 @@ namespace Csla.Xaml
       if (sourceBinding != null
         && sourceBinding.ParentBinding.RelativeSource != null
         && sourceBinding.ParentBinding.RelativeSource.Mode == RelativeSourceMode.TemplatedParent
-        && sourceBinding.DataItem is FrameworkElement)
+        && sourceBinding.DataItem is FrameworkElement control)
       {
-        var control = (FrameworkElement)sourceBinding.DataItem;
         var path = sourceBinding.ParentBinding.Path.Path;
 
         var type = control.GetType();
@@ -384,9 +383,9 @@ namespace Csla.Xaml
 
       // Check to see if PropertyInfo is inside a control template
       ClearValue(MyDataContextProperty);
-      if (newSource != null && newSource is FrameworkElement)
+      if (newSource != null && newSource is FrameworkElement element)
       {
-        var data = ((FrameworkElement)newSource).DataContext;
+        var data = element.DataContext;
         SetBindingValues(ParseRelativeBinding(GetBindingExpression(PropertyProperty)));
 
         if (data != null && GetBindingExpression(RelativeBindingProperty) == null)

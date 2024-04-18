@@ -118,10 +118,8 @@ namespace Csla.Windows
       foreach (Binding binding in control.DataBindings)
       {
         // get the BindingSource if appropriate
-        if (binding.DataSource is BindingSource)
+        if (binding.DataSource is BindingSource bs)
         {
-          BindingSource bs =
-            (BindingSource)binding.DataSource;
           // get the BusinessObject if appropriate
           Csla.Security.IAuthorizeReadWrite ds =
             bs.Current as Csla.Security.IAuthorizeReadWrite;

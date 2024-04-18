@@ -92,10 +92,10 @@ namespace Csla.Data
 
     private IList GetIList(object source)
     {
-      if (source is IListSource)
-        return ((IListSource)source).GetList();
-      else if (source is IList)
-        return source as IList;
+      if (source is IListSource listSource)
+        return listSource.GetList();
+      else if (source is IList list)
+        return list;
       else
       {
         // this is a regular object - create a list

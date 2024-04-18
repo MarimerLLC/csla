@@ -666,9 +666,8 @@ namespace Csla.Windows
 
                 case CslaFormAction.Validate:
 
-                  if (savableObject is BusinessBase)
+                  if (savableObject is BusinessBase businessObject)
                   {
-                    BusinessBase businessObject = savableObject as BusinessBase;
                     if (!businessObject.IsValid)
                     {
                       string brokenRules = string.Empty;
@@ -934,8 +933,8 @@ namespace Csla.Windows
     {
       Form frm;
 
-      if (thisControl.Parent is Form)
-        frm = (Form) thisControl.Parent;
+      if (thisControl.Parent is Form form)
+        frm = form;
       else
         frm = GetParentForm(thisControl.Parent);
 

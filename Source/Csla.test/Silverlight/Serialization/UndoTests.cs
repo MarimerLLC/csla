@@ -21,16 +21,7 @@ using Csla.Core;
 using UnitDriven;
 using Csla.Testing.Business.EditableRootTests;
 using Csla;
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace cslalighttest.Serialization
 {

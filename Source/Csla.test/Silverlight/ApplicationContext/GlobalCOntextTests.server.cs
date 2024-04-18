@@ -9,13 +9,7 @@ using System.Configuration;
 using Csla.Security;
 using Csla.Testing.Business.ApplicationContext;
 using UnitDriven;
-
-#if NUNIT
-using TestMethod = NUnit.Framework.TestAttribute;
-
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace Csla.Test.Silverlight.ApplicationContext
 {

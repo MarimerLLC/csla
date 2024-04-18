@@ -9,18 +9,7 @@
 using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Security.Claims;
-
-
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif 
 
 namespace Csla.Test.Serialization
 {

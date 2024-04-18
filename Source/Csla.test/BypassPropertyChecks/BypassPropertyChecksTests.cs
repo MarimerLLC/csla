@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using Csla;
-using Csla.DataPortalClient;
-using System;
+
 using UnitDriven;
 using System.Security.Claims;
 using Csla.TestHelpers;
@@ -45,7 +43,7 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -81,7 +79,7 @@ namespace Csla.Test.BypassPropertyChecks
       bool propertyChangedFired = false;
 
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -109,7 +107,7 @@ namespace Csla.Test.BypassPropertyChecks
       bool propertyChangedFired = false;
 
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
         {
           propertyChangedFired = true;
         };
@@ -132,7 +130,7 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -156,7 +154,7 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       BypassBusinessBase testObj = dataPortal.Fetch();
       bool propertyChangedFired = false;
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -179,7 +177,7 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -206,7 +204,7 @@ namespace Csla.Test.BypassPropertyChecks
       bool propertyChangedFired = false;
 
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -229,7 +227,7 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -253,7 +251,7 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       BypassBusinessBase testObj = dataPortal.Fetch();
       bool propertyChangedFired = false;
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };
@@ -276,7 +274,7 @@ namespace Csla.Test.BypassPropertyChecks
       UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (o, e) =>
+      testObj.PropertyChanged += (_, _) =>
       {
         propertyChangedFired = true;
       };

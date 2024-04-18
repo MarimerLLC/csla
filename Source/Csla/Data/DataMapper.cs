@@ -5,12 +5,10 @@
 // </copyright>
 // <summary>Map data from a source into a target object</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
-using System.Linq;
 
 namespace Csla.Data
 {
@@ -74,7 +72,7 @@ namespace Csla.Data
       object target, bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = new List<string>(ignoreList);
+      List<string> ignore = [..ignoreList];
       foreach (string propertyName in source.Keys)
       {
         if (!ignore.Contains(propertyName))
@@ -133,7 +131,7 @@ namespace Csla.Data
       bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = new List<string>(ignoreList);
+      List<string> ignore = [..ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
         if (!ignore.Contains(propertyName))
@@ -216,7 +214,7 @@ namespace Csla.Data
       bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = new List<string>(ignoreList);
+      List<string> ignore = [..ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
           if (!ignore.Contains(propertyName))
@@ -288,7 +286,7 @@ namespace Csla.Data
 
       private static IList<string> GetPropertyNames(Type sourceType)
       {
-        List<string> result = new List<string>();
+        List<string> result = [];
         PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
         foreach (PropertyDescriptor item in props)
             if (item.IsBrowsable)

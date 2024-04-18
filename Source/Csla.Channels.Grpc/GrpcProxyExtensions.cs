@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods data portal channel</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.DataPortalClient;
 using Grpc.Net.Client;
 using Microsoft.Extensions.DependencyInjection;

@@ -6,8 +6,6 @@
 // <summary>CSLA permissions policy provider</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 

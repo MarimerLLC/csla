@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Analyzers.Tests
@@ -35,60 +33,64 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotABusinessRule()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAndDoesNotCallComplete()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A : BusinessRuleAsync
-{ 
-  protected override Task ExecuteAsync(IRuleContext context) { } 
-}";
-      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, Array.Empty<string>());
+        public class A : BusinessRuleAsync
+        {
+          protected override Task ExecuteAsync(IRuleContext context) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAndCallsComplete()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A : BusinessRuleAsync
-{ 
-  protected override Task ExecuteAsync(IRuleContext context) 
-  { 
-    context.Complete();
-  } 
-}";
+        public class A : BusinessRuleAsync
+        {
+          protected override Task ExecuteAsync(IRuleContext context)
+          {
+            context.Complete();
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.CompleteInExecuteAsync });
+        code, [Constants.AnalyzerIdentifiers.CompleteInExecuteAsync]);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAndCallsCompleteAndNameof()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A : BusinessRuleAsync
-{ 
-  protected override Task ExecuteAsync(IRuleContext context) 
-  { 
-    var c = nameof(context);
-    context.Complete();
-  } 
-}";
+        public class A : BusinessRuleAsync
+        {
+          protected override Task ExecuteAsync(IRuleContext context)
+          {
+            var c = nameof(context);
+            context.Complete();
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<IsCompleteCalledInAsynchronousBusinessRuleAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.CompleteInExecuteAsync });
+        code, [Constants.AnalyzerIdentifiers.CompleteInExecuteAsync]);
     }
   }
 }

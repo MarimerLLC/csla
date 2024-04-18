@@ -1,7 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading.Tasks;
 using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
@@ -40,7 +38,6 @@ namespace Csla.Analyzers
     {
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
-      var typeSymbol = methodSymbol.ContainingType;
       var contextParameter = methodSymbol.Parameters[0];
 
       var newRoot = root;

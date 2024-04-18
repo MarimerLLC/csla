@@ -5,12 +5,8 @@
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.IO;
+
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
@@ -66,7 +62,7 @@ namespace Csla.Channels.Grpc
     /// data portal route, where each key is the
     /// routing tag identifying the route URL.
     /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls = new Dictionary<string, string>();
+    protected static Dictionary<string, string> RoutingTagUrls = [];
 
     /// <summary>
     /// Entry point for routing tag based data portal operations.
@@ -156,9 +152,9 @@ namespace Csla.Channels.Grpc
 
         // unpack criteria data into object
         object criteria = GetCriteria(ApplicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
+        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
-          criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
+          criteria = primitiveCriteria.Value;
         }
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
@@ -200,9 +196,9 @@ namespace Csla.Channels.Grpc
 
         // unpack criteria data into object
         object criteria = GetCriteria(ApplicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
+        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
-          criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
+          criteria = primitiveCriteria.Value;
         }
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
@@ -283,9 +279,9 @@ namespace Csla.Channels.Grpc
 
         // unpack criteria data into object
         object criteria = GetCriteria(ApplicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria)
+        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
-          criteria = ((Csla.DataPortalClient.PrimitiveCriteria)criteria).Value;
+          criteria = primitiveCriteria.Value;
         }
 
         var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);

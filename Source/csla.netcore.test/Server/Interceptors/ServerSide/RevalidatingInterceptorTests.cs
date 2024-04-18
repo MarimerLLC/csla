@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Csla.DataPortalClient;
+﻿using Csla.DataPortalClient;
 using Csla.Server;
 using Csla.Server.Interceptors.ServerSide;
-using Csla.Test.Basic;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -168,7 +163,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       // Arrange
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
-      Child childObject = rootObject.Children.AddNew();
+      rootObject.Children.AddNew();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()
@@ -194,7 +189,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
-      GrandChild grandChildObject = childObject.GrandChildren.AddNew();
+      childObject.GrandChildren.AddNew();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       InterceptArgs args = new InterceptArgs()

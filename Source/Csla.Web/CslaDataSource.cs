@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>A Web Forms data binding control designed to support</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Web.UI;
 using System.ComponentModel;
 using System.Reflection;
@@ -120,8 +120,7 @@ namespace Csla.Web
       set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value; }
     }
 
-    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = 
-      new System.Collections.Generic.Dictionary<string,Type>();
+    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = [];
 
     /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the
@@ -138,8 +137,7 @@ namespace Csla.Web
       if (!string.IsNullOrEmpty(typeAssemblyName))
       {
         // explicit assembly name provided
-        result = Type.GetType(string.Format(
-          "{0}, {1}", typeName, typeAssemblyName), true, true);
+        result = Type.GetType($"{typeName}, {typeAssemblyName}", true, true);
       }
       else if (typeName.IndexOf(",") > 0)
       {

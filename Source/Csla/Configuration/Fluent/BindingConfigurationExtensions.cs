@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Configure data binding settings</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Configuration
 {

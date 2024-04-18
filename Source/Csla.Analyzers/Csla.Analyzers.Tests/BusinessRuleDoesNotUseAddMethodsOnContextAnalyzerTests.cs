@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Analyzers.Tests
@@ -35,95 +33,101 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotABusinessRule()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAndDoesNotCallAnAddMethod()
     {
       var code =
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public class A 
-  : BusinessRule 
-{ 
-  protected override void Execute(IRuleContext context) { }
-}";
+        public class A
+          : BusinessRule
+        {
+          protected override void Execute(IRuleContext context) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.BusinessRuleContextUsage });
+        code, [Constants.AnalyzerIdentifiers.BusinessRuleContextUsage]);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAndCallsAddMethod()
     {
       var code =
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public class A 
-  : BusinessRule 
-{ 
-  protected override void Execute(IRuleContext context) 
-  { 
-    context.AddDirtyProperty(null);
-  }
-}";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+        public class A
+          : BusinessRule
+        {
+          protected override void Execute(IRuleContext context)
+          {
+            context.AddDirtyProperty(null);
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAsyncAndDoesNotCallAnAddMethod()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A 
-  : BusinessRuleAsync
-{ 
-  protected override async Task ExecuteAsync(IRuleContext context) { }
-}";
+        public class A
+          : BusinessRuleAsync
+        {
+          protected override async Task ExecuteAsync(IRuleContext context) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.BusinessRuleContextUsage });
+        code, [Constants.AnalyzerIdentifiers.BusinessRuleContextUsage]);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAsyncAndCallsAddMethod()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A 
-  : BusinessRuleAsync
-{ 
-  protected override async Task ExecuteAsync(IRuleContext context)
-  { 
-    context.AddDirtyProperty(null);
-  }
-}";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+        public class A
+          : BusinessRuleAsync
+        {
+          protected override async Task ExecuteAsync(IRuleContext context)
+          {
+            context.AddDirtyProperty(null);
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAndCallsAddMethodAndUsesNameof()
     {
       var code =
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public class A 
-  : BusinessRule 
-{ 
-  protected override void Execute(IRuleContext context) 
-  { 
-    var c = nameof(context);
-    context.AddDirtyProperty(null);
-  }
-}";
-      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(
-        code, Array.Empty<string>());
+        public class A
+          : BusinessRule
+        {
+          protected override void Execute(IRuleContext context)
+          {
+            var c = nameof(context);
+            context.AddDirtyProperty(null);
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
     }
   }
 }

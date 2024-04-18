@@ -5,24 +5,19 @@
 // </copyright>
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Rules;
-using System.Security;
 using Csla.Core.FieldManager;
 using System.Reflection;
 using System.Collections;
@@ -508,7 +503,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ReadProperty, property))
         {
           // store value in cache
-          _readResultCache.AddOrUpdate(property.Name, result, (a,b) => { return result; });
+          _readResultCache.AddOrUpdate(property.Name, result, (_, _) => { return result; });
         }
       }
       return result;
@@ -583,7 +578,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.WriteProperty, property))
         {
           // store value in cache
-          _writeResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
+          _writeResultCache.AddOrUpdate(property.Name, result, (_, _) => { return result; });
         }
       }
       return result;
@@ -603,9 +598,7 @@ namespace Csla.Core
       bool result = CanWriteProperty(property);
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(
-          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, property.Name));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Resources.PropertySetNotAllowed} ({property.Name})");
       }
       return result;
     }
@@ -676,7 +669,7 @@ namespace Csla.Core
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ExecuteMethod, method))
         {
           // store value in cache
-          _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
+          _executeResultCache.AddOrUpdate(method.Name, result, (_, _) => { return result; });
         }
       }
       return result;
@@ -698,7 +691,7 @@ namespace Csla.Core
       if (throwOnFalse && result == false)
       {
         Csla.Security.SecurityException ex =
-          new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
+          new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({method.Name})");
         throw ex;
       }
       return result;
@@ -724,8 +717,7 @@ namespace Csla.Core
       bool result = CanExecuteMethod(new MethodInfo(methodName));
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({methodName})");
       }
       return result;
     }

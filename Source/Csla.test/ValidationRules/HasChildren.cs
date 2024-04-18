@@ -6,13 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Csla.Serialization;
-using Csla.Serialization.Mobile;
 using Csla.Core;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace Csla.Test.ValidationRules
@@ -55,8 +49,8 @@ namespace Csla.Test.ValidationRules
     protected override void Initialize()
     {
       base.Initialize();
-      ChildList.ListChanged += new System.ComponentModel.ListChangedEventHandler(ChildList_ListChanged);
-      this.ChildChanged += new EventHandler<ChildChangedEventArgs>(HasChildren_ChildChanged);
+      ChildList.ListChanged += ChildList_ListChanged;
+      this.ChildChanged += HasChildren_ChildChanged;
     }
 
     void ChildList_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)
@@ -70,9 +64,9 @@ namespace Csla.Test.ValidationRules
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     #region Private Helper Methods

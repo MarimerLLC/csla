@@ -1,6 +1,7 @@
 <Project>
  <PropertyGroup>
    <LangVersion>latest</LangVersion>
+   <ImplicitUsings>enable</ImplicitUsings>
  </PropertyGroup>
  
  <!-- Common Package Settings -->

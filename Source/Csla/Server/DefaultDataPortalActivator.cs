@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -23,7 +23,7 @@ namespace Csla.Server
     /// <summary>
     /// Gets a reference to the current DI service provider.
     /// </summary>
-    protected IServiceProvider ServiceProvider { get; private set; } = serviceProvider;
+    protected IServiceProvider ServiceProvider { get; } = serviceProvider;
 
     /// <summary>
     /// Gets a new instance of the requested type.

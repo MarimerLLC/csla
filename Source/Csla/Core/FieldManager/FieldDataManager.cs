@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.IO;
-using System.Collections.Generic;
+
 using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
@@ -18,7 +15,6 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
-using System.Threading.Tasks;
 
 namespace Csla.Core.FieldManager
 {
@@ -81,7 +77,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public List<IPropertyInfo> GetRegisteredProperties()
     {
-      return new List<IPropertyInfo>(_propertyList);
+      return [.._propertyList];
     }
 
     /// <summary>
@@ -179,11 +175,11 @@ namespace Csla.Core.FieldManager
     private static List<IPropertyInfo> CreateConsolidatedList(Type type)
     {
       ForceStaticFieldInit(type);
-      List<IPropertyInfo> result = new List<IPropertyInfo>();
+      List<IPropertyInfo> result = [];
 
       // get inheritance hierarchy
       Type current = type;
-      List<Type> hierarchy = new List<Type>();
+      List<Type> hierarchy = [];
       do
       {
         hierarchy.Add(current);
@@ -618,7 +614,7 @@ namespace Csla.Core.FieldManager
     /// </remarks>
     public List<object> GetChildren()
     {
-      List<object> result = new List<object>();
+      List<object> result = [];
       foreach (var item in _fieldData)
         if (item != null && (item.Value is IEditableBusinessObject || item.Value is IEditableCollection))
           result.Add(item.Value);

@@ -6,11 +6,6 @@
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
 
 namespace Csla.Rules
 {

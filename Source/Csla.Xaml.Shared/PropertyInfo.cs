@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Expose metastate information about a property.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Core;
@@ -21,7 +20,6 @@ using Xamarin.Forms;
 using System.Collections.Generic;
 #elif MAUI
 #else
-using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Data;
 #endif
@@ -59,7 +57,7 @@ namespace Csla.Xaml
       Visibility = Visibility.Collapsed;
       Height = 20;
       Width = 20;
-      Loaded += (o, e) =>
+      Loaded += (_, _) =>
       {
         _loading = false;
         UpdateState();
@@ -324,9 +322,8 @@ namespace Csla.Xaml
       if (sourceBinding != null
         && sourceBinding.ParentBinding.RelativeSource != null
         && sourceBinding.ParentBinding.RelativeSource.Mode == RelativeSourceMode.TemplatedParent
-        && sourceBinding.DataItem is FrameworkElement)
+        && sourceBinding.DataItem is FrameworkElement control)
       {
-        var control = (FrameworkElement)sourceBinding.DataItem;
         var path = sourceBinding.ParentBinding.Path.Path;
 
         var type = control.GetType();
@@ -336,7 +333,7 @@ namespace Csla.Xaml
 #if NETFX_CORE
           fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
 #else
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
+          fi = type.GetField($"{path}{_dependencyPropertySuffix}");
 #endif
 
           if (fi != null)
@@ -384,9 +381,9 @@ namespace Csla.Xaml
 
       // Check to see if PropertyInfo is inside a control template
       ClearValue(MyDataContextProperty);
-      if (newSource != null && newSource is FrameworkElement)
+      if (newSource != null && newSource is FrameworkElement element)
       {
-        var data = ((FrameworkElement)newSource).DataContext;
+        var data = element.DataContext;
         SetBindingValues(ParseRelativeBinding(GetBindingExpression(PropertyProperty)));
 
         if (data != null && GetBindingExpression(RelativeBindingProperty) == null)

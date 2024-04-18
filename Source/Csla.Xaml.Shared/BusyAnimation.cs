@@ -6,13 +6,11 @@
 // </copyright>
 // <summary>Displays a busy animation.</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.ComponentModel;
-using System.Globalization;
 
 namespace Csla.Xaml
 {
@@ -127,7 +125,7 @@ namespace Csla.Xaml
     public BusyAnimation()
     {
       DefaultStyleKey = typeof(BusyAnimation);
-      Loaded += (o, e) =>
+      Loaded += (_, _) =>
       {
         ArrangeParts();
         GoToState(true);
@@ -178,7 +176,7 @@ namespace Csla.Xaml
     {
       if (IsRunning)
       {
-        VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
+        VisualStateManager.GoToState(this, $"state{_state + 1}", useTransitions);
       }
       else
       {
@@ -202,8 +200,6 @@ namespace Csla.Xaml
 
     private void ArrangeParts()
     {
-      double width = ActualWidth;
-      double height = ActualHeight;
       double scale = Math.Min(ActualWidth, ActualHeight);
       double theta = (2.0 * Math.PI) / NUM_STATES;
 

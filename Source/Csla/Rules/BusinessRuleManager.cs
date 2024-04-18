@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>Manages the list of rules for a business type.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
@@ -40,12 +38,12 @@ namespace Csla.Rules
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
-          (t) => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
+          (_) => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
         );
 
       return rulesInfo.Item2;
 #else
-      return _perTypeRules.Value.GetOrAdd(key, (t) => { return new BusinessRuleManager(); });
+      return _perTypeRules.Value.GetOrAdd(key, (_) => { return new BusinessRuleManager(); });
 #endif
     }
 

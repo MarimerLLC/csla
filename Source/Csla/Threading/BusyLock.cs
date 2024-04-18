@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Implementation of a lock that waits while</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Core;
-using System.Threading;
 
 namespace Csla.Threading
 {
@@ -74,7 +73,7 @@ namespace Csla.Threading
     {
       try
       {
-        _target.BusyChanged += new BusyChangedEventHandler(notify_BusyChanged);
+        _target.BusyChanged += notify_BusyChanged;
 
         // Do nothing if this object is not currently busy
         // otherwise wait for the event to be signaled.
@@ -89,7 +88,7 @@ namespace Csla.Threading
       }
       finally
       {
-        _target.BusyChanged -= new BusyChangedEventHandler(notify_BusyChanged);
+        _target.BusyChanged -= notify_BusyChanged;
         _event.Close();
       }
     }

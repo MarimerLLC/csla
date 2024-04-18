@@ -6,14 +6,9 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Csla;
-using Csla.Security;
 using Csla.Core;
-using Csla.Serialization;
 
 namespace cslalighttest.CslaDataProvider
 {
@@ -264,9 +259,9 @@ namespace cslalighttest.CslaDataProvider
   public class CustomerWO_DP_XYZ : BusinessBase<CustomerWO_DP_XYZ>
   {
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
   }
 }

@@ -3,12 +3,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -30,30 +25,31 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes()
     {
       var code =
-@"using Csla;
-using System.Threading.Tasks;
+        """
+        using Csla;
+        using System.Threading.Tasks;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class VerifyGetFixes
-{
-  private IDataPortal<A> _dataPortal;
-
-  public VerifyGetFixes(IDataPortal<A> dataPortal)
-  {
-    _dataPortal = dataPortal;
-  }
-
-  public async Task Use()
-  {
-    var x = _dataPortal.Fetch<A>();
-    await x.SaveAsync();
-  }
-}";
+        public class VerifyGetFixes
+        {
+          private IDataPortal<A> _dataPortal;
+        
+          public VerifyGetFixes(IDataPortal<A> dataPortal)
+          {
+            _dataPortal = dataPortal;
+          }
+        
+          public async Task Use()
+          {
+            var x = _dataPortal.Fetch<A>();
+            await x.SaveAsync();
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new FindSaveAssignmentIssueAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -68,7 +64,7 @@ public class VerifyGetFixes
 
       await TestHelpers.VerifyChangesAsync(actions,
         FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants.AddAssignmentDescription, document,
-        (model, newRoot) =>
+        (_, newRoot) =>
         {
           Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<AssignmentExpressionSyntax>().Any());
         });

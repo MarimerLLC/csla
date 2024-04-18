@@ -5,12 +5,10 @@
 // </copyright>
 // <summary>Base type for creating your own view model</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Csla.Reflection;
 using Csla.Rules;
 
@@ -24,7 +22,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets the current ApplicationContext instance.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
+    protected ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -433,20 +431,17 @@ namespace Csla.Blazor
       return GetPropertyInfo(keyName, Model, propertyName);
     }
 
-    private readonly Dictionary<string, object> _propertyInfoCache = new Dictionary<string, object>();
-    
+    private readonly Dictionary<string, IPropertyInfo> _propertyInfoCache = [];
+
     private IPropertyInfo GetPropertyInfo(string keyName, object model, string propertyName)
     {
-      PropertyInfo result;
-      if (_propertyInfoCache.TryGetValue(keyName, out object temp))
+      if (_propertyInfoCache.TryGetValue(keyName, out var result))
       {
-        result = (PropertyInfo)temp;
+        return result;
       }
-      else
-      {
-        result = new PropertyInfo(model, propertyName);
-        _propertyInfoCache.Add(keyName, result);
-      }
+
+      result = new PropertyInfo(model, propertyName);
+      _propertyInfoCache.Add(keyName, result);
       return result;
     }
 

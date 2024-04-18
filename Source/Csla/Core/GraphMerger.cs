@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Csla.Core
 {
@@ -139,14 +135,13 @@ namespace Csla.Core
       var listType = target.GetType();
       var childType = Utilities.GetChildItemType(listType);
       var genericTypeParams = new Type[] { listType, childType };
-      var parameterTypes = new Type[] { listType, listType };
       System.Reflection.MethodInfo methodReference;
       if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
         methodReference = this.GetType().GetMethod("MergeBusinessBindingListGraph");
       else
         methodReference = this.GetType().GetMethod("MergeBusinessListGraph");
       var gr = methodReference.MakeGenericMethod(genericTypeParams);
-      gr.Invoke(this, new object[] { target, source });
+      gr.Invoke(this, [target, source]);
 #endif
     }
 

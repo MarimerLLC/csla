@@ -6,10 +6,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.Reflection;
-
 namespace Csla.Reflection
 {
   internal class DynamicMethodHandle
@@ -35,7 +31,7 @@ namespace Csla.Reflection
         object[] inParams = null;
         if (parameters == null)
         {
-          inParams = new object[] { null };
+          inParams = [null];
 
         }
         else

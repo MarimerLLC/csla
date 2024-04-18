@@ -7,9 +7,6 @@
 //-----------------------------------------------------------------------
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Collections.Generic;
-using System.Net.Mime;
 using System.Text;
 
 namespace Csla.Generators.CSharp.AutoSerialization.Discovery
@@ -77,9 +74,9 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
 
       // Iterate through the containing types should the target type be nested inside other types
       containingTypeDeclaration = targetTypeDeclaration;
-      while (containingTypeDeclaration.Parent is TypeDeclarationSyntax)
+      while (containingTypeDeclaration.Parent is TypeDeclarationSyntax syntax)
       {
-        containingTypeDeclaration = (TypeDeclarationSyntax)containingTypeDeclaration.Parent;
+        containingTypeDeclaration = syntax;
       }
 
       namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;

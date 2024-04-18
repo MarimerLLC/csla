@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Values for validation rule severities.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Rules
 {

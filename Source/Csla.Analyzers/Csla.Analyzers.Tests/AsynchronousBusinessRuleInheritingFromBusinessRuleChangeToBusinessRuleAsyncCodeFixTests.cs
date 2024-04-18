@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -30,20 +25,21 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWithNamespace()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public sealed class TestRule : BusinessRule 
-{
-  protected override async void Execute(IRuleContext context)
-  {
-    await Task.Yield();
-  }
-}";
+        public sealed class TestRule : BusinessRule
+        {
+          protected override async void Execute(IRuleContext context)
+          {
+            await Task.Yield();
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -73,19 +69,20 @@ public sealed class TestRule : BusinessRule
     public async Task VerifyGetFixesWithoutNamespace()
     {
       var code =
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public sealed class TestRule : BusinessRule 
-{
-  protected override async void Execute(IRuleContext context)
-  {
-    await Task.Yield();
-  }
-}";
+        public sealed class TestRule : BusinessRule
+        {
+          protected override async void Execute(IRuleContext context)
+          {
+            await Task.Yield();
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(

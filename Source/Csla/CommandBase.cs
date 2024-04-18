@@ -5,18 +5,14 @@
 // </copyright>
 // <summary>This is the base class from which command </summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using Csla.Server;
 using Csla.Properties;
 using Csla.Core;
-using Csla.Serialization.Mobile;
-using Csla.DataPortalClient;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Csla
 {

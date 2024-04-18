@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Allows interception of DataPortal call</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.Server
 {

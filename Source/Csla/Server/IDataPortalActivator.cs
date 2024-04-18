@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Server
 {

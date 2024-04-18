@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Rules;
-using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
 {
@@ -67,7 +65,7 @@ namespace Csla.Test.ValidationRules
       {
         _nameProperty = nameProperty;
         AffectedProperties.Add(nameProperty);
-        InputProperties = new List<IPropertyInfo>() { primaryProperty };
+        InputProperties = [primaryProperty];
 
         IsAsync = true;
       }
@@ -78,13 +76,13 @@ namespace Csla.Test.ValidationRules
 
         var bw = new System.ComponentModel.BackgroundWorker();
 
-        bw.RunWorkerCompleted += (o, e) =>
+        bw.RunWorkerCompleted += (_, _) =>
         {
-          context.AddOutValue(_nameProperty, string.Format("customer name {0}", cn));
+          context.AddOutValue(_nameProperty, $"customer name {cn}");
 
           context.Complete();
         };
-        bw.DoWork += (o, e) =>
+        bw.DoWork += (_, _) =>
         {
           Thread.Sleep(50);
         };

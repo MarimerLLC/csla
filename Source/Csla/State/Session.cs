@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Per-user session data.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using Csla.Core;
 

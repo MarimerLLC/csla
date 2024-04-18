@@ -5,15 +5,12 @@
 // </copyright>
 // <summary>Implements n-level undo capabilities as</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.IO;
+
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
 using Csla.Serialization;
-using System.Linq;
 
 namespace Csla.Core
 {

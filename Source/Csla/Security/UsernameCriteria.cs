@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Criteria class for passing a</summary>
 //-----------------------------------------------------------------------
-using System;
-using Csla;
 
 namespace Csla.Security
 {

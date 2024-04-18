@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using System;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {
@@ -47,8 +45,5 @@ namespace Csla.Configuration
   /// <summary>
   /// Configuration options for AddWindowsForms method
   /// </summary>
-  public class WindowsFormsOptions
-  {
-
-  }
+  public class WindowsFormsOptions;
 }

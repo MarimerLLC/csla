@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Contains information about the error that</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Xaml
 {

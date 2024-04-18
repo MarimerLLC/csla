@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Defines the interface for a factory object</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Core
 {

@@ -5,20 +5,12 @@
 // </copyright>
 // <summary>Extends ObservableCollection with behaviors required</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using Csla.Serialization.Mobile;
-using Csla.Core.FieldManager;
-using Csla.Core;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using Csla.Properties;
-using System.Diagnostics;
 
 namespace Csla.Core
 {
@@ -311,11 +303,11 @@ namespace Csla.Core
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged += new BusyChangedEventHandler(busy_BusyChanged);
+        busy.BusyChanged += busy_BusyChanged;
 
       INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException += new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException += unhandled_UnhandledAsyncException;
 
       INotifyPropertyChanged c = item as INotifyPropertyChanged;
       if (c != null)
@@ -340,11 +332,11 @@ namespace Csla.Core
     {
       INotifyBusy busy = item as INotifyBusy;
       if (busy != null)
-        busy.BusyChanged -= new BusyChangedEventHandler(busy_BusyChanged);
+        busy.BusyChanged -= busy_BusyChanged;
 
       INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
       if (unhandled != null)
-        unhandled.UnhandledAsyncException -= new EventHandler<ErrorEventArgs>(unhandled_UnhandledAsyncException);
+        unhandled.UnhandledAsyncException -= unhandled_UnhandledAsyncException;
 
       INotifyPropertyChanged c = item as INotifyPropertyChanged;
       if (c != null)
@@ -356,7 +348,7 @@ namespace Csla.Core
 
       INotifyChildChanged child = item as INotifyChildChanged;
       if (child != null)
-        child.ChildChanged -= new EventHandler<ChildChangedEventArgs>(Child_Changed);
+        child.ChildChanged -= Child_Changed;
     }
 
     #endregion

@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Windows Forms extender control that automatically</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Drawing;
+
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Reflection;
 
 namespace Csla.Windows
@@ -32,8 +29,7 @@ namespace Csla.Windows
       public bool CanRead { get; set; }
     }
 
-    private readonly Dictionary<Control, ControlStatus> _sources =
-      new Dictionary<Control, ControlStatus>();
+    private readonly Dictionary<Control, ControlStatus> _sources = [];
 
     /// <summary>
     /// Creates an instance of the object.
@@ -118,10 +114,8 @@ namespace Csla.Windows
       foreach (Binding binding in control.DataBindings)
       {
         // get the BindingSource if appropriate
-        if (binding.DataSource is BindingSource)
+        if (binding.DataSource is BindingSource bs)
         {
-          BindingSource bs =
-            (BindingSource)binding.DataSource;
           // get the BusinessObject if appropriate
           Csla.Security.IAuthorizeReadWrite ds =
             bs.Current as Csla.Security.IAuthorizeReadWrite;
@@ -178,7 +172,7 @@ namespace Csla.Windows
             GetEmptyValue(
             Utilities.GetPropertyType(
               propertyInfo.PropertyType)),
-            new object[] { });
+            []);
         }
       }
 
@@ -202,9 +196,9 @@ namespace Csla.Windows
       {
         bool couldWrite =
           (!(bool)propertyInfo.GetValue(
-          ctl, new object[] { }));
+          ctl, []));
         propertyInfo.SetValue(
-          ctl, !canWrite, new object[] { });
+          ctl, !canWrite, []);
         if ((!couldWrite) && (canWrite))
           binding.ReadValue();
       }

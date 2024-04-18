@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Exception indicating a failure during an object</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Csla.Properties;
 
 namespace Csla.Windows

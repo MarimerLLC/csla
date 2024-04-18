@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Implements a list that is serializable using</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core

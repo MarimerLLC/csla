@@ -5,14 +5,8 @@
 // </copyright>
 // <summary>Builds the text of a partial type to implement the IMobileObject interface</summary>
 //-----------------------------------------------------------------------
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
+
 using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Generators.CSharp.AutoSerialization
 {
@@ -115,7 +109,7 @@ namespace Csla.Generators.CSharp.AutoSerialization
     /// <returns>A hashset of all of the namespaces required for generation</returns>
     private HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
     {
-      HashSet<string> requiredNamespaces = new HashSet<string>() { "System", "Csla.Serialization.Mobile" };
+      HashSet<string> requiredNamespaces = ["System", "Csla.Serialization.Mobile"];
 
       foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
       {

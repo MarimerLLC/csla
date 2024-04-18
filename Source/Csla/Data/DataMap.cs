@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Defines a mapping between two sets of</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Csla.Reflection;
 
 namespace Csla.Data
@@ -36,7 +35,7 @@ namespace Csla.Data
 
     private Type _sourceType;
     private Type _targetType;
-    private List<MemberMapping> _map = new List<MemberMapping>();
+    private List<MemberMapping> _map = [];
 
     /// <summary>
     /// Initializes an instance of the type.

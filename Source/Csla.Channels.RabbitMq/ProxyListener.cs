@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Handles replies from data portal server</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -76,7 +76,7 @@ namespace Csla.Channels.RabbitMq
       Channel = Connection.CreateModel();
       string[] query;
       if (string.IsNullOrWhiteSpace(QueueUri.Query))
-        query = new string[] { };
+        query = [];
       else
         query = QueueUri.Query.Substring(1).Split('&');
       if (query.Length == 0 || !query[0].StartsWith("reply="))
@@ -112,7 +112,7 @@ namespace Csla.Channels.RabbitMq
       InitializeRabbitMQ();
 
       var consumer = new EventingBasicConsumer(Channel);
-      consumer.Received += (model, ea) =>
+      consumer.Received += (_, ea) =>
       {
         Console.WriteLine($"Received reply for {ea.BasicProperties.CorrelationId}");
         if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem item))

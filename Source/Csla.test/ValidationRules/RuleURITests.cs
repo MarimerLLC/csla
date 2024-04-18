@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 using Csla.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,15 +6,9 @@ using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
 {
-  public class AddressEdit : Csla.BusinessBase<AddressEdit>
-  {
-    
-  }
+  public class AddressEdit : Csla.BusinessBase<AddressEdit>;
 
-  public class GenericRule<T> : ObjectRule
-  {
-    
-  }
+  public class GenericRule<T> : ObjectRule;
 
 
   [TestClass]

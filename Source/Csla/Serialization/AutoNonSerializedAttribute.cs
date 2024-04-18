@@ -5,17 +5,12 @@
 // </copyright>
 // <summary>Indicate that a field or property should be excluded from auto serialization</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Serialization
 {
-
   /// <summary>
   /// Indicate that a public field or property should be excluded from auto serialization
   /// </summary>
   [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-  public class AutoNonSerializedAttribute : Attribute
-  {
-  }
-
+  public class AutoNonSerializedAttribute : Attribute;
 }

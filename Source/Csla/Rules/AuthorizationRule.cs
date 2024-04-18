@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Base class providing basic authorization rule</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Csla.Properties;
 
 namespace Csla.Rules
@@ -95,7 +92,7 @@ namespace Csla.Rules
     private void CanWriteProperty(string argument)
     {
       if (_locked)
-        throw new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
+        throw new ArgumentException($"{Resources.PropertySetNotAllowed} ({argument})", argument);
     }
 
     #region IAuthorizationRule

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
 {
@@ -24,9 +20,9 @@ namespace Csla.Test.ValidationRules
     }
 
     [Create]
-    private async Task DataPortal_Create()
+    private Task DataPortal_Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
   }
 }

@@ -5,14 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using System.Threading.Tasks;
-using Csla.Server;
 
 namespace Csla.Core.LoadManager
 {
@@ -43,7 +35,7 @@ namespace Csla.Core.LoadManager
       if (_parameters.Any())
         parameters.Add(_parameters.First());
   
-      var myCallback = new EventHandler<DataPortalResult<T>>((sender, result) => callback(this, result));
+      var myCallback = new EventHandler<DataPortalResult<T>>((_, result) => callback(this, result));
       parameters.Add(myCallback);
       _factory.DynamicInvoke(parameters.ToArray());
     }

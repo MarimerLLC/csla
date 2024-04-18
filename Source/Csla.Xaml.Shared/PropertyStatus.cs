@@ -6,10 +6,8 @@
 // </copyright>
 // <summary>Displays validation information for a business</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -67,14 +65,14 @@ namespace Csla.Xaml
 
       // In WPF - Loaded fires when form is loaded even if control is not visible.
       // but will only fire once when control gets visible in Silverlight
-      Loaded += (o, e) =>
+      Loaded += (_, _) =>
       {
         _loading = false;
         UpdateState();
       };
       // IsVisibleChanged fires when control first gets visible in WPF 
       // Does not exisit in Silverlight -  see Loaded event.
-      IsVisibleChanged += (o, e) =>
+      IsVisibleChanged += (_, _) =>
                               {
                                 // update status if we are not loading 
                                 // and control is visible
@@ -83,7 +81,7 @@ namespace Csla.Xaml
                                   UpdateState();
                                 }
                               };
-      DataContextChanged += (o, e) =>
+      DataContextChanged += (_, e) =>
       {
         if (!_loading) SetSource(e.NewValue);
       };
@@ -441,8 +439,8 @@ namespace Csla.Xaml
     {
       if (image != null)
       {
-        image.MouseEnter += new MouseEventHandler(image_MouseEnter);
-        image.MouseLeave += new MouseEventHandler(image_MouseLeave);
+        image.MouseEnter += image_MouseEnter;
+        image.MouseLeave += image_MouseLeave;
       }
     }
 
@@ -450,18 +448,18 @@ namespace Csla.Xaml
     {
       if (image != null)
       {
-        image.MouseEnter -= new MouseEventHandler(image_MouseEnter);
-        image.MouseLeave -= new MouseEventHandler(image_MouseLeave);
+        image.MouseEnter -= image_MouseEnter;
+        image.MouseLeave -= image_MouseLeave;
       }
     }
 
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
       Popup popup = (Popup)FindChild(this, "popup");
-      if (popup != null && sender is UIElement)
+      if (popup != null && sender is UIElement element)
       {
         popup.Placement = PlacementMode.Mouse;
-        popup.PlacementTarget = (UIElement)sender;
+        popup.PlacementTarget = element;
         ((ItemsControl)popup.Child).ItemsSource = BrokenRules;
         popup.IsOpen = true;
       }
@@ -621,7 +619,7 @@ namespace Csla.Xaml
         VisualStateManager.GoToState(this, newState, useTransitions);
         if (newState != "Busy" && newState != "PropertyValid")
         {
-          _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", newState.ToLower()));
+          _lastImage = (FrameworkElement)FindChild(this, $"{newState.ToLower()}Image");
           EnablePopup(_lastImage);
         }
       }

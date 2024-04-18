@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Interface defining an authorization context</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Security.Claims;
-using System.Security.Principal;
-using Csla.Core;
 
 namespace Csla.Rules 
 {

@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Interface defining a business/validation</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Csla.Rules
 {

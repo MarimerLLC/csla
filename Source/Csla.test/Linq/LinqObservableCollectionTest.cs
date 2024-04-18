@@ -5,14 +5,10 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using Csla;
+
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using Csla.Serialization;
-using UnitDriven;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -183,11 +179,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
         {
           sourceChanged = true;
         };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
         {
           objChanged = true;
         };
@@ -221,11 +217,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
       {
         sourceChanged = true;
       };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         objChanged = true;
       };
@@ -259,11 +255,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
       {
         sourceChanged = true;
       };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         objChanged = true;
       };
@@ -297,11 +293,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
       {
         sourceChanged = true;
       };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         objChanged = true;
       };
@@ -335,11 +331,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
       {
         sourceChanged = true;
       };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         objChanged = true;
       };
@@ -378,11 +374,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
       {
         sourceChanged = true;
       };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         objChanged = true;
       };
@@ -407,11 +403,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
       {
         sourceChanged = true;
       };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         objChanged = true;
       };
@@ -433,11 +429,11 @@ namespace Csla.Test.Linq
 
       bool sourceChanged = false;
       bool objChanged = false;
-      source.CollectionChanged += (o, e) =>
+      source.CollectionChanged += (_, _) =>
       {
         sourceChanged = true;
       };
-      obj.CollectionChanged += (o, e) =>
+      obj.CollectionChanged += (_, _) =>
       {
         objChanged = true;
       };

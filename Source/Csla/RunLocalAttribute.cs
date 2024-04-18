@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Marks a DataPortal_XYZ method to</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {
@@ -15,8 +14,5 @@ namespace Csla
   /// DataPortal is configured for remote use.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public sealed class RunLocalAttribute : Attribute
-  {
-
-  }
+  public sealed class RunLocalAttribute : Attribute;
 }

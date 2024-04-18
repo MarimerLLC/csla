@@ -7,10 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 
 namespace Csla.Test.DataMapper
 {
@@ -197,7 +195,7 @@ namespace Csla.Test.DataMapper
     public void BasicDataMap()
     {
       Csla.Data.DataMap map = new Csla.Data.DataMap(typeof(DataMapTarget), typeof(DataMapTarget));
-      
+
       DataMapTarget source = new DataMapTarget();
       DataMapTarget target = new DataMapTarget();
       source.MyInt = 123;
@@ -255,22 +253,75 @@ namespace Csla.Test.DataMapper
 
   public class DataMapTarget
   {
-    public int MyInt { get; set; }
+    private int _int;
 
-    public double MyDouble { get; set; }
+    public int MyInt
+    {
+      get { return _int; }
+      set { _int = value; }
+    }
 
-    public bool MyBool { get; set; }
+    private double _double;
 
-    public Nullable<int> MyNInt { get; set; }
+    public double MyDouble
+    {
+      get { return _double; }
+      set { _double = value; }
+    }
 
-    public DataMapEnum MyEnum { get; set; }
+    private bool _bool;
 
-    public DateTime MyDate { get; set; }
+    public bool MyBool
+    {
+      get { return _bool; }
+      set { _bool = value; }
+    }
 
-    public Csla.SmartDate MySmartDate { get; set; }
+    private Nullable<int> _nint;
 
-    public Guid MyGuid { get; set; }
+    public Nullable<int> MyNInt
+    {
+      get { return _nint; }
+      set { _nint = value; }
+    }
 
-    public string MyString { get; set; }
+    private DataMapEnum _enum;
+
+    public DataMapEnum MyEnum
+    {
+      get { return _enum; }
+      set { _enum = value; }
+    }
+
+    private DateTime _date;
+
+    public DateTime MyDate
+    {
+      get { return _date; }
+      set { _date = value; }
+    }
+
+    private Csla.SmartDate _smartDate;
+
+    public Csla.SmartDate MySmartDate
+    {
+      get { return _smartDate; }
+      set { _smartDate = value; }
+    }
+
+    private Guid _guid;
+
+    public Guid MyGuid
+    {
+      get { return _guid; }
+      set { _guid = value; }
+    }
+
+    private string _string;
+    public string MyString
+    {
+      get { return _string; }
+      set { _string = value; }
+    }
   }
 }

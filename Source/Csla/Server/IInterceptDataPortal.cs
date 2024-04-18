@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Csla.Server
+﻿namespace Csla.Server
 {
   /// <summary>
   /// Implement this interface to create a data

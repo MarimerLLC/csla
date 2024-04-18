@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Csla.Test.ChildChanged
 {
@@ -41,7 +39,7 @@ namespace Csla.Test.ChildChanged
     private static int _SequenceID = 0;
     protected static int NextSequenceID => _SequenceID++;
 
-    protected static List<EventDetail> EventDetails = new List<EventDetail>();
+    protected static List<EventDetail> EventDetails = [];
 
 
     [Serializable]

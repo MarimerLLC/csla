@@ -5,13 +5,10 @@
 // </copyright>
 // <summary>Provides methods to dynamically find and call methods.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
-using System.Threading.Tasks;
-
 using Csla.Properties;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
@@ -59,10 +56,9 @@ namespace Csla.Reflection
     #region Dynamic Method Cache
 
 #if NET5_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache =
-      new Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>>();
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache = [];
 #else
-    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
+    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = [];
 #endif
 
     private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
@@ -294,10 +290,9 @@ namespace Csla.Reflection
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
 #if NET5_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache =
-      new Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>>();
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache = [];
 #else
-    private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
+    private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
 #endif
 
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
@@ -636,7 +631,7 @@ namespace Csla.Reflection
         object[] par;
         if (infoParamsCount == 1 && specialParamArray)
         {
-          par = new object[] { parameters };
+          par = [parameters];
         }
         else if (infoParamsCount > 1 && hasParamArray && specialParamArray)
         {
@@ -678,11 +673,10 @@ namespace Csla.Reflection
     private static object CallMethod(object obj, DynamicMethodHandle methodHandle, bool hasParameters, params object[] parameters)
     {
       object result = null;
-      var method = methodHandle.DynamicMethod;
 
       object[] inParams;
       if (parameters == null)
-        inParams = new object[] { null };
+        inParams = [null];
       else
         inParams = parameters;
 
@@ -779,9 +773,9 @@ namespace Csla.Reflection
 
       object[] inParams;
       if (!hasParameters)
-        inParams = new object[] { };
+        inParams = [];
       else if (parameters == null)
-        inParams = new object[] { null };
+        inParams = [null];
       else
         inParams = parameters;
 
@@ -987,7 +981,7 @@ namespace Csla.Reflection
     private static Type[] GetParameterTypes(bool hasParameters, object[] parameters)
     {
       if (!hasParameters)
-        return new Type[] { };
+        return [];
 
       List<Type> result = new List<Type>();
 

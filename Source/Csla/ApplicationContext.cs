@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Security.Principal;
 using Csla.Core;
 using System.Security.Claims;

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines an object that can serialize and deserialize</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Serialization
 {

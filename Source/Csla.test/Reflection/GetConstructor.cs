@@ -8,9 +8,15 @@
 using System;
 using System.Reflection;
 using System.Linq;
-using System.Diagnostics;
+#if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.Reflection;
+#else
+using NUnit.Framework;
+using TestClass = NUnit.Framework.TestFixtureAttribute;
+using TestInitialize = NUnit.Framework.SetUpAttribute;
+using TestCleanup = NUnit.Framework.TearDownAttribute;
+using TestMethod = NUnit.Framework.TestAttribute;
+#endif
 
 namespace Csla.Test.Reflection
 {
@@ -22,7 +28,7 @@ namespace Csla.Test.Reflection
     {
       var flags = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
       var obj = new HasStaticCtor();
-      var ctor = GetConstructor(obj.GetType(), flags, null, new Type[] { }, null);
+      var ctor = GetConstructor(obj.GetType(), flags, null, [], null);
       Assert.IsNotNull(ctor);
       Assert.IsTrue(ctor.IsStatic);
     }
@@ -32,7 +38,7 @@ namespace Csla.Test.Reflection
     {
       var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
       var obj = new HasStaticCtor();
-      var ctor = GetConstructor(obj.GetType(), flags, null, new Type[] { }, null);
+      var ctor = GetConstructor(obj.GetType(), flags, null, [], null);
       Assert.IsNotNull(ctor);
       Assert.IsFalse(ctor.IsStatic);
     }

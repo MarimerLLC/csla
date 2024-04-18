@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Server
 {

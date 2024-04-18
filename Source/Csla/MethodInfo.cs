@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Maintains metadata about a method.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla
 {
@@ -29,7 +25,7 @@ namespace Csla
     /// <summary>
     /// Gets the member name value.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; }
 
     /// <summary>
     /// Determines the equality of two objects.

@@ -3,12 +3,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -134,17 +129,19 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes(string operationName, string attributeName, bool includeUsingCsla,
       string expectedDescription)
     {
+      var usingCsla = includeUsingCsla ? "using Csla;" : string.Empty;
       var code =
-$@"{(includeUsingCsla ? "using Csla;" : string.Empty)}
+        $$"""
+          {{usingCsla}}
 
-public class A : Csla.BusinessBase<A>
-{{
-  private void {operationName}() {{ }}
-}}";
+          public class A : Csla.BusinessBase<A>
+          {
+            private void {{operationName}}() { }
+          }
+          """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new DoesOperationHaveAttributeAnalyzer());
-      var sourceSpan = diagnostics[0].Location.SourceSpan;
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(

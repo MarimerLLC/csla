@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Exception class indicating that there was a validation</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Rules
 {

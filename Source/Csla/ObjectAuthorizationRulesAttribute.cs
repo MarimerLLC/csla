@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Authorization method identifiation attribute</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {
@@ -14,7 +13,5 @@ namespace Csla
   /// to add object authorization rules for type.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class ObjectAuthorizationRulesAttribute : Attribute 
-  {
-  }
+  public class ObjectAuthorizationRulesAttribute : Attribute;
 }

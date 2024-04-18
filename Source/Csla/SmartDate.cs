@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Provides a date data type that understands the concept</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 
@@ -479,16 +479,15 @@ namespace Csla
     /// <param name="obj">Object to compare for equality.</param>
     public override bool Equals(object obj)
     {
-      if (obj is SmartDate)
+      if (obj is SmartDate tmp)
       {
-        SmartDate tmp = (SmartDate)obj;
         if (this.IsEmpty && tmp.IsEmpty)
           return true;
         else
           return this.Date.Equals(tmp.Date);
       }
-      else if (obj is DateTime)
-        return this.Date.Equals((DateTime)obj);
+      else if (obj is DateTime time)
+        return this.Date.Equals(time);
       else if (obj is string)
         return (this.CompareTo(obj.ToString()) == 0);
       else
@@ -860,8 +859,8 @@ namespace Csla
     /// <returns>A value indicating if the comparison date is less than, equal to or greater than this date.</returns>
     int IComparable.CompareTo(object value)
     {
-      if (value is SmartDate)
-        return CompareTo((SmartDate)value);
+      if (value is SmartDate date)
+        return CompareTo(date);
       else
         throw new ArgumentException(Resources.ValueNotSmartDateException);
     }

@@ -7,11 +7,8 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Csla.Rules;
 using System.ComponentModel;
-using System.Threading;
 using Csla.Core;
 
 namespace Csla.Test.ValidationRules
@@ -38,7 +35,7 @@ namespace Csla.Test.ValidationRules
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = new List<IPropertyInfo> { primaryProperty };
+        InputProperties = [primaryProperty];
       }
 
       protected override void Execute(IRuleContext context)
@@ -50,7 +47,7 @@ namespace Csla.Test.ValidationRules
         // Using closures to access the context would be easier but this is not possible
         // in all languages. Below is an example of how to use the context without closures
 
-        worker.DoWork += (s, e) =>
+        worker.DoWork += (_, e) =>
         {
           var avrc = (RuleContext)e.Argument;
           e.Result = avrc;
@@ -59,7 +56,7 @@ namespace Csla.Test.ValidationRules
           if (name != null && name.ToString() == "error")
             avrc.AddErrorResult("error detected");
         };
-        worker.RunWorkerCompleted += (s, e) =>
+        worker.RunWorkerCompleted += (_, e) =>
         {
           var avrc = (RuleContext)e.Result;
           if (e.Error != null)

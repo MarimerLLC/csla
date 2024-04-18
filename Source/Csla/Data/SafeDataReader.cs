@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>This is a DataReader that 'fixes' any null values before</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Data;
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
 using System.Data.SqlClient;
@@ -29,7 +29,7 @@ namespace Csla.Data
     /// object that actually contains the data from
     /// the data source.
     /// </summary>
-    protected IDataReader DataReader { get; private set; }
+    protected IDataReader DataReader { get; }
 
     /// <summary>
     /// Initializes the SafeDataReader object to use data from

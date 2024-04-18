@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Csla.Core.LoadManager
+﻿namespace Csla.Core.LoadManager
 {
     /// <summary>
     /// Exception class to add the PropertyInfo and better nmessage to an async exception

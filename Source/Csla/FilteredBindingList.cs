@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Provides a filtered view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Collections;
 using Csla.Properties;
 
@@ -718,8 +717,7 @@ namespace Csla
     private IBindingList _bindingList;
     private object _filter;
 
-    private List<ListItem> _filterIndex = 
-      new List<ListItem>();
+    private List<ListItem> _filterIndex = [];
 
     /// <summary>
     /// Creates a new view based on the provided IList object.
@@ -729,12 +727,11 @@ namespace Csla
     {
       SourceList = list;
 
-      if (SourceList is IBindingList)
+      if (SourceList is IBindingList sourceList)
       {
         _supportsBinding = true;
-        _bindingList = (IBindingList)SourceList;
-        _bindingList.ListChanged += 
-          new ListChangedEventHandler(SourceChanged);
+        _bindingList = sourceList;
+        _bindingList.ListChanged += SourceChanged;
       }
     }
 

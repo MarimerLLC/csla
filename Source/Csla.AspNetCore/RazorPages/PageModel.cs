@@ -5,14 +5,11 @@
 // </copyright>
 // <summary>Custom PageModel for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Csla.Rules;
-using System.Linq;
 using Csla.Core;
-using System.Threading.Tasks;
 
 namespace Csla.AspNetCore.RazorPages
 {
@@ -99,7 +96,7 @@ namespace Csla.AspNetCore.RazorPages
       }
     }
 
-    private readonly Dictionary<string, PropertyInfo> _info = new Dictionary<string, PropertyInfo>();
+    private readonly Dictionary<string, PropertyInfo> _info = [];
 
     /// <summary>
     /// Get a PropertyInfo object for a property

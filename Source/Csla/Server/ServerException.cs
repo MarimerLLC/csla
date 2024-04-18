@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Sanitized exception for server-side data portal operations.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Server
 {

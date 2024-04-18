@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace Csla.Serialization.Mobile
+﻿namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// This class is used to get around the issue in .NET framework, where

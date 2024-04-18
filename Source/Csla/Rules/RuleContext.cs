@@ -5,13 +5,10 @@
 // </copyright>
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
 using Csla.Core;
 using Csla.Properties;
-using System.Security.Principal;
-using System.Security.Claims;
 
 namespace Csla.Rules
 {
@@ -153,7 +150,7 @@ namespace Csla.Rules
         if (innerRule is IBusinessRule syncRule)
           syncRule.Execute(chainedContext);
         else if (innerRule is IBusinessRuleAsync asyncRule)
-          asyncRule.ExecuteAsync(chainedContext).ContinueWith((t) => { chainedContext.Complete(); });
+          asyncRule.ExecuteAsync(chainedContext).ContinueWith((_) => { chainedContext.Complete(); });
         else
           throw new ArgumentOutOfRangeException(innerRule.GetType().FullName);
       }
@@ -503,7 +500,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; private set; }
+    public ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Gets a data portal factory instance

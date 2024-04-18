@@ -5,12 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Test.Security;
-using UnitDriven;
-using System.Diagnostics;
+
 using System.Security.Claims;
 using Csla.Core;
 using Csla.TestHelpers;

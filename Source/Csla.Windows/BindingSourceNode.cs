@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Maintains a reference to a BindingSource object</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Windows.Forms;
 using Csla.Core;
 
 namespace Csla.Windows

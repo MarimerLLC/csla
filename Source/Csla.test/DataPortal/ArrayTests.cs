@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -32,11 +28,11 @@ namespace Csla.Test.DataPortal
       IDataPortal<ArrayDataPortalClass> dataPortal = _testDIContext.CreateDataPortal<ArrayDataPortalClass>();
 
       TestResults.Reinitialise();
-      _ = ArrayDataPortalClass.Get(dataPortal, new int[] { 1, 2, 3 });
+      _ = ArrayDataPortalClass.Get(dataPortal, [1, 2, 3]);
       Assert.AreEqual("Fetch(int[] values)", TestResults.GetResult("Method"));
 
       TestResults.Reinitialise();
-      _ = ArrayDataPortalClass.Get(dataPortal, new string[] { "a", "b", "c" });
+      _ = ArrayDataPortalClass.Get(dataPortal, ["a", "b", "c"]);
       Assert.AreEqual("Fetch(string[] values)", TestResults.GetResult("Method"));
     }
 
@@ -97,11 +93,11 @@ namespace Csla.Test.DataPortal
     {
       IChildDataPortal<ArrayDataPortalClass> childDataPortal = _testDIContext.CreateChildDataPortal<ArrayDataPortalClass>();
 
-      _ = ArrayDataPortalClass.GetChild(childDataPortal, new int[] { 1, 2, 3 });
+      _ = ArrayDataPortalClass.GetChild(childDataPortal, [1, 2, 3]);
       Assert.AreEqual("FetchChild(int[] values)", TestResults.GetResult("Method"));
 
       TestResults.Reinitialise();
-      _ = ArrayDataPortalClass.GetChild(childDataPortal, new string[] { "a", "b", "c" });
+      _ = ArrayDataPortalClass.GetChild(childDataPortal, ["a", "b", "c"]);
       Assert.AreEqual("FetchChild(string[] values)", TestResults.GetResult("Method"));
     }
 

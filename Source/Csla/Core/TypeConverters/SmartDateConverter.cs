@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Converts values to and from a SmartDate.</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.ComponentModel;
 
 namespace Csla.Core.TypeConverters
@@ -55,8 +54,8 @@ namespace Csla.Core.TypeConverters
         return new SmartDate();
       else if (value is System.DateTime?)
         return new SmartDate((System.DateTime?)value);
-      else if (value is DateTimeOffset)
-        return new SmartDate(((DateTimeOffset)value).DateTime);
+      else if (value is DateTimeOffset offset)
+        return new SmartDate(offset.DateTime);
       return base.ConvertFrom(context, culture, value);
     }
 

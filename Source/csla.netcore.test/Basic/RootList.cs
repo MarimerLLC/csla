@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla;
 
 namespace Csla.Test.Basic
 {
@@ -42,7 +38,7 @@ namespace Csla.Test.Basic
     {
       string[] result = BusinessRules.GetRuleDescriptions();
       if (result == null)
-        result = new string[] { };
+        result = [];
       return result;
     }
 

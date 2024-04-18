@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Context information provided to an authorization</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Security.Claims;
-using System.Security.Principal;
-using Csla.Core;
 
 namespace Csla.Rules
 {
@@ -62,7 +59,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; private set; }
+    public ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Gets a data portal factory instance

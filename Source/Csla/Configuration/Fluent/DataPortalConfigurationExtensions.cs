@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.DataPortalClient;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
@@ -78,7 +78,7 @@ namespace Csla.Configuration
     internal static void AddRequiredDataPortalServices(this CslaOptions config, IServiceCollection services)
     {
       // LocalProxy must always be available to support RunLocal
-      services.TryAddTransient((p) => new Channels.Local.LocalProxyOptions());
+      services.TryAddTransient(_ => new Channels.Local.LocalProxyOptions());
       services.AddTransient<Channels.Local.LocalProxy, Channels.Local.LocalProxy>();
 
       // Data portal API defaults

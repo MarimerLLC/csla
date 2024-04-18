@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods data portal channel</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Net.Http;
 using Csla.DataPortalClient;
 using Microsoft.Extensions.DependencyInjection;

@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Displays an error dialog for any exceptions</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -152,7 +151,7 @@ namespace Csla.Xaml
         if (string.IsNullOrEmpty(this.DialogFirstLine))
           output = error;
         else
-          output = string.Format("{0}{1}{2}", this.DialogFirstLine, Environment.NewLine, error);
+          output = $"{this.DialogFirstLine}{Environment.NewLine}{error}";
 
         MessageBox.Show(
           output,

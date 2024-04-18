@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>CSLA permissions requirement</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace Csla.Blazor

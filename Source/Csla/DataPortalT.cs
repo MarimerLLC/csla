@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
@@ -131,9 +128,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleCreateDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Create {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Create {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -233,9 +228,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleFetchDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Fetch {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Fetch {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -279,9 +272,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleDataPortalException("Execute", dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Execute {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Execute {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -368,7 +359,7 @@ namespace Csla
                 "execute",
                 objectType.Name));
             if (factoryType != null)
-              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, new object[] { obj });
+              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, [obj]);
           }
           else
           {
@@ -381,8 +372,7 @@ namespace Csla
                                                                             "delete",
                                                                             objectType.Name));
                 if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName,
-                                                                      new object[] { obj });
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, [obj]);
               }
               // must check the same authorization rules as for DataPortal_XYZ methods 
               else if (bbase.IsNew)
@@ -392,8 +382,7 @@ namespace Csla
                                                                             "create",
                                                                             objectType.Name));
                 if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
-                                                                    new object[] { obj });
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
               }
               else
               {
@@ -402,8 +391,7 @@ namespace Csla
                                                                             "save",
                                                                             objectType.Name));
                 if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
-                                                                    new object[] { obj });
+                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
               }
             }
             else
@@ -414,8 +402,7 @@ namespace Csla
                                                                           objectType.Name));
 
               if (factoryType != null)
-                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName,
-                                                                      new object[] { obj });
+                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
             }
           }
           if (method == null)
@@ -494,9 +481,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleUpdateDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Update {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Update {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -585,9 +570,7 @@ namespace Csla
             if (dpe != null)
               HandleDeleteDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Delete {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Delete {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -645,9 +628,9 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public async Task DeleteAsync(params object[] criteria)
+    public Task DeleteAsync(params object[] criteria)
     {
-      await DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
+      return DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
     /// <summary>

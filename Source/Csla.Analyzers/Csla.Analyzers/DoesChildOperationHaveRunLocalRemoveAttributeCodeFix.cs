@@ -1,14 +1,11 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
 using Csla.Analyzers.Extensions;
-using System.Collections.Generic;
 
 namespace Csla.Analyzers
 {
@@ -41,7 +38,6 @@ namespace Csla.Analyzers
 
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
-      var runLocalAttributeSymbol = methodSymbol.GetAttributes().First(_ => _.AttributeClass.IsRunLocalAttribute());
 
       foreach(var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
       {

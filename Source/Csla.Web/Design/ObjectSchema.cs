@@ -42,9 +42,7 @@ namespace Csla.Web.Design
     /// </summary>
     public System.Web.UI.Design.IDataSourceViewSchema[] GetViews()
     {
-      IDataSourceViewSchema[] result = null;
-      result = new IDataSourceViewSchema[] { new ObjectViewSchema(_designer, _typeName) };
-      return result;
+      return [new ObjectViewSchema(_designer, _typeName)];
     }
   }
 }

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Csla.Analyzers
+﻿namespace Csla.Analyzers
 {
   public static class FindOperationsWithIncorrectReturnTypesAnalyzerConstants
   {

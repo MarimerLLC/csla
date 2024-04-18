@@ -5,14 +5,8 @@
 // </copyright>
 // <summary>User control that displays busy animation</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Csla.Windows
 {
@@ -29,7 +23,7 @@ namespace Csla.Windows
     {
       InitializeComponent();
       this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-      this.BusyProgressBar.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase).Invoke(this.BusyProgressBar, new object[] { ControlStyles.SupportsTransparentBackColor, true });
+      this.BusyProgressBar.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase).Invoke(this.BusyProgressBar, [ControlStyles.SupportsTransparentBackColor, true]);
       if (!IsInDesignMode)
         this.BusyProgressBar.BackColor = _progressBarBackColor;
     }

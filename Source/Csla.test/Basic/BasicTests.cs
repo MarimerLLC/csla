@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -387,7 +386,7 @@ namespace Csla.Test.Basic
     {
       bool changed = false;
       var obj = new RootList();
-      obj.ListChanged += (o, e) =>
+      obj.ListChanged += (_, _) =>
       {
         changed = true;
       };
@@ -424,7 +423,7 @@ namespace Csla.Test.Basic
 
     public FormSimulator(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += obj_IsDirtyChanged;
       this._obj = obj;
     }
 
@@ -439,7 +438,7 @@ namespace Csla.Test.Basic
 
     public SerializableListener(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += obj_IsDirtyChanged;
       this._obj = obj;
     }
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Csla.Configuration;
+﻿using Csla.Configuration;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -39,7 +34,7 @@ namespace Csla.Test.BasicModern
     {
       var graph = CreateRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -62,7 +57,7 @@ namespace Csla.Test.BasicModern
       graph.Name = "abc";
       graph = graph.Save();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -83,7 +78,7 @@ namespace Csla.Test.BasicModern
     {
       var graph = CreateRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
         {
           changed.Add(e.PropertyName);
         };
@@ -105,7 +100,7 @@ namespace Csla.Test.BasicModern
     {
       var graph = CreateRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -123,7 +118,7 @@ namespace Csla.Test.BasicModern
 
       graph = graph.Save();
       changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -149,7 +144,7 @@ namespace Csla.Test.BasicModern
     {
       var graph = CreateRoot();
       var changed = new List<string>();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
@@ -184,11 +179,11 @@ namespace Csla.Test.BasicModern
       graph = graph.Save();
 
       changed.Clear();
-      graph.PropertyChanged += (o, e) =>
+      graph.PropertyChanged += (_, e) =>
       {
         changed.Add(e.PropertyName);
       };
-      graph.ChildChanged += (o, e) =>
+      graph.ChildChanged += (_, e) =>
       {
         if (e.ChildObject is not null)
           changed.Add($"{e.ChildObject.GetType()}-{e.PropertyChangedArgs.PropertyName}");

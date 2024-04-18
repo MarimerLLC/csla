@@ -1,8 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -47,31 +44,35 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotStereotype()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructor()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> { }";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, Array.Empty<string>());
+        public class A : BusinessBase<A> { }
+        """;
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsStereotypeAndHasPrivateNoArgumentConstructor()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  private A() { }
-}";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, 
-        new[] { Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+        public class A : BusinessBase<A>
+        {
+          private A() { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(true.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
@@ -79,14 +80,16 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassIsStereotypeAndHasPrivateConstructorWithArguments()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  private A(int a) { }
-}";
+        public class A : BusinessBase<A>
+        {
+          private A(int a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+        [Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
@@ -94,15 +97,17 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassIsStereotypeAndHasPublicNoArgumentConstructorAndPublicConstructorWithArguments()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public A() { }
-  public A(int a) { }
-}";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, 
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+        public class A : BusinessBase<A>
+        {
+          public A() { }
+          public A(int a) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -110,14 +115,16 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassIsStereotypeAndHasNoPublicNoArgumentConstructorAndPublicConstructorWithArguments()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public A(int a) { }
-}";
+        public class A : BusinessBase<A>
+        {
+          public A(int a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters, Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters, Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -125,16 +132,18 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassIsStereotypeAndHasStaticConstructor()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  static A() { }
-
-  private A(int a) { }
-}";
+        public class A : BusinessBase<A>
+        {
+          static A() { }
+        
+          private A(int a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing },
+        [Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing],
         diagnostics => Assert.AreEqual(false.ToString(), diagnostics[0].Properties[PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor]));
     }
 
@@ -142,18 +151,20 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassIsBusinessListBaseAndHasPublicConstructorWithArguments()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class B : BusinessListBase<B, A>
-{
-  public B() { }
-
-  public B(int a) { }
-}";
+        public class B : BusinessListBase<B, A>
+        {
+          public B() { }
+        
+          public B(int a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -161,18 +172,20 @@ public class B : BusinessListBase<B, A>
     public async Task AnalyzeWhenClassIsDynamicListBaseAndHasPublicConstructorWithArguments()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class B : DynamicListBase<A>
-{
-  public B() { }
-
-  public B(int a) { }
-}";
+        public class B : DynamicListBase<A>
+        {
+          public B() { }
+        
+          public B(int a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -180,19 +193,21 @@ public class B : DynamicListBase<A>
     public async Task AnalyzeWhenClassIsBusinessBindingListBaseAndHasPublicConstructorWithArguments()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class B
-  : BusinessBindingListBase<B, A>
-{
-  public B() { }
-
-  public B(int a) { }
-}";
+        public class B
+          : BusinessBindingListBase<B, A>
+        {
+          public B() { }
+        
+          public B(int a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code,
-        new[] { Constants.AnalyzerIdentifiers.ConstructorHasParameters },
+        [Constants.AnalyzerIdentifiers.ConstructorHasParameters],
         diagnostics => Assert.AreEqual(0, diagnostics[0].Properties.Count));
     }
 
@@ -200,15 +215,17 @@ public class B
     public async Task AnalyzeWhenClassIsCommandBaseAndHasPublicConstructorWithArguments()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : CommandBase<A>
-{
-  public A() { }
-
-  public A(int a) { }
-}";
-      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, Array.Empty<string>());
+        public class A : CommandBase<A>
+        {
+          public A() { }
+        
+          public A(int a) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<CheckConstructorsAnalyzer>(code, []);
     }
   }
 }

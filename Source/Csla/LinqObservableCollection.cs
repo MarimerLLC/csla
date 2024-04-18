@@ -5,11 +5,9 @@
 // </copyright>
 // <summary>Synchronized view over a source list, </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace Csla
@@ -50,7 +48,7 @@ namespace Csla
     {
       QueryResult = queryResult;
       _baseCollection = source;
-      _baseCollection.CollectionChanged += (o, e) =>
+      _baseCollection.CollectionChanged += (_, e) =>
         {
           if (!_suppressEvents)
           {

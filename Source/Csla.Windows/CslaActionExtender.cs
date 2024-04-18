@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Extender control providing automation around</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Windows.Forms;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Properties;
@@ -44,8 +42,7 @@ namespace Csla.Windows
 
     #region Member variables
 
-    private Dictionary<Control, CslaActionExtenderProperties> _sources =
-      new Dictionary<Control, CslaActionExtenderProperties>();
+    private Dictionary<Control, CslaActionExtenderProperties> _sources = [];
 
     private object _dataSource = null;
     private IContainer _container = null;
@@ -666,9 +663,8 @@ namespace Csla.Windows
 
                 case CslaFormAction.Validate:
 
-                  if (savableObject is BusinessBase)
+                  if (savableObject is BusinessBase businessObject)
                   {
-                    BusinessBase businessObject = savableObject as BusinessBase;
                     if (!businessObject.IsValid)
                     {
                       string brokenRules = string.Empty;
@@ -678,7 +674,7 @@ namespace Csla.Windows
                         var friendlyName =
                           PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
                             c => c.Name == lambdaBrokenRule.Property).FriendlyName;
-                        brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
+                        brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
                       }
                       MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -778,7 +774,7 @@ namespace Csla.Windows
               var friendlyName =
                 PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
                   c => c.Name == lambdaBrokenRule.Property).FriendlyName;
-              brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
+              brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
             }
             MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
               MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -934,8 +930,8 @@ namespace Csla.Windows
     {
       Form frm;
 
-      if (thisControl.Parent is Form)
-        frm = (Form) thisControl.Parent;
+      if (thisControl.Parent is Form form)
+        frm = form;
       else
         frm = GetParentForm(thisControl.Parent);
 

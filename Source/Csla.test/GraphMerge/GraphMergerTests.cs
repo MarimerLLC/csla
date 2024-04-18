@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,7 +44,7 @@ namespace Csla.Test.GraphMerge
       cloned.MockUpdated();
 
       var changed = false;
-      obj.PropertyChanged += (o, e) => { changed = true; };
+      obj.PropertyChanged += (_, _) => { changed = true; };
 
       var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
@@ -74,7 +71,7 @@ namespace Csla.Test.GraphMerge
       cloned.MockUpdated();
 
       var changed = false;
-      obj.PropertyChanged += (o, e) => { changed = true; };
+      obj.PropertyChanged += (_, _) => { changed = true; };
 
       var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
@@ -100,7 +97,7 @@ namespace Csla.Test.GraphMerge
       cloned.MockUpdated();
 
       var changed = false;
-      obj.PropertyChanged += (o, e) => { changed = true; };
+      obj.PropertyChanged += (_, _) => { changed = true; };
 
       var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
@@ -127,7 +124,7 @@ namespace Csla.Test.GraphMerge
       cloned.MockDeleted(); // mock DP delete result
 
       var changed = false;
-      obj.PropertyChanged += (o, e) => { changed = true; };
+      obj.PropertyChanged += (_, _) => { changed = true; };
 
       var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
@@ -157,7 +154,7 @@ namespace Csla.Test.GraphMerge
       cloned.MockUpdated();
 
       var changed = false;
-      obj.PropertyChanged += (o, e) => { changed = true; };
+      obj.PropertyChanged += (_, _) => { changed = true; };
 
       var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
@@ -188,7 +185,7 @@ namespace Csla.Test.GraphMerge
       cloned.MockUpdated();
 
       var changed = false;
-      obj.PropertyChanged += (o, e) => { changed = true; };
+      obj.PropertyChanged += (_, _) => { changed = true; };
 
       var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);
@@ -240,7 +237,7 @@ namespace Csla.Test.GraphMerge
       cloned.MockDeleted();
 
       var changed = false;
-      obj.PropertyChanged += (o, e) => { changed = true; };
+      obj.PropertyChanged += (_, _) => { changed = true; };
 
       var merger = new GraphMerger(applicationContext);
       merger.MergeGraph(obj, cloned);

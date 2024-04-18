@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>This is the base class from which collections</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 
@@ -435,7 +433,7 @@ namespace Csla
         child.SetParent(this);
         INotifyPropertyChanged c = child as INotifyPropertyChanged;
         if (c != null)
-          c.PropertyChanged += new PropertyChangedEventHandler(Child_PropertyChanged);
+          c.PropertyChanged += Child_PropertyChanged;
       }
       base.OnDeserialized();
     }
@@ -568,9 +566,9 @@ namespace Csla
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
     /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>

@@ -6,13 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Csla;
-using Csla.Core.FieldManager;
 using Csla.Rules;
-using Csla.Serialization;
 using UnitDriven;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
@@ -118,9 +113,9 @@ namespace Csla.Test.DataAnnotations
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     public string[] GetRules()
@@ -143,9 +138,9 @@ namespace Csla.Test.DataAnnotations
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     public string[] GetRules()
@@ -166,9 +161,9 @@ namespace Csla.Test.DataAnnotations
     }
 
     [Create]
-    private async Task Create()
+    private Task Create()
     {
-      await BusinessRules.CheckRulesAsync();
+      return BusinessRules.CheckRulesAsync();
     }
 
     public string[] GetRules()

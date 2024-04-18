@@ -5,14 +5,11 @@
 // </copyright>
 // <summary>Collection of connection strings.</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
 
 namespace Csla.Configuration
 {
   /// <summary>
   /// Collection of connection strings.
   /// </summary>
-  public class ConnectionStringSettingsCollection : Dictionary<string, ConnectionStringSettings>
-  {
-  }
+  public class ConnectionStringSettingsCollection : Dictionary<string, ConnectionStringSettings>;
 }

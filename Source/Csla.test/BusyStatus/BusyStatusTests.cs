@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using Csla;
 using Csla.Configuration;
-using Csla.DataPortalClient;
 using System;
 using UnitDriven;
 using Csla.Testing.Business.BusyStatus;
@@ -128,7 +127,7 @@ namespace cslalighttest.BusyStatus
 
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
-      item.ValidationComplete += (o2, e2) =>
+      item.ValidationComplete += (_, _) =>
       {
         context.Assert.IsFalse(item.IsBusy);
         context.Assert.IsTrue(item.IsSavable);
@@ -147,7 +146,7 @@ namespace cslalighttest.BusyStatus
 
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-      items[0].ValidationComplete += (o2, e2) =>
+      items[0].ValidationComplete += (_, _) =>
       {
         context.Assert.IsFalse(items.IsBusy);
         context.Assert.IsTrue(items.IsSavable);
@@ -166,7 +165,7 @@ namespace cslalighttest.BusyStatus
 
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-      items[0].ValidationComplete += async (o2, e2) =>
+      items[0].ValidationComplete += async (_, _) =>
       {
         context.Assert.IsFalse(items.IsBusy);
         context.Assert.IsTrue(items.IsSavable);
@@ -232,7 +231,7 @@ namespace cslalighttest.BusyStatus
 
       UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
-      item.ValidationComplete += (o2, e2) =>
+      item.ValidationComplete += (_, _) =>
       {
         context.Assert.IsFalse(item.IsBusy);
         context.Assert.IsTrue(item.IsSavable);
@@ -256,7 +255,7 @@ namespace cslalighttest.BusyStatus
 
      
 
-      items[0].ValidationComplete += (o2, e2) =>
+      items[0].ValidationComplete += (_, _) =>
       {
         context.Assert.IsFalse(items.IsBusy);
         context.Assert.IsTrue(items.IsSavable);

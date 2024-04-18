@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>CslaDataSource configuration form.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
 using System.Web.UI;
 using System.ComponentModel.Design;

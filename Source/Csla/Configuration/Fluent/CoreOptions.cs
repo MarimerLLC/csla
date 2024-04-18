@@ -11,7 +11,5 @@ namespace Csla.Configuration
   /// <summary>
   /// Options for data binding
   /// </summary>
-  public class CoreOptions
-  {
-  }
+  public class CoreOptions;
 }

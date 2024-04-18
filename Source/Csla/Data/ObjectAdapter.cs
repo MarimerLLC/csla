@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>An ObjectAdapter is used to convert data in an object </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.ComponentModel;
 using System.Reflection;
@@ -92,15 +91,17 @@ namespace Csla.Data
 
     private IList GetIList(object source)
     {
-      if (source is IListSource)
-        return ((IListSource)source).GetList();
-      else if (source is IList)
-        return source as IList;
+      if (source is IListSource listSource)
+        return listSource.GetList();
+      else if (source is IList list)
+        return list;
       else
       {
         // this is a regular object - create a list
-        ArrayList col = new ArrayList();
-        col.Add(source);
+        ArrayList col =
+        [
+          source
+        ];
         return col;
       }
     }
@@ -169,7 +170,7 @@ namespace Csla.Data
 
     private List<string> ScanDataView(DataView ds)
     {
-      List<string> result = new List<string>();
+      List<string> result = [];
       for (int field = 0; field < ds.Table.Columns.Count; field++)
         result.Add(ds.Table.Columns[field].ColumnName);
       return result;
@@ -177,7 +178,7 @@ namespace Csla.Data
 
     private List<string> ScanObject(Type sourceType)
     {
-      List<string> result = new List<string>();
+      List<string> result = [];
 
       if (sourceType != null)
       {

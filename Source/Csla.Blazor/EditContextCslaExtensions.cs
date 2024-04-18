@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Core;
+﻿using Csla.Core;
 using Csla.Rules;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -27,11 +24,11 @@ namespace Csla.Blazor
 
       // Perform object-level validation on request
       editContext.OnValidationRequested +=
-          (sender, eventArgs) => ValidateModel((EditContext)sender, messages);
+          (sender, _) => ValidateModel((EditContext)sender, messages);
 
       // Perform per-field validation on each field edit
       editContext.OnFieldChanged +=
-          (sender, eventArgs) => ValidateField(editContext, messages, eventArgs.FieldIdentifier);
+          (_, eventArgs) => ValidateField(editContext, messages, eventArgs.FieldIdentifier);
 
       return editContext;
     }

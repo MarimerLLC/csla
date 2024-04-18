@@ -8,10 +8,8 @@
 using Csla.Core;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
-using System;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace Csla.Blazor.WebAssembly
 {
@@ -40,7 +38,7 @@ namespace Csla.Blazor.WebAssembly
     /// <summary>
     /// Gets the current AuthenticationStateProvider instance.
     /// </summary>
-    protected AuthenticationStateProvider AuthenticationStateProvider { get; private set; }
+    protected AuthenticationStateProvider AuthenticationStateProvider { get; }
 
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.

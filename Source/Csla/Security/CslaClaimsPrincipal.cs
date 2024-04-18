@@ -5,11 +5,10 @@
 // </copyright>
 // <summary>ClaimsPrincipal subclass that supports serialization by MobileFormatter</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Security.Principal;
 using Csla.Serialization.Mobile;
 using System.Security.Claims;
-using System.Collections.Generic;
 
 namespace Csla.Security
 {

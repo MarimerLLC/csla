@@ -5,15 +5,14 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Reflection
 {
   internal class MethodCacheKey
   {
-    public string TypeName { get; private set; }
-    public string MethodName { get; private set; }
-    public Type[] ParamTypes { get; private set; }
+    public string TypeName { get; }
+    public string MethodName { get; }
+    public Type[] ParamTypes { get; }
     private int _hashKey;
 
     public MethodCacheKey(string typeName, string methodName, Type[] paramTypes)

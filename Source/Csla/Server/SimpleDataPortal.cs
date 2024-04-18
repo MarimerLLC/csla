@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Implements the server-side DataPortal as discussed</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using Csla.Properties;
-using Csla.Reflection;
 
 namespace Csla.Server
 {

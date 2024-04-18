@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using System.Threading.Tasks;
+
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Google.Protobuf;

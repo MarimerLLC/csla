@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Interface to be implemented by a custom</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Server
 {

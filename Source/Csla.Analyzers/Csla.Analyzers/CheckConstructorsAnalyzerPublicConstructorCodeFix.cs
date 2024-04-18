@@ -1,7 +1,5 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -86,7 +84,6 @@ namespace Csla.Analyzers
     private static void AddCodeFixWithUpdatingNonPublicConstructor(CodeFixContext context, SyntaxNode root,
       Diagnostic diagnostic, ClassDeclarationSyntax classNode, SemanticModel model)
     {
-      var publicModifier = SyntaxFactory.Token(SyntaxKind.PublicKeyword);
       var classSymbol = model.GetDeclaredSymbol(classNode);
 
       if (classSymbol != null)

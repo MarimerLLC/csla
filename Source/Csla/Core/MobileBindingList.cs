@@ -5,13 +5,10 @@
 // </copyright>
 // <summary>Inherit from this base class to easily</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
-using System.Reflection;
-using Csla.Reflection;
 using System.Diagnostics;
 
 namespace Csla.Core

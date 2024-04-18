@@ -5,13 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Csla;
-using Csla.Configuration;
+
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -56,9 +50,7 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  public class PersonList : PersonListBase
-  {
-  }
+  public class PersonList : PersonListBase;
 
   [Serializable]
   public class PersonListBase : Csla.BusinessBindingListBase<PersonList, PersonEdit>
@@ -68,9 +60,7 @@ namespace Csla.Test.DataPortal
     }
 
     [Serializable()]
-    public class Criteria : Csla.CriteriaBase<Criteria>
-    {
-    }
+    public class Criteria : Csla.CriteriaBase<Criteria>;
   }
 
   [Serializable]

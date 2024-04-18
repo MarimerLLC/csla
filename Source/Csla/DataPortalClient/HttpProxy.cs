@@ -8,12 +8,10 @@
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
-using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Csla.Channels.Http
 {
@@ -51,9 +49,9 @@ namespace Csla.Channels.Http
     /// Gets an HttpClientHandler for use
     /// in initializing the HttpClient instance.
     /// </summary>
-    protected virtual HttpClientHandler GetHttpClientHandler()
+    protected virtual HttpClientHandler? GetHttpClientHandler()
     {
-      return new HttpClientHandler();
+      return null;
     }
 
     /// <summary>
@@ -64,26 +62,27 @@ namespace Csla.Channels.Http
     {
       if (_httpClient == null)
       {
-        var handler = GetHttpClientHandler();
-        if (Options.UseTextSerialization)
-        {
-          handler = new HttpClientHandler();
-        }
-        else
-        {
-          handler = new HttpClientHandler()
-          {
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-          };
-        }
+        var handler = GetHttpClientHandler() ?? CreateDefaultHandler();
+        
         _httpClient = new HttpClient(handler);
         if (Timeout > 0)
         {
           _httpClient.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
         }
       }
-
+      
       return _httpClient;
+
+      HttpClientHandler CreateDefaultHandler()
+      {
+        var handler = new HttpClientHandler();
+        if (!Options.UseTextSerialization)
+        {
+          handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+        }
+
+        return handler;
+      }
     }
 
     /// <summary>

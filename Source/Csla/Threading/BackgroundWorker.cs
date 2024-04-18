@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Wraps a System.ComponentModel.BackgroundWorker and transfers ApplicationContext.User, ClientContest, CurrentCulture and CurrentUICulture to background thread.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 
 namespace Csla.Threading
@@ -166,7 +166,7 @@ namespace Csla.Threading
 
     private class WorkerAsyncRequest : ContextParams
     {
-      public object Argument { get; private set; }
+      public object Argument { get; }
 
       public WorkerAsyncRequest(ApplicationContext applicationContext, object argument)
         : base(applicationContext)
@@ -177,8 +177,8 @@ namespace Csla.Threading
 
     private class WorkerAsyncResult
     {
-      public object Result { get; private set; }
-      public Exception Error { get; private set; }
+      public object Result { get; }
+      public Exception Error { get; }
       public bool Cancelled { get; private set; }
 
       public WorkerAsyncResult(object result, Exception error)

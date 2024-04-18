@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Test.Serialization
 {
@@ -16,9 +14,8 @@ namespace Csla.Test.Serialization
     {
         public void Reg(Core.BusinessBase obj)
         {
-            obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler
-                (PrivateOnIsDirtyChanged);
-            obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(OnIsDirtyChanged);
+            obj.PropertyChanged += PrivateOnIsDirtyChanged;
+            obj.PropertyChanged += OnIsDirtyChanged;
         }
 
         private void PrivateOnIsDirtyChanged(object sender, 

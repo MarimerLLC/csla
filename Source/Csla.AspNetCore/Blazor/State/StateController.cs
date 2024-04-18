@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Gets and puts the current user session data</summary>
 //-----------------------------------------------------------------------
-using System.IO;
+
 using Microsoft.AspNetCore.Mvc;
 using Csla.State;
 using Csla.Security;

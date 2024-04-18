@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization.Mobile;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+
 using System.Net.Http;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
@@ -80,7 +77,7 @@ namespace Csla.Server.Hosts
     /// data portal route, where each key is the
     /// routing tag identifying the route URL.
     /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls { get; set; } = new Dictionary<string, string>();
+    protected static Dictionary<string, string> RoutingTagUrls { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the HttpClient timeout

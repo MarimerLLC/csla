@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,9 +34,9 @@ namespace Csla.Test.SortedBindingList
     [TestMethod()]
     public void AscendingSort()
     {
-      int[] intArr = { 45, 23, 57, 56, 11, 87, 94, 44 };
+      int[] intArr = [45, 23, 57, 56, 11, 87, 94, 44];
       SortedBindingList<int> sortedList = new SortedBindingList<int>(intArr);
-      sortedList.ListChanged += new ListChangedEventHandler(sortedList_ListChanged);
+      sortedList.ListChanged += sortedList_ListChanged;
 
       Assert.AreEqual(false, sortedList.IsSorted);
       Assert.AreEqual(56, intArr[3]);
@@ -73,7 +72,7 @@ namespace Csla.Test.SortedBindingList
     [TestMethod()]
     public void DescendingSort()
     {
-      string[] strArr = { "zandy", "alex", "Chris", "bert", "alfred", "Bert", "Jimmy", "chris", "chris", "mobbit", "myper", "Corey", "Monkey" };
+      string[] strArr = ["zandy", "alex", "Chris", "bert", "alfred", "Bert", "Jimmy", "chris", "chris", "mobbit", "myper", "Corey", "Monkey"];
       SortedBindingList<string> sortedList = new SortedBindingList<string>(strArr);
 
       Assert.AreEqual("Bert", sortedList[5]);
@@ -129,10 +128,10 @@ namespace Csla.Test.SortedBindingList
     [TestMethod()]
     public void CopyTo()
     {
-      int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+      int[] intArray = [5, 7, 1, 3, 5, 44, 32];
       SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
 
-      int[] intArray2 = { 3, 75, 1222, 3333, 511, 443, 332 };
+      int[] intArray2 = [3, 75, 1222, 3333, 511, 443, 332];
 
       Assert.AreEqual(1222, intArray2[2]);
 
@@ -153,7 +152,7 @@ namespace Csla.Test.SortedBindingList
     [TestMethod]
     public void IndexOf()
     {
-      List<string> list = new List<string>();
+      List<string> list = [];
 
       string barney = "Barney";
       string charlie = "Charlie";
@@ -173,7 +172,7 @@ namespace Csla.Test.SortedBindingList
     [TestMethod]
     public void SourceList()
     {
-      List<string> list = new List<string>();
+      List<string> list = [];
 
       string barney = "Barney";
       string charlie = "Charlie";
@@ -190,7 +189,7 @@ namespace Csla.Test.SortedBindingList
     [ExpectedException(typeof(ArgumentException))]
     public void ApplySort_ThrowException_WhenPropertyNameNotFound()
     {
-      int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+      int[] intArray = [5, 7, 1, 3, 5, 44, 32];
       SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
       sortedList.ApplySort("NotAProperty", ListSortDirection.Ascending);
     }
@@ -199,7 +198,7 @@ namespace Csla.Test.SortedBindingList
     [ExpectedException(typeof(ArgumentException))]
     public void Find_ThrowException_WhenPropertyNameNotFound()
     {
-      int[] intArray = { 5, 7, 1, 3, 5, 44, 32 };
+      int[] intArray = [5, 7, 1, 3, 5, 44, 32];
       SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
       sortedList.Find("NotAProperty", 7);
     }

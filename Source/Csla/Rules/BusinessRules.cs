@@ -5,16 +5,12 @@
 // </copyright>
 // <summary>Tracks the business rules for a business object.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Linq;
-using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;
-using System.Threading.Tasks;
 using Csla.Threading;
 using Csla.Server;
-using System.Threading;
 
 namespace Csla.Rules
 {
@@ -926,7 +922,7 @@ namespace Csla.Rules
         }
         catch (Exception ex)
         {
-          context.AddErrorResult(string.Format("{0}:{1}", rule.RuleName, ex.Message));
+          context.AddErrorResult($"{rule.RuleName}:{ex.Message}");
           if (rule.IsAsync)
             context.Complete();
         }
@@ -1175,16 +1171,16 @@ namespace Csla.Rules
       }
 
       // or a list of EditableObject (both BindingList and ObservableCollection)
-      else if (obj is IEditableCollection)
+      else if (obj is IEditableCollection collection)
       {
         var nodeKey = counter++;
-        var isValid = ((ITrackStatus)obj).IsValid;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj, BrokenRules = new BrokenRulesCollection(true) };
+        var isValid = collection.IsValid;
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = collection, BrokenRules = new BrokenRulesCollection(true) };
         long myChildBrokenRuleCount = 0;
 
         list.Add(node);
 
-        foreach (var child in (IEnumerable)obj)
+        foreach (var child in (IEnumerable)collection)
         {
           AddNodeToBrukenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
         }

@@ -4,12 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -47,7 +42,7 @@ namespace Csla.Analyzers.Tests
     {
       var document = Create(code);
       var compilation = (await document.Project.GetCompilationAsync())
-        .WithAnalyzers(ImmutableArray.Create(analyzer));
+        .WithAnalyzers([analyzer]);
       return (await compilation.GetAnalyzerDiagnosticsAsync()).ToList();
     }
 

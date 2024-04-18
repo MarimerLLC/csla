@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Implements an equality comparer for <see cref="IMobileObject" /> that compares</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Serialization.Mobile
 {

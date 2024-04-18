@@ -1,7 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -35,50 +33,54 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotMobileObject()
     {
       var code = "public class A { }";
-      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, Array.Empty<string>());
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndIsSerializable()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A : BusinessBase<A>{ }";
-      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, Array.Empty<string>());
+        [Serializable]
+        public class A : BusinessBase<A>{ }
+        """;
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndIsNotSerializable()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>{ }";
+        public class A : BusinessBase<A>{ }
+        """;
       await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
+        code, [Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable]);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenClassIsDerivedFromReadOnlyListBaseAndIsNotSerializable() {
-      var code = @"
-using Csla;
-using System;
+      var code = """
 
-namespace Testnamespace 
-{
-  [Serializable]
-  public class B : BusinessBase<B> {}
+                 using Csla;
+                 using System;
 
-  public class A : ReadOnlyListBase<A,B> {}
-}
-";
+                 namespace Testnamespace
+                 {
+                   [Serializable]
+                   public class B : BusinessBase<B> {}
+                 
+                   public class A : ReadOnlyListBase<A,B> {}
+                 }
 
-      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, new[] { Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable });
+                 """;
+
+      await TestHelpers.RunAnalysisAsync<IsBusinessObjectSerializableAnalyzer>(code, [Constants.AnalyzerIdentifiers.IsBusinessObjectSerializable]);
     }
   }
 }

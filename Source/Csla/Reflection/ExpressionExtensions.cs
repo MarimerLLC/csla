@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Extension methods for Expression types</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
+
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Csla.Reflection
 {

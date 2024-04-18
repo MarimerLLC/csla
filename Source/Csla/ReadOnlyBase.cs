@@ -5,15 +5,12 @@
 // </copyright>
 // <summary>This is a base class from which readonly business classes</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
@@ -233,7 +230,7 @@ namespace Csla
       {
         result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, property);
         // store value in cache
-        _readResultCache.AddOrUpdate(property.Name, result, (a, b) => { return result; });
+        _readResultCache.AddOrUpdate(property.Name, result, (_, _) => { return result; });
       }
       return result;
     }
@@ -333,7 +330,7 @@ namespace Csla
       if (!_executeResultCache.TryGetValue(method.Name, out result))
       {
         result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ExecuteMethod, method);
-        _executeResultCache.AddOrUpdate(method.Name, result, (a, b) => { return result; });
+        _executeResultCache.AddOrUpdate(method.Name, result, (_, _) => { return result; });
       }
       return result;
     }
@@ -354,7 +351,7 @@ namespace Csla
       if (throwOnFalse && result == false)
       {
         Csla.Security.SecurityException ex =
-          new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
+          new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({method.Name})");
         throw ex;
       }
       return result;
@@ -380,8 +377,7 @@ namespace Csla
       bool result = CanExecuteMethod(new MethodInfo(methodName));
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({methodName})");
       }
       return result;
     }
@@ -1508,9 +1504,9 @@ namespace Csla
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
     /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     [NonSerialized]

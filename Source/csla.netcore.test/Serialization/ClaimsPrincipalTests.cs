@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System.Linq;
+
 using System.Security.Claims;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

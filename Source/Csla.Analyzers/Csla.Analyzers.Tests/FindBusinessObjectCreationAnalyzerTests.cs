@@ -1,7 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -36,57 +34,61 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenConstructorIsNotOnBusinessObject()
     {
       var code = 
-@"public class A { }
-
-  public class B
-  {
-    void Foo()
-    {
-      var a = new A();
-    }
-  }";
-      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(
-        code, Array.Empty<string>());
+        """
+        public class A { }
+        
+          public class B
+          {
+            void Foo()
+            {
+              var a = new A();
+            }
+          }
+        """;
+      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenConstructorIsOnBusinessObjectWithinObjectFactory()
     {
       var code =
-@"using Csla;
-using Csla.Server;
+        """
+        using Csla;
+        using Csla.Server;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class B : ObjectFactory
-{
-  void Foo()
-  {
-    var a = new A();
-  }
-}";
-      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(
-        code, Array.Empty<string>());
+        public class B : ObjectFactory
+        {
+          void Foo()
+          {
+            var a = new A();
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(code, []);
     }
 
     [TestMethod]
     public async Task AnalyzeWhenConstructorIsOnBusinessObjectOutsideOfObjectFactory()
     {
       var code =
-@"using Csla;
-using Csla.Server;
+        """
+        using Csla;
+        using Csla.Server;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class B
-{
-  void Foo()
-  {
-    var a = new A();
-  }
-}";
+        public class B
+        {
+          void Foo()
+          {
+            var a = new A();
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(
-        code, new[] { Constants.AnalyzerIdentifiers.FindBusinessObjectCreation });
+        code, [Constants.AnalyzerIdentifiers.FindBusinessObjectCreation]);
     }
   }
 }

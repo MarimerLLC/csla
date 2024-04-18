@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+
 using System.Runtime.Serialization;
 using Csla.Properties;
 using Csla.Reflection;
@@ -181,10 +178,9 @@ namespace Csla.Serialization.Mobile
 
 #region Deserialize
 
-    private Dictionary<int, IMobileObject> _deserializationReferences =
-      new Dictionary<int, IMobileObject>();
+    private Dictionary<int, IMobileObject> _deserializationReferences = [];
 
-    private Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+    private Dictionary<string, Type> _typeCache = [];
 
     private Type GetTypeFromCache(string typeName)
     {

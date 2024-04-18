@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>This is needed because in Silverlight the tests cannot be run in separate AppDomains</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using UnitDriven;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.ComponentModel;
-using UnitDriven;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -67,8 +65,6 @@ namespace Csla.Test.MethodCaller
       public TestClass(int unsupported) { }
     }
 
-    public struct TestStruct
-    {
-    }
+    public struct TestStruct;
   }
 }

@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Selects the appropriate data portal implementation</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
-using System.Threading.Tasks;
 
 namespace Csla.Server
 {

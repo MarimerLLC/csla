@@ -6,9 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Core;
 

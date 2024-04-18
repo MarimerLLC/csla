@@ -6,9 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Serialization;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -168,14 +165,10 @@ namespace Csla.Test.IO
     }
 
     [Serializable]
-    private class Criteria
-    {
-    }
+    private class Criteria;
 
     [Serializable]
-    private class OtherCriteria
-    {
-    }
+    private class OtherCriteria;
 
     [Create]
     protected void DataPortal_Create()

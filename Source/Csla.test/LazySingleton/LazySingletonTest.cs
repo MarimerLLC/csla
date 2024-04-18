@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnitDriven;
+﻿using System.Collections.Generic;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Test.LazySingleton

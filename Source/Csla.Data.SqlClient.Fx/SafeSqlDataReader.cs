@@ -5,14 +5,13 @@
 // </copyright>
 // <summary>This is a SqlDataReader based on SafeDataReader</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Data;
 #if NETFX
 using System.Data.SqlClient;
 #else
 using Microsoft.Data.SqlClient;
 #endif
-using System.Threading.Tasks;
 
 namespace Csla.Data.SqlClient
 {

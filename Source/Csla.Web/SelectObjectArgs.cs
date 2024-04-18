@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Argument object used in the SelectObject event.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 
 namespace Csla.Web

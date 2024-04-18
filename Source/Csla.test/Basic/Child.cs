@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Data;
 
 namespace Csla.Test.Basic
@@ -32,12 +30,12 @@ namespace Csla.Test.Basic
 
     public override bool Equals(object obj)
     {
-      if (obj == null || !(obj is Child))
+      if (obj == null || !(obj is Child child))
       {
         return false;
       }
 
-      return ReadProperty(DataProperty) == ((Child)(obj)).ReadProperty(DataProperty);
+      return ReadProperty(DataProperty) == ((Child)child).ReadProperty(DataProperty);
     }
 
     public override int GetHashCode()

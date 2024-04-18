@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Csla.State;
 
 namespace Csla.Blazor.State
@@ -77,7 +75,7 @@ namespace Csla.Blazor.State
         if (session.Value.LastTouched < expirationTime)
           toRemove.Add(session.Key);
       foreach (var key in toRemove)
-        _sessions.TryRemove(key, out var x);
+        _sessions.TryRemove(key, out _);
     }
 
     // wasm client-side methods

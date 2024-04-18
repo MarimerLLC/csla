@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Security.Permissions;
 
 namespace Csla.Reflection
 {

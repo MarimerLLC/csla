@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines the method signature for a filter</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

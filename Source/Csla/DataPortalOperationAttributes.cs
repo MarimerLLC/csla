@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines the attributes used by data portal to find methods</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {
@@ -14,32 +13,28 @@ namespace Csla
   /// via dependency injection.
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public class InjectAttribute : Attribute
-  { }
+  public class InjectAttribute : Attribute;
 
   /// <summary>
   /// Base type for data portal operation
   /// attributes.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DataPortalOperationAttribute : Attribute
-  { }
+  public class DataPortalOperationAttribute : Attribute;
 
   /// <summary>
   /// Base type for data portal root operation
   /// attributes.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DataPortalRootOperationAttribute : DataPortalOperationAttribute
-  { }
+  public class DataPortalRootOperationAttribute : DataPortalOperationAttribute;
 
   /// <summary>
   /// Base type for data portal child operation
   /// attributes.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DataPortalChildOperationAttribute : DataPortalOperationAttribute
-  { }
+  public class DataPortalChildOperationAttribute : DataPortalOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -47,8 +42,7 @@ namespace Csla
   /// domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class CreateAttribute : DataPortalRootOperationAttribute
-  { }
+  public class CreateAttribute : DataPortalRootOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -56,8 +50,7 @@ namespace Csla
   /// the domain object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class FetchAttribute : DataPortalRootOperationAttribute
-  { }
+  public class FetchAttribute : DataPortalRootOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -65,8 +58,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class InsertAttribute : DataPortalRootOperationAttribute
-  { }
+  public class InsertAttribute : DataPortalRootOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -74,8 +66,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class UpdateAttribute : DataPortalRootOperationAttribute
-  { }
+  public class UpdateAttribute : DataPortalRootOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -83,8 +74,7 @@ namespace Csla
   /// object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class ExecuteAttribute : DataPortalRootOperationAttribute
-  { }
+  public class ExecuteAttribute : DataPortalRootOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -92,8 +82,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteAttribute : DataPortalRootOperationAttribute
-  { }
+  public class DeleteAttribute : DataPortalRootOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -101,8 +90,7 @@ namespace Csla
   /// during an explicit delete operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelfAttribute : DataPortalRootOperationAttribute
-  { }
+  public class DeleteSelfAttribute : DataPortalRootOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -110,8 +98,7 @@ namespace Csla
   /// child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class CreateChildAttribute : DataPortalChildOperationAttribute
-  { }
+  public class CreateChildAttribute : DataPortalChildOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -119,8 +106,7 @@ namespace Csla
   /// the child object.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class FetchChildAttribute : DataPortalChildOperationAttribute
-  { }
+  public class FetchChildAttribute : DataPortalChildOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -128,8 +114,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class InsertChildAttribute : DataPortalChildOperationAttribute
-  { }
+  public class InsertChildAttribute : DataPortalChildOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -137,8 +122,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class UpdateChildAttribute : DataPortalChildOperationAttribute
-  { }
+  public class UpdateChildAttribute : DataPortalChildOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -146,8 +130,7 @@ namespace Csla
   /// during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class DeleteSelfChildAttribute : DataPortalChildOperationAttribute
-  { }
+  public class DeleteSelfChildAttribute : DataPortalChildOperationAttribute;
 
   /// <summary>
   /// Specifies a method used by the server-side
@@ -155,6 +138,5 @@ namespace Csla
   /// object during an update operation.
   /// </summary>
   [AttributeUsage(AttributeTargets.Method)]
-  public class ExecuteChildAttribute : DataPortalChildOperationAttribute
-  { }
+  public class ExecuteChildAttribute : DataPortalChildOperationAttribute;
 }

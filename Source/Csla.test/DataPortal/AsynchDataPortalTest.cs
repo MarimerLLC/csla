@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using Csla.Test.Basic;
 using System.Threading.Tasks;
@@ -208,7 +207,7 @@ namespace Csla.Test.DataPortal
         list.Add(i);
       }
 
-      var tasks = list.AsParallel().Select(x => dataPortal.FetchAsync());
+      var tasks = list.AsParallel().Select(_ => dataPortal.FetchAsync());
       await Task.WhenAll(tasks);
     }
 

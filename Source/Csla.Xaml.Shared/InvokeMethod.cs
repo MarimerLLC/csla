@@ -6,12 +6,8 @@
 // </copyright>
 // <summary>Invokes a method on a target object when a </summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.ComponentModel;
-using System.Collections.Generic;
-using Csla.Properties;
 
 namespace Csla.Xaml
 {
@@ -99,7 +95,7 @@ namespace Csla.Xaml
       DependencyProperty.RegisterAttached("TriggerEvent",
       typeof(string),
       typeof(InvokeMethod),
-      new PropertyMetadata((o, e) =>
+      new PropertyMetadata((o, _) =>
       {
         var ctrl = o as UIElement;
         if (ctrl != null)
@@ -233,12 +229,16 @@ namespace Csla.Xaml
         if (pCount == 0)
           targetMethod.Invoke(target, null);
         else if (pCount == 2)
-          targetMethod.Invoke(target, new object[] { this, new ExecuteEventArgs
-        {
-          MethodParameter = p,
-          TriggerParameter = e,
-          TriggerSource = (FrameworkElement)_element
-        }});
+          targetMethod.Invoke(
+            target,
+            [
+              this, new ExecuteEventArgs
+              {
+                MethodParameter = p,
+                TriggerParameter = e,
+                TriggerSource = (FrameworkElement)_element
+              }
+            ]);
         else
           throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
       }

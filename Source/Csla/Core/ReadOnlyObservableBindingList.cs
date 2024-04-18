@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>A readonly version of ObservableBindingList.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
 using Csla.Properties;
 
 namespace Csla.Core
@@ -38,7 +35,7 @@ namespace Csla.Core
       AllowNew = false;
       AllowRemove = false;
 
-      this.CollectionChanged += (o, e) =>
+      this.CollectionChanged += (_, _) =>
         {
           if (IsReadOnly)
             throw new NotSupportedException(Resources.ChangeReadOnlyListInvalid);

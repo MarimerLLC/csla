@@ -441,8 +441,8 @@ namespace Csla.Xaml
     {
       if (image != null)
       {
-        image.MouseEnter += new MouseEventHandler(image_MouseEnter);
-        image.MouseLeave += new MouseEventHandler(image_MouseLeave);
+        image.MouseEnter += image_MouseEnter;
+        image.MouseLeave += image_MouseLeave;
       }
     }
 
@@ -450,8 +450,8 @@ namespace Csla.Xaml
     {
       if (image != null)
       {
-        image.MouseEnter -= new MouseEventHandler(image_MouseEnter);
-        image.MouseLeave -= new MouseEventHandler(image_MouseLeave);
+        image.MouseEnter -= image_MouseEnter;
+        image.MouseLeave -= image_MouseLeave;
       }
     }
 

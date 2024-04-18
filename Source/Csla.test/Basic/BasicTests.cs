@@ -433,7 +433,7 @@ namespace Csla.Test.Basic
 
     public FormSimulator(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += obj_IsDirtyChanged;
       this._obj = obj;
     }
 
@@ -448,7 +448,7 @@ namespace Csla.Test.Basic
 
     public SerializableListener(Core.BusinessBase obj)
     {
-      this._obj.PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(obj_IsDirtyChanged);
+      this._obj.PropertyChanged += obj_IsDirtyChanged;
       this._obj = obj;
     }
 

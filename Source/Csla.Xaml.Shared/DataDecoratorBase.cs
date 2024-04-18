@@ -43,8 +43,8 @@ namespace Csla.Xaml
     /// </summary>
     public DataDecoratorBase()
     {
-      this.DataContextChanged += new DependencyPropertyChangedEventHandler(Panel_DataContextChanged);
-      this.Loaded += new RoutedEventHandler(Panel_Loaded);
+      this.DataContextChanged += Panel_DataContextChanged;
+      this.Loaded += Panel_Loaded;
     }
 
     private void Panel_Loaded(object sender, RoutedEventArgs e)
@@ -118,7 +118,7 @@ namespace Csla.Xaml
       }
       else
       {
-        provider.DataChanged -= new EventHandler(DataProvider_DataChanged);
+        provider.DataChanged -= DataProvider_DataChanged;
         oldContext = provider.Data;
       }
       UnHookChildChanged(oldContext as Csla.Core.INotifyChildChanged);

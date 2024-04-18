@@ -34,8 +34,7 @@ namespace Csla.Xaml
     {
       CommandManager = new CslaDataProviderCommandManager(this);
       _factoryParameters = new ObservableCollection<object>();
-      _factoryParameters.CollectionChanged += 
-        new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
+      _factoryParameters.CollectionChanged += _factoryParameters_CollectionChanged;
     }
 
     /// <summary>

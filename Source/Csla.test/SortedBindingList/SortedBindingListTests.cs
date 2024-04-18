@@ -45,7 +45,7 @@ namespace Csla.Test.SortedBindingList
     {
       int[] intArr = [45, 23, 57, 56, 11, 87, 94, 44];
       SortedBindingList<int> sortedList = new SortedBindingList<int>(intArr);
-      sortedList.ListChanged += new ListChangedEventHandler(sortedList_ListChanged);
+      sortedList.ListChanged += sortedList_ListChanged;
 
       Assert.AreEqual(false, sortedList.IsSorted);
       Assert.AreEqual(56, intArr[3]);

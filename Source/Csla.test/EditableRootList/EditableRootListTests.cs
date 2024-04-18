@@ -60,7 +60,7 @@ namespace Csla.Test.EditableRootList
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsTrue(list[0].IsNew, "Object should be new");
-      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
+      list.Saved += List_Saved;
       list.RemoveAt(0);
       Assert.AreEqual(true, _isListSaved, "List saved event did not fire after save.");
       Assert.AreEqual(0, list.Count, "Incorrect count after remove");
@@ -80,8 +80,8 @@ namespace Csla.Test.EditableRootList
       
       list.Add(itemDataPortal.Fetch("test"));
       ERitem item = list[0];
-      item.Saved += new EventHandler<Csla.Core.SavedEventArgs>(item_Saved);
-      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
+      item.Saved += item_Saved;
+      list.Saved += List_Saved;
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       Assert.IsFalse(list[0].IsNew, "Object should not be new");
 
@@ -113,7 +113,7 @@ namespace Csla.Test.EditableRootList
       _isListSaved = false;
 
       ERlist list = dataPortal.Create();
-      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
+      list.Saved += List_Saved;
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
       
@@ -136,7 +136,7 @@ namespace Csla.Test.EditableRootList
       _isListSaved = false;
 
       ERlist list = dataPortal.Create();
-      list.Saved += new EventHandler<Csla.Core.SavedEventArgs>(List_Saved);
+      list.Saved += List_Saved;
       list.Add(itemDataPortal.Fetch("test"));
       ERitem item = list[0];
       Assert.AreEqual(1, list.Count, "Incorrect count after add");

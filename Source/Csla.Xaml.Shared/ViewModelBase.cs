@@ -6,10 +6,12 @@
 // <summary>Base class used to create ViewModel objects that</summary>
 //-----------------------------------------------------------------------
 
+using System;
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 using System.Windows;
 using Csla.Core;
 using Csla.Rules;

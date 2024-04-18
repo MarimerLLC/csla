@@ -6,6 +6,8 @@
 // <summary>Contains information about the error that</summary>
 //-----------------------------------------------------------------------
 
+using System;
+
 namespace Csla.Xaml
 {
   /// <summary>

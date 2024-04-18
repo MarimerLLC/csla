@@ -58,7 +58,7 @@ namespace Csla.Configuration
       cslaOptions.AddRequiredDataPortalServices(services);
 
       // Default to using LocalProxy and local data portal
-      var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
+      var proxyInit = services.Any(i => i.ServiceType.Equals(typeof(IDataPortalProxy)));
       if (!proxyInit)
       {
         cslaOptions.DataPortal((options) => options.DataPortalClientOptions.UseLocalProxy());
@@ -74,7 +74,7 @@ namespace Csla.Configuration
 
       var contextManagerType = typeof(Core.IContextManager);
 
-      var managerInit = services.Where(i => i.ServiceType.Equals(contextManagerType)).Any();
+      var managerInit = services.Any(i => i.ServiceType.Equals(contextManagerType));
       if (managerInit) return;
 
       if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;

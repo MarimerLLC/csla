@@ -24,7 +24,7 @@ namespace Csla.Analyzers.Extensions
         }
       }
 
-      return @this.ChildNodes().Where(_ => _.HasUsing(qualifiedName)).Any();
+      return @this.ChildNodes().Any(_ => _.HasUsing(qualifiedName));
     }
 
     internal static T FindParent<T>(this SyntaxNode @this)

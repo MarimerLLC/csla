@@ -262,7 +262,7 @@ namespace Csla.Web.Mvc
           string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
           if (bindingContext.ModelState.TryGetValue(mskey, out state))
           {
-            if (state.Errors.Where(e => e.ErrorMessage == item.Description).Any())
+            if (state.Errors.Any(e => e.ErrorMessage == item.Description))
               continue;
             else
               bindingContext.ModelState.AddModelError(mskey, item.Description);

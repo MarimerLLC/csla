@@ -26,12 +26,14 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenConstructorNoArgumentsDoesNotExist()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  private A(int a) { }
-}";
+        public class A : BusinessBase<A>
+        {
+          private A(int a) { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -63,12 +65,14 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExists()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  private A() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          private A() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -100,13 +104,15 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndLeadingTriviaExists()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  // Hey! Don't loose me! 
-  private A() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          // Hey! Don't loose me!
+          private A() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -140,12 +146,14 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsAndTrailingTriviaExists()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  private A()/* And not this either */ { }
-}";
+        public class A : BusinessBase<A>
+        {
+          private A()/* And not this either */ { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
@@ -179,18 +187,20 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public A() { }
-
-  public class B
-    : BusinessBase<B>
-  {
-    private B() { }
-  }
-}";
+        public class A : BusinessBase<A>
+        {
+          public A() { }
+        
+          public class B
+            : BusinessBase<B>
+          {
+            private B() { }
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());

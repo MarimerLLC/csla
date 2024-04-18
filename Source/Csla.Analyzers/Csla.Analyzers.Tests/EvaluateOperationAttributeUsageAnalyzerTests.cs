@@ -31,13 +31,15 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenTypeIsNotStereotype()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A
-{
-  [Fetch]
-  private void Fetch() { }
-}";
+        public class A
+        {
+          [Fetch]
+          private void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateOperationAttributeUsageAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect]);
     }
@@ -46,16 +48,18 @@ public class A
     public async Task AnalyzeWhenTypeIsStereotypeAndOperationIsStatic()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A
-  : BusinessBase<A>
-{
-  [Fetch]
-  private static void Fetch() { }
-}";
+        [Serializable]
+        public class A
+          : BusinessBase<A>
+        {
+          [Fetch]
+          private static void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateOperationAttributeUsageAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect]);
     }
@@ -64,16 +68,18 @@ public class A
     public async Task AnalyzeWhenTypeIsStereotypeAndOperationIsInstance()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A
-  : BusinessBase<A>
-{
-  [Fetch]
-  private void Fetch() { }
-}";
+        [Serializable]
+        public class A
+          : BusinessBase<A>
+        {
+          [Fetch]
+          private void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateOperationAttributeUsageAnalyzer>(code, []);
     }
   }

@@ -25,26 +25,28 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes()
     {
       var code =
-@"using Csla;
-using System.Threading.Tasks;
+        """
+        using Csla;
+        using System.Threading.Tasks;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class VerifyGetFixes
-{
-  private IDataPortal<A> _dataPortal;
-
-  public VerifyGetFixes(IDataPortal<A> dataPortal)
-  {
-    _dataPortal = dataPortal;
-  }
-
-  public async Task Use()
-  {
-    var x = _dataPortal.Fetch<A>();
-    await x.SaveAsync();
-  }
-}";
+        public class VerifyGetFixes
+        {
+          private IDataPortal<A> _dataPortal;
+        
+          public VerifyGetFixes(IDataPortal<A> dataPortal)
+          {
+            _dataPortal = dataPortal;
+          }
+        
+          public async Task Use()
+          {
+            var x = _dataPortal.Fetch<A>();
+            await x.SaveAsync();
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new FindSaveAssignmentIssueAnalyzer());

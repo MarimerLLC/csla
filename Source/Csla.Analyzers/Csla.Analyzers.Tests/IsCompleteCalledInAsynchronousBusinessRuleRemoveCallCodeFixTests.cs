@@ -25,16 +25,18 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public sealed class TestRule : BusinessRuleAsync
-{
-  protected override async Task ExecuteAsync(IRuleContext context)
-  {
-    context.Complete();
-  }
-}";
+        public sealed class TestRule : BusinessRuleAsync
+        {
+          protected override async Task ExecuteAsync(IRuleContext context)
+          {
+            context.Complete();
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsCompleteCalledInAsynchronousBusinessRuleAnalyzer());
@@ -62,17 +64,19 @@ public sealed class TestRule : BusinessRuleAsync
     public async Task VerifyGetFixesWithNameofCall()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public sealed class TestRule : BusinessRuleAsync
-{
-  protected override async Task ExecuteAsync(IRuleContext context)
-  {
-    var c = nameof(context);
-    context.Complete();
-  }
-}";
+        public sealed class TestRule : BusinessRuleAsync
+        {
+          protected override async Task ExecuteAsync(IRuleContext context)
+          {
+            var c = nameof(context);
+            context.Complete();
+          }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsCompleteCalledInAsynchronousBusinessRuleAnalyzer());

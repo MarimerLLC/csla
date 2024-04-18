@@ -40,13 +40,15 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasNamingConventionAndAttribute()
     {
       var code = 
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{ 
-  [Fetch]
-  private void DataPortal_Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          private void DataPortal_Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<DoesOperationHaveAttributeAnalyzer>(code, []);
     }
 
@@ -54,13 +56,15 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasAttribute()
     {
       var code = 
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{ 
-  [Fetch]
-  private void Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          private void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<DoesOperationHaveAttributeAnalyzer>(code, []);
     }
 
@@ -68,12 +72,14 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasNamingConvention()
     {
       var code = 
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{ 
-  private void DataPortal_Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          private void DataPortal_Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<DoesOperationHaveAttributeAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute]);
     }

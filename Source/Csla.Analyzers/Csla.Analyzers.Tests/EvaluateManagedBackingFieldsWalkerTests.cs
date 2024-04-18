@@ -28,19 +28,21 @@ namespace Csla.Analyzers.Tests
     public async Task WalkWhenFieldIsUsedByPropertyInfoManagement()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty =
-    RegisterProperty<string>(_ => _.Data);
-
-  public string Data
-  {
-    get { return GetProperty(DataProperty); }
-    set { SetProperty(DataProperty, value); }
-  }
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty =
+            RegisterProperty<string>(_ => _.Data);
+        
+          public string Data
+          {
+            get { return GetProperty(DataProperty); }
+            set { SetProperty(DataProperty, value); }
+          }
+        }
+        """;
       var walker = await GetWalker(code);
       Assert.IsTrue(walker.UsesField);
     }
@@ -49,14 +51,16 @@ public class A : BusinessBase<A>
     public async Task WalkWhenFieldIsNotUsedByPropertyInfoManagement()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty =
-    RegisterProperty<string>(_ => _.Data);
-  public string Data { get; set; }
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty =
+            RegisterProperty<string>(_ => _.Data);
+          public string Data { get; set; }
+        }
+        """;
       var walker = await GetWalker(code);
       Assert.IsFalse(walker.UsesField);
     }

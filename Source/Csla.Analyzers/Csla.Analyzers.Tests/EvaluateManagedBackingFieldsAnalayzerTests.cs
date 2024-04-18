@@ -38,34 +38,36 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassHasManagedBackingFieldNotUsedByProperty()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty =
-    RegisterProperty<string>(_ => _.Data);
-  public string Data { get; set; }
-
-  public static readonly PropertyInfo<string> ArrowDataProperty =
-    RegisterProperty<string>(_ => _.ArrowData);
-  public string ArrowData 
-  { 
-    get => string.Empty; 
-    set => ArrowData = value; 
-  }
-
-  public static readonly PropertyInfo<string> BlockDataProperty =
-    RegisterProperty<string>(_ => _.BlockData);
-  public string BlockData 
-  { 
-    get { return string.Empty; }
-    set { BlockData = value; }
-  }
-
-  public static readonly PropertyInfo<string> ExpressionDataProperty =
-    RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => string.Empty;
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty =
+            RegisterProperty<string>(_ => _.Data);
+          public string Data { get; set; }
+        
+          public static readonly PropertyInfo<string> ArrowDataProperty =
+            RegisterProperty<string>(_ => _.ArrowData);
+          public string ArrowData
+          {
+            get => string.Empty;
+            set => ArrowData = value;
+          }
+        
+          public static readonly PropertyInfo<string> BlockDataProperty =
+            RegisterProperty<string>(_ => _.BlockData);
+          public string BlockData
+          {
+            get { return string.Empty; }
+            set { BlockData = value; }
+          }
+        
+          public static readonly PropertyInfo<string> ExpressionDataProperty =
+            RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => string.Empty;
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
     }
 
@@ -73,22 +75,24 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasManagedBackingFieldUsedProperty()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty =
-    RegisterProperty<string>(_ => _.Data);
-  public string Data
-  {
-    get => GetProperty(DataProperty);
-    set => SetProperty(DataProperty, value);
-  }
-
-  public static readonly PropertyInfo<string> ExpressionDataProperty =
-    RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => GetProperty(ExpressionDataProperty);
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty =
+            RegisterProperty<string>(_ => _.Data);
+          public string Data
+          {
+            get => GetProperty(DataProperty);
+            set => SetProperty(DataProperty, value);
+          }
+        
+          public static readonly PropertyInfo<string> ExpressionDataProperty =
+            RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => GetProperty(ExpressionDataProperty);
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
     }
 
@@ -96,30 +100,32 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotPublic()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  static readonly PropertyInfo<string> BlockDataProperty =
-    RegisterProperty<string>(_ => _.BlockData);
-  public string BlockData
-  {
-    get { return GetProperty(BlockDataProperty); }
-    set { SetProperty(BlockDataProperty, value); }
-  }
-
-  static readonly PropertyInfo<string> ArrowDataProperty =
-    RegisterProperty<string>(_ => _.ArrowData);
-  public string ArrowData
-  {
-    get => GetProperty(ArrowDataProperty);
-    set => SetProperty(ArrowDataProperty, value);
-  }
-
-  static readonly PropertyInfo<string> ExpressionDataProperty =
-    RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => GetProperty(ExpressionDataProperty);
-}";
+        public class A : BusinessBase<A>
+        {
+          static readonly PropertyInfo<string> BlockDataProperty =
+            RegisterProperty<string>(_ => _.BlockData);
+          public string BlockData
+          {
+            get { return GetProperty(BlockDataProperty); }
+            set { SetProperty(BlockDataProperty, value); }
+          }
+        
+          static readonly PropertyInfo<string> ArrowDataProperty =
+            RegisterProperty<string>(_ => _.ArrowData);
+          public string ArrowData
+          {
+            get => GetProperty(ArrowDataProperty);
+            set => SetProperty(ArrowDataProperty, value);
+          }
+        
+          static readonly PropertyInfo<string> ExpressionDataProperty =
+            RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => GetProperty(ExpressionDataProperty);
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         code,
         [
@@ -133,30 +139,32 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotStatic()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public readonly PropertyInfo<string> BlockDataProperty =
-    RegisterProperty<string>(_ => _.BlockData);
-  public string BlockData
-  {
-    get { return GetProperty(BlockDataProperty); }
-    set { SetProperty(BlockDataProperty, value); }
-  }
-
-  public readonly PropertyInfo<string> ArrowDataProperty =
-    RegisterProperty<string>(_ => _.ArrowData);
-  public string ArrowData
-  {
-    get => GetProperty(ArrowDataProperty);
-    set => SetProperty(ArrowDataProperty, value);
-  }
-
-  public readonly PropertyInfo<string> ExpressionDataProperty =
-    RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => GetProperty(ExpressionDataProperty);
-}";
+        public class A : BusinessBase<A>
+        {
+          public readonly PropertyInfo<string> BlockDataProperty =
+            RegisterProperty<string>(_ => _.BlockData);
+          public string BlockData
+          {
+            get { return GetProperty(BlockDataProperty); }
+            set { SetProperty(BlockDataProperty, value); }
+          }
+        
+          public readonly PropertyInfo<string> ArrowDataProperty =
+            RegisterProperty<string>(_ => _.ArrowData);
+          public string ArrowData
+          {
+            get => GetProperty(ArrowDataProperty);
+            set => SetProperty(ArrowDataProperty, value);
+          }
+        
+          public readonly PropertyInfo<string> ExpressionDataProperty =
+            RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => GetProperty(ExpressionDataProperty);
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         code,
         [
@@ -170,30 +178,32 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasManagedBackingFieldUsedPropertyAndIsNotReadonly()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static PropertyInfo<string> BlockDataProperty =
-    RegisterProperty<string>(_ => _.BlockData);
-  public string BlockData
-  {
-    get { return GetProperty(BlockDataProperty); }
-    set { SetProperty(BlockDataProperty, value); }
-  }
-
-  public static PropertyInfo<string> DataProperty =
-    RegisterProperty<string>(_ => _.Data);
-  public string Data
-  {
-    get => GetProperty(DataProperty);
-    set => SetProperty(DataProperty, value);
-  }
-
-  public static PropertyInfo<string> ExpressionDataProperty =
-    RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => GetProperty(ExpressionDataProperty);
-}";
+        public class A : BusinessBase<A>
+        {
+          public static PropertyInfo<string> BlockDataProperty =
+            RegisterProperty<string>(_ => _.BlockData);
+          public string BlockData
+          {
+            get { return GetProperty(BlockDataProperty); }
+            set { SetProperty(BlockDataProperty, value); }
+          }
+        
+          public static PropertyInfo<string> DataProperty =
+            RegisterProperty<string>(_ => _.Data);
+          public string Data
+          {
+            get => GetProperty(DataProperty);
+            set => SetProperty(DataProperty, value);
+          }
+        
+          public static PropertyInfo<string> ExpressionDataProperty =
+            RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => GetProperty(ExpressionDataProperty);
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         code,
         [
@@ -207,30 +217,32 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenCommandHasManagedBackingFieldUsedPropertyAndIsNotReadonly()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : CommandBase<A>
-{
-  public static PropertyInfo<string> BlockDataProperty =
-    RegisterProperty<string>(_ => _.BlockData);
-  public string BlockData
-  {
-    get { return ReadProperty(BlockDataProperty); }
-    set { LoadProperty(BlockDataProperty, value); }
-  }
-
-  public static PropertyInfo<string> ArrowDataProperty =
-    RegisterProperty<string>(_ => _.ArrowData);
-  public string ArrowData
-  {
-    get => ReadProperty(ArrowDataProperty);
-    set => LoadProperty(ArrowDataProperty, value);
-  }
-
-  public static PropertyInfo<string> ExpressionDataProperty =
-    RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => ReadProperty(ExpressionDataProperty);
-}";
+        public class A : CommandBase<A>
+        {
+          public static PropertyInfo<string> BlockDataProperty =
+            RegisterProperty<string>(_ => _.BlockData);
+          public string BlockData
+          {
+            get { return ReadProperty(BlockDataProperty); }
+            set { LoadProperty(BlockDataProperty, value); }
+          }
+        
+          public static PropertyInfo<string> ArrowDataProperty =
+            RegisterProperty<string>(_ => _.ArrowData);
+          public string ArrowData
+          {
+            get => ReadProperty(ArrowDataProperty);
+            set => LoadProperty(ArrowDataProperty, value);
+          }
+        
+          public static PropertyInfo<string> ExpressionDataProperty =
+            RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => ReadProperty(ExpressionDataProperty);
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
         code,
         [

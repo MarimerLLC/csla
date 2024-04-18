@@ -129,13 +129,16 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixes(string operationName, string attributeName, bool includeUsingCsla,
       string expectedDescription)
     {
+      var usingCsla = includeUsingCsla ? "using Csla;" : string.Empty;
       var code =
-$@"{(includeUsingCsla ? "using Csla;" : string.Empty)}
+        $$"""
+          {{usingCsla}}
 
-public class A : Csla.BusinessBase<A>
-{{
-  private void {operationName}() {{ }}
-}}";
+          public class A : Csla.BusinessBase<A>
+          {
+            private void {{operationName}}() { }
+          }
+          """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new DoesOperationHaveAttributeAnalyzer());

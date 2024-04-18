@@ -38,12 +38,14 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassHasAbstractProperty()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public abstract class A : BusinessBase<A>
-{
-  public abstract string Data { get; set; }
-}";
+        public abstract class A : BusinessBase<A>
+        {
+          public abstract string Data { get; set; }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
@@ -51,12 +53,14 @@ public abstract class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasStaticProperty()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static string Data { get; set; }
-}";
+        public class A : BusinessBase<A>
+        {
+          public static string Data { get; set; }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
@@ -64,14 +68,16 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasGetterWithNoMethodCall()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public string Data { get; }
-
-  public string ExpressionData => string.Empty;
-}";
+        public class A : BusinessBase<A>
+        {
+          public string Data { get; }
+        
+          public string ExpressionData => string.Empty;
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
@@ -79,14 +85,16 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasGetterWithMethodCallButIsNotCslaPropertyMethod()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public string Data { get { return this.GetProperty(); } }
-
-  public string GetProperty() => null;
-}";
+        public class A : BusinessBase<A>
+        {
+          public string Data { get { return this.GetProperty(); } }
+        
+          public string GetProperty() => null;
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
@@ -94,17 +102,19 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasGetterWithMethodCallAndMultipleStatements()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
-  private string _x;
-
-  public string Data { get { _x = ""44""; return this.GetProperty(DataProperty); } }
-
-  public string GetX() { return _x; }
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          private string _x;
+        
+          public string Data { get { _x = "44"; return this.GetProperty(DataProperty); } }
+        
+          public string GetX() { return _x; }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
     }
@@ -113,16 +123,18 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasGetterWithMethodCallAndReturnButNoDirectInvocationExpression()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
-  public string Data { get { return ""x"" + this.GetProperty(DataProperty); } }
-
-  public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => ""x"" + this.GetProperty(DataProperty);
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data { get { return "x" + this.GetProperty(DataProperty); } }
+        
+          public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => "x" + this.GetProperty(DataProperty);
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
       [
         Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
@@ -134,16 +146,18 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasGetterWithMethodCallAndReturnAndDirectInvocationExpression()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
-  public string Data { get { return this.GetProperty(DataProperty); } }
-
-  public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
-  public string ExpressionData => this.GetProperty(DataProperty);
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data { get { return this.GetProperty(DataProperty); } }
+        
+          public static readonly PropertyInfo<string> ExpressionDataProperty = RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => this.GetProperty(DataProperty);
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
@@ -151,12 +165,14 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasSetterWithNoMethodCall()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public string Data { set { } }
-}";
+        public class A : BusinessBase<A>
+        {
+          public string Data { set { } }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
@@ -164,14 +180,16 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasSetterWithMethodCallButIsNotCslaPropertyMethod()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public string Data { set { this.SetProperty(); } }
-
-  public void SetProperty() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          public string Data { set { this.SetProperty(); } }
+        
+          public void SetProperty() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
 
@@ -179,17 +197,19 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasSetterWithMethodCallAndMultipleStatements()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
-  private string _x;
-
-  public string Data { get { return null; } set { _x = ""44""; this.SetProperty(DataProperty, value); } }
-
-  public string GetX() { return _x; }
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          private string _x;
+        
+          public string Data { get { return null; } set { _x = "44"; this.SetProperty(DataProperty, value); } }
+        
+          public string GetX() { return _x; }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         code,
         [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
@@ -199,18 +219,20 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWhenClassHasSetterWithMethodCallAndDirectInvocationExpression()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
-
-  public string Data
-  {
-    get { return null; }
-    set { this.SetProperty(DataProperty, value); }
-  }
-}";
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+        
+          public string Data
+          {
+            get { return null; }
+            set { this.SetProperty(DataProperty, value); }
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
   }

@@ -25,15 +25,17 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenClassIsNotSealed()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  public void Fetch() { }
-}";
+        [Serializable]
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          public void Fetch() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());
@@ -79,15 +81,17 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenClassIsSealed()
     {
       var code =
-@"using Csla;
-using System;
+        """
+        using Csla;
+        using System;
 
-[Serializable]
-public sealed class A : BusinessBase<A>
-{
-  [Fetch]
-  public void Fetch() { }
-}";
+        [Serializable]
+        public sealed class A : BusinessBase<A>
+        {
+          [Fetch]
+          public void Fetch() { }
+        }
+        """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new IsOperationMethodPublicAnalyzer());

@@ -25,10 +25,12 @@ namespace Csla.Analyzers.Tests
     public async Task WalkWhenNodeHasInvocation()
     {
       var code =
-@"public class WalkWhenNodeHasInvocation
-{
-  public void Go() => this.GetHashCode();
-}";
+        """
+        public class WalkWhenNodeHasInvocation
+        {
+          public void Go() => this.GetHashCode();
+        }
+        """;
       var walker = await GetWalker(code);
       Assert.IsTrue(walker.HasIssue);
     }

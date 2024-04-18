@@ -717,8 +717,7 @@ namespace Csla
     private IBindingList _bindingList;
     private object _filter;
 
-    private List<ListItem> _filterIndex = 
-      new List<ListItem>();
+    private List<ListItem> _filterIndex = [];
 
     /// <summary>
     /// Creates a new view based on the provided IList object.

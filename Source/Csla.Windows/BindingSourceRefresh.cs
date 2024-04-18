@@ -26,7 +26,7 @@ namespace Csla.Windows
   public class BindingSourceRefresh : Component, IExtenderProvider, ISupportInitialize
   {
     #region Fields
-    private readonly Dictionary<BindingSource, bool> _sources = new Dictionary<BindingSource, bool>();
+    private readonly Dictionary<BindingSource, bool> _sources = [];
     #endregion
     #region Events
     /// <summary>

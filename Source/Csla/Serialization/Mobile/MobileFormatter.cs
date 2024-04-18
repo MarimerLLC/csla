@@ -178,10 +178,9 @@ namespace Csla.Serialization.Mobile
 
 #region Deserialize
 
-    private Dictionary<int, IMobileObject> _deserializationReferences =
-      new Dictionary<int, IMobileObject>();
+    private Dictionary<int, IMobileObject> _deserializationReferences = [];
 
-    private Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+    private Dictionary<string, Type> _typeCache = [];
 
     private Type GetTypeFromCache(string typeName)
     {

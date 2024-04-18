@@ -9,7 +9,7 @@ namespace Csla.Test.AppContext
   public class TestContextManager : IContextManager
   {
     [ThreadStatic]
-    private static HybridDictionary _myContext = new HybridDictionary();
+    private static HybridDictionary _myContext = [];
     private readonly AsyncLocal<IPrincipal> _principal = new();
 
     private const string _localContextName = "Csla.ClientContext";

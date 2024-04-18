@@ -96,7 +96,7 @@ namespace Csla.AspNetCore.RazorPages
       }
     }
 
-    private readonly Dictionary<string, PropertyInfo> _info = new Dictionary<string, PropertyInfo>();
+    private readonly Dictionary<string, PropertyInfo> _info = [];
 
     /// <summary>
     /// Get a PropertyInfo object for a property

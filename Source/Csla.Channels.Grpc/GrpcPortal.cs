@@ -62,7 +62,7 @@ namespace Csla.Channels.Grpc
     /// data portal route, where each key is the
     /// routing tag identifying the route URL.
     /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls = new Dictionary<string, string>();
+    protected static Dictionary<string, string> RoutingTagUrls = [];
 
     /// <summary>
     /// Entry point for routing tag based data portal operations.

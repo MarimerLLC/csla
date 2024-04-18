@@ -56,10 +56,9 @@ namespace Csla.Reflection
     #region Dynamic Method Cache
 
 #if NET5_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache =
-      new Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>>();
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache = [];
 #else
-    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
+    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = [];
 #endif
 
     private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
@@ -291,10 +290,9 @@ namespace Csla.Reflection
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
 #if NET5_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache =
-      new Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>>();
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache = [];
 #else
-    private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
+    private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
 #endif
 
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)

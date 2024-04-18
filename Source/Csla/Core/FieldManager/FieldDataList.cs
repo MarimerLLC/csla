@@ -18,11 +18,11 @@ namespace Csla.Core.FieldManager
 #endif
   {
     [NonSerialized()]
-    private Dictionary<string, int> _fieldIndex = new Dictionary<string, int>();
+    private Dictionary<string, int> _fieldIndex = [];
 #if (ANDROID || IOS) || NETFX_CORE
     private Csla.Core.MobileBindingList<IFieldData> _fields = new Csla.Core.MobileBindingList<IFieldData>();
 #else
-    private List<IFieldData> _fields = new List<IFieldData>();
+    private List<IFieldData> _fields = [];
 #endif
 
     public FieldDataList()

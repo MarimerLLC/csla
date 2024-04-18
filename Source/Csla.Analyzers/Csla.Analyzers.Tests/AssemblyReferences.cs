@@ -47,8 +47,7 @@ namespace Csla.Analyzers.Tests
       return references.ToArray();
     }
 
-    private static readonly ConcurrentDictionary<Assembly, MetadataReference> transformedAssemblies =
-       new ConcurrentDictionary<Assembly, MetadataReference>();
+    private static readonly ConcurrentDictionary<Assembly, MetadataReference> transformedAssemblies = [];
 
     private static IEnumerable<MetadataReference> Transform(this IEnumerable<Assembly> @this) =>
        @this.Where(_ => !_.IsDynamic && !string.IsNullOrWhiteSpace(_.Location))

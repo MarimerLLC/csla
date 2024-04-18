@@ -42,8 +42,7 @@ namespace Csla.Windows
 
     #region Member variables
 
-    private Dictionary<Control, CslaActionExtenderProperties> _sources =
-      new Dictionary<Control, CslaActionExtenderProperties>();
+    private Dictionary<Control, CslaActionExtenderProperties> _sources = [];
 
     private object _dataSource = null;
     private IContainer _container = null;

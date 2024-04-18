@@ -42,8 +42,7 @@ namespace Csla.Windows
 
     #region Member variables
 
-    private Dictionary<ToolStripButton, CslaActionExtenderProperties> _sources =
-      new Dictionary<ToolStripButton, CslaActionExtenderProperties>();
+    private Dictionary<ToolStripButton, CslaActionExtenderProperties> _sources = [];
 
     private object _dataSource = null;
     private IContainer _container = null;

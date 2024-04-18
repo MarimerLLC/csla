@@ -693,9 +693,7 @@ namespace Csla
     private IBindingList _bindingList;
     private bool _initiatedLocally;
 
-    private List<ListItem> _sortIndex =
-      new List<ListItem>();
-
+    private List<ListItem> _sortIndex = [];
 
     /// <summary>
     /// Creates a new view based on the provided IList object.

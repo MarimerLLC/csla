@@ -1,8 +1,6 @@
 ﻿using System.IO;
 using System.Text;
-#if MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 using UnitDriven;
 
 namespace Csla.Test.SourceLink

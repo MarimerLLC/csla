@@ -603,9 +603,7 @@ namespace Csla.Core
       bool result = CanWriteProperty(property);
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(
-          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, property.Name));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Resources.PropertySetNotAllowed} ({property.Name})");
       }
       return result;
     }
@@ -698,7 +696,7 @@ namespace Csla.Core
       if (throwOnFalse && result == false)
       {
         Csla.Security.SecurityException ex =
-          new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
+          new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({method.Name})");
         throw ex;
       }
       return result;
@@ -724,8 +722,7 @@ namespace Csla.Core
       bool result = CanExecuteMethod(new MethodInfo(methodName));
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({methodName})");
       }
       return result;
     }

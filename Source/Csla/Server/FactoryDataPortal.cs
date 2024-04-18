@@ -57,7 +57,7 @@ namespace Csla.Server
           throw error;
 
         if (result is Csla.Core.ITrackStatus busy && busy.IsBusy)
-          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
+          throw new InvalidOperationException($"{objectType.Name}.IsBusy == true");
 
         Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
       }
@@ -86,7 +86,7 @@ namespace Csla.Server
           throw error;
 
         if (result is Csla.Core.ITrackStatus busy && busy.IsBusy)
-          throw new InvalidOperationException(string.Format("{0}.IsBusy == true", objectType.Name));
+          throw new InvalidOperationException($"{objectType.Name}.IsBusy == true");
 
         Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
       }

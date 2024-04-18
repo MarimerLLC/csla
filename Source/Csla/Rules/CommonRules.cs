@@ -384,7 +384,7 @@ namespace Csla.Rules.CommonRules
         if (string.IsNullOrEmpty(Format))
           outValue = Min.ToString();
         else
-          outValue = string.Format(string.Format("{{0:{0}}}", Format), Min);
+          outValue = string.Format($"{{0:{Format}}}", Min);
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, outValue);
         context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }
@@ -472,7 +472,7 @@ namespace Csla.Rules.CommonRules
         if (string.IsNullOrEmpty(Format))
           outValue = Max.ToString();
         else
-          outValue = string.Format(string.Format("{{0:{0}}}", Format), Max);
+          outValue = string.Format($"{{0:{Format}}}", Max);
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, outValue);
         context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
       }

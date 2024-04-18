@@ -621,7 +621,7 @@ namespace Csla.Xaml
         VisualStateManager.GoToState(this, newState, useTransitions);
         if (newState != "Busy" && newState != "PropertyValid")
         {
-          _lastImage = (FrameworkElement)FindChild(this, string.Format("{0}Image", newState.ToLower()));
+          _lastImage = (FrameworkElement)FindChild(this, $"{newState.ToLower()}Image");
           EnablePopup(_lastImage);
         }
       }

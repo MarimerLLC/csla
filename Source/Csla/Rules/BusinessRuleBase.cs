@@ -140,7 +140,7 @@ namespace Csla.Rules
     protected void CanWriteProperty(string argument)
     {
       if (PropertiesLocked) throw
-        new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
+        new ArgumentException($"{Resources.PropertySetNotAllowed} ({argument})", argument);
     }
 
     /// <summary>

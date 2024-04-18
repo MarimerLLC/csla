@@ -143,7 +143,7 @@ namespace Csla.Test.MethodCaller
       end = DateTime.Now;
       reflectionTime = end - start;
 
-      Assert.IsTrue(dynamicTime < reflectionTime, string.Format("Dynamic {0} should be faster than reflection {1}", dynamicTime, reflectionTime));
+      Assert.IsTrue(dynamicTime < reflectionTime, $"Dynamic {dynamicTime} should be faster than reflection {reflectionTime}");
     }
 #endif
 #endif

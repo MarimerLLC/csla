@@ -80,7 +80,7 @@ namespace Csla.Test.ValidationRules
 
         bw.RunWorkerCompleted += (_, _) =>
         {
-          context.AddOutValue(_nameProperty, string.Format("customer name {0}", cn));
+          context.AddOutValue(_nameProperty, $"customer name {cn}");
 
           context.Complete();
         };

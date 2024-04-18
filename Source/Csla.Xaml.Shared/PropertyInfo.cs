@@ -336,7 +336,7 @@ namespace Csla.Xaml
 #if NETFX_CORE
           fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
 #else
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
+          fi = type.GetField($"{path}{_dependencyPropertySuffix}");
 #endif
 
           if (fi != null)

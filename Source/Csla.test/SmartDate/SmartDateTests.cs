@@ -473,8 +473,8 @@ namespace Csla.Test.SmartDate
       Assert.AreEqual("", obj.TextDate, "Should be empty");
 
       var now = DateTime.Now;
-      obj.TextDate = string.Format("{0:g}", now);
-      Assert.AreEqual(string.Format("{0:g}", now), obj.TextDate, "Should be today");
+      obj.TextDate = $"{now:g}";
+      Assert.AreEqual($"{now:g}", obj.TextDate, "Should be today");
     }
 
 

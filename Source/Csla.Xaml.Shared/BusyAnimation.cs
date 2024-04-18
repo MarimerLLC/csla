@@ -178,7 +178,7 @@ namespace Csla.Xaml
     {
       if (IsRunning)
       {
-        VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
+        VisualStateManager.GoToState(this, $"state{_state + 1}", useTransitions);
       }
       else
       {

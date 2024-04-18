@@ -131,9 +131,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleCreateDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Create {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Create {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -233,9 +231,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleFetchDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Fetch {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Fetch {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -279,9 +275,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleDataPortalException("Execute", dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Execute {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Execute {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -490,9 +484,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleUpdateDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Update {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Update {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -581,9 +573,7 @@ namespace Csla
             if (dpe != null)
               HandleDeleteDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Delete {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Delete {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {

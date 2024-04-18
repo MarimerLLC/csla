@@ -120,8 +120,7 @@ namespace Csla.Web
       set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value; }
     }
 
-    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = 
-      new System.Collections.Generic.Dictionary<string,Type>();
+    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = [];
 
     /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the

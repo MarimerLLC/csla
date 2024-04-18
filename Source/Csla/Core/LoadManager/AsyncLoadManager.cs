@@ -25,7 +25,7 @@ namespace Csla.Core.LoadManager
     }
 
     private object _syncRoot = new object();
-    private readonly ObservableCollection<IAsyncLoader> _loading = new ObservableCollection<IAsyncLoader>();
+    private readonly ObservableCollection<IAsyncLoader> _loading = [];
 
     public bool IsLoading
     {

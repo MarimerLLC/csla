@@ -32,8 +32,7 @@ namespace Csla.Windows
       public bool CanRead { get; set; }
     }
 
-    private readonly Dictionary<Control, ControlStatus> _sources =
-      new Dictionary<Control, ControlStatus>();
+    private readonly Dictionary<Control, ControlStatus> _sources = [];
 
     /// <summary>
     /// Creates an instance of the object.

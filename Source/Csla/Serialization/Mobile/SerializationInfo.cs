@@ -190,7 +190,7 @@ namespace Csla.Serialization.Mobile
       #endregion
     }
 
-    private Dictionary<string, ChildData> _children = new Dictionary<string, ChildData>();
+    private Dictionary<string, ChildData> _children = [];
     /// <summary>
     /// Dictionary containing child reference data.
     /// </summary>
@@ -201,7 +201,7 @@ namespace Csla.Serialization.Mobile
       set { _children = value; }
     }
 
-    private Dictionary<string, FieldData> _values = new Dictionary<string, FieldData>();
+    private Dictionary<string, FieldData> _values = [];
     /// <summary>
     /// Dictionary containg field data.
     /// </summary>

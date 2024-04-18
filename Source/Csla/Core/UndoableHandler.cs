@@ -22,10 +22,9 @@ namespace Csla.Core
     internal static class UndoableHandler
     {
 #if NET5_0_OR_GREATER
-        private static readonly Dictionary<Type, Tuple<string, List<DynamicMemberHandle>>> _undoableFieldCache = 
-          new Dictionary<Type, Tuple<string,  List<DynamicMemberHandle>>>();
+        private static readonly Dictionary<Type, Tuple<string, List<DynamicMemberHandle>>> _undoableFieldCache = [];
 #else
-        private static readonly Dictionary<Type, List<DynamicMemberHandle>> _undoableFieldCache = new Dictionary<Type, List<DynamicMemberHandle>>();
+        private static readonly Dictionary<Type, List<DynamicMemberHandle>> _undoableFieldCache = [];
 #endif
 
         public static List<DynamicMemberHandle> GetCachedFieldHandlers(Type type)

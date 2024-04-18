@@ -18,11 +18,9 @@ namespace Csla.Server
   internal static class DataPortalMethodCache
   {
 #if NET5_0_OR_GREATER
-    private static Dictionary<MethodCacheKey, Tuple<string, DataPortalMethodInfo>> _cache =
-      new Dictionary<MethodCacheKey, Tuple<string, DataPortalMethodInfo>>();
+    private static Dictionary<MethodCacheKey, Tuple<string, DataPortalMethodInfo>> _cache = [];
 #else
-    private static Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache =
-      new Dictionary<MethodCacheKey, DataPortalMethodInfo>();
+    private static Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache = [];
 #endif
 
     public static DataPortalMethodInfo GetMethodInfo(Type objectType, string methodName, params object[] parameters)

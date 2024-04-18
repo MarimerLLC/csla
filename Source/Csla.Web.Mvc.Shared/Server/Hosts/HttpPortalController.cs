@@ -80,7 +80,7 @@ namespace Csla.Server.Hosts
     /// data portal route, where each key is the
     /// routing tag identifying the route URL.
     /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls { get; set; } = new Dictionary<string, string>();
+    protected static Dictionary<string, string> RoutingTagUrls { get; set; } = [];
 
     /// <summary>
     /// Gets or sets the HttpClient timeout

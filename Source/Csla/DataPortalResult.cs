@@ -21,18 +21,18 @@ namespace Csla
     /// <summary>
     /// Object that DataPortal received as a result of current operation
     /// </summary>
-    public T Object { get; private set; }
+    public T Object { get; }
     /// <summary>
     /// Error that occurred during the DataPotal call.
     /// This will be null if no errors occurred.
     /// </summary>
-    public Exception Error { get; private set; }
+    public Exception Error { get; }
 
     /// <summary>
     /// User defined information
     /// that was passed into data portal on initial request
     /// </summary>
-    public object UserState { get; private set; }
+    public object UserState { get; }
 
     /// <summary>
     /// Create new instance of data portal result

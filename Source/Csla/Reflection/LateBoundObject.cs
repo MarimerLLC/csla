@@ -24,7 +24,7 @@ namespace Csla.Reflection
     /// <summary>
     /// Object instance managed by LateBoundObject.
     /// </summary>
-    public object Instance { get; private set; }
+    public object Instance { get; }
 
     /// <summary>
     /// Creates an instance of the specified

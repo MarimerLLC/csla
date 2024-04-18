@@ -46,7 +46,7 @@ namespace Csla.Core
       }
     }
 
-    internal IServiceProvider ServiceProvider { get; private set; }
+    internal IServiceProvider ServiceProvider { get; }
     private IContextManager ContextManager { get; set; }
     private IContextManager LocalContextManager { get; set; }
 

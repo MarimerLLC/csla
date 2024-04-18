@@ -20,7 +20,7 @@ namespace Csla.Core.LoadManager
   internal class TaskLoader<T> : IAsyncLoader
   {
     private readonly Task<T> _loader;
-    public IPropertyInfo Property { get; private set; }
+    public IPropertyInfo Property { get; }
 
     public TaskLoader(IPropertyInfo property, Task<T> loader)
     {

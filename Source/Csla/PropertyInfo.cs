@@ -134,7 +134,7 @@ namespace Csla
     /// <summary>
     /// Gets the property name value.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; }
 
     /// <summary>
     /// Gets the type of the property.

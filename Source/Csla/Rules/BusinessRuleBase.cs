@@ -57,7 +57,7 @@ namespace Csla.Rules
     /// properties are executed after rules for the primary
     /// property.
     /// </summary>
-    public List<Csla.Core.IPropertyInfo> AffectedProperties { get; private set; }
+    public List<Csla.Core.IPropertyInfo> AffectedProperties { get; }
 
     /// <summary>
     /// Gets a list of secondary property values to be supplied to the

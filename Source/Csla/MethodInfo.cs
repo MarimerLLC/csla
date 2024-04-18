@@ -29,7 +29,7 @@ namespace Csla
     /// <summary>
     /// Gets the member name value.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; }
 
     /// <summary>
     /// Determines the equality of two objects.

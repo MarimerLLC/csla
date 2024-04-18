@@ -29,7 +29,7 @@ namespace Csla.Data
     /// object that actually contains the data from
     /// the data source.
     /// </summary>
-    protected IDataReader DataReader { get; private set; }
+    protected IDataReader DataReader { get; }
 
     /// <summary>
     /// Initializes the SafeDataReader object to use data from

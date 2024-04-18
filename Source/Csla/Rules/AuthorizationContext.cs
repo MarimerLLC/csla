@@ -62,7 +62,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; private set; }
+    public ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Gets a data portal factory instance

@@ -42,7 +42,7 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
+    protected ApplicationContext ApplicationContext { get; }
 
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
     /// <summary>

@@ -24,10 +24,10 @@ namespace Csla.Threading
 
     private ApplicationContext ApplicationContext { get; set; }
 
-    public IPrincipal User { get; private set; }
-    public Csla.Core.ContextDictionary ClientContext { get; private set; }
-    public CultureInfo UICulture { get; private set; }
-    public CultureInfo Culture { get; private set; }
+    public IPrincipal User { get; }
+    public Csla.Core.ContextDictionary ClientContext { get; }
+    public CultureInfo UICulture { get; }
+    public CultureInfo Culture { get; }
 
     public ContextParams()
     {

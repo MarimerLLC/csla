@@ -51,7 +51,7 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the ValidationAttribute instance.
     /// </summary>
-    public System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { get; private set; }
+    public System.ComponentModel.DataAnnotations.ValidationAttribute Attribute { get; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -169,7 +169,7 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the max length value.
     /// </summary>
-    public int Max { get; private set; }
+    public int Max { get; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -240,7 +240,7 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the min length value.
     /// </summary>
-    public int Min { get; private set; }
+    public int Min { get; }
 
     /// <summary>
     /// Creates an instance of the rule.
@@ -312,7 +312,7 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the min value.
     /// </summary>
-    public T Min { get; private set; }
+    public T Min { get; }
     /// <summary>
     /// Gets or sets the format string used
     /// to format the Min value.
@@ -400,7 +400,7 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the max value.
     /// </summary>
-    public T Max { get; private set; }
+    public T Max { get; }
     /// <summary>
     /// Gets or sets the format string used
     /// to format the Max value.
@@ -520,7 +520,7 @@ namespace Csla.Rules.CommonRules
     /// Gets the regular expression
     /// to be evaluated.
     /// </summary>
-    public string Expression { get; private set; }
+    public string Expression { get; }
 
     /// <summary>
     /// Gets or sets a value that controls how

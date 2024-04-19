@@ -165,8 +165,7 @@ namespace Csla
         T savable = item;
 
         // attempt to clone object
-        ICloneable cloneable = savable as ICloneable;
-        if (cloneable != null)
+        if (savable is ICloneable cloneable)
         {
           savable = (T)cloneable.Clone();
           MethodCaller.CallMethodIfImplemented(item, "MarkBusy");

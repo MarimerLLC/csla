@@ -33,8 +33,7 @@ namespace Csla.Reflection
 
     public override bool Equals(object obj)
     {
-      MethodCacheKey key = obj as MethodCacheKey;
-      if (key != null &&
+      if (obj is MethodCacheKey key &&
           key.TypeName == this.TypeName &&
           key.MethodName == this.MethodName &&
           ArrayEquals(key.ParamTypes, this.ParamTypes))

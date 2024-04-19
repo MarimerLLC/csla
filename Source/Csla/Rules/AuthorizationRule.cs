@@ -6,6 +6,7 @@
 // <summary>Base class providing basic authorization rule</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
 using Csla.Properties;
 
 namespace Csla.Rules
@@ -134,8 +135,7 @@ namespace Csla.Rules
     /// </remarks>
     protected object ReadProperty(object obj, Csla.Core.IPropertyInfo propertyInfo)
     {
-      var target = obj as Core.IManageProperties;
-      if (target != null)
+      if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);

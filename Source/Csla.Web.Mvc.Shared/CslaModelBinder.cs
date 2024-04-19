@@ -135,6 +135,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.ComponentModel;
 using System.Collections;
+using Csla.Core;
 
 namespace Csla.Web.Mvc
 {
@@ -166,8 +167,7 @@ namespace Csla.Web.Mvc
       if (typeof(Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType)))
         return BindCslaCollection(controllerContext, bindingContext);
 
-      var suppress = bindingContext.Model as Core.ICheckRules;
-      if (suppress != null)
+      if (bindingContext.Model is ICheckRules suppress)
         suppress.SuppressRuleChecking();
       var result = base.BindModel(controllerContext, bindingContext);
       return result;
@@ -191,8 +191,7 @@ namespace Csla.Web.Mvc
         if (!bindingContext.ValueProvider.ContainsPrefix(subIndexKey))
           continue;      //no value to update skip
         var elementModel = collection[currIdx];
-        var suppress = elementModel as Core.ICheckRules;
-        if (suppress != null)
+        if (elementModel is ICheckRules suppress)
           suppress.SuppressRuleChecking();
         var elementContext = new ModelBindingContext()
         {
@@ -226,8 +225,7 @@ namespace Csla.Web.Mvc
     /// <param name="modelType">Type of model object</param>
     protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
     {
-      var controller = controllerContext.Controller as IModelCreator;
-      if (controller != null)
+      if (controllerContext.Controller is IModelCreator controller)
         return controller.CreateModel(modelType);
       else
         return base.CreateModel(controllerContext, bindingContext, modelType);
@@ -241,13 +239,11 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     protected override void OnModelUpdated(ControllerContext controllerContext, ModelBindingContext bindingContext)
     {
-      var obj = bindingContext.Model as Core.BusinessBase;
-      if (obj != null)
+      if (bindingContext.Model is BusinessBase obj)
       {
         if (this._checkRulesOnModelUpdated)
         {
-          var suppress = obj as Core.ICheckRules;
-          if (suppress != null)
+          if (obj is ICheckRules suppress)
           {
             suppress.ResumeRuleChecking();
             suppress.CheckRules();

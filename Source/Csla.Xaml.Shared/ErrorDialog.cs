@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Csla.Xaml
 {
@@ -124,22 +125,19 @@ namespace Csla.Xaml
 
     private void AttachSource(object source)
     {
-      var dp = source as System.Windows.Data.DataSourceProvider;
-      if (dp != null)
+      if (source is DataSourceProvider dp)
         dp.DataChanged += source_DataChanged;
     }
 
     private void DetachSource(object source)
     {
-      var dp = source as System.Windows.Data.DataSourceProvider;
-      if (dp != null)
+      if (source is DataSourceProvider dp)
         dp.DataChanged -= source_DataChanged;
     }
 
     private void source_DataChanged(object sender, EventArgs e)
     {
-      var dp = sender as System.Windows.Data.DataSourceProvider;
-      if (dp != null && dp.Error != null)
+      if (sender is DataSourceProvider dp && dp.Error != null)
       {
         string error;
         if (this.ShowExceptionDetail)

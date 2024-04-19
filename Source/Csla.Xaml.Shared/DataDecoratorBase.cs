@@ -63,15 +63,13 @@ namespace Csla.Xaml
     private object GetDataObject(object dataContext)
     {
       object result = dataContext;
-      DataSourceProvider provider = dataContext as DataSourceProvider;
-      if (provider != null)
+      if (dataContext is DataSourceProvider provider)
       {
         result = provider.Data;
       }
       else
       {
-        var icv = dataContext as ICollectionView;
-        if (icv != null)
+        if (dataContext is ICollectionView icv)
           result = icv.CurrentItem;
       }
       return result;
@@ -110,8 +108,7 @@ namespace Csla.Xaml
       // unhook any old event handling
       object oldContext = null;
 
-      DataSourceProvider provider = oldValue as DataSourceProvider;
-      if (provider == null)
+      if (oldValue is not DataSourceProvider provider)
       {
         oldContext = oldValue;
       }
@@ -122,8 +119,7 @@ namespace Csla.Xaml
       }
       UnHookChildChanged(oldContext as Csla.Core.INotifyChildChanged);
       UnHookPropertyChanged(oldContext as INotifyPropertyChanged);
-      INotifyCollectionChanged observable = oldContext as INotifyCollectionChanged;
-      if (observable != null)
+      if (oldContext is INotifyCollectionChanged observable)
         UnHookObservableListChanged(observable);
       else
         UnHookBindingListChanged(oldContext as IBindingList);
@@ -134,8 +130,7 @@ namespace Csla.Xaml
       // hook any new event
       object newContext = null;
 
-      DataSourceProvider provider = newValue as DataSourceProvider;
-      if (provider == null)
+      if (newValue is not DataSourceProvider provider)
       {
         newContext = newValue;
       }
@@ -146,8 +141,7 @@ namespace Csla.Xaml
       }
       HookChildChanged(newContext as Csla.Core.INotifyChildChanged);
       HookPropertyChanged(newContext as INotifyPropertyChanged);
-      INotifyCollectionChanged observable = newContext as INotifyCollectionChanged;
-      if (observable != null)
+      if (newContext is INotifyCollectionChanged observable)
         HookObservableListChanged(observable);
       else
         HookBindingListChanged(newContext as IBindingList);

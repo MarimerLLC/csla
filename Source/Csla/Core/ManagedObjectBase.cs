@@ -177,8 +177,7 @@ namespace Csla.Core
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
-        var fd = data as FieldManager.IFieldData<P>;
-        if (fd != null)
+        if (data is IFieldData<P> fd)
           result = fd.Value;
         else
           result = (P)data.Value;
@@ -249,8 +248,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -294,8 +292,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -321,8 +318,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;

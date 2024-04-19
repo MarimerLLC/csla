@@ -1172,8 +1172,7 @@ namespace Csla
       IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
-        IFieldData<P> fd = data as IFieldData<P>;
-        if (fd != null)
+        if (data is IFieldData<P> fd)
           result = fd.Value;
         else
           result = (P)data.Value;

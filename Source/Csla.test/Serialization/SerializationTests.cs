@@ -651,7 +651,7 @@ namespace Csla.Test.Serialization
     [Execute]
     protected void DataPortal_Execute()
     {
-      Name = Name + " server";
+      Name += " server";
     }
   }
 }

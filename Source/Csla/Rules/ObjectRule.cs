@@ -55,11 +55,11 @@ namespace Csla.Rules
       {
         if (value && !CanRunInCheckRules)
         {
-          RunMode = RunMode ^ RunModes.DenyCheckRules;
+          RunMode ^= RunModes.DenyCheckRules;
         }
         else if (!value && CanRunInCheckRules)
         {
-          RunMode = RunMode | RunModes.DenyCheckRules;
+          RunMode |= RunModes.DenyCheckRules;
         }
       }
     }

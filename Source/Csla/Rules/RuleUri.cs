@@ -60,7 +60,7 @@ namespace Csla.Rules
       {
         var tmp = hostName;
         hostName = null;
-        for (int i = 0; i < tmp.Length - 1; i = i + 63)
+        for (int i = 0; i < tmp.Length - 1; i += 63)
           hostName = hostName + tmp.Substring(i, ((i + 63 <= tmp.Length) ? 63 : tmp.Length - i)) + "/";
         hostName = hostName.Substring(0, hostName.Length - 1);
       }
@@ -130,7 +130,7 @@ namespace Csla.Rules
         string name = _uri.Host;
         if (_uri.Parts().Length > 1)
           for (int i = 0; i < _uri.Parts().Length - 1; i++)
-            name = name + _uri.Parts()[i];
+            name += _uri.Parts()[i];
         return name.Replace("/", "");
       }
     }

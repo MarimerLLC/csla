@@ -17,7 +17,7 @@ namespace Csla.Test.PropertyGetSet
 
     public EditableGetSetTopBase()
     {
-      _dummy = _dummy + 0;
+      _dummy += 0;
     }
 
     private static PropertyInfo<string> TopBaseProperty = RegisterProperty<string>(new PropertyInfo<string>("TopBase", "TopBase"));

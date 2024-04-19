@@ -11,22 +11,6 @@
     <RunSettingsFilePath>$(MSBuildProjectDirectory)\test.runsettings</RunSettingsFilePath>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net462|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net462|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MSTEST</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="CslaDataProvider\**" />
     <Compile Remove="DataBinding\**" />

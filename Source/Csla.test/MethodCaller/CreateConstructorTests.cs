@@ -8,16 +8,8 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
-
-#if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#else
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#endif
+
 
 namespace Csla.Test.MethodCaller
 {
@@ -32,11 +24,7 @@ namespace Csla.Test.MethodCaller
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetService<ApplicationContext>();
       var t1 = applicationContext.CreateInstance(typeof(TestClass));
-#if MSTEST
       Assert.IsInstanceOfType(t1, typeof(TestClass));
-#else
-      Assert.IsInstanceOfType(typeof(TestClass), t1);
-#endif
     }
 
     [TestMethod]

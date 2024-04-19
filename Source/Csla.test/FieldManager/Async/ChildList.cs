@@ -6,9 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Threading.Tasks;
-
 namespace Csla.Test.FieldManager.Async
 {
   [Serializable]

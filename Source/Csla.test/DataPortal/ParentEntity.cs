@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>DO NOT USE in UI - use the factory method instead</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Test.DataBinding
 {

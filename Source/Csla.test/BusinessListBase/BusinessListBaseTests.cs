@@ -5,10 +5,9 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.TestHelpers;
 using FluentAssertions;
-using System.Threading.Tasks;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

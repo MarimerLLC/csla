@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Csla.Test.Authorization
+﻿namespace Csla.Test.Authorization
 {
   public class RootException : BusinessBase<RootException>
   {

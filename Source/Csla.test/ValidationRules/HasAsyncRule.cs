@@ -5,11 +5,9 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Csla.Rules;
 using System.ComponentModel;
-using Csla.Core;
 
 namespace Csla.Test.ValidationRules
 {

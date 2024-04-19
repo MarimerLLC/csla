@@ -1,5 +1,3 @@
-using System;
-
 namespace Csla.Test.CommandBase
 {
   [Serializable]

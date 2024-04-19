@@ -5,13 +5,11 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using Csla.Core;
 using Csla.Rules;
 using UnitDriven;
-using System.Threading.Tasks;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -5,12 +5,10 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using Csla.Rules;
 using UnitDriven;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

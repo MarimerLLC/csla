@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Test to see if contexts get cleared out properly</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Configuration;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

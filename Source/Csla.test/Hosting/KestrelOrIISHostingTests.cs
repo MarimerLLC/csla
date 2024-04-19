@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Csla.TestHelpers.Http;
+﻿using Csla.TestHelpers.Http;
 using Csla.Testing.Business.DataPortal;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

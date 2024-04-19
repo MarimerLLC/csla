@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Threading;
-
 namespace Csla.Test.AppContext
 {
   public class AppContextThread

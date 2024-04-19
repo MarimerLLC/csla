@@ -5,14 +5,13 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Test.DataBinding;
 using System.Data.SqlClient;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 using FluentAssertions;
-using System.Threading.Tasks;
 using Csla.Rules;
 using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

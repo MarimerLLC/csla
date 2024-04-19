@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace Csla.Test.Authorization
 {
 #if TESTING

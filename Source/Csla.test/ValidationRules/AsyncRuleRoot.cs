@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Csla.Core;
+﻿using Csla.Core;
 using Csla.Rules;
 
 namespace Csla.Test.ValidationRules

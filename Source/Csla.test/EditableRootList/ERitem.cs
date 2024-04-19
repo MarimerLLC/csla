@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Test.EditableRootList
 {

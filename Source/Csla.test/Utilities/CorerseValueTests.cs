@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System;
 using UnitDriven;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

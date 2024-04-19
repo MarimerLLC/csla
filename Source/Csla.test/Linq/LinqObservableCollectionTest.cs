@@ -6,9 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

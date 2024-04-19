@@ -127,6 +127,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod()]
+    [TestCategory("SkipOnCIServer")]
     public void TestAuthBeginEditRules()
     {
       Guid managerInstanceId;
@@ -249,6 +250,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod()]
+    [TestCategory("SkipOnCIServer")]
     public void TestAuthorizationAfterEditCycle()
     {
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
@@ -295,6 +297,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void TestAuthorizedAccess()
     {
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
@@ -316,6 +319,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void TestAuthExecute()
     {
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));

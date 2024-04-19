@@ -50,7 +50,7 @@ namespace Csla.Test.SafeDataReader
 
     [TestMethod()]
     [TestCategory("SkipWhenLiveUnitTesting")]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     public void CloseSafeDataReader()
     {
       // TODO: Connection strings were lost, and I don't know how to set them correctly
@@ -71,7 +71,7 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod()]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     public void TestFieldCount()
     {
       // TODO: Connection strings were lost, and I don't know how to set them correctly
@@ -93,7 +93,7 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod()]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     public void GetSchemaTable()
     {
       // TODO: Connection strings were lost, and I don't know how to set them correctly
@@ -119,7 +119,7 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod()]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     public void IsDBNull()
     {
       // TODO: Connection strings were lost, and I don't know how to set them correctly
@@ -142,7 +142,7 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod()]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     public void GetDataTypes()
     {
       // TODO: Connection strings were lost, and I don't know how to set them correctly
@@ -195,7 +195,7 @@ namespace Csla.Test.SafeDataReader
 
 
     [TestMethod()]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     [ExpectedException(typeof(SqlException))]
     public void ThrowSqlException()
     {
@@ -212,7 +212,7 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod()]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     public void TestSafeDataReader()
     {
       List<string> list = new List<string>();

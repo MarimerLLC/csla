@@ -58,7 +58,7 @@ namespace Csla.Test.DataPortal
 
 #if DEBUG
     [TestMethod()]
-    [TestCategory("Database")]
+    [TestCategory("SkipOnCIServer")]
     public void TestTransactionScopeUpdate()
     {
       IDataPortal<TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<TransactionalRoot>();

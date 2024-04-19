@@ -293,11 +293,22 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task WhenCreatingANewObjectThePortalMustWaitAfterCreateUntilTheObjectIsNotBusyAnymore()
     {
-      var dataPortal = _testDIContext.CreateDataPortal<ObjectStillBusyAfterCreate>();
+      var cslaOptions = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();
+      int oldTimeout = cslaOptions.DefaultWaitForIdleTimeoutInSeconds;
+      try
+      {
+        cslaOptions.DefaultWaitForIdleTimeoutInSeconds = 5;
 
-      var obj = await dataPortal.CreateAsync();
+        var dataPortal = _testDIContext.CreateDataPortal<ObjectStillBusyAfterCreate>();
 
-      obj.IsBusy.Should().BeFalse();
+        var obj = await dataPortal.CreateAsync();
+
+        obj.IsBusy.Should().BeFalse();
+      }
+      finally
+      {
+        cslaOptions.DefaultWaitForIdleTimeoutInSeconds = oldTimeout;
+      }
     }
 
     private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)

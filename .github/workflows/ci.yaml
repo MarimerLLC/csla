@@ -27,4 +27,4 @@ jobs:
       run: dotnet build Source\csla.test.sln
 
     - name: Test
-      run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer
+      run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings test.runsettings

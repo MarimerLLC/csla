@@ -205,7 +205,7 @@ namespace Csla.Test.ValidationRules
 
       actual.CustomerId = 4;
       Assert.IsFalse(actual.IsValid);
-      Assert.AreEqual(3, actual.BrokenRulesCollection.Where(p => p.Severity == RuleSeverity.Error).Count());
+      Assert.AreEqual(3, actual.BrokenRulesCollection.Count(p => p.Severity == RuleSeverity.Error));
     }
 
     [TestMethod()]
@@ -218,7 +218,7 @@ namespace Csla.Test.ValidationRules
 
       actual.CustomerId = 5;
       Assert.IsTrue(actual.IsValid);
-      Assert.AreEqual(3, actual.BrokenRulesCollection.Where(p => p.Severity == RuleSeverity.Warning).Count());
+      Assert.AreEqual(3, actual.BrokenRulesCollection.Count(p => p.Severity == RuleSeverity.Warning));
     }
 
     [TestMethod()]
@@ -231,7 +231,7 @@ namespace Csla.Test.ValidationRules
 
       actual.CustomerId = 6;
       Assert.IsTrue(actual.IsValid);
-      Assert.AreEqual(3, actual.BrokenRulesCollection.Where(p => p.Severity == RuleSeverity.Information).Count());
+      Assert.AreEqual(3, actual.BrokenRulesCollection.Count(p => p.Severity == RuleSeverity.Information));
     }
 
 

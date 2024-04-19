@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-
 using Csla.Threading;
 using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,14 +30,14 @@ namespace Csla.Test.Threading
           BusyChanged(this, new BusyChangedEventArgs("", busy));
       }
 
-      public event BusyChangedEventHandler BusyChanged;      
+      public event BusyChangedEventHandler BusyChanged;
 
-      public event EventHandler<ErrorEventArgs> UnhandledAsyncException;
+      public event EventHandler<Csla.Core.ErrorEventArgs> UnhandledAsyncException;
 
       protected virtual void OnUnhandledAsyncException()
       {
         if (UnhandledAsyncException != null)
-          UnhandledAsyncException(this, new ErrorEventArgs(null, null));
+          UnhandledAsyncException(this, new Csla.Core.ErrorEventArgs(null, null));
       }
     }
 

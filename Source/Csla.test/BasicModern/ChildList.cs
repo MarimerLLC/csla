@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Csla.Test.BasicModern
+﻿namespace Csla.Test.BasicModern
 {
   [Serializable]
   public class ChildList : BusinessListBase<ChildList, Child>;

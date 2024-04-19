@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Csla.Test.Serialization
+﻿namespace Csla.Test.Serialization
 {
   public enum RandomEnum
   {

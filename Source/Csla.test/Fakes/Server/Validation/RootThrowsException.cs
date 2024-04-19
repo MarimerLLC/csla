@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Csla.Test.ValidationRules
+﻿namespace Csla.Test.ValidationRules
 {
   [Serializable]
   public class RootThrowsException : BusinessBase<RootThrowsException>

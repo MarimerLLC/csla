@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Csla.Configuration;
+﻿using Csla.Configuration;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

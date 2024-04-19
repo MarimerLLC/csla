@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Linq;
 using Csla.Rules;
 
 namespace Csla.Test.Authorization 

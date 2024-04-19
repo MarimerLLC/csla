@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Basically this test class exposes protected DataPortal constructor overloads to the </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Configuration;
 using Csla.Server;
 using Csla.Server.Dashboard;

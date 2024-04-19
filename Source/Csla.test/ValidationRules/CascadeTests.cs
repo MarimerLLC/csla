@@ -1,7 +1,4 @@
-﻿
-
-using System.Linq;
-using Csla.TestHelpers;
+﻿using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules

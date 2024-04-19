@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using UnitDriven;
-using System.Threading.Tasks;
 using Csla.TestHelpers;
 using FluentAssertions.Execution;
 using FluentAssertions;

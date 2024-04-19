@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Csla.Core;
+﻿using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
 

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Data Annotations attribute that makes use of DI</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace Csla.Test.ValidationRules

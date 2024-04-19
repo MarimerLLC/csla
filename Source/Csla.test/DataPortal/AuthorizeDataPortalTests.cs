@@ -11,7 +11,6 @@ using Csla.Testing.Business.DataPortal;
 using Csla.Server;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal

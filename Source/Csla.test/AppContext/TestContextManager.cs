@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Security.Principal;
-using System.Threading;
 using Csla.Core;
 
 namespace Csla.Test.AppContext

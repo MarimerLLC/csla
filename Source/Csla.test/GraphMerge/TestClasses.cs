@@ -1,5 +1,4 @@
-﻿using System;
-using Csla.Rules;
+﻿using Csla.Rules;
 
 namespace Csla.Test.GraphMerge
 {

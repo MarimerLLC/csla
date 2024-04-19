@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Threading.Tasks;
 using Csla.Server;
 
 namespace Csla.Test.DataPortalTest

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Csla.Test.FieldManager
+﻿namespace Csla.Test.FieldManager
 {
   [Serializable]
   public class RootUpdateAllChildren : BusinessBase<RootUpdateAllChildren>

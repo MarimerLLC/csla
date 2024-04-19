@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Always make sure to cleanup after each test </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Configuration;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

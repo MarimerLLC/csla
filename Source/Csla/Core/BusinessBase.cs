@@ -798,8 +798,7 @@ namespace Csla.Core
           // called on us, and now we've been cancelled back to
           // where we were added so we should have ourselves
           // removed from the parent collection
-          if (Parent != null)
-            Parent.RemoveChild(this);
+          Parent?.RemoveChild(this);
         }
       }
     }
@@ -906,8 +905,7 @@ namespace Csla.Core
       base.AcceptChangesComplete();
 
       // !!!! Will trigger Save here when using DynamicListBase template
-      if (Parent != null)
-        Parent.ApplyEditChild(this);
+      Parent?.ApplyEditChild(this);
     }
 
 #endregion
@@ -1061,8 +1059,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnValidationComplete()
     {
-      if (_validationCompleteHandlers != null)
-        _validationCompleteHandlers(this, EventArgs.Empty);
+      _validationCompleteHandlers?.Invoke(this, EventArgs.Empty);
     }
 
     private void InitializeBusinessRules()
@@ -3095,8 +3092,7 @@ namespace Csla.Core
     /// <param name="args">Event args.</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      if (_busyChanged != null)
-        _busyChanged(this, args);
+      _busyChanged?.Invoke(this, args);
       MetaPropertyHasChanged("IsSelfBusy");
       MetaPropertyHasChanged("IsBusy");
     }
@@ -3152,8 +3148,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
+      _unhandledAsyncException?.Invoke(this, error);
     }
 
     /// <summary>
@@ -3205,8 +3200,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnChildChanged(ChildChangedEventArgs e)
     {
-      if (_childChangedHandlers != null)
-        _childChangedHandlers.Invoke(this, e);
+      _childChangedHandlers?.Invoke(this, e);
       MetaPropertyHasChanged("IsDirty");
       MetaPropertyHasChanged("IsValid");
       MetaPropertyHasChanged("IsSavable");

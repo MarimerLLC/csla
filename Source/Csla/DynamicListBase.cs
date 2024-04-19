@@ -129,8 +129,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSaved(T newObject, Exception error)
     {
-      if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject, error, null));
+      Saved?.Invoke(this, new SavedEventArgs(newObject, error, null));
     }
 
     /// <summary>

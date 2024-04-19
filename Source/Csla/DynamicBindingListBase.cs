@@ -254,10 +254,8 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, null);
-      if (_nonSerializableSavedHandlers != null)
-        _nonSerializableSavedHandlers.Invoke(this, args);
-      if (_serializableSavedHandlers != null)
-        _serializableSavedHandlers.Invoke(this, args);
+      _nonSerializableSavedHandlers?.Invoke(this, args);
+      _serializableSavedHandlers?.Invoke(this, args);
     }
 
 #endregion

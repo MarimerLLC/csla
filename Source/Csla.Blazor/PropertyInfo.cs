@@ -59,14 +59,7 @@ namespace Csla.Blazor
     /// </summary>
     public object Value
     {
-      get
-      {
-        var result = Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
-        if (result != null)
-          return result;
-        else
-          return default;
-      }
+      get => Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
       set => Csla.Utilities.CallByName(Model, PropertyName, CallType.Set, value);
     }
 

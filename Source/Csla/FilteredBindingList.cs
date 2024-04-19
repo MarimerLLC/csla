@@ -391,8 +391,7 @@ namespace Csla
     /// <param name="e">Parameter for the event.</param>
     protected void OnListChanged(ListChangedEventArgs e)
     {
-      if (ListChanged != null)
-        ListChanged(this, e);
+      ListChanged?.Invoke(this, e);
     }
 
     /// <summary>

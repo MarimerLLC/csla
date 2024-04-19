@@ -130,9 +130,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnRemovingItem(T removedItem)
     {
-      if (_removingItemHandler != null)
-        _removingItemHandler.Invoke(this,
-          new RemovingItemEventArgs(removedItem));
+      _removingItemHandler?.Invoke(this,
+        new RemovingItemEventArgs(removedItem));
     }
 
     #endregion
@@ -193,8 +192,7 @@ namespace Csla.Core
     /// <param name="args">Event arguments.</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      if (_busyChanged != null)
-        _busyChanged(this, args);
+      _busyChanged?.Invoke(this, args);
     }
 
     /// <summary>
@@ -259,8 +257,7 @@ namespace Csla.Core
     /// <param name="error">Event arguments.</param>
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
+      _unhandledAsyncException?.Invoke(this, error);
     }
 
     /// <summary>
@@ -410,8 +407,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnChildChanged(ChildChangedEventArgs e)
     {
-      if (_childChangedHandlers != null)
-        _childChangedHandlers.Invoke(this, e);
+      _childChangedHandlers?.Invoke(this, e);
     }
 
     /// <summary>

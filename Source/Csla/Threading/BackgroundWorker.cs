@@ -240,10 +240,7 @@ namespace Csla.Threading
       try
       {
         var doWorkEventArgs = new DoWorkEventArgs(request.Argument);
-        if (_myDoWork != null)
-        {
-          _myDoWork.Invoke(this, doWorkEventArgs);
-        }
+        _myDoWork?.Invoke(this, doWorkEventArgs);
 #pragma warning disable CS0618 // Type or member is obsolete
         e.Result = new WorkerAsyncResult(doWorkEventArgs.Result, null);
 #pragma warning restore CS0618 // Type or member is obsolete
@@ -286,10 +283,7 @@ namespace Csla.Threading
       }
 
 
-      if (_myWorkerCompleted != null)
-      {
-        _myWorkerCompleted.Invoke(this, new RunWorkerCompletedEventArgs(result, error, e.Cancelled));
-      }
+      _myWorkerCompleted?.Invoke(this, new RunWorkerCompletedEventArgs(result, error, e.Cancelled));
     }
 
     /// <summary>
@@ -302,10 +296,7 @@ namespace Csla.Threading
     /// </exception>
     private void InternalProgressChanged(object sender, ProgressChangedEventArgs e)
     {
-      if (_myWorkerProgressChanged != null)
-      {
-        _myWorkerProgressChanged.Invoke(this, new ProgressChangedEventArgs(e.ProgressPercentage, e.UserState));
-      }
+      _myWorkerProgressChanged?.Invoke(this, new ProgressChangedEventArgs(e.ProgressPercentage, e.UserState));
     }
 
     /// <summary>

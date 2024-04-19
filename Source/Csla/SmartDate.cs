@@ -711,15 +711,12 @@ namespace Csla
       DateTime tmp;
 
       // call custom parser if set...
-      if (_customParser != null)
+      var tmpValue = _customParser?.Invoke(value);
+      // i f custom parser returned a value then parsing succeeded
+      if (tmpValue.HasValue)
       {
-        var tmpValue = _customParser.Invoke(value);
-        // i f custom parser returned a value then parsing succeeded
-        if (tmpValue.HasValue)
-        {
-          result = tmpValue.Value;
-          return true;
-        }
+        result = tmpValue.Value;
+        return true;
       }
 
       if (String.IsNullOrEmpty(value))

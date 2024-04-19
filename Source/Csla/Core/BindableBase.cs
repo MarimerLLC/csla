@@ -82,12 +82,10 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanged(string propertyName)
     {
-      if (_nonSerializableChangedHandlers != null)
-        _nonSerializableChangedHandlers.Invoke(this,
-          new PropertyChangedEventArgs(propertyName));
-      if (_serializableChangedHandlers != null)
-        _serializableChangedHandlers.Invoke(this,
-          new PropertyChangedEventArgs(propertyName));
+      _nonSerializableChangedHandlers?.Invoke(this,
+        new PropertyChangedEventArgs(propertyName));
+      _serializableChangedHandlers?.Invoke(this,
+        new PropertyChangedEventArgs(propertyName));
     }
 
         /// <summary>
@@ -103,12 +101,10 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnMetaPropertyChanged(string propertyName)
     {
-      if (_nonSerializableChangedHandlers != null)
-        _nonSerializableChangedHandlers.Invoke(this,
-          new MetaPropertyChangedEventArgs(propertyName));
-      if (_serializableChangedHandlers != null)
-        _serializableChangedHandlers.Invoke(this,
-          new MetaPropertyChangedEventArgs(propertyName));
+      _nonSerializableChangedHandlers?.Invoke(this,
+        new MetaPropertyChangedEventArgs(propertyName));
+      _serializableChangedHandlers?.Invoke(this,
+        new MetaPropertyChangedEventArgs(propertyName));
     }
 
     /// <summary>
@@ -229,12 +225,10 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanging(string propertyName)
     {
-      if (_nonSerializableChangingHandlers != null)
-        _nonSerializableChangingHandlers.Invoke(this,
-          new PropertyChangingEventArgs(propertyName));
-      if (_serializableChangingHandlers != null)
-        _serializableChangingHandlers.Invoke(this,
-          new PropertyChangingEventArgs(propertyName));
+      _nonSerializableChangingHandlers?.Invoke(this,
+        new PropertyChangingEventArgs(propertyName));
+      _serializableChangingHandlers?.Invoke(this,
+        new PropertyChangingEventArgs(propertyName));
     }
 
     /// <summary>

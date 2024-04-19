@@ -26,8 +26,7 @@ namespace Csla.Test.Threading
       public void MarkBusy(bool busy)
       {
         IsBusy = busy;
-        if (BusyChanged != null)
-          BusyChanged(this, new BusyChangedEventArgs("", busy));
+        BusyChanged?.Invoke(this, new BusyChangedEventArgs("", busy));
       }
 
       public event BusyChangedEventHandler BusyChanged;

@@ -1186,8 +1186,7 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-      if (_savedEvent != null)
-        _savedEvent.Invoke(this, args);
+      _savedEvent?.Invoke(this, args);
     }
     #endregion
 

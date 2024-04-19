@@ -102,8 +102,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.Child_OnDataPortalException(eventArgs, ex);
+          obj?.Child_OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -198,8 +197,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.Child_OnDataPortalException(eventArgs, ex);
+          obj?.Child_OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -342,9 +340,8 @@ namespace Csla.Server
       {
         try
         {
-          if (lb != null)
-            lb.Child_OnDataPortalException(
-              new DataPortalEventArgs(null, objectType, obj, operation), ex);
+          lb?.Child_OnDataPortalException(
+            new DataPortalEventArgs(null, objectType, obj, operation), ex);
         }
         catch
         {

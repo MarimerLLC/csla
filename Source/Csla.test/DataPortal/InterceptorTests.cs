@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void CreateWithIntercept()
     {
-      var obj = CreateInitializeRoot("abc");
+      CreateInitializeRoot("abc");
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
       Assert.AreEqual("CreateInstance", TestResults.GetResult("Activate1+InitializeRoot"), "CreateInstance should have run");
@@ -53,7 +53,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FetchWithIntercept()
     {
-      var obj = GetInitializeRoot("abc");
+      GetInitializeRoot("abc");
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeRoot"), "Complete should have run");
       Assert.AreEqual("CreateInstance", TestResults.GetResult("Activate1+InitializeRoot"), "CreateInstance should have run");
@@ -65,7 +65,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FetchListWithIntercept()
     {
-      var obj = GetInitializeListRoot();
+      GetInitializeListRoot();
       Assert.AreEqual("Initialize", TestResults.GetResult("Intercept1+InitializeListRoot"), "Initialize should have run");
       Assert.AreEqual("Complete", TestResults.GetResult("Intercept2+InitializeListRoot"), "Complete should have run");
       Assert.AreEqual("CreateInstance", TestResults.GetResult("Activate1+InitializeListRoot"), "CreateInstance (list) should have run");
@@ -80,7 +80,7 @@ namespace Csla.Test.DataPortal
     {
       try
       {
-        var obj = GetInitializeRoot("boom");
+        GetInitializeRoot("boom");
       }
       catch
       { }

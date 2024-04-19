@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
 
-      Split test = Split.NewObject(dataPortal);
+      Split.NewObject(dataPortal);
       Assert.AreEqual("Created", TestResults.GetResult("Split"));
     }
     [TestMethod]
@@ -50,7 +50,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
 
-      Split test = Split.GetObject(5, dataPortal);
+      Split.GetObject(5, dataPortal);
       Assert.AreEqual("Fetched", TestResults.GetResult("Split"));
     }
     [TestMethod]

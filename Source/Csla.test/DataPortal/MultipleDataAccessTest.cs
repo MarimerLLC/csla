@@ -46,7 +46,7 @@ namespace Csla.Test.DataPortal
 
       try
       {
-        var result = dataPortal.Fetch(1, default(bool?));
+        dataPortal.Fetch(1, default(bool?));
       }
       catch (DataPortalException ex)
       {

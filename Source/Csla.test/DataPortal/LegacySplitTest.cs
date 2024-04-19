@@ -40,14 +40,14 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpCreate()
     {
-      LegacySplit test = NewLegacySplit();
+      NewLegacySplit();
       Assert.AreEqual("Created", TestResults.GetResult("LegacySplit"));
     }
 
     [TestMethod]
     public void TestDpFetch()
     {
-      LegacySplit test = GetLegacySplit(5);
+      GetLegacySplit(5);
       Assert.AreEqual("Fetched", TestResults.GetResult("LegacySplit"));
     }
 

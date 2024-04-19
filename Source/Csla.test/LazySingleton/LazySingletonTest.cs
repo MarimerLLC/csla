@@ -63,9 +63,9 @@ namespace Csla.Test.LazySingleton
     {
       var lazy = new LazySingleton<Dictionary<string, object>>(() => new Dictionary<string, object>());
       var value = lazy.Value;
-      Assert.IsNotNull(lazy.Value, "Value must not be null.");
+      Assert.IsNotNull(value, "Value must not be null.");
       Assert.IsTrue(lazy.IsValueCreated);
-      Assert.AreEqual(typeof(Dictionary<string, object>), lazy.Value.GetType());
+      Assert.AreEqual(typeof(Dictionary<string, object>), value.GetType());
     }
 
     #region Private Helper Methods

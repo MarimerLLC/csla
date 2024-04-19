@@ -54,7 +54,6 @@ namespace Csla.Test.RollBack
       Assert.AreEqual(true, root.IsNew, "isnew is true");
 
       TestResults.Reinitialise();
-      RollbackRoot tmp = root.Clone();
       root.ApplyEdit();
       root = root.Save();
 

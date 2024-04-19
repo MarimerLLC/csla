@@ -51,7 +51,7 @@ namespace Csla.Test.Basic
     {
       RootList list = CreateRootList();
       RootListChild child = list.AddNew();
-      string[] rules = child.GetRuleDescriptions();
+      child.GetRuleDescriptions();
     }
 
     private TestCollection CreateTestCollection()

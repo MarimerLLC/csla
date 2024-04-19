@@ -31,7 +31,6 @@ namespace cslalighttest.BusyStatus
   [TestClass]
   public class BusyStatusTests : TestBase
   {
-
     private static TestDIContext _testDIContext;
     private static TestDIContext _noCloneOnUpdateDIContext;
 
@@ -230,8 +229,6 @@ namespace cslalighttest.BusyStatus
       context.Assert.Success();
 
       context.Complete();
-
-
     }
 
     [TestMethod]
@@ -262,8 +259,6 @@ namespace cslalighttest.BusyStatus
 
       UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-
-     
 
       items[0].ValidationComplete += (_, _) =>
       {
@@ -320,10 +315,9 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
-      
+
       await item.WaitForIdle(TimeSpan.FromSeconds(5)); // Timeout should _never_ happen
 
       item.IsBusy.Should().BeFalse(because: $"{nameof(ItemWithAsynchRule.IsBusy)} is still true even though we waited with {nameof(ItemWithAsynchRule.WaitForIdle)}.");
@@ -332,10 +326,8 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public async Task WaitForIdle_WhenReachingTheTimeoutATimeoutExceptionIsThrown() 
     {
-
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
 

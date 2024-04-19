@@ -43,7 +43,7 @@ namespace Csla.Test.EditableRootList
       IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
 
       ERlist list = dataPortal.Create();
-      ERitem item = list.AddNew();
+      list.AddNew();
       Assert.AreEqual(1, list.Count, "Count should be 1");
       Assert.IsTrue(list[0].IsNew, "Object should be new");
     }

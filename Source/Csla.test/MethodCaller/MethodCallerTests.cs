@@ -151,7 +151,6 @@ namespace Csla.Test.MethodCaller
     [ExpectedException(typeof(CallMethodException))]
     public void CallWithInvalidParameterTypeFails()
     {
-      MemoryStream ms = new MemoryStream();
       var t = this.GetType();
       var foo = t.GetMethod("foo");
       Csla.Reflection.MethodCaller.CallMethod(this, foo, "This should be a MemoryStream object not a string...");

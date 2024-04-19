@@ -145,9 +145,7 @@ namespace Csla.Test.Linq
                   where r.Id > 100
                   select r;
       var synced = source.ToSyncList(query);
-      int count = 0;
-      foreach (var item in synced)
-        count++;
+      int count = synced.Count;
       Assert.AreEqual(3, count, "Calculated count wrong (br)");
       Assert.AreEqual(3, synced.Count, "Synced count wrong (br)");
       Assert.AreEqual(4, source.Count, "source count wrong (br)");
@@ -155,9 +153,7 @@ namespace Csla.Test.Linq
 
       source.RemoveAt(3);
 
-      count = 0;
-      foreach (var item in synced)
-        count++;
+      count = synced.Count;
 
       Assert.AreEqual(3, count, "Calculated count wrong");
       Assert.AreEqual(3, synced.Count, "Synced count wrong");

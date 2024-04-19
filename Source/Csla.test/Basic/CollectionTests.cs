@@ -53,7 +53,7 @@ namespace Csla.Test.Basic
     {
       RootList list = new RootList();
       RootListChild child = list.AddNew();
-      string[] rules = child.GetRuleDescriptions();
+      child.GetRuleDescriptions();
     }
   }
 

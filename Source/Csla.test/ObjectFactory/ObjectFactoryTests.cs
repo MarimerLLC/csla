@@ -309,7 +309,7 @@ namespace Csla.Test.ObjectFactory
 
       try
       {
-        var test = CommandObjectMissingFactoryMethod.Execute(dataPortal);
+        CommandObjectMissingFactoryMethod.Execute(dataPortal);
       }
       catch (DataPortalException ex)
       {

@@ -85,8 +85,6 @@ namespace GraphMergerTest.Business
             {
                 var list  = dal.FetchList(parentId);
 
-                var items = new List<ChildItem>();
-
                 foreach (var dto in list)
                 {
                     var item = childDataPortal.FetchChild(dto);

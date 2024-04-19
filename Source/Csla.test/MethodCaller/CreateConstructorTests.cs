@@ -58,7 +58,7 @@ namespace Csla.Test.MethodCaller
       services.AddCsla();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetService<ApplicationContext>();
-      var obj = applicationContext.CreateInstanceDI(typeof(TestStruct));
+      applicationContext.CreateInstanceDI(typeof(TestStruct));
     }
 
     public class NonPublic1

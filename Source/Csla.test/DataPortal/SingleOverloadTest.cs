@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<SingleOverload> dataPortal = _testDIContext.CreateDataPortal<SingleOverload>();
 
-      SingleOverload test = SingleOverload.NewObject(dataPortal);
+      SingleOverload.NewObject(dataPortal);
       Assert.AreEqual("Created0", TestResults.GetResult("SingleOverload"));
     }
     [TestMethod]
@@ -50,7 +50,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<SingleOverload> dataPortal = _testDIContext.CreateDataPortal<SingleOverload>();
 
-      SingleOverload test = SingleOverload.NewObjectWithCriteria(dataPortal);
+      SingleOverload.NewObjectWithCriteria(dataPortal);
       Assert.AreEqual("Created1", TestResults.GetResult("SingleOverload"));
     }
     [TestMethod]
@@ -58,7 +58,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<SingleOverload> dataPortal = _testDIContext.CreateDataPortal<SingleOverload>();
 
-      SingleOverload test = SingleOverload.GetObject(5, dataPortal);
+      SingleOverload.GetObject(5, dataPortal);
       Assert.AreEqual("Fetched", TestResults.GetResult("SingleOverload"));
     }
     [TestMethod]

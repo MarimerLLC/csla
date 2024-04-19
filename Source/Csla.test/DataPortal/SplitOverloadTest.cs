@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<SplitOverload> dataPortal = _testDIContext.CreateDataPortal<SplitOverload>();
 
-      SplitOverload test = SplitOverload.NewObject(dataPortal);
+      SplitOverload.NewObject(dataPortal);
       Assert.AreEqual("Created", TestResults.GetResult("SplitOverload"));
     }
     [TestMethod]
@@ -50,7 +50,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<SplitOverload> dataPortal = _testDIContext.CreateDataPortal<SplitOverload>();
 
-      SplitOverload test = SplitOverload.NewObjectWithCriteria(dataPortal);
+      SplitOverload.NewObjectWithCriteria(dataPortal);
       Assert.AreEqual("Created1", TestResults.GetResult("SplitOverload"));
     }
     [TestMethod]
@@ -58,7 +58,7 @@ namespace Csla.Test.DataPortalTest
     {
       IDataPortal<SplitOverload> dataPortal = _testDIContext.CreateDataPortal<SplitOverload>();
 
-      SplitOverload test = SplitOverload.GetObject(5, dataPortal);
+      SplitOverload.GetObject(5, dataPortal);
       Assert.AreEqual("Fetched", TestResults.GetResult("SplitOverload"));
     }
     [TestMethod]

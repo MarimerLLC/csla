@@ -214,7 +214,7 @@ namespace Csla.Test.SafeDataReader
       {
         cm.CommandText = "SELECT FirstName FROM NonExistantTable";
 
-        Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
+        new Csla.Data.SafeDataReader(cm.ExecuteReader());
       }
     }
 

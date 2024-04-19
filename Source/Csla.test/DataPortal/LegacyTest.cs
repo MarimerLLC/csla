@@ -40,13 +40,13 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpCreate()
     {
-      Legacy test = NewLegacy();
+      NewLegacy();
       Assert.AreEqual("Created", TestResults.GetResult("Legacy"));
     }
     [TestMethod]
     public void TestDpFetch()
     {
-      Legacy test = GetLegacy(5);
+      GetLegacy(5);
       Assert.AreEqual("Fetched", TestResults.GetResult("Legacy"));
     }
     [TestMethod]

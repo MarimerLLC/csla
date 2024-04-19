@@ -141,7 +141,7 @@ namespace Csla.Test.Linq
       Assert.AreEqual(3, count, "Calculated count wrong (br)");
       Assert.AreEqual(3, synced.Count, "Synced count wrong (br)");
       Assert.AreEqual(4, source.Count, "source count wrong (br)");
-      Assert.AreEqual(0, synced.Where(_ => _.Id == 12).Count(), "synced contains 12");
+      Assert.AreEqual(0, synced.Count(_ => _.Id == 12), "synced contains 12");
 
       source.RemoveAt(3);
 
@@ -152,7 +152,7 @@ namespace Csla.Test.Linq
       Assert.AreEqual(3, count, "Calculated count wrong");
       Assert.AreEqual(3, synced.Count, "Synced count wrong");
       Assert.AreEqual(3, source.Count, "source count wrong");
-      Assert.AreEqual(0, synced.Where(_ => _.Id == 12).Count(), "synced contains 12");
+      Assert.AreEqual(0, synced.Count(_ => _.Id == 12), "synced contains 12");
     }
 
     [TestMethod]

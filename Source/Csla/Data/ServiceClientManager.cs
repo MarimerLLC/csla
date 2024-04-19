@@ -29,8 +29,8 @@ namespace Csla.Data
     private static object _lock = new object();
     private string _name = string.Empty;
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Gets the client proxy object for the
@@ -42,11 +42,11 @@ namespace Csla.Data
 
       lock (_lock)
       {
-        ServiceClientManager<C, T> mgr = (ServiceClientManager<C, T>)ApplicationContext.LocalContext.GetValueOrNull(name);
+        ServiceClientManager<C, T> mgr = (ServiceClientManager<C, T>)_applicationContext.LocalContext.GetValueOrNull(name);
         if (mgr == null)
         {
           mgr = new ServiceClientManager<C, T>(name);
-          ApplicationContext.LocalContext[name] = mgr;
+          _applicationContext.LocalContext[name] = mgr;
         }
         return mgr;
       }
@@ -55,7 +55,7 @@ namespace Csla.Data
 
     private ServiceClientManager(string name)
     {
-      Client = (C)(ApplicationContext.CreateInstanceDI(typeof(C)));
+      Client = (C)(_applicationContext.CreateInstanceDI(typeof(C)));
     }
 
     /// <summary>

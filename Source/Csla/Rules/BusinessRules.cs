@@ -34,15 +34,15 @@ namespace Csla.Rules
     /// <param name="target">Target business object.</param>
     public BusinessRules(ApplicationContext applicationContext, IHostRules target)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       SetTarget(target);
     }
 
     [NonSerialized]
     private object SyncRoot = new();
 
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    private ApplicationContext _applicationContext;
 
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
@@ -132,7 +132,7 @@ namespace Csla.Rules
       get
       {
         if (_typeAuthRules == null && _target != null)
-          _typeAuthRules = AuthorizationRuleManager.GetRulesForType(ApplicationContext, _target.GetType(), _ruleSet);
+          _typeAuthRules = AuthorizationRuleManager.GetRulesForType(_applicationContext, _target.GetType(), _ruleSet);
         return _typeAuthRules;
       }
     }
@@ -594,7 +594,7 @@ namespace Csla.Rules
       RunningRules = true;
       var rules = from r in TypeRules.Rules
                   where r.PrimaryProperty == null
-                    && CanRunRule(ApplicationContext, r, executionContext)
+                    && CanRunRule(_applicationContext, r, executionContext)
                   orderby r.Priority
                   select r;
       BrokenRules.ClearRules(null);
@@ -702,7 +702,7 @@ namespace Csla.Rules
       // checking rules for the primary property
       var primaryRules = from r in TypeRules.Rules
                   where ReferenceEquals(r.PrimaryProperty, property)
-                    && CanRunRule(ApplicationContext, r, executionMode)
+                    && CanRunRule(_applicationContext, r, executionMode)
                   orderby r.Priority
                   select r;
 
@@ -790,7 +790,7 @@ namespace Csla.Rules
           break;
         bool complete = false;
         // set up context
-        var context = new RuleContext(ApplicationContext, (r) =>
+        var context = new RuleContext(_applicationContext, (r) =>
         {
           if (r.Rule.IsAsync)
           {

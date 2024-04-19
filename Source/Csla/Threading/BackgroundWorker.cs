@@ -22,13 +22,13 @@ namespace Csla.Threading
     /// </summary>
     public BackgroundWorker(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       _myWorker.DoWork += InternalDoWork;
       _myWorker.RunWorkerCompleted += InternalRunWorkerCompleted;
       _myWorker.ProgressChanged += InternalProgressChanged;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     // overridden event handler to be invoked by this class
     private DoWorkEventHandler _myDoWork;
@@ -215,7 +215,7 @@ namespace Csla.Threading
     /// </exception>
     public void RunWorkerAsync(object argument)
     {
-      _myWorker.RunWorkerAsync(new WorkerAsyncRequest(ApplicationContext, argument));
+      _myWorker.RunWorkerAsync(new WorkerAsyncRequest(_applicationContext, argument));
     }
 
 

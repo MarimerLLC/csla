@@ -36,8 +36,8 @@ namespace Csla.Core.FieldManager
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 
-    private ApplicationContext ApplicationContext { get; set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext _applicationContext;
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -46,7 +46,7 @@ namespace Csla.Core.FieldManager
 
     internal FieldDataManager(ApplicationContext applicationContext, Type businessObjectType)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       SetPropertyList(businessObjectType);
       _fieldData = new IFieldData[_propertyList.Count];
     }
@@ -520,7 +520,7 @@ namespace Csla.Core.FieldManager
 
       // serialize the state and stack it
       using MemoryStream buffer = new MemoryStream();
-      var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+      var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
       var stateList = new MobileList<IFieldData>(state.ToList());
       formatter.Serialize(buffer, stateList);
       _stateStack.Push(buffer.ToArray());
@@ -539,7 +539,7 @@ namespace Csla.Core.FieldManager
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+          var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
           state = ((MobileList<IFieldData>)(formatter.Deserialize(buffer))).ToArray();
         }
 
@@ -625,7 +625,7 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Paramters for method</param>
     public void UpdateChildren(params object[] parameters)
     {
-      var dp = ApplicationContext.CreateInstanceDI<DataPortal<IFieldData>>();
+      var dp = _applicationContext.CreateInstanceDI<DataPortal<IFieldData>>();
       foreach (var item in _fieldData)
       {
         if (item != null)
@@ -645,7 +645,7 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Paramters for method</param>
     public void UpdateAllChildren(params object[] parameters)
     {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal(ApplicationContext);
+      Server.ChildDataPortal portal = new Server.ChildDataPortal(_applicationContext);
       foreach (var item in _fieldData)
       {
         if (item != null)
@@ -664,7 +664,7 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Parameters for method</param>
     public async Task UpdateChildrenAsync(params object[] parameters)
     {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal(ApplicationContext);
+      Server.ChildDataPortal portal = new Server.ChildDataPortal(_applicationContext);
       foreach (var item in _fieldData)
       {
         if (item != null)
@@ -684,7 +684,7 @@ namespace Csla.Core.FieldManager
     /// <param name="parameters">Parameters for method</param>
     public async Task UpdateAllChildrenAsync(params object[] parameters)
     {
-      Server.ChildDataPortal portal = new Server.ChildDataPortal(ApplicationContext);
+      Server.ChildDataPortal portal = new Server.ChildDataPortal(_applicationContext);
       foreach (var item in _fieldData)
       {
         if (item != null)
@@ -724,7 +724,7 @@ namespace Csla.Core.FieldManager
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
           else if (mode == StateMode.Undo && data.Value is IMobileObject)
-            info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(data.Value), data.IsDirty);
+            info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(data.Value), data.IsDirty);
           else if(data.Value is not IMobileObject)
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
@@ -789,7 +789,7 @@ namespace Csla.Core.FieldManager
             typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
             !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
           {
-            data.Value = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize((byte[])value.Value);
+            data.Value = SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize((byte[])value.Value);
           }
           else data.Value = value.Value;
 

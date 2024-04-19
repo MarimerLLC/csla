@@ -44,8 +44,8 @@ namespace Csla.Data
     private string _connectionString;
     private string _label;
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Gets the TransactionManager object for the 
@@ -128,15 +128,15 @@ namespace Csla.Data
       {
         var contextLabel = GetContextName(database, label);
         TransactionManager<C, T> mgr = null;
-        if (ApplicationContext.LocalContext.Contains(contextLabel))
+        if (_applicationContext.LocalContext.Contains(contextLabel))
         {
-          mgr = (TransactionManager<C, T>)(ApplicationContext.LocalContext[contextLabel]);
+          mgr = (TransactionManager<C, T>)(_applicationContext.LocalContext[contextLabel]);
 
         }
         else
         {
           mgr = new TransactionManager<C, T>(database, label);
-          ApplicationContext.LocalContext[contextLabel] = mgr;
+          _applicationContext.LocalContext[contextLabel] = mgr;
         }
         mgr.AddRef();
         return mgr;
@@ -233,7 +233,7 @@ namespace Csla.Data
           {
             _transaction.Dispose();
             _connection.Dispose();
-            ApplicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
+            _applicationContext.LocalContext.Remove(GetContextName(_connectionString, _label));
           }
         }
       }

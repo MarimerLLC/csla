@@ -9,7 +9,7 @@ namespace Csla.Serialization.Mobile
   public class CslaBinaryWriter : ICslaWriter
   {
     private readonly Dictionary<string, int> keywordsDictionary;
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Create new instance of CslaBinaryWriter class
@@ -17,7 +17,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="applicationContext"></param>
     public CslaBinaryWriter(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       keywordsDictionary = new Dictionary<string, int>();
     }
 
@@ -100,7 +100,7 @@ namespace Csla.Serialization.Mobile
       {
         using (MemoryStream buffer = new MemoryStream())
         {
-          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+          var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
           formatter.Serialize(buffer, target);
           var data = buffer.ToArray();
           Write(CslaKnownTypes.IMobileObject, writer);

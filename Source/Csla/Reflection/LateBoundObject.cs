@@ -17,8 +17,8 @@ namespace Csla.Reflection
   /// </summary>
   public class LateBoundObject : Core.IUseApplicationContext
   {
-    private ApplicationContext ApplicationContext { get; set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext _applicationContext;
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
 
     /// <summary>
     /// Object instance managed by LateBoundObject.
@@ -39,7 +39,7 @@ namespace Csla.Reflection
     /// </remarks>
     public LateBoundObject(Type objectType)
     {
-      Instance = ApplicationContext.CreateInstanceDI(objectType);
+      Instance = _applicationContext.CreateInstanceDI(objectType);
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ namespace Csla.Reflection
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)ApplicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
         return serviceProviderMethodCaller;
       }
     }
@@ -184,7 +184,7 @@ namespace Csla.Reflection
         Instance, parameters);
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, method.MethodInfo);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, method.MethodInfo);
         await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters).ConfigureAwait(false);
       }
       catch (CallMethodException)

@@ -27,13 +27,13 @@ namespace Csla.Server
     /// <param name="dataPortalOptions"></param>
     public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector, DataPortalOptions dataPortalOptions)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       FactoryLoader = factoryLoader;
       ExceptionInspector = inspector;
       DataPortalOptions = dataPortalOptions;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
     private IObjectFactoryLoader FactoryLoader { get; set; }
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
     private DataPortalOptions DataPortalOptions { get; set; }
@@ -49,7 +49,7 @@ namespace Csla.Server
       object result;
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, factory, methodName);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
         if (result is Exception error)
@@ -66,7 +66,7 @@ namespace Csla.Server
           factory, "InvokeError", new DataPortalEventArgs(context, objectType, null, operation, ex));
         throw;
       }
-      return new DataPortalResult(ApplicationContext, result);
+      return new DataPortalResult(_applicationContext, result);
     }
 
     private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context, bool isSync)
@@ -78,7 +78,7 @@ namespace Csla.Server
       object result;
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(ApplicationContext, isSync, factory, methodName, e);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName, e);
 
         result = await Csla.Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
         if (result is Exception error)
@@ -94,7 +94,7 @@ namespace Csla.Server
         Csla.Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeError", new DataPortalEventArgs(context, objectType, e, operation, ex));
         throw;
       }
-      return new DataPortalResult(ApplicationContext, result);
+      return new DataPortalResult(_applicationContext, result);
     }
 
     #endregion
@@ -124,7 +124,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-            ApplicationContext, context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
+            _applicationContext, context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
             new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
             null, DataPortalOptions);
       }
@@ -158,7 +158,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          ApplicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
+          _applicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
           null, DataPortalOptions);
       }
@@ -178,7 +178,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          ApplicationContext, context.FactoryInfo.ExecuteMethodName + " " + Resources.FailedOnServer,
+          _applicationContext, context.FactoryInfo.ExecuteMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.ExecuteMethodName, ex),
           null, DataPortalOptions);
       }
@@ -209,7 +209,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          ApplicationContext, methodName + " " + Resources.FailedOnServer,
+          _applicationContext, methodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(obj.GetType(), obj, null, methodName, ex),
           obj, DataPortalOptions);
 
@@ -239,7 +239,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          ApplicationContext, context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
+          _applicationContext, context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
           null, DataPortalOptions);
       }

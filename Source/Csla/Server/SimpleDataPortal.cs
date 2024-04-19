@@ -25,13 +25,13 @@ namespace Csla.Server
     /// <param name="dataPortalOptions"></param>
     public SimpleDataPortal(ApplicationContext applicationContext, IDataPortalActivator activator, IDataPortalExceptionInspector exceptionInspector, Configuration.DataPortalOptions dataPortalOptions)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       Activator = activator;
       ExceptionInspector = exceptionInspector;
       DataPortalOptions = dataPortalOptions;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
     private IDataPortalActivator Activator { get; set; }
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
     private Csla.Configuration.DataPortalOptions DataPortalOptions { get; set; }
@@ -54,14 +54,14 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
+        obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkNew();
         await obj.CreateAsync(criteria, isSync).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult(ApplicationContext, obj.Instance);
+        return new DataPortalResult(_applicationContext, obj.Instance);
       }
       catch (Exception ex)
       {
@@ -76,7 +76,7 @@ namespace Csla.Server
         object outval = null;
         if (obj != null) outval = obj.Instance;
         throw DataPortal.NewDataPortalException(
-              ApplicationContext, "DataPortal.Create " + Resources.FailedOnServer,
+              _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Create", ex),
               outval, DataPortalOptions);
       }
@@ -111,7 +111,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
+        obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
@@ -119,7 +119,7 @@ namespace Csla.Server
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult(ApplicationContext, obj.Instance);
+        return new DataPortalResult(_applicationContext, obj.Instance);
       }
       catch (Exception ex)
       {
@@ -134,7 +134,7 @@ namespace Csla.Server
         object outval = null;
         if (obj != null) outval = obj.Instance;
         throw DataPortal.NewDataPortalException(
-              ApplicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
+              _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
               outval, DataPortalOptions);
       }
@@ -153,7 +153,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Execute);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
+        obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
@@ -161,7 +161,7 @@ namespace Csla.Server
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult(ApplicationContext, obj.Instance);
+        return new DataPortalResult(_applicationContext, obj.Instance);
       }
       catch (Exception ex)
       {
@@ -176,7 +176,7 @@ namespace Csla.Server
         object outval = null;
         if (obj != null) outval = obj.Instance;
         throw DataPortal.NewDataPortalException(
-              ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
+              _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Execute", ex),
               outval, DataPortalOptions);
       }
@@ -203,7 +203,7 @@ namespace Csla.Server
     {
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      var lb = ApplicationContext.CreateInstanceDI<DataPortalTarget>(obj);
+      var lb = _applicationContext.CreateInstanceDI<DataPortalTarget>(obj);
       if (lb.Instance is Core.ICommandObject)
         return await Execute(lb, context, isSync);
 
@@ -216,7 +216,7 @@ namespace Csla.Server
         await lb.WaitForIdle().ConfigureAwait(false);
         lb.ThrowIfBusy();
         lb.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult(ApplicationContext, lb.Instance);
+        return new DataPortalResult(_applicationContext, lb.Instance);
       }
       catch (Exception ex)
       {
@@ -229,7 +229,7 @@ namespace Csla.Server
           // ignore exceptions from the exception handler
         }
         throw DataPortal.NewDataPortalException(
-              ApplicationContext, "DataPortal.Update " + Resources.FailedOnServer,
+              _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
               obj, DataPortalOptions);
       }
@@ -255,7 +255,7 @@ namespace Csla.Server
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult(ApplicationContext, obj.Instance);
+        return new DataPortalResult(_applicationContext, obj.Instance);
       }
       catch (Exception ex)
       {
@@ -270,7 +270,7 @@ namespace Csla.Server
         object reference = null;
         reference = obj.Instance ?? obj;
         throw DataPortal.NewDataPortalException(
-              ApplicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
+              _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(reference.GetType(), reference, null, "DataPortal.Execute", ex),
               reference, DataPortalOptions);
       }
@@ -298,14 +298,14 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);
       try
       {
-        obj = ApplicationContext.CreateInstanceDI<DataPortalTarget>(ApplicationContext.CreateInstanceDI(objectType));
+        obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
         Activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.DeleteAsync(criteria, isSync).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult {  ApplicationContext = ApplicationContext };
+        return new DataPortalResult {  ApplicationContext = _applicationContext };
       }
       catch (Exception ex)
       {
@@ -318,7 +318,7 @@ namespace Csla.Server
           // ignore exceptions from the exception handler
         }
         throw DataPortal.NewDataPortalException(
-              ApplicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
+              _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, obj, null, "DataPortal.Delete", ex),
               null, DataPortalOptions);
       }

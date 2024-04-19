@@ -26,8 +26,8 @@ namespace Csla.Data
 
     private static object _lock = new object();
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Gets the DataServiceContext object for the 
@@ -43,14 +43,14 @@ namespace Csla.Data
       {
         var contextLabel = GetContextName(path.ToString());
         DataServiceContextManager<C> mgr = null;
-        if (ApplicationContext.LocalContext.Contains(contextLabel))
+        if (_applicationContext.LocalContext.Contains(contextLabel))
         {
-          mgr = (DataServiceContextManager<C>)(ApplicationContext.LocalContext[contextLabel]);
+          mgr = (DataServiceContextManager<C>)(_applicationContext.LocalContext[contextLabel]);
         }
         else
         {
           mgr = new DataServiceContextManager<C>(path);
-          ApplicationContext.LocalContext[contextLabel] = mgr;
+          _applicationContext.LocalContext[contextLabel] = mgr;
         }
         return mgr;
       }
@@ -58,7 +58,7 @@ namespace Csla.Data
 
     private DataServiceContextManager(Uri path)
     {
-      DataServiceContext = (C)(ApplicationContext.CreateInstanceDI(typeof(C), path));
+      DataServiceContext = (C)(_applicationContext.CreateInstanceDI(typeof(C), path));
     }
 
     /// <summary>

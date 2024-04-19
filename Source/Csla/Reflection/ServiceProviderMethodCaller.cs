@@ -33,8 +33,8 @@ namespace Csla.Reflection
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache = [];
 #endif
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
-    private ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -67,7 +67,7 @@ namespace Csla.Reflection
       if (targetType == null)
         throw new ArgumentNullException(nameof(targetType));
 
-      var activator = ApplicationContext.GetRequiredService<IDataPortalActivator>();
+      var activator = _applicationContext.GetRequiredService<IDataPortalActivator>();
       targetType = activator.ResolveType(targetType);
 
       var typeOfOperation = typeof(T);
@@ -91,7 +91,7 @@ namespace Csla.Reflection
       var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
       {
-        var factoryLoader = ApplicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
+        var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
         var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
         var ftList = new List<System.Reflection.MethodInfo>();
         var level = 0;
@@ -469,7 +469,7 @@ namespace Csla.Reflection
         plist = new object[method.Parameters.Length];
         int index = 0;
         int criteriaIndex = 0;
-        var service = ApplicationContext.CurrentServiceProvider;
+        var service = _applicationContext.CurrentServiceProvider;
         foreach (var item in method.Parameters)
         {
           if (method.IsInjected[index])

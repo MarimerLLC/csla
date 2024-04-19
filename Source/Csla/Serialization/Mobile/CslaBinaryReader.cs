@@ -9,7 +9,7 @@ namespace Csla.Serialization.Mobile
   public class CslaBinaryReader : ICslaReader
   {
     private readonly Dictionary<int, string> keywordsDictionary;
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates new instance of <see cref="CslaBinaryReader"/>
@@ -17,7 +17,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="applicationContext"></param>
     public CslaBinaryReader(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       keywordsDictionary = new Dictionary<int, string>();
     }
 
@@ -100,7 +100,7 @@ namespace Csla.Serialization.Mobile
         case CslaKnownTypes.IMobileObject:
           using (MemoryStream arrayBuffer = new MemoryStream(reader.ReadBytes(reader.ReadInt32())))
           {
-            var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+            var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
             var obj = formatter.Deserialize(arrayBuffer);
             return obj;
           }

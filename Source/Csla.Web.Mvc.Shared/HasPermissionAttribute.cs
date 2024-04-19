@@ -23,7 +23,7 @@ namespace Csla.Web.Mvc
     private AuthorizationActions _action;
     private Type _objectType;
     private string _errorMsg = ERROR_MSG;
-    private ApplicationContext ApplicationContext { get; set; }
+    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates an instance of the type.
@@ -34,7 +34,7 @@ namespace Csla.Web.Mvc
     {
       _action = action;
       _objectType = objectType;
-      ApplicationContext = ApplicationContextManager.GetApplicationContext();
+      _applicationContext = ApplicationContextManager.GetApplicationContext();
     }
 
     /// <summary>
@@ -56,9 +56,9 @@ namespace Csla.Web.Mvc
     /// <returns>True if access is authorized; otherwise, false.</returns>
     protected override bool AuthorizeCore(HttpContextBase httpContext)
     {
-      if (!ApplicationContext.User.Identity.IsAuthenticated) return false;
+      if (!_applicationContext.User.Identity.IsAuthenticated) return false;
 
-      return BusinessRules.HasPermission(ApplicationContext, _action, _objectType);
+      return BusinessRules.HasPermission(_applicationContext, _action, _objectType);
     }
 
     /// <summary>

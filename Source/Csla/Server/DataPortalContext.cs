@@ -74,8 +74,8 @@ namespace Csla.Server
       internal set { _factoryInfo = value; }
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    private ApplicationContext _applicationContext;
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
 
     /// <summary>
     /// Creates a new DataPortalContext object.
@@ -84,7 +84,7 @@ namespace Csla.Server
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
     public DataPortalContext(ApplicationContext applicationContext, bool isRemotePortal)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       Principal = GetPrincipal(applicationContext, isRemotePortal);
       IsRemotePortal = isRemotePortal;
       ClientCulture = System.Threading.Thread.CurrentThread.CurrentCulture.Name;
@@ -103,7 +103,7 @@ namespace Csla.Server
     /// <param name="clientUICulture">Client UI culture.</param>
     public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext)
     {
-      ApplicationContext = applicationContext;
+      _applicationContext = applicationContext;
       Principal = principal;
       ClientContext = clientContext;
       ClientCulture = clientCulture;
@@ -134,8 +134,8 @@ namespace Csla.Server
 
     void Serialization.Mobile.IMobileObject.GetState(Serialization.Mobile.SerializationInfo info)
     {
-      info.AddValue("principal", Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(Principal));
-      info.AddValue("clientContext", Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ClientContext));
+      info.AddValue("principal", Csla.Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(Principal));
+      info.AddValue("clientContext", Csla.Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(ClientContext));
       info.AddValue("clientCulture", ClientCulture);
       info.AddValue("clientUICulture", ClientUICulture);
       info.AddValue("isRemotePortal", IsRemotePortal);
@@ -147,8 +147,8 @@ namespace Csla.Server
 
     void Serialization.Mobile.IMobileObject.SetState(Serialization.Mobile.SerializationInfo info)
     {
-      Principal = (IPrincipal)Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(info.GetValue<byte[]>("principal"));
-      ClientContext = (ContextDictionary)Csla.Serialization.SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(info.GetValue<byte[]>("clientContext"));
+      Principal = (IPrincipal)Csla.Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(info.GetValue<byte[]>("principal"));
+      ClientContext = (ContextDictionary)Csla.Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(info.GetValue<byte[]>("clientContext"));
       ClientCulture = info.GetValue<string>("clientCulture");
       ClientUICulture = info.GetValue<string>("clientUICulture");
       IsRemotePortal = info.GetValue<bool>("isRemotePortal");

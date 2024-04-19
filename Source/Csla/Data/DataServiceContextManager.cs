@@ -78,7 +78,6 @@ namespace Csla.Data
     /// <typeparam name="T">
     /// Type of entity.
     /// </typeparam>
-    /// <returns></returns>
     public List<T> GetEntities<T>()
     {
       List<T> returnValue = new List<T>();

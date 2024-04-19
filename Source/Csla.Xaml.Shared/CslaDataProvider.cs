@@ -340,7 +340,6 @@ namespace Csla.Xaml
     /// </summary>
     /// <typeparam name="T">Type of ObjectInstance</typeparam>
     /// <param name="factory">Async data portal or factory method</param>
-    /// <returns></returns>
     public async void Refresh<T>(Func<Task<T>> factory)
     {
       T result = default(T);

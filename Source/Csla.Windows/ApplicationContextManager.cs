@@ -22,7 +22,6 @@ namespace Csla.Windows
     /// <summary>
     /// Gets the current principal.
     /// </summary>
-    /// <returns></returns>
     public override IPrincipal GetUser()
     {
       if (_principal == null)

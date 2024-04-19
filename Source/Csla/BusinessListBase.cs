@@ -726,7 +726,6 @@ namespace Csla
     /// Await this method to ensure business object
     /// is not busy running async rules.
     /// </summary>
-    /// <returns></returns>
     public async Task WaitForIdle()
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
@@ -738,7 +737,6 @@ namespace Csla
     /// is not busy running async rules.
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
-    /// <returns></returns>
     public Task WaitForIdle(TimeSpan timeout)
     {
       return BusyHelper.WaitForIdle(this, timeout);

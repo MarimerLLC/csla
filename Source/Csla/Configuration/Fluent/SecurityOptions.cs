@@ -34,7 +34,6 @@ namespace Csla.Configuration
     /// CSLA .NET framework.
     /// </summary>
     /// <value></value>
-    /// <returns></returns>
     public string AuthenticationType { get; set; } = "Csla";
   }
 }

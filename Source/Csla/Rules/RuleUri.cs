@@ -98,7 +98,6 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a string representation of the rule URI.
     /// </summary>
-    /// <returns></returns>
     public override string ToString()
     {
       return _uri.ToString();
@@ -185,7 +184,6 @@ namespace Csla.Rules
     /// Recursive processing of generic constraints and parameters.
     /// </summary>
     /// <param name="type">The type.</param>
-    /// <returns></returns>
     private static string GetTypeName(Type type)
     {
       if (!type.IsGenericType)

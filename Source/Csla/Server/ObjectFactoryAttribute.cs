@@ -283,7 +283,6 @@ namespace Csla.Server
     /// Gets the short version of assembly qualified name.
     /// </summary>
     /// <param name="type">The type.</param>
-    /// <returns></returns>
     private static string GetAssemblyQualifiedName(Type type)
     {
 #if NETFX_CORE

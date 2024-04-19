@@ -42,7 +42,6 @@ namespace Csla.Channels.Grpc
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
     /// </summary>
-    /// <returns></returns>
     protected virtual GrpcChannel GetChannel()
     {
       if (_channel == null)
@@ -67,7 +66,6 @@ namespace Csla.Channels.Grpc
     /// <summary>
     /// Get gRPC client object used by data portal.
     /// </summary>
-    /// <returns></returns>
     protected virtual GrpcService.GrpcServiceClient GetGrpcClient()
     {
       return _grpcClient ??= new GrpcService.GrpcServiceClient(GetChannel());

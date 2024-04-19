@@ -1112,7 +1112,6 @@ namespace Csla.Core
     /// <summary>
     /// Gets the registered rules. Only for unit testing and not visible to code. 
     /// </summary>
-    /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected BusinessRuleManager GetRegisteredRules()
     {
@@ -1889,7 +1888,6 @@ namespace Csla.Core
     /// <typeparam name="P">Type of the property.</typeparam>
     /// <param name="property">PropertyInfo object containing property metadata.</param>
     /// <param name="valueGenerator">Method returning the new value.</param>
-    /// <returns></returns>
     /// <remarks>
     /// If the user is not authorized to read the property
     /// value, the defaultValue value is returned as a
@@ -1912,7 +1910,6 @@ namespace Csla.Core
     /// property is currently being retrieved.
     /// </summary>
     /// <param name="propertyInfo">Property to check.</param>
-    /// <returns></returns>
     protected bool PropertyIsLoading(IPropertyInfo propertyInfo)
     {
       return LoadManager.IsLoadingProperty(propertyInfo);
@@ -1925,7 +1922,6 @@ namespace Csla.Core
     /// <typeparam name="P">Type of the property.</typeparam>
     /// <param name="property">PropertyInfo object containing property metadata.</param>
     /// <param name="factory">Async method returning the new value.</param>
-    /// <returns></returns>
     /// <remarks>
     /// <para>
     /// Note that the first value returned is almost certainly
@@ -2701,7 +2697,6 @@ namespace Csla.Core
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <param name="oldValue">The old value.</param>
-    /// <returns></returns>
     private static bool ValuesDiffer<P>(PropertyInfo<P> propertyInfo, P newValue, P oldValue)
     {
       var valuesDiffer = false;
@@ -2945,7 +2940,6 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <returns></returns>
     private object LoadPropertyByReflection(string loadPropertyMethodName, IPropertyInfo propertyInfo, object newValue)
     {
       var t = this.GetType();

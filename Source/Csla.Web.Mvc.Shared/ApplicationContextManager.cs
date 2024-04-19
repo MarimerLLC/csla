@@ -114,7 +114,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    /// <returns></returns>
     public static ApplicationContext GetApplicationContext()
     {
       return (ApplicationContext)HttpContext.Current.Items[_applicationContextName];

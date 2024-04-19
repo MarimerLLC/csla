@@ -18,7 +18,6 @@ namespace Csla.Web.Mvc
     /// type.
     /// </summary>
     /// <param name="modelType">Type of model object to create.</param>
-    /// <returns></returns>
     object CreateModel(Type modelType);
   }
 }

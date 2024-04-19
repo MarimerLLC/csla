@@ -25,7 +25,6 @@ namespace Csla.Configuration
     /// Configures services to provide CSLA AspNetCore support
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
-    /// <returns></returns>
     public static CslaOptions AddAspNetCore(this CslaOptions config)
     {
       return AddAspNetCore(config, null);
@@ -36,7 +35,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
     /// <param name="options">Options object</param>
-    /// <returns></returns>
     public static CslaOptions AddAspNetCore(this CslaOptions config, Action<AspNetCoreConfigurationOptions> options)
     {
       var localOptions = new AspNetCoreConfigurationOptions();

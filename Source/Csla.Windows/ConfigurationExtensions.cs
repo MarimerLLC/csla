@@ -18,7 +18,6 @@ namespace Csla.Configuration
     /// environments.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
-    /// <returns></returns>
     public static CslaOptions AddWindowsForms(this CslaOptions config)
     {
       return AddWindowsForms(config, null);
@@ -30,7 +29,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">XamlOptions action</param>
-    /// <returns></returns>
     public static CslaOptions AddWindowsForms(this CslaOptions config, Action<WindowsFormsOptions> options)
     {
       var xamlOptions = new WindowsFormsOptions();

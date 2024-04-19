@@ -224,7 +224,6 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Object on which to call the method.</param>
     /// <param name="propertyInfo">PropertyInfo object containing property metadata.</param>
-    /// <returns></returns>
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>

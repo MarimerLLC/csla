@@ -20,7 +20,6 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="action">Authorization action</param>
     /// <param name="objectType">Business object type</param>
-    /// <returns></returns>
     public static string GetPolicy(Rules.AuthorizationActions action, Type objectType)
     {
       var actionName = action.ToString();

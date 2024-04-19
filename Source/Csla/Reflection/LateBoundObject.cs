@@ -116,7 +116,6 @@ namespace Csla.Reflection
     /// otherwise synchronously invokes the method.
     /// </summary>
     /// <param name="methodName">Name of the method.</param>
-    /// <returns></returns>
     public async Task CallMethodTryAsync(string methodName)
     {
       try

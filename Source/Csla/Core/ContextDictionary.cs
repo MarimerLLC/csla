@@ -47,8 +47,7 @@ namespace Csla.Core
       foreach (string key in this.Keys)
       {
         object value = this[key];
-        IMobileObject mobile = value as IMobileObject;
-        if (mobile != null)
+        if (value is IMobileObject mobile)
         {
           SerializationInfo si = formatter.SerializeObject(mobile);
           info.AddChild(key, si.ReferenceId);

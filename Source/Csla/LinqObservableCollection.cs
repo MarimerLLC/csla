@@ -237,8 +237,7 @@ namespace Csla
     {
       get 
       {
-        var obj = _baseCollection as ICollection<T>;
-        if (obj != null)
+        if (_baseCollection is ICollection<T> obj)
           return obj.IsReadOnly;
         else
           return false; 

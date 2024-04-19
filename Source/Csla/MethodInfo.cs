@@ -33,8 +33,7 @@ namespace Csla
     /// <param name="obj">Object to compare.</param>
     public override bool Equals(object obj)
     {
-      var other = obj as MethodInfo;
-      if (other != null)
+      if (obj is MethodInfo other)
         return Name == other.Name;
       else
         return false;

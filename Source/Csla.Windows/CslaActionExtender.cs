@@ -529,14 +529,12 @@ namespace Csla.Windows
       // make sure to not attach many times
       RemoveEventHooks(objectToBind);
 
-      INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
-      if (propChangedObjParent != null)
+      if (objectToBind is INotifyPropertyChanged propChangedObjParent)
       {
         propChangedObjParent.PropertyChanged += propChangedObj_PropertyChanged;
       }
 
-      INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
-      if (propChangedObjChild != null)
+      if (objectToBind is INotifyChildChanged propChangedObjChild)
       {
         propChangedObjChild.ChildChanged += propChangedObj_ChildChanged;
       }
@@ -544,14 +542,12 @@ namespace Csla.Windows
 
     private void RemoveEventHooks(ISavable objectToBind)
     {
-      INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
-      if (propChangedObjParent != null)
+      if (objectToBind is INotifyPropertyChanged propChangedObjParent)
       {
         propChangedObjParent.PropertyChanged -= propChangedObj_PropertyChanged;
       }
 
-      INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
-      if (propChangedObjChild != null)
+      if (objectToBind is INotifyChildChanged propChangedObjChild)
       {
         propChangedObjChild.ChildChanged -= propChangedObj_ChildChanged;
       }
@@ -891,8 +887,7 @@ namespace Csla.Windows
         ISavable businessObject = GetBusinessObject();
         if (businessObject != null)
         {
-          ITrackStatus trackableObject = businessObject as ITrackStatus;
-          if (trackableObject != null)
+          if (businessObject is ITrackStatus trackableObject)
           {
             if (pair.Value.ActionType == CslaFormAction.Cancel || pair.Value.DisableWhenClean)
               ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
@@ -941,8 +936,7 @@ namespace Csla.Windows
     private ISavable GetBusinessObject()
     {
       ISavable businessObject = null;
-      BindingSource source = _dataSource as BindingSource;
-      if (source != null)
+      if (_dataSource is BindingSource source)
         businessObject = source.DataSource as ISavable;
 
       return businessObject;

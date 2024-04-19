@@ -49,12 +49,11 @@ namespace Csla.Xaml
       result = ctrl.GetValue(TargetProperty);
       if (result == null)
       {
-        var fe = ctrl as FrameworkElement;
-        if (fe != null)
+        if (ctrl is FrameworkElement fe)
           result = fe.DataContext;
       }
-      var icv = result as ICollectionView;
-      if (icv != null)
+
+      if (result is ICollectionView icv)
         result = icv.CurrentItem;
       return result;
     }
@@ -97,8 +96,7 @@ namespace Csla.Xaml
       typeof(InvokeMethod),
       new PropertyMetadata((o, _) =>
       {
-        var ctrl = o as UIElement;
-        if (ctrl != null)
+        if (o is UIElement ctrl)
           new InvokeMethod(ctrl);
       }));
 

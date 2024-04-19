@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using Csla.Core;
 
 namespace Csla.Web.Mvc
 {
@@ -45,8 +46,7 @@ namespace Csla.Web.Mvc
     {
       try
       {
-        var savable = ModelObject as Csla.Core.ISavable;
-        if (savable == null)
+        if (ModelObject is not ISavable savable)
           throw new InvalidOperationException("Save");
 
         ModelObject = (T)savable.Save(forceUpdate);

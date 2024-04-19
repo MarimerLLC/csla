@@ -40,8 +40,7 @@ namespace Csla.Server
     /// <param name="value">New value for IsReadOnly.</param>
     protected void SetIsReadOnly(object obj, bool value)
     {
-      var list = obj as Csla.Core.IReadOnlyBindingList;
-      if (list != null)
+      if (obj is IReadOnlyBindingList list)
         list.IsReadOnly = value;
     }
 
@@ -54,8 +53,7 @@ namespace Csla.Server
     /// </param>
     protected void CheckRules(object obj)
     {
-      var target = obj as IDataPortalTarget;
-      if (target != null)
+      if (obj is IDataPortalTarget target)
         target.CheckRules();
       else
         MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
@@ -70,8 +68,7 @@ namespace Csla.Server
     /// </param>
     protected async Task CheckRulesAsync(object obj)
     {
-      var target = obj as IDataPortalTarget;
-      if (target != null)
+      if (obj is IDataPortalTarget target)
         await target.CheckRulesAsync().ConfigureAwait(false);
       else
         MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
@@ -119,8 +116,7 @@ namespace Csla.Server
     /// </param>
     protected void MarkOld(object obj)
     {
-      var target = obj as IDataPortalTarget;
-      if (target != null)
+      if (obj is IDataPortalTarget target)
         target.MarkOld();
       else
         MethodCaller.CallMethodIfImplemented(obj, "MarkOld", null);
@@ -135,8 +131,7 @@ namespace Csla.Server
     /// </param>
     protected void MarkNew(object obj)
     {
-      var target = obj as IDataPortalTarget;
-      if (target != null)
+      if (obj is IDataPortalTarget target)
         target.MarkNew();
       else
         MethodCaller.CallMethodIfImplemented(obj, "MarkNew", null);
@@ -151,8 +146,7 @@ namespace Csla.Server
     /// </param>
     protected void MarkAsChild(object obj)
     {
-      var target = obj as IDataPortalTarget;
-      if (target != null)
+      if (obj is IDataPortalTarget target)
         target.MarkAsChild();
       else
         MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild", null);
@@ -179,8 +173,7 @@ namespace Csla.Server
     /// </remarks>
     protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
     {
-      var target = obj as Core.IManageProperties;
-      if (target != null)
+      if (obj is IManageProperties target)
         target.LoadProperty<P>(propertyInfo, newValue);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);
@@ -200,8 +193,7 @@ namespace Csla.Server
     /// </remarks>
     protected void LoadProperty(object obj, IPropertyInfo propertyInfo, object newValue)
     {
-      var target = obj as Core.IManageProperties;
-      if (target != null)
+      if (obj is IManageProperties target)
         target.LoadProperty(propertyInfo, newValue);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);
@@ -221,8 +213,7 @@ namespace Csla.Server
     /// </remarks>
     protected P ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
     {
-      var target = obj as Core.IManageProperties;
-      if (target != null)
+      if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);
@@ -239,8 +230,7 @@ namespace Csla.Server
     /// </remarks>
     protected object ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
-      var target = obj as IManageProperties;
-      if (target != null)
+      if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);
@@ -274,8 +264,7 @@ namespace Csla.Server
     /// <param name="property">Property info object.</param>
     protected bool FieldExists(object obj, Csla.Core.IPropertyInfo property)
     {
-      var target = obj as Core.IManageProperties;
-      if (target != null)
+      if (obj is IManageProperties target)
         return target.FieldExists(property);
       else
         throw new ArgumentException(Resources.IManagePropertiesRequiredException);
@@ -289,8 +278,7 @@ namespace Csla.Server
     /// <param name="obj">Editable collection object.</param>
     protected Csla.Core.MobileList<C> GetDeletedList<C>(object obj)
     {
-      var target = obj as Core.IEditableCollection;
-      if (target != null)
+      if (obj is IEditableCollection target)
         return (Csla.Core.MobileList<C>)target.GetDeletedList();
       else
         throw new ArgumentException(Resources.IEditableCollectionRequiredException);

@@ -850,8 +850,7 @@ namespace Csla
     {
       if (itemIndex <= -1) return;
 
-      ICancelAddNew can = SourceList as ICancelAddNew;
-      if (can != null)
+      if (SourceList is ICancelAddNew can)
         can.CancelNew(OriginalIndex(itemIndex));
       else
         SourceList.RemoveAt(OriginalIndex(itemIndex));
@@ -859,8 +858,7 @@ namespace Csla
 
     void ICancelAddNew.EndNew(int itemIndex)
     {
-      ICancelAddNew can = SourceList as ICancelAddNew;
-      if (can != null)
+      if (SourceList is ICancelAddNew can)
         can.EndNew(OriginalIndex(itemIndex));
     }
 

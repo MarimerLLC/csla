@@ -188,8 +188,7 @@ namespace Csla.Test.DataAnnotations
     {
       if (validationContext.ObjectInstance == null)
         return new ValidationResult("ObjectInstance is null");
-      var obj = validationContext.ObjectInstance as Custom;
-      if (obj == null)
+      if (validationContext.ObjectInstance is not Custom obj)
         return new ValidationResult("ObjectInstance is not the Custom type");
       if (string.IsNullOrEmpty(obj.Name) || obj.Name != "abc")
         return new ValidationResult("Name must be abc");

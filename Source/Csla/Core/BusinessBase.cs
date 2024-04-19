@@ -1419,28 +1419,22 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnAddEventHooks(IBusinessObject child)
     {
-      INotifyBusy busy = child as INotifyBusy;
-      if (busy != null)
+      if (child is INotifyBusy busy)
         busy.BusyChanged += Child_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (child is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException += Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
+      if (child is INotifyPropertyChanged pc)
         pc.PropertyChanged += Child_PropertyChanged;
 
-      IBindingList bl = child as IBindingList;
-      if (bl != null)
+      if (child is IBindingList bl)
         bl.ListChanged += Child_ListChanged;
 
-      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
-      if (ncc != null)
+      if (child is INotifyCollectionChanged ncc)
         ncc.CollectionChanged += Child_CollectionChanged;
 
-      INotifyChildChanged cc = child as INotifyChildChanged;
-      if (cc != null)
+      if (child is INotifyChildChanged cc)
         cc.ChildChanged += Child_Changed;
     }
 
@@ -1461,28 +1455,22 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnRemoveEventHooks(IBusinessObject child)
     {
-      INotifyBusy busy = child as INotifyBusy;
-      if (busy != null)
+      if (child is INotifyBusy busy)
         busy.BusyChanged -= Child_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (child is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException -= Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
+      if (child is INotifyPropertyChanged pc)
         pc.PropertyChanged -= Child_PropertyChanged;
 
-      IBindingList bl = child as IBindingList;
-      if (bl != null)
+      if (child is IBindingList bl)
         bl.ListChanged -= Child_ListChanged;
 
-      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
-      if (ncc != null)
+      if (child is INotifyCollectionChanged ncc)
         ncc.CollectionChanged -= Child_CollectionChanged;
 
-      INotifyChildChanged cc = child as INotifyChildChanged;
-      if (cc != null)
+      if (child is INotifyChildChanged cc)
         cc.ChildChanged -= Child_Changed;
     }
 
@@ -2012,8 +2000,7 @@ namespace Csla.Core
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
-        FieldManager.IFieldData<P> fd = data as FieldManager.IFieldData<P>;
-        if (fd != null)
+        if (data is IFieldData<P> fd)
           result = fd.Value;
         else
           result = (P)data.Value;
@@ -2409,8 +2396,7 @@ namespace Csla.Core
           }
           else
           {
-            var fd = fieldData as FieldManager.IFieldData<P>;
-            if (fd != null)
+            if (fieldData is IFieldData<P> fd)
               oldValue = fd.Value;
             else
               oldValue = (P)fieldData.Value;
@@ -2465,8 +2451,7 @@ namespace Csla.Core
           }
           else
           {
-            var fd = fieldData as FieldManager.IFieldData<P>;
-            if (fd != null)
+            if (fieldData is IFieldData<P> fd)
               oldValue = fd.Value;
             else
               oldValue = (P)fieldData.Value;
@@ -2574,8 +2559,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -2629,8 +2613,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -2674,8 +2657,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -2684,12 +2666,9 @@ namespace Csla.Core
         var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
         if (valuesDiffer)
         {
-
-          IBusinessObject old = oldValue as IBusinessObject;
-          if (old != null)
+          if (oldValue is IBusinessObject old)
             RemoveEventHooks(old);
-          IBusinessObject @new = newValue as IBusinessObject;
-          if (@new != null)
+          if (newValue is IBusinessObject @new)
             AddEventHooks(@new);
 
           if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
@@ -2749,12 +2728,9 @@ namespace Csla.Core
 
       if (valuesDiffer)
       {
-
-        IBusinessObject old = oldValue as IBusinessObject;
-        if (old != null)
+        if (oldValue is IBusinessObject old)
           RemoveEventHooks(old);
-        IBusinessObject @new = newValue as IBusinessObject;
-        if (@new != null)
+        if (newValue is IBusinessObject @new)
           AddEventHooks(@new);
 
 
@@ -2987,8 +2963,7 @@ namespace Csla.Core
     /// <param name="newValue">Potential child object</param>
     private void ResetChildEditLevel(object newValue)
     {
-      IEditableBusinessObject child = newValue as IEditableBusinessObject;
-      if (child != null)
+      if (newValue is IEditableBusinessObject child)
       {
         child.SetParent(this);
         // set child edit level
@@ -2998,12 +2973,10 @@ namespace Csla.Core
       }
       else
       {
-        IEditableCollection col = newValue as IEditableCollection;
-        if (col != null)
+        if (newValue is IEditableCollection col)
         {
           col.SetParent(this);
-          IUndoableObject undo = col as IUndoableObject;
-          if (undo != null)
+          if (col is IUndoableObject undo)
           {
             // set child edit level
             UndoableBase.ResetChildEditLevel(undo, this.EditLevel, this.BindingEdit);

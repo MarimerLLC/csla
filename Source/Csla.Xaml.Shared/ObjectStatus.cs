@@ -282,8 +282,7 @@ namespace Csla.Xaml
         CanDeleteObject = false;
       }
 
-      IEditableBusinessObject source = DataObject as IEditableBusinessObject;
-      if (source != null)
+      if (DataObject is IEditableBusinessObject source)
       {
         if (IsDeleted != source.IsDeleted)
           IsDeleted = source.IsDeleted;
@@ -298,8 +297,7 @@ namespace Csla.Xaml
       }
       else
       {
-        IEditableCollection sourceList = DataObject as IEditableCollection;
-        if (sourceList != null)
+        if (DataObject is IEditableCollection sourceList)
         {
           if (IsDirty != sourceList.IsDirty)
             IsDirty = sourceList.IsDirty;

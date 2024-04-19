@@ -191,8 +191,7 @@ namespace Csla.Core
         // collection is dirty
         foreach (C child in this)
         {
-          INotifyBusy busy = child as INotifyBusy;
-          if (busy != null && busy.IsBusy)
+          if (child is INotifyBusy busy && busy.IsBusy)
             return true;
         }
 

@@ -62,9 +62,10 @@ namespace Csla.Reflection
     {
       if (method == null) throw new ArgumentNullException("method");
 
-      var lambda = method as LambdaExpression;
-      if (lambda == null) throw new ArgumentException("Not a lambda expression", "method");
-      if (lambda.Body.NodeType != ExpressionType.Call) throw new ArgumentException("Not a method call", "method");
+      if (method is not LambdaExpression lambda)
+        throw new ArgumentException("Not a lambda expression", "method");
+      if (lambda.Body.NodeType != ExpressionType.Call)
+        throw new ArgumentException("Not a method call", "method");
 
       return ((MethodCallExpression)lambda.Body).Method;
     }
@@ -115,8 +116,8 @@ namespace Csla.Reflection
     {
       if (member == null) throw new ArgumentNullException("member");
 
-      var lambda = member as LambdaExpression;
-      if (lambda == null) throw new ArgumentException("Not a lambda expression", "member");
+      if (member is not LambdaExpression lambda)
+        throw new ArgumentException("Not a lambda expression", "member");
 
       MemberExpression memberExpr = null;
 

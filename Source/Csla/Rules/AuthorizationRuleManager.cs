@@ -144,8 +144,7 @@ namespace Csla.Rules
 
       public override bool Equals(object obj)
       {
-        var other = obj as RuleSetKey;
-        if (other == null)
+        if (obj is not RuleSetKey other)
           return false;
         else
           return this.Type.Equals(other.Type) && RuleSet == other.RuleSet;

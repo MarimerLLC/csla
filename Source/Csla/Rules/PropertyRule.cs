@@ -85,11 +85,11 @@ namespace Csla.Rules
       {
         if (value && !CanRunAsAffectedProperty)
         {
-          RunMode = RunMode ^ RunModes.DenyAsAffectedProperty;
+          RunMode ^= RunModes.DenyAsAffectedProperty;
         }
         else if (!value && CanRunAsAffectedProperty)
         {
-          RunMode = RunMode | RunModes.DenyAsAffectedProperty;
+          RunMode |= RunModes.DenyAsAffectedProperty;
         }
       }
     }
@@ -107,11 +107,11 @@ namespace Csla.Rules
       {
         if (value && !CanRunOnServer)
         {
-          RunMode = RunMode ^ RunModes.DenyOnServerSidePortal;
+          RunMode ^= RunModes.DenyOnServerSidePortal;
         }
         else if (!value && CanRunOnServer)
         {
-          RunMode = RunMode | RunModes.DenyOnServerSidePortal;
+          RunMode |= RunModes.DenyOnServerSidePortal;
         }
       }
     }
@@ -129,11 +129,11 @@ namespace Csla.Rules
       {
         if (value && !CanRunInCheckRules)
         {
-          RunMode = RunMode ^ RunModes.DenyCheckRules;
+          RunMode ^= RunModes.DenyCheckRules;
         }
         else if (!value && CanRunInCheckRules)
         {
-          RunMode = RunMode | RunModes.DenyCheckRules;
+          RunMode |= RunModes.DenyCheckRules;
         }
       }
     }

@@ -16,6 +16,7 @@ using System.Windows.Media;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
+using Csla.Security;
 
 namespace Csla.Xaml
 {
@@ -181,8 +182,7 @@ namespace Csla.Xaml
         Source = newSource;      // set new Source
         AttachSource(Source);    // attach to new Source
 
-        var bb = Source as BusinessBase;
-        if (bb != null)
+        if (Source is BusinessBase bb)
         {
           IsBusy = bb.IsPropertyBusy(PropertyName);
         }
@@ -226,8 +226,7 @@ namespace Csla.Xaml
       if (bindingPath.IndexOf('.') > 0)
         firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
 
-      var icv = source as ICollectionView;
-      if (icv != null && firstProperty != "CurrentItem")
+      if (source is ICollectionView icv && firstProperty != "CurrentItem")
         source = icv.CurrentItem;
       if (source != null && !string.IsNullOrEmpty(firstProperty))
       {
@@ -242,11 +241,9 @@ namespace Csla.Xaml
 
     private void DetachSource(object source)
     {
-      var p = source as INotifyPropertyChanged;
-      if (p != null)
+      if (source is INotifyPropertyChanged p)
         p.PropertyChanged -= source_PropertyChanged;
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
+      if (source is INotifyBusy busy)
         busy.BusyChanged -= source_BusyChanged;
 
       ClearState();
@@ -254,11 +251,9 @@ namespace Csla.Xaml
 
     private void AttachSource(object source)
     {
-      var p = source as INotifyPropertyChanged;
-      if (p != null)
+      if (source is INotifyPropertyChanged p)
         p.PropertyChanged += source_PropertyChanged;
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
+      if (source is INotifyBusy busy)
         busy.BusyChanged += source_BusyChanged;
 
     }
@@ -274,8 +269,7 @@ namespace Csla.Xaml
       if (e.PropertyName == PropertyName || string.IsNullOrEmpty(e.PropertyName))
       {
         bool busy = e.Busy;
-        BusinessBase bb = Source as BusinessBase;
-        if (bb != null)
+        if (Source is BusinessBase bb)
           busy = bb.IsPropertyBusy(PropertyName);
 
         if (busy != IsBusy)
@@ -520,15 +514,13 @@ namespace Csla.Xaml
       }
       else
       {
-        var iarw = Source as Csla.Security.IAuthorizeReadWrite;
-        if (iarw != null)
+        if (Source is IAuthorizeReadWrite iarw)
         {
           CanWrite = iarw.CanWriteProperty(PropertyName);
           CanRead = iarw.CanReadProperty(PropertyName);
         }
 
-        BusinessBase businessObject = Source as BusinessBase;
-        if (businessObject != null)
+        if (Source is BusinessBase businessObject)
         {
           var allRules = (from r in businessObject.BrokenRulesCollection
                           where r.Property == PropertyName
@@ -600,8 +592,7 @@ namespace Csla.Xaml
     {
       if (_loading) return;
 
-      BusyAnimation busy = FindChild(this, "busy") as BusyAnimation;
-      if (busy != null)
+      if (FindChild(this, "busy") is BusyAnimation busy)
         busy.IsRunning = IsBusy;
 
       string newState;

@@ -11,9 +11,7 @@
 //using System.Security.Claims;
 //using System.Security.Principal;
 //using System.Threading;
-//#if MSTEST
 //using Microsoft.VisualStudio.TestTools.UnitTesting;
-//#endif
 //using UnitDriven;
 //using BackgroundWorker = Csla.Threading.BackgroundWorker;
 

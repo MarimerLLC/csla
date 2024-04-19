@@ -17,7 +17,7 @@ namespace Csla.Test.PropertyGetSet
 
     public EditableGetSetBase()
     {
-      _dummy = _dummy + 0;
+      _dummy += 0;
     }
 
     private static PropertyInfo<string> BaseProperty = RegisterProperty<string>(typeof(EditableGetSetBase<T>), new PropertyInfo<string>("Base", "Base"));

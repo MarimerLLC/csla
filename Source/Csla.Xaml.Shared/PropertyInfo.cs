@@ -462,8 +462,7 @@ namespace Csla.Xaml
     /// <returns></returns>
     protected object GetRealSource(object source, string bindingPath)
     {
-      var icv = source as ICollectionView;
-      if (icv != null)
+      if (source is ICollectionView icv)
         source = icv.CurrentItem;
       if (source != null && bindingPath.IndexOf('.') > 0)
       {
@@ -514,8 +513,7 @@ namespace Csla.Xaml
       {
         DetachSource(old);
         AttachSource(source);
-        BusinessBase bb = Source as BusinessBase;
-        if (bb != null && !string.IsNullOrWhiteSpace(BindingPath))
+        if (Source is BusinessBase bb && !string.IsNullOrWhiteSpace(BindingPath))
         {
           IsBusy = bb.IsPropertyBusy(BindingPath);
         }
@@ -524,21 +522,17 @@ namespace Csla.Xaml
 
     private void DetachSource(object source)
     {
-      var p = source as INotifyPropertyChanged;
-      if (p != null)
+      if (source is INotifyPropertyChanged p)
         p.PropertyChanged -= source_PropertyChanged;
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
+      if (source is INotifyBusy busy)
         busy.BusyChanged -= source_BusyChanged;
     }
 
     private void AttachSource(object source)
     {
-      var p = source as INotifyPropertyChanged;
-      if (p != null)
+      if (source is INotifyPropertyChanged p)
         p.PropertyChanged += source_PropertyChanged;
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
+      if (source is INotifyBusy busy)
         busy.BusyChanged += source_BusyChanged;
     }
 
@@ -556,8 +550,7 @@ namespace Csla.Xaml
       if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
       {
         bool busy = e.Busy;
-        BusinessBase bb = Source as BusinessBase;
-        if (bb != null)
+        if (Source is BusinessBase bb)
           busy = bb.IsPropertyBusy(BindingPath);
 
         if (busy != IsBusy)

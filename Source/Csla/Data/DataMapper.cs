@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -315,8 +316,7 @@ namespace Csla.Data
     /// </param>
     public static void Load(System.Collections.IDictionary source, object target, Func<string, object> nameMapper)
     {
-      var validTarget = target as Core.IManageProperties;
-      if (validTarget == null)
+      if (target is not IManageProperties validTarget)
         throw new NotSupportedException();
       var propertyList = validTarget.GetManagedProperties();
       foreach (var p in propertyList)
@@ -345,8 +345,7 @@ namespace Csla.Data
     /// </param>
     public static void Load(object source, System.Collections.IDictionary target, Func<string, object> nameMapper)
     {
-      var validSource = source as Core.IManageProperties;
-      if (validSource == null)
+      if (source is not IManageProperties validSource)
         throw new NotSupportedException();
       var propertyList = validSource.GetManagedProperties();
       foreach (var p in propertyList)

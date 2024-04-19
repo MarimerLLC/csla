@@ -12,18 +12,9 @@ using UnitDriven;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Csla.TestHelpers;
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
 using System.IO;
-#endif 
 
 namespace Csla.Test.Serialization
 {
@@ -659,7 +650,7 @@ namespace Csla.Test.Serialization
     [Execute]
     protected void DataPortal_Execute()
     {
-      Name = Name + " server";
+      Name += " server";
     }
   }
 }

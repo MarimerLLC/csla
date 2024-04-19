@@ -22,19 +22,18 @@ namespace Csla.Reflection
       this.ParamTypes = paramTypes;
 
       _hashKey = typeName.GetHashCode();
-      _hashKey = _hashKey ^ methodName.GetHashCode();
+      _hashKey ^= methodName.GetHashCode();
       foreach (Type item in paramTypes)
 #if NETFX_CORE
-        _hashKey = _hashKey ^ item.Name().GetHashCode();
+        _hashKey ^= item.Name().GetHashCode();
 #else
-        _hashKey = _hashKey ^ item.Name.GetHashCode();
+        _hashKey ^= item.Name.GetHashCode();
 #endif
     }
 
     public override bool Equals(object obj)
     {
-      MethodCacheKey key = obj as MethodCacheKey;
-      if (key != null &&
+      if (obj is MethodCacheKey key &&
           key.TypeName == this.TypeName &&
           key.MethodName == this.MethodName &&
           ArrayEquals(key.ParamTypes, this.ParamTypes))

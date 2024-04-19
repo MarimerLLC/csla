@@ -11,27 +11,17 @@ using System.Text;
 using Csla.Test.Security;
 using UnitDriven;
 using System.Diagnostics;
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace Csla.Test.Windows
 {
 #if TESTING
-    [DebuggerNonUserCode]
-    [DebuggerStepThrough]
+  [DebuggerNonUserCode]
+  [DebuggerStepThrough]
 #endif
   [TestClass()]
   public class ReadWriteAuthorizationTests
   {
-
     [TestMethod()]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestReadWrite()
@@ -41,8 +31,6 @@ namespace Csla.Test.Windows
       var personRoot = EditablePerson.GetEditablePerson();
       using (var personForm = new PersonForm())
       {
-
-
         Assert.IsFalse(personForm.readWriteAuthorization1.GetApplyAuthorization(personForm.firstNameTextBox));
         Assert.IsFalse(personForm.readWriteAuthorization1.GetApplyAuthorization(personForm.middleNameTextBox));
         Assert.IsFalse(personForm.readWriteAuthorization1.GetApplyAuthorization(personForm.lastNameTextBox));

@@ -9,20 +9,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Csla.Data;
 using Csla.Test.Basic;
-
-#if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-#else
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-using System.Configuration;
-using System.Linq;
-using Csla.Test.Basic;
-#endif
 
 namespace Csla.Test.CslaDataProvider
 {
@@ -32,7 +19,6 @@ namespace Csla.Test.CslaDataProvider
     [TestMethod]
     public void TestAddNew()
     {
-      
       Csla.Test.Basic.RootList list = new Csla.Test.Basic.RootList();
       Csla.Xaml.CslaDataProvider dp = new Csla.Xaml.CslaDataProvider();
       dp.ObjectInstance = list;

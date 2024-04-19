@@ -301,24 +301,20 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnAddEventHooks(T item)
     {
-      INotifyBusy busy = item as INotifyBusy;
-      if (busy != null)
+      if (item is INotifyBusy busy)
         busy.BusyChanged += busy_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (item is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException += unhandled_UnhandledAsyncException;
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
-      if (c != null)
+      if (item is INotifyPropertyChanged c)
         c.PropertyChanged += Child_PropertyChanged;
 
       //IBindingList list = item as IBindingList;
       //if (list != null)
       //  list.ListChanged += new ListChangedEventHandler(Child_ListChanged);
 
-      INotifyChildChanged child = item as INotifyChildChanged;
-      if (child != null)
+      if (item is INotifyChildChanged child)
         child.ChildChanged += Child_Changed;
     }
 
@@ -330,24 +326,20 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnRemoveEventHooks(T item)
     {
-      INotifyBusy busy = item as INotifyBusy;
-      if (busy != null)
+      if (item is INotifyBusy busy)
         busy.BusyChanged -= busy_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (item is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException -= unhandled_UnhandledAsyncException;
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
-      if (c != null)
+      if (item is INotifyPropertyChanged c)
         c.PropertyChanged -= Child_PropertyChanged;
 
       //IBindingList list = item as IBindingList;
       //if(list!=null)
       //  list.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
 
-      INotifyChildChanged child = item as INotifyChildChanged;
-      if (child != null)
+      if (item is INotifyChildChanged child)
         child.ChildChanged -= Child_Changed;
     }
 

@@ -566,8 +566,7 @@ namespace Csla
         {
           if (ex.InnerExceptions.Count > 0)
           {
-            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
-            if (dpe != null)
+            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleDeleteDataPortalException(dpe);
           }
           throw new DataPortalException($"DataPortal.Delete {Resources.Failed}", ex, null);

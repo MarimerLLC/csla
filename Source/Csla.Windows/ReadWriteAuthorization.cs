@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.Reflection;
+using Csla.Security;
 
 namespace Csla.Windows
 {
@@ -117,9 +118,7 @@ namespace Csla.Windows
         if (binding.DataSource is BindingSource bs)
         {
           // get the BusinessObject if appropriate
-          Csla.Security.IAuthorizeReadWrite ds =
-            bs.Current as Csla.Security.IAuthorizeReadWrite;
-          if (ds != null)
+          if (bs.Current is IAuthorizeReadWrite ds)
           {
             // get the object property name
             string propertyName =

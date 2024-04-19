@@ -123,9 +123,7 @@ namespace Csla.Windows
     /// </param>
     public void Bind(object objectToBind)
     {
-      ISupportUndo root = objectToBind as ISupportUndo;
-
-      if (root != null)
+      if (objectToBind is ISupportUndo root)
         root.BeginEdit();
 
       Source.DataSource = objectToBind;

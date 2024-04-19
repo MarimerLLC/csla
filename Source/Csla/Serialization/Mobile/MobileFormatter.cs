@@ -298,8 +298,7 @@ namespace Csla.Serialization.Mobile
 
       foreach (SerializationInfo info in deserialized)
       {
-        ISerializationNotification notifiable = _deserializationReferences[info.ReferenceId] as ISerializationNotification;
-        if (notifiable != null)
+        if (_deserializationReferences[info.ReferenceId] is ISerializationNotification notifiable)
           notifiable.Deserialized();
       }
       return (_deserializationReferences.Count > 0 ? _deserializationReferences[1] : null);

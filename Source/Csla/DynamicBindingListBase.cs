@@ -163,8 +163,7 @@ namespace Csla
         T savable = item;
 
         // clone the object if possible
-        ICloneable clonable = savable as ICloneable;
-        if (clonable != null)
+        if (savable is ICloneable clonable)
           savable = (T)clonable.Clone();
 
         // commit all changes
@@ -431,8 +430,7 @@ namespace Csla
       foreach (IEditableBusinessObject child in this)
       {
         child.SetParent(this);
-        INotifyPropertyChanged c = child as INotifyPropertyChanged;
-        if (c != null)
+        if (child is INotifyPropertyChanged c)
           c.PropertyChanged += Child_PropertyChanged;
       }
       base.OnDeserialized();

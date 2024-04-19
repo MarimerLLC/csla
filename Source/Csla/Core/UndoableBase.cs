@@ -271,11 +271,8 @@ namespace Csla.Core
               else
               {
                 // make sure the variable has a value
-                if (value != null)
-                {
-                  // this is a child object, cascade the call.
-                  ((IUndoableObject)value).UndoChanges(this.EditLevel, BindingEdit);
-                }
+                // this is a child object, cascade the call.
+                ((IUndoableObject) value)?.UndoChanges(this.EditLevel, BindingEdit);
               }
             }
             else if (value is IMobileObject && state[fieldName] != null)
@@ -351,11 +348,8 @@ namespace Csla.Core
             {
               object value = h.DynamicMemberGet(this);
               // make sure the variable has a value
-              if (value != null)
-              {
-                // it is a child object so cascade the call
-                ((Core.IUndoableObject)value).AcceptChanges(this.EditLevel, BindingEdit);
-              }
+              // it is a child object so cascade the call
+              ((IUndoableObject) value)?.AcceptChanges(this.EditLevel, BindingEdit);
             }
           }
 

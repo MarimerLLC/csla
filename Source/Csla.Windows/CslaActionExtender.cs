@@ -427,8 +427,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnClicking(CslaActionCancelEventArgs e)
     {
-      if (Clicking != null)
-        Clicking(this, e);
+      Clicking?.Invoke(this, e);
     }
 
     /// <summary>
@@ -437,8 +436,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnClicked(CslaActionEventArgs e)
     {
-      if (Clicked != null)
-        Clicked(this, e);
+      Clicked?.Invoke(this, e);
     }
 
     /// <summary>
@@ -447,8 +445,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnErrorEncountered(ErrorEncounteredEventArgs e)
     {
-      if (ErrorEncountered != null)
-        ErrorEncountered(this, e);
+      ErrorEncountered?.Invoke(this, e);
     }
 
     /// <summary>
@@ -457,8 +454,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnSetForNew(CslaActionEventArgs e)
     {
-      if (SetForNew != null)
-        SetForNew(this, e);
+      SetForNew?.Invoke(this, e);
     }
 
     /// <summary>
@@ -467,8 +463,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnBusinessObjectInvalid(CslaActionEventArgs e)
     {
-      if (BusinessObjectInvalid != null)
-        BusinessObjectInvalid(this, e);
+      BusinessObjectInvalid?.Invoke(this, e);
     }
 
     /// <summary>
@@ -477,8 +472,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnHasBrokenRules(HasBrokenRulesEventArgs e)
     {
-      if (HasBrokenRules != null)
-        HasBrokenRules(this, e);
+      HasBrokenRules?.Invoke(this, e);
     }
 
     /// <summary>
@@ -487,8 +481,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnObjectSaving(CslaActionCancelEventArgs e)
     {
-      if (ObjectSaving != null)
-        ObjectSaving(this, e);
+      ObjectSaving?.Invoke(this, e);
     }
 
     /// <summary>
@@ -497,8 +490,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnObjectSaved(CslaActionEventArgs e)
     {
-      if (ObjectSaved != null)
-        ObjectSaved(this, e);
+      ObjectSaved?.Invoke(this, e);
     }
 
     #endregion
@@ -885,16 +877,13 @@ namespace Csla.Windows
       if (pair.Value.DisableWhenUseless || (pair.Value.DisableWhenClean && !ctl.Enabled))
       {
         ISavable businessObject = GetBusinessObject();
-        if (businessObject != null)
+        if (businessObject is ITrackStatus trackableObject)
         {
-          if (businessObject is ITrackStatus trackableObject)
-          {
-            if (pair.Value.ActionType == CslaFormAction.Cancel || pair.Value.DisableWhenClean)
-              ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
-            if (pair.Value.ActionType == CslaFormAction.Save)
-              ChangeEnabled(ctl, (trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted)
-                && trackableObject.IsValid);
-          }
+          if (pair.Value.ActionType == CslaFormAction.Cancel || pair.Value.DisableWhenClean)
+            ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
+          if (pair.Value.ActionType == CslaFormAction.Save)
+            ChangeEnabled(ctl, (trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted)
+                               && trackableObject.IsValid);
         }
       }
     }
@@ -915,8 +904,7 @@ namespace Csla.Windows
         {
           Control ctl = enumerator.Current.Key;
           Form frm = GetParentForm(ctl);
-          if (frm != null)
-            frm.Close();
+          frm?.Close();
         }
       }
     }

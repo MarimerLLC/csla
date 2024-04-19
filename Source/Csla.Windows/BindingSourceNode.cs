@@ -143,8 +143,7 @@ namespace Csla.Windows
       Unbind(false);
       EndEdit();
 
-      if (root != null)
-        root.ApplyEdit();
+      root?.ApplyEdit();
     }
 
     /// <summary>
@@ -159,8 +158,7 @@ namespace Csla.Windows
 
       Unbind(true);
 
-      if (root != null)
-        root.CancelEdit();
+      root?.CancelEdit();
 
       Bind(businessObject);
     }

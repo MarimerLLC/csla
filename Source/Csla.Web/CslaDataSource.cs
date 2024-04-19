@@ -180,8 +180,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnSelectObject(SelectObjectArgs e)
     {
-      if (SelectObject != null)
-        SelectObject(this, e);
+      SelectObject?.Invoke(this, e);
     }
 
     /// <summary>
@@ -189,8 +188,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnInsertObject(InsertObjectArgs e)
     {
-      if (InsertObject != null)
-        InsertObject(this, e);
+      InsertObject?.Invoke(this, e);
     }
 
     /// <summary>
@@ -198,8 +196,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnUpdateObject(UpdateObjectArgs e)
     {
-      if (UpdateObject != null)
-        UpdateObject(this, e);
+      UpdateObject?.Invoke(this, e);
     }
 
     /// <summary>
@@ -207,8 +204,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnDeleteObject(DeleteObjectArgs e)
     {
-      if (DeleteObject != null)
-        DeleteObject(this, e);
+      DeleteObject?.Invoke(this, e);
     }
   }
 }

@@ -425,8 +425,7 @@ namespace Csla.Core
     /// <param name="propertyName">Name of the changed property.</param>
     protected void OnPropertyChanged(string propertyName)
     {
-      if (_propertyChanged != null)
-        _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 #endif
 
@@ -496,8 +495,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
-      if (FieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
+      FieldManager?.SetPropertyList(this.GetType());
     }
 
     #endregion

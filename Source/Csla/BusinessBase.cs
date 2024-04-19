@@ -222,8 +222,7 @@ namespace Csla
           {
             if (dataPortalOptions.DataPortalClientOptions.AutoCloneOnUpdate)
             {
-              if (result != null)
-                result.MarkIdle();
+              result?.MarkIdle();
               MarkIdle();
             }
           }
@@ -367,10 +366,8 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-      if (_nonSerializableSavedHandlers != null)
-        _nonSerializableSavedHandlers.Invoke(this, args);
-      if (_serializableSavedHandlers != null)
-        _serializableSavedHandlers.Invoke(this, args);
+      _nonSerializableSavedHandlers?.Invoke(this, args);
+      _serializableSavedHandlers?.Invoke(this, args);
     }
 
     #endregion

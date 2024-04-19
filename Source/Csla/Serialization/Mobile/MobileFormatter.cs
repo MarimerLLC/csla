@@ -290,10 +290,7 @@ namespace Csla.Serialization.Mobile
       {
         IMobileObject mobile = _deserializationReferences[info.ReferenceId];
 
-        if (mobile != null)
-        {
-          mobile.SetChildren(info, this);
-        }
+        mobile?.SetChildren(info, this);
       }
 
       foreach (SerializationInfo info in deserialized)

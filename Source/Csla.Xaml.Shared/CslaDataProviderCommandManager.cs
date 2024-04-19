@@ -99,14 +99,11 @@ namespace Csla.Xaml
       bool result = false;
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
       {
-        if (ctl.Provider.Data != null)
+        if (ctl.Provider.Data is IBindingList list)
         {
-          if (ctl.Provider.Data is IBindingList list)
-          {
-            result = list.AllowNew;
-            if (result && !Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
-              result = false;
-          }
+          result = list.AllowNew;
+          if (result && !Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
+            result = false;
         }
       }
       e.CanExecute = result;

@@ -27,8 +27,7 @@ namespace Csla.Test.Threading
       public void MarkBusy(bool busy)
       {
         IsBusy = busy;
-        if (BusyChanged != null)
-          BusyChanged(this, new BusyChangedEventArgs("", busy));
+        BusyChanged?.Invoke(this, new BusyChangedEventArgs("", busy));
       }
 
       public event BusyChangedEventHandler BusyChanged;      
@@ -37,8 +36,7 @@ namespace Csla.Test.Threading
 
       protected virtual void OnUnhandledAsyncException()
       {
-        if (UnhandledAsyncException != null)
-          UnhandledAsyncException(this, new ErrorEventArgs(null, null));
+        UnhandledAsyncException?.Invoke(this, new ErrorEventArgs(null, null));
       }
     }
 

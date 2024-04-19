@@ -587,13 +587,10 @@ namespace Csla.Core.FieldManager
 
         foreach (var item in _fieldData)
         {
-          if (item != null)
+          if (item?.Value is IUndoableObject child)
           {
-            if (item.Value is IUndoableObject child)
-            {
-              // cascade call to child
-              child.AcceptChanges(parentEditLevel, parentBindingEdit);
-            }
+            // cascade call to child
+            child.AcceptChanges(parentEditLevel, parentBindingEdit);
           }
         }
       }
@@ -745,13 +742,10 @@ namespace Csla.Core.FieldManager
     {
       foreach (IFieldData data in _fieldData)
       {
-        if (data != null)
+        if (data?.Value is IMobileObject mobile)
         {
-          if (data.Value is IMobileObject mobile)
-          {
-            SerializationInfo childInfo = formatter.SerializeObject(mobile);
-            info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
-          }
+          SerializationInfo childInfo = formatter.SerializeObject(mobile);
+          info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
         }
       }
       base.OnGetChildren(info, formatter);

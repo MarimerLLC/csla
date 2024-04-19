@@ -274,10 +274,8 @@ namespace Csla.Windows
           {
             e.Binding.ReadValue();
           }
-          if (BindingError != null)
-          {
-            BindingError(this, new BindingErrorEventArgs(e.Binding, e.Exception));
-          }
+
+          BindingError?.Invoke(this, new BindingErrorEventArgs(e.Binding, e.Exception));
           break;
         default:
           if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate)

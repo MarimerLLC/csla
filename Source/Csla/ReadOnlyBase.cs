@@ -1601,8 +1601,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      if (_propertyBusy != null)
-        _propertyBusy(this, args);
+      _propertyBusy?.Invoke(this, args);
     }
 
 #endregion
@@ -1783,8 +1782,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnUnhandledAsyncException(Csla.Core.ErrorEventArgs error)
     {
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
+      _unhandledAsyncException?.Invoke(this, error);
     }
 
     /// <summary>

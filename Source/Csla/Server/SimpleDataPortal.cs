@@ -67,8 +67,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.OnDataPortalException(eventArgs, ex);
+          obj?.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -126,8 +125,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.OnDataPortalException(eventArgs, ex);
+          obj?.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -169,8 +167,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.OnDataPortalException(eventArgs, ex);
+          obj?.OnDataPortalException(eventArgs, ex);
         }
         catch
         {

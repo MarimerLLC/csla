@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Csla.Test.DataPortal
+﻿namespace Csla.Test.DataPortal
 {
   [Serializable]
   public class MultipleDataAccessBase<T>

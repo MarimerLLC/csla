@@ -75,7 +75,6 @@ namespace Csla.Configuration
     /// use by DbProviderFactories.GetFactory().
     /// </summary>
     /// <param name="dbProvider"></param>
-    /// <returns></returns>
     [Obsolete("Use dependency injection", true)]
     public DataOptions DbProvider(string dbProvider)
     {

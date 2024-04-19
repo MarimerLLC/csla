@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading;
 
 namespace Csla.Testing.Business.DataPortal
 {

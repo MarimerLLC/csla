@@ -6,10 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System;
 using Csla.Serialization.Mobile;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using Csla.TestHelpers;
 
 namespace Csla.Test.SmartDate

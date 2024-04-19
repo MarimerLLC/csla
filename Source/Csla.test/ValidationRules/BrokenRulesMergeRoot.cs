@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Rules;
 
 namespace Csla.Test.ValidationRules

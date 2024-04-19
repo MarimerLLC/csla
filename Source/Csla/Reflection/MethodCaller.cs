@@ -411,7 +411,6 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="obj">Target object.</param>
     /// <param name="property">Property to invoke.</param>
-    /// <returns></returns>
     public static object CallPropertyGetter(object obj, string property)
     {
       if (ApplicationContext.UseReflectionFallback)
@@ -1227,7 +1226,6 @@ namespace Csla.Reflection
     /// <param name="typeParams">Type parameters for method</param>
     /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
     /// <param name="parameters">Parameters for method</param>
-    /// <returns></returns>
     public static Task<object> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
     {
       var tcs = new TaskCompletionSource<object>();
@@ -1272,7 +1270,6 @@ namespace Csla.Reflection
     /// <param name="typeParams">Type parameters for method</param>
     /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
     /// <param name="parameters">Parameters for method</param>
-    /// <returns></returns>
     public static object CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
     {
       var objectType = target.GetType();

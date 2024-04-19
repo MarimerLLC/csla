@@ -28,7 +28,6 @@ namespace Csla.Blazor.Authentication
     /// <summary>
     /// Gets the authentication state.
     /// </summary>
-    /// <returns></returns>
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
       return Task.FromResult(AuthenticationState);

@@ -285,7 +285,6 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    /// <returns></returns>
     public T GetValue<T>(string name)
     {
       try

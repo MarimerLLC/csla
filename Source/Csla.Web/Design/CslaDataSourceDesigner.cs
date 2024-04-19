@@ -44,7 +44,6 @@ namespace Csla.Web.Design
     /// Returns the default view for this designer.
     /// </summary>
     /// <param name="viewName">Ignored</param>
-    /// <returns></returns>
     /// <remarks>
     /// This designer supports only a "Default" view.
     /// </remarks>

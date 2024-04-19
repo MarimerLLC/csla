@@ -156,7 +156,6 @@ namespace Csla.Windows
     /// Gets the action type.
     /// </summary>
     /// <param name="ctl">Reference to Control.</param>
-    /// <returns></returns>
     [Category("Csla")]
     [Description("Gets or sets the action type for this button.")]
     [Bindable(true)]
@@ -198,7 +197,6 @@ namespace Csla.Windows
     /// Gets the post save action.
     /// </summary>
     /// <param name="ctl">Reference to Control.</param>
-    /// <returns></returns>
     [Category("Csla")]
     [Description("Gets or sets the action performed after a save (if ActionType is set to Save).")]
     [Bindable(true)]

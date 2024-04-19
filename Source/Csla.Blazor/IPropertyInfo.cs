@@ -62,7 +62,6 @@ namespace Csla.Blazor
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    /// <returns></returns>
     System.Reflection.PropertyInfo GetPropertyInfo();
   }
 }

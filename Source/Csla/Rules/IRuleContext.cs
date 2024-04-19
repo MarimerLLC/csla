@@ -199,14 +199,12 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    /// <returns></returns>
     T GetInputValue<T>(PropertyInfo<T> propertyInfo);
     /// <summary>
     /// Gets the value with explicit cast
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The generic property info.</param>
-    /// <returns></returns>
     T GetInputValue<T>(IPropertyInfo propertyInfo);
     /// <summary>
     /// Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not.

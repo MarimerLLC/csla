@@ -63,7 +63,6 @@ namespace Csla.Core
     /// if the event handler should be serialized
     /// </summary>
     /// <param name="value">the event handler to review</param>
-    /// <returns></returns>
     protected virtual bool ShouldHandlerSerialize(PropertyChangedEventHandler value)
     {
       return value.Method.IsPublic &&
@@ -253,7 +252,6 @@ namespace Csla.Core
     /// if the event handler should be serialized
     /// </summary>
     /// <param name="value">the event handler to review</param>
-    /// <returns></returns>
     protected virtual bool ShouldHandlerSerialize(PropertyChangingEventHandler value)
     {
       return value.Method.IsPublic &&

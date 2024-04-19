@@ -219,7 +219,6 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    /// <returns></returns>
     protected object GetRealSource(object source, string bindingPath)
     {
       var firstProperty = string.Empty;

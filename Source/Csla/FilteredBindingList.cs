@@ -179,7 +179,6 @@ namespace Csla
     /// <summary>
     /// Gets an enumerator object.
     /// </summary>
-    /// <returns></returns>
     public IEnumerator<T> GetEnumerator()
     {
       if (IsFiltered)
@@ -766,7 +765,6 @@ namespace Csla
     /// </summary>
     /// <value>A descriptor for the property on which
     /// the items in the collection will be filtered.</value>
-    /// <returns></returns>
     /// <remarks></remarks>
     public PropertyDescriptor FilterProperty { get; private set; }
 

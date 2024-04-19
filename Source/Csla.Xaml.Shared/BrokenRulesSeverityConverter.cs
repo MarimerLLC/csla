@@ -28,7 +28,6 @@ namespace Csla.Xaml
     /// <param name="targetType">Desired output type (ignored).</param>
     /// <param name="parameter">Extra parameter (ignored).</param>
     /// <param name="culture">Desired culture (ignored).</param>
-    /// <returns></returns>
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
       RuleSeverity severity = (RuleSeverity)value;

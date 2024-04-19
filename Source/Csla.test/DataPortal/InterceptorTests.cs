@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Csla.Configuration;
+﻿using Csla.Configuration;
 using Csla.Core;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

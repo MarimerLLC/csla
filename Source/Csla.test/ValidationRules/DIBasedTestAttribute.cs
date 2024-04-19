@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Data Annotations attribute that makes use of DI</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel.DataAnnotations;
 
 namespace Csla.Test.ValidationRules
@@ -25,7 +25,6 @@ namespace Csla.Test.ValidationRules
     /// </summary>
     /// <param name="value">The value that is to be validated</param>
     /// <param name="validationContext">The context within which we are to perform validation</param>
-    /// <returns></returns>
     /// <exception cref="ArgumentNullException">Validation context is not provided</exception>
     protected override ValidationResult IsValid(object value, ValidationContext validationContext)
     {

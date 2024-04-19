@@ -578,7 +578,6 @@ namespace Csla.Xaml
     /// <summary>
     /// Override to provide custom Model save behavior.
     /// </summary>
-    /// <returns></returns>
     protected virtual async Task<T> DoSaveAsync(ISavable cloned)
     {
       if (cloned != null)

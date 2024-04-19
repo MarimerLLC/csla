@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

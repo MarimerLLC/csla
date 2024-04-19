@@ -100,7 +100,6 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns></returns>
     protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
@@ -133,7 +132,6 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns></returns>
     protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);

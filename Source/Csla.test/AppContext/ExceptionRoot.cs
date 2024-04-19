@@ -4,7 +4,6 @@
 //     Website: https://cslanet.com
 // </copyright>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Test.AppContext
 {

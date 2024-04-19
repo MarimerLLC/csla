@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Linq;
 using Csla.Core;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

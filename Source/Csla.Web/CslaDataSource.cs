@@ -64,7 +64,6 @@ namespace Csla.Web
     /// Returns the default view for this data control.
     /// </summary>
     /// <param name="viewName">Ignored.</param>
-    /// <returns></returns>
     /// <remarks>This control only contains a "Default" view.</remarks>
     protected override DataSourceView GetView(string viewName)
     {

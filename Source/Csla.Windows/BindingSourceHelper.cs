@@ -30,7 +30,6 @@ namespace Csla.Windows
     /// <param name="rootSource">
     /// Root BindingSource object.
     /// </param>
-    /// <returns></returns>
     public static BindingSourceNode InitializeBindingSourceTree(
       IContainer container, BindingSource rootSource)
     {

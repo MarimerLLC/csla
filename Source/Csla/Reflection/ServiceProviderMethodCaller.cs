@@ -450,7 +450,6 @@ namespace Csla.Reflection
     /// <param name="obj">Target object</param>
     /// <param name="method">Method to invoke</param>
     /// <param name="parameters">Criteria params array</param>
-    /// <returns></returns>
     public async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object[] parameters)
     {
       if (method == null)

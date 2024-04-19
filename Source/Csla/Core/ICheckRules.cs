@@ -39,7 +39,6 @@ namespace Csla.Core
     /// <summary>
     /// Gets the broken rules collection
     /// </summary>
-    /// <returns></returns>
     BrokenRulesCollection GetBrokenRules();
   }
 }

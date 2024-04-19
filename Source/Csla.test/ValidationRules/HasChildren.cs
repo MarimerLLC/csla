@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Core;
-using System.Threading.Tasks;
 
 namespace Csla.Test.ValidationRules
 {

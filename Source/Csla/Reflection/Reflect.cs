@@ -88,7 +88,6 @@ namespace Csla.Reflection
     /// </summary>
     /// <typeparam name="P">Type assigned to the property</typeparam>
     /// <param name="property">Property Expression</param>
-    /// <returns></returns>
     /// <exception cref="ArgumentNullException">The <paramref name="property"/> is null.</exception>
     /// <exception cref="ArgumentException">The <paramref name="property"/> is not a lambda expression or it does not represent a property access.</exception>
     public static PropertyInfo GetProperty<P>(Expression<Func<TTarget, P>> property)

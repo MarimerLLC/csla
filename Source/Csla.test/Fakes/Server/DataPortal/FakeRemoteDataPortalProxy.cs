@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Csla.Channels.Local;
+﻿using Csla.Channels.Local;
 using Csla.DataPortalClient;
 using Csla.Server;
 

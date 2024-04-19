@@ -5,16 +5,14 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using Csla.Test.ValidationRules;
 using UnitDriven;
-using System.Threading.Tasks;
 using System.Security.Claims;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
-using System.IO;
 
 namespace Csla.Test.Serialization
 {

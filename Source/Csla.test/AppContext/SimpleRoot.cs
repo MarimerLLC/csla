@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>The unique ID of this object</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Test.AppContext
 {
@@ -17,7 +16,6 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// The unique ID of this object
     /// </summary>
-    /// <returns></returns>
     protected override object GetIdValue()
     {
       return this._Data;

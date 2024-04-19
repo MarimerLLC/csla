@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-using Csla.Rules;
+﻿using Csla.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.TestHelpers;
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Security.Principal;
-using System.Threading;
 using Csla.Core;
 
 namespace Csla.Test.AppContext
@@ -99,7 +97,6 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
-    /// <returns></returns>
     public IServiceProvider GetServiceProvider()
     {
       return (IServiceProvider)ApplicationContext.LocalContext["__sps"];

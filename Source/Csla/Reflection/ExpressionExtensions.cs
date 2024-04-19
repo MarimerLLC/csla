@@ -21,7 +21,6 @@ namespace Csla.Reflection
     /// </summary>
     /// <typeparam name="T">Type of value</typeparam>
     /// <param name="expression">Expression</param>
-    /// <returns></returns>
     public static string GetKey<T>(this Expression<T> expression)
     {
       var list = new List<string>();

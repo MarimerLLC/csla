@@ -59,7 +59,6 @@ namespace Csla.Web.Mvc
     /// Handles CSLA permissions
     /// </summary>
     /// <param name="context">Authorization handler context</param>
-    /// <returns></returns>
     public override Task HandleAsync(AuthorizationHandlerContext context)
     {
       foreach (var item in context.PendingRequirements)
@@ -73,7 +72,6 @@ namespace Csla.Web.Mvc
     /// </summary>
     /// <param name="context">Authorization handler context</param>
     /// <param name="requirement">CSLA permissions requirement</param>
-    /// <returns></returns>
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, 
       CslaPermissionRequirement requirement)
     {

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

@@ -97,7 +97,6 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
-    /// <returns></returns>
     public IServiceProvider GetServiceProvider()
     {
       return (IServiceProvider)ApplicationContext.LocalContext["__sps"];

@@ -43,7 +43,6 @@ namespace Csla.Data.SqlClient
     /// </summary>
     /// <typeparam name="T">Type of value</typeparam>
     /// <param name="ordinal">Ordinal position of value</param>
-    /// <returns></returns>
     public Task<T> GetFieldValueAsync<T>(int ordinal)
     {
       if (SqlDataReader == null)
@@ -69,7 +68,6 @@ namespace Csla.Data.SqlClient
     /// or missing value.
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
-    /// <returns></returns>
     public Task<bool> IsDbNullAsync(int ordinal)
     {
       if (SqlDataReader == null)
@@ -83,7 +81,6 @@ namespace Csla.Data.SqlClient
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
     /// <param name="cancellationToken">Async cancellation token</param>
-    /// <returns></returns>
     public Task<bool> IsDbNullAsync(int ordinal, System.Threading.CancellationToken cancellationToken)
     {
       if (SqlDataReader == null)
@@ -94,7 +91,6 @@ namespace Csla.Data.SqlClient
     /// <summary>
     /// Advances the reader to the next result.
     /// </summary>
-    /// <returns></returns>
     public Task<bool> NextResultAsync()
     {
       if (SqlDataReader == null)
@@ -106,7 +102,6 @@ namespace Csla.Data.SqlClient
     /// Advances the reader to the next result.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    /// <returns></returns>
     public Task<bool> NextResultAsync(System.Threading.CancellationToken cancellationToken)
     {
       if (SqlDataReader == null)
@@ -117,7 +112,6 @@ namespace Csla.Data.SqlClient
     /// <summary>
     /// Advances to the next record in a recordset.
     /// </summary>
-    /// <returns></returns>
     public Task<bool> ReadAsync()
     {
       if (SqlDataReader == null)
@@ -129,7 +123,6 @@ namespace Csla.Data.SqlClient
     /// Advances to the next record in a recordset.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    /// <returns></returns>
     public Task<bool> ReadAsync(System.Threading.CancellationToken cancellationToken)
     {
       if (SqlDataReader == null)

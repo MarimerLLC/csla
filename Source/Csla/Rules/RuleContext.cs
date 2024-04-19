@@ -442,7 +442,6 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    /// <returns></returns>
     public  T GetInputValue<T>(PropertyInfo<T> propertyInfo)
     {
       return (T)InputPropertyValues[propertyInfo];
@@ -453,7 +452,6 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The generic property info.</param>
-    /// <returns></returns>
     public T GetInputValue<T>(IPropertyInfo propertyInfo)
     {
       return (T)InputPropertyValues[propertyInfo];

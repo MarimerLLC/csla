@@ -42,7 +42,6 @@ namespace Csla.Channels.Grpc
     /// </summary>
     /// <param name="request">Request message</param>
     /// <param name="context">Server call context</param>
-    /// <returns></returns>
     public override async Task<ResponseMessage> Invoke(RequestMessage request, ServerCallContext context)
     {
       var operation = request.Operation;

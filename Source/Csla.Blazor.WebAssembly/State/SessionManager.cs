@@ -86,7 +86,6 @@ namespace Csla.Blazor.WebAssembly.State
     /// the wasm client to the web server 
     /// if SyncContextWithServer is true.
     /// </summary>
-    /// <returns></returns>
     public async Task SendSession()
     {
       _session.Touch();

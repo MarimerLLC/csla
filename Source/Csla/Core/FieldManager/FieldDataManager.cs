@@ -85,7 +85,6 @@ namespace Csla.Core.FieldManager
     /// property name.
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
-    /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the
     /// property name doesn't correspond to a registered property.</exception>
     public IPropertyInfo GetRegisteredProperty(string propertyName)

@@ -31,7 +31,6 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="context"></param>
     /// <param name="requirement"></param>
-    /// <returns></returns>
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CslaPermissionRequirement requirement)
     {
       if (Rules.BusinessRules.HasPermission(ApplicationContext, requirement.Action, requirement.ObjectType))

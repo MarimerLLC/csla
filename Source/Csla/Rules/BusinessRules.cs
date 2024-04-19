@@ -141,7 +141,6 @@ namespace Csla.Rules
     /// Gets a list of rule:// URI values for
     /// the rules defined in the object.
     /// </summary>
-    /// <returns></returns>
     public string[] GetRuleDescriptions()
     {
       var result = new List<string>();
@@ -698,7 +697,6 @@ namespace Csla.Rules
     /// <param name="property">The property.</param>
     /// <param name="cascade">if set to <c>true</c> [cascade].</param>
     /// <param name="executionMode">The execute mode.</param>
-    /// <returns></returns>
     private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleContextModes executionMode)
     {
       // checking rules for the primary property
@@ -780,7 +778,6 @@ namespace Csla.Rules
     /// <param name="rules">The rules.</param>
     /// <param name="cascade">if set to <c>true</c> cascade.</param>
     /// <param name="executionContext">The execution context.</param>
-    /// <returns></returns>
     private RunRulesResult RunRules(IEnumerable<IBusinessRuleBase> rules, bool cascade, RuleContextModes executionContext)
     {
       var affectedProperties = new List<string>();
@@ -1130,7 +1127,6 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="root">The root.</param>
     /// <param name="errorsOnly">if set to <c>true</c> will only return objects that gave IsValid = false.</param>
-    /// <returns></returns>
     public static BrokenRulesTree GetAllBrokenRules(object root, bool errorsOnly)
     {
       var list = new BrokenRulesTree();

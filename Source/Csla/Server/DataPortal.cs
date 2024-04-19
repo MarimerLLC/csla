@@ -756,7 +756,6 @@ namespace Csla.Server
     /// serializable criteria value.
     /// </summary>
     /// <param name="criteria">Params array</param>
-    /// <returns></returns>
     public static object GetCriteriaFromArray(params object[] criteria)
     {
       var clength = 0;
@@ -781,7 +780,6 @@ namespace Csla.Server
     /// into an array of type object.
     /// </summary>
     /// <param name="criteria">Single serializble criteria value</param>
-    /// <returns></returns>
     public static object[] GetCriteriaArray(object criteria)
     {
       if (criteria == null)

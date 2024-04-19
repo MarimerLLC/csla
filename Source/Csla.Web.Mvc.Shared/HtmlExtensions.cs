@@ -27,7 +27,6 @@ namespace Csla.Web.Mvc
     /// <typeparam name="T">Model type</typeparam>
     /// <param name="htmlHelper">IHtmlHelper instance</param>
     /// <param name="expression">Model property</param>
-    /// <returns></returns>
     public static HtmlString InformationFor<T>(
       this IHtmlHelper<T> htmlHelper,
       System.Linq.Expressions.Expression<Func<T, object>> expression)
@@ -48,7 +47,6 @@ namespace Csla.Web.Mvc
     /// <typeparam name="T">Model type</typeparam>
     /// <param name="htmlHelper">IHtmlHelper instance</param>
     /// <param name="expression">Model property</param>
-    /// <returns></returns>
     public static HtmlString WarningFor<T>(
       this IHtmlHelper<T> htmlHelper,
       System.Linq.Expressions.Expression<Func<T, object>> expression)
@@ -69,7 +67,6 @@ namespace Csla.Web.Mvc
     /// <typeparam name="T">Model type</typeparam>
     /// <param name="htmlHelper">IHtmlHelper instance</param>
     /// <param name="expression">Model property</param>
-    /// <returns></returns>
     public static HtmlString ErrorFor<T>(
       this IHtmlHelper<T> htmlHelper,
       System.Linq.Expressions.Expression<Func<T, object>> expression)

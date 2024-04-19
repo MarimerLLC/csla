@@ -27,7 +27,6 @@ namespace Csla.State
     /// Sends the current user's session from
     /// the wasm client to the web server.
     /// </summary>
-    /// <returns></returns>
     Task SendSession();
     #endregion
 

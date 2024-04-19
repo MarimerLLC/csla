@@ -31,7 +31,6 @@ namespace Csla.Core
     /// Gets an instance of ObjectCloner.
     /// </summary>
     /// <param name="applicationContext"></param>
-    /// <returns></returns>
     public static ObjectCloner GetInstance(ApplicationContext applicationContext)
     {
       return new ObjectCloner(applicationContext);

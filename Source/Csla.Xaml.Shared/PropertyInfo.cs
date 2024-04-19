@@ -459,7 +459,6 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    /// <returns></returns>
     protected object GetRealSource(object source, string bindingPath)
     {
       if (source is ICollectionView icv)
@@ -484,7 +483,6 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    /// <returns></returns>
     protected PropertyPath GetRelativePath(object source, string bindingPath)
     {
       if (source != null)
@@ -569,7 +567,6 @@ namespace Csla.Xaml
     /// Gets the validation error messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string ErrorText
     {
       get
@@ -585,7 +582,6 @@ namespace Csla.Xaml
     /// Gets the validation warning messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string WarningText
     {
       get
@@ -601,7 +597,6 @@ namespace Csla.Xaml
     /// Gets the validation information messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string InformationText
     {
       get

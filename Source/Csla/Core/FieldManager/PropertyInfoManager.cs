@@ -174,7 +174,6 @@ namespace Csla.Core.FieldManager
     /// </summary>
     /// <param name="objectType">The business object type.</param>
     /// <param name="propertyName">The name of the property.</param>
-    /// <returns></returns>
     public static IPropertyInfo GetRegisteredProperty(Type objectType, string propertyName)
     {
       return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);

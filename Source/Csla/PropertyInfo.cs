@@ -244,7 +244,6 @@ namespace Csla
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    /// <returns></returns>
     public System.Reflection.PropertyInfo GetPropertyInfo() => _propertyInfo;
 
     #region IComparable Members

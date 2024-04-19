@@ -50,7 +50,6 @@ namespace Csla.Serialization.Mobile
     /// a short code.
     /// </summary>
     /// <param name="type">Original type.</param>
-    /// <returns></returns>
     public static string GetAssemblyQualifiedName(Type type)
     {
       var result = type.AssemblyQualifiedName;
@@ -65,7 +64,6 @@ namespace Csla.Serialization.Mobile
     /// specific assembly name.
     /// </summary>
     /// <param name="typeName"></param>
-    /// <returns></returns>
     public static string GetAssemblyQualifiedName(string typeName)
     {
       var result = typeName;

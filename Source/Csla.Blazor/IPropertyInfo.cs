@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
+﻿using System.ComponentModel;
 
 namespace Csla.Blazor
 {
@@ -65,7 +62,6 @@ namespace Csla.Blazor
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    /// <returns></returns>
     System.Reflection.PropertyInfo GetPropertyInfo();
   }
 }

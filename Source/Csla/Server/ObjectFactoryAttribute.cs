@@ -5,11 +5,6 @@
 // </copyright>
 // <summary>Specifies that the data portal</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Csla.Reflection;
 
 namespace Csla.Server
 {
@@ -288,7 +283,6 @@ namespace Csla.Server
     /// Gets the short version of assembly qualified name.
     /// </summary>
     /// <param name="type">The type.</param>
-    /// <returns></returns>
     private static string GetAssemblyQualifiedName(Type type)
     {
 #if NETFX_CORE
@@ -304,8 +298,7 @@ namespace Csla.Server
         if (type.AssemblyQualifiedName == null) return string.Empty;
 
         var elements = type.AssemblyQualifiedName.Split(',');
-        return string.Format("{0},{1}", elements[0], elements[1]);
-
+        return $"{elements[0]},{elements[1]}";
       }
     }
   }

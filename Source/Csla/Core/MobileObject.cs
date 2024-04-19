@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Inherit from this base class to easily</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
 

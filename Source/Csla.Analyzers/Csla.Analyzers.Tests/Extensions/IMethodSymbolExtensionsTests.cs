@@ -2,9 +2,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using static Csla.Analyzers.Extensions.IMethodSymbolExtensions;
 
 namespace Csla.Analyzers.Tests.Extensions
@@ -28,71 +25,75 @@ namespace Csla.Analyzers.Tests.Extensions
     private const string C_Execute = nameof(C_Execute);
 
     private static readonly string DataPortalOperationCode =
-$@"using Csla;
+      $$"""
+        using Csla;
 
-namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
-{{
-  public class DataPortalOperations
-  {{
-    public void {AMethod} () {{ }}
-    
-    public void {CslaMemberConstants.Operations.DataPortalCreate}() {{ }}
-    public void {CslaMemberConstants.Operations.DataPortalFetch}() {{ }}
-    public void {CslaMemberConstants.Operations.DataPortalInsert}() {{ }}
-    public void {CslaMemberConstants.Operations.DataPortalUpdate}() {{ }}
-    public void {CslaMemberConstants.Operations.DataPortalDelete}() {{ }}
-    public void {CslaMemberConstants.Operations.DataPortalDeleteSelf}() {{ }}
-    public void {CslaMemberConstants.Operations.DataPortalExecute}() {{ }}
-    public void {CslaMemberConstants.Operations.ChildCreate}() {{ }}
-    public void {CslaMemberConstants.Operations.ChildFetch}() {{ }}
-    public void {CslaMemberConstants.Operations.ChildInsert}() {{ }}
-    public void {CslaMemberConstants.Operations.ChildUpdate}() {{ }}
-    public void {CslaMemberConstants.Operations.ChildDeleteSelf}() {{ }}
-    public void {CslaMemberConstants.Operations.ChildExecute}() {{ }}
-
-    [Create] public void {DP_Create}() {{ }}
-    [Fetch] public void {DP_Fetch}() {{ }}
-    [Insert] public void {DP_Insert}() {{ }}
-    [Update] public void {DP_Update}() {{ }}
-    [Delete] public void {DP_Delete}() {{ }}
-    [DeleteSelf] public void {DP_DeleteSelf}() {{ }}
-    [Execute] public void {DP_Execute}() {{ }}
-    [CreateChild] public void {C_Create}() {{ }}
-    [FetchChild] public void {C_Fetch}() {{ }}
-    [InsertChild] public void {C_Insert}() {{ }}
-    [UpdateChild] public void {C_Update}() {{ }}
-    [DeleteSelfChild] public void {C_DeleteSelf}() {{ }}
-    [ExecuteChild] public void {C_Execute}() {{ }}
-  }}
-}}";
+        namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
+        {
+          public class DataPortalOperations
+          {
+            public void {{AMethod}} () { }
+            
+            public void {{CslaMemberConstants.Operations.DataPortalCreate}}() { }
+            public void {{CslaMemberConstants.Operations.DataPortalFetch}}() { }
+            public void {{CslaMemberConstants.Operations.DataPortalInsert}}() { }
+            public void {{CslaMemberConstants.Operations.DataPortalUpdate}}() { }
+            public void {{CslaMemberConstants.Operations.DataPortalDelete}}() { }
+            public void {{CslaMemberConstants.Operations.DataPortalDeleteSelf}}() { }
+            public void {{CslaMemberConstants.Operations.DataPortalExecute}}() { }
+            public void {{CslaMemberConstants.Operations.ChildCreate}}() { }
+            public void {{CslaMemberConstants.Operations.ChildFetch}}() { }
+            public void {{CslaMemberConstants.Operations.ChildInsert}}() { }
+            public void {{CslaMemberConstants.Operations.ChildUpdate}}() { }
+            public void {{CslaMemberConstants.Operations.ChildDeleteSelf}}() { }
+            public void {{CslaMemberConstants.Operations.ChildExecute}}() { }
+        
+            [Create] public void {{DP_Create}}() { }
+            [Fetch] public void {{DP_Fetch}}() { }
+            [Insert] public void {{DP_Insert}}() { }
+            [Update] public void {{DP_Update}}() { }
+            [Delete] public void {{DP_Delete}}() { }
+            [DeleteSelf] public void {{DP_DeleteSelf}}() { }
+            [Execute] public void {{DP_Execute}}() { }
+            [CreateChild] public void {{C_Create}}() { }
+            [FetchChild] public void {{C_Fetch}}() { }
+            [InsertChild] public void {{C_Insert}}() { }
+            [UpdateChild] public void {{C_Update}}() { }
+            [DeleteSelfChild] public void {{C_DeleteSelf}}() { }
+            [ExecuteChild] public void {{C_Execute}}() { }
+          }
+        }
+        """;
     private const string PropertyInfoManagementCode =
-@"namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
-{
-  public class PropertyInfoManagementMethods
-    : BusinessBase<PropertyInfoManagementMethods>
-  {
-    public void AMethod()
-    {
-      this.GetProperty(null);
-      this.GetPropertyConvert<string, string>(null, null);
-      this.SetProperty(null, null);
-      this.SetPropertyConvert<string, string>(null, null);
-      this.LoadProperty(null, null);
-      this.LoadPropertyAsync<string>(null, null);
-      this.LoadPropertyConvert<string, string>(null, null);
-      this.LoadPropertyMarkDirty(null, null);
-      this.ReadProperty(null);
-      this.ReadPropertyConvert<string, string>(null);
-      this.LazyGetProperty<string>(null, null);
-      this.LazyGetPropertyAsync<string>(null, null);
-      this.LazyReadProperty<string>(null, null);
-      this.LazyReadPropertyAsync<string>(null, null);
-      this.Something();
-    }
-
-    private void Something() { }
-  }
-}";
+      """
+      namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
+      {
+        public class PropertyInfoManagementMethods
+          : BusinessBase<PropertyInfoManagementMethods>
+        {
+          public void AMethod()
+          {
+            this.GetProperty(null);
+            this.GetPropertyConvert<string, string>(null, null);
+            this.SetProperty(null, null);
+            this.SetPropertyConvert<string, string>(null, null);
+            this.LoadProperty(null, null);
+            this.LoadPropertyAsync<string>(null, null);
+            this.LoadPropertyConvert<string, string>(null, null);
+            this.LoadPropertyMarkDirty(null, null);
+            this.ReadProperty(null);
+            this.ReadPropertyConvert<string, string>(null);
+            this.LazyGetProperty<string>(null, null);
+            this.LazyGetPropertyAsync<string>(null, null);
+            this.LazyReadProperty<string>(null, null);
+            this.LazyReadPropertyAsync<string>(null, null);
+            this.Something();
+          }
+      
+          private void Something() { }
+        }
+      }
+      """;
 
     [TestMethod]
     public void IsPropertyInfoManagementMethodWhenSymbolIsNull()

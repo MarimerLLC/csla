@@ -5,11 +5,7 @@
 // </copyright>
 // <summary>Object containing the serialization</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
+
 using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile
@@ -190,7 +186,7 @@ namespace Csla.Serialization.Mobile
       #endregion
     }
 
-    private Dictionary<string, ChildData> _children = new Dictionary<string, ChildData>();
+    private Dictionary<string, ChildData> _children = [];
     /// <summary>
     /// Dictionary containing child reference data.
     /// </summary>
@@ -201,7 +197,7 @@ namespace Csla.Serialization.Mobile
       set { _children = value; }
     }
 
-    private Dictionary<string, FieldData> _values = new Dictionary<string, FieldData>();
+    private Dictionary<string, FieldData> _values = [];
     /// <summary>
     /// Dictionary containg field data.
     /// </summary>
@@ -289,7 +285,6 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    /// <returns></returns>
     public T GetValue<T>(string name)
     {
       try
@@ -299,7 +294,7 @@ namespace Csla.Serialization.Mobile
       }
       catch (Exception ex)
       {
-        throw new InvalidOperationException(string.Format("SerializationInfo.GetValue: {0}", name), ex);
+        throw new InvalidOperationException($"SerializationInfo.GetValue: {name}", ex);
       }
     }
 
@@ -413,9 +408,9 @@ namespace Csla.Serialization.Mobile
       {
         int referenceId = info.Children[key].ReferenceId;
         object serialized = formatter.GetObject(referenceId);
-        if (serialized is ChildData)
+        if (serialized is ChildData data)
         {
-          _children.Add(key, (ChildData)serialized);
+          _children.Add(key, data);
         }
         else
         {

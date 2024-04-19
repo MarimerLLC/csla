@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Marks a DataPortal_XYZ method to run within</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Transactions;
 
 namespace Csla

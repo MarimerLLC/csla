@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.DataPortalClient
 {

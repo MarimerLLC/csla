@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Gets and puts the current user session data</summary>
 //-----------------------------------------------------------------------
-using System.IO;
+
 using Microsoft.AspNetCore.Mvc;
 using Csla.State;
 using Csla.Security;
@@ -35,7 +35,6 @@ namespace Csla.AspNetCore.Blazor.State
     /// format.
     /// </summary>
     /// <param name="lastTouched">Last touched value from session</param>
-    /// <returns></returns>
     [HttpGet]
     public virtual StateResult Get(long lastTouched)
     {
@@ -68,7 +67,6 @@ namespace Csla.AspNetCore.Blazor.State
     /// serialized format.
     /// </summary>
     /// <param name="updatedSessionData"></param>
-    /// <returns></returns>
     [HttpPut]
     public virtual void Put(byte[] updatedSessionData)
     {

@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.IO;
-using System.Collections.Generic;
+
 using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
@@ -18,7 +15,6 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
-using System.Threading.Tasks;
 
 namespace Csla.Core.FieldManager
 {
@@ -89,7 +85,6 @@ namespace Csla.Core.FieldManager
     /// property name.
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
-    /// <returns></returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the
     /// property name doesn't correspond to a registered property.</exception>
     public IPropertyInfo GetRegisteredProperty(string propertyName)
@@ -591,13 +586,10 @@ namespace Csla.Core.FieldManager
 
         foreach (var item in _fieldData)
         {
-          if (item != null)
+          if (item?.Value is IUndoableObject child)
           {
-            if (item.Value is IUndoableObject child)
-            {
-              // cascade call to child
-              child.AcceptChanges(parentEditLevel, parentBindingEdit);
-            }
+            // cascade call to child
+            child.AcceptChanges(parentEditLevel, parentBindingEdit);
           }
         }
       }
@@ -749,13 +741,10 @@ namespace Csla.Core.FieldManager
     {
       foreach (IFieldData data in _fieldData)
       {
-        if (data != null)
+        if (data?.Value is IMobileObject mobile)
         {
-          if (data.Value is IMobileObject mobile)
-          {
-            SerializationInfo childInfo = formatter.SerializeObject(mobile);
-            info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
-          }
+          SerializationInfo childInfo = formatter.SerializeObject(mobile);
+          info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
         }
       }
       base.OnGetChildren(info, formatter);

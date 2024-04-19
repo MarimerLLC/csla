@@ -5,12 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla;
-using Csla.Serialization;
-using Csla.DataPortalClient;
+
 using Csla.Serialization.Mobile;
 
 namespace Csla.Test.PropertyGetSet

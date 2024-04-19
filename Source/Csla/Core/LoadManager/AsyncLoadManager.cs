@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.Collections.ObjectModel;
 using Csla.Properties;
 
@@ -25,7 +24,7 @@ namespace Csla.Core.LoadManager
     }
 
     private object _syncRoot = new object();
-    private readonly ObservableCollection<IAsyncLoader> _loading = new ObservableCollection<IAsyncLoader>();
+    private readonly ObservableCollection<IAsyncLoader> _loading = [];
 
     public bool IsLoading
     {
@@ -87,8 +86,7 @@ namespace Csla.Core.LoadManager
     public event BusyChangedEventHandler BusyChanged;
     protected void OnPropertyBusy(string propertyName, bool busy)
     {
-      if (BusyChanged != null)
-        BusyChanged(this, new BusyChangedEventArgs(propertyName, busy));
+      BusyChanged?.Invoke(this, new BusyChangedEventArgs(propertyName, busy));
     }
 
     #endregion
@@ -121,8 +119,7 @@ namespace Csla.Core.LoadManager
 
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
+      _unhandledAsyncException?.Invoke(this, error);
     }
 
     protected void OnUnhandledAsyncException(object originalSender, Exception error)

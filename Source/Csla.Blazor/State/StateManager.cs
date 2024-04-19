@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Get and save state from Blazor pages</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using Csla.State;
 
 namespace Csla.Blazor.State
@@ -22,27 +21,24 @@ namespace Csla.Blazor.State
     /// <summary>
     /// Get state from cache.
     /// </summary>
-    /// <returns></returns>
-    public async Task InitializeAsync()
+    public Task InitializeAsync()
     {
-      await InitializeAsync(TimeSpan.FromSeconds(10));
+      return InitializeAsync(TimeSpan.FromSeconds(10));
     }
 
     /// <summary>
     /// Get state from cache.
     /// </summary>
     /// <param name="timeout">Time to wait before timing out</param>
-    /// <returns></returns>
-    public async Task InitializeAsync(TimeSpan timeout)
+    public Task InitializeAsync(TimeSpan timeout)
     {
-      await GetState(timeout);
+      return GetState(timeout);
     }
 
     /// <summary>
     /// Get state from cache.
     /// </summary>
     /// <param name="timeout">Time to wait before timing out</param>
-    /// <returns></returns>
     private async Task GetState(TimeSpan timeout)
     {
       Session session;

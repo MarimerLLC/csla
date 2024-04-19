@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Authorization handler for CSLA permissions</summary>
 //-----------------------------------------------------------------------
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace Csla.Blazor
@@ -31,7 +31,6 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="context"></param>
     /// <param name="requirement"></param>
-    /// <returns></returns>
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CslaPermissionRequirement requirement)
     {
       if (Rules.BusinessRules.HasPermission(_applicationContext, requirement.Action, requirement.ObjectType))

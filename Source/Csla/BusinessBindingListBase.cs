@@ -5,11 +5,9 @@
 // </copyright>
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Server;
@@ -711,7 +709,6 @@ namespace Csla
     /// Await this method to ensure business object
     /// is not busy running async rules.
     /// </summary>
-    /// <returns></returns>
     public async Task WaitForIdle()
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
@@ -723,10 +720,9 @@ namespace Csla
     /// is not busy running async rules.
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
-    /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>
@@ -1131,9 +1127,9 @@ namespace Csla
       return await SaveAsync();
     }
 
-    async Task ISavable.SaveAndMergeAsync(bool forceUpdate)
+    Task ISavable.SaveAndMergeAsync(bool forceUpdate)
     {
-      await SaveAndMergeAsync();
+      return SaveAndMergeAsync();
     }
 
     void Csla.Core.ISavable.SaveComplete(object newObject)
@@ -1151,9 +1147,9 @@ namespace Csla
       return await SaveAsync();
     }
 
-    async Task ISavable<T>.SaveAndMergeAsync(bool forceUpdate)
+    Task ISavable<T>.SaveAndMergeAsync(bool forceUpdate)
     {
-      await SaveAndMergeAsync();
+      return SaveAndMergeAsync();
     }
 
     void Csla.Core.ISavable<T>.SaveComplete(T newObject)
@@ -1206,10 +1202,8 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
-      if (_nonSerializableSavedHandlers != null)
-        _nonSerializableSavedHandlers.Invoke(this, args);
-      if (_serializableSavedHandlers != null)
-        _serializableSavedHandlers.Invoke(this, args);
+      _nonSerializableSavedHandlers?.Invoke(this, args);
+      _serializableSavedHandlers?.Invoke(this, args);
     }
     #endregion
 

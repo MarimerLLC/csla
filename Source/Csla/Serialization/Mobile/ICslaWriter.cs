@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace Csla.Serialization.Mobile
+﻿namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// Represents a class that can be used to write a list of <see cref="SerializationInfo"/> objects

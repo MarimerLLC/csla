@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Net;
 using System.Net.Http;
 using Csla.Configuration;
@@ -65,19 +65,23 @@ namespace Csla.Channels.Http
     }
 
 #pragma warning disable SYSLIB0014
-    private class CompressionWebClient : WebClient
+    private class CompressionWebClient(int timeout) : WebClient
     {
-      private int Timeout { get; set; }
-
-      public CompressionWebClient(int timeout) => Timeout = timeout;
-
       protected override WebRequest GetWebRequest(Uri address)
       {
-        var req = base.GetWebRequest(address) as HttpWebRequest;
-        req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-        if (Timeout > 0)
-          req.Timeout = Timeout;
-        return req;
+        var webRequest = base.GetWebRequest(address)!;
+
+        if (webRequest is HttpWebRequest httpWebRequest)
+        {
+          httpWebRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+        }
+
+        if (timeout > 0)
+        {
+          webRequest.Timeout = timeout;
+        }
+
+        return webRequest;
       }
     }
 #pragma warning restore SYSLIB0014

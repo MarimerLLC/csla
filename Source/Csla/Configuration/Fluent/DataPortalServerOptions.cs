@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Server-side data portal options.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Csla.Server;
 
 namespace Csla.Configuration

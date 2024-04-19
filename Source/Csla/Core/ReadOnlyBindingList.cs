@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>A readonly version of BindingList(Of T)</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
 
 namespace Csla.Core
@@ -191,8 +191,7 @@ namespace Csla.Core
         // collection is dirty
         foreach (C child in this)
         {
-          INotifyBusy busy = child as INotifyBusy;
-          if (busy != null && busy.IsBusy)
+          if (child is INotifyBusy busy && busy.IsBusy)
             return true;
         }
 

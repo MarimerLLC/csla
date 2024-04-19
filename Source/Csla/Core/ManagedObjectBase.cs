@@ -5,16 +5,13 @@
 // </copyright>
 // <summary>Base class for an object that is serializable</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.Linq.Expressions;
 using System.Reflection;
 using Csla.Core.FieldManager;
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Csla.Core
 {
@@ -103,7 +100,6 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns></returns>
     protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
@@ -136,7 +132,6 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns></returns>
     protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
@@ -180,8 +175,7 @@ namespace Csla.Core
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
-        var fd = data as FieldManager.IFieldData<P>;
-        if (fd != null)
+        if (data is IFieldData<P> fd)
           result = fd.Value;
         else
           result = (P)data.Value;
@@ -252,8 +246,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -297,8 +290,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -324,8 +316,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -432,8 +423,7 @@ namespace Csla.Core
     /// <param name="propertyName">Name of the changed property.</param>
     protected void OnPropertyChanged(string propertyName)
     {
-      if (_propertyChanged != null)
-        _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 #endif
 
@@ -503,8 +493,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
     {
-      if (FieldManager != null)
-        FieldManager.SetPropertyList(this.GetType());
+      FieldManager?.SetPropertyList(this.GetType());
     }
 
     #endregion

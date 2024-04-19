@@ -5,12 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Csla;
-using Csla.Serialization;
 
 namespace Csla.Test.PropertyGetSet
 {
@@ -22,7 +16,7 @@ namespace Csla.Test.PropertyGetSet
 
     public EditableGetSetBase()
     {
-      _dummy = _dummy + 0;
+      _dummy += 0;
     }
 
     private static PropertyInfo<string> BaseProperty = RegisterProperty<string>(typeof(EditableGetSetBase<T>), new PropertyInfo<string>("Base", "Base"));

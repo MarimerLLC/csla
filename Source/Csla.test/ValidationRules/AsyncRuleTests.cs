@@ -5,30 +5,12 @@
 // </copyright>
 // <summary>This only works on Silverlight because when run through NUnit it is not running</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+
 using UnitDriven;
-using System.Threading.Tasks;
 using Csla.TestHelpers;
-using Csla.Rules;
 using FluentAssertions.Execution;
 using FluentAssertions;
-
-
-
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace Csla.Test.ValidationRules
 {

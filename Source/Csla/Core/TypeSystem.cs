@@ -6,9 +6,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-
 namespace Csla.Core
 {
   internal static class TypeSystem

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Extends <see cref="IBindingList" /> by adding extra</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 
 namespace Csla.Core

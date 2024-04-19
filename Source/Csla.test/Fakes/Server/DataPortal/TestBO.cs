@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Configuration;
 
 namespace Csla.Testing.Business.DataPortal

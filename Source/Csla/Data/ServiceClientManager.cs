@@ -37,7 +37,6 @@ namespace Csla.Data
     /// specified name.
     /// </summary>
     /// <param name="name">Unique name for the proxy object.</param>
-    /// <returns></returns>
     public ServiceClientManager<C,T > GetManager(string name)
     {
 

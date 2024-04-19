@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Base class used to create ViewModel objects that</summary>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Collections;
 using System.Collections.Specialized;
@@ -577,7 +578,6 @@ namespace Csla.Xaml
     /// <summary>
     /// Override to provide custom Model save behavior.
     /// </summary>
-    /// <returns></returns>
     protected virtual async Task<T> DoSaveAsync(ISavable cloned)
     {
       if (cloned != null)

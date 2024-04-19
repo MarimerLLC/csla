@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Base class used to create business and validation</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using Csla.Properties;
 
 namespace Csla.Rules
@@ -57,7 +56,7 @@ namespace Csla.Rules
     /// properties are executed after rules for the primary
     /// property.
     /// </summary>
-    public List<Csla.Core.IPropertyInfo> AffectedProperties { get; private set; }
+    public List<Csla.Core.IPropertyInfo> AffectedProperties { get; }
 
     /// <summary>
     /// Gets a list of secondary property values to be supplied to the
@@ -140,7 +139,7 @@ namespace Csla.Rules
     protected void CanWriteProperty(string argument)
     {
       if (PropertiesLocked) throw
-        new ArgumentException(string.Format("{0} ({1})", Resources.PropertySetNotAllowed, argument), argument);
+        new ArgumentException($"{Resources.PropertySetNotAllowed} ({argument})", argument);
     }
 
     /// <summary>

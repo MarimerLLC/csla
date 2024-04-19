@@ -6,13 +6,11 @@
 // </copyright>
 // <summary>Displays a busy animation.</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.ComponentModel;
-using System.Globalization;
 
 namespace Csla.Xaml
 {
@@ -178,7 +176,7 @@ namespace Csla.Xaml
     {
       if (IsRunning)
       {
-        VisualStateManager.GoToState(this, string.Format("state{0}", _state + 1), useTransitions);
+        VisualStateManager.GoToState(this, $"state{_state + 1}", useTransitions);
       }
       else
       {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Analyzers.Tests
@@ -42,12 +40,14 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWithMobileObjectAndMethodIsNotOperation()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  public void Foo() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          public void Foo() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(code, []);
     }
 
@@ -55,13 +55,15 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWithMobileObjectAndMethodIsOperationReturningVoid()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  private void Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          private void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(code, []);
     }
 
@@ -69,14 +71,16 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWithMobileObjectAndMethodIsOperationReturningTask()
     {
       var code =
-@"using Csla;
-using System.Threading.Tasks;
+        """
+        using Csla;
+        using System.Threading.Tasks;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  private async Task FetchAsync() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          private async Task FetchAsync() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(code, []);
     }
 
@@ -84,13 +88,15 @@ public class A : BusinessBase<A>
     public async Task AnalyzeWithMobileObjectAndMethodIsOperationReturningIncorrectType()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  private string Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          private string Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindOperationsWithIncorrectReturnTypesAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes]);
     }

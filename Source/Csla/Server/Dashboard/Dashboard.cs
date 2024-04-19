@@ -5,12 +5,8 @@
 // </copyright>
 // <summary>Data portal dashboard</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections;
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace Csla.Server.Dashboard
 {
@@ -20,11 +16,11 @@ namespace Csla.Server.Dashboard
   public class Dashboard : IDashboard
   {
     private readonly object _syncLock = new object();
-    private ConcurrentQueue<InterceptArgs> _initializeQueue = new ConcurrentQueue<InterceptArgs>();
-    private ConcurrentQueue<InterceptArgs> _completeQueue = new ConcurrentQueue<InterceptArgs>();
+    private ConcurrentQueue<InterceptArgs> _initializeQueue = [];
+    private ConcurrentQueue<InterceptArgs> _completeQueue = [];
     private readonly Timer _timerInitialize;
     private readonly Timer _timerComplete;
-    private ConcurrentQueue<Activity> _recentActivity = new ConcurrentQueue<Activity>();
+    private ConcurrentQueue<Activity> _recentActivity = [];
     private const int _timerDueTime = 50;
     private const int _timerPeriod = 500;
 
@@ -92,7 +88,7 @@ namespace Csla.Server.Dashboard
     /// <summary>
     /// Gets the time the data portal was first invoked
     /// </summary>
-    public DateTimeOffset FirstCall { get; private set; }
+    public DateTimeOffset FirstCall { get; }
     /// <summary>
     /// Gets the most recent time the data portal
     /// was invoked

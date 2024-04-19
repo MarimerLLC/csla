@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Globalization;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
@@ -131,9 +128,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleCreateDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Create {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Create {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -233,9 +228,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleFetchDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Fetch {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Fetch {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -279,9 +272,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleDataPortalException("Execute", dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Execute {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Execute {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -490,9 +481,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleUpdateDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Update {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Update {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -577,13 +566,10 @@ namespace Csla
         {
           if (ex.InnerExceptions.Count > 0)
           {
-            var dpe = ex.InnerExceptions[0] as Server.DataPortalException;
-            if (dpe != null)
+            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleDeleteDataPortalException(dpe);
           }
-          throw new DataPortalException(
-            string.Format("DataPortal.Delete {0}", Resources.Failed),
-            ex, null);
+          throw new DataPortalException($"DataPortal.Delete {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
         {
@@ -641,9 +627,9 @@ namespace Csla
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    public async Task DeleteAsync(params object[] criteria)
+    public Task DeleteAsync(params object[] criteria)
     {
-      await DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
+      return DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
     /// <summary>

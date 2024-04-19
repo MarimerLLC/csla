@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Creates the factory object that</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core.FieldManager
 {

@@ -5,14 +5,12 @@
 // </copyright>
 // <summary>Implement extension methods for AspNet configuration</summary>
 //-----------------------------------------------------------------------
-using System;
-using Csla.Runtime;
+
 #if NET5_0_OR_GREATER
 using Csla.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 #endif
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Csla.Core;
 using Csla.AspNetCore;
 
@@ -27,7 +25,6 @@ namespace Csla.Configuration
     /// Configures services to provide CSLA AspNetCore support
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
-    /// <returns></returns>
     public static CslaOptions AddAspNetCore(this CslaOptions config)
     {
       return AddAspNetCore(config, null);
@@ -38,7 +35,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
     /// <param name="options">Options object</param>
-    /// <returns></returns>
     public static CslaOptions AddAspNetCore(this CslaOptions config, Action<AspNetCoreConfigurationOptions> options)
     {
       var localOptions = new AspNetCoreConfigurationOptions();

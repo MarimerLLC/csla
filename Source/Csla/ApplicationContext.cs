@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Security.Principal;
 using Csla.Core;
 using System.Security.Claims;
@@ -405,7 +405,6 @@ namespace Csla
     /// </summary>
     /// <param name="type">Generic type to create</param>
     /// <param name="paramTypes">Type parameters</param>
-    /// <returns></returns>
     internal object CreateGenericInstanceDI(Type type, params Type[] paramTypes)
     {
       var genericType = type.GetGenericTypeDefinition();
@@ -446,7 +445,6 @@ namespace Csla
     /// </summary>
     /// <param name="type">Generic type to create</param>
     /// <param name="paramTypes">Type parameters</param>
-    /// <returns></returns>
     internal object CreateGenericInstance(Type type, params Type[] paramTypes)
     {
       var genericType = type.GetGenericTypeDefinition();

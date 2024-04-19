@@ -5,27 +5,13 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Text;
 using Csla.Core;
 using Csla.Rules;
 using UnitDriven;
-using Csla.Serialization;
-using System.Threading.Tasks;
 using Csla.TestHelpers;
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace Csla.Test.ValidationRules
 {
@@ -760,7 +746,7 @@ namespace Csla.Test.ValidationRules
       var v1 = (string)context.InputPropertyValues[PrimaryProperty];
       var v2 = (string)context.InputPropertyValues[SecondaryProperty];
       if (string.IsNullOrEmpty(v1) || string.IsNullOrEmpty(v2))
-        context.AddErrorResult(string.Format("v1:{0}, v2:{1}", v1, v2));
+        context.AddErrorResult($"v1:{v1}, v2:{v2}");
     }
   }
 

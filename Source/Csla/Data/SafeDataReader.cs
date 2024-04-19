@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>This is a DataReader that 'fixes' any null values before</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Data;
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
 using System.Data.SqlClient;
@@ -29,7 +29,7 @@ namespace Csla.Data
     /// object that actually contains the data from
     /// the data source.
     /// </summary>
-    protected IDataReader DataReader { get; private set; }
+    protected IDataReader DataReader { get; }
 
     /// <summary>
     /// Initializes the SafeDataReader object to use data from
@@ -50,7 +50,6 @@ namespace Csla.Data
     /// </summary>
     /// <typeparam name="T">Type of value</typeparam>
     /// <param name="ordinal">Ordinal position of value</param>
-    /// <returns></returns>
     public Task<T> GetFieldValueAsync<T>(int ordinal)
     {
       if (_sqlDataReader == null)
@@ -76,7 +75,6 @@ namespace Csla.Data
     /// or missing value.
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
-    /// <returns></returns>
     public Task<bool> IsDbNullAsync(int ordinal)
     {
       if (_sqlDataReader == null)
@@ -90,7 +88,6 @@ namespace Csla.Data
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
     /// <param name="cancellationToken">Async cancellation token</param>
-    /// <returns></returns>
     public Task<bool> IsDbNullAsync(int ordinal, System.Threading.CancellationToken cancellationToken)
     {
       if (_sqlDataReader == null)
@@ -101,7 +98,6 @@ namespace Csla.Data
     /// <summary>
     /// Advances the reader to the next result.
     /// </summary>
-    /// <returns></returns>
     public Task<bool> NextResultAsync()
     {
       if (_sqlDataReader == null)
@@ -113,7 +109,6 @@ namespace Csla.Data
     /// Advances the reader to the next result.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    /// <returns></returns>
     public Task<bool> NextResultAsync(System.Threading.CancellationToken cancellationToken)
     {
       if (_sqlDataReader == null)
@@ -124,7 +119,6 @@ namespace Csla.Data
     /// <summary>
     /// Advances to the next record in a recordset.
     /// </summary>
-    /// <returns></returns>
     public Task<bool> ReadAsync()
     {
       if (_sqlDataReader == null)
@@ -136,7 +130,6 @@ namespace Csla.Data
     /// Advances to the next record in a recordset.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    /// <returns></returns>
     public Task<bool> ReadAsync(System.Threading.CancellationToken cancellationToken)
     {
       if (_sqlDataReader == null)

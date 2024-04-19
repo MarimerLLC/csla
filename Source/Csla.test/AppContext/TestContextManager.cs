@@ -1,20 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Collections.Specialized;
 using System.Security.Principal;
-using System.Text;
-using System.Threading;
 using Csla.Core;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Test.AppContext
 {
   public class TestContextManager : IContextManager
   {
     [ThreadStatic]
-    private static HybridDictionary _myContext = new HybridDictionary();
+    private static HybridDictionary _myContext = [];
     private readonly AsyncLocal<IPrincipal> _principal = new();
 
     private const string _localContextName = "Csla.ClientContext";
@@ -104,7 +97,6 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
-    /// <returns></returns>
     public IServiceProvider GetServiceProvider()
     {
       return (IServiceProvider)ApplicationContext.LocalContext["__sps"];

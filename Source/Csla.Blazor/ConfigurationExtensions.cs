@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using Csla.Blazor;
 using Csla.Core;
 using Csla.State;
@@ -25,7 +24,6 @@ namespace Csla.Configuration
     /// Configures services to provide CSLA Blazor server support
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
-    /// <returns></returns>
     public static CslaOptions AddServerSideBlazor(this CslaOptions config)
     {
       return AddServerSideBlazor(config, null);
@@ -36,7 +34,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
     /// <param name="options">Options object</param>
-    /// <returns></returns>
     public static CslaOptions AddServerSideBlazor(this CslaOptions config, Action<BlazorServerConfigurationOptions> options)
     {
       var blazorOptions = new BlazorServerConfigurationOptions();

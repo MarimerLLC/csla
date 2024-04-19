@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>ASP.NET MVC model creator.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Web.Mvc
 {
@@ -22,7 +18,6 @@ namespace Csla.Web.Mvc
     /// type.
     /// </summary>
     /// <param name="modelType">Type of model object to create.</param>
-    /// <returns></returns>
     object CreateModel(Type modelType);
   }
 }

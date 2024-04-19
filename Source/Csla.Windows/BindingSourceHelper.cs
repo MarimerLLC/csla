@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>Helper methods for dealing with BindingSource</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Windows.Forms;
-using System.Text;
 using Csla.Properties;
 
 namespace Csla.Windows
@@ -33,7 +30,6 @@ namespace Csla.Windows
     /// <param name="rootSource">
     /// Root BindingSource object.
     /// </param>
-    /// <returns></returns>
     public static BindingSourceNode InitializeBindingSourceTree(
       IContainer container, BindingSource rootSource)
     {
@@ -53,9 +49,8 @@ namespace Csla.Windows
 
       foreach (Component component in container.Components)
       {
-        if (component is BindingSource)
+        if (component is BindingSource temp)
         {
-          BindingSource temp = component as BindingSource;
           if (temp.DataSource != null && temp.DataSource.Equals(parent))
           {
             BindingSourceNode childNode = new BindingSourceNode(temp);

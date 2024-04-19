@@ -6,10 +6,7 @@
 // <summary>Source generator capable of completing the generation of a single partial type</summary>
 //-----------------------------------------------------------------------
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Csla.Generators.CSharp.AutoSerialization

@@ -2,11 +2,7 @@
 using Csla.Rules;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace Csla.Blazor
 {
@@ -184,7 +180,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Get error messages
     /// </summary>
-    /// <returns></returns>
     protected IEnumerable<string> GetErrorMessages()
     {
       return GetBrokenRuleMessages(RuleSeverity.Error);
@@ -193,7 +188,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Get warning messages
     /// </summary>
-    /// <returns></returns>
     protected IEnumerable<string> GetWarningMessages()
     {
       return GetBrokenRuleMessages(RuleSeverity.Warning);
@@ -202,7 +196,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Get info messages
     /// </summary>
-    /// <returns></returns>
     protected IEnumerable<string> GetInfoMessages()
     {
       return GetBrokenRuleMessages(RuleSeverity.Information);

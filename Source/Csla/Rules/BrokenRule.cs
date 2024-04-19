@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Stores details about a specific broken business rule.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Core;
 using Csla.Serialization.Mobile;
 
@@ -71,7 +71,6 @@ namespace Csla.Rules
     /// Gets the severity of the broken rule.
     /// </summary>
     /// <value></value>
-    /// <returns></returns>
     /// <remarks></remarks>
     public RuleSeverity Severity
     {

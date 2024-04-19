@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Indicates that the specified property belongs</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
@@ -176,7 +174,6 @@ namespace Csla.Core.FieldManager
     /// </summary>
     /// <param name="objectType">The business object type.</param>
     /// <param name="propertyName">The name of the property.</param>
-    /// <returns></returns>
     public static IPropertyInfo GetRegisteredProperty(Type objectType, string propertyName)
     {
       return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);

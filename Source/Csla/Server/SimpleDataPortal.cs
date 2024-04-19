@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Implements the server-side DataPortal as discussed</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using Csla.Properties;
-using Csla.Reflection;
 
 namespace Csla.Server
 {
@@ -69,8 +67,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.OnDataPortalException(eventArgs, ex);
+          obj?.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -128,8 +125,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.OnDataPortalException(eventArgs, ex);
+          obj?.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -171,8 +167,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.OnDataPortalException(eventArgs, ex);
+          obj?.OnDataPortalException(eventArgs, ex);
         }
         catch
         {

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>This interface is implemented by all</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

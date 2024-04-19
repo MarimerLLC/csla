@@ -5,16 +5,12 @@
 // </copyright>
 // <summary>Tracks the business rules for a business object.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Linq;
-using System.Collections.Generic;
 using Csla.Serialization.Mobile;
 using Csla.Core;
-using System.Threading.Tasks;
 using Csla.Threading;
 using Csla.Server;
-using System.Threading;
 
 namespace Csla.Rules
 {
@@ -145,7 +141,6 @@ namespace Csla.Rules
     /// Gets a list of rule:// URI values for
     /// the rules defined in the object.
     /// </summary>
-    /// <returns></returns>
     public string[] GetRuleDescriptions()
     {
       var result = new List<string>();
@@ -702,7 +697,6 @@ namespace Csla.Rules
     /// <param name="property">The property.</param>
     /// <param name="cascade">if set to <c>true</c> [cascade].</param>
     /// <param name="executionMode">The execute mode.</param>
-    /// <returns></returns>
     private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleContextModes executionMode)
     {
       // checking rules for the primary property
@@ -784,7 +778,6 @@ namespace Csla.Rules
     /// <param name="rules">The rules.</param>
     /// <param name="cascade">if set to <c>true</c> cascade.</param>
     /// <param name="executionContext">The execution context.</param>
-    /// <returns></returns>
     private RunRulesResult RunRules(IEnumerable<IBusinessRuleBase> rules, bool cascade, RuleContextModes executionContext)
     {
       var affectedProperties = new List<string>();
@@ -926,7 +919,7 @@ namespace Csla.Rules
         }
         catch (Exception ex)
         {
-          context.AddErrorResult(string.Format("{0}:{1}", rule.RuleName, ex.Message));
+          context.AddErrorResult($"{rule.RuleName}:{ex.Message}");
           if (rule.IsAsync)
             context.Complete();
         }
@@ -1134,7 +1127,6 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="root">The root.</param>
     /// <param name="errorsOnly">if set to <c>true</c> will only return objects that gave IsValid = false.</param>
-    /// <returns></returns>
     public static BrokenRulesTree GetAllBrokenRules(object root, bool errorsOnly)
     {
       var list = new BrokenRulesTree();
@@ -1175,16 +1167,16 @@ namespace Csla.Rules
       }
 
       // or a list of EditableObject (both BindingList and ObservableCollection)
-      else if (obj is IEditableCollection)
+      else if (obj is IEditableCollection collection)
       {
         var nodeKey = counter++;
-        var isValid = ((ITrackStatus)obj).IsValid;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = obj, BrokenRules = new BrokenRulesCollection(true) };
+        var isValid = collection.IsValid;
+        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = collection, BrokenRules = new BrokenRulesCollection(true) };
         long myChildBrokenRuleCount = 0;
 
         list.Add(node);
 
-        foreach (var child in (IEnumerable)obj)
+        foreach (var child in (IEnumerable)collection)
         {
           AddNodeToBrukenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
         }

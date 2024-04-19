@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Csla.Test.Server.Scope
+﻿namespace Csla.Test.Server.Scope
 {
   public class GuidProvider : IAsyncDisposable
   {

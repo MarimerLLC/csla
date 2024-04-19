@@ -5,30 +5,10 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using Csla;
-using Csla.Serialization;
-using System;
-using UnitDriven;
-#if !WINDOWS_PHONE
-using Microsoft.VisualBasic;
-#endif
-using Csla.Serialization.Mobile;
-using System.Threading;
 
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-using TestSetup = NUnit.Framework.SetUpAttribute;
-using Microsoft.VisualBasic;
 using Csla.Serialization.Mobile;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using Csla.TestHelpers;
-#endif
 
 namespace Csla.Test.SmartDate
 {
@@ -473,8 +453,8 @@ namespace Csla.Test.SmartDate
       Assert.AreEqual("", obj.TextDate, "Should be empty");
 
       var now = DateTime.Now;
-      obj.TextDate = string.Format("{0:g}", now);
-      Assert.AreEqual(string.Format("{0:g}", now), obj.TextDate, "Should be today");
+      obj.TextDate = $"{now:g}";
+      Assert.AreEqual($"{now:g}", obj.TextDate, "Should be today");
     }
 
 

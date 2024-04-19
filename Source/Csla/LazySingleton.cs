@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-namespace Csla
+﻿namespace Csla
 {
   /// <summary>
   /// An alternative to Lazy&lt;T&gt; 

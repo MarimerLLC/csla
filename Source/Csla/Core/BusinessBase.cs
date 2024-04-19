@@ -5,24 +5,19 @@
 // </copyright>
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Csla.Properties;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
-using System.Collections.ObjectModel;
 using Csla.Core.LoadManager;
 using Csla.Reflection;
 using Csla.Server;
 using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Rules;
-using System.Security;
 using Csla.Core.FieldManager;
 using System.Reflection;
 using System.Collections;
@@ -603,9 +598,7 @@ namespace Csla.Core
       bool result = CanWriteProperty(property);
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(
-          String.Format("{0} ({1})", Resources.PropertySetNotAllowed, property.Name));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Resources.PropertySetNotAllowed} ({property.Name})");
       }
       return result;
     }
@@ -698,7 +691,7 @@ namespace Csla.Core
       if (throwOnFalse && result == false)
       {
         Csla.Security.SecurityException ex =
-          new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, method.Name));
+          new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({method.Name})");
         throw ex;
       }
       return result;
@@ -724,8 +717,7 @@ namespace Csla.Core
       bool result = CanExecuteMethod(new MethodInfo(methodName));
       if (throwOnFalse && result == false)
       {
-        Csla.Security.SecurityException ex = new Csla.Security.SecurityException(string.Format("{0} ({1})", Properties.Resources.MethodExecuteNotAllowed, methodName));
-        throw ex;
+        throw new Csla.Security.SecurityException($"{Properties.Resources.MethodExecuteNotAllowed} ({methodName})");
       }
       return result;
     }
@@ -806,8 +798,7 @@ namespace Csla.Core
           // called on us, and now we've been cancelled back to
           // where we were added so we should have ourselves
           // removed from the parent collection
-          if (Parent != null)
-            Parent.RemoveChild(this);
+          Parent?.RemoveChild(this);
         }
       }
     }
@@ -914,8 +905,7 @@ namespace Csla.Core
       base.AcceptChangesComplete();
 
       // !!!! Will trigger Save here when using DynamicListBase template
-      if (Parent != null)
-        Parent.ApplyEditChild(this);
+      Parent?.ApplyEditChild(this);
     }
 
 #endregion
@@ -1069,8 +1059,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnValidationComplete()
     {
-      if (_validationCompleteHandlers != null)
-        _validationCompleteHandlers(this, EventArgs.Empty);
+      _validationCompleteHandlers?.Invoke(this, EventArgs.Empty);
     }
 
     private void InitializeBusinessRules()
@@ -1120,7 +1109,6 @@ namespace Csla.Core
     /// <summary>
     /// Gets the registered rules. Only for unit testing and not visible to code. 
     /// </summary>
-    /// <returns></returns>
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected BusinessRuleManager GetRegisteredRules()
     {
@@ -1427,28 +1415,22 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnAddEventHooks(IBusinessObject child)
     {
-      INotifyBusy busy = child as INotifyBusy;
-      if (busy != null)
+      if (child is INotifyBusy busy)
         busy.BusyChanged += Child_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (child is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException += Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
+      if (child is INotifyPropertyChanged pc)
         pc.PropertyChanged += Child_PropertyChanged;
 
-      IBindingList bl = child as IBindingList;
-      if (bl != null)
+      if (child is IBindingList bl)
         bl.ListChanged += Child_ListChanged;
 
-      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
-      if (ncc != null)
+      if (child is INotifyCollectionChanged ncc)
         ncc.CollectionChanged += Child_CollectionChanged;
 
-      INotifyChildChanged cc = child as INotifyChildChanged;
-      if (cc != null)
+      if (child is INotifyChildChanged cc)
         cc.ChildChanged += Child_Changed;
     }
 
@@ -1469,28 +1451,22 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnRemoveEventHooks(IBusinessObject child)
     {
-      INotifyBusy busy = child as INotifyBusy;
-      if (busy != null)
+      if (child is INotifyBusy busy)
         busy.BusyChanged -= Child_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = child as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (child is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException -= Child_UnhandledAsyncException;
 
-      INotifyPropertyChanged pc = child as INotifyPropertyChanged;
-      if (pc != null)
+      if (child is INotifyPropertyChanged pc)
         pc.PropertyChanged -= Child_PropertyChanged;
 
-      IBindingList bl = child as IBindingList;
-      if (bl != null)
+      if (child is IBindingList bl)
         bl.ListChanged -= Child_ListChanged;
 
-      INotifyCollectionChanged ncc = child as INotifyCollectionChanged;
-      if (ncc != null)
+      if (child is INotifyCollectionChanged ncc)
         ncc.CollectionChanged -= Child_CollectionChanged;
 
-      INotifyChildChanged cc = child as INotifyChildChanged;
-      if (cc != null)
+      if (child is INotifyChildChanged cc)
         cc.ChildChanged -= Child_Changed;
     }
 
@@ -1909,7 +1885,6 @@ namespace Csla.Core
     /// <typeparam name="P">Type of the property.</typeparam>
     /// <param name="property">PropertyInfo object containing property metadata.</param>
     /// <param name="valueGenerator">Method returning the new value.</param>
-    /// <returns></returns>
     /// <remarks>
     /// If the user is not authorized to read the property
     /// value, the defaultValue value is returned as a
@@ -1932,7 +1907,6 @@ namespace Csla.Core
     /// property is currently being retrieved.
     /// </summary>
     /// <param name="propertyInfo">Property to check.</param>
-    /// <returns></returns>
     protected bool PropertyIsLoading(IPropertyInfo propertyInfo)
     {
       return LoadManager.IsLoadingProperty(propertyInfo);
@@ -1945,7 +1919,6 @@ namespace Csla.Core
     /// <typeparam name="P">Type of the property.</typeparam>
     /// <param name="property">PropertyInfo object containing property metadata.</param>
     /// <param name="factory">Async method returning the new value.</param>
-    /// <returns></returns>
     /// <remarks>
     /// <para>
     /// Note that the first value returned is almost certainly
@@ -2020,8 +1993,7 @@ namespace Csla.Core
       FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
-        FieldManager.IFieldData<P> fd = data as FieldManager.IFieldData<P>;
-        if (fd != null)
+        if (data is IFieldData<P> fd)
           result = fd.Value;
         else
           result = (P)data.Value;
@@ -2417,8 +2389,7 @@ namespace Csla.Core
           }
           else
           {
-            var fd = fieldData as FieldManager.IFieldData<P>;
-            if (fd != null)
+            if (fieldData is IFieldData<P> fd)
               oldValue = fd.Value;
             else
               oldValue = (P)fieldData.Value;
@@ -2473,8 +2444,7 @@ namespace Csla.Core
           }
           else
           {
-            var fd = fieldData as FieldManager.IFieldData<P>;
-            if (fd != null)
+            if (fieldData is IFieldData<P> fd)
               oldValue = fd.Value;
             else
               oldValue = (P)fieldData.Value;
@@ -2582,8 +2552,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -2637,8 +2606,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -2682,8 +2650,7 @@ namespace Csla.Core
         }
         else
         {
-          var fd = fieldData as FieldManager.IFieldData<P>;
-          if (fd != null)
+          if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
             oldValue = (P)fieldData.Value;
@@ -2692,12 +2659,9 @@ namespace Csla.Core
         var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
         if (valuesDiffer)
         {
-
-          IBusinessObject old = oldValue as IBusinessObject;
-          if (old != null)
+          if (oldValue is IBusinessObject old)
             RemoveEventHooks(old);
-          IBusinessObject @new = newValue as IBusinessObject;
-          if (@new != null)
+          if (newValue is IBusinessObject @new)
             AddEventHooks(@new);
 
           if (typeof(IEditableBusinessObject).IsAssignableFrom(propertyInfo.Type))
@@ -2730,7 +2694,6 @@ namespace Csla.Core
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <param name="oldValue">The old value.</param>
-    /// <returns></returns>
     private static bool ValuesDiffer<P>(PropertyInfo<P> propertyInfo, P newValue, P oldValue)
     {
       var valuesDiffer = false;
@@ -2757,12 +2720,9 @@ namespace Csla.Core
 
       if (valuesDiffer)
       {
-
-        IBusinessObject old = oldValue as IBusinessObject;
-        if (old != null)
+        if (oldValue is IBusinessObject old)
           RemoveEventHooks(old);
-        IBusinessObject @new = newValue as IBusinessObject;
-        if (@new != null)
+        if (newValue is IBusinessObject @new)
           AddEventHooks(@new);
 
 
@@ -2977,7 +2937,6 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
-    /// <returns></returns>
     private object LoadPropertyByReflection(string loadPropertyMethodName, IPropertyInfo propertyInfo, object newValue)
     {
       var t = this.GetType();
@@ -2995,8 +2954,7 @@ namespace Csla.Core
     /// <param name="newValue">Potential child object</param>
     private void ResetChildEditLevel(object newValue)
     {
-      IEditableBusinessObject child = newValue as IEditableBusinessObject;
-      if (child != null)
+      if (newValue is IEditableBusinessObject child)
       {
         child.SetParent(this);
         // set child edit level
@@ -3006,12 +2964,10 @@ namespace Csla.Core
       }
       else
       {
-        IEditableCollection col = newValue as IEditableCollection;
-        if (col != null)
+        if (newValue is IEditableCollection col)
         {
           col.SetParent(this);
-          IUndoableObject undo = col as IUndoableObject;
-          if (undo != null)
+          if (col is IUndoableObject undo)
           {
             // set child edit level
             UndoableBase.ResetChildEditLevel(undo, this.EditLevel, this.BindingEdit);
@@ -3136,8 +3092,7 @@ namespace Csla.Core
     /// <param name="args">Event args.</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      if (_busyChanged != null)
-        _busyChanged(this, args);
+      _busyChanged?.Invoke(this, args);
       MetaPropertyHasChanged("IsSelfBusy");
       MetaPropertyHasChanged("IsBusy");
     }
@@ -3193,8 +3148,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
+      _unhandledAsyncException?.Invoke(this, error);
     }
 
     /// <summary>
@@ -3246,8 +3200,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnChildChanged(ChildChangedEventArgs e)
     {
-      if (_childChangedHandlers != null)
-        _childChangedHandlers.Invoke(this, e);
+      _childChangedHandlers?.Invoke(this, e);
       MetaPropertyHasChanged("IsDirty");
       MetaPropertyHasChanged("IsValid");
       MetaPropertyHasChanged("IsSavable");

@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>An ObjectAdapter is used to convert data in an object </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.ComponentModel;
 using System.Reflection;
@@ -92,10 +91,10 @@ namespace Csla.Data
 
     private IList GetIList(object source)
     {
-      if (source is IListSource)
-        return ((IListSource)source).GetList();
-      else if (source is IList)
-        return source as IList;
+      if (source is IListSource listSource)
+        return listSource.GetList();
+      else if (source is IList list)
+        return list;
       else
       {
         // this is a regular object - create a list
@@ -141,20 +140,17 @@ namespace Csla.Data
       List<string> result;
       // first handle DataSet/DataTable
       object innerSource;
-      IListSource iListSource = source as IListSource;
-      if (iListSource != null)
+      if (source is IListSource iListSource)
         innerSource = iListSource.GetList();
       else
         innerSource = source;
 
-      DataView dataView = innerSource as DataView;
-      if (dataView != null)
+      if (innerSource is DataView dataView)
         result = ScanDataView(dataView);
       else
       {
         // now handle lists/arrays/collections
-        IEnumerable iEnumerable = innerSource as IEnumerable;
-        if (iEnumerable != null)
+        if (innerSource is IEnumerable iEnumerable)
         {
           Type childType = Utilities.GetChildItemType(
             innerSource.GetType());
@@ -206,8 +202,7 @@ namespace Csla.Data
     private static string GetField(object obj, string fieldName)
     {
       string result;
-      DataRowView dataRowView = obj as DataRowView;
-      if (dataRowView != null)
+      if (obj is DataRowView dataRowView)
       {
         // this is a DataRowView from a DataView
         result = dataRowView[fieldName].ToString();
@@ -219,8 +214,7 @@ namespace Csla.Data
       }
       else
       {
-        string tmp = obj as string;
-        if (tmp != null)
+        if (obj is string tmp)
         {
           // this is a simple string
           result = (string)obj;

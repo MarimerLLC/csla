@@ -5,12 +5,9 @@
 // </copyright>
 // <summary>Dynamically find/invoke methods with DI provided params</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 
@@ -31,11 +28,9 @@ namespace Csla.Reflection
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 #if NET5_0_OR_GREATER
-    private static readonly ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>> _methodCache =
-      new ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>>();
+    private static readonly ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>> _methodCache = [];
 #else
-    private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache =
-      new ConcurrentDictionary<string, ServiceProviderMethodInfo>();
+    private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache = [];
 #endif
 
     ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
@@ -455,7 +450,6 @@ namespace Csla.Reflection
     /// <param name="obj">Target object</param>
     /// <param name="method">Method to invoke</param>
     /// <param name="parameters">Criteria params array</param>
-    /// <returns></returns>
     public async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object[] parameters)
     {
       if (method == null)

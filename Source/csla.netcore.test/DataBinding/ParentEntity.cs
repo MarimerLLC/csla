@@ -5,11 +5,6 @@
 // </copyright>
 // <summary>DO NOT USE in UI - use the factory method instead</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
-using System.Data.SqlClient;
 
 namespace Csla.Test.DataBinding
 {

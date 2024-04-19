@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Class containing the default implementation for</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Server
 {

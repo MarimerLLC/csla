@@ -1,7 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -36,15 +34,17 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenConstructorIsNotOnBusinessObject()
     {
       var code = 
-@"public class A { }
-
-  public class B
-  {
-    void Foo()
-    {
-      var a = new A();
-    }
-  }";
+        """
+        public class A { }
+        
+          public class B
+          {
+            void Foo()
+            {
+              var a = new A();
+            }
+          }
+        """;
       await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(code, []);
     }
 
@@ -52,18 +52,20 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenConstructorIsOnBusinessObjectWithinObjectFactory()
     {
       var code =
-@"using Csla;
-using Csla.Server;
+        """
+        using Csla;
+        using Csla.Server;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class B : ObjectFactory
-{
-  void Foo()
-  {
-    var a = new A();
-  }
-}";
+        public class B : ObjectFactory
+        {
+          void Foo()
+          {
+            var a = new A();
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(code, []);
     }
 
@@ -71,18 +73,20 @@ public class B : ObjectFactory
     public async Task AnalyzeWhenConstructorIsOnBusinessObjectOutsideOfObjectFactory()
     {
       var code =
-@"using Csla;
-using Csla.Server;
+        """
+        using Csla;
+        using Csla.Server;
 
-public class A : BusinessBase<A> { }
+        public class A : BusinessBase<A> { }
 
-public class B
-{
-  void Foo()
-  {
-    var a = new A();
-  }
-}";
+        public class B
+        {
+          void Foo()
+          {
+            var a = new A();
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindBusinessObjectCreationAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.FindBusinessObjectCreation]);
     }

@@ -3,12 +3,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {
@@ -30,13 +25,15 @@ namespace Csla.Analyzers.Tests
     public async Task VerifyGetFixesWhenChangingToVoid()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  public string Fetch() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          public string Fetch() { }
+        }
+        """;
 
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -68,14 +65,16 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenChangingToTask()
     {
       var code =
-@"using Csla;
-using System.Threading.Tasks;
+        """
+        using Csla;
+        using System.Threading.Tasks;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  public async string FetchAsync() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          public async string FetchAsync() { }
+        }
+        """;
 
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
@@ -106,13 +105,15 @@ public class A : BusinessBase<A>
     public async Task VerifyGetFixesWhenChangingToTaskAndUsingDoesNotExist()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A : BusinessBase<A>
-{
-  [Fetch]
-  public async string FetchAsync() { }
-}";
+        public class A : BusinessBase<A>
+        {
+          [Fetch]
+          public async string FetchAsync() { }
+        }
+        """;
 
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();

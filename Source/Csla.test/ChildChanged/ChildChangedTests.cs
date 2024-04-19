@@ -5,26 +5,14 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using UnitDriven;
+
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 
 
 
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-using TestSetup = NUnit.Framework.SetUpAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace Csla.Test.ChildChanged
 {

@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Invoke data portal methods on child</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.Server
 {
@@ -104,8 +102,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.Child_OnDataPortalException(eventArgs, ex);
+          obj?.Child_OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -200,8 +197,7 @@ namespace Csla.Server
       {
         try
         {
-          if (obj != null)
-            obj.Child_OnDataPortalException(eventArgs, ex);
+          obj?.Child_OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -257,9 +253,9 @@ namespace Csla.Server
     /// Update a business object.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public async Task UpdateAsync(object obj)
+    public Task UpdateAsync(object obj)
     {
-      await DoUpdateAsync(obj, false, null).ConfigureAwait(false);
+      return DoUpdateAsync(obj, false, null);
     }
 
     /// <summary>
@@ -269,9 +265,9 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public async Task UpdateAsync(object obj, params object[] parameters)
+    public Task UpdateAsync(object obj, params object[] parameters)
     {
-      await DoUpdateAsync(obj, false, parameters).ConfigureAwait(false);
+      return DoUpdateAsync(obj, false, parameters);
     }
 
     /// <summary>
@@ -299,9 +295,9 @@ namespace Csla.Server
     /// Update a business object. Include objects which are not dirty.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public async Task UpdateAllAsync(object obj)
+    public Task UpdateAllAsync(object obj)
     {
-      await DoUpdateAsync(obj, true, null).ConfigureAwait(false);
+      return DoUpdateAsync(obj, true, null);
     }
 
     /// <summary>
@@ -311,9 +307,9 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public async Task UpdateAllAsync(object obj, params object[] parameters)
+    public Task UpdateAllAsync(object obj, params object[] parameters)
     {
-      await DoUpdateAsync(obj, true, parameters).ConfigureAwait(false);
+      return DoUpdateAsync(obj, true, parameters);
     }
 
     private async Task DoUpdateAsync(object obj, bool bypassIsDirtyTest, params object[] parameters)
@@ -344,9 +340,8 @@ namespace Csla.Server
       {
         try
         {
-          if (lb != null)
-            lb.Child_OnDataPortalException(
-              new DataPortalEventArgs(null, objectType, obj, operation), ex);
+          lb?.Child_OnDataPortalException(
+            new DataPortalEventArgs(null, objectType, obj, operation), ex);
         }
         catch
         {

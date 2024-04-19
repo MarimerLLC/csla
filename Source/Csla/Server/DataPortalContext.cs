@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Security.Principal;
-using System.Collections.Specialized;
 using Csla.Core;
 using Csla.Configuration;
 

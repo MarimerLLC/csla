@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Analyzers.Tests
@@ -42,9 +40,11 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsABusinessRuleButDoesNotOverrideExecute()
     {
       var code = 
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public class A : BusinessRule { }";
+        public class A : BusinessRule { }
+        """;
       await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(code, []);
     }
 
@@ -52,15 +52,17 @@ public class A : BusinessRule { }";
     public async Task AnalyzeWhenClassIsABusinessRuleAndOverridesExecuteAndIsNotAsync()
     {
       var code =
-@"using Csla.Rules;
+        """
+        using Csla.Rules;
 
-public class A : BusinessRule 
-{ 
-  protected override void Execute(IRuleContext context)
-  {
-    base.Execute(context);
-  }
-}";
+        public class A : BusinessRule
+        {
+          protected override void Execute(IRuleContext context)
+          {
+            base.Execute(context);
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(code, []);
     }
 
@@ -68,17 +70,19 @@ public class A : BusinessRule
     public async Task AnalyzeWhenClassIsABusinessRuleAndOverridesExecuteAndIsAsync()
     {
       var code =
-@"using Csla.Rules;
-using System.Threading.Tasks;
+        """
+        using Csla.Rules;
+        using System.Threading.Tasks;
 
-public class A : BusinessRule 
-{ 
-  protected override async void Execute(IRuleContext context)
-  {
-    await Task.Yield();
-    base.Execute(context);
-  }
-}";
+        public class A : BusinessRule
+        {
+          protected override async void Execute(IRuleContext context)
+          {
+            await Task.Yield();
+            base.Execute(context);
+          }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance]);
     }

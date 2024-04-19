@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>Maintains metadata about a method or property.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Core
 {

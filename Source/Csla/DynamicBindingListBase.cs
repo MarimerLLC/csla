@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>This is the base class from which collections</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 
@@ -165,8 +163,7 @@ namespace Csla
         T savable = item;
 
         // clone the object if possible
-        ICloneable clonable = savable as ICloneable;
-        if (clonable != null)
+        if (savable is ICloneable clonable)
           savable = (T)clonable.Clone();
 
         // commit all changes
@@ -257,10 +254,8 @@ namespace Csla
     protected virtual void OnSaved(T newObject, Exception e)
     {
       Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, null);
-      if (_nonSerializableSavedHandlers != null)
-        _nonSerializableSavedHandlers.Invoke(this, args);
-      if (_serializableSavedHandlers != null)
-        _serializableSavedHandlers.Invoke(this, args);
+      _nonSerializableSavedHandlers?.Invoke(this, args);
+      _serializableSavedHandlers?.Invoke(this, args);
     }
 
 #endregion
@@ -433,8 +428,7 @@ namespace Csla
       foreach (IEditableBusinessObject child in this)
       {
         child.SetParent(this);
-        INotifyPropertyChanged c = child as INotifyPropertyChanged;
-        if (c != null)
+        if (child is INotifyPropertyChanged c)
           c.PropertyChanged += Child_PropertyChanged;
       }
       base.OnDeserialized();
@@ -555,7 +549,6 @@ namespace Csla
     /// Await this method to ensure business object
     /// is not busy running async rules.
     /// </summary>
-    /// <returns></returns>
     public async Task WaitForIdle()
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
@@ -567,10 +560,9 @@ namespace Csla
     /// is not busy running async rules.
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
-    /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>

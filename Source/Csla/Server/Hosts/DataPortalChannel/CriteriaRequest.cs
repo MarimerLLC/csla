@@ -6,8 +6,6 @@
 // <summary>Message sent to the server</summary>
 //-----------------------------------------------------------------------
 
-using System;
-
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>

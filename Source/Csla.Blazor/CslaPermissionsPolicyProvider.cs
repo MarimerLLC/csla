@@ -6,8 +6,6 @@
 // <summary>CSLA permissions policy provider</summary>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
@@ -37,19 +35,16 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets the default policy
     /// </summary>
-    /// <returns></returns>
     public Task<AuthorizationPolicy> GetDefaultPolicyAsync() => Task.FromResult(_options.DefaultPolicy);
     /// <summary>
     /// Gets the fallback policy
     /// </summary>
-    /// <returns></returns>
     public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => Task.FromResult(_options.FallbackPolicy);
 
     /// <summary>
     /// Gets the authorization policy
     /// </summary>
     /// <param name="policyName">String representing the policy</param>
-    /// <returns></returns>
     /// <remarks>
     /// Gets a CSLA permissions policy if the policy name corresponds
     /// to a CSLA policy, otherwise gets a policy from the fallback

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Analyzers.Tests
@@ -42,16 +40,18 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsABusinessBaseAndHasNoParameters()
     {
       var code = 
-@"using Csla;
+        """
+        using Csla;
 
-public class A 
-  : BusinessBase<A>
-{ 
-  public A() { }
-
-  [Fetch]
-  private void Fetch() { }
-}";
+        public class A
+          : BusinessBase<A>
+        {
+          public A() { }
+        
+          [Fetch]
+          private void Fetch() { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(code, []);
     }
 
@@ -59,16 +59,18 @@ public class A
     public async Task AnalyzeWhenClassIsABusinessBaseAndHasParameterNotRefOrOut()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A 
-  : BusinessBase<A>
-{ 
-  public A() { }
-
-  [Fetch]
-  private void Fetch(string a) { }
-}";
+        public class A
+          : BusinessBase<A>
+        {
+          public A() { }
+        
+          [Fetch]
+          private void Fetch(string a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(code, []);
     }
 
@@ -76,16 +78,18 @@ public class A
     public async Task AnalyzeWhenClassIsABusinessBaseAndHasRefParameter()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A 
-  : BusinessBase<A>
-{ 
-  public A() { }
-
-  [Fetch]
-  private void Fetch(ref string a) { }
-}";
+        public class A
+          : BusinessBase<A>
+        {
+          public A() { }
+        
+          [Fetch]
+          private void Fetch(ref string a) { }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation]);
     }
@@ -94,16 +98,18 @@ public class A
     public async Task AnalyzeWhenClassIsABusinessBaseAndHasOutParameter()
     {
       var code =
-@"using Csla;
+        """
+        using Csla;
 
-public class A 
-  : BusinessBase<A>
-{ 
-  public A() { }
-
-  [Fetch]
-  private void Fetch(out string a) { a = string.Empty; }
-}";
+        public class A
+          : BusinessBase<A>
+        {
+          public A() { }
+        
+          [Fetch]
+          private void Fetch(out string a) { a = string.Empty; }
+        }
+        """;
       await TestHelpers.RunAnalysisAsync<FindRefAndOutParametersInOperationsAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation]);
     }

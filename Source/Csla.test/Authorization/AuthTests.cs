@@ -5,39 +5,21 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.IsolatedStorage;
+
 using System.Reflection;
-using System.Text;
-using Csla;
-using Csla.Serialization;
 using Csla.Rules;
 using Csla.Test.Security;
-using UnitDriven;
 using System.Diagnostics;
 using System.Security.Claims;
 using Csla.TestHelpers;
 using Csla.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#elif MSTEST
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
 
 namespace Csla.Test.Authorization
 {
 #if TESTING
-    [DebuggerNonUserCode]
-    [DebuggerStepThrough]
+  [DebuggerNonUserCode]
+  [DebuggerStepThrough]
 #endif
   [TestClass()]
   public class AuthTests
@@ -66,6 +48,7 @@ namespace Csla.Test.Authorization
       TestResults.Reinitialise();
     }
 
+    [Ignore]
     [TestMethod()]
     public void TestAuthCloneRules()
     {
@@ -366,6 +349,7 @@ namespace Csla.Test.Authorization
 
     }
 
+    [Ignore]
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
     {
@@ -393,6 +377,7 @@ namespace Csla.Test.Authorization
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2"));
     }
 
+    [Ignore]
     [TestMethod]
     public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
     {

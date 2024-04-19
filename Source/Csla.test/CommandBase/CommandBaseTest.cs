@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Csla.Core;
+﻿using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.TestHelpers;
 

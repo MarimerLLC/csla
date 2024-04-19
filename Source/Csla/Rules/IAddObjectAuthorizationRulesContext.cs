@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Context for the AddObjectAuthorizationRulesContext method.</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Specialized;
-using System.Security.Claims;
-using System.Security.Principal;
 
 namespace Csla.Rules
 {

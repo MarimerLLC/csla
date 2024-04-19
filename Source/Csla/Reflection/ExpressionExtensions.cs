@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Extension methods for Expression types</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
+
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Csla.Reflection
 {
@@ -22,7 +21,6 @@ namespace Csla.Reflection
     /// </summary>
     /// <typeparam name="T">Type of value</typeparam>
     /// <param name="expression">Expression</param>
-    /// <returns></returns>
     public static string GetKey<T>(this Expression<T> expression)
     {
       var list = new List<string>();

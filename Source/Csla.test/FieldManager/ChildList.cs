@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System;
-
 namespace Csla.Test.FieldManager
 {
   [Serializable]

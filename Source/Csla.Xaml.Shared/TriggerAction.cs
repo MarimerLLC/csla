@@ -7,14 +7,10 @@
 // <summary>Control used to invoke a method on the DataContext</summary>
 //-----------------------------------------------------------------------
 #define DEBUG
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
 using System.Windows;
 using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Csla.Xaml
 {
@@ -40,15 +36,13 @@ namespace Csla.Xaml
     private void CallMethod(object sender, EventArgs e)
     {
       object target = this.DataContext;
-      var cvs = target as System.Windows.Data.CollectionViewSource;
-      if (cvs != null && cvs.View != null)
+      if (target is CollectionViewSource cvs && cvs.View != null)
       {
         target = cvs.View.CurrentItem;
       }
       else
       {
-        var icv = target as ICollectionView;
-        if (icv != null)
+        if (target is ICollectionView icv)
           target = icv.CurrentItem;
       }
       if (target == null) return; // can be null at design time - so just exit

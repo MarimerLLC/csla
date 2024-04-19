@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Csla.Test.Authorization
+﻿namespace Csla.Test.Authorization
 {
   public class RootException : BusinessBase<RootException>
   {

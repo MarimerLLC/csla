@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Object containing information about the</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Server
 {

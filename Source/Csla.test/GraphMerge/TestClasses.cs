@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Csla;
-using Csla.Rules;
+﻿using Csla.Rules;
 
 namespace Csla.Test.GraphMerge
 {
@@ -48,24 +42,21 @@ namespace Csla.Test.GraphMerge
     public void MockUpdated()
     {
       MarkOld();
-      if (Child != null)
-        Child.MockUpdated();
+      Child?.MockUpdated();
       ChildList.MockUpdated();
     }
 
     public void MarkForDelete()
     {
       MarkDeleted();
-      if (Child != null)
-        Child.MarkForDelete();
+      Child?.MarkForDelete();
       ChildList.Clear();
     }
 
     public void MockDeleted()
     {
       MarkNew();
-      if (Child != null)
-        Child.MockDeleted();
+      Child?.MockDeleted();
       ChildList.MockDeleted();
     }
 

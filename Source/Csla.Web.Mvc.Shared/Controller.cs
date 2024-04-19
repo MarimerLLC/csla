@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Provides methods that respond to HTTP requests</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 #if NETSTANDARD2_0  || NET5_0_OR_GREATER || NETCOREAPP3_1
 using System.Threading.Tasks;
 using Csla.Core;
@@ -42,7 +39,7 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
+    protected ApplicationContext ApplicationContext { get; }
 
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
     /// <summary>

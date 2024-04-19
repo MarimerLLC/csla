@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Indicate that a field or property should be excluded from auto serialization</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Serialization
 {

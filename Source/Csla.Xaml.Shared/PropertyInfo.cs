@@ -5,14 +5,17 @@
 // </copyright>
 // <summary>Expose metastate information about a property.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Core;
 using Csla.Rules;
 using System.Reflection;
 using System.Collections.ObjectModel;
+using System;
+using System.Linq;
+
+
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -21,7 +24,6 @@ using Xamarin.Forms;
 using System.Collections.Generic;
 #elif MAUI
 #else
-using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Data;
 #endif
@@ -324,9 +326,8 @@ namespace Csla.Xaml
       if (sourceBinding != null
         && sourceBinding.ParentBinding.RelativeSource != null
         && sourceBinding.ParentBinding.RelativeSource.Mode == RelativeSourceMode.TemplatedParent
-        && sourceBinding.DataItem is FrameworkElement)
+        && sourceBinding.DataItem is FrameworkElement control)
       {
-        var control = (FrameworkElement)sourceBinding.DataItem;
         var path = sourceBinding.ParentBinding.Path.Path;
 
         var type = control.GetType();
@@ -336,7 +337,7 @@ namespace Csla.Xaml
 #if NETFX_CORE
           fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
 #else
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix));
+          fi = type.GetField($"{path}{_dependencyPropertySuffix}");
 #endif
 
           if (fi != null)
@@ -384,9 +385,9 @@ namespace Csla.Xaml
 
       // Check to see if PropertyInfo is inside a control template
       ClearValue(MyDataContextProperty);
-      if (newSource != null && newSource is FrameworkElement)
+      if (newSource != null && newSource is FrameworkElement element)
       {
-        var data = ((FrameworkElement)newSource).DataContext;
+        var data = element.DataContext;
         SetBindingValues(ParseRelativeBinding(GetBindingExpression(PropertyProperty)));
 
         if (data != null && GetBindingExpression(RelativeBindingProperty) == null)
@@ -458,11 +459,9 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    /// <returns></returns>
     protected object GetRealSource(object source, string bindingPath)
     {
-      var icv = source as ICollectionView;
-      if (icv != null)
+      if (source is ICollectionView icv)
         source = icv.CurrentItem;
       if (source != null && bindingPath.IndexOf('.') > 0)
       {
@@ -484,7 +483,6 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    /// <returns></returns>
     protected PropertyPath GetRelativePath(object source, string bindingPath)
     {
       if (source != null)
@@ -513,8 +511,7 @@ namespace Csla.Xaml
       {
         DetachSource(old);
         AttachSource(source);
-        BusinessBase bb = Source as BusinessBase;
-        if (bb != null && !string.IsNullOrWhiteSpace(BindingPath))
+        if (Source is BusinessBase bb && !string.IsNullOrWhiteSpace(BindingPath))
         {
           IsBusy = bb.IsPropertyBusy(BindingPath);
         }
@@ -523,21 +520,17 @@ namespace Csla.Xaml
 
     private void DetachSource(object source)
     {
-      var p = source as INotifyPropertyChanged;
-      if (p != null)
+      if (source is INotifyPropertyChanged p)
         p.PropertyChanged -= source_PropertyChanged;
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
+      if (source is INotifyBusy busy)
         busy.BusyChanged -= source_BusyChanged;
     }
 
     private void AttachSource(object source)
     {
-      var p = source as INotifyPropertyChanged;
-      if (p != null)
+      if (source is INotifyPropertyChanged p)
         p.PropertyChanged += source_PropertyChanged;
-      INotifyBusy busy = source as INotifyBusy;
-      if (busy != null)
+      if (source is INotifyBusy busy)
         busy.BusyChanged += source_BusyChanged;
     }
 
@@ -555,8 +548,7 @@ namespace Csla.Xaml
       if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
       {
         bool busy = e.Busy;
-        BusinessBase bb = Source as BusinessBase;
-        if (bb != null)
+        if (Source is BusinessBase bb)
           busy = bb.IsPropertyBusy(BindingPath);
 
         if (busy != IsBusy)
@@ -575,7 +567,6 @@ namespace Csla.Xaml
     /// Gets the validation error messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string ErrorText
     {
       get
@@ -591,7 +582,6 @@ namespace Csla.Xaml
     /// Gets the validation warning messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string WarningText
     {
       get
@@ -607,7 +597,6 @@ namespace Csla.Xaml
     /// Gets the validation information messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string InformationText
     {
       get
@@ -882,8 +871,7 @@ namespace Csla.Xaml
     /// <param name="propertyName">Name of the changed property.</param>
     protected virtual void OnPropertyChanged(string propertyName)
     {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 #endif
 

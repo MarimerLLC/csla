@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-
-namespace Csla.Serialization.Mobile
+﻿namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// Represents a reader class that can be used

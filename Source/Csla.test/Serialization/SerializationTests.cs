@@ -5,32 +5,14 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
+
 using System.ComponentModel;
-using System.Diagnostics;
-using Csla.Serialization;
-using Csla.Configuration;
 using Csla.Test.ValidationRules;
 using UnitDriven;
-using System.Threading.Tasks;
 using System.Security.Claims;
 using Csla.TestHelpers;
-using Microsoft.Extensions.DependencyInjection;
-
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#else
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
-using System.IO;
-#endif 
 
 namespace Csla.Test.Serialization
 {
@@ -667,7 +649,7 @@ namespace Csla.Test.Serialization
     [Execute]
     protected void DataPortal_Execute()
     {
-      Name = Name + " server";
+      Name += " server";
     }
   }
 }

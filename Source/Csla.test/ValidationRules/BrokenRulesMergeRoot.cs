@@ -5,11 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 using Csla.Rules;
-using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
 {

@@ -6,7 +6,6 @@
 // <summary>Basic implementation of AuthenticationStateProvider</summary>
 //-----------------------------------------------------------------------
 using System.Security.Claims;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Csla.Blazor.Authentication
@@ -29,7 +28,6 @@ namespace Csla.Blazor.Authentication
     /// <summary>
     /// Gets the authentication state.
     /// </summary>
-    /// <returns></returns>
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
       return Task.FromResult(AuthenticationState);

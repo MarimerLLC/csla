@@ -5,11 +5,9 @@
 // </copyright>
 // <summary>Synchronized view over a source list, </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace Csla
@@ -239,8 +237,7 @@ namespace Csla
     {
       get 
       {
-        var obj = _baseCollection as ICollection<T>;
-        if (obj != null)
+        if (_baseCollection is ICollection<T> obj)
           return obj.IsReadOnly;
         else
           return false; 

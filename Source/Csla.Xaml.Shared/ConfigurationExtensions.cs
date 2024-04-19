@@ -23,7 +23,6 @@ namespace Csla.Configuration
     /// environments.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
-    /// <returns></returns>
     public static CslaOptions AddXaml(this CslaOptions config)
     {
       return AddXaml(config, null);
@@ -35,7 +34,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">XamlOptions action</param>
-    /// <returns></returns>
     public static CslaOptions AddXaml(this CslaOptions config, Action<XamlOptions> options)
     {
       var xamlOptions = new XamlOptions();
@@ -57,7 +55,6 @@ namespace Csla.Configuration
   }
 }
 #elif !XAMARIN && !NETFX_CORE
-using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Csla.Xaml;
 using Microsoft.Extensions.Hosting;
@@ -74,7 +71,6 @@ namespace Csla.Configuration
     /// environments.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
-    /// <returns></returns>
     public static CslaOptions AddXaml(this CslaOptions config)
     {
       return AddXaml(config, null);
@@ -86,7 +82,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">XamlOptions action</param>
-    /// <returns></returns>
     public static CslaOptions AddXaml(this CslaOptions config, Action<XamlOptions> options)
     {
       var xamlOptions = new XamlOptions();
@@ -103,7 +98,6 @@ namespace Csla.Configuration
     /// Initializes CSLA for use by Xaml apps.
     /// </summary>
     /// <param name="host"></param>
-    /// <returns></returns>
     public static IHost UseCsla(this IHost host)
     {
       // create instance of ApplicationContext so the

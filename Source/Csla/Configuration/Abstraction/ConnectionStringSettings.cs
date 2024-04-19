@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Information about a connection string</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Configuration
 {

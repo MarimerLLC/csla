@@ -5,13 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
-using System.Text;
-using Csla;
-using System;
-using System.Threading.Tasks;
 
-using Csla.Core;
 using Csla.Server;
 
 namespace Csla.Test.DataPortalTest

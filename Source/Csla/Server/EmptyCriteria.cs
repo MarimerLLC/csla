@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Empty criteria used by the data portal as a</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Server
 {

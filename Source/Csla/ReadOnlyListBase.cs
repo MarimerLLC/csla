@@ -5,12 +5,10 @@
 // </copyright>
 // <summary>This is the base class from which readonly collections</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
-using System;
-using System.Threading.Tasks;
 using Csla.Core;
 
 namespace Csla

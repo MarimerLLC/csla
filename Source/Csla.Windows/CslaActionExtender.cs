@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Extender control providing automation around</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Windows.Forms;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Properties;
@@ -44,8 +42,7 @@ namespace Csla.Windows
 
     #region Member variables
 
-    private Dictionary<Control, CslaActionExtenderProperties> _sources =
-      new Dictionary<Control, CslaActionExtenderProperties>();
+    private Dictionary<Control, CslaActionExtenderProperties> _sources = [];
 
     private object _dataSource = null;
     private IContainer _container = null;
@@ -159,7 +156,6 @@ namespace Csla.Windows
     /// Gets the action type.
     /// </summary>
     /// <param name="ctl">Reference to Control.</param>
-    /// <returns></returns>
     [Category("Csla")]
     [Description("Gets or sets the action type for this button.")]
     [Bindable(true)]
@@ -201,7 +197,6 @@ namespace Csla.Windows
     /// Gets the post save action.
     /// </summary>
     /// <param name="ctl">Reference to Control.</param>
-    /// <returns></returns>
     [Category("Csla")]
     [Description("Gets or sets the action performed after a save (if ActionType is set to Save).")]
     [Bindable(true)]
@@ -430,8 +425,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnClicking(CslaActionCancelEventArgs e)
     {
-      if (Clicking != null)
-        Clicking(this, e);
+      Clicking?.Invoke(this, e);
     }
 
     /// <summary>
@@ -440,8 +434,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnClicked(CslaActionEventArgs e)
     {
-      if (Clicked != null)
-        Clicked(this, e);
+      Clicked?.Invoke(this, e);
     }
 
     /// <summary>
@@ -450,8 +443,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnErrorEncountered(ErrorEncounteredEventArgs e)
     {
-      if (ErrorEncountered != null)
-        ErrorEncountered(this, e);
+      ErrorEncountered?.Invoke(this, e);
     }
 
     /// <summary>
@@ -460,8 +452,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnSetForNew(CslaActionEventArgs e)
     {
-      if (SetForNew != null)
-        SetForNew(this, e);
+      SetForNew?.Invoke(this, e);
     }
 
     /// <summary>
@@ -470,8 +461,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnBusinessObjectInvalid(CslaActionEventArgs e)
     {
-      if (BusinessObjectInvalid != null)
-        BusinessObjectInvalid(this, e);
+      BusinessObjectInvalid?.Invoke(this, e);
     }
 
     /// <summary>
@@ -480,8 +470,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnHasBrokenRules(HasBrokenRulesEventArgs e)
     {
-      if (HasBrokenRules != null)
-        HasBrokenRules(this, e);
+      HasBrokenRules?.Invoke(this, e);
     }
 
     /// <summary>
@@ -490,8 +479,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnObjectSaving(CslaActionCancelEventArgs e)
     {
-      if (ObjectSaving != null)
-        ObjectSaving(this, e);
+      ObjectSaving?.Invoke(this, e);
     }
 
     /// <summary>
@@ -500,8 +488,7 @@ namespace Csla.Windows
     /// <param name="e">Event arguments.</param>
     protected virtual void OnObjectSaved(CslaActionEventArgs e)
     {
-      if (ObjectSaved != null)
-        ObjectSaved(this, e);
+      ObjectSaved?.Invoke(this, e);
     }
 
     #endregion
@@ -532,14 +519,12 @@ namespace Csla.Windows
       // make sure to not attach many times
       RemoveEventHooks(objectToBind);
 
-      INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
-      if (propChangedObjParent != null)
+      if (objectToBind is INotifyPropertyChanged propChangedObjParent)
       {
         propChangedObjParent.PropertyChanged += propChangedObj_PropertyChanged;
       }
 
-      INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
-      if (propChangedObjChild != null)
+      if (objectToBind is INotifyChildChanged propChangedObjChild)
       {
         propChangedObjChild.ChildChanged += propChangedObj_ChildChanged;
       }
@@ -547,14 +532,12 @@ namespace Csla.Windows
 
     private void RemoveEventHooks(ISavable objectToBind)
     {
-      INotifyPropertyChanged propChangedObjParent = objectToBind as INotifyPropertyChanged;
-      if (propChangedObjParent != null)
+      if (objectToBind is INotifyPropertyChanged propChangedObjParent)
       {
         propChangedObjParent.PropertyChanged -= propChangedObj_PropertyChanged;
       }
 
-      INotifyChildChanged propChangedObjChild = objectToBind as INotifyChildChanged;
-      if (propChangedObjChild != null)
+      if (objectToBind is INotifyChildChanged propChangedObjChild)
       {
         propChangedObjChild.ChildChanged -= propChangedObj_ChildChanged;
       }
@@ -666,9 +649,8 @@ namespace Csla.Windows
 
                 case CslaFormAction.Validate:
 
-                  if (savableObject is BusinessBase)
+                  if (savableObject is BusinessBase businessObject)
                   {
-                    BusinessBase businessObject = savableObject as BusinessBase;
                     if (!businessObject.IsValid)
                     {
                       string brokenRules = string.Empty;
@@ -678,7 +660,7 @@ namespace Csla.Windows
                         var friendlyName =
                           PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
                             c => c.Name == lambdaBrokenRule.Property).FriendlyName;
-                        brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
+                        brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
                       }
                       MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -778,7 +760,7 @@ namespace Csla.Windows
               var friendlyName =
                 PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
                   c => c.Name == lambdaBrokenRule.Property).FriendlyName;
-              brokenRules += string.Format("{0}: {1}{2}", friendlyName, brokenRule, Environment.NewLine);
+              brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
             }
             MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
               MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -893,17 +875,13 @@ namespace Csla.Windows
       if (pair.Value.DisableWhenUseless || (pair.Value.DisableWhenClean && !ctl.Enabled))
       {
         ISavable businessObject = GetBusinessObject();
-        if (businessObject != null)
+        if (businessObject is ITrackStatus trackableObject)
         {
-          ITrackStatus trackableObject = businessObject as ITrackStatus;
-          if (trackableObject != null)
-          {
-            if (pair.Value.ActionType == CslaFormAction.Cancel || pair.Value.DisableWhenClean)
-              ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
-            if (pair.Value.ActionType == CslaFormAction.Save)
-              ChangeEnabled(ctl, (trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted)
-                && trackableObject.IsValid);
-          }
+          if (pair.Value.ActionType == CslaFormAction.Cancel || pair.Value.DisableWhenClean)
+            ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
+          if (pair.Value.ActionType == CslaFormAction.Save)
+            ChangeEnabled(ctl, (trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted)
+                               && trackableObject.IsValid);
         }
       }
     }
@@ -924,8 +902,7 @@ namespace Csla.Windows
         {
           Control ctl = enumerator.Current.Key;
           Form frm = GetParentForm(ctl);
-          if (frm != null)
-            frm.Close();
+          frm?.Close();
         }
       }
     }
@@ -934,8 +911,8 @@ namespace Csla.Windows
     {
       Form frm;
 
-      if (thisControl.Parent is Form)
-        frm = (Form) thisControl.Parent;
+      if (thisControl.Parent is Form form)
+        frm = form;
       else
         frm = GetParentForm(thisControl.Parent);
 
@@ -945,8 +922,7 @@ namespace Csla.Windows
     private ISavable GetBusinessObject()
     {
       ISavable businessObject = null;
-      BindingSource source = _dataSource as BindingSource;
-      if (source != null)
+      if (_dataSource is BindingSource source)
         businessObject = source.DataSource as ISavable;
 
       return businessObject;

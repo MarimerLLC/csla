@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Contains information about the result of a rule.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Csla.Properties;
 
 namespace Csla.Rules

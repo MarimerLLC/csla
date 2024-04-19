@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Csla.Test.DataPortal
+﻿namespace Csla.Test.DataPortal
 {
   [Serializable]
   public class MultipleDataAccessBase<T>

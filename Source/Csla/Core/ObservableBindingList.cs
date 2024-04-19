@@ -5,20 +5,12 @@
 // </copyright>
 // <summary>Extends ObservableCollection with behaviors required</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
 using Csla.Serialization.Mobile;
-using Csla.Core.FieldManager;
-using Csla.Core;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using Csla.Properties;
-using System.Diagnostics;
 
 namespace Csla.Core
 {
@@ -138,9 +130,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnRemovingItem(T removedItem)
     {
-      if (_removingItemHandler != null)
-        _removingItemHandler.Invoke(this,
-          new RemovingItemEventArgs(removedItem));
+      _removingItemHandler?.Invoke(this,
+        new RemovingItemEventArgs(removedItem));
     }
 
     #endregion
@@ -201,8 +192,7 @@ namespace Csla.Core
     /// <param name="args">Event arguments.</param>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      if (_busyChanged != null)
-        _busyChanged(this, args);
+      _busyChanged?.Invoke(this, args);
     }
 
     /// <summary>
@@ -267,8 +257,7 @@ namespace Csla.Core
     /// <param name="error">Event arguments.</param>
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)
     {
-      if (_unhandledAsyncException != null)
-        _unhandledAsyncException(this, error);
+      _unhandledAsyncException?.Invoke(this, error);
     }
 
     /// <summary>
@@ -309,24 +298,20 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnAddEventHooks(T item)
     {
-      INotifyBusy busy = item as INotifyBusy;
-      if (busy != null)
+      if (item is INotifyBusy busy)
         busy.BusyChanged += busy_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (item is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException += unhandled_UnhandledAsyncException;
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
-      if (c != null)
+      if (item is INotifyPropertyChanged c)
         c.PropertyChanged += Child_PropertyChanged;
 
       //IBindingList list = item as IBindingList;
       //if (list != null)
       //  list.ListChanged += new ListChangedEventHandler(Child_ListChanged);
 
-      INotifyChildChanged child = item as INotifyChildChanged;
-      if (child != null)
+      if (item is INotifyChildChanged child)
         child.ChildChanged += Child_Changed;
     }
 
@@ -338,24 +323,20 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected virtual void OnRemoveEventHooks(T item)
     {
-      INotifyBusy busy = item as INotifyBusy;
-      if (busy != null)
+      if (item is INotifyBusy busy)
         busy.BusyChanged -= busy_BusyChanged;
 
-      INotifyUnhandledAsyncException unhandled = item as INotifyUnhandledAsyncException;
-      if (unhandled != null)
+      if (item is INotifyUnhandledAsyncException unhandled)
         unhandled.UnhandledAsyncException -= unhandled_UnhandledAsyncException;
 
-      INotifyPropertyChanged c = item as INotifyPropertyChanged;
-      if (c != null)
+      if (item is INotifyPropertyChanged c)
         c.PropertyChanged -= Child_PropertyChanged;
 
       //IBindingList list = item as IBindingList;
       //if(list!=null)
       //  list.ListChanged -= new ListChangedEventHandler(Child_ListChanged);
 
-      INotifyChildChanged child = item as INotifyChildChanged;
-      if (child != null)
+      if (item is INotifyChildChanged child)
         child.ChildChanged -= Child_Changed;
     }
 
@@ -426,8 +407,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnChildChanged(ChildChangedEventArgs e)
     {
-      if (_childChangedHandlers != null)
-        _childChangedHandlers.Invoke(this, e);
+      _childChangedHandlers?.Invoke(this, e);
     }
 
     /// <summary>

@@ -5,9 +5,8 @@
 // </copyright>
 // <summary>Provides a filtered view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Collections;
 using Csla.Properties;
 
@@ -180,7 +179,6 @@ namespace Csla
     /// <summary>
     /// Gets an enumerator object.
     /// </summary>
-    /// <returns></returns>
     public IEnumerator<T> GetEnumerator()
     {
       if (IsFiltered)
@@ -393,8 +391,7 @@ namespace Csla
     /// <param name="e">Parameter for the event.</param>
     protected void OnListChanged(ListChangedEventArgs e)
     {
-      if (ListChanged != null)
-        ListChanged(this, e);
+      ListChanged?.Invoke(this, e);
     }
 
     /// <summary>
@@ -718,8 +715,7 @@ namespace Csla
     private IBindingList _bindingList;
     private object _filter;
 
-    private List<ListItem> _filterIndex = 
-      new List<ListItem>();
+    private List<ListItem> _filterIndex = [];
 
     /// <summary>
     /// Creates a new view based on the provided IList object.
@@ -729,10 +725,10 @@ namespace Csla
     {
       SourceList = list;
 
-      if (SourceList is IBindingList)
+      if (SourceList is IBindingList sourceList)
       {
         _supportsBinding = true;
-        _bindingList = (IBindingList)SourceList;
+        _bindingList = sourceList;
         _bindingList.ListChanged += SourceChanged;
       }
     }
@@ -769,7 +765,6 @@ namespace Csla
     /// </summary>
     /// <value>A descriptor for the property on which
     /// the items in the collection will be filtered.</value>
-    /// <returns></returns>
     /// <remarks></remarks>
     public PropertyDescriptor FilterProperty { get; private set; }
 
@@ -972,8 +967,7 @@ namespace Csla
     {
       if (itemIndex <= -1) return;
 
-      ICancelAddNew can = SourceList as ICancelAddNew;
-      if (can != null)
+      if (SourceList is ICancelAddNew can)
         can.CancelNew(OriginalIndex(itemIndex));
       else
         SourceList.RemoveAt(OriginalIndex(itemIndex));
@@ -981,8 +975,7 @@ namespace Csla
 
     void ICancelAddNew.EndNew(int itemIndex)
     {
-      ICancelAddNew can = SourceList as ICancelAddNew;
-      if (can != null)
+      if (SourceList is ICancelAddNew can)
         can.EndNew(OriginalIndex(itemIndex));
     }
 

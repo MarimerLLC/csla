@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Csla.Server;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Csla.Test.DataPortal
+﻿namespace Csla.Test.DataPortal
 {
   //[TestClass]
   //public class LogicalExecutionDataPortalTests

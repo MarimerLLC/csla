@@ -5,9 +5,7 @@
 // </copyright>
 // <summary>Manages the list of authorization </summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
@@ -146,8 +144,7 @@ namespace Csla.Rules
 
       public override bool Equals(object obj)
       {
-        var other = obj as RuleSetKey;
-        if (other == null)
+        if (obj is not RuleSetKey other)
           return false;
         else
           return this.Type.Equals(other.Type) && RuleSet == other.RuleSet;

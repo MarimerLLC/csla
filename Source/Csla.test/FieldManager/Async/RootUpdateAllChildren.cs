@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Csla.Test.FieldManager.Async
+﻿namespace Csla.Test.FieldManager.Async
 {
   [Serializable]
   public class RootUpdateAllChildren : BusinessBase<RootUpdateAllChildren>
@@ -44,15 +41,15 @@ namespace Csla.Test.FieldManager.Async
     }
 
     [Insert]
-    protected async Task InsertAsync()
+    protected Task InsertAsync()
     {
-      await FieldManager.UpdateAllChildrenAsync();
+      return FieldManager.UpdateAllChildrenAsync();
     }
 
     [Update]
-    protected async Task UpdateAsync()
+    protected Task UpdateAsync()
     {
-      await FieldManager.UpdateAllChildrenAsync();
+      return FieldManager.UpdateAllChildrenAsync();
     }
   }
 }

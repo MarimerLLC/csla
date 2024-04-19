@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Implementation of the authorizer that</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
 using Csla.Rules;
 using Csla.Security;

@@ -2,6 +2,30 @@
 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
+## CSLA .NET version 8.1.0 release
+
+CSLA .NET version 8.0.0 adds features and bug fixes. It also drops support for .NET 7.
+
+Primary changes in this release include:
+
+* [#3637](https://github.com/MarimerLLC/csla/issues/3637) Remove support for .NET 7
+* [#1376](https://github.com/MarimerLLC/csla/issues/1376) CSLA now supports async serialization in aspnetcore
+* [#3755](https://github.com/MarimerLLC/csla/issues/3755) Server-side data portal now waits for all async rules to complete
+
+And _massive_ amounts of overall code modernization thanks to @SimonCropp
+
+### Change List
+
+* https://github.com/MarimerLLC/csla/compare/v8.0.0...v8.1.0
+
+### Contributors
+
+* @nico159
+* @rockfordlhotka
+* @ProDInfo
+* @SimonCropp
+* @StefanOssendorf
+
 ## CSLA .NET version 8.0.0 release
 
 CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.

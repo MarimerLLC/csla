@@ -6,9 +6,7 @@
 // </copyright>
 // <summary>Provides a sorted view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.ComponentModel;
-using System.Collections.Generic;
 using System.Collections;
 using Csla.Properties;
 
@@ -44,8 +42,8 @@ namespace Csla
       {
         object target = other.Key;
 
-        if (Key is IComparable)
-          return ((IComparable)Key).CompareTo(target);
+        if (Key is IComparable comparable)
+          return comparable.CompareTo(target);
 
         else
         {
@@ -415,8 +413,7 @@ namespace Csla
     /// <param name="e">Event arguments.</param>
     protected void OnListChanged(ListChangedEventArgs e)
     {
-      if (ListChanged != null)
-        ListChanged(this, e);
+      ListChanged?.Invoke(this, e);
     }
 
     /// <summary>
@@ -695,9 +692,7 @@ namespace Csla
     private IBindingList _bindingList;
     private bool _initiatedLocally;
 
-    private List<ListItem> _sortIndex =
-      new List<ListItem>();
-
+    private List<ListItem> _sortIndex = [];
 
     /// <summary>
     /// Creates a new view based on the provided IList object.
@@ -707,10 +702,10 @@ namespace Csla
     {
       SourceList = list;
 
-      if (SourceList is IBindingList)
+      if (SourceList is IBindingList sourceList)
       {
         _supportsBinding = true;
-        _bindingList = (IBindingList)SourceList;
+        _bindingList = sourceList;
         _bindingList.ListChanged += SourceChanged;
       }
     }
@@ -854,8 +849,7 @@ namespace Csla
     {
       if (itemIndex <= -1) return;
 
-      ICancelAddNew can = SourceList as ICancelAddNew;
-      if (can != null)
+      if (SourceList is ICancelAddNew can)
         can.CancelNew(OriginalIndex(itemIndex));
       else
         SourceList.RemoveAt(OriginalIndex(itemIndex));
@@ -863,8 +857,7 @@ namespace Csla
 
     void ICancelAddNew.EndNew(int itemIndex)
     {
-      ICancelAddNew can = SourceList as ICancelAddNew;
-      if (can != null)
+      if (SourceList is ICancelAddNew can)
         can.EndNew(OriginalIndex(itemIndex));
     }
 

@@ -5,12 +5,10 @@
 // </copyright>
 // <summary>Base type for creating your own view model</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Csla.Reflection;
 using Csla.Rules;
 
@@ -24,7 +22,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets the current ApplicationContext instance.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
+    protected ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -226,7 +224,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Saves the Model.
     /// </summary>
-    /// <returns></returns>
     public async Task SaveAsync()
     {
       Exception = null;
@@ -293,7 +290,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Override to provide custom Model save behavior.
     /// </summary>
-    /// <returns></returns>
     protected virtual async Task<T> DoSaveAsync(Core.ISavable cloned)
     {
       if (cloned != null)
@@ -377,7 +373,6 @@ namespace Csla.Blazor
     /// to the meta-state of the property.
     /// </summary>
     /// <param name="property">Property expression</param>
-    /// <returns></returns>
     public IPropertyInfo GetPropertyInfo<P>(Expression<Func<P>> property)
     {
       if (property == null)
@@ -395,7 +390,6 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="property">Property expression</param>
     /// <param name="id">Unique identifier for property in list or array</param>
-    /// <returns></returns>
     public IPropertyInfo GetPropertyInfo<P>(Expression<Func<P>> property, string id)
     {
       if (property == null)
@@ -412,7 +406,6 @@ namespace Csla.Blazor
     /// to the meta-state of the property.
     /// </summary>
     /// <param name="propertyName">Property name</param>
-    /// <returns></returns>
     public IPropertyInfo GetPropertyInfo(string propertyName)
     {
       var keyName = Model.GetType().FullName + "." + propertyName;
@@ -426,14 +419,13 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="propertyName">Property name</param>
     /// <param name="id">Unique identifier for property in list or array</param>
-    /// <returns></returns>
     public IPropertyInfo GetPropertyInfo(string propertyName, string id)
     {
       var keyName = Model.GetType().FullName + "." + propertyName + $"[{id}]";
       return GetPropertyInfo(keyName, Model, propertyName);
     }
 
-    private readonly Dictionary<string, IPropertyInfo> _propertyInfoCache = new Dictionary<string, IPropertyInfo>();
+    private readonly Dictionary<string, IPropertyInfo> _propertyInfoCache = [];
 
     private IPropertyInfo GetPropertyInfo(string keyName, object model, string propertyName)
     {
@@ -490,7 +482,6 @@ namespace Csla.Blazor
     /// is authorized to create an instance of the
     /// business domain type.
     /// </summary>
-    /// <returns></returns>
     public bool CanCreateObject
     {
       get
@@ -512,7 +503,6 @@ namespace Csla.Blazor
     /// is authorized to retrieve an instance of the
     /// business domain type.
     /// </summary>
-    /// <returns></returns>
     public bool CanGetObject
     {
       get
@@ -534,7 +524,6 @@ namespace Csla.Blazor
     /// is authorized to edit/save an instance of the
     /// business domain type.
     /// </summary>
-    /// <returns></returns>
     public bool CanEditObject
     {
       get
@@ -556,7 +545,6 @@ namespace Csla.Blazor
     /// is authorized to delete an instance of the
     /// business domain type.
     /// </summary>
-    /// <returns></returns>
     public bool CanDeleteObject
     {
       get

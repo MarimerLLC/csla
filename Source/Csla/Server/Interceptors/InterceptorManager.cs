@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Cascades DataPortal interception requests to registered interceptors</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Csla.Server
 {

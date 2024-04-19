@@ -6,8 +6,6 @@
 // <summary>This class provides an implementation of a deep</summary>
 //-----------------------------------------------------------------------
 using Csla.Serialization;
-using System;
-using System.IO;
 
 namespace Csla.Core
 {
@@ -33,7 +31,6 @@ namespace Csla.Core
     /// Gets an instance of ObjectCloner.
     /// </summary>
     /// <param name="applicationContext"></param>
-    /// <returns></returns>
     public static ObjectCloner GetInstance(ApplicationContext applicationContext)
     {
       return new ObjectCloner(applicationContext);

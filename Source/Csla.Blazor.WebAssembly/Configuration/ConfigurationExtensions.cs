@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
 using Csla.Blazor.WebAssembly.Configuration;
 
 namespace Csla.Configuration
@@ -25,7 +24,6 @@ namespace Csla.Configuration
     /// Registers services necessary for Blazor WebAssembly.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
-    /// <returns></returns>
     public static CslaOptions AddBlazorWebAssembly(this CslaOptions config)
     {
       return AddBlazorWebAssembly(config, null);
@@ -36,7 +34,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">Options object</param>
-    /// <returns></returns>
     public static CslaOptions AddBlazorWebAssembly(this CslaOptions config, Action<BlazorWebAssemblyConfigurationOptions> options)
     {
       var blazorOptions = new BlazorWebAssemblyConfigurationOptions();

@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>This exception is returned for any errors occuring</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Security.Permissions;
+
 using Csla.Server.Hosts.DataPortalChannel;
 
 namespace Csla
@@ -186,7 +185,7 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
     public override string StackTrace
     {
-      get { return String.Format("{0}{1}{2}", _innerStackTrace, Environment.NewLine, base.StackTrace); }
+      get { return $"{_innerStackTrace}{Environment.NewLine}{base.StackTrace}"; }
     }
   }
 }

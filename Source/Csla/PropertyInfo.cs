@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Maintains metadata about a property.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Linq;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -134,7 +133,7 @@ namespace Csla
     /// <summary>
     /// Gets the property name value.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name { get; }
 
     /// <summary>
     /// Gets the type of the property.
@@ -245,7 +244,6 @@ namespace Csla
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    /// <returns></returns>
     public System.Reflection.PropertyInfo GetPropertyInfo() => _propertyInfo;
 
     #region IComparable Members

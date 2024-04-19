@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>ConfigurationManager that abstracts underlying configuration</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Collections.Specialized;
 
 namespace Csla.Configuration

@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitDriven
@@ -62,9 +61,9 @@ namespace UnitDriven
       p.Invoke();
     }
 
-    public async Task Try(Func<Task> p)
+    public Task Try(Func<Task> p)
     {
-      await p();
+      return p();
     }
 
     public void Success() 

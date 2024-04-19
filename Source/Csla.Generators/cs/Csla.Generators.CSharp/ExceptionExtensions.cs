@@ -6,9 +6,6 @@
 // <summary>Extension methods for the Exception type</summary>
 //-----------------------------------------------------------------------
 using Microsoft.CodeAnalysis;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Generators.CSharp
 {

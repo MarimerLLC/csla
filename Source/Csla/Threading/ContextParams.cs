@@ -7,8 +7,6 @@
 //----------------------------------------------------------------------
 using System.Globalization;
 using System.Security.Principal;
-using System.Threading;
-using Csla.Core;
 
 namespace Csla.Threading
 {
@@ -24,10 +22,10 @@ namespace Csla.Threading
 
     private ApplicationContext _applicationContext;
 
-    public IPrincipal User { get; private set; }
-    public Csla.Core.ContextDictionary ClientContext { get; private set; }
-    public CultureInfo UICulture { get; private set; }
-    public CultureInfo Culture { get; private set; }
+    public IPrincipal User { get; }
+    public Csla.Core.ContextDictionary ClientContext { get; }
+    public CultureInfo UICulture { get; }
+    public CultureInfo Culture { get; }
 
     public ContextParams()
     {

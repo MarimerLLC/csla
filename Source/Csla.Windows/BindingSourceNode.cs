@@ -5,10 +5,8 @@
 // </copyright>
 // <summary>Maintains a reference to a BindingSource object</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Windows.Forms;
 using Csla.Core;
 
 namespace Csla.Windows
@@ -125,9 +123,7 @@ namespace Csla.Windows
     /// </param>
     public void Bind(object objectToBind)
     {
-      ISupportUndo root = objectToBind as ISupportUndo;
-
-      if (root != null)
+      if (objectToBind is ISupportUndo root)
         root.BeginEdit();
 
       Source.DataSource = objectToBind;
@@ -147,8 +143,7 @@ namespace Csla.Windows
       Unbind(false);
       EndEdit();
 
-      if (root != null)
-        root.ApplyEdit();
+      root?.ApplyEdit();
     }
 
     /// <summary>
@@ -163,8 +158,7 @@ namespace Csla.Windows
 
       Unbind(true);
 
-      if (root != null)
-        root.CancelEdit();
+      root?.CancelEdit();
 
       Bind(businessObject);
     }

@@ -5,13 +5,10 @@
 // </copyright>
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
-using System.Collections.Generic;
 using Csla.Core;
 using Csla.Properties;
-using System.Security.Principal;
-using System.Security.Claims;
 
 namespace Csla.Rules
 {
@@ -445,7 +442,6 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    /// <returns></returns>
     public  T GetInputValue<T>(PropertyInfo<T> propertyInfo)
     {
       return (T)InputPropertyValues[propertyInfo];
@@ -456,7 +452,6 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The generic property info.</param>
-    /// <returns></returns>
     public T GetInputValue<T>(IPropertyInfo propertyInfo)
     {
       return (T)InputPropertyValues[propertyInfo];
@@ -503,7 +498,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get; private set; }
+    public ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Gets a data portal factory instance

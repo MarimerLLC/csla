@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Enables simple invocation of methods</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
+
 using Csla.Properties;
 
 namespace Csla.Reflection
@@ -24,7 +23,7 @@ namespace Csla.Reflection
     /// <summary>
     /// Object instance managed by LateBoundObject.
     /// </summary>
-    public object Instance { get; private set; }
+    public object Instance { get; }
 
     /// <summary>
     /// Creates an instance of the specified
@@ -117,7 +116,6 @@ namespace Csla.Reflection
     /// otherwise synchronously invokes the method.
     /// </summary>
     /// <param name="methodName">Name of the method.</param>
-    /// <returns></returns>
     public async Task CallMethodTryAsync(string methodName)
     {
       try

@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>A Web Forms data binding control designed to support</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Web.UI;
 using System.ComponentModel;
 using System.Reflection;
@@ -64,7 +64,6 @@ namespace Csla.Web
     /// Returns the default view for this data control.
     /// </summary>
     /// <param name="viewName">Ignored.</param>
-    /// <returns></returns>
     /// <remarks>This control only contains a "Default" view.</remarks>
     protected override DataSourceView GetView(string viewName)
     {
@@ -120,8 +119,7 @@ namespace Csla.Web
       set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value; }
     }
 
-    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = 
-      new System.Collections.Generic.Dictionary<string,Type>();
+    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = [];
 
     /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the
@@ -138,8 +136,7 @@ namespace Csla.Web
       if (!string.IsNullOrEmpty(typeAssemblyName))
       {
         // explicit assembly name provided
-        result = Type.GetType(string.Format(
-          "{0}, {1}", typeName, typeAssemblyName), true, true);
+        result = Type.GetType($"{typeName}, {typeAssemblyName}", true, true);
       }
       else if (typeName.IndexOf(",") > 0)
       {
@@ -182,8 +179,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnSelectObject(SelectObjectArgs e)
     {
-      if (SelectObject != null)
-        SelectObject(this, e);
+      SelectObject?.Invoke(this, e);
     }
 
     /// <summary>
@@ -191,8 +187,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnInsertObject(InsertObjectArgs e)
     {
-      if (InsertObject != null)
-        InsertObject(this, e);
+      InsertObject?.Invoke(this, e);
     }
 
     /// <summary>
@@ -200,8 +195,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnUpdateObject(UpdateObjectArgs e)
     {
-      if (UpdateObject != null)
-        UpdateObject(this, e);
+      UpdateObject?.Invoke(this, e);
     }
 
     /// <summary>
@@ -209,8 +203,7 @@ namespace Csla.Web
     /// </summary>
     internal void OnDeleteObject(DeleteObjectArgs e)
     {
-      if (DeleteObject != null)
-        DeleteObject(this, e);
+      DeleteObject?.Invoke(this, e);
     }
   }
 }

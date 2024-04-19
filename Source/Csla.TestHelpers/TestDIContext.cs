@@ -5,9 +5,6 @@
 // </copyright>
 // <summary>Test DI context for use in tests</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.TestHelpers
 {

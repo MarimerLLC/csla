@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Configuration
 {

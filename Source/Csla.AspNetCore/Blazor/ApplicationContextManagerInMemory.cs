@@ -8,10 +8,8 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using Microsoft.AspNetCore.Components.Authorization;
-using System;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Threading.Tasks;
 
 namespace Csla.AspNetCore.Blazor
 {
@@ -30,7 +28,7 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Gets the current HttpContext instance.
     /// </summary>
-    protected AuthenticationStateProvider AuthenticationStateProvider { get; private set; }
+    protected AuthenticationStateProvider AuthenticationStateProvider { get; }
 
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
@@ -40,7 +38,7 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Gets the active circuit state.
     /// </summary>
-    protected ActiveCircuitState ActiveCircuitState { get; private set; }
+    protected ActiveCircuitState ActiveCircuitState { get; }
 
     /// <summary>
     /// Creates an instance of the object, initializing it

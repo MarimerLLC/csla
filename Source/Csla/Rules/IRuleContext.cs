@@ -6,11 +6,6 @@
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
 using Csla.Core;
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
 
 namespace Csla.Rules
 {
@@ -204,14 +199,12 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    /// <returns></returns>
     T GetInputValue<T>(PropertyInfo<T> propertyInfo);
     /// <summary>
     /// Gets the value with explicit cast
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The generic property info.</param>
-    /// <returns></returns>
     T GetInputValue<T>(IPropertyInfo propertyInfo);
     /// <summary>
     /// Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not.

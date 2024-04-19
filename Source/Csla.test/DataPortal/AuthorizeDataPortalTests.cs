@@ -5,26 +5,13 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Configuration;
-using Csla.DataPortalClient;
+
 using Csla.Configuration;
 using Csla.Testing.Business.DataPortal;
 using Csla.Server;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
-
-#if !NUNIT && !ANDROID
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#elif !ANDROID
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#endif 
-
 
 namespace Csla.Test.DataPortal
 {

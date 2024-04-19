@@ -5,15 +5,9 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Core;
+
 using Csla.Rules;
 using Csla.Rules.CommonRules;
-using Csla.Serialization;
-using Csla.DataPortalClient;
-using System.Diagnostics;
 
 namespace Csla.Test.Security
 {

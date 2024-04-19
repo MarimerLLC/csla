@@ -6,7 +6,6 @@
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
 using System.Security.Principal;
-using System.Threading;
 using Csla.Configuration;
 
 namespace Csla.Windows
@@ -23,7 +22,6 @@ namespace Csla.Windows
     /// <summary>
     /// Gets the current principal.
     /// </summary>
-    /// <returns></returns>
     public override IPrincipal GetUser()
     {
       if (_principal == null)

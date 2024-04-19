@@ -5,11 +5,9 @@
 // </copyright>
 // <summary>This is the base class from which collections</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
@@ -131,26 +129,25 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSaved(T newObject, Exception error)
     {
-      if (Saved != null)
-        Saved(this, new SavedEventArgs(newObject, error, null));
+      Saved?.Invoke(this, new SavedEventArgs(newObject, error, null));
     }
 
     /// <summary>
     /// Saves the specified item in the list.
     /// </summary>
     /// <param name="item">Item to be saved.</param>
-    public async Task SaveItemAsync(T item)
+    public Task SaveItemAsync(T item)
     {
-      await SaveItemAsync(IndexOf(item));
+      return SaveItemAsync(IndexOf(item));
     }
 
     /// <summary>
     /// Saves the specified item in the list.
     /// </summary>
     /// <param name="index">Index of item to be saved.</param>
-    public async Task SaveItemAsync(int index)
+    public Task SaveItemAsync(int index)
     {
-      await SaveItemAsync(index, false);
+      return SaveItemAsync(index, false);
     }
 
     /// <summary>
@@ -167,8 +164,7 @@ namespace Csla
         T savable = item;
 
         // attempt to clone object
-        ICloneable cloneable = savable as ICloneable;
-        if (cloneable != null)
+        if (savable is ICloneable cloneable)
         {
           savable = (T)cloneable.Clone();
           MethodCaller.CallMethodIfImplemented(item, "MarkBusy");
@@ -439,7 +435,6 @@ namespace Csla
     /// Await this method to ensure business object
     /// is not busy running async rules.
     /// </summary>
-    /// <returns></returns>
     public async Task WaitForIdle()
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
@@ -451,10 +446,9 @@ namespace Csla
     /// is not busy running async rules.
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
-    /// <returns></returns>
-    public async Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>

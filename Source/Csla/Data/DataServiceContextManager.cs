@@ -78,15 +78,14 @@ namespace Csla.Data
     /// <typeparam name="T">
     /// Type of entity.
     /// </typeparam>
-    /// <returns></returns>
     public List<T> GetEntities<T>()
     {
       List<T> returnValue = new List<T>();
       foreach (var oneEntityDescriptor in DataServiceContext.Entities)
       {
-        if (oneEntityDescriptor.Entity is T)
+        if (oneEntityDescriptor.Entity is T entity)
         {
-          returnValue.Add((T)oneEntityDescriptor.Entity);
+          returnValue.Add(entity);
         }
       }
       return returnValue;

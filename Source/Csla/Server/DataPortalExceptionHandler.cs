@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>This class provides a hoook for developers to add custom error handling in the DataPortal. </summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -38,7 +38,6 @@ namespace Csla.Server
     /// <param name="criteria">The criteria.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="ex">The exception.</param>
-    /// <returns></returns>
     public Exception InspectException(Type objectType, object criteria, string methodName, Exception ex)
     {
       Exception handledException;
@@ -68,7 +67,6 @@ namespace Csla.Server
     /// <param name="criteria">The criteria.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="ex">The exception.</param>
-    /// <returns></returns>
     public Exception InspectException(Type objectType, object businessObject, object criteria, string methodName, Exception ex)
     {
       // The exception as parameter is always a CallMethodException containing the business exception as Inner exception 

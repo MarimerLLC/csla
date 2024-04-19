@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Note: We exposed the PropertyInfo's so we can test it...</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

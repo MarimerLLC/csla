@@ -6,8 +6,6 @@
 // <summary>Response message for returning</summary>
 //-----------------------------------------------------------------------
 
-using System;
-
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>

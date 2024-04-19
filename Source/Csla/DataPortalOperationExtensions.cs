@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Object containing information about the</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Rules;
 
 namespace Csla

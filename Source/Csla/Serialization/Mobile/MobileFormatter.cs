@@ -5,10 +5,7 @@
 // </copyright>
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+
 using System.Runtime.Serialization;
 using Csla.Properties;
 using Csla.Reflection;
@@ -124,7 +121,6 @@ namespace Csla.Serialization.Mobile
     /// Serializes an object into a SerializationInfo object.
     /// </summary>
     /// <param name="obj">Object to be serialized.</param>
-    /// <returns></returns>
     public SerializationInfo SerializeObject(object obj)
     {
       SerializationInfo info;
@@ -181,10 +177,9 @@ namespace Csla.Serialization.Mobile
 
 #region Deserialize
 
-    private Dictionary<int, IMobileObject> _deserializationReferences =
-      new Dictionary<int, IMobileObject>();
+    private Dictionary<int, IMobileObject> _deserializationReferences = [];
 
-    private Dictionary<string, Type> _typeCache = new Dictionary<string, Type>();
+    private Dictionary<string, Type> _typeCache = [];
 
     private Type GetTypeFromCache(string typeName)
     {
@@ -212,7 +207,6 @@ namespace Csla.Serialization.Mobile
     /// Stream containing the serialized XML
     /// data.
     /// </param>
-    /// <returns></returns>
     public object Deserialize(Stream serializationStream)
     {
       if (serializationStream == null)
@@ -230,7 +224,6 @@ namespace Csla.Serialization.Mobile
     /// Stream containing the serialized XML
     /// data.
     /// </param>
-    /// <returns></returns>
     object ISerializationFormatter.Deserialize(byte[] buffer)
     {
       if (buffer.Length == 0)
@@ -245,7 +238,6 @@ namespace Csla.Serialization.Mobile
     /// Deserialize an object from DTO graph.
     /// </summary>
     ///<param name="deserialized">DTO group to deserialize</param>
-    /// <returns></returns>
     public object DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
 
@@ -294,16 +286,12 @@ namespace Csla.Serialization.Mobile
       {
         IMobileObject mobile = _deserializationReferences[info.ReferenceId];
 
-        if (mobile != null)
-        {
-          mobile.SetChildren(info, this);
-        }
+        mobile?.SetChildren(info, this);
       }
 
       foreach (SerializationInfo info in deserialized)
       {
-        ISerializationNotification notifiable = _deserializationReferences[info.ReferenceId] as ISerializationNotification;
-        if (notifiable != null)
+        if (_deserializationReferences[info.ReferenceId] is ISerializationNotification notifiable)
           notifiable.Deserialized();
       }
       return (_deserializationReferences.Count > 0 ? _deserializationReferences[1] : null);
@@ -331,7 +319,6 @@ namespace Csla.Serialization.Mobile
     /// reference id within the serialization stream.
     /// </summary>
     /// <param name="referenceId">Id of object in stream.</param>
-    /// <returns></returns>
     public IMobileObject GetObject(int referenceId)
     {
       return _deserializationReferences[referenceId];
@@ -348,7 +335,6 @@ namespace Csla.Serialization.Mobile
     /// The object to be serialized, which must implement
     /// IMobileObject.
     /// </param>
-    /// <returns></returns>
     public byte[] SerializeToByteArray(object obj)
     {
       using (var buffer = new System.IO.MemoryStream())
@@ -366,7 +352,6 @@ namespace Csla.Serialization.Mobile
     /// The object to be serialized, which must implement
     /// IMobileObject.
     /// </param>
-    /// <returns></returns>
     public List<SerializationInfo> SerializeToDTO(object obj)
     {
       var formatter = new MobileFormatter(_applicationContext);

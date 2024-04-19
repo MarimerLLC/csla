@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Placeholder for null child objects.</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Serialization.Mobile
 {

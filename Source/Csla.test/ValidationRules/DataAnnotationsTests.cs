@@ -5,12 +5,8 @@
 // </copyright>
 // <summary>Tests for functionality around Data Annotations attributes</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

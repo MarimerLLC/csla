@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla.Core
 {

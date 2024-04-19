@@ -5,14 +5,8 @@
 // </copyright>
 // <summary>User control that displays busy animation</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
 
 namespace Csla.Windows
 {

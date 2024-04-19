@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>List of valid relationship types</summary>
 //-----------------------------------------------------------------------
-using System;
 
 namespace Csla
 {

@@ -6,17 +6,15 @@
 // </copyright>
 // <summary>Wraps and creates a CSLA .NET-style object </summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Reflection;
+using Csla.Core;
 using Csla.Reflection;
 using Csla.Properties;
-using System.Threading.Tasks;
 
 namespace Csla.Xaml
 {
@@ -51,8 +49,7 @@ namespace Csla.Xaml
     /// <param name="userState">Reference to a userstate object.</param>
     protected virtual void OnSaved(object newObject, Exception error, object userState)
     {
-      if (Saved != null)
-        Saved(this, new Csla.Core.SavedEventArgs(newObject, error, userState));
+      Saved?.Invoke(this, new Csla.Core.SavedEventArgs(newObject, error, userState));
     }
 
     void _factoryParameters_CollectionChanged(
@@ -132,8 +129,7 @@ namespace Csla.Xaml
       set
       {
         _dataChangedHandler = value;
-        var dialog = value as IErrorDialog;
-        if (dialog != null)
+        if (value is IErrorDialog dialog)
           dialog.Register(this);
         OnPropertyChanged(new PropertyChangedEventArgs("DataChangedHandler"));
       }
@@ -313,8 +309,7 @@ namespace Csla.Xaml
         if (ex.InnerException != null)
         {
           exceptionResult = ex.InnerException;
-          var dpe = exceptionResult as Csla.DataPortalException;
-          if (dpe != null && dpe.BusinessException != null)
+          if (exceptionResult is DataPortalException dpe && dpe.BusinessException != null)
             exceptionResult = dpe.BusinessException;
         }
         else
@@ -327,8 +322,7 @@ namespace Csla.Xaml
 
       if (ManageObjectLifetime && result != null)
       {
-        var undo = result as Csla.Core.ISupportUndo;
-        if (undo != null)
+        if (result is ISupportUndo undo)
           undo.BeginEdit();
       }
 
@@ -345,7 +339,6 @@ namespace Csla.Xaml
     /// </summary>
     /// <typeparam name="T">Type of ObjectInstance</typeparam>
     /// <param name="factory">Async data portal or factory method</param>
-    /// <returns></returns>
     public async void Refresh<T>(Func<Task<T>> factory)
     {
       T result = default(T);
@@ -365,8 +358,7 @@ namespace Csla.Xaml
         if (ex.InnerException != null)
         {
           exceptionResult = ex.InnerException;
-          var dpe = exceptionResult as Csla.DataPortalException;
-          if (dpe != null && dpe.BusinessException != null)
+          if (exceptionResult is DataPortalException dpe && dpe.BusinessException != null)
             exceptionResult = dpe.BusinessException;
         }
         else
@@ -379,8 +371,7 @@ namespace Csla.Xaml
 
       if (ManageObjectLifetime && result != null)
       {
-        var undo = result as Csla.Core.ISupportUndo;
-        if (undo != null)
+        if (result is ISupportUndo undo)
           undo.BeginEdit();
       }
 
@@ -443,8 +434,7 @@ namespace Csla.Xaml
           if (ex.InnerException != null)
           {
             exceptionResult = ex.InnerException;
-            var dpe = exceptionResult as Csla.DataPortalException;
-            if (dpe != null && dpe.BusinessException != null)
+            if (exceptionResult is DataPortalException dpe && dpe.BusinessException != null)
               exceptionResult = dpe.BusinessException;
           }
           else
@@ -462,8 +452,7 @@ namespace Csla.Xaml
 
       if (request.ManageObjectLifetime && result != null)
       {
-        var undo = result as Csla.Core.ISupportUndo;
-        if (undo != null)
+        if (result is ISupportUndo undo)
           undo.BeginEdit();
       }
 
@@ -531,8 +520,7 @@ namespace Csla.Xaml
     /// </remarks>
     public void Cancel()
     {
-      var undo = this.Data as Csla.Core.ISupportUndo;
-      if (undo != null && _manageLifetime)
+      if (this.Data is ISupportUndo undo && _manageLifetime)
       {
         IsBusy = true;
         undo.CancelEdit();
@@ -619,8 +607,7 @@ namespace Csla.Xaml
     {
       // only do something if the object implements
       // IBindingList
-      IBindingList list = this.Data as IBindingList;
-      if (list != null && list.AllowNew)
+      if (this.Data is IBindingList list && list.AllowNew)
         return list.AddNew();
       else
         return null;
@@ -642,8 +629,7 @@ namespace Csla.Xaml
       // only do something if the object implements
       // IBindingList
       IBindingList list;
-      var bb = item as Csla.Core.BusinessBase;
-      if (bb != null)
+      if (item is BusinessBase bb)
         list = bb.Parent as IBindingList;
       else
         list = this.Data as IBindingList;

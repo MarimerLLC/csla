@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Converts values to and from a SmartDate.</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.ComponentModel;
 
 namespace Csla.Core.TypeConverters
@@ -22,7 +21,6 @@ namespace Csla.Core.TypeConverters
     /// </summary>
     /// <param name="context"></param>
     /// <param name="sourceType"></param>
-    /// <returns></returns>
     /// <remarks></remarks>
     public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Type sourceType)
     {
@@ -43,7 +41,6 @@ namespace Csla.Core.TypeConverters
     /// <param name="context"></param>
     /// <param name="culture"></param>
     /// <param name="value"></param>
-    /// <returns></returns>
     /// <remarks></remarks>
     public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
     {
@@ -55,8 +52,8 @@ namespace Csla.Core.TypeConverters
         return new SmartDate();
       else if (value is System.DateTime?)
         return new SmartDate((System.DateTime?)value);
-      else if (value is DateTimeOffset)
-        return new SmartDate(((DateTimeOffset)value).DateTime);
+      else if (value is DateTimeOffset offset)
+        return new SmartDate(offset.DateTime);
       return base.ConvertFrom(context, culture, value);
     }
 
@@ -66,7 +63,6 @@ namespace Csla.Core.TypeConverters
     /// </summary>
     /// <param name="context"></param>
     /// <param name="destinationType"></param>
-    /// <returns></returns>
     /// <remarks></remarks>
     public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType)
     {
@@ -88,7 +84,6 @@ namespace Csla.Core.TypeConverters
     /// <param name="culture"></param>
     /// <param name="value"></param>
     /// <param name="destinationType"></param>
-    /// <returns></returns>
     /// <remarks></remarks>
     public override object ConvertTo(
       System.ComponentModel.ITypeDescriptorContext context,

@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Manages session state</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
 
 namespace Csla.State
 {
@@ -29,7 +27,6 @@ namespace Csla.State
     /// Sends the current user's session from
     /// the wasm client to the web server.
     /// </summary>
-    /// <returns></returns>
     Task SendSession();
     #endregion
 

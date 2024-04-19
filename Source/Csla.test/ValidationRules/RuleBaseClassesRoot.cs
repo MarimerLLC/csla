@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Csla.Core;
+﻿using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
-using Csla.TestHelpers;
-using Csla.Threading;
 
 namespace Csla.Test.ValidationRules
 {
@@ -235,8 +228,8 @@ namespace Csla.Test.ValidationRules
 
       if (value1.CompareTo(value2) >= 0)
       {
-        context.AddErrorResult(string.Format("{0} must be less than {1}", PrimaryProperty.FriendlyName, CompareTo.FriendlyName));
-        context.AddErrorResult(CompareTo, string.Format("{0} must be larger than {1}", CompareTo.FriendlyName, PrimaryProperty.FriendlyName));
+        context.AddErrorResult($"{PrimaryProperty.FriendlyName} must be less than {CompareTo.FriendlyName}");
+        context.AddErrorResult(CompareTo, $"{CompareTo.FriendlyName} must be larger than {PrimaryProperty.FriendlyName}");
       }
     }
   }
@@ -269,7 +262,7 @@ namespace Csla.Test.ValidationRules
           name = "Rocky Lhotka";
           break;
         default:
-          name = string.Format("Customer_{0}", customerId);
+          name = $"Customer_{customerId}";
           break;
       }
       context.AddOutValue(NameProperty, name);

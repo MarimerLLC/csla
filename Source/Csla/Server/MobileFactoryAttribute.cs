@@ -5,11 +5,6 @@
 // </copyright>
 // <summary>Specifies that the WCF data portal</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Csla.Server
 {

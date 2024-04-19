@@ -5,23 +5,10 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.ComponentModel;
-using UnitDriven;
-using Csla.Serialization.Mobile;
-using Csla.Core;
-using Csla.Serialization;
-using Csla.TestHelpers;
 
-#if NUNIT
-using NUnit.Framework;
-using TestClass = NUnit.Framework.TestFixtureAttribute;
-using TestInitialize = NUnit.Framework.SetUpAttribute;
-using TestCleanup = NUnit.Framework.TearDownAttribute;
-using TestMethod = NUnit.Framework.TestAttribute;
-#elif MSTEST
+using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-#endif
+
 namespace Csla.Test.PropertyGetSet
 {
 #if TESTING

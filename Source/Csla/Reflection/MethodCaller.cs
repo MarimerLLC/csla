@@ -5,13 +5,10 @@
 // </copyright>
 // <summary>Provides methods to dynamically find and call methods.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
-using System.Threading.Tasks;
-
 using Csla.Properties;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
@@ -59,10 +56,9 @@ namespace Csla.Reflection
     #region Dynamic Method Cache
 
 #if NET5_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache =
-      new Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>>();
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache = [];
 #else
-    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = new Dictionary<MethodCacheKey, DynamicMethodHandle>();
+    private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = [];
 #endif
 
     private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
@@ -294,10 +290,9 @@ namespace Csla.Reflection
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
 #if NET5_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache =
-      new Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>>();
+    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache = [];
 #else
-    private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = new Dictionary<MethodCacheKey, DynamicMemberHandle>();
+    private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
 #endif
 
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
@@ -416,7 +411,6 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="obj">Target object.</param>
     /// <param name="property">Property to invoke.</param>
-    /// <returns></returns>
     public static object CallPropertyGetter(object obj, string property)
     {
       if (ApplicationContext.UseReflectionFallback)
@@ -1232,7 +1226,6 @@ namespace Csla.Reflection
     /// <param name="typeParams">Type parameters for method</param>
     /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
     /// <param name="parameters">Parameters for method</param>
-    /// <returns></returns>
     public static Task<object> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
     {
       var tcs = new TaskCompletionSource<object>();
@@ -1277,7 +1270,6 @@ namespace Csla.Reflection
     /// <param name="typeParams">Type parameters for method</param>
     /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
     /// <param name="parameters">Parameters for method</param>
-    /// <returns></returns>
     public static object CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
     {
       var objectType = target.GetType();

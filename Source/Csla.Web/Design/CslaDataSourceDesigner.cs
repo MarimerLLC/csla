@@ -5,12 +5,11 @@
 // </copyright>
 // <summary>Implements designer support for CslaDataSource.</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using System.Web.UI;
 using System.Web.UI.Design;
 using System.ComponentModel;
 using System.Windows.Forms.Design;
-using Csla.Web;
 
 namespace Csla.Web.Design
 {
@@ -45,7 +44,6 @@ namespace Csla.Web.Design
     /// Returns the default view for this designer.
     /// </summary>
     /// <param name="viewName">Ignored</param>
-    /// <returns></returns>
     /// <remarks>
     /// This designer supports only a "Default" view.
     /// </remarks>
@@ -108,8 +106,7 @@ namespace Csla.Web.Design
       if (string.IsNullOrEmpty(DataSourceControl.TypeAssemblyName))
         oldTypeName = DataSourceControl.TypeName;
       else
-        oldTypeName = string.Format("{0}, {1}", 
-          DataSourceControl.TypeName, DataSourceControl.TypeAssemblyName);
+        oldTypeName = $"{DataSourceControl.TypeName}, {DataSourceControl.TypeAssemblyName}";
 
       IUIService uiService = (IUIService)_control.Site.GetService(typeof(IUIService));
       CslaDataSourceConfiguration cfg = new CslaDataSourceConfiguration(_control, oldTypeName);

@@ -5,10 +5,6 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using Csla.Core.FieldManager;
-using System.Threading.Tasks;
 
 namespace Csla.Core
 {

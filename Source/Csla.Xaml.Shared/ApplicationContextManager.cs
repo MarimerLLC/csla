@@ -5,11 +5,11 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Security.Principal;
 using System.Threading;
 using Csla.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Xaml
 {
@@ -42,7 +42,6 @@ namespace Csla.Xaml
     /// <summary>
     /// Gets the current principal.
     /// </summary>
-    /// <returns></returns>
     public override IPrincipal GetUser()
     {
       if (_principal == null)

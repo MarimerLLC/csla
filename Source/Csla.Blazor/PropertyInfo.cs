@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>Exposes metastate for a property</summary>
 //-----------------------------------------------------------------------
-using System.Linq;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using Csla.Rules;
 
@@ -60,14 +59,7 @@ namespace Csla.Blazor
     /// </summary>
     public object Value
     {
-      get
-      {
-        var result = Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
-        if (result != null)
-          return result;
-        else
-          return default;
-      }
+      get => Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
       set => Csla.Utilities.CallByName(Model, PropertyName, CallType.Set, value);
     }
 
@@ -92,7 +84,6 @@ namespace Csla.Blazor
     /// Gets the validation error messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string ErrorText
     {
       get
@@ -108,7 +99,6 @@ namespace Csla.Blazor
     /// Gets the validation warning messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string WarningText
     {
       get
@@ -124,7 +114,6 @@ namespace Csla.Blazor
     /// Gets the validation information messages for a
     /// property on the Model
     /// </summary>
-    /// <returns></returns>
     public string InformationText
     {
       get
@@ -155,7 +144,6 @@ namespace Csla.Blazor
     /// Gets a value indicating whether the current user
     /// is authorized to read the property on the Model
     /// </summary>
-    /// <returns></returns>
     public bool CanRead
     {
       get
@@ -171,7 +159,6 @@ namespace Csla.Blazor
     /// Gets a value indicating whether the current user
     /// is authorized to change the property on the Model
     /// </summary>
-    /// <returns></returns>
     public bool CanWrite
     {
       get
@@ -187,7 +174,6 @@ namespace Csla.Blazor
     /// Gets a value indicating whether the property 
     /// on the Model is busy
     /// </summary>
-    /// <returns></returns>
     public bool IsBusy
     {
       get
@@ -213,7 +199,6 @@ namespace Csla.Blazor
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    /// <returns></returns>
     public System.Reflection.PropertyInfo GetPropertyInfo() 
       => Model.GetType().GetProperty(PropertyName);
   }

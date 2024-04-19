@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Base class used to create object level rule</summary>
 //-----------------------------------------------------------------------
-using System;
+
 using Csla.Core;
 using Csla.Properties;
 
@@ -55,11 +55,11 @@ namespace Csla.Rules
       {
         if (value && !CanRunInCheckRules)
         {
-          RunMode = RunMode ^ RunModes.DenyCheckRules;
+          RunMode ^= RunModes.DenyCheckRules;
         }
         else if (!value && CanRunInCheckRules)
         {
-          RunMode = RunMode | RunModes.DenyCheckRules;
+          RunMode |= RunModes.DenyCheckRules;
         }
       }
     }

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
-using Csla.Core;
+﻿using Csla.Core;
 using Csla.Rules;
-using Csla.Serialization;
 
 namespace Csla.Test.ValidationRules
 {
@@ -80,7 +74,7 @@ namespace Csla.Test.ValidationRules
 
         bw.RunWorkerCompleted += (_, _) =>
         {
-          context.AddOutValue(_nameProperty, string.Format("customer name {0}", cn));
+          context.AddOutValue(_nameProperty, $"customer name {cn}");
 
           context.Complete();
         };

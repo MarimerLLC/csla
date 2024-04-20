@@ -130,14 +130,14 @@ namespace Csla.Channels.Http
     private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
     {
       var client = GetHttpClient();
-      var httpRequest = new HttpRequestMessage(
+      using var httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
       SetHttpRequestHeaders(httpRequest);
 #if NET8_0_OR_GREATER
       if (Options.UseTextSerialization)
         httpRequest.Content = new StringContent(
-          System.Convert.ToBase64String(serialized), 
+          System.Convert.ToBase64String(serialized),
           mediaType: new MediaTypeHeaderValue("application/base64,text/plain"));
       else
         httpRequest.Content = new ByteArrayContent(serialized);
@@ -185,8 +185,8 @@ namespace Csla.Channels.Http
         string message;
         if (ex.Response != null)
         {
-          using (var reader = new System.IO.StreamReader(ex.Response.GetResponseStream()))
-            message = reader.ReadToEnd();
+          using var reader = new StreamReader(ex.Response.GetResponseStream());
+          message = reader.ReadToEnd();
         }
         else
         {

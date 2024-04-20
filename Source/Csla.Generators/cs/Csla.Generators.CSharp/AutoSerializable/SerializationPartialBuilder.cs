@@ -26,36 +26,29 @@ namespace Csla.Generators.CSharp.AutoSerialization
     /// <returns>Generated code to fulfil the required serialization</returns>
     internal GenerationResults BuildPartialTypeDefinition(ExtractedTypeDefinition typeDefinition)
     {
-      GenerationResults generationResults;
-      IndentedTextWriter textWriter;
+      using var stringWriter = new StringWriter();
+      var textWriter = new IndentedTextWriter(stringWriter, "\t");
 
-      using (StringWriter stringWriter = new StringWriter())
+      AppendUsingStatements(textWriter, typeDefinition);
+      AppendContainerDefinitions(textWriter, typeDefinition);
+
+      AppendTypeDefinition(textWriter, typeDefinition);
+      AppendBlockStart(textWriter);
+
+      AppendGetChildrenMethod(textWriter, typeDefinition);
+      AppendGetStateMethod(textWriter, typeDefinition);
+      AppendSetChildrenMethod(textWriter, typeDefinition);
+      AppendSetStateMethod(textWriter, typeDefinition);
+
+      AppendBlockEnd(textWriter);
+
+      AppendContainerDefinitionClosures(textWriter, typeDefinition);
+
+      return new GenerationResults
       {
-        textWriter = new IndentedTextWriter(stringWriter, "\t");
-
-        AppendUsingStatements(textWriter, typeDefinition);
-        AppendContainerDefinitions(textWriter, typeDefinition);
-
-        AppendTypeDefinition(textWriter, typeDefinition);
-        AppendBlockStart(textWriter);
-
-        AppendGetChildrenMethod(textWriter, typeDefinition);
-        AppendGetStateMethod(textWriter, typeDefinition);
-        AppendSetChildrenMethod(textWriter, typeDefinition);
-        AppendSetStateMethod(textWriter, typeDefinition);
-
-        AppendBlockEnd(textWriter);
-
-        AppendContainerDefinitionClosures(textWriter, typeDefinition);
-
-        generationResults = new GenerationResults()
-        {
-          FullyQualifiedName = typeDefinition.FullyQualifiedName,
-          GeneratedSource = stringWriter.ToString()
-        };
-      }
-
-      return generationResults;
+        FullyQualifiedName = typeDefinition.FullyQualifiedName,
+        GeneratedSource = stringWriter.ToString()
+      };
     }
 
     #region Private Helper Methods

@@ -285,22 +285,20 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public async Task VerifyUndoableStateStackOnClone()
     {
-      using (UnitTestContext context = GetContext())
-      {
-        var root = await CreateHasRulesManager2Async();
-        string expected = root.Name;
-        root.BeginEdit();
-        root.Name = "";
-        HasRulesManager2 rootClone = root.Clone();
-        rootClone.CancelEdit();
+      using UnitTestContext context = GetContext();
+      var root = await CreateHasRulesManager2Async();
+      string expected = root.Name;
+      root.BeginEdit();
+      root.Name = "";
+      HasRulesManager2 rootClone = root.Clone();
+      rootClone.CancelEdit();
 
-        string actual = rootClone.Name;
-        context.Assert.AreEqual(expected, actual);
-        context.Assert.Try(rootClone.ApplyEdit);
+      string actual = rootClone.Name;
+      context.Assert.AreEqual(expected, actual);
+      context.Assert.Try(rootClone.ApplyEdit);
 
-        context.Assert.Success();
-        context.Complete();
-      }
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod()]

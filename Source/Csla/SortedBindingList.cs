@@ -21,7 +21,9 @@ namespace Csla
   /// the original list or collection.
   /// </typeparam>
   public class SortedBindingList<T> :
-    IList<T>, IBindingList, IEnumerable<T>, ICancelAddNew
+    IList<T>,
+    IBindingList,
+    ICancelAddNew
   {
 
     #region ListItem class

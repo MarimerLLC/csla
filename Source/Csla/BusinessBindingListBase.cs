@@ -25,12 +25,11 @@ namespace Csla
   [Serializable()]
   public abstract class BusinessBindingListBase<T, C> :
       ExtendedBindingList<C>, IContainsDeletedList,
-      IEditableCollection, Core.IUndoableObject, ICloneable,
-      ISavable, ISavable<T>, Core.IParent, Server.IDataPortalTarget,
-      INotifyBusy,
+      IEditableCollection, IUndoableObject, ICloneable,
+      ISavable, ISavable<T>, IParent, IDataPortalTarget,
       IUseApplicationContext
     where T : BusinessBindingListBase<T, C>
-    where C : Core.IEditableBusinessObject
+    where C : IEditableBusinessObject
   {
     /// <summary>
     /// Creates an instance of the type.

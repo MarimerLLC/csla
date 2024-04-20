@@ -36,14 +36,8 @@ namespace Csla
   /// <typeparam name="T">Type of the business object.</typeparam>
   [Serializable()]
   public abstract class ReadOnlyBase<T> : BindableBase,
-    ICloneable,
-    IReadOnlyObject,
-    ISerializationNotification,
-    IAuthorizeReadWrite,
     IDataPortalTarget,
     IManageProperties,
-    INotifyBusy,
-    IHostRules,
     IReadOnlyBase,
     IUseApplicationContext,
     IUseFieldManager,

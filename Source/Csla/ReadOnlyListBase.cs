@@ -25,11 +25,11 @@ namespace Csla
 #if (ANDROID || IOS) || NETFX_CORE
     Core.ReadOnlyBindingList<C>,
 #else
-    Core.ReadOnlyObservableBindingList<C>, 
+    Core.ReadOnlyObservableBindingList<C>,
 #endif
-    Csla.Core.IReadOnlyCollection,
-    ICloneable, Server.IDataPortalTarget,
-    IReadOnlyListBase<C>, Core.IUseApplicationContext
+    Server.IDataPortalTarget,
+    IReadOnlyListBase<C>,
+    IUseApplicationContext
     where T : ReadOnlyListBase<T, C>
   {
     /// <summary>

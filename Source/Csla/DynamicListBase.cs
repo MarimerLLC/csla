@@ -46,8 +46,11 @@ namespace Csla
 #else
     ObservableBindingList<T>,
 #endif
-    Core.IParent, Csla.Server.IDataPortalTarget, ISerializationNotification, IBusinessObject, IUseApplicationContext
-    where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
+    IParent,
+    Server.IDataPortalTarget,
+    IBusinessObject,
+    IUseApplicationContext
+    where T : IEditableBusinessObject, IUndoableObject, ISavable, IMobileObject, IBusinessObject
   {
     /// <summary>
     /// Creates an instance of the type.

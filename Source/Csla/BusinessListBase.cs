@@ -27,10 +27,10 @@ namespace Csla
 #endif
   [Serializable]
   public abstract class BusinessListBase<T, C> :
-      ObservableBindingList<C>, IContainsDeletedList,
-      IEditableCollection, Core.IUndoableObject, ICloneable,
-      ISavable, Core.ISavable<T>, Core.IParent,  Server.IDataPortalTarget,
-      INotifyBusy,
+      ObservableBindingList<C>,
+      IContainsDeletedList,
+      ISavable<T>,
+      IDataPortalTarget,
       IBusinessListBase<C>,
       IUseApplicationContext
     where T : BusinessListBase<T, C>

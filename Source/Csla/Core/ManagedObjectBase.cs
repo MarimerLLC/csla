@@ -391,22 +391,6 @@ namespace Csla.Core
 
     #region INotifyPropertyChanged Members
 
-#if NETFX_CORE
-    /// <summary>
-    /// Event raised when a property has changed.
-    /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    /// <summary>
-    /// Raises the PropertyChanged event.
-    /// </summary>
-    /// <param name="propertyName">Name of the changed property.</param>
-    protected void OnPropertyChanged(string propertyName)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-    }
-#else
     [NonSerialized]
     [NotUndoable]
     private PropertyChangedEventHandler _propertyChanged;
@@ -425,7 +409,6 @@ namespace Csla.Core
     {
       _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-#endif
 
     /// <summary>
     /// Raises the PropertyChanged event.

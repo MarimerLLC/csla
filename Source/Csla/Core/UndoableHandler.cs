@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !IOS
+﻿#if !IOS
 
 //-----------------------------------------------------------------------
 // <copyright file="UndoableHandler.cs" company="Marimer LLC">

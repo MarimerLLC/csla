@@ -21,13 +21,9 @@ namespace Csla
   /// data type and the design choices behind it.
   /// </remarks>
   [Serializable()]
-#if !NETFX_CORE
   [System.ComponentModel.TypeConverter(typeof(Csla.Core.TypeConverters.SmartDateConverter))]
-#endif
   public struct SmartDate : Csla.Core.ISmartField,
-#if !NETFX_CORE
-    IConvertible, 
-#endif
+    IConvertible,
     IComparable, IFormattable, IMobileObject
   {
     private DateTime _date;
@@ -36,12 +32,10 @@ namespace Csla
     private string _format;
     private static string _defaultFormat;
 
-#if !NETFX_CORE
     [NonSerialized]
-#endif
     [NotUndoable]
     private static Func<string, DateTime?> _customParser;
-    
+
 #region EmptyValue enum
 
     /// <summary>
@@ -506,7 +500,6 @@ namespace Csla
 
 #region DBValue
 
-#if !NETFX_CORE
     /// <summary>
     /// Gets a database-friendly version of the date value.
     /// </summary>
@@ -534,7 +527,6 @@ namespace Csla
           return this.Date;
       }
     }
-#endif
 
 #endregion
 
@@ -1242,7 +1234,6 @@ namespace Csla
 
 #endregion
 
-#if !NETFX_CORE
 #region  IConvertible
 
     System.TypeCode IConvertible.GetTypeCode()
@@ -1336,8 +1327,6 @@ namespace Csla
     }
 
 #endregion
-
-#endif
 
 #region IFormattable Members
 

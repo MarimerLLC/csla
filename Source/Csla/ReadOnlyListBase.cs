@@ -22,7 +22,7 @@ namespace Csla
   [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
   public abstract class ReadOnlyListBase<T, C> :
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS
     Core.ReadOnlyBindingList<C>,
 #else
     Core.ReadOnlyObservableBindingList<C>, 

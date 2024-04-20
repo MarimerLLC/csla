@@ -41,7 +41,7 @@ namespace Csla
   /// </remarks>
   [Serializable()]
   public abstract class DynamicListBase<T> :
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS
     ExtendedBindingList<T>,
 #else
     ObservableBindingList<T>,

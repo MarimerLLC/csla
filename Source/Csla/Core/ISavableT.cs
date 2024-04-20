@@ -15,7 +15,7 @@ namespace Csla.Core
   /// </summary>
   public interface ISavable<T> where T:class
   {
-#if !(ANDROID || IOS) && !NETFX_CORE
+#if !(ANDROID || IOS)
     /// <summary>
     /// Saves the object to the database.
     /// </summary>

@@ -8,9 +8,7 @@
 //-----------------------------------------------------------------------
 using System.Linq.Expressions;
 using System.Reflection;
-#if !NETFX_CORE
 using System.Reflection.Emit;
-#endif
 using Csla.Properties;
 
 namespace Csla.Reflection
@@ -52,11 +50,7 @@ namespace Csla.Reflection
         throw new NotSupportedException(Resources.ConstructorsWithParametersNotSupported);
 
       Expression body = Expression.New(constructor);
-#if NETFX_CORE
-      if (constructor.DeclaringType.IsValueType())
-#else
       if (constructor.DeclaringType.IsValueType)
-#endif
       {
         body = Expression.Convert(body, typeof(object));
       }
@@ -98,11 +92,7 @@ namespace Csla.Reflection
            Expression.Return(target, nullRef),
           Expression.Label(target, nullRef));
       }
-#if NETFX_CORE
-      else if (method.ReturnType.IsValueType())
-#else
       else if (method.ReturnType.IsValueType)
-#endif
       {
         body = Expression.Convert(body, typeof(object));
       }
@@ -127,11 +117,7 @@ namespace Csla.Reflection
         Expression.Convert(target, property.DeclaringType),
         property);
 
-#if NETFX_CORE
-      if (property.PropertyType.IsValueType())
-#else
       if (property.PropertyType.IsValueType)
-#endif
       {
         body = Expression.Convert(body, typeof(object));
       }
@@ -177,11 +163,7 @@ namespace Csla.Reflection
         Expression.Convert(target, field.DeclaringType),
         field);
 
-#if NETFX_CORE
-      if (field.FieldType.IsValueType())
-#else
       if (field.FieldType.IsValueType)
-#endif
       {
         body = Expression.Convert(body, typeof(object));
       }

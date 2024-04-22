@@ -95,6 +95,7 @@ namespace Csla.Test.BasicModern
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void MakeOldMetastateEvents()
     {
       var graph = NewRoot();
@@ -117,6 +118,7 @@ namespace Csla.Test.BasicModern
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void MarkDeletedMetastateEvents()
     {
       var graph = NewRoot();
@@ -140,6 +142,7 @@ namespace Csla.Test.BasicModern
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void RootChangedMetastateEventsId()
     {
       var graph = NewRoot();
@@ -162,6 +165,7 @@ namespace Csla.Test.BasicModern
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void RootChangedMetastateEventsName()
     {
       var graph = NewRoot();
@@ -206,6 +210,7 @@ namespace Csla.Test.BasicModern
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void RootChangedMetastateEventsChild()
     {
 

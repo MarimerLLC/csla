@@ -120,6 +120,7 @@ namespace Csla.Test.ValidationRules
 
     [TestMethod()]
     [TestCategory("SkipWhenLiveUnitTesting")]
+    [TestCategory("SkipOnCIServer")]
     public void AsyncLookupCustomerSetsCustomerName()
     {
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();

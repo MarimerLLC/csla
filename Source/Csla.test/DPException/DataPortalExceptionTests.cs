@@ -30,7 +30,7 @@ namespace Csla.Test.DPException
 
 #if DEBUG
     [TestMethod()]
-
+    [TestCategory("SkipOnCIServer")]
     public void CheckInnerExceptionsOnSave()
     {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();

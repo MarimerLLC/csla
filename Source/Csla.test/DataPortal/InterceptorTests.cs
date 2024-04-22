@@ -30,6 +30,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void CreateWithIntercept()
     {
       var obj = CreateInitializeRoot("abc");
@@ -41,6 +42,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void FetchWithIntercept()
     {
       var obj = GetInitializeRoot("abc");
@@ -119,6 +121,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void ExecuteCommandWithIntercept()
     {
       IDataPortal<InterceptorCommand> dataPortal = _testDIContext.CreateDataPortal<InterceptorCommand>();

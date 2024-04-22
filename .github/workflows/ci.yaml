@@ -3,10 +3,10 @@ name: main
 on:
   push:
     branches: [ main, v7.x, v8.x ]
-    paths: 'Source/**'
+    paths: ['Source/**', '.github/workflows/**']
   pull_request:
     branches: [ main, v7.x, v8.x ]
-    paths: 'Source/**'
+    paths: ['Source/**', '.github/workflows/**']
 
 jobs:
 
@@ -26,5 +26,5 @@ jobs:
     - name: Build
       run: dotnet build Source\csla.test.sln
 
-#    - name: Test
-#      run: dotnet test Source\csla.test.sln --no-build --verbosity normal
+    - name: Test
+      run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings

@@ -67,7 +67,7 @@ function UpdateNuSpecRepository( $nuSpecFilePath )
 {
     # Get Git info
     $commit = git rev-parse HEAD
-    $origin = git config --get remote.marimer.url
+    $origin = git config --get remote.upstream.url
 
     Write-Host "Dynamically setting NuSpec repository:" -ForegroundColor Yellow
     Write-Host "      origin: $origin" -ForegroundColor Yellow
@@ -210,9 +210,9 @@ catch
     $baseException = $_.Exception.GetBaseException()
     if ( $_.Exception -ne $baseException )
     {
-      Write-Host $baseException.Message -ForegroundColor Magenta
+      Write-Host $baseException.ToString() -ForegroundColor Magenta
     }
-    Write-Host $_.Exception.Message -ForegroundColor Magenta
+    Write-Host $_.Exception.ToString() -ForegroundColor Magenta
     Pause
 } 
 finally 

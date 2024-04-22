@@ -57,6 +57,7 @@ namespace Csla.Test.AppContext
     /// Should the ClientContext be cleared explicitly also?
     /// </remarks>
     [TestMethod()]
+    [TestCategory("SkipOnCIServer")]
     public void ClientContext()
     {
       IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();

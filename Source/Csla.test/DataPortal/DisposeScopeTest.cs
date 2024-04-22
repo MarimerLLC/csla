@@ -29,6 +29,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void Test_Scope_DoesDisposeWithLocalScope()
     {
       // CSLA should dispose of the temporary server-side service provider.

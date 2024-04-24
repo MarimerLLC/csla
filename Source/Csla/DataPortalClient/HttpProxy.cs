@@ -45,6 +45,7 @@ namespace Csla.Channels.Http
     private HttpClient _httpClient;
     private string VersionRoutingTag { get; set; }
 
+#nullable enable
     /// <summary>
     /// Gets an HttpClientHandler for use
     /// in initializing the HttpClient instance.
@@ -53,6 +54,7 @@ namespace Csla.Channels.Http
     {
       return null;
     }
+#nullable disable
 
     /// <summary>
     /// Gets an HttpClient object for use in

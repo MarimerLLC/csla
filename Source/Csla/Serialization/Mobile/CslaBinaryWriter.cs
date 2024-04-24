@@ -30,32 +30,30 @@ namespace Csla.Serialization.Mobile
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
       this.keywordsDictionary.Clear();
-      using (var writer = new CslaNonClosingBinaryWriter(serializationStream))
+      using var writer = new CslaNonClosingBinaryWriter(serializationStream);
+      writer.Write(objectData.Count);
+      foreach (var serializationInfo in objectData)
       {
-        writer.Write(objectData.Count);
-        foreach (var serializationInfo in objectData)
-        {
-          writer.Write(serializationInfo.ReferenceId);
-          WriteSystemString(serializationInfo.TypeName, writer);
+        writer.Write(serializationInfo.ReferenceId);
+        WriteSystemString(serializationInfo.TypeName, writer);
 
-          writer.Write(serializationInfo.Children.Count);
-          foreach (var childData in serializationInfo.Children)
-          {
-            WriteSystemString(childData.Key, writer);
-            writer.Write(childData.Value.IsDirty);
-            writer.Write(childData.Value.ReferenceId);
-          }
-          writer.Write(serializationInfo.Values.Count);
-          foreach (var valueData in serializationInfo.Values)
-          {
-            WriteSystemString(valueData.Key, writer);
-            WriteSystemString(valueData.Value.EnumTypeName ?? string.Empty, writer);
-            writer.Write(valueData.Value.IsDirty);
-            Write(valueData.Value.Value, writer);
-          }
+        writer.Write(serializationInfo.Children.Count);
+        foreach (var childData in serializationInfo.Children)
+        {
+          WriteSystemString(childData.Key, writer);
+          writer.Write(childData.Value.IsDirty);
+          writer.Write(childData.Value.ReferenceId);
         }
-        writer.Flush();
+        writer.Write(serializationInfo.Values.Count);
+        foreach (var valueData in serializationInfo.Values)
+        {
+          WriteSystemString(valueData.Key, writer);
+          WriteSystemString(valueData.Value.EnumTypeName ?? string.Empty, writer);
+          writer.Write(valueData.Value.IsDirty);
+          Write(valueData.Value.Value, writer);
+        }
       }
+      writer.Flush();
     }
 
     private void WriteSystemString(string systemString, BinaryWriter writer)
@@ -98,15 +96,13 @@ namespace Csla.Serialization.Mobile
       }
       else if (target is IMobileObject)
       {
-        using (MemoryStream buffer = new MemoryStream())
-        {
-          var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
-          formatter.Serialize(buffer, target);
-          var data = buffer.ToArray();
-          Write(CslaKnownTypes.IMobileObject, writer);
-          writer.Write(data.Length);
-          writer.Write(data);
-        }
+        using var buffer = new MemoryStream();
+        var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+        formatter.Serialize(buffer, target);
+        var data = buffer.ToArray();
+        Write(CslaKnownTypes.IMobileObject, writer);
+        writer.Write(data.Length);
+        writer.Write(data);
       }
       else if (target is CslaKnownTypes types)
       {

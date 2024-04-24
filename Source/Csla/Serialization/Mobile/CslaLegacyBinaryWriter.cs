@@ -28,32 +28,30 @@ namespace Csla.Serialization.Mobile
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
       keywordsDictionary.Clear();
-      using (var writer = new CslaNonClosingBinaryWriter(serializationStream))
+      using var writer = new CslaNonClosingBinaryWriter(serializationStream);
+      writer.Write(objectData.Count);
+      foreach (var serializationInfo in objectData)
       {
-        writer.Write(objectData.Count);
-        foreach (var serializationInfo in objectData)
-        {
-          writer.Write(serializationInfo.ReferenceId);
-          WriteSystemString(serializationInfo.TypeName, writer);
+        writer.Write(serializationInfo.ReferenceId);
+        WriteSystemString(serializationInfo.TypeName, writer);
 
-          writer.Write(serializationInfo.Children.Count);
-          foreach (var childData in serializationInfo.Children)
-          {
-            WriteSystemString(childData.Key, writer);
-            Write(childData.Value.IsDirty, writer);
-            Write(childData.Value.ReferenceId, writer);
-          }
-          writer.Write(serializationInfo.Values.Count);
-          foreach (var valueData in serializationInfo.Values)
-          {
-            WriteSystemString(valueData.Key, writer);
-            WriteSystemString(valueData.Value.EnumTypeName ?? string.Empty, writer);
-            Write(valueData.Value.IsDirty, writer);
-            Write(valueData.Value.Value, writer);
-          }
+        writer.Write(serializationInfo.Children.Count);
+        foreach (var childData in serializationInfo.Children)
+        {
+          WriteSystemString(childData.Key, writer);
+          Write(childData.Value.IsDirty, writer);
+          Write(childData.Value.ReferenceId, writer);
         }
-        writer.Flush();
+        writer.Write(serializationInfo.Values.Count);
+        foreach (var valueData in serializationInfo.Values)
+        {
+          WriteSystemString(valueData.Key, writer);
+          WriteSystemString(valueData.Value.EnumTypeName ?? string.Empty, writer);
+          Write(valueData.Value.IsDirty, writer);
+          Write(valueData.Value.Value, writer);
+        }
       }
+      writer.Flush();
     }
 
     private void WriteSystemString(string systemString, BinaryWriter writer)

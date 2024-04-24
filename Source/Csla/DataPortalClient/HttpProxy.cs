@@ -196,8 +196,8 @@ namespace Csla.Channels.Http
         string message;
         if (ex.Response != null)
         {
-          using (var reader = new System.IO.StreamReader(ex.Response.GetResponseStream()))
-            message = reader.ReadToEnd();
+          using var reader = new StreamReader(ex.Response.GetResponseStream());
+          message = reader.ReadToEnd();
         }
         else
         {

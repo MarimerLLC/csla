@@ -261,13 +261,11 @@ namespace Csla.Serialization.Mobile
           if (type.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var state = info.GetValue<byte[]>("s");
-            using (var buffer = new System.IO.MemoryStream(state))
+            using var buffer = new MemoryStream(state);
+            using (var reader = new BinaryReader(buffer))
             {
-              using (var reader = new System.IO.BinaryReader(buffer))
-              {
-                var mobile = new Security.CslaClaimsPrincipal(reader);
-                _deserializationReferences.Add(info.ReferenceId, mobile);
-              }
+              var mobile = new Security.CslaClaimsPrincipal(reader);
+              _deserializationReferences.Add(info.ReferenceId, mobile);
             }
           }
           else
@@ -337,12 +335,10 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public byte[] SerializeToByteArray(object obj)
     {
-      using (var buffer = new System.IO.MemoryStream())
-      {
-        var formatter = new MobileFormatter(_applicationContext);
-        formatter.Serialize(buffer, obj);
-        return buffer.ToArray();
-      }
+      using var buffer = new System.IO.MemoryStream();
+      var formatter = new MobileFormatter(_applicationContext);
+      formatter.Serialize(buffer, obj);
+      return buffer.ToArray();
     }
 
     /// <summary>
@@ -386,11 +382,9 @@ namespace Csla.Serialization.Mobile
       if (data == null)
         return null;
 
-      using (var buffer = new System.IO.MemoryStream(data))
-      {
-        var formatter = new MobileFormatter(_applicationContext);
-        return formatter.Deserialize(buffer);
-      }
+      using var buffer = new MemoryStream(data);
+      var formatter = new MobileFormatter(_applicationContext);
+      return formatter.Deserialize(buffer);
     }
 
     /// <summary>

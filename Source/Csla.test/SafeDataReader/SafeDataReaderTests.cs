@@ -78,18 +78,16 @@ namespace Csla.Test.SafeDataReader
       SqlConnection cn = new SqlConnection(CONNECTION_STRING);
       cn.Open();
 
-      using (SqlCommand cm = cn.CreateCommand())
-      {
-        cm.CommandText = "SELECT FirstName, LastName FROM Table2";
+      using SqlCommand cm = cn.CreateCommand();
+      cm.CommandText = "SELECT FirstName, LastName FROM Table2";
 
-        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
-        {
-          Assert.IsTrue(dr.FieldCount > 0);
-          Assert.AreEqual(false, dr.NextResult());
-          dr.Close();
-        }
-        cn.Close();
+      using (var dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
+      {
+        Assert.IsTrue(dr.FieldCount > 0);
+        Assert.AreEqual(false, dr.NextResult());
+        dr.Close();
       }
+      cn.Close();
     }
 
     [TestMethod()]
@@ -203,12 +201,10 @@ namespace Csla.Test.SafeDataReader
       SqlConnection cn = new SqlConnection(CONNECTION_STRING);
       cn.Open();
 
-      using (SqlCommand cm = cn.CreateCommand())
-      {
-        cm.CommandText = "SELECT FirstName FROM NonExistantTable";
+      using SqlCommand cm = cn.CreateCommand();
+      cm.CommandText = "SELECT FirstName FROM NonExistantTable";
 
-        Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
-      }
+      Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
     }
 
     [TestMethod()]

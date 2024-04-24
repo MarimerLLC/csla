@@ -27,40 +27,38 @@ namespace Csla.Serialization.Mobile
     public List<SerializationInfo> Read(Stream serializationStream)
     {
       var returnValue = new List<SerializationInfo>();
-      int childCount, valueCount, referenceId;
-      string systemName, enumTypeName;
-      bool isDirty;
-      object value;
       keywordsDictionary.Clear();
-      using (var reader = new BinaryReader(serializationStream))
+      using var reader = new BinaryReader(serializationStream);
+      var totalCount = reader.ReadInt32();
+      for (var counter = 0; counter < totalCount; counter++)
       {
-        var totalCount = reader.ReadInt32();
-        for (var counter = 0; counter < totalCount; counter++)
+        var info = new SerializationInfo
         {
-          var info = new SerializationInfo();
-          info.ReferenceId = reader.ReadInt32();
-          info.TypeName = (string)ReadObject(reader);
+          ReferenceId = reader.ReadInt32(),
+          TypeName = (string)ReadObject(reader)
+        };
 
-          childCount = reader.ReadInt32();
-          for (var childCounter = 0; childCounter < childCount; childCounter++)
-          {
-            systemName = (string)ReadObject(reader);
-            isDirty = (bool)ReadObject(reader);
-            referenceId = (int)ReadObject(reader);
-            info.AddChild(systemName, referenceId, isDirty);
-          }
-
-          valueCount = reader.ReadInt32();
-          for (var valueCounter = 0; valueCounter < valueCount; valueCounter++)
-          {
-            systemName = (string)ReadObject(reader);
-            enumTypeName = (string)ReadObject(reader);
-            isDirty = (bool)ReadObject(reader);
-            value = ReadObject(reader);
-            info.AddValue(systemName, value, isDirty, string.IsNullOrEmpty(enumTypeName) ? null : enumTypeName);
-          }
-          returnValue.Add(info);
+        var childCount = reader.ReadInt32();
+        string systemName;
+        bool isDirty;
+        for (var childCounter = 0; childCounter < childCount; childCounter++)
+        {
+          systemName = (string)ReadObject(reader);
+          isDirty = (bool)ReadObject(reader);
+          var referenceId = (int)ReadObject(reader);
+          info.AddChild(systemName, referenceId, isDirty);
         }
+
+        var valueCount = reader.ReadInt32();
+        for (var valueCounter = 0; valueCounter < valueCount; valueCounter++)
+        {
+          systemName = (string)ReadObject(reader);
+          var enumTypeName = (string)ReadObject(reader);
+          isDirty = (bool)ReadObject(reader);
+          var value = ReadObject(reader);
+          info.AddValue(systemName, value, isDirty, string.IsNullOrEmpty(enumTypeName) ? null : enumTypeName);
+        }
+        returnValue.Add(info);
       }
 
       return returnValue;

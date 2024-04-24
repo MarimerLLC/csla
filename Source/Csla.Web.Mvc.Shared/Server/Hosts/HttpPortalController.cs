@@ -193,13 +193,9 @@ namespace Csla.Server.Hosts
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       DataPortalErrorInfo errorData = null;
       if (UseTextSerialization)
-      {
-        Response.Headers["Content-type"] = "application/base64,text/plain";
-      }
+        Response.Headers.ContentType = "text/plain";
       else
-      {
-        Response.Headers["Content-type"] = "application/octet-stream";
-      }
+        Response.Headers.ContentType = "application/octet-stream";
       SetHttpResponseHeaders(Response);
       try
       {
@@ -221,6 +217,7 @@ namespace Csla.Server.Hosts
 
     private async Task InvokeTextPortal(string operation, Stream requestStream, Stream responseStream)
     {
+      Response.Headers.ContentType = "text/plain";
       string requestString;
       using (var reader = new StreamReader(requestStream))
         requestString = await reader.ReadToEndAsync();

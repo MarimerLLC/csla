@@ -136,16 +136,27 @@ namespace Csla.Channels.Http
       SetHttpRequestHeaders(httpRequest);
 #if NET8_0_OR_GREATER
       if (Options.UseTextSerialization)
+      {
         httpRequest.Content = new StringContent(
-          System.Convert.ToBase64String(serialized), 
+          System.Convert.ToBase64String(serialized),
           mediaType: new MediaTypeHeaderValue("application/base64,text/plain"));
+      }
       else
+      {
         httpRequest.Content = new ByteArrayContent(serialized);
+        httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+      }
 #else
       if (Options.UseTextSerialization)
+      {
         httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
+        httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
+      }
       else
+      {
         httpRequest.Content = new ByteArrayContent(serialized);
+        httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+      }
 #endif
       using var httpResponse = await client.SendAsync(httpRequest);
       await VerifyResponseSuccess(httpResponse);

@@ -24,7 +24,7 @@ namespace Csla.Reflection
   /// </summary>
   public class ServiceProviderMethodCaller : Core.IUseApplicationContext
   {
-    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly | BindingFlags.DeclaredOnly;
+    private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 #if NET5_0_OR_GREATER

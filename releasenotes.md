@@ -1,5 +1,5 @@
 # CSLA 8 releases
-
+ 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
 ## CSLA .NET version 8.1.0 release

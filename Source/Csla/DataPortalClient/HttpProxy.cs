@@ -130,7 +130,7 @@ namespace Csla.Channels.Http
     private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
     {
       var client = GetHttpClient();
-      var httpRequest = new HttpRequestMessage(
+      using var httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
         $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
       SetHttpRequestHeaders(httpRequest);

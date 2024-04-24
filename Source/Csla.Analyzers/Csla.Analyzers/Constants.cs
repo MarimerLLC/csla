@@ -4,7 +4,6 @@
   {
     public static class AnalyzerIdentifiers
     {
-      public const string IsBusinessObjectSerializable = "CSLA0001";
       public const string IsOperationMethodPublic = "CSLA0002";
       public const string PublicNoArgumentConstructorIsMissing = "CSLA0003";
       public const string ConstructorHasParameters = "CSLA0004";

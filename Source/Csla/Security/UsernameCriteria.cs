@@ -60,7 +60,7 @@ namespace Csla.Security
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS
     public UsernameCriteria()
     { }
 #else

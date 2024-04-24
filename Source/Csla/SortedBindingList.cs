@@ -1,4 +1,3 @@
-#if !NETFX_CORE
 //-----------------------------------------------------------------------
 // <copyright file="SortedBindingList.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -882,4 +881,3 @@ namespace Csla
 
   }
 }
-#endif

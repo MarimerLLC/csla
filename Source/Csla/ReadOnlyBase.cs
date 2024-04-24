@@ -274,8 +274,7 @@ namespace Csla
       var propertyInfo = FieldManager.GetRegisteredProperties().FirstOrDefault(p => p.Name == propertyName);
       if (propertyInfo == null)
       {
-#if NETFX_CORE || (ANDROID || IOS)
-#else
+#if !(ANDROID || IOS)
         Trace.TraceError("CanReadProperty: {0} is not a registered property of {1}.{2}", propertyName, this.GetType().Namespace, this.GetType().Name);
 #endif
         return true;

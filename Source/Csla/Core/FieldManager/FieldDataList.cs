@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 namespace Csla.Core.FieldManager
 {
   [Serializable]
-#if (ANDROID || IOS) || NETFX_CORE
+#if (ANDROID || IOS)
   internal class FieldDataList : Csla.Core.MobileObject, Csla.Serialization.Mobile.ISerializationNotification
 #else
   internal class FieldDataList : ISerializable
@@ -19,7 +19,7 @@ namespace Csla.Core.FieldManager
   {
     [NonSerialized()]
     private Dictionary<string, int> _fieldIndex = [];
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS
     private Csla.Core.MobileBindingList<IFieldData> _fields = new Csla.Core.MobileBindingList<IFieldData>();
 #else
     private List<IFieldData> _fields = [];
@@ -67,7 +67,7 @@ namespace Csla.Core.FieldManager
       return null;
     }
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS
     public Csla.Core.MobileBindingList<IFieldData> GetFieldDataList()
     {
       return _fields;
@@ -79,7 +79,7 @@ namespace Csla.Core.FieldManager
     }
 #endif
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS
     #region ISerializationNotification Members
 
     void Csla.Serialization.Mobile.ISerializationNotification.Deserialized()

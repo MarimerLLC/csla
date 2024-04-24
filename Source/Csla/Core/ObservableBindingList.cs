@@ -493,7 +493,7 @@ namespace Csla.Core
       }
     }
 
-#if (ANDROID || IOS) || NETFX_CORE
+#if ANDROID || IOS
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 

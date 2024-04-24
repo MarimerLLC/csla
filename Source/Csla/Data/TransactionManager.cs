@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !(ANDROID || IOS)
+﻿#if !(ANDROID || IOS)
 //-----------------------------------------------------------------------
 // <copyright file="TransactionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

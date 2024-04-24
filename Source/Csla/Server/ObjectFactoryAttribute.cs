@@ -285,11 +285,7 @@ namespace Csla.Server
     /// <param name="type">The type.</param>
     private static string GetAssemblyQualifiedName(Type type)
     {
-#if NETFX_CORE
-      if (type.IsGenericType())
-#else
       if (type.IsGenericType)
-#endif
       {
         return type.AssemblyQualifiedName;
       }

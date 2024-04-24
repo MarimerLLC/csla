@@ -131,7 +131,6 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     private void MergeGraph(IEditableCollection target, IEditableCollection source)
     {
-#if !NETFX_CORE
       var listType = target.GetType();
       var childType = Utilities.GetChildItemType(listType);
       var genericTypeParams = new Type[] { listType, childType };
@@ -142,7 +141,6 @@ namespace Csla.Core
         methodReference = this.GetType().GetMethod("MergeBusinessListGraph");
       var gr = methodReference.MakeGenericMethod(genericTypeParams);
       gr.Invoke(this, [target, source]);
-#endif
     }
 
     /// <summary>

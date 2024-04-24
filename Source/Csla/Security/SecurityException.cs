@@ -1,7 +1,4 @@
-﻿#if !(ANDROID || IOS) && !NETFX_CORE
-#endif
-
-namespace Csla.Security
+﻿namespace Csla.Security
 {
   /// <summary>
   /// Security exception.

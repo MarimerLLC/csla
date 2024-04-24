@@ -8,7 +8,7 @@
 
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
-#if NETFX_CORE || (ANDROID || IOS)
+#if ANDROID || IOS
 using System.Collections.Generic;
 using System.Collections.Specialized;
 #endif
@@ -312,7 +312,7 @@ namespace Csla.Core
       _childChangedHandlers?.Invoke(this, e);
     }
 
-#if NETFX_CORE || (ANDROID || IOS)
+#if ANDROID || IOS
 
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.

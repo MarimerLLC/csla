@@ -233,7 +233,7 @@ namespace Csla
     /// is currently executing on the client or server.
     /// </summary>
     public ExecutionLocations ExecutionLocation { get; private set; } =
-#if (ANDROID || IOS || NETFX_CORE) && !NETSTANDARD
+#if (ANDROID || IOS) && !NETSTANDARD
       ExecutionLocations.MobileClient;
 #else
       ExecutionLocations.Client;

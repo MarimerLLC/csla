@@ -39,17 +39,10 @@ namespace Csla.Reflection
           inParams = parameters;
         }
         var pCount = infoParams.Length;
-#if NETFX_CORE
-        var isgeneric = info.ReturnType.IsGenericType();
-        if (pCount > 0 &&
-           ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
-           (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Count() > 0)))
-#else
         var isgeneric = info.ReturnType.IsGenericType;
         if (pCount > 0 &&
            ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
            (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
-#endif
         {
           this.HasFinalArrayParam = true;
           this.MethodParamsLength = pCount;

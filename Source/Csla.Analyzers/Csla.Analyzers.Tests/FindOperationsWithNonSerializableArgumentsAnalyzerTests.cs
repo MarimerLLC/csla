@@ -139,27 +139,6 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
-    public async Task AnalyzeWithMobileObjectAndMethodIsRootOperationWithSerializableArgumentCustomType()
-    {
-      var code =
-        """
-        using Csla;
-        using System;
-
-        [Serializable]
-        public class A { }
-
-        public class B : BusinessBase<B>
-        {
-          [Fetch]
-          private void Fetch(A x) { }
-        }
-
-        """;
-      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
-    }
-
-    [TestMethod]
     public async Task AnalyzeWithMobileObjectAndMethodIsChildOperationWithNoArguments()
     {
       var code =

@@ -4,7 +4,6 @@
 ### New Rules
 Rule ID | Category | Severity | Notes
 --------|----------|----------|-------
-CSLA0001 | Usage | Error | IsBusinessObjectSerializableAnalyzer
 CSLA0002 | Design | Warning | IsOperationMethodPublicAnalyzer
 CSLA0003 | Usage | Error | CheckConstructorsAnalyzer
 CSLA0004 | Usage | Warning | CheckConstructorsAnalyzer

@@ -22,8 +22,7 @@ namespace Csla.Core
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
   public class ExtendedBindingList<T> : MobileBindingList<T>,
-    IExtendedBindingList, 
-    IMobileList,
+    IExtendedBindingList,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification

@@ -39,9 +39,9 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable]
-  public abstract class CommandBase<T> : ManagedObjectBase, 
-      ICommandObject, ICloneable,
-      Csla.Server.IDataPortalTarget, Csla.Core.IManageProperties,
+  public abstract class CommandBase<T> : ManagedObjectBase,
+      IDataPortalTarget,
+      IManageProperties,
       ICommandBase
     where T : CommandBase<T>
   {

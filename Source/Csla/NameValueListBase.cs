@@ -22,16 +22,17 @@ namespace Csla
   /// <typeparam name="V">Type of the values.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class NameValueListBase<K, V> : 
-    Core.ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>, 
-    ICloneable, Core.IBusinessObject, Server.IDataPortalTarget,
+  public abstract class NameValueListBase<K, V> :
+    ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>,
+    ICloneable,
+    Server.IDataPortalTarget,
     IUseApplicationContext
   {
     /// <summary>
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set

@@ -43,7 +43,6 @@ namespace Csla.Core
     IManageProperties,
     Rules.IHostRules,
     ICheckRules,
-    INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification,
     IDataErrorInfo,

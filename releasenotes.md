@@ -26,6 +26,23 @@ And _massive_ amounts of overall code modernization thanks to @SimonCropp
 * @SimonCropp
 * @StefanOssendorf
 
+## CSLA .NET version 8.0.1 release
+
+CSLA .NET version 8.0.1 fixes a NuGet bug in the 8.0.0 release.
+
+.NET 8 Windows Forms and WPF projects can now reference the CSLA .NET NuGet packages.
+
+### Contributors
+
+* @prodinfo
+* @rockfordlhotka
+
+**Full Changelog**: https://github.com/MarimerLLC/csla/compare/v8.0.0...v8.0.1
+
+## CSLA .NET version 8.0.0 release
+
+See full release details here: https://github.com/MarimerLLC/csla/releases/tag/v8.0.0
+
 ## CSLA .NET version 8.0.0 release
 
 CSLA .NET version 8.0.0 adds support for .NET 8 and other enhancements.

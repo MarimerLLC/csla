@@ -24,8 +24,8 @@ namespace Csla.Test.CommandBase
 
     [ClassInitialize()]
     public static void ClassInitialize(TestContext testContext) 
-    { 
-
+    {
+      _ = testContext;
     }
 
     #region Additional test attributes

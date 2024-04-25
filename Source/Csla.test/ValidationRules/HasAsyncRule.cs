@@ -33,7 +33,7 @@ namespace Csla.Test.ValidationRules
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = [primaryProperty];
+        InputProperties.Add(primaryProperty);
       }
 
       protected override void Execute(IRuleContext context)
@@ -76,7 +76,7 @@ namespace Csla.Test.ValidationRules
       {
         IsAsync = true;
         _innerRule = new Rule1(primaryProperty);
-        InputProperties = _innerRule.InputProperties;
+        InputProperties.AddRange(_innerRule.InputProperties);
       }
 
       protected override void Execute(IRuleContext context)
@@ -97,7 +97,7 @@ namespace Csla.Test.ValidationRules
       {
         IsAsync = true;
         _innerRule = new Rule1(primaryProperty);
-        InputProperties = _innerRule.InputProperties;
+        InputProperties.AddRange(_innerRule.InputProperties);
         ProvideTargetWhenAsync = true;
       }
 

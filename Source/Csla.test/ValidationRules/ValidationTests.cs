@@ -736,7 +736,8 @@ namespace Csla.Test.ValidationRules
     {
       SecondaryProperty = secondProperty;
       AffectedProperties.Add(SecondaryProperty);
-      InputProperties = [PrimaryProperty, SecondaryProperty];
+      InputProperties.Add(PrimaryProperty);
+      InputProperties.Add(SecondaryProperty);
     }
 
     protected override void Execute(Rules.IRuleContext context)
@@ -800,7 +801,7 @@ namespace Csla.Test.ValidationRules
       public ToUpper(IPropertyInfo primaryProperty)
         : base(primaryProperty)
       {
-        InputProperties = [primaryProperty];
+        InputProperties.Add(primaryProperty);
       }
 
       protected override void Execute(IRuleContext context)
@@ -837,7 +838,7 @@ namespace Csla.Test.ValidationRules
     public CheckLazyInputFieldExists(Csla.Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = [primaryProperty];
+      InputProperties.Add(primaryProperty);
     }
 
     protected override void Execute(Rules.IRuleContext context)

@@ -141,10 +141,6 @@ namespace Csla.Test.ValidationRules
     public CalcSum(IPropertyInfo primaryProperty, params IPropertyInfo[] inputProperties)
       : base(primaryProperty)
     {
-      if (InputProperties == null)
-      {
-        InputProperties = [];
-      }
       InputProperties.AddRange(inputProperties);
 
       CanRunOnServer = false;
@@ -213,7 +209,8 @@ namespace Csla.Test.ValidationRules
       : base(primaryProperty)
     {
       CompareTo = compareToProperty;
-      InputProperties = [primaryProperty, compareToProperty];
+      InputProperties.Add(primaryProperty);
+      InputProperties.Add(compareToProperty);
       AffectedProperties.Add(compareToProperty);
     }
 
@@ -241,7 +238,7 @@ namespace Csla.Test.ValidationRules
       : base(primaryProperty)
     {
       NameProperty = nameProperty;
-      InputProperties = [primaryProperty];
+      InputProperties.Add(primaryProperty);
       AffectedProperties.Add(NameProperty);
 
       CanRunOnServer = false;

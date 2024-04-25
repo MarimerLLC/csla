@@ -78,7 +78,7 @@ namespace Csla.Testing.Business.BusyStatus
         : base(primaryProperty)
       {
         IsAsync = true;
-        InputProperties = [primaryProperty];
+        InputProperties.Add(primaryProperty);
         base.RunMode = RunModes.DenyOnServerSidePortal | RunModes.DenyCheckRules;
       }
 

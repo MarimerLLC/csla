@@ -230,7 +230,6 @@ namespace Csla.Test.ValidationRules
     {
       _primaryProperty = primaryProperty;
       _affectedProperty = affectedProperty;
-      if (InputProperties == null) InputProperties = new List<IPropertyInfo>();
       InputProperties.Add(primaryProperty);
       AffectedProperties.Add(affectedProperty);
     }
@@ -293,7 +292,6 @@ namespace Csla.Test.ValidationRules
     public CalcSumRule(IPropertyInfo primaryProperty, params IPropertyInfo[] inputProperties)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo>();
       InputProperties.AddRange(inputProperties);
     }
 
@@ -322,7 +320,6 @@ namespace Csla.Test.ValidationRules
     {
       _primaryProperty = primaryProperty;
       _affectedProperty = affectedProperty;
-      if (InputProperties == null) InputProperties = new List<IPropertyInfo>();
       InputProperties.Add(primaryProperty);
       AffectedProperties.Add(affectedProperty);
 

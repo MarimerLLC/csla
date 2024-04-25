@@ -61,7 +61,7 @@ namespace Csla.Test.ValidationRules
       {
         _nameProperty = nameProperty;
         AffectedProperties.Add(nameProperty);
-        InputProperties = [primaryProperty];
+        InputProperties.Add(primaryProperty);
 
         IsAsync = true;
       }

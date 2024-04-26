@@ -9,7 +9,6 @@
 using System.Data;
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
 using System.Data.SqlClient;
-using System.Threading.Tasks;
 #endif
 
 namespace Csla.Data

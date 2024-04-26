@@ -9,7 +9,6 @@
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
 #if ANDROID || IOS
-using System.Collections.Generic;
 using System.Collections.Specialized;
 #endif
 

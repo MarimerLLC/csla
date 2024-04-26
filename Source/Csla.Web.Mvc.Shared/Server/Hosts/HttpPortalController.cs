@@ -6,17 +6,13 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 
-using System.Net.Http;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
 
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
-
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-
 #else
+using System.Net.Http;
 using System.Web.Http;
 #endif
 

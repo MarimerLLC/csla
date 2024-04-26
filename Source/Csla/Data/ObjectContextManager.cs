@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
-using System;
 using Csla.Configuration;
 using System.Data.Objects;
 using Csla.Properties;

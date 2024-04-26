@@ -6,9 +6,6 @@
 // </copyright>
 // <summary>Provides an automated way to reuse </summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-
 namespace Csla.Data
 {
   /// <summary>

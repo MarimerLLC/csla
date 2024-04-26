@@ -6,8 +6,6 @@
 // </copyright>
 // <summary>Provides methods that respond to HTTP requests</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace Csla.Web.Mvc

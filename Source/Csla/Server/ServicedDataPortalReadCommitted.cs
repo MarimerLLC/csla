@@ -6,10 +6,8 @@
 // </copyright>
 // <summary>Implements the server-side Serviced </summary>
 //-----------------------------------------------------------------------
-using System;
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Csla.Server
 {

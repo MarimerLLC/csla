@@ -11,25 +11,25 @@ using System.Data;
 namespace Csla.Test.Server.Interceptors
 {
   [Serializable]
-    public class GrandChildren : BusinessListBase<GrandChildren, GrandChild>
+  public class GrandChildren : BusinessListBase<GrandChildren, GrandChild>
+  {
+    public void Add(string data)
     {
-        public void Add(string data)
-        {
-            var grandChild = this.AddNew();
-            grandChild.Data = data;
-        }
-
-        internal void Update(IDbTransaction tr)
-        {
-            foreach (GrandChild child in this)
-            {
-                child.Update(tr);
-            }
-        }
-
-        public GrandChildren()
-        {
-            MarkAsChild();
-        }
+      var grandChild = this.AddNew();
+      grandChild.Data = data;
     }
+
+    internal void Update(IDbTransaction tr)
+    {
+      foreach (GrandChild child in this)
+      {
+        child.Update(tr);
+      }
+    }
+
+    public GrandChildren()
+    {
+      MarkAsChild();
+    }
+  }
 }

@@ -1,29 +1,29 @@
 ﻿namespace Csla.Core.LoadManager
 {
+  /// <summary>
+  /// Exception class to add the PropertyInfo and better nmessage to an async exception
+  /// </summary>
+  [Serializable]
+  public class AsyncLoadException : Exception
+  {
+
     /// <summary>
-    /// Exception class to add the PropertyInfo and better nmessage to an async exception
+    /// The property that Async LazyLoad failed on.
     /// </summary>
-    [Serializable]
-    public class AsyncLoadException : Exception
+    /// <value>
+    /// The property.
+    /// </value>
+    public IPropertyInfo Property { get; set; }
+
+    /// <summary>
+    /// Constructor for AsyncLoadException
+    /// </summary>
+    /// <param name="property">the IPropertyInfo that desccribes the property</param>
+    /// <param name="message">Clear text message for user</param>
+    /// <param name="ex">the actual exception</param>
+    public AsyncLoadException(IPropertyInfo property, string message, Exception ex) : base(message, ex)
     {
-
-      /// <summary>
-      /// The property that Async LazyLoad failed on.  
-      /// </summary>
-      /// <value>
-      /// The property.
-      /// </value>
-      public IPropertyInfo Property { get; set; }
-
-        /// <summary>
-        /// Constructor for AsyncLoadException
-        /// </summary>
-        /// <param name="property">the IPropertyInfo that desccribes the property</param>
-        /// <param name="message">Clear text message for user</param>
-        /// <param name="ex">the actual exception</param>
-        public AsyncLoadException(IPropertyInfo property, string message, Exception ex) : base(message, ex)
-        {
-            Property = property;
-        }
+      Property = property;
     }
+  }
 }

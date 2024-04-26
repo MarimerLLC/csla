@@ -1,34 +1,30 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Csla.Rules;
 using GraphMergerTest.Business;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GraphMergerTest.BusinessTests
 {
-    [TestClass]
-    public class WidgetTests
-        : TestBase
+  [TestClass]
+  public class WidgetTests
+    : TestBase
+  {
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
     {
-        [ClassInitialize]
-        public static void ClassInitialize(TestContext context)
-        {
-            TestBaseClassInitialize();
-        }
+      TestBaseClassInitialize();
+    }
 
-        [TestMethod]
-        public async Task UpdateWithMergeWidgetTest()
-        {
-            await UpdateWidgetTest(true);
-        }
+    [TestMethod]
+    public async Task UpdateWithMergeWidgetTest()
+    {
+      await UpdateWidgetTest(true);
+    }
 
-        [TestMethod]
-        public async Task UpdateWithoutMergeWidgetTest()
-        {
-            await UpdateWidgetTest(false);
-        }
+    [TestMethod]
+    public async Task UpdateWithoutMergeWidgetTest()
+    {
+      await UpdateWidgetTest(false);
+    }
 
     public async Task UpdateWidgetTest(bool merge)
     {
@@ -36,7 +32,7 @@ namespace GraphMergerTest.BusinessTests
 
       instance = await WidgetFactory.GetAsync(instance.Id);
 
-      instance.ChildItems.AddNew(new[] { Guid.NewGuid() });
+      instance.ChildItems.AddNew(new[] {Guid.NewGuid()});
 
       var allChildItemIds = instance.ChildItems.Select(d => d.ChildItemId).ToList();
 
@@ -57,32 +53,32 @@ namespace GraphMergerTest.BusinessTests
         Assert.IsNotNull(instance.ChildItems.GetChildItem(childitemId));
     }
 
-        public static async Task<Widget> NewWidgetAsync()
-        {
-            var instance = await WidgetFactory.NewWidgetAsync();
+    public static async Task<Widget> NewWidgetAsync()
+    {
+      var instance = await WidgetFactory.NewWidgetAsync();
 
-            AssignValues(instance);
+      AssignValues(instance);
 
-            return instance;
-        }
-
-        public static async Task<Widget> InsertWidgetAsync()
-        {
-            var instance = await NewWidgetAsync();
-
-            instance     = instance.Save();
-
-            return instance;
-        }
-
-        public static void AssignValues(Widget instance)
-        {
-            var childitemIds = new List<Guid>();
-
-            for (int i = 0; i < 4; i++)
-                childitemIds.Add(Guid.NewGuid());
-
-            instance.ChildItems.AddNew(childitemIds);
-        }
+      return instance;
     }
+
+    public static async Task<Widget> InsertWidgetAsync()
+    {
+      var instance = await NewWidgetAsync();
+
+      instance = instance.Save();
+
+      return instance;
+    }
+
+    public static void AssignValues(Widget instance)
+    {
+      var childitemIds = new List<Guid>();
+
+      for (int i = 0; i < 4; i++)
+        childitemIds.Add(Guid.NewGuid());
+
+      instance.ChildItems.AddNew(childitemIds);
+    }
+  }
 }

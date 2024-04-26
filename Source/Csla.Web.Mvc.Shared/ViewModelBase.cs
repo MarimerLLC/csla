@@ -6,9 +6,6 @@
 // </copyright>
 // <summary>Base class used to create ViewModel objects that contain the Model object and related elements.</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Csla.Core;

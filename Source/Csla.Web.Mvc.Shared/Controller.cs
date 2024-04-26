@@ -7,10 +7,8 @@
 //-----------------------------------------------------------------------
 
 #if NETSTANDARD2_0  || NET5_0_OR_GREATER || NETCOREAPP3_1
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Rules;
-using Microsoft.AspNetCore.Mvc;
 #else
 using System.Web.Mvc;
 #endif

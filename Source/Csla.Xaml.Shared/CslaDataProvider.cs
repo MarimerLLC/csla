@@ -9,7 +9,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Data;
 using System.Reflection;
 using Csla.Core;

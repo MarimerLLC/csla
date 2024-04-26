@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using System;
 using Microsoft.AspNetCore.Builder;
 
 namespace Csla.Configuration

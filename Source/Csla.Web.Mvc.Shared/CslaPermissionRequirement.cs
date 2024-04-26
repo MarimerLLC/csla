@@ -6,8 +6,6 @@
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
-using System;
-using System.Threading.Tasks;
 using Csla.Rules;
 using Microsoft.AspNetCore.Authorization;
 

@@ -6,9 +6,7 @@
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
 
-using System;
 using System.Security.Principal;
-using System.Threading;
 using Csla.Configuration;
 
 namespace Csla.Xaml

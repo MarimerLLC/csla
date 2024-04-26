@@ -6,12 +6,8 @@
 // <summary>Html extension methods providing support for HTML rendering based on security permissions in an application.</summary>
 //-----------------------------------------------------------------------
 #if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Csla.AspNetCore;
 
 namespace Csla.Web.Mvc
 {
@@ -293,13 +289,7 @@ namespace Csla.Web.Mvc
   }
 }
 #else
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web.Mvc;
-using System.Web.Mvc.Html;
-using System.Web.Routing;
 
 namespace Csla.Web.Mvc
 {

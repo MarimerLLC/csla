@@ -6,7 +6,6 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 #if MAUI
-using System;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Csla.Xaml;
 using Microsoft.Extensions.Hosting;

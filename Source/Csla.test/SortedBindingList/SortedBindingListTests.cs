@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.SortedBindingList
 {
-  [TestClass()]
+  [TestClass]
   public class SortedBindingListTests
   {
     private static TestDIContext _testDIContext;
@@ -30,7 +30,7 @@ namespace Csla.Test.SortedBindingList
       TestResults.Reinitialise();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void AscendingSort()
     {
       int[] intArr = [45, 23, 57, 56, 11, 87, 94, 44];
@@ -68,7 +68,7 @@ namespace Csla.Test.SortedBindingList
       Console.WriteLine("list changed");
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void DescendingSort()
     {
       string[] strArr = ["zandy", "alex", "Chris", "bert", "alfred", "Bert", "Jimmy", "chris", "chris", "mobbit", "myper", "Corey", "Monkey"];
@@ -124,7 +124,7 @@ namespace Csla.Test.SortedBindingList
     //    }
     //}
 
-    [TestMethod()]
+    [TestMethod]
     public void CopyTo()
     {
       int[] intArray = [5, 7, 1, 3, 5, 44, 32];

@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.AppContext
 {
-  [TestClass()]
+  [TestClass]
   public class AppContextTests
   {
     private static TestDIContext _testDIContext;
@@ -31,7 +31,7 @@ namespace Csla.Test.AppContext
 
     #region Simple Test
 
-    [TestMethod()]
+    [TestMethod]
     public void SimpleTest()
     {
       IDataPortal<SimpleRoot> dataPortal = _testDIContext.CreateDataPortal<SimpleRoot>();
@@ -56,7 +56,7 @@ namespace Csla.Test.AppContext
     /// Clearing the GlobalContext clears the ClientContext also? 
     /// Should the ClientContext be cleared explicitly also?
     /// </remarks>
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void ClientContext()
     {
@@ -96,7 +96,7 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// Test the FaileCreate Context
     /// </summary>
-    [TestMethod()]
+    [TestMethod]
     public void FailCreateContext()
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
@@ -121,7 +121,7 @@ namespace Csla.Test.AppContext
 
     #region FailFetchContext
 
-    [TestMethod()]
+    [TestMethod]
     public void FailFetchContext()
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
@@ -148,7 +148,7 @@ namespace Csla.Test.AppContext
 
     #endregion
 
-    [TestMethod()]
+    [TestMethod]
     public void FailUpdateContext()
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(opts => opts.
@@ -179,7 +179,7 @@ namespace Csla.Test.AppContext
 
     #region FailDeleteContext
 
-    [TestMethod()]
+    [TestMethod]
     public void FailDeleteContext()
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();

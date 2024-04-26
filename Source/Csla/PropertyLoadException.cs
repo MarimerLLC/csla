@@ -13,7 +13,7 @@ namespace Csla
   /// set a property's field.
   /// </summary>
   /// <remarks></remarks>
-  [Serializable()]
+  [Serializable]
   public class PropertyLoadException : Exception
   {
     /// <summary>

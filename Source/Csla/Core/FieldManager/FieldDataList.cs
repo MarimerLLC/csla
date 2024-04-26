@@ -17,7 +17,7 @@ namespace Csla.Core.FieldManager
   internal class FieldDataList : ISerializable
 #endif
   {
-    [NonSerialized()]
+    [NonSerialized]
     private Dictionary<string, int> _fieldIndex = [];
 #if ANDROID || IOS
     private Csla.Core.MobileBindingList<IFieldData> _fields = new Csla.Core.MobileBindingList<IFieldData>();

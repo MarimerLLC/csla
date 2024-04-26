@@ -166,7 +166,7 @@ namespace Csla
     /// <summary>
     /// Contains a key and value pair.
     /// </summary>
-    [Serializable()]
+    [Serializable]
     public class NameValuePair : MobileObject
     {
       private V _value;

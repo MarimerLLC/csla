@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataBinding
 {
-  [Serializable()]
+  [Serializable]
   public class ChildEntity : BusinessBase<ChildEntity>
   {
     private int _ID;

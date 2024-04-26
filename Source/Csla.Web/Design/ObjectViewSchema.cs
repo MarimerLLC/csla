@@ -18,7 +18,7 @@ namespace Csla.Web.Design
   /// Object providing schema information for a
   /// business object.
   /// </summary>
-  [Serializable()]
+  [Serializable]
   public class ObjectViewSchema : IDataSourceViewSchema
   {
     private string _typeName = "";

@@ -15,7 +15,7 @@ namespace Csla.Server
     /// serverside/inner exception is not serializable 
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
-    [Serializable()]
+    [Serializable]
     public class GenericBusinessException : Exception
     {
       /// <summary>

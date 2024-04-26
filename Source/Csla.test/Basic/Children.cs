@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Csla.Test.Basic
 {
-  [Serializable()]
+  [Serializable]
   public class Children : BusinessBindingListBase<Children, Child>
   {
     public void Add(IDataPortal<Child> dataPortal, string data)

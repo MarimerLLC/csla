@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.FieldManager.Async
 {
-  [TestClass()]
+  [TestClass]
   public class ChildUpdateTests
   {
     private static TestDIContext _testDIContext;

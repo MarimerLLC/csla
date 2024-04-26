@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
 {
-  [TestClass()]
+  [TestClass]
   public class SeverityTests
   {
     private static TestDIContext _testDIContext;

@@ -15,10 +15,10 @@ namespace Csla.Test.Authorization
   [DebuggerNonUserCode]
   [DebuggerStepThrough]
 #endif
-  [TestClass()]
+  [TestClass]
   public class PerTypeAuthorizationTests
   {
-    [TestMethod()]
+    [TestMethod]
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void DenyWritePerType()
     {

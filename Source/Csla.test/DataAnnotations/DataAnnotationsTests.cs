@@ -184,7 +184,7 @@ namespace Csla.Test.DataAnnotations
     }
   }
 
-  [Serializable()]
+  [Serializable]
   public partial class MultipleMeta : Csla.BusinessBase<MultipleMeta>
   {
       public static PropertyInfo<decimal> AmountProperty = RegisterProperty<decimal>(p => p.Amount);

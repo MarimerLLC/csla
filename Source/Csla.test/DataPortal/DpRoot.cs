@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataPortal
 {
-  [Serializable()]
+  [Serializable]
   public class DpRoot : BusinessBase<DpRoot>
   {
     private string _auth = "No value";
@@ -39,7 +39,7 @@ namespace Csla.Test.DataPortal
 
     #region "Criteria class"
 
-    [Serializable()]
+    [Serializable]
     internal class Criteria : CriteriaBase<Criteria>
     {
       public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);

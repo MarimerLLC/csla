@@ -14,7 +14,7 @@ namespace Csla.Test.Security
 #if TESTING
     [DebuggerNonUserCode]
 #endif
-  [Serializable()]
+  [Serializable]
   public class PermissionsRoot2 : BusinessBase<PermissionsRoot2>
   {
     private int _ID = 0;
@@ -79,7 +79,7 @@ namespace Csla.Test.Security
 
     #region "Criteria"
 
-    [Serializable()]
+    [Serializable]
     private class Criteria
     {
       //implement
@@ -87,7 +87,7 @@ namespace Csla.Test.Security
 
     #endregion
 
-    [RunLocal()]
+    [RunLocal]
     [Create]
     protected void DataPortal_Create()
     {

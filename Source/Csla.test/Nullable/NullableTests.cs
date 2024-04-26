@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Nullable
 {
-  [TestClass()]
+  [TestClass]
   public class NullableTests
   {
     private static TestDIContext _testDIContext;
@@ -29,7 +29,7 @@ namespace Csla.Test.Nullable
       TestResults.Reinitialise();
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableProperty()
     {
@@ -42,7 +42,7 @@ namespace Csla.Test.Nullable
       Assert.AreEqual(null, nullRoot.NullableInteger);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableField()
     {
@@ -53,7 +53,7 @@ namespace Csla.Test.Nullable
       Assert.AreEqual(null, nullRoot._nullableIntMember);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableAfterClone()
     {
@@ -67,7 +67,7 @@ namespace Csla.Test.Nullable
       Assert.AreEqual(null, nullRoot2.NullableInteger);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableAfterEditCycle()
     {

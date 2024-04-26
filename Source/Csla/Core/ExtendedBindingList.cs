@@ -27,7 +27,7 @@ namespace Csla.Core
     INotifyChildChanged,
     ISerializationNotification
   {
-    [NonSerialized()]
+    [NonSerialized]
     private EventHandler<RemovingItemEventArgs> _nonSerializableHandlers;
     private EventHandler<RemovingItemEventArgs> _serializableHandlers;
 

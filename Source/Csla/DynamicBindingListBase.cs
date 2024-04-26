@@ -37,7 +37,7 @@ namespace Csla
   /// Save() methods.
   /// </para>
   /// </remarks>
-  [Serializable()]
+  [Serializable]
   public abstract class DynamicBindingListBase<T> :
     Core.ExtendedBindingList<T>,
     Core.IParent,

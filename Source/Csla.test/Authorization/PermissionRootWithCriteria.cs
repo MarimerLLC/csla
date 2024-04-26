@@ -10,7 +10,7 @@ using Csla.Rules;
 
 namespace Csla.Test.Authorization 
 {
-  [Serializable()]
+  [Serializable]
   public class PermissionRootWithCriteria : BusinessBase<PermissionRootWithCriteria>
   {
     public static void AddObjectAuthorizationRules() {

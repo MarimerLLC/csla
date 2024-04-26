@@ -462,7 +462,7 @@ namespace Csla.Core
     #region OnDeserialized
 
 
-    [System.Runtime.Serialization.OnDeserialized()]
+    [System.Runtime.Serialization.OnDeserialized]
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       OnDeserialized(context);

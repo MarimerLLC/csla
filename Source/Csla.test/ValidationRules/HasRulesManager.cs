@@ -11,7 +11,7 @@ using Csla.Core;
 
 namespace Csla.Test.ValidationRules
 {
-  [Serializable()]
+  [Serializable]
   public partial class HasRulesManager : BusinessBase<HasRulesManager>
   {
     public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
@@ -27,7 +27,7 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(NameProperty, 10));
     }
 
-    [Serializable()]
+    [Serializable]
     public class Criteria : CriteriaBase<Criteria>
     {
       public string _name;

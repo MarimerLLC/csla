@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.SafeDataReader
 {
-  [TestClass()]
+  [TestClass]
   public class SafeDataReaderTests
   {
     [TestInitialize]
@@ -48,7 +48,7 @@ namespace Csla.Test.SafeDataReader
       }
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     [TestCategory("SkipOnCIServer")]
     public void CloseSafeDataReader()
@@ -70,7 +70,7 @@ namespace Csla.Test.SafeDataReader
       }
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void TestFieldCount()
     {
@@ -90,7 +90,7 @@ namespace Csla.Test.SafeDataReader
       cn.Close();
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void GetSchemaTable()
     {
@@ -116,7 +116,7 @@ namespace Csla.Test.SafeDataReader
       Assert.AreEqual(typeof(System.Byte[]), dtSchema.Rows[1][12]);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void IsDBNull()
     {
@@ -139,7 +139,7 @@ namespace Csla.Test.SafeDataReader
       cn.Close();
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void GetDataTypes()
     {
@@ -192,7 +192,7 @@ namespace Csla.Test.SafeDataReader
 
 
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     [ExpectedException(typeof(SqlException))]
     public void ThrowSqlException()
@@ -207,7 +207,7 @@ namespace Csla.Test.SafeDataReader
       Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void TestSafeDataReader()
     {

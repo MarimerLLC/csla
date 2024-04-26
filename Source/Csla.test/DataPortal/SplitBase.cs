@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataPortalTest
 {
-  [Serializable()]
+  [Serializable]
   public abstract class SplitBase<T> : Csla.BusinessBase<T>
       where T : SplitBase<T>
   {
@@ -46,7 +46,7 @@ namespace Csla.Test.DataPortalTest
 
     #region Data Access
 
-    [Serializable()]
+    [Serializable]
     private class Criteria : CriteriaBase<Criteria>
     {
       public int Id { get; }

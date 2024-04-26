@@ -34,7 +34,7 @@ namespace Csla
   /// should only implement readonly properties.
   /// </remarks>
   /// <typeparam name="T">Type of the business object.</typeparam>
-  [Serializable()]
+  [Serializable]
   public abstract class ReadOnlyBase<T> : BindableBase,
     IDataPortalTarget,
     IManageProperties,
@@ -126,14 +126,14 @@ namespace Csla
     /// </summary>
     protected virtual bool IsCanReadPropertyAuthorizationCheckDisabled { get; } = false;
 
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private ConcurrentDictionary<string, bool> _readResultCache;
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private ConcurrentDictionary<string, bool> _executeResultCache;
-    [NotUndoable()]
-    [NonSerialized()]
+    [NotUndoable]
+    [NonSerialized]
     private System.Security.Principal.IPrincipal _lastPrincipal;
 
     private void InitializeBusinessRules()
@@ -512,7 +512,7 @@ namespace Csla
       OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
     }
 
-    [System.Runtime.Serialization.OnDeserialized()]
+    [System.Runtime.Serialization.OnDeserialized]
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
       if (_fieldManager != null)
@@ -1439,7 +1439,7 @@ namespace Csla
 
 #region  Field Manager
 
-    [NotUndoable()]
+    [NotUndoable]
     private FieldDataManager _fieldManager;
 
     /// <summary>

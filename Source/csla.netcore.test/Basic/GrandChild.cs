@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Csla.Test.Basic
 {
-  [Serializable()]
+  [Serializable]
   public class GrandChild : BusinessBase<GrandChild>
   {
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);

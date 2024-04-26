@@ -16,7 +16,7 @@ namespace Csla.Reflection
   /// being invoked.
   /// </summary>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
-  [Serializable()]
+  [Serializable]
   public class CallMethodException : Exception
   {
     private string _innerStackTrace;

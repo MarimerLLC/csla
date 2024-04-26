@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataBinding
 {
-  [Serializable()]
+  [Serializable]
   public class ChildEntity : BusinessBase<ChildEntity>
   {
     public static PropertyInfo<int> IDProperty = RegisterProperty<int>(c => c.ID);

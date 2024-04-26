@@ -14,7 +14,7 @@ namespace Csla.Core
   /// CSLA .NET.
   /// </summary>
   /// <remarks></remarks>
-  [Serializable()]
+  [Serializable]
   public class UndoException : Exception
   {
     /// <summary>

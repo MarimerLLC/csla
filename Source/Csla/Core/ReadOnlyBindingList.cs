@@ -22,7 +22,7 @@ namespace Csla.Core
   /// </remarks>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-  [Serializable()]
+  [Serializable]
   public abstract class ReadOnlyBindingList<C> :
     Core.ExtendedBindingList<C>, Core.IBusinessObject, Core.IReadOnlyBindingList
   {

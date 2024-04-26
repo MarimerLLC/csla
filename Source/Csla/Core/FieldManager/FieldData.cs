@@ -16,7 +16,7 @@ namespace Csla.Core.FieldManager
   /// Contains a field value and related metadata.
   /// </summary>
   /// <typeparam name="T">Type of field value contained.</typeparam>
-  [Serializable()]
+  [Serializable]
   public class FieldData<T> : IFieldData<T>
   {
     [NonSerialized]

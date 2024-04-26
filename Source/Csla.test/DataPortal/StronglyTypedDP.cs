@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataPortal
 {
-  [Serializable()]
+  [Serializable]
   public class StronglyTypedDP : BusinessBase<StronglyTypedDP>
   {
     public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
@@ -27,7 +27,7 @@ namespace Csla.Test.DataPortal
 
     //criteria class needs to be protected since DataPortal_xyz methods are 
     //protected
-    [Serializable()]
+    [Serializable]
     protected class Criteria
     {
       public string _data;

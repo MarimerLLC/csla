@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 
 namespace Csla.Test.DataPortal
 {
-  [Serializable()]
+  [Serializable]
   public class TransactionalRoot : BusinessBase<TransactionalRoot>
   {
     #region "Business methods"
@@ -76,7 +76,7 @@ namespace Csla.Test.DataPortal
 
     #region "Criteria"
 
-    [Serializable()]
+    [Serializable]
     private class Criteria
     {
       public int _id;
@@ -91,7 +91,7 @@ namespace Csla.Test.DataPortal
 
     #region "Data Access"
 
-    [RunLocal()]
+    [RunLocal]
     [Create]
     protected void DataPortal_Create()
     {

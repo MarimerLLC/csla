@@ -683,7 +683,7 @@ namespace Csla
 
     #region IsChild
 
-    [NotUndoable()]
+    [NotUndoable]
     private bool _isChild = false;
 
     /// <summary>
@@ -1151,7 +1151,7 @@ namespace Csla
       OnSaved(newObject, null, null);
     }
 
-    [NonSerialized()]
+    [NonSerialized]
     [NotUndoable]
     private EventHandler<Csla.Core.SavedEventArgs> _savedEvent;
 
@@ -1192,7 +1192,7 @@ namespace Csla
 
     #region  Parent/Child link
 
-    [NotUndoable(), NonSerialized()]
+    [NotUndoable, NonSerialized]
     private Core.IParent _parent;
 
     /// <summary>

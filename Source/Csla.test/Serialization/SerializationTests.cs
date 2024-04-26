@@ -16,7 +16,7 @@ using Csla.Serialization.Mobile;
 
 namespace Csla.Test.Serialization
 {
-  [TestClass()]
+  [TestClass]
   public class SerializationTests : TestBase
   {
     private static TestDIContext _testDIContext;
@@ -78,7 +78,7 @@ namespace Csla.Test.Serialization
       Assert.IsTrue(serializer == typeof(MobileFormatter));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void TestWithoutSerializableHandler()
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
@@ -106,7 +106,7 @@ namespace Csla.Test.Serialization
 
     // TODO: fix test
     [Ignore]
-    [TestMethod()]
+    [TestMethod]
     public void Clone()
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
@@ -125,7 +125,7 @@ namespace Csla.Test.Serialization
 
     // TODO: fix test
     [Ignore]
-    [TestMethod()]
+    [TestMethod]
     public void SerializableEvents()
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
@@ -204,7 +204,7 @@ namespace Csla.Test.Serialization
       context.Assert.Success();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void TestSerializableEventsActionFails()
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
@@ -228,7 +228,7 @@ namespace Csla.Test.Serialization
       //}
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void TestSerializableEventsActionSucceeds()
     {
       IDataPortal<OverrideSerializationRoot> dataPortal = _testDIContext.CreateDataPortal<OverrideSerializationRoot>();
@@ -251,7 +251,7 @@ namespace Csla.Test.Serialization
       //b.Serialize(new MemoryStream(), root);
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task TestValidationRulesAfterSerialization()
     {
@@ -273,7 +273,7 @@ namespace Csla.Test.Serialization
       context.Complete();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void TestSerializationCslaBinaryReaderWriterList()
     {
       IDataPortal<BinaryReaderWriterTestClassList> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClassList>();
@@ -336,7 +336,7 @@ namespace Csla.Test.Serialization
     }
 
 
-    [TestMethod()]
+    [TestMethod]
     public void TestSerializationCslaBinaryReaderWriter()
     {
       IDataPortal<BinaryReaderWriterTestClass> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
@@ -409,7 +409,7 @@ namespace Csla.Test.Serialization
 
     // TODO: fix test
     [Ignore]
-    [TestMethod()]
+    [TestMethod]
     public void TestAuthorizationRulesAfterSerialization()
     {
       TestDIContext adminDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));

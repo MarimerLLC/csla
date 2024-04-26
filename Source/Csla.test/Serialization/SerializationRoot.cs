@@ -8,7 +8,7 @@
 
 namespace Csla.Test.Serialization
 {
-  [Serializable()]
+  [Serializable]
   public class SerializationRoot : BusinessBase<SerializationRoot>
   {
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data, RelationshipTypes.PrivateField);

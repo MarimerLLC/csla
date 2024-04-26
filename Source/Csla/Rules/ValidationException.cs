@@ -13,7 +13,7 @@ namespace Csla.Rules
   /// Exception class indicating that there was a validation
   /// problem with a business object.
   /// </summary>
-  [Serializable()]
+  [Serializable]
   public class ValidationException : Exception
   {
 

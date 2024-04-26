@@ -11,7 +11,7 @@ namespace Csla.Test.Authorization
 #if TESTING
   [DebuggerNonUserCode]
 #endif
-  [Serializable()]
+  [Serializable]
   public class ReadOnlyPerson : ReadOnlyBase<ReadOnlyPerson>
   {
     private bool _authorizationCheckDisabled;

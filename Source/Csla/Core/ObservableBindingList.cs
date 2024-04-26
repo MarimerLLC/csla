@@ -100,7 +100,7 @@ namespace Csla.Core
 
     #region RemovingItem event
 
-    [NonSerialized()]
+    [NonSerialized]
     private EventHandler<RemovingItemEventArgs> _removingItemHandler;
 
     /// <summary>

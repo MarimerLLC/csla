@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
 {
-  [TestClass()]
+  [TestClass]
   public class ShortCircuitTests
   {
     private static TestDIContext _testDIContext;

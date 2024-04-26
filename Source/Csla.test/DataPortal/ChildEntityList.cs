@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataBinding
 {
-    [Serializable()]
+    [Serializable]
     public class ChildEntityList : BusinessBindingListBase<ChildEntityList, ChildEntity>
     {
         public ChildEntityList()
@@ -17,7 +17,7 @@ namespace Csla.Test.DataBinding
 
         #region "Criteria"
 
-        [Serializable()]
+        [Serializable]
         private class Criteria
         {
             //no criteria for this list

@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortalChild
 {
-  [TestClass()]
+  [TestClass]
   public class DataPortalChildTests
   {
     private static TestDIContext _testDIContext;

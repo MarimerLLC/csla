@@ -15,7 +15,7 @@ namespace Csla.Core
   /// and INotifyPropertyChanging in a 
   /// serialization-safe manner.
   /// </summary>
-  [Serializable()]
+  [Serializable]
   public abstract class BindableBase : 
     MobileObject, 
     INotifyPropertyChanged, 
@@ -27,7 +27,7 @@ namespace Csla.Core
     protected BindableBase()
     { }
 
-    [NonSerialized()]
+    [NonSerialized]
     private PropertyChangedEventHandler _nonSerializableChangedHandlers;
     private PropertyChangedEventHandler _serializableChangedHandlers;
 
@@ -152,7 +152,7 @@ namespace Csla.Core
       OnPropertyChanged(string.Empty);
     }
 
-    [NonSerialized()]
+    [NonSerialized]
     private PropertyChangingEventHandler _nonSerializableChangingHandlers;
     private PropertyChangingEventHandler _serializableChangingHandlers;
 

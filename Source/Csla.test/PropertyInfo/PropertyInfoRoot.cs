@@ -11,7 +11,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Csla.Test.PropertyInfo
 {
-  [Serializable()]
+  [Serializable]
   public class PropertyInfoRoot : BusinessBase<PropertyInfoRoot>
   {
     #region Factory Methods

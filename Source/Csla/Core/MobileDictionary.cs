@@ -16,7 +16,7 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="K">Key value: any primitive or IMobileObject type.</typeparam>
   /// <typeparam name="V">Value: any primitive or IMobileObject type.</typeparam>
-  [Serializable()]
+  [Serializable]
   public class MobileDictionary<K, V> : Dictionary<K, V>, IMobileObject
   {
     private bool _keyIsMobile;

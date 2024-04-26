@@ -21,7 +21,6 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_PrimitiveCriteria_NoExceptionRaised()
     {
       // Arrange
-      var executed = false;
       var criteria = new PrimitiveCriteria(1);
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       var sut = new RevalidatingInterceptor(applicationContext);
@@ -37,17 +36,12 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Act
       await sut.InitializeAsync(args);
-      executed = true;
-
-      // Assert
-      Assert.IsTrue(executed);
     }
 
     [TestMethod]
     public async Task Initialize_ValidRootObjectNoChildren_NoExceptionRaised()
     {
       // Arrange
-      var executed = false;
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
@@ -57,24 +51,19 @@ namespace Csla.Test.Server.Interceptors.ServerSide
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
         Parameter = rootObject,
-        IsSync=true 
+        IsSync = true
       };
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
       await sut.InitializeAsync(args);
-      executed = true;
-
-      // Assert
-      Assert.IsTrue(executed);
     }
 
     [TestMethod]
     public async Task Initialize_ValidRootObjectWithChild_NoExceptionRaised()
     {
       // Arrange
-      var executed = false;
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
@@ -93,17 +82,12 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Act
       await sut.InitializeAsync(args);
-      executed = true;
-
-      // Assert
-      Assert.IsTrue(executed);
     }
 
     [TestMethod]
     public async Task Initialize_ValidRootObjectWithChildAndGrandChild_NoExceptionRaised()
     {
       // Arrange
-      var executed = false;
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
@@ -124,10 +108,6 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Act
       await sut.InitializeAsync(args);
-      executed = true;
-
-      // Assert
-      Assert.IsTrue(executed);
     }
 
     [TestMethod]

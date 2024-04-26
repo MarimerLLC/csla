@@ -36,7 +36,7 @@ namespace Csla.Serialization.Mobile
       var totalCount = reader.ReadInt32();
       for (var counter = 0; counter < totalCount; counter++)
       {
-        var info = new SerializationInfo()
+        var info = new SerializationInfo
         {
           ReferenceId = reader.ReadInt32(),
           TypeName = ReadString(reader)

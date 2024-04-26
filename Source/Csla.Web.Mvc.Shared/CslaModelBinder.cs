@@ -193,7 +193,7 @@ namespace Csla.Web.Mvc
         var elementModel = collection[currIdx];
         if (elementModel is ICheckRules suppress)
           suppress.SuppressRuleChecking();
-        var elementContext = new ModelBindingContext()
+        var elementContext = new ModelBindingContext
         {
           ModelMetadata = ModelMetadataProviders.Current.GetMetadataForType(() => elementModel, elementModel.GetType()),
           ModelName = subIndexKey,

@@ -54,7 +54,7 @@ namespace Csla.Analyzers
         }
         else
         {
-          var properties = new Dictionary<string, string>()
+          var properties = new Dictionary<string, string>
           {
             [IsOperationMethodPublicAnalyzerConstants.IsSealed] = typeSymbol.IsSealed.ToString()
           }.ToImmutableDictionary();

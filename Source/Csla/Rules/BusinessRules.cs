@@ -1145,7 +1145,7 @@ namespace Csla.Rules
         var nodeKey = counter++;
         var bo = bbase;
         long myChildBrokenRuleCount = bo.BrokenRulesCollection.Count;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj };
+        var node = new BrokenRulesNode { Parent = parentKey, Node = nodeKey, BrokenRules = bo.BrokenRulesCollection, Object = obj };
         list.Add(node);
 
         // get managed child properties 
@@ -1171,7 +1171,7 @@ namespace Csla.Rules
       {
         var nodeKey = counter++;
         var isValid = collection.IsValid;
-        var node = new BrokenRulesNode() { Parent = parentKey, Node = nodeKey, Object = collection, BrokenRules = new BrokenRulesCollection(true) };
+        var node = new BrokenRulesNode { Parent = parentKey, Node = nodeKey, Object = collection, BrokenRules = new BrokenRulesCollection(true) };
         long myChildBrokenRuleCount = 0;
 
         list.Add(node);

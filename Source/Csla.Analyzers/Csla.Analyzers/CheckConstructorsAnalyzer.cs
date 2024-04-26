@@ -75,7 +75,7 @@ namespace Csla.Analyzers
 
         if (!hasPublicNoArgumentConstructor)
         {
-          var properties = new Dictionary<string, string>()
+          var properties = new Dictionary<string, string>
           {
             [PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor] = hasNonPublicNoArgumentConstructor.ToString()
           }.ToImmutableDictionary();

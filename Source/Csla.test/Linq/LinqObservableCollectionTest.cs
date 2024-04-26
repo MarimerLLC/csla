@@ -156,7 +156,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Create()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c" };
+      var source = new ObservableCollection<string> { "a", "b", "c" };
       var query = from r in source
                   where r == "b"
                   select r;
@@ -169,7 +169,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void AddItem()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c" };
+      var source = new ObservableCollection<string> { "a", "b", "c" };
       var query = from r in source
                   where r == "b"
                   select r;
@@ -207,7 +207,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void InsertItem()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c" };
+      var source = new ObservableCollection<string> { "a", "b", "c" };
       var query = from r in source
                   where r == "b"
                   select r;
@@ -245,7 +245,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void RemoveAt()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c", "bb" };
+      var source = new ObservableCollection<string> { "a", "b", "c", "bb" };
       var query = from r in source
                   where r[0] == 'b'
                   select r;
@@ -283,7 +283,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void RemoveItem()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c", "bb" };
+      var source = new ObservableCollection<string> { "a", "b", "c", "bb" };
       var query = from r in source
                   where r[0] == 'b'
                   select r;
@@ -321,7 +321,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void ReplaceItem()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c" };
+      var source = new ObservableCollection<string> { "a", "b", "c" };
       var query = from r in source
                   where r == "b"
                   select r;
@@ -364,7 +364,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void MoveItem()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c" };
+      var source = new ObservableCollection<string> { "a", "b", "c" };
       var query = from r in source
                   where r == "b"
                   select r;
@@ -393,7 +393,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void ClearSource()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c" };
+      var source = new ObservableCollection<string> { "a", "b", "c" };
       var query = from r in source
                   where r == "b"
                   select r;
@@ -419,7 +419,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void ClearView()
     {
-      var source = new ObservableCollection<string>() { "a", "b", "c" };
+      var source = new ObservableCollection<string> { "a", "b", "c" };
       var query = from r in source
                   where r == "b"
                   select r;

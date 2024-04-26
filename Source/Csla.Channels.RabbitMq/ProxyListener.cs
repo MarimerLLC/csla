@@ -64,7 +64,7 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     private void InitializeRabbitMQ()
     {
-      var factory = new ConnectionFactory() { HostName = QueueUri.Host };
+      var factory = new ConnectionFactory { HostName = QueueUri.Host };
       if (QueueUri.Port < 0)
         factory.Port = QueueUri.Port;
       var userInfo = QueueUri.UserInfo.Split(':');

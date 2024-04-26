@@ -77,7 +77,7 @@ namespace Csla.Channels.RabbitMq
         if (string.IsNullOrWhiteSpace(DataPortalQueueName))
           throw new UriFormatException("DataPortalQueueName");
         Console.WriteLine($"Will send to queue {DataPortalQueueName}");
-        var factory = new ConnectionFactory() { HostName = url.Host };
+        var factory = new ConnectionFactory { HostName = url.Host };
         if (url.Port < 0)
           factory.Port = url.Port;
         var userInfo = url.UserInfo.Split(':');

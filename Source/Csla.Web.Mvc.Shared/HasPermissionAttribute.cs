@@ -72,7 +72,7 @@ namespace Csla.Web.Mvc
       if (filterContext.HttpContext.Request.IsAjaxRequest())
       {
         filterContext.HttpContext.Response.StatusCode = (int)System.Net.HttpStatusCode.InternalServerError;
-        filterContext.Result = new JsonResult()
+        filterContext.Result = new JsonResult
         {
           JsonRequestBehavior = JsonRequestBehavior.AllowGet,
           Data = new

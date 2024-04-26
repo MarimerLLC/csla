@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Server.Interceptors.ServerSide
 {
-
   [TestClass]
   public class RevalidatingInterceptorTests
   {
@@ -22,11 +21,11 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_PrimitiveCriteria_NoExceptionRaised()
     {
       // Arrange
-      bool executed = false;
-      PrimitiveCriteria criteria = new PrimitiveCriteria(1);
+      var executed = false;
+      var criteria = new PrimitiveCriteria(1);
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      InterceptArgs args = new InterceptArgs()
+      var sut = new RevalidatingInterceptor(applicationContext);
+      var args = new InterceptArgs
       {
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
@@ -42,19 +41,19 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Assert
       Assert.IsTrue(executed);
-
     }
 
     [TestMethod]
     public async Task Initialize_ValidRootObjectNoChildren_NoExceptionRaised()
     {
       // Arrange
-      bool executed = false;
+      var executed = false;
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      InterceptArgs args = new InterceptArgs() {
+      var args = new InterceptArgs
+      {
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
         Parameter = rootObject,
@@ -69,21 +68,20 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Assert
       Assert.IsTrue(executed);
-      
     }
 
     [TestMethod]
     public async Task Initialize_ValidRootObjectWithChild_NoExceptionRaised()
     {
       // Arrange
-      bool executed = false;
+      var executed = false;
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      InterceptArgs args = new InterceptArgs()
+      var sut = new RevalidatingInterceptor(applicationContext);
+      var args = new InterceptArgs
       {
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
@@ -99,14 +97,13 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Assert
       Assert.IsTrue(executed);
-
     }
 
     [TestMethod]
     public async Task Initialize_ValidRootObjectWithChildAndGrandChild_NoExceptionRaised()
     {
       // Arrange
-      bool executed = false;
+      var executed = false;
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
@@ -114,8 +111,8 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       GrandChild grandChildObject = childObject.GrandChildren.AddNew();
       grandChildObject.Data = "Test grandchild data";
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      InterceptArgs args = new InterceptArgs()
+      var sut = new RevalidatingInterceptor(applicationContext);
+      var args = new InterceptArgs
       {
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
@@ -131,7 +128,6 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Assert
       Assert.IsTrue(executed);
-
     }
 
     [TestMethod]
@@ -141,8 +137,8 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria(""));
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      InterceptArgs args = new InterceptArgs()
+      var sut = new RevalidatingInterceptor(applicationContext);
+      var args = new InterceptArgs
       {
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
@@ -154,7 +150,6 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Act and Assert
       await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
-
     }
 
     [TestMethod]
@@ -165,8 +160,8 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
       rootObject.Children.AddNew();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      InterceptArgs args = new InterceptArgs()
+      var sut = new RevalidatingInterceptor(applicationContext);
+      var args = new InterceptArgs
       {
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
@@ -178,7 +173,6 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Act and Assert
       await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
-
     }
 
     [TestMethod]
@@ -191,8 +185,8 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       childObject.Data = "Test child data";
       childObject.GrandChildren.AddNew();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      InterceptArgs args = new InterceptArgs()
+      var sut = new RevalidatingInterceptor(applicationContext);
+      var args = new InterceptArgs
       {
         ObjectType = typeof(Root),
         Operation = DataPortalOperations.Update,
@@ -204,7 +198,6 @@ namespace Csla.Test.Server.Interceptors.ServerSide
 
       // Act and Assert
       await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
-
     }
   }
 }

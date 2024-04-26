@@ -60,7 +60,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
       containerDefinitionBuilder.Append(" ");
       containerDefinitionBuilder.Append(typeDeclarationSyntax.Identifier.ToString());
 
-      containerDefinition = new ExtractedContainerDefinition()
+      containerDefinition = new ExtractedContainerDefinition
       {
         Name = typeDeclarationSyntax.Identifier.ToString(),
         FullDefinition = containerDefinitionBuilder.ToString()
@@ -84,7 +84,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
       containerDefinitionBuilder.Append("namespace ");
       containerDefinitionBuilder.Append(namespaceDeclarationSyntax.Name.ToString());
 
-      containerDefinition = new ExtractedContainerDefinition()
+      containerDefinition = new ExtractedContainerDefinition
       {
         Name = namespaceDeclarationSyntax.Name.ToString(),
         FullDefinition = containerDefinitionBuilder.ToString()

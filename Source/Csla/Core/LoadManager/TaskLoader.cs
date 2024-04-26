@@ -28,11 +28,11 @@
       try
       {
         var o = await _loader;
-        result = new TaskDataPortalResult() { Error = null, Object = o };
+        result = new TaskDataPortalResult { Error = null, Object = o };
       }
       catch (Exception ex)
       {
-        result = new TaskDataPortalResult() { Error = ex, Object = null };
+        result = new TaskDataPortalResult { Error = ex, Object = null };
       }
 
       callback(this, result);

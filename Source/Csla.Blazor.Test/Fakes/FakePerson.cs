@@ -3,7 +3,7 @@ using Csla.Blazor.Test.Rules;
 
 namespace Csla.Blazor.Test.Fakes
 {
-  [Serializable()]
+  [Serializable]
   public class FakePerson : BusinessBase<FakePerson>
   {
     public static Csla.PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));

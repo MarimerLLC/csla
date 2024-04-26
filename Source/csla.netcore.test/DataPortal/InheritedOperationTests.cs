@@ -59,7 +59,7 @@ namespace Csla.Test.DataPortal
     {
     }
 
-    [Serializable()]
+    [Serializable]
     public class Criteria : Csla.CriteriaBase<Criteria>;
   }
 

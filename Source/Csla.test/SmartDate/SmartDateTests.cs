@@ -12,7 +12,7 @@ using Csla.TestHelpers;
 
 namespace Csla.Test.SmartDate
 {
-  [TestClass()]
+  [TestClass]
   public class SmartDateTests
   {
     private static TestDIContext _testDIContext;
@@ -47,7 +47,7 @@ namespace Csla.Test.SmartDate
     }
 
     #region Test Constructors
-    [TestMethod()]
+    [TestMethod]
     public void TestSmartDateConstructors()
     {
       DateTime now = DateTime.Now;
@@ -191,7 +191,7 @@ namespace Csla.Test.SmartDate
 
 #if !WINDOWS_PHONE
     #region Add
-    [TestMethod()]
+    [TestMethod]
     public void Add()
     {
       Csla.SmartDate d2 = new Csla.SmartDate();
@@ -206,7 +206,7 @@ namespace Csla.Test.SmartDate
     #endregion
 
     #region Subtract
-    [TestMethod()]
+    [TestMethod]
     public void Subtract()
     {
       Csla.SmartDate d2 = new Csla.SmartDate();
@@ -223,7 +223,7 @@ namespace Csla.Test.SmartDate
 #endif
 
     #region Comparison
-    [TestMethod()]
+    [TestMethod]
     public void Comparison()
     {
       Csla.SmartDate d2 = new Csla.SmartDate(true);
@@ -274,7 +274,7 @@ namespace Csla.Test.SmartDate
     #endregion
 
     #region Empty
-    [TestMethod()]
+    [TestMethod]
     public void Empty()
     {
       Csla.SmartDate d2 = new Csla.SmartDate();
@@ -319,7 +319,7 @@ namespace Csla.Test.SmartDate
     #endregion
 
     #region Comparison Operators
-    [TestMethod()]
+    [TestMethod]
     public void ComparisonOperators()
     {
       Csla.SmartDate d1 = new Csla.SmartDate();
@@ -394,7 +394,7 @@ namespace Csla.Test.SmartDate
     #endregion
 
     #region Serialization
-    [TestMethod()]
+    [TestMethod]
     public void SerializationTest()
     {
       Csla.SmartDate d2;

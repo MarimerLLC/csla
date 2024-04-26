@@ -10,7 +10,7 @@ using System.Data;
 
 namespace Csla.Test.Server.Interceptors
 {
-  [Serializable()]
+  [Serializable]
     public class Children : BusinessListBase<Children, Child>
     {
         public void Add(string data)

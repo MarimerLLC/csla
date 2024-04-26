@@ -8,7 +8,7 @@
 
 namespace Csla.Test.Basic
 {
-  [Serializable()]
+  [Serializable]
   public class Root : BusinessBase<Root>
   {
     public static PropertyInfo<Children> ChildrenProperty = RegisterProperty<Children>(c => c.Children);
@@ -42,7 +42,7 @@ namespace Csla.Test.Basic
       }
     }
 
-    [Serializable()]
+    [Serializable]
     internal class Criteria
     {
       public string _data;

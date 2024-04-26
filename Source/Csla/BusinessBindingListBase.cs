@@ -22,7 +22,7 @@ namespace Csla
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-  [Serializable()]
+  [Serializable]
   public abstract class BusinessBindingListBase<T, C> :
       ExtendedBindingList<C>, IContainsDeletedList,
       IEditableCollection, IUndoableObject, ICloneable,
@@ -662,7 +662,7 @@ namespace Csla
 
     #region IsChild
 
-    [NotUndoable()]
+    [NotUndoable]
     private bool _isChild = false;
 
     /// <summary>
@@ -1156,7 +1156,7 @@ namespace Csla
       OnSaved(newObject, null, null);
     }
 
-    [NonSerialized()]
+    [NonSerialized]
     [NotUndoable]
     private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
     [NotUndoable]
@@ -1208,7 +1208,7 @@ namespace Csla
 
     #region  Parent/Child link
 
-    [NotUndoable(), NonSerialized()]
+    [NotUndoable, NonSerialized]
     private Core.IParent _parent;
 
     /// <summary>

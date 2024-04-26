@@ -8,7 +8,7 @@
 
 namespace Csla.Test.Basic
 {
-    [Serializable()]
+    [Serializable]
     public class NameValueListObj : NameValueListBase<int, string>
     {
         [Fetch]

@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Serialization
 {
-  [TestClass()]
+  [TestClass]
   public class CslaClaimsPrincipalSerializationTests
   {
     [TestMethod]

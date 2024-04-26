@@ -8,7 +8,7 @@
 
 namespace Csla.Test.Nullable
 {
-    [Serializable()]
+    [Serializable]
     public class NullableObject : BusinessBase<NullableObject>
     {
         private string _name = string.Empty;
@@ -42,7 +42,7 @@ namespace Csla.Test.Nullable
             }
         }
 
-        [Serializable()]
+        [Serializable]
         private class Criteria
         {
             public string _name;

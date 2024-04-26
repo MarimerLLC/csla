@@ -18,12 +18,12 @@ namespace Csla.Core
   /// Implements n-level undo capabilities as
   /// described in Chapters 2 and 3.
   /// </summary>
-  [Serializable()]
+  [Serializable]
   public abstract class UndoableBase : Csla.Core.BindableBase,
     Csla.Core.IUndoableObject, IUseApplicationContext
   {
     // keep a stack of object state values.
-    [NotUndoable()]
+    [NotUndoable]
     private readonly Stack<byte[]> _stateStack = new();
     [NotUndoable]
     private bool _bindingEdit;

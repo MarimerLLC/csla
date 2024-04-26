@@ -20,7 +20,7 @@ namespace Csla
   /// See Chapter 5 for a full discussion of the need for this
   /// data type and the design choices behind it.
   /// </remarks>
-  [Serializable()]
+  [Serializable]
   [System.ComponentModel.TypeConverter(typeof(Csla.Core.TypeConverters.SmartDateConverter))]
   public struct SmartDate : Csla.Core.ISmartField,
     IConvertible,

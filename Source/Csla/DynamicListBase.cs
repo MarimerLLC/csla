@@ -39,7 +39,7 @@ namespace Csla
   /// Save() methods.
   /// </para>
   /// </remarks>
-  [Serializable()]
+  [Serializable]
   public abstract class DynamicListBase<T> :
 #if ANDROID || IOS
     ExtendedBindingList<T>,

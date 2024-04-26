@@ -22,7 +22,7 @@ namespace Csla.Test.CommandBase
     ///</summary>
     public TestContext TestContext { get; set; }
 
-    [ClassInitialize()]
+    [ClassInitialize]
     public static void ClassInitialize(TestContext testContext) 
     {
       _ = testContext;

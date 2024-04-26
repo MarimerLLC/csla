@@ -18,7 +18,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
 {
-  [TestClass()]
+  [TestClass]
   public class DataPortalTests
   {
     private static TestDIContext _testDIContext;
@@ -57,7 +57,7 @@ namespace Csla.Test.DataPortal
     }
 
 #if DEBUG
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void TestTransactionScopeUpdate()
     {
@@ -137,7 +137,7 @@ namespace Csla.Test.DataPortal
     }
 #endif
 
-    [TestMethod()]
+    [TestMethod]
     public void StronglyTypedDataPortalMethods()
     {
       IDataPortal<StronglyTypedDP> dataPortal = _testDIContext.CreateDataPortal<StronglyTypedDP>();

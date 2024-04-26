@@ -21,7 +21,7 @@ namespace Csla.Test.Authorization
   [DebuggerNonUserCode]
   [DebuggerStepThrough]
 #endif
-  [TestClass()]
+  [TestClass]
   public class AuthTests
   {
     private static TestDIContext _anonymousDIContext;
@@ -49,7 +49,7 @@ namespace Csla.Test.Authorization
     }
 
     [Ignore]
-    [TestMethod()]
+    [TestMethod]
     public void TestAuthCloneRules()
     {
       IDataPortal<DataPortal.DpRoot> dataPortal = _adminDIContext.CreateDataPortal<DataPortal.DpRoot>();
@@ -126,7 +126,7 @@ namespace Csla.Test.Authorization
 
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void TestAuthBeginEditRules()
     {
@@ -249,7 +249,7 @@ namespace Csla.Test.Authorization
 
     }
 
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void TestAuthorizationAfterEditCycle()
     {

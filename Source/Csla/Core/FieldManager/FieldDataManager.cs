@@ -32,7 +32,7 @@ namespace Csla.Core.FieldManager
     private string _businessObjectType;
     [NonSerialized]
     BusinessBase _parent;
-    [NonSerialized()]
+    [NonSerialized]
     private List<IPropertyInfo> _propertyList;
     private IFieldData[] _fieldData;
 

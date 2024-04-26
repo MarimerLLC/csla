@@ -8,7 +8,7 @@
 
 namespace Csla.Test.AppContext
 {
-  [Serializable()]
+  [Serializable]
   class SimpleRoot : BusinessBase<SimpleRoot>
   {
     private string _Data = string.Empty;
@@ -40,7 +40,7 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// Criteria for DataPortal overrides
     /// </summary>
-    [Serializable()]
+    [Serializable]
     internal class Criteria
     {
       public const string DefaultData = "<new>";

@@ -430,7 +430,7 @@ namespace Csla.Test.Basic
     { }
   }
 
-  [Serializable()]
+  [Serializable]
   public class SerializableListener
   {
     private Core.BusinessBase _obj;

@@ -8,7 +8,7 @@
 
 namespace Csla.Test.Serialization
 {
-    [Serializable( )]
+    [Serializable]
     public class TestEventSink
     {
         public void Reg(Core.BusinessBase obj)

@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.GraphMerge
 {
-  [TestClass()]
+  [TestClass]
   public class IdentityTests
   {
     private static TestDIContext _testDIContext;

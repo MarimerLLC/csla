@@ -19,7 +19,7 @@ namespace Csla
   /// <typeparam name="C">Type of child objects contained in the list.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-  [Serializable()]
+  [Serializable]
   public abstract class ReadOnlyBindingListBase<T, C> : 
     Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection, 
     ICloneable, Server.IDataPortalTarget, Core.IUseApplicationContext

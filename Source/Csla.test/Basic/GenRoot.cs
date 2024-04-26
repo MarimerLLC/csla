@@ -8,6 +8,6 @@
 
 namespace Csla.Test.Basic
 {
-  [Serializable()]
+  [Serializable]
   public class GenRoot : GenRootBase;
 }

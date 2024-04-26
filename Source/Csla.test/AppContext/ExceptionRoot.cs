@@ -7,7 +7,7 @@
 
 namespace Csla.Test.AppContext
 {
-  [Serializable()]
+  [Serializable]
   class ExceptionRoot : BusinessBase<ExceptionRoot>
   {
     private string _Data = string.Empty;
@@ -24,7 +24,7 @@ namespace Csla.Test.AppContext
       return this._Data;
     }
 
-    [Serializable()]
+    [Serializable]
     internal class Criteria
     {
       public const string DefaultData = "<new>";

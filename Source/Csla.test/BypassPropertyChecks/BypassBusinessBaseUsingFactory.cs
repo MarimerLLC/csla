@@ -8,7 +8,7 @@
 
 namespace Csla.Test.BypassPropertyChecks
 {
-  [Serializable()]
+  [Serializable]
   [Csla.Server.ObjectFactory("Csla.Test.BypassPropertyChecks.TestObjectFactory,Csla.Tests")]
   public class BypassBusinessBaseUsingFactory : BusinessBase<BypassBusinessBaseUsingFactory>
   {

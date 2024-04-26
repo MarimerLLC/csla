@@ -8,7 +8,7 @@
 
 namespace Csla.Test.BypassPropertyChecks
 {
-  [Serializable()]
+  [Serializable]
   public class BypassBusinessBase : BusinessBase<BypassBusinessBase>
   {
     public BypassBusinessBase()

@@ -17,7 +17,7 @@ namespace Csla.Test.Authorization
   [DebuggerNonUserCode]
   [DebuggerStepThrough]
 #endif
-  [TestClass()]
+  [TestClass]
   public class ReadonlyAuthorizationTests
   {
     private static TestDIContext _testDIContext;

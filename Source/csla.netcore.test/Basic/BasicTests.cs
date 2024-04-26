@@ -501,7 +501,7 @@ namespace Csla.Test.Basic
     { }
   }
 
-  [Serializable()]
+  [Serializable]
   public class SerializableListener
   {
     private readonly Core.BusinessBase _obj;

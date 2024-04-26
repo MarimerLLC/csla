@@ -15,7 +15,7 @@ namespace Csla.Security
   /// <summary>
   /// ClaimsPrincipal subclass that supports serialization by SerializationFormatterFactory.GetFormatter().
   /// </summary>
-  [Serializable()]
+  [Serializable]
   public class CslaClaimsPrincipal : ClaimsPrincipal, ICslaPrincipal
   {
     /// <summary>

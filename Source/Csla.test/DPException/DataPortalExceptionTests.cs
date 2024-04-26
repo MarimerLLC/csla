@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DPException
 {
-  [TestClass()]
+  [TestClass]
   public class DataPortalExceptionTests
   {
     private static TestDIContext _testDIContext;
@@ -29,7 +29,7 @@ namespace Csla.Test.DPException
     }
 
 #if DEBUG
-    [TestMethod()]
+    [TestMethod]
     [TestCategory("SkipOnCIServer")]
     public void CheckInnerExceptionsOnSave()
     {
@@ -80,7 +80,7 @@ namespace Csla.Test.DPException
     }
 #endif
 
-    [TestMethod()]
+    [TestMethod]
     public void CheckInnerExceptionsOnDelete()
     {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
@@ -111,7 +111,7 @@ namespace Csla.Test.DPException
       Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void CheckInnerExceptionsOnFetch()
     {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();

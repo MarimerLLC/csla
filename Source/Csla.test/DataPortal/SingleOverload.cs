@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataPortalTest
 {
-  [Serializable()]
+  [Serializable]
   class SingleOverload : BusinessBase<SingleOverload>
   {
     #region Business Methods
@@ -47,7 +47,7 @@ namespace Csla.Test.DataPortalTest
 
     #region Data Access
 
-    [Serializable()]
+    [Serializable]
     private class Criteria
     {
       public int Id { get; }
@@ -56,7 +56,7 @@ namespace Csla.Test.DataPortalTest
       { Id = id; }
     }
 
-    [Serializable()]
+    [Serializable]
     private class OtherCriteria
     {
       public int Id { get; }

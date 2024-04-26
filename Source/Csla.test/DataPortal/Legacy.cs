@@ -8,7 +8,7 @@
 
 namespace Csla.Test.DataPortalTest
 {
-  [Serializable()]
+  [Serializable]
   class Legacy : BusinessBase<Legacy>
   {
     #region Business Methods
@@ -25,7 +25,7 @@ namespace Csla.Test.DataPortalTest
 
     #region Data Access
 
-    [Serializable()]
+    [Serializable]
     internal class Criteria
     {
       public int Id { get; }

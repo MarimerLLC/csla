@@ -84,7 +84,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    [Serializable()]
+    [Serializable]
     public class FetchCriteria : CriteriaBase<FetchCriteria>
     {
       public FetchCriteria() { }

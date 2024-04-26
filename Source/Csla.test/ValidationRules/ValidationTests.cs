@@ -15,7 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
 {
-  [TestClass()]
+  [TestClass]
   public class ValidationTests : TestBase
   {
 
@@ -33,7 +33,7 @@ namespace Csla.Test.ValidationRules
       TestResults.Reinitialise();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task TestValidationRulesWithPrivateMember()
     {
       //works now because we are calling ValidationRules.CheckRules() in DataPortal_Create
@@ -64,7 +64,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task TestValidationRulesWithPublicProperty()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
@@ -93,7 +93,7 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual("Name required", root.BrokenRulesCollection.GetFirstBrokenRule(HasRulesManager2.NameProperty).Description);
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task TestValidationAfterEditCycle()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
@@ -171,7 +171,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task TestValidationRulesAfterClone()
     {
       //this test uses HasRulesManager2, which assigns criteria._name to its public
@@ -191,7 +191,7 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual(true, rootClone.IsValid);
     }
 
-    [TestMethod()]
+    [TestMethod]
 
     public async Task BreakRequiredRule()
     {
@@ -202,7 +202,7 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
     }
 
-    [TestMethod()]
+    [TestMethod]
 
     public async Task BreakLengthRule()
     {
@@ -221,7 +221,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
-    [TestMethod()]
+    [TestMethod]
 
     public async Task BreakLengthRuleAndClone()
     {
@@ -246,7 +246,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public void RegExSSN()
     {
       UnitTestContext context = GetContext();
@@ -301,7 +301,7 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
-    [TestMethod()]
+    [TestMethod]
     public async Task ListChangedEventTrigger()
     {
       UnitTestContext context = GetContext();

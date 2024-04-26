@@ -11,7 +11,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Csla.Test.Server.Interceptors
 {
-  [Serializable()]
+  [Serializable]
   public class GrandChild : BusinessBase<GrandChild>
   {
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);

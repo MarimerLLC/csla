@@ -8,7 +8,7 @@
 
 namespace Csla.Test.RollBack
 {
-  [Serializable()]
+  [Serializable]
   public class RollbackRoot : BusinessBase<RollbackRoot>
   {
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
@@ -31,7 +31,7 @@ namespace Csla.Test.RollBack
       set { SetProperty(FailProperty, value); }
     }
 
-    [Serializable()]
+    [Serializable]
     protected class Criteria : CriteriaBase<Criteria>
     {
       private static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));

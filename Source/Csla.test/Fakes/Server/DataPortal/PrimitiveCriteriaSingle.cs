@@ -115,7 +115,7 @@ namespace Csla.Test.DataPortalTest
     {
       TestResults.Reinitialise();
       TestResults.Add("PrimitiveCriteriaSingle", "Deleted");
-      MethodCalled = "Deleted+" + id.ToString();
+      MethodCalled = $"Deleted+{id}";
     }
 
     #endregion

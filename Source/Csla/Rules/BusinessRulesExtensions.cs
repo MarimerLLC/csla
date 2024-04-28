@@ -98,7 +98,7 @@ namespace Csla.Rules
     /// <param name="message">The message.</param>
     public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message) where T : BusinessBase
     {
-      AddRule(businessRules, primaryProperty, ruleHandler, message, RuleSeverity.Error);
+      AddRule(businessRules, ruleSet, primaryProperty, ruleHandler, message, RuleSeverity.Error);
     }
 
     /// <summary>

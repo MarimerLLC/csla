@@ -81,7 +81,7 @@ namespace Csla.Test.PropertyInfo
       set { SetProperty(StringNullDefaultValueProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> ContainingTypeProperty = RegisterProperty<string>(c => c.ContainingType);
+    public static readonly PropertyInfo<string> ContainingTypeProperty = RegisterProperty<string>(new PropertyInfo<string>(nameof(ContainingType), null, typeof(PropertyInfoRoot), RelationshipTypes.None));
     public string ContainingType
     {
       get { return GetProperty(ContainingTypeProperty); }

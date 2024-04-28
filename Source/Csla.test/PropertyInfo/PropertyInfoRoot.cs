@@ -73,7 +73,7 @@ namespace Csla.Test.PropertyInfo
       get { return GetProperty(NameDefaultValueProperty); }
       set { SetProperty(NameDefaultValueProperty, value); }
     }
-    
+
     public static readonly PropertyInfo<string> StringNullDefaultValueProperty = RegisterProperty<string>(c => c.StringNullDefaultValue, string.Empty, null);
     public string StringNullDefaultValue
     {
@@ -81,6 +81,19 @@ namespace Csla.Test.PropertyInfo
       set { SetProperty(StringNullDefaultValueProperty, value); }
     }
 
+    public static readonly PropertyInfo<string> ContainingTypeProperty = RegisterProperty<string>(c => c.ContainingType);
+    public string ContainingType
+    {
+      get { return GetProperty(ContainingTypeProperty); }
+      set { SetProperty(ContainingTypeProperty, value); }
+    }
+
+    public static readonly PropertyInfo<string> ContainingTypeNullProperty = RegisterProperty<string>(new PropertyInfo<string>(nameof(ContainingTypeNull), null, null, RelationshipTypes.None));
+    public string ContainingTypeNull
+    {
+      get { return GetProperty(ContainingTypeNullProperty); }
+      set { SetProperty(ContainingTypeNullProperty, value); }
+    }
 
     #endregion
   }

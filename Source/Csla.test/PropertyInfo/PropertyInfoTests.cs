@@ -60,7 +60,7 @@ namespace Csla.Test.PropertyInfo
       Assert.AreEqual("x", PropertyInfoRoot.NameDefaultValueProperty.DefaultValue);
       Assert.AreEqual("x", PropertyInfoRoot.NewPropertyInfoRoot(dataPortal).NameDefaultValue);
     }
-    
+
     [TestMethod]
     public void TestStringNullDefaultValue()
     {
@@ -68,6 +68,13 @@ namespace Csla.Test.PropertyInfo
 
       Assert.AreEqual(null, PropertyInfoRoot.StringNullDefaultValueProperty.DefaultValue);
       Assert.AreEqual(null, PropertyInfoRoot.NewPropertyInfoRoot(dataPortal).StringNullDefaultValue);
+    }
+
+    [TestMethod]
+    public void TestContainingType()
+    {
+      Assert.IsTrue(ReferenceEquals(typeof(PropertyInfoRoot).GetProperty(nameof(PropertyInfoRoot.ContainingType)), PropertyInfoRoot.ContainingTypeProperty.GetPropertyInfo()));      
+      Assert.IsTrue(ReferenceEquals(null, PropertyInfoRoot.ContainingTypeNullProperty.GetPropertyInfo()));
     }
   }
 }

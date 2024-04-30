@@ -101,7 +101,7 @@ namespace Csla
     /// </param>
     /// <param name="relationship">Relationship with referenced object.</param>
     public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship) 
-      : this(name, friendlyName, null, DataBindingFriendlyDefault(), relationship)
+      : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), relationship)
     { }
 
     /// <summary>

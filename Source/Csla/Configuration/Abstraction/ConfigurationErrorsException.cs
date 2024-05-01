@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="ConfigurationErrorsException.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -26,7 +27,7 @@ namespace Csla.Configuration
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
-    public ConfigurationErrorsException(string message)
+    public ConfigurationErrorsException(string? message)
       : base(message)
     {
 
@@ -37,7 +38,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
     /// <param name="innerException">Inner exception object.</param>
-    public ConfigurationErrorsException(string message, Exception innerException)
+    public ConfigurationErrorsException(string? message, Exception innerException)
        : base(message, innerException)
     {
 

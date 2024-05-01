@@ -125,11 +125,8 @@ namespace Csla.Test.State
     private static byte[] GetSession(SessionMessage session, ApplicationContext _applicationContext)
     {
       var info = new MobileFormatter(_applicationContext).SerializeToDTO(session);
-
       var ms = new MemoryStream();
-
       new CslaBinaryWriter(_applicationContext).Write(ms, info);
-
       ms.Position = 0;
       var array = ms.ToArray();
       return array;
@@ -148,7 +145,6 @@ namespace Csla.Test.State
     {
       var timeout = TimeSpan.Zero;
       await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.RetrieveSession(timeout));
-
     }
 
     [TestMethod]
@@ -157,7 +153,6 @@ namespace Csla.Test.State
       var cts = new CancellationTokenSource();
       var session = await _sessionManager.RetrieveSession(cts.Token);
       Assert.AreEqual(session, SessionValue.Session);
-
     }
 
     [TestMethod]
@@ -173,7 +168,6 @@ namespace Csla.Test.State
     {
       var timeout = TimeSpan.FromHours(1);
       await _sessionManager.SendSession(timeout);
-
       Assert.IsTrue(true);
     }
 
@@ -182,7 +176,6 @@ namespace Csla.Test.State
     {
       var timeout = TimeSpan.Zero;
       await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.SendSession(timeout));
-
     }
 
     [TestMethod]
@@ -205,7 +198,6 @@ namespace Csla.Test.State
     [TestMethod]
     public void  RetrieveCAchedSessionSession()
     {
-
       _sessionManager.GetCachedSession();
     }
   }

@@ -39,14 +39,11 @@ namespace Csla.Blazor.State
     /// Get state from cache.
     /// </summary>
     /// <param name="timeout">Time to wait before timing out</param>
-    private async Task<Session> GetState(TimeSpan timeout)
+    private async Task GetState(TimeSpan timeout)
     {
-      Session session = null;
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
-        session = await _sessionManager.RetrieveSession(timeout);
-
-      return session;
+        _ = await _sessionManager.RetrieveSession(timeout);
     }
 
     /// <summary>

@@ -13,6 +13,8 @@ using Csla.Serialization;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
 using Csla.Blazor.State.Messages;
+using System.Reflection;
+using System.Threading;
 
 namespace Csla.Blazor.WebAssembly.State
 {
@@ -49,12 +51,12 @@ namespace Csla.Blazor.WebAssembly.State
       return RetrieveSession(GetCancellationToken(timeout));
     }
 
-      /// <summary>
-      /// Retrieves the current user's session from
-      /// the web server to the wasm client
-      /// if SyncContextWithServer is true.
-      /// </summary>
-      public async Task<Session> RetrieveSession(CancellationToken ct)
+    /// <summary>
+    /// Retrieves the current user's session from
+    /// the web server to the wasm client
+    /// if SyncContextWithServer is true.
+    /// </summary>
+    public async Task<Session> RetrieveSession(CancellationToken ct)
     {
       if (_options.SyncContextWithServer)
       {
@@ -88,10 +90,9 @@ namespace Csla.Blazor.WebAssembly.State
             _session = GetSession();
           }
         }
-        catch(OperationCanceledException)
+        catch(OperationCanceledException ocex)
         {
-          _session = GetSession();
-          throw;
+          throw new TimeoutException ($"{this.GetType().FullName}.RetrieveSession.", ocex);
         }
       }
       else
@@ -113,13 +114,7 @@ namespace Csla.Blazor.WebAssembly.State
 
     private static CancellationToken GetCancellationToken(TimeSpan timeout)
     {
-      var cts = new CancellationTokenSource();
-      cts.CancelAfter(timeout);
-      if (timeout <= TimeSpan.Zero)
-      {
-        cts.Cancel();
-      }
-
+      var cts = new CancellationTokenSource(timeout);
       return cts.Token;
     }
 
@@ -141,9 +136,9 @@ namespace Csla.Blazor.WebAssembly.State
         {
           await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray(), ct);
         }
-        catch(OperationCanceledException )
+        catch(OperationCanceledException ocex)
         {
-          throw;
+          throw new TimeoutException($"{this.GetType().FullName}.SendSession.", ocex);
         }
       }
     }

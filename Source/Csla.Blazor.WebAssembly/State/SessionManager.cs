@@ -44,7 +44,17 @@ namespace Csla.Blazor.WebAssembly.State
     /// the web server to the wasm client
     /// if SyncContextWithServer is true.
     /// </summary>
-    public async Task<Session> RetrieveSession()
+    public Task<Session> RetrieveSession(TimeSpan timeout)
+    {
+      return RetrieveSession(GetCancellationToken(timeout));
+    }
+
+      /// <summary>
+      /// Retrieves the current user's session from
+      /// the web server to the wasm client
+      /// if SyncContextWithServer is true.
+      /// </summary>
+      public async Task<Session> RetrieveSession(CancellationToken ct)
     {
       if (_options.SyncContextWithServer)
       {
@@ -53,25 +63,35 @@ namespace Csla.Blazor.WebAssembly.State
           lastTouched = _session.LastTouched;
         var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
 
-        var stateResult = await client.GetFromJsonAsync<StateResult>(url);
-        if (stateResult.ResultStatus == ResultStatuses.Success)
+        try
         {
-          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
-          var buffer = new MemoryStream(stateResult.SessionData)
+          var stateResult = await client.GetFromJsonAsync<StateResult>(url, ct);
+
+
+          if (stateResult.ResultStatus == ResultStatuses.Success)
           {
-            Position = 0
-          };
-          var message = (SessionMessage)formatter.Deserialize(buffer);
-          _session = message.Session;
-          if (message.Principal is not null &&
-              ApplicationContext.GetRequiredService<AuthenticationStateProvider>() is CslaAuthenticationStateProvider provider)
+            var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+            var buffer = new MemoryStream(stateResult.SessionData)
+            {
+              Position = 0
+            };
+            var message = (SessionMessage)formatter.Deserialize(buffer);
+            _session = message.Session;
+            if (message.Principal is not null &&
+                ApplicationContext.GetRequiredService<AuthenticationStateProvider>() is CslaAuthenticationStateProvider provider)
+            {
+              provider.SetPrincipal(message.Principal);
+            }
+          }
+          else // NoUpdates
           {
-            provider.SetPrincipal(message.Principal);
+            _session = GetSession();
           }
         }
-        else // NoUpdates
+        catch(OperationCanceledException)
         {
           _session = GetSession();
+          throw;
         }
       }
       else
@@ -86,7 +106,29 @@ namespace Csla.Blazor.WebAssembly.State
     /// the wasm client to the web server 
     /// if SyncContextWithServer is true.
     /// </summary>
-    public async Task SendSession()
+    public Task SendSession(TimeSpan timeout)
+    {
+      return SendSession(GetCancellationToken(timeout));
+    }
+
+    private static CancellationToken GetCancellationToken(TimeSpan timeout)
+    {
+      var cts = new CancellationTokenSource();
+      cts.CancelAfter(timeout);
+      if (timeout <= TimeSpan.Zero)
+      {
+        cts.Cancel();
+      }
+
+      return cts.Token;
+    }
+
+    /// <summary>
+    /// Sends the current user's session from
+    /// the wasm client to the web server 
+    /// if SyncContextWithServer is true.
+    /// </summary>
+    public async Task SendSession(CancellationToken ct)
     {
       _session.Touch();
       if (_options.SyncContextWithServer)
@@ -95,7 +137,14 @@ namespace Csla.Blazor.WebAssembly.State
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);
         buffer.Position = 0;
-        await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray());
+        try
+        {
+          await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray(), ct);
+        }
+        catch(OperationCanceledException )
+        {
+          throw;
+        }
       }
     }
 

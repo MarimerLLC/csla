@@ -39,12 +39,14 @@ namespace Csla.Blazor.State
     /// Get state from cache.
     /// </summary>
     /// <param name="timeout">Time to wait before timing out</param>
-    private async Task GetState(TimeSpan timeout)
+    private async Task<Session> GetState(TimeSpan timeout)
     {
-      Session session;
+      Session session = null;
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
-        session = await _sessionManager.RetrieveSession();
+        session = await _sessionManager.RetrieveSession(timeout);
+
+      return session;
     }
 
     /// <summary>
@@ -57,12 +59,12 @@ namespace Csla.Blazor.State
     /// at which you know the user is navigating to another
     /// page.
     /// </remarks>
-    public void SaveState()
+    public void SaveState(TimeSpan timeout)
     {
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
       {
-        _sessionManager.SendSession();
+        _sessionManager.SendSession(timeout);
       }
     }
   }

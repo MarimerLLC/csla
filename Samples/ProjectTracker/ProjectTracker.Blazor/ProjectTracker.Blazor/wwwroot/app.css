@@ -49,3 +49,21 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.animated-box {
+  width: 200px;
+  height: 20px;
+  background: linear-gradient(to right, lightgrey 50%, darkgrey 50%);
+  background-size: 200% 50%;
+  animation: gradient 2s infinite linear;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: 0 0;
+  }
+}

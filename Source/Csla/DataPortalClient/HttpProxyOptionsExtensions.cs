@@ -41,7 +41,7 @@ namespace Csla.Channels.Http
     /// <param name="source">The options object.</param>
     /// <returns>The options object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static HttpProxyOptions UseTextSerialization(this HttpProxyOptions source)
+    public static HttpProxyOptions UseTextForSerialization(this HttpProxyOptions source)
     {
       if (source is null)
         throw new ArgumentNullException(nameof(source));
@@ -56,7 +56,7 @@ namespace Csla.Channels.Http
     /// <param name="source">The options object.</param>
     /// <returns>The options object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
-    public static HttpProxyOptions UseDefaultSerialization(this HttpProxyOptions source)
+    public static HttpProxyOptions UseDefaultForSerialization(this HttpProxyOptions source)
     {
       if (source is null)
         throw new ArgumentNullException(nameof(source));

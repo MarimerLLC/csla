@@ -63,21 +63,20 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     protected HttpContext HttpContext { get; set; }
 
-    private void InitializeUser()
+    private async Task InitializeUser()
     {
       if (ActiveCircuitState.CircuitExists)
       {
         Task<AuthenticationState> task;
         try
         {
-          task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+          await(task = AuthenticationStateProvider.GetAuthenticationStateAsync());
         }
         catch (InvalidOperationException ex)
         {
           task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
           string message = ex.Message;
-          if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
-              && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState)))
+          if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync) + " outside of the DI scope for a Razor component"))
           {
             SetHostPrincipal(task);
           }

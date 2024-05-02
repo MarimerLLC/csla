@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -55,19 +56,18 @@ namespace Csla.AspNetCore.Blazor
       InitializeUser();
     }
 
-    private void InitializeUser()
+    private async Task InitializeUser()
     {
       Task<AuthenticationState> task = default;
       try
       {
-        task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await (task = AuthenticationStateProvider.GetAuthenticationStateAsync());
       }
       catch (InvalidOperationException ex)
       {
         task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
         string message = ex.Message;
-        if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
-            && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState)))
+        if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync) + " outside of the DI scope for a Razor component"))
         {
           SetHostPrincipal(task);
         }

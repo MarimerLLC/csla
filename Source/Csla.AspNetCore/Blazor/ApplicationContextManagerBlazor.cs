@@ -70,13 +70,23 @@ namespace Csla.AspNetCore.Blazor
         Task<AuthenticationState> task;
         try
         {
-          await(task = AuthenticationStateProvider.GetAuthenticationStateAsync());
+          task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+          await task;
         }
         catch (InvalidOperationException ex)
         {
           task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
           string message = ex.Message;
-          if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync) + " outside of the DI scope for a Razor component"))
+
+          //check for pre .net 8 error text
+          bool oldGetCalledBeforeSetError = message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
+            && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState));
+
+          //check for .net 8+ error text
+          bool newGetCalledOutsideRazorScopeError = message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync)
+            + " outside of the DI scope for a Razor component", StringComparison.OrdinalIgnoreCase);
+
+          if (oldGetCalledBeforeSetError || newGetCalledOutsideRazorScopeError)
           {
             SetHostPrincipal(task);
           }

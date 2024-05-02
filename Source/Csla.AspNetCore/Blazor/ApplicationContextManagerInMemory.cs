@@ -53,7 +53,7 @@ namespace Csla.AspNetCore.Blazor
       ActiveCircuitState = activeCircuitState;
       CurrentPrincipal = UnauthenticatedPrincipal;
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
-      InitializeUser();
+      _ = InitializeUser();
     }
 
     private async Task InitializeUser()

@@ -85,7 +85,7 @@ namespace Csla.Rules
           var result = results[i];
           var resultRuleName = result.RuleName;
 
-          if(!rulesDone.Contains(resultRuleName))
+          if (!rulesDone.Contains(resultRuleName))
           {
             rulesDone.Add(resultRuleName);
 
@@ -102,6 +102,7 @@ namespace Csla.Rules
                                                       resultRuleName));
 
           var resultPrimaryProperty = result.PrimaryProperty;
+          var resultDisplayIndex = result.DisplayIndex;
 
           BrokenRule broken = new BrokenRule
           {
@@ -110,7 +111,8 @@ namespace Csla.Rules
             Property = resultPrimaryProperty == null
                        ? null : resultPrimaryProperty.Name,
             Severity = result.Severity,
-            OriginProperty = originPropertyName
+            OriginProperty = originPropertyName,
+            DisplayIndex = resultDisplayIndex
           };
 
           Add(broken);

@@ -153,7 +153,7 @@ namespace Csla.Rules.CommonRules
       if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
       {
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message, DisplayIndex) { Severity = Severity });
       }
     }
   }
@@ -224,7 +224,7 @@ namespace Csla.Rules.CommonRules
       if (value != null && value.ToString().Length > Max)
       {
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, Max);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message, DisplayIndex) { Severity = Severity });
       }
     }
   }
@@ -295,7 +295,7 @@ namespace Csla.Rules.CommonRules
       if (value != null && value.ToString().Length < Min)
       {
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, Min);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message, DisplayIndex) { Severity = Severity });
       }
     }
   }
@@ -383,7 +383,7 @@ namespace Csla.Rules.CommonRules
         else
           outValue = string.Format($"{{0:{Format}}}", Min);
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, outValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message, DisplayIndex) { Severity = Severity });
       }
     }
   }
@@ -471,7 +471,7 @@ namespace Csla.Rules.CommonRules
         else
           outValue = string.Format($"{{0:{Format}}}", Max);
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, outValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message, DisplayIndex) { Severity = Severity });
       }
     }
   }
@@ -601,7 +601,7 @@ namespace Csla.Rules.CommonRules
       if (!ruleSatisfied)
       {
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message, DisplayIndex) { Severity = Severity });
       }
     }
   }
@@ -642,6 +642,7 @@ namespace Csla.Rules.CommonRules
       : base(primaryProperty)
     {
       Priority = 1;
+      DisplayIndex = 1;
     }
 
     /// <summary>

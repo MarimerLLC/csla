@@ -156,11 +156,11 @@ namespace Csla.Test.State
     }
 
     [TestMethod]
-    public async Task RetrieveSession_WithCancelledCancellationToken_ShouldThrowTimeoutException()
+    public async Task RetrieveSession_WithCancelledCancellationToken_ShouldThrowTaskCanceledException()
     {
       var cts = new CancellationTokenSource();
       cts.Cancel();
-      await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.RetrieveSession(cts.Token));
+      await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _sessionManager.RetrieveSession(cts.Token));
     }
 
     [TestMethod]
@@ -187,11 +187,11 @@ namespace Csla.Test.State
     }
 
     [TestMethod]
-    public async Task SendSession_WithCancelledCancellationToken_ShouldThrowTimeoutException()
+    public async Task SendSession_WithCancelledCancellationToken_ShouldThrowTaskCanceledException()
     {
       var cts = new CancellationTokenSource();
       cts.Cancel();
-      await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.SendSession(cts.Token));
+      await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _sessionManager.SendSession(cts.Token));
     }
 
 

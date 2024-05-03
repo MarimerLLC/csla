@@ -1,6 +1,5 @@
 ﻿@page "/counter"
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
-@implements IDisposable /* CSLA wasm pages must be IDisposable */
 @inject Csla.Blazor.State.StateManager StateManager
 
 <PageTitle>Counter</PageTitle>
@@ -25,11 +24,5 @@
     private void IncrementCount()
     {
         currentCount++;
-    }
-
-    public void Dispose()
-    {
-        // wasm pages _must_ save state back to server
-        StateManager.SaveState();
     }
 }

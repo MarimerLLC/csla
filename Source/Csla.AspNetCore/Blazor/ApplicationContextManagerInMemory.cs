@@ -67,17 +67,11 @@ namespace Csla.AspNetCore.Blazor
       catch (InvalidOperationException ex)
       {
         task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
+
         string message = ex.Message;
-
-        //check for pre .net 8 error text
-        bool oldGetCalledBeforeSetError = message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync))
-          && message.Contains(nameof(IHostEnvironmentAuthenticationStateProvider.SetAuthenticationState));
-
-        //check for .net 8+ error text
-        bool newGetCalledOutsideRazorScopeError = message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync) 
-          + " outside of the DI scope for a Razor component", StringComparison.OrdinalIgnoreCase);
-
-        if (oldGetCalledBeforeSetError || newGetCalledOutsideRazorScopeError)
+        //see ms error https://github.com/dotnet/aspnetcore/blob/87e324a61dcd15db4086b8a8ca7bd74ca1e0a513/src/Components/Server/src/Circuits/ServerAuthenticationStateProvider.cs#L16
+        //not much safe to test on except the error type and the use of this method name in message.
+        if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync)))
         {
           SetHostPrincipal(task);
         }

@@ -63,14 +63,14 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     protected HttpContext HttpContext { get; set; }
 
-    private void InitializeUser()
+    private async void InitializeUser()
     {
       if (ActiveCircuitState.CircuitExists)
       {
         Task<AuthenticationState> task;
         try
         {
-          task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+          await (task = AuthenticationStateProvider.GetAuthenticationStateAsync());
         }
         catch (InvalidOperationException ex)
         {

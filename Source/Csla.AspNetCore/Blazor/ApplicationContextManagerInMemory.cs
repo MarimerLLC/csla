@@ -55,12 +55,12 @@ namespace Csla.AspNetCore.Blazor
       InitializeUser();
     }
 
-    private void InitializeUser()
+    private async void InitializeUser()
     {
       Task<AuthenticationState> task = default;
       try
       {
-        task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await (task = AuthenticationStateProvider.GetAuthenticationStateAsync());
       }
       catch (InvalidOperationException ex)
       {

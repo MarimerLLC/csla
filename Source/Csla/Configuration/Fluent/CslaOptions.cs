@@ -28,7 +28,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets a reference to the current services collection.
     /// </summary>
-    public IServiceCollection Services { get; private set; }
+    public IServiceCollection Services { get; }
 
     /// <summary>
     /// Gets or sets the type for the IContextManager to
@@ -66,26 +66,26 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the SecurityOptions instance.
     /// </summary>
-    internal SecurityOptions SecurityOptions { get; private set; } = new SecurityOptions();
+    internal SecurityOptions SecurityOptions { get; } = new SecurityOptions();
     /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
-    internal SerializationOptions SerializationOptions { get; private set; } = new SerializationOptions();
+    internal SerializationOptions SerializationOptions { get; } = new SerializationOptions();
     /// <summary>
     /// Gets the DataPortalClientOptions instance.
     /// </summary>
-    internal DataPortalOptions DataPortalOptions { get; private set; }
+    internal DataPortalOptions DataPortalOptions { get; }
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>
-    public DataOptions DataOptions { get; private set; } = new DataOptions();
+    public DataOptions DataOptions { get; } = new DataOptions();
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>
-    public BindingOptions BindingOptions { get; private set; } = new BindingOptions();
+    public BindingOptions BindingOptions { get; } = new BindingOptions();
     /// <summary>
     /// Gets the CoreOptions instance.
     /// </summary>
-    internal CoreOptions CoreOptions { get; private set; } = new CoreOptions();
+    internal CoreOptions CoreOptions { get; } = new CoreOptions();
   }
 }

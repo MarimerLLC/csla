@@ -231,12 +231,12 @@ namespace Csla.Xaml
           p.PropertyChanged -= P_PropertyChanged;
       }
 
-      public PropertyInfo Parent { get; private set; }
-      public object Source { get; private set; }
-      public string PropertyName { get; private set; }
+      public PropertyInfo Parent { get; }
+      public object Source { get; }
+      public string PropertyName { get; }
     }
 
-    private List<SourceReference> _sources = new List<SourceReference>();
+    private readonly List<SourceReference> _sources = new List<SourceReference>();
 
     private void SetSource()
     {

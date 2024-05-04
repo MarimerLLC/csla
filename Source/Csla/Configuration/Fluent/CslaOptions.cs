@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="CslaConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -19,9 +20,10 @@ namespace Csla.Configuration
     /// Creates an instance of the type
     /// </summary>
     /// <param name="services">Services collection</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public CslaOptions(IServiceCollection services)
     {
-      Services = services;
+      Services = services ?? throw new ArgumentNullException(nameof(services));
       DataPortalOptions = new DataPortalOptions(this);
     }
 
@@ -34,7 +36,7 @@ namespace Csla.Configuration
     /// Gets or sets the type for the IContextManager to
     /// be used by ApplicationContext.
     /// </summary>
-    public Type ContextManagerType { get; set; }
+    public Type? ContextManagerType { get; set; }
 
     /// <summary>
     /// Sets a value indicating whether CSLA

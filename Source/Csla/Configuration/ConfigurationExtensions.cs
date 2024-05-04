@@ -1,4 +1,5 @@
-﻿#if NET462_OR_GREATER || NETSTANDARD2_0 || NET6_0_OR_GREATER
+﻿#nullable enable
+#if NET462_OR_GREATER || NETSTANDARD2_0 || NET6_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -22,6 +23,7 @@ namespace Csla.Configuration
     /// Add CSLA .NET services for use by the application.
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddCsla(this IServiceCollection services)
     {
       return AddCsla(services, null);
@@ -32,7 +34,8 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
     /// <param name="options">Options for configuring CSLA .NET</param>
-    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
+    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions>? options)
     {
       // Custom configuration
       var cslaOptions = new CslaOptions(services);

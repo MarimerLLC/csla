@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="CslaDataPortalConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -21,6 +22,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaDataPortalConfiguration
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions DataPortal(this CslaOptions config)
     {
       return DataPortal(config, null);
@@ -31,8 +33,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config"></param>
     /// <param name="options"></param>
-    public static CslaOptions DataPortal(this CslaOptions config, Action<DataPortalOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions DataPortal(this CslaOptions config, Action<DataPortalOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       options?.Invoke(config.DataPortalOptions);
       return config;
     }
@@ -42,8 +48,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config"></param>
     /// <param name="options"></param>
-    public static DataPortalOptions ClientSideDataPortal(this DataPortalOptions config, Action<DataPortalClientOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static DataPortalOptions ClientSideDataPortal(this DataPortalOptions config, Action<DataPortalClientOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       options?.Invoke(config.DataPortalClientOptions);
       return config;
     }
@@ -53,6 +63,7 @@ namespace Csla.Configuration
     /// data portal.
     /// </summary>
     /// <param name="config">The configuration that is to be affected</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalOptions AddServerSideDataPortal(this DataPortalOptions config)
     {
       return AddServerSideDataPortal(config, null);
@@ -64,8 +75,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">The configuration that is to be affected</param>
     /// <param name="options">The action that is to be used to influence the configuration options</param>
-    public static DataPortalOptions AddServerSideDataPortal(this DataPortalOptions config, Action<DataPortalServerOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static DataPortalOptions AddServerSideDataPortal(this DataPortalOptions config, Action<DataPortalServerOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       options?.Invoke(config.DataPortalServerOptions);
       return config;
     }

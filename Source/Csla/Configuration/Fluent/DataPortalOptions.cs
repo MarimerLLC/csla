@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="DataPortalClientOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -16,9 +17,10 @@ namespace Csla.Configuration
     /// Creates an instance of the type
     /// </summary>
     /// <param name="cslaOptions">CslaOptions object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="cslaOptions"/> is <see langword="null"/>.</exception>
     public DataPortalOptions(CslaOptions cslaOptions)
     {
-      CslaOptions = cslaOptions;
+      CslaOptions = cslaOptions ?? throw new ArgumentNullException(nameof(cslaOptions));
       DataPortalClientOptions = new DataPortalClientOptions(this);
       DataPortalServerOptions = new DataPortalServerOptions();
     }
@@ -38,7 +40,7 @@ namespace Csla.Configuration
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public string VersionRoutingTag { get; set; }
+    public string? VersionRoutingTag { get; set; }
 
     /// <summary>
     /// Gets or sets the data portal client options

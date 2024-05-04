@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="CslaSecurityConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -16,8 +17,12 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaSecurityConfiguration
     /// </summary>
-    public static CslaOptions Security(this CslaOptions config, Action<SecurityOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions Security(this CslaOptions config, Action<SecurityOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       options?.Invoke(config.SecurityOptions);
       return config;
     }

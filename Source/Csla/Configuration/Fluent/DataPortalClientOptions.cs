@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="DataPortalClientOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -16,15 +17,16 @@ namespace Csla.Configuration
   /// </summary>
   public class DataPortalClientOptions
   {
+    private readonly DataPortalOptions _parent;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    /// <param name="dataPortalOptions"><paramref name="dataPortalOptions"/> is <see langword="null"/>.</param>
     public DataPortalClientOptions(DataPortalOptions dataPortalOptions)
     {
-      _parent = dataPortalOptions;
+      _parent = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
-
-    private readonly DataPortalOptions _parent;
 
     /// <summary>
     /// Gets a reference to the current services collection.

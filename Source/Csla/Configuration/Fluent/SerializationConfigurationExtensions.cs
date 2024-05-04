@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="CslaSerializationConfiguration.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -16,8 +17,12 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaSerializationConfiguration
     /// </summary>
-    public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       options?.Invoke(config.SerializationOptions);
       return config;
     }

@@ -21,11 +21,11 @@ namespace Csla.Test.State
   [TestClass]
   public class SessionManagerTests
   {
-    private SessionManager _sessionManager;
+    private SessionManager _SessionManager;
     private SessionMessage SessionValue;
 
     [TestInitialize]
-    public void Initialize()
+    public async Task Initialize()
     {
       var mockServiceProvider = new Mock<IServiceProvider>();
 
@@ -58,8 +58,6 @@ namespace Csla.Test.State
       // Mock IServiceProvider
       mockServiceProvider.Setup(x => x.GetService(typeof(Csla.Server.IDataPortalActivator))).Returns(mockActivator.Object);
 
-      // Mock IServiceProvider
-
       // Mock IContextManager
       var mockContextManager = new Mock<IContextManager>();
       mockContextManager.Setup(x => x.IsValid).Returns(true);
@@ -79,8 +77,8 @@ namespace Csla.Test.State
       var _applicationContext = new ApplicationContext(mockApplicationContextAccessor.Object);
 
 
-      _sessionManager = new SessionManager(_applicationContext, GetHttpClient(SessionValue, _applicationContext), new BlazorWebAssemblyConfigurationOptions { SyncContextWithServer = true });
-      _sessionManager.RetrieveSession(TimeSpan.FromHours(1));
+      _SessionManager = new SessionManager(_applicationContext, GetHttpClient(SessionValue, _applicationContext), new BlazorWebAssemblyConfigurationOptions { SyncContextWithServer = true });
+      await _SessionManager.RetrieveSession(TimeSpan.FromHours(1));
     }
 
     private static HttpClient GetHttpClient(SessionMessage session, ApplicationContext _applicationContext)
@@ -97,8 +95,6 @@ namespace Csla.Test.State
          // prepare the expected response of the mocked http call
          .ReturnsAsync((HttpRequestMessage request, CancellationToken cancellationToken) =>
          {
-
-
            if (cancellationToken.IsCancellationRequested)
            {
              throw new OperationCanceledException(cancellationToken);
@@ -136,7 +132,7 @@ namespace Csla.Test.State
     public async Task RetrieveSession_WithTimeoutValue_ShouldNotThrowException()
     {
       var timeout = TimeSpan.FromHours(1);
-      var session = await _sessionManager.RetrieveSession(timeout);
+      var session = await _SessionManager.RetrieveSession(timeout);
       Assert.AreEqual(session, SessionValue.Session);
     }
 
@@ -144,14 +140,14 @@ namespace Csla.Test.State
     public async Task RetrieveSession_WithZeroTimeout_ShouldThrowTimeoutException()
     {
       var timeout = TimeSpan.Zero;
-      await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.RetrieveSession(timeout));
+      await Assert.ThrowsExceptionAsync<TimeoutException>(() => _SessionManager.RetrieveSession(timeout));
     }
 
     [TestMethod]
     public async Task RetrieveSession_WithValidCancellationToken_ShouldNotThrowException()
     {
       var cts = new CancellationTokenSource();
-      var session = await _sessionManager.RetrieveSession(cts.Token);
+      var session = await _SessionManager.RetrieveSession(cts.Token);
       Assert.AreEqual(session, SessionValue.Session);
     }
 
@@ -160,14 +156,14 @@ namespace Csla.Test.State
     {
       var cts = new CancellationTokenSource();
       cts.Cancel();
-      await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _sessionManager.RetrieveSession(cts.Token));
+      await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _SessionManager.RetrieveSession(cts.Token));
     }
 
     [TestMethod]
     public async Task SendSession_WithTimeoutValue_ShouldNotThrowException()
     {
       var timeout = TimeSpan.FromHours(1);
-      await _sessionManager.SendSession(timeout);
+      await _SessionManager.SendSession(timeout);
       Assert.IsTrue(true);
     }
 
@@ -175,14 +171,14 @@ namespace Csla.Test.State
     public async Task SendSession_WithZeroTimeout_ShouldThrowTimeoutException()
     {
       var timeout = TimeSpan.Zero;
-      await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.SendSession(timeout));
+      await Assert.ThrowsExceptionAsync<TimeoutException>(() => _SessionManager.SendSession(timeout));
     }
 
     [TestMethod]
     public async Task SendSession_WithValidCancellationToken_ShouldNotThrowException()
     {
       var cts = new CancellationTokenSource();
-      await _sessionManager.SendSession(cts.Token);
+      await _SessionManager.SendSession(cts.Token);
       Assert.IsTrue(true);
     }
 
@@ -191,14 +187,14 @@ namespace Csla.Test.State
     {
       var cts = new CancellationTokenSource();
       cts.Cancel();
-      await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _sessionManager.SendSession(cts.Token));
+      await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _SessionManager.SendSession(cts.Token));
     }
 
 
     [TestMethod]
     public void  RetrieveCAchedSessionSession()
     {
-      _sessionManager.GetCachedSession();
+      _SessionManager.GetCachedSession();
     }
   }
 }

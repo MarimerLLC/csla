@@ -57,12 +57,12 @@ namespace Csla.Blazor.State
     /// at which you know the user is navigating to another
     /// page.
     /// </remarks>
-    public void SaveState()
+    public async Task SaveState()
     {
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
       {
-        _sessionManager.SendSession();
+        await _sessionManager.SendSession();
       }
     }
   }

@@ -21,6 +21,8 @@ namespace Csla.Channels.Http
   /// </summary>
   public class HttpProxy : DataPortalProxy
   {
+    private HttpClient _httpClient;
+
     /// <summary>
     /// Creates an instance of the type, initializing
     /// it to use the supplied HttpClient object and options.
@@ -42,7 +44,7 @@ namespace Csla.Channels.Http
     /// Current options for the proxy.
     /// </summary>
     protected HttpProxyOptions Options { get; set; }
-    private HttpClient _httpClient;
+
     private string VersionRoutingTag { get; set; }
 
 #nullable enable

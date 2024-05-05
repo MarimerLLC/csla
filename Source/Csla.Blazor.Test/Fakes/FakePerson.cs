@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Csla.Blazor.Test.Rules;
+using Csla.Test;
 
 namespace Csla.Blazor.Test.Fakes
 {
@@ -92,6 +93,12 @@ namespace Csla.Blazor.Test.Fakes
       BusinessRules.CheckRules();
     }
 
+    [RunLocal]
+    [Insert]
+    private void Insert()
+    {
+      TestResults.Add("FakePerson", "Inserted");
+    }
     #endregion
 
   }

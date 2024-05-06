@@ -1,5 +1,4 @@
 ﻿using Csla.Blazor.Test.Fakes;
-using Csla.Test;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -24,18 +23,23 @@ namespace Csla.Blazor.Test
       var appCntxt = _testDIContext.CreateTestApplicationContext();
       var vm = new ViewModel<FakePerson>(appCntxt)
       {
-        ManageObjectLifetime = true,
         Model = person,
       };
-      SetupErrorHandler(vm);
-      TestResults.Add("FakePerson", string.Empty);
-      // The second insert with the same key will result in an exception, so the insert will fail
+      var error = false;
+      vm.Error += () =>
+      {
+        error = true;
+        // these fields should be populated when Error event is triggered
+        Assert.IsNotNull(vm.Exception);
+        Assert.IsNotNull(vm.ViewModelErrorText);
+      };
+      person.FirstName = FakePerson.FirstNameFailOnInsertValue;
 
       // Act
       await vm.SaveAsync();
 
       // Assert
-      Assert.AreEqual("Invoked", TestResults.GetResult("ErrorHandler"));
+      Assert.IsTrue(error); // Error event should have been triggered
       Assert.IsNotNull(vm.Exception);
       Assert.IsNotNull(vm.ViewModelErrorText);
     }
@@ -48,30 +52,24 @@ namespace Csla.Blazor.Test
       var appCntxt = _testDIContext.CreateTestApplicationContext();
       var vm = new ViewModel<FakePerson>(appCntxt)
       {
-        ManageObjectLifetime = true,
         Model = person,
       };
-      SetupErrorHandler(vm);
+      var error = false;
+      vm.Error += () =>
+      {
+        error = true;
+      };
 
       // Act
       await vm.SaveAsync();
 
       // Assert
-      Assert.AreEqual("Inserted", TestResults.GetResult("FakePerson"));
-      Assert.AreEqual(string.Empty, TestResults.GetResult("ErrorHandler"));
+      Assert.IsFalse(error); // Error event shouldn't have been triggered
       Assert.IsNull(vm.Exception);
       Assert.IsNull(vm.ViewModelErrorText);
     }
 
     #region Helper Methods
-
-    private void SetupErrorHandler(ViewModel<FakePerson> vm)
-    {
-      vm.Error += () =>
-      {
-        TestResults.Add("ErrorHandler", "Invoked");
-      };
-    }
 
     FakePerson GetValidFakePerson()
     {

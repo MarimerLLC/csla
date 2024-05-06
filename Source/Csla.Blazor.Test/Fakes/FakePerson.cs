@@ -13,6 +13,8 @@ namespace Csla.Blazor.Test.Fakes
     public static Csla.PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
     public static Csla.PropertyInfo<FakePersonEmailAddresses> EmailAddressesProperty = RegisterProperty<FakePersonEmailAddresses>(nameof(EmailAddresses));
 
+    public static string FirstNameFailOnInsertValue = "FailOnInsert";
+
     #region Properties 
 
     [MaxLength(25)]
@@ -93,11 +95,12 @@ namespace Csla.Blazor.Test.Fakes
       BusinessRules.CheckRules();
     }
 
-    [RunLocal]
     [Insert]
     private void Insert()
     {
-      TestResults.Add("FakePerson", "Inserted");
+      if (FirstName == FirstNameFailOnInsertValue) {
+        throw new Exception("Insert failed");
+      }
     }
     #endregion
 

@@ -25,13 +25,16 @@ namespace Csla.Blazor.Test
       {
         Model = person,
       };
-      var error = false;
-      vm.Error += () =>
+      var error = 0;
+      vm.Error += (o, e) =>
       {
-        error = true;
+        error++;
+        Assert.IsNotNull(e.Error);
         // these fields should be populated when Error event is triggered
         Assert.IsNotNull(vm.Exception);
         Assert.IsNotNull(vm.ViewModelErrorText);
+        Assert.AreSame(e.Error, vm.Exception);
+        Assert.AreSame(o, vm);
       };
       person.FirstName = FakePerson.FirstNameFailOnInsertValue;
 
@@ -39,7 +42,7 @@ namespace Csla.Blazor.Test
       await vm.SaveAsync();
 
       // Assert
-      Assert.IsTrue(error); // Error event should have been triggered
+      Assert.AreEqual(1, error); // Error event should have been triggered only once
       Assert.IsNotNull(vm.Exception);
       Assert.IsNotNull(vm.ViewModelErrorText);
     }
@@ -55,7 +58,7 @@ namespace Csla.Blazor.Test
         Model = person,
       };
       var error = false;
-      vm.Error += () =>
+      vm.Error += (o, e) =>
       {
         error = true;
       };

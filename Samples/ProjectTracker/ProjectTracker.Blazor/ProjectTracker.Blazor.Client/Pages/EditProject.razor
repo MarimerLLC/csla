@@ -29,7 +29,14 @@ else if (vm.Model == null)
 }
 else
 {
-    <h1>@vm.Model.Name</h1>
+    @if (string.IsNullOrWhiteSpace(vm.Model.Name))
+    {
+      <h1>Edit Project</h1>
+    }
+    else
+    {
+      <h1>@vm.Model.Name</h1>
+    }
     <p>
         <a href="projects">Project list</a>
     </p>

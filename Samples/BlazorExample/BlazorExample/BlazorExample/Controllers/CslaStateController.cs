@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Csla;
 using Csla.State;
+using Csla.Blazor.State.Messages;
 
 namespace BlazorExample.Controllers
 {
@@ -15,7 +16,7 @@ namespace BlazorExample.Controllers
   public class CslaStateController(ApplicationContext applicationContext, ISessionManager sessionManager) :
       Csla.AspNetCore.Blazor.State.StateController(applicationContext, sessionManager)
   {
-    public override byte[] Get() => base.Get();
+    public override StateResult Get(long lastTouched) => base.Get(lastTouched);
 
     public override void Put(byte[] updatedSessionData) => base.Put(updatedSessionData);
   }

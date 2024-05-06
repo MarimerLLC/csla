@@ -1,7 +1,7 @@
 ﻿@page "/counter"
 @rendermode @(new InteractiveAutoRenderMode(prerender: false))
-@implements IDisposable /* CSLA wasm pages must be IDisposable */
 @inject Csla.Blazor.State.StateManager StateManager
+@inject ApplicationContext applicationContext
 
 <PageTitle>Counter</PageTitle>
 
@@ -20,16 +20,19 @@
     {
         // Every page _must_ initialize the state manager
         await StateManager.InitializeAsync();
+        if (!applicationContext.LocalContext.Contains("counter"))
+        {
+            applicationContext.LocalContext["counter"] = 0;
+            StateManager.SaveState();
+        }
+        currentCount = (int)applicationContext.LocalContext["counter"];
+        StateHasChanged();
     }
 
     private void IncrementCount()
     {
         currentCount++;
-    }
-
-    public void Dispose()
-    {
-        // wasm pages _must_ save state back to server
+        applicationContext.LocalContext["counter"] = currentCount;
         StateManager.SaveState();
     }
 }

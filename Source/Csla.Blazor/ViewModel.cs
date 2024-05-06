@@ -40,6 +40,10 @@ namespace Csla.Blazor
     /// </summary>
     public event Action Saved;
     /// <summary>
+    /// Event raised when failed to save Model.
+    /// </summary>
+    public event EventHandler<Core.ErrorEventArgs> Error;
+    /// <summary>
     /// Event raised when Model is changing.
     /// </summary>
     public event Action<T, T> ModelChanging;
@@ -284,6 +288,9 @@ namespace Csla.Blazor
       {
         HookChangedEvents(Model);
         IsBusy = false;
+        if (Exception != null) {
+          Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception)); 
+        }
       }
     }
 

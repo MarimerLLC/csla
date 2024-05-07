@@ -64,6 +64,10 @@ namespace Csla.Blazor.State
       {
         _sessionManager.SendSession();
       }
+      else
+      {
+        _sessionManager.UpdateSession(null);
+      }
     }
   }
 }

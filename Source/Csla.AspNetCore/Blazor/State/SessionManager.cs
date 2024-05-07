@@ -26,12 +26,15 @@ namespace Csla.Blazor.State
     /// </summary>
     public Session GetSession()
     {
-      Session result;
       var key = _sessionIdManager.GetSessionId();
-      if (!_sessions.ContainsKey(key))
-        _sessions.TryAdd(key, []);
-      result = _sessions[key];
-      result.Touch();
+      if (!_sessions.TryGetValue(key, out var result))
+      {
+        if (_sessions.TryAdd(key, []))
+        {
+          result = _sessions[key];
+          result.Touch();
+        }
+      }
       return result;
     }
 
@@ -41,10 +44,9 @@ namespace Csla.Blazor.State
     /// <param name="newSession">Current user session data</param>
     public void UpdateSession(Session newSession)
     {
+      var existingSession = GetSession();
       if (newSession != null)
       {
-        var key = _sessionIdManager.GetSessionId();
-        var existingSession = _sessions[key];
         Replace(newSession, existingSession);
         existingSession.Touch();
       }

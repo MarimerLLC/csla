@@ -1,7 +1,9 @@
 ﻿@page "/counter"
-@rendermode @(new InteractiveAutoRenderMode(prerender: false))
+@* @rendermode @(new InteractiveAutoRenderMode(prerender: false)) *@
+@rendermode InteractiveAuto
 @inject Csla.Blazor.State.StateManager StateManager
 @inject ApplicationContext applicationContext
+@inject RenderModeProvider renderModeProvider
 
 <PageTitle>Counter</PageTitle>
 
@@ -9,24 +11,38 @@
 
 <p role="status">Current count: @currentCount</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<p class="text-info">@renderModeText</p>
+
+@if (IsInteractive)
+{
+    <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+}
 
 @code {
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
     private int currentCount = 0;
+    private bool IsInteractive = false;
+    private string? renderModeText;
 
     protected override async Task OnInitializedAsync()
     {
         // Every page _must_ initialize the state manager
         await StateManager.InitializeAsync();
-        if (!applicationContext.LocalContext.Contains("counter"))
+        var renderMode = renderModeProvider.GetRenderMode(this);
+        renderModeText = renderMode.ToString();
+        IsInteractive = renderMode == RenderModes.WasmInteractive || renderMode == RenderModes.ServerInteractive;
+        if (IsInteractive)
         {
-            applicationContext.LocalContext["counter"] = 0;
-            StateManager.SaveState();
+            if (!applicationContext.LocalContext.Contains("counter"))
+            {
+                applicationContext.LocalContext["counter"] = 0;
+                StateManager.SaveState();
+            }
+            var tmp = applicationContext.LocalContext["counter"];
+            currentCount = tmp != null ? (int)tmp : 0;
+            StateHasChanged();
         }
-        currentCount = (int)applicationContext.LocalContext["counter"];
-        StateHasChanged();
     }
 
     private void IncrementCount()

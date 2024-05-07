@@ -1,6 +1,8 @@
+using BlazorExample;
 using BlazorExample.Client.Components.Pages;
 using BlazorExample.Components;
 using Csla.Configuration;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +14,11 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 builder.Services.AddCascadingAuthenticationState();
+
+// Add render mode detection services
+builder.Services.AddTransient<RenderModeProvider>();
+builder.Services.AddScoped<ActiveCircuitState>();
+builder.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
 
 // CSLA requires AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();

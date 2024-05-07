@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Blazor.WebAssembly" Version="8.1.1-R24050703" />
+    <PackageReference Include="Csla.Blazor.WebAssembly" Version="8.1.1-R24050706" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
   </ItemGroup>
 

@@ -1,10 +1,11 @@
 ﻿@page "/editperson"
 @page "/editperson/{id}"
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+@rendermode InteractiveAuto
 @inject Csla.Blazor.State.StateManager StateManager
 @inject Csla.IDataPortal<PersonEdit> personEditPortal
 @inject Csla.Blazor.ViewModel<PersonEdit> vm
 @inject NavigationManager NavigationManager
+@inject RenderModeProvider renderModeProvider
 
 <h1>Edit Person</h1>
 
@@ -12,16 +13,13 @@
 
 <p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
 
-@if (vm.Model == null)
+@if (!IsInteractive)
 {
-  <AuthorizeView>
-    <Authorized>
-      <p>Loading Person...</p>
-    </Authorized>
-    <NotAuthorized>
-      <p>Not authorized</p>
-    </NotAuthorized>
-  </AuthorizeView>
+    <p>Initializing Blazor interactive runtime...</p>
+}
+else if (vm.Model == null)
+{
+  <p>Loading data...</p>
 }
 else
 {
@@ -71,18 +69,23 @@ else
     public string? id { get; set; }
     [CascadingParameter]
     private Task<AuthenticationState>? authenticationState { get; set; }
+    private bool IsInteractive;
 
     protected override async Task OnInitializedAsync()
     {
         // Every page _must_ initialize the state manager
         await StateManager.InitializeAsync();
+        IsInteractive = renderModeProvider.IsComponentInteractive(this);
 
-        vm.Saved += () => NavigationManager.NavigateTo("listpersons");
-        vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+        if (IsInteractive)
+        {
+          vm.Saved += () => NavigationManager.NavigateTo("listpersons");
+          vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
 
-        if (string.IsNullOrWhiteSpace(id))
-            await vm.RefreshAsync(() => personEditPortal.CreateAsync());
-        else
-            await vm.RefreshAsync(() => personEditPortal.FetchAsync(int.Parse(id)));
+          if (string.IsNullOrWhiteSpace(id))
+              await vm.RefreshAsync(() => personEditPortal.CreateAsync());
+          else
+              await vm.RefreshAsync(() => personEditPortal.FetchAsync(int.Parse(id)));
+        }
     }
 }

@@ -18,5 +18,11 @@ namespace BlazorExample
         result = RenderModes.ServerStatic;
       return result;
     }
+
+    public bool IsComponentInteractive(ComponentBase component)
+    {
+      var renderMode = GetRenderMode(component);
+      return renderMode == RenderModes.WasmInteractive || renderMode == RenderModes.ServerInteractive;
+    }
   }
 }

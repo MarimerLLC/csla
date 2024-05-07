@@ -32,6 +32,7 @@
         var renderMode = renderModeProvider.GetRenderMode(this);
         renderModeText = renderMode.ToString();
         IsInteractive = renderMode == RenderModes.WasmInteractive || renderMode == RenderModes.ServerInteractive;
+
         if (IsInteractive)
         {
             if (!applicationContext.LocalContext.Contains("counter"))

@@ -4,17 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Csla.Blazor.WebAssembly.State;
 using Csla.State;
-using Moq;
 using System.Net.Http;
 using Csla.Blazor.WebAssembly.Configuration;
 using Csla.Core;
 using Csla.Runtime;
-using Moq.Protected;
 using System.Net;
 using Csla.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Components.Authorization;
+using NSubstitute;
 
 namespace Csla.Test.State
 {
@@ -27,13 +26,13 @@ namespace Csla.Test.State
     [TestInitialize]
     public void Initialize()
     {
-      var mockServiceProvider = new Mock<IServiceProvider>();
+      var mockServiceProvider = Substitute.For<IServiceProvider>();
 
       // Mock AuthenticationStateProvider
-      var mockAuthStateProvider = new Mock<AuthenticationStateProvider>();
+      var mockAuthStateProvider = Substitute.For<AuthenticationStateProvider>();
 
       // Mock IServiceProvider
-      mockServiceProvider.Setup(x => x.GetService(typeof(AuthenticationStateProvider))).Returns(mockAuthStateProvider.Object);
+      mockServiceProvider.GetService(typeof(AuthenticationStateProvider)).Returns(mockAuthStateProvider);
 
       _sessionValue = new SessionMessage
       {
@@ -44,73 +43,59 @@ namespace Csla.Test.State
       };
 
       // Mock ISerializationFormatter
-      var mockFormatter = new Mock<ISerializationFormatter>();
-      mockFormatter.Setup(x => x.Serialize(It.IsAny<Stream>(), It.IsAny<object>()));
-      mockFormatter.Setup(x => x.Deserialize(It.IsAny<Stream>())).Returns(_sessionValue);
+      var mockFormatter = Substitute.For<ISerializationFormatter>();
+      mockFormatter.Serialize(Arg.Any<Stream>(), Arg.Any<object>());
+      mockFormatter.Deserialize(Arg.Any<Stream>()).Returns(_sessionValue);
 
       // Mock IServiceProvider
-      mockServiceProvider.Setup(x => x.GetService(typeof(Csla.Serialization.Mobile.MobileFormatter))).Returns(mockFormatter.Object);
+      mockServiceProvider.GetService(typeof(Csla.Serialization.Mobile.MobileFormatter)).Returns(mockFormatter);
 
-      var mockActivator = new Mock<Csla.Server.IDataPortalActivator>();
-      mockActivator.Setup(x => x.CreateInstance(It.Is<Type>(t => t == typeof(Csla.Serialization.Mobile.MobileFormatter)))).Returns(mockFormatter.Object);
-      mockActivator.Setup(x => x.InitializeInstance(It.IsAny<object>()));
+      var mockActivator = Substitute.For<Csla.Server.IDataPortalActivator>();
+      mockActivator.CreateInstance(Arg.Is<Type>(t => t == typeof(Csla.Serialization.Mobile.MobileFormatter))).Returns(mockFormatter);
+      mockActivator.InitializeInstance(Arg.Any<object>());
 
       // Mock IServiceProvider
-      mockServiceProvider.Setup(x => x.GetService(typeof(Csla.Server.IDataPortalActivator))).Returns(mockActivator.Object);
+      mockServiceProvider.GetService(typeof(Csla.Server.IDataPortalActivator)).Returns(mockActivator);
 
       // Mock IContextManager
-      var mockContextManager = new Mock<IContextManager>();
-      mockContextManager.Setup(x => x.IsValid).Returns(true);
+      var mockContextManager = Substitute.For<IContextManager>();
+      mockContextManager.IsValid.Returns(true);
 
       // Mock IContextManagerLocal
-      var mockLocalContextManager = new Mock<IContextManagerLocal>();
+      var mockLocalContextManager = Substitute.For<IContextManagerLocal>();
 
       // Mock IServiceProvider
-      mockServiceProvider.Setup(x => x.GetService(typeof(IRuntimeInfo))).Returns(new RuntimeInfo());
+      mockServiceProvider.GetService(typeof(IRuntimeInfo)).Returns(new RuntimeInfo());
 
       // Mock IEnumerable<IContextManager>
-      var mockContextManagerList = new List<IContextManager> { mockContextManager.Object };
+      var mockContextManagerList = new List<IContextManager> { mockContextManager };
 
       // Mock ApplicationContextAccessor
-      var mockApplicationContextAccessor = new Mock<ApplicationContextAccessor>(mockContextManagerList, mockLocalContextManager.Object, mockServiceProvider.Object);
+      var mockApplicationContextAccessor = Substitute.For<ApplicationContextAccessor>(mockContextManagerList, mockLocalContextManager, mockServiceProvider);
 
-      var _applicationContext = new ApplicationContext(mockApplicationContextAccessor.Object);
-
+      var _applicationContext = new ApplicationContext(mockApplicationContextAccessor);
 
       _sessionManager = new SessionManager(_applicationContext, GetHttpClient(_sessionValue, _applicationContext), new BlazorWebAssemblyConfigurationOptions { SyncContextWithServer = true });
     }
 
+    public class TestHttpMessageHandler(SessionMessage session, ApplicationContext _applicationContext) : HttpMessageHandler
+    {
+      protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+      {
+        cancellationToken.ThrowIfCancellationRequested();
+        var response = new HttpResponseMessage()
+        {
+          StatusCode = HttpStatusCode.OK,
+          Content = new StringContent("{\"ResultStatus\":0, \"SessionData\":\"" + Convert.ToBase64String(GetSession(session, _applicationContext)) + "\"}"),
+        };
+        return Task.FromResult(response);
+      }
+    }
     private static HttpClient GetHttpClient(SessionMessage session, ApplicationContext _applicationContext)
     {
-      var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
-      handlerMock
-         .Protected()
-         // Setup the PROTECTED method to mock
-         .Setup<Task<HttpResponseMessage>>(
-            "SendAsync",
-            ItExpr.IsAny<HttpRequestMessage>(),
-            ItExpr.IsAny<CancellationToken>()
-         )
-         // prepare the expected response of the mocked http call
-         .ReturnsAsync((HttpRequestMessage request, CancellationToken cancellationToken) =>
-         {
-           if (cancellationToken.IsCancellationRequested)
-           {
-             throw new OperationCanceledException(cancellationToken);
-           }
-           else
-           {
-             return new HttpResponseMessage()
-             {
-               StatusCode = HttpStatusCode.OK,
-               Content = new StringContent("{\"ResultStatus\":0, \"SessionData\":\"" + Convert.ToBase64String(GetSession(session, _applicationContext)) + "\"}"),
-             };
-           }
-         })
-         .Verifiable();
-
+      var handlerMock = new TestHttpMessageHandler(session,_applicationContext);
       // use real http client with mocked handler here
-      var httpClient = new HttpClient(handlerMock.Object)
+      var httpClient = new HttpClient(handlerMock)
       {
         BaseAddress = new Uri("http://test.com/"),
       };

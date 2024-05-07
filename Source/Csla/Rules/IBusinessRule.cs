@@ -84,6 +84,10 @@ namespace Csla.Rules
     /// will run asynchronous code.
     /// </summary>
     bool IsAsync { get; }
+    /// <summary>
+    /// Gets the rule Display Index in UI.
+    /// </summary>
+    int DisplayIndex { get; }
   }
 
   /// <summary>

@@ -24,15 +24,16 @@ namespace Csla.DataPortalClient
     /// 
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public DataPortalProxy(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Gets a value indicating whether the data portal

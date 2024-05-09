@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="GrpcProxy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -27,7 +28,7 @@ namespace Csla.Channels.Grpc
     /// <param name="channel">GrpcChannel instance</param>
     /// <param name="options">Proxy options</param>
     /// <param name="dataPortalOptions">Data portal options</param>
-    public GrpcProxy(ApplicationContext applicationContext, GrpcChannel channel, GrpcProxyOptions options, DataPortalOptions dataPortalOptions)
+    public GrpcProxy(ApplicationContext applicationContext, GrpcChannel? channel, GrpcProxyOptions options, DataPortalOptions dataPortalOptions)
       : base(applicationContext)
     {
       _channel = channel;
@@ -35,9 +36,9 @@ namespace Csla.Channels.Grpc
       VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
-    private GrpcChannel _channel;
-    private static GrpcChannel _defaultChannel;
-    private string VersionRoutingTag { get; set; }
+    private GrpcChannel? _channel;
+    private static GrpcChannel? _defaultChannel;
+    private string? VersionRoutingTag { get; set; }
 
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.

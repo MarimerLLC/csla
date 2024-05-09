@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="HttpResponse.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -18,12 +19,12 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Server-side exception data if an exception occurred on the server.
     /// </summary>
-    public static readonly PropertyInfo<DataPortalErrorInfo> ErrorDataProperty = RegisterProperty<DataPortalErrorInfo>(c => c.ErrorData);
+    public static readonly PropertyInfo<DataPortalErrorInfo?> ErrorDataProperty = RegisterProperty<DataPortalErrorInfo?>(c => c.ErrorData);
 
     /// <summary>
     /// Server-side exception data if an exception occurred on the server.
     /// </summary>
-    public DataPortalErrorInfo ErrorData
+    public DataPortalErrorInfo? ErrorData
     {
       get { return GetProperty(ErrorDataProperty); }
       set { LoadProperty(ErrorDataProperty, value); }

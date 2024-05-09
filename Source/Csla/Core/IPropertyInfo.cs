@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="IPropertyInfo.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -31,7 +32,7 @@ namespace Csla.Core
     /// if the user is not authorized to 
     /// read the property.
     /// </remarks>
-    object DefaultValue { get; }
+    object? DefaultValue { get; }
     /// <summary>
     /// Gets a new field data container for the property.
     /// </summary>
@@ -56,6 +57,6 @@ namespace Csla.Core
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    System.Reflection.PropertyInfo GetPropertyInfo();
+    System.Reflection.PropertyInfo? GetPropertyInfo();
   }
 }

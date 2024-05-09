@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="GrpcPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -31,10 +32,11 @@ namespace Csla.Channels.Grpc
     /// </summary>
     /// <param name="dataPortal">Data portal server service</param>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="dataPortal"/> is <see langword="null"/>.</exception>
     public GrpcPortal(IDataPortalServer dataPortal, ApplicationContext applicationContext)
     {
-      dataPortalServer = dataPortal;
-      _applicationContext = applicationContext;
+      dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
@@ -42,8 +44,12 @@ namespace Csla.Channels.Grpc
     /// </summary>
     /// <param name="request">Request message</param>
     /// <param name="context">Server call context</param>
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public override async Task<ResponseMessage> Invoke(RequestMessage request, ServerCallContext context)
     {
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
       var operation = request.Operation;
       if (operation.Contains("/"))
       {
@@ -69,8 +75,17 @@ namespace Csla.Channels.Grpc
     /// <param name="operation">Name of the data portal operation to perform</param>
     /// <param name="routingTag">Routing tag from caller</param>
     /// <param name="request">Request message</param>
+    /// <exception cref="ArgumentNullException"><paramref name="routingTag"/> or <paramref name="request"/>  is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="operation"/> is null, empty or only consists of white spaces.</exception>
     protected virtual async Task<ResponseMessage> RouteMessage(string operation, string routingTag, RequestMessage request)
     {
+      if (string.IsNullOrWhiteSpace(operation))
+        throw new ArgumentException(string.Format(Csla.Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(operation)), nameof(operation));
+      if (routingTag is null)
+        throw new ArgumentNullException(nameof(routingTag));
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
       if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")
       {
         var options = new GrpcProxyOptions { DataPortalUrl = $"{route}?operation={operation}" };
@@ -94,7 +109,7 @@ namespace Csla.Channels.Grpc
     private async Task<ResponseMessage> InvokePortal(string operation, ByteString requestData)
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      DataPortalErrorInfo errorData = null;
+      DataPortalErrorInfo? errorData = null;
       try
       {
         var request = SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(requestData.ToByteArray());
@@ -142,15 +157,19 @@ namespace Csla.Channels.Grpc
     /// Create and initialize an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Create(CriteriaRequest request)
     {
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -186,15 +205,18 @@ namespace Csla.Channels.Grpc
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
     {
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -230,14 +252,18 @@ namespace Csla.Channels.Grpc
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Update(UpdateRequest request)
     {
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
         // unpack object
-        object obj = GetCriteria(_applicationContext, request.ObjectData);
+        object? obj = GetCriteria(_applicationContext, request.ObjectData);
 
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
@@ -269,15 +295,19 @@ namespace Csla.Channels.Grpc
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Delete(CriteriaRequest request)
     {
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -311,9 +341,9 @@ namespace Csla.Channels.Grpc
 
     #region Criteria
 
-    private static object GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
+    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
     {
-      object criteria = null;
+      object? criteria = null;
       if (criteriaData != null)
         criteria = SerializationFormatterFactory.GetFormatter(applicationContext).Deserialize(criteriaData);
       return criteria;

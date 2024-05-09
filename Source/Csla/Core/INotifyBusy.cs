@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="INotifyBusy.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -18,7 +19,7 @@ namespace Csla.Core
     /// Event raised when the object's busy
     /// status changes.
     /// </summary>
-    event BusyChangedEventHandler BusyChanged;
+    event BusyChangedEventHandler? BusyChanged;
 
     /// <summary>
     /// Gets a value indicating whether the object,

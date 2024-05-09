@@ -1042,6 +1042,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} must not be null, empty or only consisting of white spaces..
+        /// </summary>
+        public static string StringNotNullOrWhiteSpaceException {
+            get {
+                return ResourceManager.GetString("StringNotNullOrWhiteSpaceException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} required.
         /// </summary>
         public static string StringRequiredRule {

@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="PropertyInfo.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -8,6 +9,7 @@
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -23,6 +25,7 @@ namespace Csla
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
     public PropertyInfo(string name)
       : this(name, null, null, DataBindingFriendlyDefault(), RelationshipTypes.None)
     { }
@@ -32,6 +35,7 @@ namespace Csla
     /// </summary>
     /// <param name="name">Name of the property.</param>
     /// <param name="relationship">Relationship with referenced object.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
     public PropertyInfo(string name, RelationshipTypes relationship)
       : this(name, null, null, DataBindingFriendlyDefault(), relationship)
     { }
@@ -43,6 +47,7 @@ namespace Csla
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
     public PropertyInfo(string name, T defaultValue)
       : this(name, null, null, defaultValue, RelationshipTypes.None)
     { }
@@ -54,6 +59,7 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
     public PropertyInfo(string name, string friendlyName)
         : this(name, friendlyName, null, DataBindingFriendlyDefault(), RelationshipTypes.None)
     { }
@@ -68,6 +74,7 @@ namespace Csla
     /// <param name="containingType">
     /// Factory to provide display name from attributes.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
     public PropertyInfo(string name, string friendlyName, Type containingType)
         : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), RelationshipTypes.None)
     { }
@@ -85,6 +92,7 @@ namespace Csla
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
     public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue)
         : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None)
     { }
@@ -100,6 +108,7 @@ namespace Csla
     /// Factory to provide display name from attributes.
     /// </param>
     /// <param name="relationship">Relationship with referenced object.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
     public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship) 
       : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), relationship)
     { }
@@ -119,8 +128,12 @@ namespace Csla
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue, RelationshipTypes relationship)
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, empty or consists only of white spaces.</exception>
+    public PropertyInfo(string name, string? friendlyName, Type? containingType, T? defaultValue, RelationshipTypes relationship)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       Name = name;
       _friendlyName = friendlyName;
       RelationshipType = relationship;
@@ -143,9 +156,10 @@ namespace Csla
       get { return typeof(T); }
     }
 
-    private readonly System.Reflection.PropertyInfo _propertyInfo;
+    private readonly System.Reflection.PropertyInfo? _propertyInfo;
 
-    private readonly string _friendlyName;
+    private readonly string? _friendlyName;
+
     /// <summary>
     /// Gets the friendly display name
     /// for the property.
@@ -170,7 +184,7 @@ namespace Csla
           if (display != null)
           {
             // DataAnnotations attribute.
-            result = display.GetName();
+            result = display.GetName() ?? Name;
           }
           else
           {
@@ -180,6 +194,7 @@ namespace Csla
               result = displayName.DisplayName;
           }
         }
+
         return result;
       }
     }
@@ -193,9 +208,9 @@ namespace Csla
     /// if the user is not authorized to 
     /// read the property.
     /// </remarks>
-    public virtual T DefaultValue { get; }
+    public virtual T? DefaultValue { get; }
 
-    object Core.IPropertyInfo.DefaultValue
+    object? Core.IPropertyInfo.DefaultValue
     {
       get { return DefaultValue; }
     }
@@ -244,12 +259,15 @@ namespace Csla
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    public System.Reflection.PropertyInfo GetPropertyInfo() => _propertyInfo;
+    public System.Reflection.PropertyInfo? GetPropertyInfo() => _propertyInfo;
 
     #region IComparable Members
 
-    int IComparable.CompareTo(object obj)
+    int IComparable.CompareTo(object? obj)
     {
+      if (obj is null)
+        return 1;
+      
       return Name.CompareTo(((Core.IPropertyInfo)obj).Name);
     }
 
@@ -259,13 +277,13 @@ namespace Csla
     /// Creates the CSLA Data Binding Friendly default for the given type T.
     /// </summary>
     /// <returns>Default value for T which is compatible with Data Binding</returns>
-    public static T DataBindingFriendlyDefault()
+    public static T? DataBindingFriendlyDefault()
     {
       // if T is string we need an empty string, not null, for data binding
       if (typeof(T) == typeof(string))
         return (T)(object)string.Empty;
 
-      return default(T);
+      return default;
     }
   }
 }

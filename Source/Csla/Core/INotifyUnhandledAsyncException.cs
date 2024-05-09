@@ -1,4 +1,5 @@
-﻿//-----------------------------------------------------------------------
+﻿#nullable enable
+//-----------------------------------------------------------------------
 // <copyright file="INotifyUnhandledAsyncException.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -18,6 +19,6 @@ namespace Csla.Core
     /// Event indicating that an exception occurred during
     /// an asynchronous operation.
     /// </summary>
-    event EventHandler<ErrorEventArgs> UnhandledAsyncException;
+    event EventHandler<ErrorEventArgs>? UnhandledAsyncException;
   }
 }

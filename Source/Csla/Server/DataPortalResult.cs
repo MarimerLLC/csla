@@ -29,7 +29,7 @@ namespace Csla.Server
     /// Error that occurred during the DataPotal call.
     /// This will be null if no errors occurred.
     /// </summary>
-    public Exception Error { get; private set; }
+    public Exception? Error { get; private set; }
 
     /// <summary>
     /// Creates an instance of the type.

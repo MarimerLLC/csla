@@ -11,6 +11,7 @@ using Csla.Serialization.Mobile;
 using Csla.Core;
 using Csla.Threading;
 using Csla.Server;
+using System.Reflection;
 
 namespace Csla.Rules
 {
@@ -520,20 +521,36 @@ namespace Csla.Rules
     public async Task<List<string>> CheckRulesAsync(TimeSpan timeout)
     {
       var result = CheckRules();
-      await WaitForAsyncRulesToComplete(timeout);
+      await WaitForAsyncRulesToComplete(timeout.ToCancellationToken());
       return result;
     }
 
-    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout) {
+
+    /// <summary>
+    /// Waits for asynchronous rules to complete within the specified timeout.
+    /// </summary>
+    /// <param name="timeout">The timeout duration.</param>
+    /// <exception cref="TimeoutException">Thrown when the specified timeout is exceeded.</exception>
+    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout)
+    {
+        try
+        {
+            await WaitForAsyncRulesToComplete(timeout.ToCancellationToken());
+        }
+        catch (TaskCanceledException tcex)
+        {
+            throw new TimeoutException(nameof(CheckRulesAsync), tcex);
+        }
+    }
+
+    private async Task WaitForAsyncRulesToComplete(CancellationToken ct) 
+    {
       if (!RunningAsyncRules) 
       {
         return;
       }
-
-      var tasks = new Task[] { BusyChanged.WaitAsync(), Task.Delay(timeout) };
-      var final = await Task.WhenAny(tasks);
-      if (final == tasks[1])
-        throw new TimeoutException(nameof(CheckRulesAsync));
+      BusyChanged.SetCancellationToken(ct);
+      await BusyChanged.WaitAsync();
     }
 
     /// <summary>

@@ -9,6 +9,8 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
 using Csla.Reflection;
 using Csla.Rules;
 
@@ -226,72 +228,88 @@ namespace Csla.Blazor
     public TimeSpan BusyTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Saves the Model.
+    /// Saves the Model asynchronously.
     /// </summary>
     public async Task SaveAsync()
     {
-      Exception = null;
-      ViewModelErrorText = null;
-      try
-      {
-        if (Model is Core.ITrackStatus obj && !obj.IsSavable)
+        try
         {
-          if (obj.IsBusy)
-          {
-            var stopTime = DateTime.Now + BusyTimeout;
-            while (obj.IsBusy)
+            await SaveAsync(BusyTimeout.ToCancellationToken());
+        }
+        catch (TaskCanceledException tcex)
+        {
+            Exception = new TimeoutException("SaveAsync", tcex);
+            ViewModelErrorText = Exception.Message;
+        }
+    }
+
+    /// <summary>
+    /// Saves the Model.
+    /// </summary>
+    /// <param name="ct">The cancellation token.</param>
+    public async Task SaveAsync(CancellationToken ct)
+    {
+        Exception = null;
+        ViewModelErrorText = null;
+        try
+        {
+            if (Model is Core.ITrackStatus obj && !obj.IsSavable)
             {
-              if (DateTime.Now > stopTime)
-                throw new TimeoutException("SaveAsync");
-              await Task.Delay(1);
+                if (obj.IsBusy)
+                {
+                    while (obj.IsBusy)
+                    {
+                        ct.ThrowIfCancellationRequested();
+                        await Task.Delay(1, ct);
+                    }
+                }
+                if (!obj.IsValid)
+                {
+                    ViewModelErrorText = ModelErrorText;
+                    return;
+                }
+                else if (!obj.IsSavable)
+                    throw new InvalidOperationException(
+                        $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
             }
-          }
-          if (!obj.IsValid)
-          {
-            ViewModelErrorText = ModelErrorText;
-            return;
-          }
-          else if (!obj.IsSavable)
-            throw new InvalidOperationException(
-              $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
+
+            UnhookChangedEvents(Model);
+
+            var savable = Model as Core.ISavable;
+            if (ManageObjectLifetime)
+            {
+                // clone the object if possible
+                if (Model is ICloneable clonable)
+                    savable = (Core.ISavable)clonable.Clone();
+
+                //apply changes
+                if (savable is Core.ISupportUndo undoable)
+                    undoable.ApplyEdit();
+            }
+
+            IsBusy = true;
+            Model = await DoSaveAsync(savable);
+            Saved?.Invoke();
         }
-
-        UnhookChangedEvents(Model);
-
-        var savable = Model as Core.ISavable;
-        if (ManageObjectLifetime)
+        catch (DataPortalException ex)
         {
-          // clone the object if possible
-          if (Model is ICloneable clonable)
-            savable = (Core.ISavable)clonable.Clone();
-
-          //apply changes
-          if (savable is Core.ISupportUndo undoable)
-            undoable.ApplyEdit();
+            Exception = ex;
+            ViewModelErrorText = ex.BusinessExceptionMessage;
         }
-
-        IsBusy = true;
-        Model = await DoSaveAsync(savable);
-        Saved?.Invoke();
-      }
-      catch (DataPortalException ex)
-      {
-        Exception = ex;
-        ViewModelErrorText = ex.BusinessExceptionMessage;
-      }
-      catch (Exception ex)
-      {
-        Exception = ex;
-        ViewModelErrorText = ex.Message;
-      }
-      finally
-      {
-        HookChangedEvents(Model);
-        IsBusy = false;
-        if (Exception != null) {
-          Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception)); 
+        catch (Exception ex)
+        {
+            Exception = ex;
+            ViewModelErrorText = ex.Message;
         }
-      }
+        finally
+        {
+            HookChangedEvents(Model);
+            IsBusy = false;
+            if (Exception != null)
+            {
+                Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception));
+            }
+        }
     }
 
     /// <summary>

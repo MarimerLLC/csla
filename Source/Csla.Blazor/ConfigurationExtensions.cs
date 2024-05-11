@@ -56,10 +56,13 @@ namespace Csla.Configuration
         config.Services.Remove(manager);
       config.Services.AddScoped(typeof(IContextManager), managerType);
 
-      // use Blazor state management
-      config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
-      config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
-      config.Services.AddTransient<Blazor.State.StateManager>();
+      if (!blazorOptions.UseInMemoryApplicationContextManager)
+      {
+        // use Blazor state management
+        config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
+        config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
+        config.Services.AddTransient<Blazor.State.StateManager>();
+      }
 
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));

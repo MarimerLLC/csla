@@ -478,8 +478,21 @@ namespace Csla.Rules
     public async Task<List<string>> CheckRulesAsync(IPropertyInfo property, TimeSpan timeout)
     {
       var affectedProperties = CheckRules(property);
-      await WaitForAsyncRulesToComplete(timeout);
+      await WaitForAsyncRulesToComplete(timeout.ToCancellationToken());
       return affectedProperties;
+    }
+
+    /// <summary>
+    /// Asynchronously checks the rules for the specified property and waits for any asynchronous rules to complete.
+    /// </summary>
+    /// <param name="property">The property to check the rules for.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A list of affected properties.</returns>
+    public async Task<List<string>> CheckRulesAsync(IPropertyInfo property, CancellationToken ct)
+    {
+        var affectedProperties = CheckRules(property);
+        await WaitForAsyncRulesToComplete(ct);
+        return affectedProperties;
     }
 
     /// <summary>
@@ -549,8 +562,13 @@ namespace Csla.Rules
       {
         return;
       }
+
+#if NET6_0_OR_GREATER
+      await BusyChanged.WaitAsync().WaitAsync(ct);
+#else
       BusyChanged.SetCancellationToken(ct);
       await BusyChanged.WaitAsync();
+#endif
     }
 
     /// <summary>

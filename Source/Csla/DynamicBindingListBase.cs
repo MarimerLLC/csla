@@ -566,6 +566,16 @@ namespace Csla
     }
 
     /// <summary>
+    /// Await this method to ensure the business object
+    /// is not busy running async rules.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    public Task WaitForIdle(CancellationToken ct)
+    {
+      return BusyHelper.WaitForIdle(this, ct);
+    }
+
+    /// <summary>
     /// Gets a value indicating whether this object
     /// is currently running an async operation.
     /// </summary>

@@ -1484,6 +1484,16 @@ namespace Csla
       return BusyHelper.WaitForIdle(this, timeout);
     }
 
+    /// <summary>
+    /// Waits for the object to become idle.
+    /// </summary>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public Task WaitForIdle(CancellationToken ct)
+    {
+        return BusyHelper.WaitForIdle(this, ct);
+    }
+
     [NonSerialized]
     [NotUndoable]
     private bool _isBusy;

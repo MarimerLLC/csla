@@ -22,9 +22,13 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalClientOptions UseGrpcProxy(
-      this DataPortalClientOptions config, Action<Csla.Channels.Grpc.GrpcProxyOptions> options)
+      this DataPortalClientOptions config, Action<Csla.Channels.Grpc.GrpcProxyOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       var proxyOptions = new Csla.Channels.Grpc.GrpcProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient(typeof(IDataPortalProxy),

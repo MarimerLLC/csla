@@ -1,5 +1,4 @@
-﻿#nullable enable
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="GrpcPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -44,11 +43,13 @@ namespace Csla.Channels.Grpc
     /// </summary>
     /// <param name="request">Request message</param>
     /// <param name="context">Server call context</param>
-    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="request"/> is <see langword="null"/>.</exception>
     public override async Task<ResponseMessage> Invoke(RequestMessage request, ServerCallContext context)
     {
       if (request is null)
         throw new ArgumentNullException(nameof(request));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
 
       var operation = request.Operation;
       if (operation.Contains("/"))
@@ -75,18 +76,18 @@ namespace Csla.Channels.Grpc
     /// <param name="operation">Name of the data portal operation to perform</param>
     /// <param name="routingTag">Routing tag from caller</param>
     /// <param name="request">Request message</param>
-    /// <exception cref="ArgumentNullException"><paramref name="routingTag"/> or <paramref name="request"/>  is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="operation"/> is null, empty or only consists of white spaces.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="routingTag"/> or <paramref name="request"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="routingTag"/> is null, empty or only consists of white spaces.</exception>
     protected virtual async Task<ResponseMessage> RouteMessage(string operation, string routingTag, RequestMessage request)
     {
       if (string.IsNullOrWhiteSpace(operation))
-        throw new ArgumentException(string.Format(Csla.Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(operation)), nameof(operation));
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(operation)), nameof(operation));
       if (routingTag is null)
         throw new ArgumentNullException(nameof(routingTag));
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")
+      if (RoutingTagUrls.TryGetValue(routingTag, out string? route) && route != "localhost")
       {
         var options = new GrpcProxyOptions { DataPortalUrl = $"{route}?operation={operation}" };
         var channel = _applicationContext.CreateInstanceDI<global::Grpc.Net.Client.GrpcChannel>();
@@ -210,6 +211,7 @@ namespace Csla.Channels.Grpc
     {
       if (request is null)
         throw new ArgumentNullException(nameof(request));
+
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
@@ -341,7 +343,7 @@ namespace Csla.Channels.Grpc
 
     #region Criteria
 
-    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
+    private static object? GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
     {
       object? criteria = null;
       if (criteriaData != null)

@@ -21,9 +21,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalClientOptions UseRabbitMqProxy(
-      this DataPortalClientOptions config, Action<Csla.Channels.RabbitMq.RabbitMqProxyOptions> options)
+      this DataPortalClientOptions config, Action<Csla.Channels.RabbitMq.RabbitMqProxyOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
       var proxyOptions = new Csla.Channels.RabbitMq.RabbitMqProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient(typeof(IDataPortalProxy),

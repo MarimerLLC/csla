@@ -43,7 +43,7 @@ namespace Csla.Server
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync);
+    Task<DataPortalResult> Update(object? obj, DataPortalContext context, bool isSync);
     /// <summary>
     /// Delete a business object.
     /// </summary>

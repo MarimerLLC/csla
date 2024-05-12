@@ -44,7 +44,7 @@ namespace Csla.Channels.Grpc
 
     private GrpcChannel? _channel;
     private static GrpcChannel? _defaultChannel;
-    private string VersionRoutingTag { get; set; }
+    private string? VersionRoutingTag { get; set; }
 
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
@@ -112,7 +112,7 @@ namespace Csla.Channels.Grpc
       return await GetGrpcClient().InvokeAsync(request);
     }
 
-    private string CreateOperationTag(string operation, string versionToken, string routingToken)
+    private string CreateOperationTag(string operation, string? versionToken, string routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
         return $"{operation}/{routingToken}-{versionToken}";

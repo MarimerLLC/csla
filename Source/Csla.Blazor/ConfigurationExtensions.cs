@@ -45,13 +45,9 @@ namespace Csla.Configuration
 
       string managerTypeName;
       if (blazorOptions.UseInMemoryApplicationContextManager)
-      {
         managerTypeName = "Csla.AspNetCore.Blazor.ApplicationContextManagerInMemory,Csla.AspNetCore";
-      }
       else
-      {
         managerTypeName = "Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore";
-      }
       var managerType = Type.GetType(managerTypeName);
       if (managerType is null)
         throw new TypeLoadException(managerTypeName);

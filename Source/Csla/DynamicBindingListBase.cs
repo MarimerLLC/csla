@@ -45,7 +45,7 @@ namespace Csla
     IBusinessObject,
     IUseApplicationContext
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
-    {
+  {
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -202,9 +202,9 @@ namespace Csla
       return result;
     }
 
-#endregion
+    #endregion
 
-#region Saved Event
+    #region Saved Event
     [NonSerialized]
     [NotUndoable]
     private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
@@ -258,9 +258,9 @@ namespace Csla
       _serializableSavedHandlers?.Invoke(this, args);
     }
 
-#endregion
+    #endregion
 
-#region  Insert, Remove, Clear
+    #region  Insert, Remove, Clear
 
     /// <summary>
     /// Adds a new item to the list.
@@ -326,9 +326,9 @@ namespace Csla
       base.SetItem(index, item);
     }
 
-#endregion
+    #endregion
 
-#region  IParent Members
+    #region  IParent Members
 
     void Csla.Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
     {
@@ -347,9 +347,9 @@ namespace Csla
       get { return null; }
     }
 
-#endregion
+    #endregion
 
-#region  Cascade Child events
+    #region  Cascade Child events
 
     /// <summary>
     /// Handles any PropertyChanged event from 
@@ -414,9 +414,9 @@ namespace Csla
       return result;
     }
 
-#endregion
+    #endregion
 
-#region  Serialization Notification
+    #region  Serialization Notification
 
     /// <summary>
     /// This method is called on a newly deserialized object
@@ -434,9 +434,9 @@ namespace Csla
       base.OnDeserialized();
     }
 
-#endregion
+    #endregion
 
-#region  Data Access
+    #region  Data Access
 
     private void DataPortal_Update()
     {
@@ -484,9 +484,9 @@ namespace Csla
 
     }
 
-#endregion
+    #endregion
 
-#region ToArray
+    #region ToArray
 
     /// <summary>
     /// Get an array containing all items in the list.
@@ -499,9 +499,9 @@ namespace Csla
       return result.ToArray();
     }
 
-#endregion
+    #endregion
 
-#region IDataPortalTarget Members
+    #region IDataPortalTarget Members
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }

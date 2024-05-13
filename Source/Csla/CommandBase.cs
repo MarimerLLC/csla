@@ -7,12 +7,12 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
-using Csla.Server;
-using Csla.Properties;
-using Csla.Core;
 using System.Linq.Expressions;
-using Csla.Reflection;
 using System.Reflection;
+using Csla.Core;
+using Csla.Properties;
+using Csla.Reflection;
+using Csla.Server;
 
 namespace Csla
 {

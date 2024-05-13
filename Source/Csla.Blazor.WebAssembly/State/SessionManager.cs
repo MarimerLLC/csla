@@ -7,14 +7,14 @@
 //-----------------------------------------------------------------------
 
 using System.Net.Http.Json;
+using System.Reflection;
+using System.Threading;
 using Csla.Blazor.Authentication;
+using Csla.Blazor.State.Messages;
 using Csla.Blazor.WebAssembly.Configuration;
 using Csla.Serialization;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
-using Csla.Blazor.State.Messages;
-using System.Reflection;
-using System.Threading;
 
 namespace Csla.Blazor.WebAssembly.State
 {
@@ -51,14 +51,14 @@ namespace Csla.Blazor.WebAssembly.State
     /// <exception cref="TimeoutException">Thrown when the specified timeout is exceeded.</exception>
     public async Task<Session> RetrieveSession(TimeSpan timeout)
     {
-        try
-        {
-            return await RetrieveSession(GetCancellationToken(timeout));
-        }
-        catch (TaskCanceledException tcex)
-        {
-            throw new TimeoutException($"{this.GetType().FullName}.{nameof(RetrieveSession)}.", tcex);
-        }
+      try
+      {
+        return await RetrieveSession(GetCancellationToken(timeout));
+      }
+      catch (TaskCanceledException tcex)
+      {
+        throw new TimeoutException($"{this.GetType().FullName}.{nameof(RetrieveSession)}.", tcex);
+      }
     }
 
     /// <summary>
@@ -70,38 +70,38 @@ namespace Csla.Blazor.WebAssembly.State
     /// <returns>The retrieved session.</returns>
     public async Task<Session> RetrieveSession(CancellationToken ct)
     {
-        if (_options.SyncContextWithServer)
+      if (_options.SyncContextWithServer)
+      {
+        long lastTouched = 0;
+        if (_session != null)
+          lastTouched = _session.LastTouched;
+        var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
+        var stateResult = await client.GetFromJsonAsync<StateResult>(url, ct);
+        if (stateResult.ResultStatus == ResultStatuses.Success)
         {
-            long lastTouched = 0;
-            if (_session != null)
-                lastTouched = _session.LastTouched;
-            var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
-            var stateResult = await client.GetFromJsonAsync<StateResult>(url, ct);
-            if (stateResult.ResultStatus == ResultStatuses.Success)
-            {
-                var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
-                var buffer = new MemoryStream(stateResult.SessionData)
-                {
-                    Position = 0
-                };
-                var message = (SessionMessage)formatter.Deserialize(buffer);
-                _session = message.Session;
-                if (message.Principal is not null &&
-                    ApplicationContext.GetRequiredService<AuthenticationStateProvider>() is CslaAuthenticationStateProvider provider)
-                {
-                    provider.SetPrincipal(message.Principal);
-                }
-            }
-            else // NoUpdates
-            {
-                _session = GetSession();
-            }
+          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+          var buffer = new MemoryStream(stateResult.SessionData)
+          {
+            Position = 0
+          };
+          var message = (SessionMessage)formatter.Deserialize(buffer);
+          _session = message.Session;
+          if (message.Principal is not null &&
+              ApplicationContext.GetRequiredService<AuthenticationStateProvider>() is CslaAuthenticationStateProvider provider)
+          {
+            provider.SetPrincipal(message.Principal);
+          }
         }
-        else
+        else // NoUpdates
         {
-            _session = GetSession();
+          _session = GetSession();
         }
-        return _session;
+      }
+      else
+      {
+        _session = GetSession();
+      }
+      return _session;
     }
 
     /// <summary>
@@ -114,14 +114,14 @@ namespace Csla.Blazor.WebAssembly.State
     /// <exception cref="TimeoutException">Thrown when the specified timeout is exceeded.</exception>
     public async Task SendSession(TimeSpan timeout)
     {
-        try
-        {
-            await SendSession(GetCancellationToken(timeout));
-        }
-        catch (TaskCanceledException tcex)
-        {
-            throw new TimeoutException($"{this.GetType().FullName}.{nameof(SendSession)}.", tcex);
-        }
+      try
+      {
+        await SendSession(GetCancellationToken(timeout));
+      }
+      catch (TaskCanceledException tcex)
+      {
+        throw new TimeoutException($"{this.GetType().FullName}.{nameof(SendSession)}.", tcex);
+      }
     }
 
     private static CancellationToken GetCancellationToken(TimeSpan timeout)
@@ -139,15 +139,15 @@ namespace Csla.Blazor.WebAssembly.State
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task SendSession(CancellationToken ct)
     {
-        _session.Touch();
-        if (_options.SyncContextWithServer)
-        {
-            var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
-            var buffer = new MemoryStream();
-            formatter.Serialize(buffer, _session);
-            buffer.Position = 0;
-            await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray(), ct);
-        }
+      _session.Touch();
+      if (_options.SyncContextWithServer)
+      {
+        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+        var buffer = new MemoryStream();
+        formatter.Serialize(buffer, _session);
+        buffer.Position = 0;
+        await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray(), ct);
+      }
     }
 
 
@@ -157,17 +157,17 @@ namespace Csla.Blazor.WebAssembly.State
     /// <returns>The session data.</returns>
     private Session GetSession()
     {
-        Session result;
-        if (_session != null)
-        {
-            result = _session;
-        }
-        else
-        {
-            result = [];
-            result.Touch();
-        }
-        return result;
+      Session result;
+      if (_session != null)
+      {
+        result = _session;
+      }
+      else
+      {
+        result = [];
+        result.Touch();
+      }
+      return result;
     }
 
     // server-side methods

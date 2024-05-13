@@ -29,7 +29,7 @@ namespace Csla.Threading
     /// <param name="ct">The cancellation token to set.</param>
     public void SetCancellationToken(CancellationToken ct)
     {
-        ct.Register(() => _tcs.TrySetCanceled(), useSynchronizationContext: false);
+      ct.Register(() => _tcs.TrySetCanceled(), useSynchronizationContext: false);
     }
 
     /// <summary>

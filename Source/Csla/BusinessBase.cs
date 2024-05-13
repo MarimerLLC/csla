@@ -9,8 +9,8 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
-using Csla.Properties;
 using Csla.Core;
+using Csla.Properties;
 using Csla.Reflection;
 
 namespace Csla

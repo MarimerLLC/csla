@@ -232,15 +232,15 @@ namespace Csla.Blazor
     /// </summary>
     public async Task SaveAsync()
     {
-        try
-        {
-            await SaveAsync(BusyTimeout.ToCancellationToken());
-        }
-        catch (TaskCanceledException tcex)
-        {
-            Exception = new TimeoutException("SaveAsync", tcex);
-            ViewModelErrorText = Exception.Message;
-        }
+      try
+      {
+        await SaveAsync(BusyTimeout.ToCancellationToken());
+      }
+      catch (TaskCanceledException tcex)
+      {
+        Exception = new TimeoutException("SaveAsync", tcex);
+        ViewModelErrorText = Exception.Message;
+      }
     }
 
     /// <summary>
@@ -249,67 +249,67 @@ namespace Csla.Blazor
     /// <param name="ct">The cancellation token.</param>
     public async Task SaveAsync(CancellationToken ct)
     {
-        Exception = null;
-        ViewModelErrorText = null;
-        try
+      Exception = null;
+      ViewModelErrorText = null;
+      try
+      {
+        if (Model is Core.ITrackStatus obj && !obj.IsSavable)
         {
-            if (Model is Core.ITrackStatus obj && !obj.IsSavable)
+          if (obj.IsBusy)
+          {
+            while (obj.IsBusy)
             {
-                if (obj.IsBusy)
-                {
-                    while (obj.IsBusy)
-                    {
-                        ct.ThrowIfCancellationRequested();
-                        await Task.Delay(1, ct);
-                    }
-                }
-                if (!obj.IsValid)
-                {
-                    ViewModelErrorText = ModelErrorText;
-                    return;
-                }
-                else if (!obj.IsSavable)
-                    throw new InvalidOperationException(
-                        $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
+              ct.ThrowIfCancellationRequested();
+              await Task.Delay(1, ct);
             }
-
-            UnhookChangedEvents(Model);
-
-            var savable = Model as Core.ISavable;
-            if (ManageObjectLifetime)
-            {
-                // clone the object if possible
-                if (Model is ICloneable clonable)
-                    savable = (Core.ISavable)clonable.Clone();
-
-                //apply changes
-                if (savable is Core.ISupportUndo undoable)
-                    undoable.ApplyEdit();
-            }
-
-            IsBusy = true;
-            Model = await DoSaveAsync(savable);
-            Saved?.Invoke();
+          }
+          if (!obj.IsValid)
+          {
+            ViewModelErrorText = ModelErrorText;
+            return;
+          }
+          else if (!obj.IsSavable)
+            throw new InvalidOperationException(
+                $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
         }
-        catch (DataPortalException ex)
+
+        UnhookChangedEvents(Model);
+
+        var savable = Model as Core.ISavable;
+        if (ManageObjectLifetime)
         {
-            Exception = ex;
-            ViewModelErrorText = ex.BusinessExceptionMessage;
+          // clone the object if possible
+          if (Model is ICloneable clonable)
+            savable = (Core.ISavable)clonable.Clone();
+
+          //apply changes
+          if (savable is Core.ISupportUndo undoable)
+            undoable.ApplyEdit();
         }
-        catch (Exception ex)
+
+        IsBusy = true;
+        Model = await DoSaveAsync(savable);
+        Saved?.Invoke();
+      }
+      catch (DataPortalException ex)
+      {
+        Exception = ex;
+        ViewModelErrorText = ex.BusinessExceptionMessage;
+      }
+      catch (Exception ex)
+      {
+        Exception = ex;
+        ViewModelErrorText = ex.Message;
+      }
+      finally
+      {
+        HookChangedEvents(Model);
+        IsBusy = false;
+        if (Exception != null)
         {
-            Exception = ex;
-            ViewModelErrorText = ex.Message;
+          Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception));
         }
-        finally
-        {
-            HookChangedEvents(Model);
-            IsBusy = false;
-            if (Exception != null)
-            {
-                Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception));
-            }
-        }
+      }
     }
 
     /// <summary>
@@ -360,7 +360,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model 
+    public T Model
     {
       get => _model;
       set
@@ -501,7 +501,7 @@ namespace Csla.Blazor
     #region ObjectLevelPermissions
 
     private bool _canCreateObject;
-    
+
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to create an instance of the
@@ -511,7 +511,7 @@ namespace Csla.Blazor
     {
       get
       {
-        SetPropertiesAtObjectLevel(); 
+        SetPropertiesAtObjectLevel();
         return _canCreateObject;
       }
       protected set
@@ -564,7 +564,7 @@ namespace Csla.Blazor
     }
 
     private bool _canDeleteObject;
-    
+
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to delete an instance of the

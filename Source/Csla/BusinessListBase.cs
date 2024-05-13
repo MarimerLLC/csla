@@ -6,11 +6,11 @@
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Csla.Core;
 using Csla.Properties;
-using System.Collections.Specialized;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 
@@ -598,7 +598,7 @@ namespace Csla
         if (child.EditLevelAdded > EditLevel)
           DeletedList.RemoveAt(index);
       }
-      
+
       if (EditLevel < 0) EditLevel = 0;
     }
 
@@ -1213,7 +1213,7 @@ namespace Csla
     /// This value will be Nothing for root objects.
     /// </remarks>
     [Browsable(false)]
-    [Display(AutoGenerateField=false)]
+    [Display(AutoGenerateField = false)]
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public Core.IParent Parent
@@ -1247,7 +1247,7 @@ namespace Csla
         _parent = parent;
         _identityManager = null;
       }
-      else 
+      else
       {
         // case when current identity manager has next identity of > 1
         // parent next identity incremented by 1 not accounting for this (child collection) next identity

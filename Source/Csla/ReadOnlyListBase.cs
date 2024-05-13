@@ -8,8 +8,8 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Csla.Properties;
 using Csla.Core;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -36,8 +36,8 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext 
-    { 
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
       get => ApplicationContext;
       set
       {

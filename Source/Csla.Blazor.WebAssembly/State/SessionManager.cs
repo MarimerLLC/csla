@@ -24,7 +24,9 @@ namespace Csla.Blazor.WebAssembly.State
   /// <param name="httpClient"></param>
   /// <param name="options"></param>
   public class SessionManager(
-    ApplicationContext applicationContext, HttpClient httpClient, BlazorWebAssemblyConfigurationOptions options) : ISessionManager
+    ApplicationContext applicationContext, 
+    HttpClient httpClient, 
+    BlazorWebAssemblyConfigurationOptions options) : ISessionManager
   {
     private readonly ApplicationContext ApplicationContext = applicationContext;
     private readonly HttpClient client = httpClient;
@@ -36,7 +38,9 @@ namespace Csla.Blazor.WebAssembly.State
     /// </summary>
     public Session GetCachedSession()
     {
-      return _session;
+      if (_options.SyncContextWithServer && _session == null)
+        throw new InvalidOperationException("SessionManager.Session == null");
+      return GetSession();
     }
 
     /// <summary>
@@ -119,8 +123,8 @@ namespace Csla.Blazor.WebAssembly.State
     }
 
     // server-side methods
-    Session ISessionManager.GetSession() => throw new NotImplementedException();
-    void ISessionManager.UpdateSession(Session newSession) => throw new NotImplementedException();
-    void ISessionManager.PurgeSessions(TimeSpan expiration) => throw new NotImplementedException();
+    Session ISessionManager.GetSession() => throw new NotSupportedException();
+    void ISessionManager.UpdateSession(Session newSession) => throw new NotSupportedException();
+    void ISessionManager.PurgeSessions(TimeSpan expiration) => throw new NotSupportedException();
   }
 }

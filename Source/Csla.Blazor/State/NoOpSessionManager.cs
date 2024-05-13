@@ -46,7 +46,7 @@ namespace Csla.Blazor.State
     public Task<Session> RetrieveSession()
     { throw new NotSupportedException(); }
     /// <summary>
-    /// 
+    /// Not supported
     /// </summary>
     /// <param name="timeout"></param>
     /// <returns></returns>

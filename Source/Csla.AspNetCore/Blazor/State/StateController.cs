@@ -19,8 +19,6 @@ namespace Csla.AspNetCore.Blazor.State
   /// </summary>
   /// <param name="applicationContext"></param>
   /// <param name="sessionManager"></param>
-  [ApiController]
-  [Route("[controller]")]
   public class StateController(ApplicationContext applicationContext, ISessionManager sessionManager) : ControllerBase
   {
     /// <summary>

@@ -21,51 +21,51 @@ namespace Csla.Blazor.State
     /// Not implemented
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Session GetCachedSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
     /// Not implemented
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Session GetSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
     /// Not implemented
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public void PurgeSessions(TimeSpan expiration)
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
     /// Not implemented
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Task<Session> RetrieveSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
 
     public Task<Session> RetrieveSession(TimeSpan timeout)
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
 
     /// <summary>
     /// Not implemented
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Task SendSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
 
     public Task SendSession(TimeSpan timeout)
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
 
     /// <summary>
     /// Not implemented
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public void UpdateSession(Session newSession)
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
   }
 }

@@ -1,9 +1,9 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SessionServerManager.cs" company="Marimer LLC">
+// <copyright file="NoOpSessionManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Manages all user session data</summary>
+// <summary>NoOp user session data implementation</summary>
 //-----------------------------------------------------------------------
 
 using Csla.State;

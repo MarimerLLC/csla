@@ -18,46 +18,46 @@ namespace Csla.Blazor.State
   public class NoOpSessionManager : ISessionManager
   {
     /// <summary>
-    /// Not implemented
+    /// Not supported
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Session GetCachedSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
-    /// Not implemented
+    /// Not supported
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Session GetSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
-    /// Not implemented
+    /// Not supported
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public void PurgeSessions(TimeSpan expiration)
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
-    /// Not implemented
+    /// Not supported
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Task<Session> RetrieveSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
-    /// Not implemented
+    /// Not supported
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public Task SendSession()
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
     /// <summary>
-    /// Not implemented
+    /// Not supported
     /// </summary>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <exception cref="NotSupportedException"></exception>
     public void UpdateSession(Session newSession)
-    { throw new NotImplementedException(); }
+    { throw new NotSupportedException(); }
   }
 }

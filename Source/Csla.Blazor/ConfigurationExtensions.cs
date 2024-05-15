@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Blazor;
+using Csla.Blazor.State;
 using Csla.Core;
 using Csla.State;
 using Microsoft.AspNetCore.Authorization;
@@ -56,10 +57,18 @@ namespace Csla.Configuration
         config.Services.Remove(manager);
       config.Services.AddScoped(typeof(IContextManager), managerType);
 
-      // use Blazor state management
-      config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
-      config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
-      config.Services.AddTransient<Blazor.State.StateManager>();
+      if (blazorOptions.UseInMemoryApplicationContextManager)
+      {
+        // do not use any Blazor state management
+        config.Services.AddSingleton<ISessionManager, NoOpSessionManager>();
+      }
+      else
+      {
+        // use Blazor state management
+        config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
+        config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
+        config.Services.AddTransient<StateManager>();
+      }
 
       // use Blazor viewmodel
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));

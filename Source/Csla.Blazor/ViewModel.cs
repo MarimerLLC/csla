@@ -387,7 +387,24 @@ namespace Csla.Blazor
 
       var keyName = property.GetKey();
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
-      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName);
+      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName, " ");
+    }
+
+    /// <summary>
+    /// Get a PropertyInfo object for a property.
+    /// PropertyInfo provides access
+    /// to the meta-state of the property.
+    /// </summary>
+    /// <param name="property">Property expression</param>
+    /// <param name="textSeparator">text seprator for concatenating errors </param>
+    public IPropertyInfo GetPropertyInfo<P>(string textSeparator, Expression<Func<P>> property)
+    {
+      if (property == null)
+        throw new ArgumentNullException(nameof(property));
+
+      var keyName = property.GetKey();
+      var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
+      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName, textSeparator);
     }
 
     /// <summary>
@@ -404,7 +421,7 @@ namespace Csla.Blazor
 
       var keyName = property.GetKey() + $"[{id}]";
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
-      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName);
+      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName, " ");
     }
 
     /// <summary>
@@ -416,7 +433,7 @@ namespace Csla.Blazor
     public IPropertyInfo GetPropertyInfo(string propertyName)
     {
       var keyName = Model.GetType().FullName + "." + propertyName;
-      return GetPropertyInfo(keyName, Model, propertyName);
+      return GetPropertyInfo(keyName, Model, propertyName, " ");
     }
 
     /// <summary>
@@ -429,19 +446,19 @@ namespace Csla.Blazor
     public IPropertyInfo GetPropertyInfo(string propertyName, string id)
     {
       var keyName = Model.GetType().FullName + "." + propertyName + $"[{id}]";
-      return GetPropertyInfo(keyName, Model, propertyName);
+      return GetPropertyInfo(keyName, Model, propertyName, " ");
     }
 
     private readonly Dictionary<string, IPropertyInfo> _propertyInfoCache = [];
 
-    private IPropertyInfo GetPropertyInfo(string keyName, object model, string propertyName)
+    private IPropertyInfo GetPropertyInfo(string keyName, object model, string propertyName, string textSeparator)
     {
       if (_propertyInfoCache.TryGetValue(keyName, out var result))
       {
         return result;
       }
 
-      result = new PropertyInfo(model, propertyName);
+      result = new PropertyInfo(model, propertyName,textSeparator);
       _propertyInfoCache.Add(keyName, result);
       return result;
     }

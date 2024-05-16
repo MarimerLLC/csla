@@ -41,10 +41,9 @@ namespace Csla.Blazor.State
     /// <param name="timeout">Time to wait before timing out</param>
     private async Task GetState(TimeSpan timeout)
     {
-      Session session;
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
-        session = await _sessionManager.RetrieveSession();
+        _ = await _sessionManager.RetrieveSession(timeout);
     }
 
     /// <summary>
@@ -57,12 +56,28 @@ namespace Csla.Blazor.State
     /// at which you know the user is navigating to another
     /// page.
     /// </remarks>
-    public void SaveState()
+    public async Task SaveState()
+    {
+      await SaveState(TimeSpan.FromSeconds(10));
+    }
+
+    /// <summary>
+    /// Saves state from Blazor wasm to web server. Must call
+    /// as user navigates to any server-side Blazor page.
+    /// </summary>
+    /// <param name="timeout">Timeout value</param>
+    /// <remarks>
+    /// Normally this method is called from the Dispose method
+    /// of a Blazor page, which is the only reliable point
+    /// at which you know the user is navigating to another
+    /// page.
+    /// </remarks>
+    public async Task SaveState(TimeSpan timeout)
     {
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
       {
-        _sessionManager.SendSession();
+         await _sessionManager.SendSession(timeout);
       }
     }
   }

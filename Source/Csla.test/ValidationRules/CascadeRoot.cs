@@ -215,7 +215,7 @@ namespace Csla.Test.ValidationRules
       if (value1 + value2 != _sumValue)
       {
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, _value2Property.FriendlyName, _sumValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message, 1) { Severity = Severity });
       }
     }
   }

@@ -22,6 +22,7 @@ namespace Csla.Rules
     private bool _provideTargetWhenAsync;
     private int _priority;
     private RuleUri _ruleUri;
+    private int _displayIndex;
 
     /// <summary>
     /// If true, rule will only cascade if the primary property
@@ -130,6 +131,18 @@ namespace Csla.Rules
       {
         CanWriteProperty(nameof(RunMode));
         _runMode = value;
+      }
+    }
+    /// <summary>
+    /// Gets the rule DisplayIndex in UI.
+    /// </summary>
+    public int DisplayIndex
+    {
+      get { return _displayIndex; }
+      set
+      {
+        CanWriteProperty(nameof(DisplayIndex));
+        _displayIndex = value;
       }
     }
 

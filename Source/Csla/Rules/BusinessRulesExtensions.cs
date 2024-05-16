@@ -35,7 +35,7 @@ namespace Csla.Rules
         {
           if (!ruleHandler.Invoke(target))
           {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName)) {Severity = severity});
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName), o.Rule.DisplayIndex) {Severity = severity});
           }
         }
       });
@@ -78,7 +78,7 @@ namespace Csla.Rules
         {
           if (!ruleHandler.Invoke(target))
           {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName)) { Severity = severity });
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName), o.Rule.DisplayIndex) { Severity = severity });
           }
         }
       });
@@ -150,7 +150,7 @@ namespace Csla.Rules
         {
           if (!ruleHandler.Invoke(target))
           {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, messageDelegate.Invoke()) { Severity = severity });
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, messageDelegate.Invoke(), o.Rule.DisplayIndex) { Severity = severity });
           }
         }
       });

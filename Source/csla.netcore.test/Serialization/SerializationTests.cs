@@ -59,7 +59,7 @@ namespace Csla.Test.Serialization
       {
         IServiceCollection services = new ServiceCollection();
         services.AddCsla(o => o
-          .Serialization(o => o.SerializationFormatter(typeof(CustomFormatter))));
+          .Serialization(o => o.SerializationFormatter<CustomFormatter>()));
         var provider = services.BuildServiceProvider();
         var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -73,7 +73,7 @@ namespace Csla.Test.Serialization
         // reset the serializer back to default
         IServiceCollection services = new ServiceCollection();
         services.AddCsla(o => o
-          .Serialization(o => o.SerializationFormatter(typeof(Csla.Serialization.Mobile.MobileFormatter))));
+          .Serialization(o => o.SerializationFormatter<Csla.Serialization.Mobile.MobileFormatter>()));
         var provider = services.BuildServiceProvider();
         var applicationContext = provider.GetRequiredService<ApplicationContext>();
       }

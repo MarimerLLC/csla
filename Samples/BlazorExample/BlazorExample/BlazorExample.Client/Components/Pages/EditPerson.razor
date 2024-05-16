@@ -1,7 +1,7 @@
 ﻿@page "/editperson"
 @page "/editperson/{id}"
-@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
-@implements IDisposable /* CSLA wasm pages must be IDisposable */
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
+@rendermode InteractiveAuto
 @inject Csla.Blazor.State.StateManager StateManager
 @inject Csla.IDataPortal<PersonEdit> personEditPortal
 @inject Csla.Blazor.ViewModel<PersonEdit> vm
@@ -85,11 +85,5 @@ else
             await vm.RefreshAsync(() => personEditPortal.CreateAsync());
         else
             await vm.RefreshAsync(() => personEditPortal.FetchAsync(int.Parse(id)));
-    }
-
-    public void Dispose()
-    {
-        // wasm pages _must_ save state back to server
-        StateManager.SaveState();
     }
 }

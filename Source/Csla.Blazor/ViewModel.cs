@@ -9,8 +9,6 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Reflection;
-using System.Threading;
 using Csla.Reflection;
 using Csla.Rules;
 
@@ -238,7 +236,7 @@ namespace Csla.Blazor
       }
       catch (TaskCanceledException tcex)
       {
-        Exception = new TimeoutException("SaveAsync", tcex);
+        Exception = new TimeoutException(nameof(SaveAsync), tcex);
         ViewModelErrorText = Exception.Message;
       }
     }

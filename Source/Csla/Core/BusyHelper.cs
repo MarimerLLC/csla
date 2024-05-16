@@ -59,7 +59,7 @@ namespace Csla.Core
           return;
         }
 #if NET6_0_OR_GREATER
-                var finishedTask = await tcs.Task.WaitAsync(ct).ConfigureAwait(false);
+        var finishedTask = await tcs.Task.WaitAsync(ct).ConfigureAwait(false);
 #else
         ct.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: false);
         var finishedTask = await tcs.Task.ConfigureAwait(false);

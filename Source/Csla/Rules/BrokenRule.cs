@@ -28,7 +28,11 @@ namespace Csla.Rules
     private string _property;
     private RuleSeverity _severity;
     private string _originProperty;
+
     private int _priority;
+
+    private int _displayIndex;
+
 
     /// <summary>
     /// Gets a string representation for this object.
@@ -89,6 +93,7 @@ namespace Csla.Rules
       internal set { _originProperty = value; }
     }
 
+
     /// <summary>
     /// Gets or sets the broken rule priority.
     /// </summary>
@@ -97,6 +102,18 @@ namespace Csla.Rules
       get { return _priority; }
       internal set { _priority = value; }
     }
+
+
+    /// <summary>
+    /// Gets or sets the DisplayIndex property.
+    /// </summary>
+    /// <value>The DisplayIndex property.</value>
+    public int DisplayIndex
+    {
+      get { return _displayIndex; }
+      internal set { _displayIndex = value; }
+    }
+    
 
     #region MobileObject overrides
 
@@ -117,7 +134,11 @@ namespace Csla.Rules
       info.AddValue("_property", _property);
       info.AddValue("_severity", (int)_severity);
       info.AddValue("_originProperty", _originProperty);
+
       info.AddValue("_priority", _priority);
+
+      info.AddValue("_displayIndex", (int)_displayIndex);
+
 
       base.OnGetState(info, mode);
     }
@@ -140,6 +161,8 @@ namespace Csla.Rules
       _severity = info.GetValue<RuleSeverity>("_severity");
       _originProperty = info.GetValue<string>("_originProperty");
       _priority = info.GetValue<int>("_priority");
+      _displayIndex = info.GetValue<int>("_displayIndex");
+
 
       base.OnSetState(info, mode);
     }

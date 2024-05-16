@@ -60,6 +60,10 @@ namespace Csla.Rules
     /// the rule is complete.
     /// </summary>
     public Dictionary<Core.IPropertyInfo, object> OutputPropertyValues { get; set; }
+    /// <summary>
+    /// Gets or sets a value of Message's display Index 
+    /// </summary>
+    public int DisplayIndex { get; set; }
 
     /// <summary>
     /// Creates a successful result.
@@ -68,12 +72,15 @@ namespace Csla.Rules
     /// this result.</param>
     /// <param name="property">Property to which this result should
     /// be attached.</param>
-    public RuleResult(string ruleName, Core.IPropertyInfo property)
+    /// <param name="displayIndex"> Message's display Index 
+    /// in UI </param>
+    public RuleResult(string ruleName, Core.IPropertyInfo property, int displayIndex)
     {
       RuleName = ruleName;
       PrimaryProperty = property;
       Success = true;
       Severity = RuleSeverity.Success;
+      DisplayIndex = displayIndex;
     }
 
     /// <summary>
@@ -85,7 +92,9 @@ namespace Csla.Rules
     /// be attached.</param>
     /// <param name="description">Human-readable description of
     /// why the rule failed.</param>
-    public RuleResult(string ruleName, Core.IPropertyInfo property, string description)
+    /// <param name="displayIndex"> Message's display Index 
+    /// in UI </param>
+    public RuleResult(string ruleName, Core.IPropertyInfo property, string description, int displayIndex)
     {
 
       if (string.IsNullOrEmpty(description))
@@ -96,6 +105,7 @@ namespace Csla.Rules
       Description = description;
       Success = string.IsNullOrEmpty(description);
       Severity = RuleSeverity.Error;
+      DisplayIndex = displayIndex;
     }
   }
 }

@@ -241,17 +241,13 @@ namespace Csla.Threading
       {
         var doWorkEventArgs = new DoWorkEventArgs(request.Argument);
         _myDoWork?.Invoke(this, doWorkEventArgs);
-#pragma warning disable CS0618 // Type or member is obsolete
         e.Result = new WorkerAsyncResult(doWorkEventArgs.Result, null);
-#pragma warning restore CS0618 // Type or member is obsolete
         e.Cancel = doWorkEventArgs.Cancel;
       }
       // must implement exception handling and return exception in WorkerAsyncResult
       catch (Exception ex)
       {
-#pragma warning disable CS0618 // Type or member is obsolete
         e.Result = new WorkerAsyncResult(null, ex);
-#pragma warning restore CS0618 // Type or member is obsolete
       }
     }
 

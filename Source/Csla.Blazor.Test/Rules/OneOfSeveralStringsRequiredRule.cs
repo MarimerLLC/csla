@@ -79,7 +79,7 @@ namespace Csla.Blazor.Test.Rules
         foreach (Csla.Core.IPropertyInfo propertyInfo in InputProperties)
         { 
           var message = string.Format(GetMessage(), propertyInfo.FriendlyName);
-          context.Results.Add(new RuleResult(RuleName, propertyInfo, message) { Severity = Severity });
+          context.Results.Add(new RuleResult(RuleName, propertyInfo, message, 1) { Severity = Severity });
         }
       }
     }

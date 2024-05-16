@@ -283,6 +283,19 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    public void BusinessRuleDisplayIndex()
+    {
+      UnitTestContext context = GetContext();
+      var root = CreateWithoutCriteria<RuleDisplayIndex>();
+      root.Validate();
+      Csla.Rules.BrokenRulesCollection list = root.BrokenRulesCollection;
+      context.Assert.AreEqual(2, list[0].DisplayIndex, "Should have DisplayIndex");
+
+      context.Assert.Success();
+      context.Complete();
+    }
+
+    [TestMethod]
     public async Task VerifyUndoableStateStackOnClone()
     {
       using UnitTestContext context = GetContext();

@@ -79,8 +79,8 @@ namespace Csla.Blazor.State
     }
 
     // wasm client-side methods
-    Task<Session> ISessionManager.RetrieveSession() => throw new NotImplementedException();
+    Task<Session> ISessionManager.RetrieveSession(TimeSpan timeout) => throw new NotImplementedException();
     Session ISessionManager.GetCachedSession() => throw new NotImplementedException();
-    Task ISessionManager.SendSession() => throw new NotImplementedException();
+    Task ISessionManager.SendSession(TimeSpan timeout) => throw new NotImplementedException();
   }
 }

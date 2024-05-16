@@ -6,6 +6,7 @@
 // <summary>Use this type to configure the settings for serialization.</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Configuration
@@ -20,10 +21,9 @@ namespace Csla.Configuration
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc). Default is MobileFormatter.
     /// </summary>
-    /// <param name="formatterType">Serialization formatter type.</param>
-    public SerializationOptions SerializationFormatter(Type formatterType)
+    public SerializationOptions SerializationFormatter<T>() where T: ISerializationFormatter
     {
-      ApplicationContext.SerializationFormatter = formatterType;
+      ApplicationContext.SerializationFormatter = typeof(T);
       return this;
     }
 

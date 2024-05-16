@@ -72,7 +72,7 @@ namespace Csla.Rules
       }
     }
     
-    internal void SetBrokenRules(List<RuleResult> results, string originPropertyName)
+    internal void SetBrokenRules(List<RuleResult> results, string originPropertyName, int Priority)
     {
       lock (_syncRoot)
       {
@@ -110,7 +110,8 @@ namespace Csla.Rules
             Property = resultPrimaryProperty == null
                        ? null : resultPrimaryProperty.Name,
             Severity = result.Severity,
-            OriginProperty = originPropertyName
+            OriginProperty = originPropertyName,
+            Priority = Priority
           };
 
           Add(broken);
@@ -248,7 +249,7 @@ namespace Csla.Rules
     /// </returns>
     public BrokenRule GetFirstMessage(Csla.Core.IPropertyInfo property)
     {
-      return this.FirstOrDefault(c => c.Property == property.Name);
+      return this.OrderBy(c => c.Priority).FirstOrDefault(c => c.Property == property.Name);
     }
 
     /// <summary>
@@ -280,7 +281,7 @@ namespace Csla.Rules
     /// </returns>
     public BrokenRule GetFirstMessage(string property, RuleSeverity severity)
     {
-      return this.FirstOrDefault(c => c.Property == property && c.Severity == severity);
+      return this.OrderBy(c => c.Property).FirstOrDefault(c => c.Property == property && c.Severity == severity);
     }
 
     /// <summary>

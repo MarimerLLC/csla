@@ -517,6 +517,22 @@ namespace Csla.Test.ValidationRules
       context.Complete();
     }
 
+    [TestMethod]
+    public void BrokenRulesPriority()
+    {
+      UnitTestContext context = GetContext();
+      var root = CreateWithoutCriteria<BrokenRulesPriority>();
+      root.Name = "z";
+      root.Validate();
+      Csla.Rules.BrokenRulesCollection list = root.BrokenRulesCollection;
+
+      context.Assert.AreEqual(1, list[0].Priority, "Priority of Broken rule.");
+      Assert.AreEqual("Check capitalization", root.BrokenRulesCollection.GetFirstBrokenRule("Name").Description, "'Check capitalization' should be broken (GetFirstBrokenRule)");
+
+      context.Assert.Success();
+      context.Complete();
+    }
+
     private T CreateWithoutCriteria<T>()
     {
       IDataPortal<T> dataPortal = _testDIContext.CreateDataPortal<T>();

@@ -16,18 +16,12 @@ namespace Csla.Test.ValidationRules
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
     private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(c => c.ChildList, "Child list", null, RelationshipTypes.LazyLoad);
-    public ChildList ChildList
-    {
-      get 
-      {
-        return LazyGetProperty(ChildListProperty, () => GetDataPortal<ChildList>().Create()); 
-      }
-    }
+    public ChildList ChildList => LazyGetProperty(ChildListProperty, () => GetDataPortal<ChildList>().Create());
 
     protected override void AddBusinessRules()
     {

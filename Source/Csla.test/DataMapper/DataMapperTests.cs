@@ -240,8 +240,8 @@ namespace Csla.Test.DataMapper
     public static PropertyInfo<int> MyIntProperty = RegisterProperty<int>(c => c.MyInt);
     public int MyInt
     {
-      get { return GetProperty(MyIntProperty); }
-      set { SetProperty(MyIntProperty, value); }
+      get => GetProperty(MyIntProperty);
+      set => SetProperty(MyIntProperty, value);
     }
 
     [Create]
@@ -256,71 +256,71 @@ namespace Csla.Test.DataMapper
 
     public int MyInt
     {
-      get { return _int; }
-      set { _int = value; }
+      get => _int;
+      set => _int = value;
     }
 
     private double _double;
 
     public double MyDouble
     {
-      get { return _double; }
-      set { _double = value; }
+      get => _double;
+      set => _double = value;
     }
 
     private bool _bool;
 
     public bool MyBool
     {
-      get { return _bool; }
-      set { _bool = value; }
+      get => _bool;
+      set => _bool = value;
     }
 
     private Nullable<int> _nint;
 
     public Nullable<int> MyNInt
     {
-      get { return _nint; }
-      set { _nint = value; }
+      get => _nint;
+      set => _nint = value;
     }
 
     private DataMapEnum _enum;
 
     public DataMapEnum MyEnum
     {
-      get { return _enum; }
-      set { _enum = value; }
+      get => _enum;
+      set => _enum = value;
     }
 
     private DateTime _date;
 
     public DateTime MyDate
     {
-      get { return _date; }
-      set { _date = value; }
+      get => _date;
+      set => _date = value;
     }
 
     private Csla.SmartDate _smartDate;
 
     public Csla.SmartDate MySmartDate
     {
-      get { return _smartDate; }
-      set { _smartDate = value; }
+      get => _smartDate;
+      set => _smartDate = value;
     }
 
     private Guid _guid;
 
     public Guid MyGuid
     {
-      get { return _guid; }
-      set { _guid = value; }
+      get => _guid;
+      set => _guid = value;
     }
 
     private string _string;
     public string MyString
     {
-      get { return _string; }
-      set { _string = value; }
+      get => _string;
+      set => _string = value;
     }
   }
 }

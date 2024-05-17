@@ -8,15 +8,15 @@ namespace Csla.Testing.Business.DataPortal
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     private static readonly PropertyInfo<string> MethodCalledProperty = RegisterProperty(new PropertyInfo<string>("MethodCalled", "MethodCalled"));
     public string MethodCalled
     {
-      get { return GetProperty(MethodCalledProperty); }
-      set { SetProperty(MethodCalledProperty, value); }
+      get => GetProperty(MethodCalledProperty);
+      set => SetProperty(MethodCalledProperty, value);
     }
 
     public void SetAsChild()

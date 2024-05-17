@@ -18,8 +18,8 @@ namespace Csla.Test.PropertyGetSet
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(typeof(EditableGetSet), new PropertyInfo<int>("Id"));
     public int Id
     {
-      get { return GetProperty<int>(IdProperty); }
-      set { SetProperty<int>(IdProperty, value); }
+      get => GetProperty<int>(IdProperty);
+      set => SetProperty<int>(IdProperty, value);
     }
 
     public static BadGetSet GetObject(IDataPortal<BadGetSet> dataPortal)
@@ -42,16 +42,16 @@ namespace Csla.Test.PropertyGetSet
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
-      get { return GetProperty<int>(IdProperty); }
-      set { SetProperty<int>(IdProperty, value); }
+      get => GetProperty<int>(IdProperty);
+      set => SetProperty<int>(IdProperty, value);
     }
 
     // the registering class is intentionally incorrect for this test
     public static readonly PropertyInfo<int> IdTwoProperty = RegisterProperty<int>(c => c.Id);
     public int IdTwo
     {
-      get { return GetProperty<int>(IdTwoProperty); }
-      set { SetProperty<int>(IdTwoProperty, value); }
+      get => GetProperty<int>(IdTwoProperty);
+      set => SetProperty<int>(IdTwoProperty, value);
     }
 
     public static BadGetSetTwo GetObject(IDataPortal<BadGetSetTwo> dataPortal)

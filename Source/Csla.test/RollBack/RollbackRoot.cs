@@ -21,14 +21,14 @@ namespace Csla.Test.RollBack
 
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public bool Fail
     {
-      get { return GetProperty(FailProperty); }
-      set { SetProperty(FailProperty, value); }
+      get => GetProperty(FailProperty);
+      set => SetProperty(FailProperty, value);
     }
 
     [Serializable]
@@ -48,8 +48,8 @@ namespace Csla.Test.RollBack
 
       public string Data
       {
-        get { return ReadProperty(DataProperty); }
-        set { LoadProperty(DataProperty, value); }
+        get => ReadProperty(DataProperty);
+        set => LoadProperty(DataProperty, value);
       }
     }
 

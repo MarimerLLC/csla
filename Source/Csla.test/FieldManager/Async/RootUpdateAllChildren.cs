@@ -6,27 +6,15 @@
     private static PropertyInfo<string> DataProperty = RegisterProperty<string>(typeof(RootUpdateAllChildren), new PropertyInfo<string>("Data"));
     public string Data
     {
-      get { return GetProperty<string>(DataProperty); }
-      set { SetProperty<string>(DataProperty, value); }
+      get => GetProperty<string>(DataProperty);
+      set => SetProperty<string>(DataProperty, value);
     }
 
     private static PropertyInfo<Child> ChildProperty = RegisterProperty<Child>(typeof(RootUpdateAllChildren), new PropertyInfo<Child>("Child"));
-    public Child Child
-    {
-      get 
-      {
-        return GetProperty<Child>(ChildProperty); 
-      }
-    }
+    public Child Child => GetProperty<Child>(ChildProperty);
 
     private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(typeof(RootUpdateAllChildren), new PropertyInfo<ChildList>("ChildList"));
-    public ChildList ChildList
-    {
-      get
-      {
-        return GetProperty<ChildList>(ChildListProperty);
-      }
-    }
+    public ChildList ChildList => GetProperty<ChildList>(ChildListProperty);
 
     public async Task FetchChildAsync(IChildDataPortal<Child> childDataPortal)
     {

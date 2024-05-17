@@ -10,25 +10,25 @@ namespace Csla.Test.ValidationRules
 
     public string CustomerNumber
     {
-      get { return GetProperty(CustomerNumberProperty); }
+      get => GetProperty(CustomerNumberProperty);
 
-      set { SetProperty(CustomerNumberProperty, value); }
+      set => SetProperty(CustomerNumberProperty, value);
     }
 
     public static readonly PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(c => c.CustomerName);
 
     public string CustomerName
     {
-      get { return GetProperty(CustomerNameProperty); }
+      get => GetProperty(CustomerNameProperty);
 
-      set { SetProperty(CustomerNameProperty, value); }
+      set => SetProperty(CustomerNameProperty, value);
     }
 
     public static readonly PropertyInfo<string> AsyncAwaitProperty = RegisterProperty<string>(c => c.AsyncAwait);
     public string AsyncAwait
     {
-      get { return GetProperty(AsyncAwaitProperty); }
-      set { SetProperty(AsyncAwaitProperty, value); }
+      get => GetProperty(AsyncAwaitProperty);
+      set => SetProperty(AsyncAwaitProperty, value);
     }
 
     public static AsyncRuleRoot NewRoot(IDataPortal<AsyncRuleRoot> dataPortal)

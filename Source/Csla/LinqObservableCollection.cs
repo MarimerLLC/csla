@@ -118,10 +118,7 @@ namespace Csla
     /// a BusinessListBase) object that
     /// contains/manages all data items.
     /// </summary>
-    public IList<T> Source
-    {
-      get { return _baseCollection; }
-    }
+    public IList<T> Source => _baseCollection;
 
     /// <summary>
     /// Gets the query result object used to
@@ -164,10 +161,7 @@ namespace Csla
     /// <param name="index">Index location.</param>
     public T this[int index]
     {
-      get
-      {
-        return QueryResult[index];
-      }
+      get => QueryResult[index];
       set
       {
         var idx = _baseCollection.IndexOf(QueryResult[index]);
@@ -226,10 +220,7 @@ namespace Csla
     /// <summary>
     /// Gets the number of items in the list.
     /// </summary>
-    public int Count
-    {
-      get { return QueryResult.Count; }
-    }
+    public int Count => QueryResult.Count;
 
     /// <summary>
     /// Gets a value indicating whether the source
@@ -313,10 +304,7 @@ namespace Csla
     /// Gets a value indicating whether the source
     /// list has a fixed size.
     /// </summary>
-    public bool IsFixedSize
-    {
-      get { return ((IList)_baseCollection).IsFixedSize; }
-    }
+    public bool IsFixedSize => ((IList)_baseCollection).IsFixedSize;
 
     /// <summary>
     /// Removes specified item from the list.
@@ -329,14 +317,8 @@ namespace Csla
 
     object IList.this[int index]
     {
-      get
-      {
-        return this[index];
-      }
-      set
-      {
-        this[index] = (T)value;
-      }
+      get => this[index];
+      set => this[index] = (T)value;
     }
 
     /// <summary>
@@ -353,18 +335,12 @@ namespace Csla
     /// Gets a value indicating whether the source list
     /// is synchronized.
     /// </summary>
-    public bool IsSynchronized
-    {
-      get { return ((IList)_baseCollection).IsSynchronized; }
-    }
+    public bool IsSynchronized => ((IList)_baseCollection).IsSynchronized;
 
     /// <summary>
     /// Gets the SyncRoot from the source list.
     /// </summary>
-    public object SyncRoot
-    {
-      get { return ((IList)_baseCollection).SyncRoot; }
-    }
+    public object SyncRoot => ((IList)_baseCollection).SyncRoot;
   }
 
   /// <summary>

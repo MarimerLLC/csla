@@ -14,8 +14,8 @@ namespace Csla.Test.ValidationRules
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
   }
 }

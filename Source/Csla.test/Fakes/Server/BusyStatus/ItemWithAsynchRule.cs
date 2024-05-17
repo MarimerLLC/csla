@@ -19,42 +19,24 @@ namespace Csla.Testing.Business.BusyStatus
 
     public string Id
     {
-      get
-      {
-        return GetProperty(IdProperty);
-      }
-      set
-      {
-        SetProperty(IdProperty, value);
-      }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
     private static PropertyInfo<string> OperationResultProperty = RegisterProperty<string>(c => c.OperationResult, "Operation Result", string.Empty);
 
     public string OperationResult
     {
-      get
-      {
-        return GetProperty(OperationResultProperty);
-      }
-      set
-      {
-        SetProperty(OperationResultProperty, value);
-      }
+      get => GetProperty(OperationResultProperty);
+      set => SetProperty(OperationResultProperty, value);
     }
 
     private static PropertyInfo<string> RuleFieldProperty = RegisterProperty<string>(c => c.RuleField, "Rule Field", string.Empty);
 
     public string RuleField
     {
-      get
-      {
-        return GetProperty(RuleFieldProperty);
-      }
-      set
-      {
-        SetProperty(RuleFieldProperty, value);
-      }
+      get => GetProperty(RuleFieldProperty);
+      set => SetProperty(RuleFieldProperty, value);
     }
 
     internal static ItemWithAsynchRule GetOneItemForList(IChildDataPortal<ItemWithAsynchRule> childDataPortal, string id)
@@ -62,10 +44,7 @@ namespace Csla.Testing.Business.BusyStatus
       return childDataPortal.FetchChild(id);
     }
 
-    public bool IsRunningRules
-    {
-      get { return BusinessRules.RunningAsyncRules && BusinessRules.RunningRules; }
-    }
+    public bool IsRunningRules => BusinessRules.RunningAsyncRules && BusinessRules.RunningRules;
 
     protected override void AddBusinessRules()
     {

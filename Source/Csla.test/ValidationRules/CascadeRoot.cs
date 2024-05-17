@@ -13,134 +13,134 @@ namespace Csla.Test.ValidationRules
     public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
     public int Num1
     {
-      get { return GetProperty(Num1Property); }
-      set { SetProperty(Num1Property, value); }
+      get => GetProperty(Num1Property);
+      set => SetProperty(Num1Property, value);
     }
 
     public static readonly PropertyInfo<int> Num2Property = RegisterProperty<int>(c => c.Num2);
     public int Num2
     {
-      get { return GetProperty(Num2Property); }
-      set { SetProperty(Num2Property, value); }
+      get => GetProperty(Num2Property);
+      set => SetProperty(Num2Property, value);
     }
 
     public static readonly PropertyInfo<int> Num3Property = RegisterProperty<int>(c => c.Num3);
     public int Num3
     {
-      get { return GetProperty(Num3Property); }
-      set { SetProperty(Num3Property, value); }
+      get => GetProperty(Num3Property);
+      set => SetProperty(Num3Property, value);
     }
 
     public static readonly PropertyInfo<int> Num4Property = RegisterProperty<int>(c => c.Num4);
     public int Num4
     {
-      get { return GetProperty(Num4Property); }
-      set { SetProperty(Num4Property, value); }
+      get => GetProperty(Num4Property);
+      set => SetProperty(Num4Property, value);
     }
 
     public static readonly PropertyInfo<int> Num5Property = RegisterProperty<int>(c => c.Num5);
     public int Num5
     {
-      get { return GetProperty(Num5Property); }
-      set { SetProperty(Num5Property, value); }
+      get => GetProperty(Num5Property);
+      set => SetProperty(Num5Property, value);
     }
 
     internal static PropertyInfo<int> ValueAaProperty = RegisterProperty<int>(c => c.ValueAa);
     public int ValueAa
     {
-      get { return GetProperty(ValueAaProperty); }
-      set { SetProperty(ValueAaProperty, value); }
+      get => GetProperty(ValueAaProperty);
+      set => SetProperty(ValueAaProperty, value);
     }
 
     internal static PropertyInfo<int> ValueAbProperty = RegisterProperty<int>(c => c.ValueAb);
     public int ValueAb
     {
-      get { return GetProperty(ValueAbProperty); }
-      set { SetProperty(ValueAbProperty, value); }
+      get => GetProperty(ValueAbProperty);
+      set => SetProperty(ValueAbProperty, value);
     }
 
     internal static PropertyInfo<int> ValueAcProperty = RegisterProperty<int>(c => c.ValueAc);
     public int ValueAc
     {
-      get { return GetProperty(ValueAcProperty); }
-      set { SetProperty(ValueAcProperty, value); }
+      get => GetProperty(ValueAcProperty);
+      set => SetProperty(ValueAcProperty, value);
     }
 
     internal static PropertyInfo<int> ValueAdProperty = RegisterProperty<int>(c => c.ValueAd);
     public int ValueAd
     {
-      get { return GetProperty(ValueAdProperty); }
-      set { SetProperty(ValueAdProperty, value); }
+      get => GetProperty(ValueAdProperty);
+      set => SetProperty(ValueAdProperty, value);
     }
 
     internal static PropertyInfo<int> ValueAeProperty = RegisterProperty<int>(c => c.ValueAe);
     public int ValueAe
     {
-      get { return GetProperty(ValueAeProperty); }
-      set { SetProperty(ValueAeProperty, value); }
+      get => GetProperty(ValueAeProperty);
+      set => SetProperty(ValueAeProperty, value);
     }
 
     internal static PropertyInfo<int> ValueAfProperty = RegisterProperty<int>(c => c.ValueAf);
     public int ValueAf
     {
-      get { return GetProperty(ValueAfProperty); }
-      set { SetProperty(ValueAfProperty, value); }
+      get => GetProperty(ValueAfProperty);
+      set => SetProperty(ValueAfProperty, value);
     }
 
     internal static PropertyInfo<int> ValueAgProperty = RegisterProperty<int>(c => c.ValueAg);
     public int ValueAg
     {
-      get { return GetProperty(ValueAgProperty); }
-      set { SetProperty(ValueAgProperty, value); }
+      get => GetProperty(ValueAgProperty);
+      set => SetProperty(ValueAgProperty, value);
     }
 
     internal static PropertyInfo<int> ValueBaProperty = RegisterProperty<int>(c => c.ValueBa);
     public int ValueBa
     {
-      get { return GetProperty(ValueBaProperty); }
-      set { SetProperty(ValueBaProperty, value); }
+      get => GetProperty(ValueBaProperty);
+      set => SetProperty(ValueBaProperty, value);
     }
 
     internal static PropertyInfo<int> ValueBbProperty = RegisterProperty<int>(c => c.ValueBb);
     public int ValueBb
     {
-      get { return GetProperty(ValueBbProperty); }
-      set { SetProperty(ValueBbProperty, value); }
+      get => GetProperty(ValueBbProperty);
+      set => SetProperty(ValueBbProperty, value);
     }
 
     internal static PropertyInfo<decimal> ValueCaProperty = RegisterProperty<decimal>(c => c.ValueCa);
     public decimal ValueCa
     {
-      get { return GetProperty(ValueCaProperty); }
-      set { SetProperty(ValueCaProperty, value); }
+      get => GetProperty(ValueCaProperty);
+      set => SetProperty(ValueCaProperty, value);
     }
 
     internal static PropertyInfo<decimal> ValueCbProperty = RegisterProperty<decimal>(c => c.ValueCb);
     public decimal ValueCb
     {
-      get { return GetProperty(ValueCbProperty); }
-      set { SetProperty(ValueCbProperty, value); }
+      get => GetProperty(ValueCbProperty);
+      set => SetProperty(ValueCbProperty, value);
     }
 
     internal static PropertyInfo<decimal> ValueCcProperty = RegisterProperty<decimal>(c => c.ValueCc);
     public decimal ValueCc
     {
-      get { return GetProperty(ValueCcProperty); }
-      set { SetProperty(ValueCcProperty, value); }
+      get => GetProperty(ValueCcProperty);
+      set => SetProperty(ValueCcProperty, value);
     }
 
     internal static PropertyInfo<decimal> ValueCdProperty = RegisterProperty<decimal>(c => c.ValueCd);
     public decimal ValueCd
     {
-      get { return GetProperty(ValueCdProperty); }
-      set { SetProperty(ValueCdProperty, value); }
+      get => GetProperty(ValueCdProperty);
+      set => SetProperty(ValueCdProperty, value);
     }
 
     internal static PropertyInfo<decimal> ValueCeProperty = RegisterProperty<decimal>(c => c.ValueCe);
     public decimal ValueCe
     {
-      get { return GetProperty(ValueCeProperty); }
-      set { SetProperty(ValueCeProperty, value); }
+      get => GetProperty(ValueCeProperty);
+      set => SetProperty(ValueCeProperty, value);
     }
 
     protected override void AddBusinessRules()
@@ -174,8 +174,8 @@ namespace Csla.Test.ValidationRules
     }
     public bool CascadeOnDirtyProperties
     {
-      get { return BusinessRules.CascadeOnDirtyProperties; }
-      set { BusinessRules.CascadeOnDirtyProperties = value; }
+      get => BusinessRules.CascadeOnDirtyProperties;
+      set => BusinessRules.CascadeOnDirtyProperties = value;
     }
 
     [Create]

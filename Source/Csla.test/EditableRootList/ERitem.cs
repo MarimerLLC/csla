@@ -14,8 +14,8 @@ namespace Csla.Test.EditableRootList
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public ERitem()

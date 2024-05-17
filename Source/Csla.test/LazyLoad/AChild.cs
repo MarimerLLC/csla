@@ -14,14 +14,11 @@ namespace Csla.Test.LazyLoad
     public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
     public Guid Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
-    public new int EditLevel
-    {
-      get { return base.EditLevel; }
-    }
+    public new int EditLevel => base.EditLevel;
 
     public AChild()
     {

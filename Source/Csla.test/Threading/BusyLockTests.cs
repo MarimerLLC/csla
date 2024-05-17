@@ -18,10 +18,7 @@ namespace Csla.Test.Threading
     {
       public bool IsBusy { get; private set; }
 
-      public bool IsSelfBusy
-      {
-        get { return IsBusy; }
-      }
+      public bool IsSelfBusy => IsBusy;
 
       public void MarkBusy(bool busy)
       {

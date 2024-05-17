@@ -21,13 +21,7 @@ namespace Csla.Test.ChildChanged
     }
 
     private static PropertyInfo<SingleList> ListProperty = RegisterProperty(new PropertyInfo<SingleList>("List"));
-    public SingleList List
-    {
-      get 
-      {
-        return GetProperty(ListProperty); 
-      }
-    }
+    public SingleList List => GetProperty(ListProperty);
 
     [Fetch]
     private void Fetch([Inject] IChildDataPortal<SingleList> childDataPortal)

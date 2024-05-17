@@ -637,8 +637,8 @@ namespace Csla.Test.Serialization
     private static PropertyInfo<string> NameProperty = RegisterProperty<string>("Name");
     public string Name
     {
-      get { return ReadProperty(NameProperty); }
-      set { LoadProperty(NameProperty, value); }
+      get => ReadProperty(NameProperty);
+      set => LoadProperty(NameProperty, value);
     }
 
     [RunLocal]

@@ -397,8 +397,8 @@ namespace Csla.Core
 
     event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
     {
-      add { _propertyChanged = (PropertyChangedEventHandler)Delegate.Combine(_propertyChanged, value); }
-      remove { _propertyChanged = (PropertyChangedEventHandler)Delegate.Remove(_propertyChanged, value); }
+      add => _propertyChanged = (PropertyChangedEventHandler)Delegate.Combine(_propertyChanged, value);
+      remove => _propertyChanged = (PropertyChangedEventHandler)Delegate.Remove(_propertyChanged, value);
     }
 
     /// <summary>

@@ -58,8 +58,8 @@ namespace Csla.Test.DataPortal
 
     public EditableChild1 Child
     {
-      get { return GetProperty(ChildProperty); }
-      private set { LoadProperty(ChildProperty, value); }
+      get => GetProperty(ChildProperty);
+      private set => LoadProperty(ChildProperty, value);
     }
 
     [RunLocal]

@@ -5,8 +5,8 @@
     private static int _counter = 0;
     public static int Counter
     {
-      get { return _counter; }
-      set { _counter = value; }
+      get => _counter;
+      set => _counter = value;
     }
 
     public static void AddObjectAuthorizationRules()

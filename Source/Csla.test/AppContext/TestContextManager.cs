@@ -14,10 +14,7 @@ namespace Csla.Test.AppContext
     private const string _clientContextName = "Csla.ClientContext";
     private const string _globalContextName = "Csla.GlobalContext";
 
-    public bool IsValid
-    {
-      get { return true; }
-    }
+    public bool IsValid => true;
 
     public bool IsStatefulContext => true;
 

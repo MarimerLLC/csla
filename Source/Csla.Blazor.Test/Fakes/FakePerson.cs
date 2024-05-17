@@ -19,34 +19,31 @@ namespace Csla.Blazor.Test.Fakes
     [MaxLength(25)]
     public string FirstName
     {
-      get { return GetProperty(FirstNameProperty); }
-      set { SetProperty(FirstNameProperty, value); }
+      get => GetProperty(FirstNameProperty);
+      set => SetProperty(FirstNameProperty, value);
     }
 
     [Required]
     [MaxLength(25)]
     public string LastName
     {
-      get { return GetProperty(LastNameProperty); }
-      set { SetProperty(LastNameProperty, value); }
+      get => GetProperty(LastNameProperty);
+      set => SetProperty(LastNameProperty, value);
     }
 
     public string HomeTelephone
     {
-      get { return GetProperty(HomeTelephoneProperty); }
-      set { SetProperty(HomeTelephoneProperty, value); }
+      get => GetProperty(HomeTelephoneProperty);
+      set => SetProperty(HomeTelephoneProperty, value);
     }
 
     public string MobileTelephone
     {
-      get { return GetProperty(MobileTelephoneProperty); }
-      set { SetProperty(MobileTelephoneProperty, value); }
+      get => GetProperty(MobileTelephoneProperty);
+      set => SetProperty(MobileTelephoneProperty, value);
     }
 
-    public FakePersonEmailAddresses EmailAddresses
-    {
-      get { return GetProperty(EmailAddressesProperty); }
-    }
+    public FakePersonEmailAddresses EmailAddresses => GetProperty(EmailAddressesProperty);
 
     #endregion
 

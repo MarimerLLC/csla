@@ -18,16 +18,13 @@ namespace Csla.Test.DataPortal
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public string Auth
     {
-      get
-      {
-        return _auth;
-      }
+      get => _auth;
 
       set
       {
@@ -45,8 +42,8 @@ namespace Csla.Test.DataPortal
       public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
       public string Data
       {
-        get { return ReadProperty(DataProperty); }
-        set { LoadProperty(DataProperty, value); }
+        get => ReadProperty(DataProperty);
+        set => LoadProperty(DataProperty, value);
       }
 
       public Criteria()
@@ -159,10 +156,7 @@ namespace Csla.Test.DataPortal
     public static PropertyInfo<string> DenyWriteOnPropertyProperty = RegisterProperty<string>(c => c.DenyWriteOnProperty);
     public string DenyWriteOnProperty
     {
-      get
-      {
-        return "<No Value>";
-      }
+      get => "<No Value>";
 
       set
       {

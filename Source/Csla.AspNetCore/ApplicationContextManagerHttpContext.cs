@@ -161,14 +161,8 @@ namespace Csla.AspNetCore
     /// </summary>
     public virtual ApplicationContext ApplicationContext
     {
-      get
-      {
-        return (ApplicationContext)HttpContext?.Items[_applicationContextName];
-      }
-      set
-      {
-        HttpContext.Items[_applicationContextName] = value;
-      }
+      get => (ApplicationContext)HttpContext?.Items[_applicationContextName];
+      set => HttpContext.Items[_applicationContextName] = value;
     }
   }
 }

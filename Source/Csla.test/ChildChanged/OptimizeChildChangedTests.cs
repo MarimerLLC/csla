@@ -49,22 +49,22 @@ namespace Csla.Test.ChildChanged
       public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
       public string Name
       {
-        get { return GetProperty(NameProperty); }
-        set { SetProperty(NameProperty, value); }
+        get => GetProperty(NameProperty);
+        set => SetProperty(NameProperty, value);
       }
 
       public static readonly PropertyInfo<SimpleBO> ChildProperty = RegisterProperty<SimpleBO>(c => c.Child);
       public SimpleBO Child
       {
-        get { return GetProperty(ChildProperty); }
-        set { SetProperty(ChildProperty, value); }
+        get => GetProperty(ChildProperty);
+        set => SetProperty(ChildProperty, value);
       }
 
       public static readonly PropertyInfo<SimpleBOList> ChildListProperty = RegisterProperty<SimpleBOList>(c => c.ChildList);
       public SimpleBOList ChildList
       {
-        get { return GetProperty(ChildListProperty); }
-        set { SetProperty(ChildListProperty, value); }
+        get => GetProperty(ChildListProperty);
+        set => SetProperty(ChildListProperty, value);
       }
 
       protected override void AddBusinessRules()

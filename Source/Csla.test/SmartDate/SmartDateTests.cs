@@ -484,15 +484,15 @@ namespace Csla.Test.SmartDate
       RegisterProperty<Csla.SmartDate>(c => c.TextDate, null, new Csla.SmartDate { FormatString = "g" });
     public string TextDate
     {
-      get { return GetPropertyConvert<Csla.SmartDate, string>(TextDateProperty); }
-      set { SetPropertyConvert<Csla.SmartDate, string>(TextDateProperty, value); }
+      get => GetPropertyConvert<Csla.SmartDate, string>(TextDateProperty);
+      set => SetPropertyConvert<Csla.SmartDate, string>(TextDateProperty, value);
     }
 
     public static PropertyInfo<Csla.SmartDate> MyDateProperty = RegisterProperty<Csla.SmartDate>(c => c.MyDate);
     public Csla.SmartDate MyDate
     {
-      get { return GetProperty(MyDateProperty); }
-      set { SetProperty(MyDateProperty, value); }
+      get => GetProperty(MyDateProperty);
+      set => SetProperty(MyDateProperty, value);
     }
 
     public static SDtest NewSDTest(IDataPortal<SDtest> dataPortal)

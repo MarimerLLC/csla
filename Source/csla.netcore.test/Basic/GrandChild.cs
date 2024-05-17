@@ -16,8 +16,8 @@ namespace Csla.Test.Basic
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     internal static GrandChild NewGrandChild(string data)

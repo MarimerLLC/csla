@@ -16,8 +16,8 @@ namespace Csla.Test.DataPortalTest
     public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
     #endregion

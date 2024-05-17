@@ -28,54 +28,30 @@ namespace cslalighttest.CslaDataProvider
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "CustomerWithError Id", 0);
     public int Id
     {
-      get
-      {
-        return GetProperty<int>(IdProperty);
-      }
-      set
-      {
-        SetProperty<int>(IdProperty, value);
-      }
+      get => GetProperty<int>(IdProperty);
+      set => SetProperty<int>(IdProperty, value);
     }
 
     private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name, "CustomerWithError Name", "");
     public string Name
     {
-      get
-      {
-        return GetProperty<string>(NameProperty);
-      }
-      set
-      {
-        SetProperty<string>(NameProperty, value);
-      }
+      get => GetProperty<string>(NameProperty);
+      set => SetProperty<string>(NameProperty, value);
     }
 
     private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c=>c.Method, "Method", "");
     public string Method
     {
-      get
-      {
-        return GetProperty<string>(MethodProperty);
-      }
-      set
-      {
-        SetProperty<string>(MethodProperty, value);
-      }
+      get => GetProperty<string>(MethodProperty);
+      set => SetProperty<string>(MethodProperty, value);
     }
 
 
     private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(c => c.ThrowException, "ThrowException", true);
     public bool ThrowException
     {
-      get
-      {
-        return GetProperty<bool>(ThrowExceptionProperty);
-      }
-      set
-      {
-        LoadProperty<bool>(ThrowExceptionProperty, value);
-      }
+      get => GetProperty<bool>(ThrowExceptionProperty);
+      set => LoadProperty<bool>(ThrowExceptionProperty, value);
     }
 
     protected override void AddBusinessRules()
@@ -96,13 +72,7 @@ namespace cslalighttest.CslaDataProvider
 
       private int _CustomerWithErrorId;
 
-      public int CustomerWithErrorID
-      {
-        get
-        {
-          return _CustomerWithErrorId;
-        }
-      }
+      public int CustomerWithErrorID => _CustomerWithErrorId;
 
       protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
       {

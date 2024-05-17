@@ -7,14 +7,14 @@
 
     public bool IsAuthenticated
     {
-      get { return GetProperty(IsAuthenticatedProperty); }
-      private set { LoadProperty(IsAuthenticatedProperty, value); }
+      get => GetProperty(IsAuthenticatedProperty);
+      private set => LoadProperty(IsAuthenticatedProperty, value);
     }
 
     public string Name 
     { 
-      get { return GetProperty(NameProperty); }
-      private set { LoadProperty(NameProperty, value); } 
+      get => GetProperty(NameProperty);
+      private set => LoadProperty(NameProperty, value);
     }
 
     [Fetch]

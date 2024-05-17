@@ -18,37 +18,28 @@ namespace Csla.Test.DataBinding
 
     public string NotUndoable
     {
-      get { return _notUndoable; }
-      set { _notUndoable = value; }
+      get => _notUndoable;
+      set => _notUndoable = value;
     }
 
     public static PropertyInfo<int> IDProperty = RegisterProperty<int>(c => c.ID);
     public int ID
     {
-      get { return GetProperty(IDProperty); }
-      private set { LoadProperty(IDProperty, value); }
+      get => GetProperty(IDProperty);
+      private set => LoadProperty(IDProperty, value);
     }
 
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public static PropertyInfo<ChildEntityList> ChildrenProperty = RegisterProperty<ChildEntityList>(p => p.Children);
-    public ChildEntityList Children
-    {
-      get { return GetProperty(ChildrenProperty); }
-    }
+    public ChildEntityList Children => GetProperty(ChildrenProperty);
 
-    public override bool IsDirty
-    {
-      get
-      {
-        return base.IsDirty || Children.IsDirty;
-      }
-    }
+    public override bool IsDirty => base.IsDirty || Children.IsDirty;
 
     #endregion
 

@@ -32,8 +32,8 @@ namespace Csla.Test.Basic
     public static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data);
     public int Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public string[] GetRuleDescriptions()

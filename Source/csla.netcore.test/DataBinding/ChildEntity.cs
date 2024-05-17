@@ -15,14 +15,11 @@ namespace Csla.Test.DataBinding
     private string _firstName = "";
     private string _lastName = "";
 
-    public int ID
-    {
-      get { return _ID; }
-    }
+    public int ID => _ID;
 
     public string FirstName
     {
-      get { return _firstName; }
+      get => _firstName;
       set
       {
         if (_firstName != value)
@@ -32,7 +29,7 @@ namespace Csla.Test.DataBinding
 
     public string LastName
     {
-      get { return _lastName; }
+      get => _lastName;
       set
       {
         if (_lastName != value)

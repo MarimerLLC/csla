@@ -20,7 +20,7 @@ namespace Csla.Rules
     /// </summary>
     public override bool IsAsync
     {
-      get { return true; }
+      get => true;
       protected set { }
     }
 

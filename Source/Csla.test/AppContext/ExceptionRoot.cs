@@ -14,9 +14,9 @@ namespace Csla.Test.AppContext
     public string Data
     {
       [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      get { return this._Data; }
+      get => this._Data;
       [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
-      set { this._Data = value; }
+      set => this._Data = value;
     }
 
     protected override object GetIdValue()

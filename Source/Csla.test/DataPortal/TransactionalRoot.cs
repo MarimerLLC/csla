@@ -21,29 +21,29 @@ namespace Csla.Test.DataPortal
     public static PropertyInfo<int> IDProperty = RegisterProperty<int>(c => c.ID);
     public int ID
     {
-      get { return GetProperty(IDProperty); }
-      private set { LoadProperty(IDProperty, value); }
+      get => GetProperty(IDProperty);
+      private set => LoadProperty(IDProperty, value);
     }
 
     public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
     public string FirstName
     {
-      get { return GetProperty(FirstNameProperty); }
-      set { SetProperty(FirstNameProperty, value); }
+      get => GetProperty(FirstNameProperty);
+      set => SetProperty(FirstNameProperty, value);
     }
 
     public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
     public string LastName
     {
-      get { return GetProperty(LastNameProperty); }
-      set { SetProperty(LastNameProperty, value); }
+      get => GetProperty(LastNameProperty);
+      set => SetProperty(LastNameProperty, value);
     }
 
     public static PropertyInfo<string> SmallColumnProperty = RegisterProperty<string>(c => c.SmallColumn);
     public string SmallColumn
     {
-      get { return GetProperty(SmallColumnProperty); }
-      set { SetProperty(SmallColumnProperty, value); }
+      get => GetProperty(SmallColumnProperty);
+      set => SetProperty(SmallColumnProperty, value);
     }
 
     #endregion

@@ -23,21 +23,12 @@ namespace Csla.Testing.Business.ReadOnlyTest
       typeof(ReadOnlyPerson),
       new PropertyInfo<DateTime>("Birthdate"));
 
-    public Guid Id
-    {
-      get { return GetProperty<Guid>(IdProperty); }
-    }
+    public Guid Id => GetProperty<Guid>(IdProperty);
 
 
-    public string Name
-    {
-      get { return GetProperty<string>(NameProperty); }
-    }
+    public string Name => GetProperty<string>(NameProperty);
 
-    public DateTime Birthdate
-    {
-      get { return GetProperty<DateTime>(BirthdateProperty); }
-    }
+    public DateTime Birthdate => GetProperty<DateTime>(BirthdateProperty);
 
     public static ReadOnlyPerson GetReadOnlyPersonForList(string personName, int year)
     {

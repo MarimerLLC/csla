@@ -19,8 +19,8 @@ namespace Csla.Test.Server.Interceptors
     [Required]
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public Guid Guid { get; } = System.Guid.NewGuid();
@@ -28,8 +28,8 @@ namespace Csla.Test.Server.Interceptors
     public static readonly PropertyInfo<GrandChildren> GrandChildrenProperty = RegisterProperty<GrandChildren>(c => c.GrandChildren);
     public GrandChildren GrandChildren
     {
-      get { return GetProperty(GrandChildrenProperty); }
-      private set { LoadProperty(GrandChildrenProperty, value); }
+      get => GetProperty(GrandChildrenProperty);
+      private set => LoadProperty(GrandChildrenProperty, value);
     }
 
     [CreateChild]

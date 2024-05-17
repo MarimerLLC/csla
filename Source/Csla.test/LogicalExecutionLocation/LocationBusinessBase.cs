@@ -17,22 +17,22 @@ namespace Csla.Test.LogicalExecutionLocation
     protected static PropertyInfo<string> DataProperty = RegisterProperty<string>(new PropertyInfo<string>("Data"));
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     private static PropertyInfo<string> NestedDataProperty = RegisterProperty<string>(c => c.NestedData);
     public string NestedData
     {
-      get { return GetProperty(NestedDataProperty); }
-      set { SetProperty(NestedDataProperty, value); }
+      get => GetProperty(NestedDataProperty);
+      set => SetProperty(NestedDataProperty, value);
     }
 
     protected static PropertyInfo<string> RuleProperty = RegisterProperty<string>(new PropertyInfo<string>("Rule"));
     public string Rule
     {
-      get { return GetProperty(RuleProperty); }
-      set { SetProperty(RuleProperty, value); }
+      get => GetProperty(RuleProperty);
+      set => SetProperty(RuleProperty, value);
     }
 
 #pragma warning disable CS0436 // Type conflicts with imported type

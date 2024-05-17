@@ -19,31 +19,31 @@ namespace Csla.Test.BypassPropertyChecks
     protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id), "Id");
     public int Id
     {
-      get { return GetProperty<int>(IdProperty); }
-      set { SetProperty<int>(IdProperty, value, Csla.Security.NoAccessBehavior.ThrowException); }
+      get => GetProperty<int>(IdProperty);
+      set => SetProperty<int>(IdProperty, value, Csla.Security.NoAccessBehavior.ThrowException);
     }
 
     protected static PropertyInfo<int> Id2Property = RegisterProperty<int>(c => c.Id2, "Id2");
     public int Id2
     {
-      get { return GetProperty<int>(Id2Property); }
-      set { SetProperty<int>(Id2Property, value, Csla.Security.NoAccessBehavior.ThrowException); }
+      get => GetProperty<int>(Id2Property);
+      set => SetProperty<int>(Id2Property, value, Csla.Security.NoAccessBehavior.ThrowException);
     }
 
     private int _id3;
     protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(c => c.Id3, "Id3", 0, RelationshipTypes.PrivateField);
     public int Id3
     {
-      get { return GetProperty<int>(Id3Property, _id3); }
-      set { SetProperty<int>(Id3Property.Name, ref _id3, value, Csla.Security.NoAccessBehavior.ThrowException); }
+      get => GetProperty<int>(Id3Property, _id3);
+      set => SetProperty<int>(Id3Property.Name, ref _id3, value, Csla.Security.NoAccessBehavior.ThrowException);
     }
 
     private int _id4;
     protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(c => c.Id4, "Id4", 0, RelationshipTypes.PrivateField);
     public int Id4
     {
-      get { return GetProperty<int>(Id4Property, _id4); }
-      set { SetProperty<int>(Id4Property.Name, ref _id4, value, Csla.Security.NoAccessBehavior.ThrowException); }
+      get => GetProperty<int>(Id4Property, _id4);
+      set => SetProperty<int>(Id4Property.Name, ref _id4, value, Csla.Security.NoAccessBehavior.ThrowException);
     }
 
     protected override void AddBusinessRules()

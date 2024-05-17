@@ -29,10 +29,7 @@ namespace Csla.Test.PropertyGetSet
       return dataPortal.FetchChild();
     }
 
-    public new int EditLevel
-    {
-      get { return base.EditLevel; }
-    }
+    public new int EditLevel => base.EditLevel;
 
     [Create]
     [CreateChild]

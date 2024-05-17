@@ -16,15 +16,15 @@ namespace Csla.Test.ValidationRules
     public static PropertyInfo<string> Test1Property = RegisterProperty<string>(c => c.Test1);
     public string Test1
     {
-      get { return GetProperty(Test1Property); }
-      set { SetProperty(Test1Property, value); }
+      get => GetProperty(Test1Property);
+      set => SetProperty(Test1Property, value);
     }
 
     public static PropertyInfo<string> Test2Property = RegisterProperty<string>(c => c.Test2);
     public string Test2
     {
-      get { return GetProperty(Test2Property); }
-      set { SetProperty(Test2Property, value); }
+      get => GetProperty(Test2Property);
+      set => SetProperty(Test2Property, value);
     }
 
     protected override void AddBusinessRules()

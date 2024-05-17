@@ -6,15 +6,15 @@ namespace Csla.Test.CommandBase
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get { return ReadProperty(NameProperty); }
-      private set { LoadProperty(NameProperty, value); }
+      get => ReadProperty(NameProperty);
+      private set => LoadProperty(NameProperty, value);
     }
 
     public static readonly PropertyInfo<int> NumProperty = RegisterProperty<int>(c => c.Num);
     public int Num
     {
-      get { return ReadProperty(NumProperty); }
-      private set { LoadProperty(NumProperty, value); }
+      get => ReadProperty(NumProperty);
+      private set => LoadProperty(NumProperty, value);
     }
 
     [RunLocal]

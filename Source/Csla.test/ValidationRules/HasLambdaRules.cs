@@ -9,16 +9,16 @@ namespace Csla.Test.ValidationRules
 
     public string Ssn
     {
-      get { return GetProperty(SsnProperty); }
-      set { SetProperty(SsnProperty, value); }
+      get => GetProperty(SsnProperty);
+      set => SetProperty(SsnProperty, value);
     }
 
     public static PropertyInfo<string> Ssn2Property = RegisterProperty<string>(c => c.Ssn2);
 
     public string Ssn2
     {
-      get { return GetProperty(Ssn2Property); }
-      set { SetProperty(Ssn2Property, value); }
+      get => GetProperty(Ssn2Property);
+      set => SetProperty(Ssn2Property, value);
     }
 
     public static HasLambdaRules New(IDataPortal<HasLambdaRules> dataPortal)

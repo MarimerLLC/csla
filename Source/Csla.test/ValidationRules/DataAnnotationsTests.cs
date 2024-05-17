@@ -56,8 +56,8 @@ namespace Csla.Test.ValidationRules
       [DIBasedTest]
       public string TestProperty 
       { 
-        get { return GetProperty(TestPropertyProperty); } 
-        set { SetProperty(TestPropertyProperty, value); }
+        get => GetProperty(TestPropertyProperty);
+        set => SetProperty(TestPropertyProperty, value);
       }
 
       [Create]

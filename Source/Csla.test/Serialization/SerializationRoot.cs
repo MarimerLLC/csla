@@ -15,8 +15,8 @@ namespace Csla.Test.Serialization
     private string _data = DataProperty.DefaultValue;
     public string Data
     {
-      get { return GetProperty(DataProperty, _data); }
-      set { SetProperty(DataProperty, ref _data, value); }
+      get => GetProperty(DataProperty, _data);
+      set => SetProperty(DataProperty, ref _data, value);
     }
 
     public static SerializationRoot NewSerializationRoot(IDataPortal<SerializationRoot> dataPortal)

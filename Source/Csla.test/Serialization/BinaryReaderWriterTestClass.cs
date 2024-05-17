@@ -85,8 +85,8 @@
     /// </Summary>
     public RandomEnum EnumTest
     {
-      get { return GetProperty(EnumTestProperty); }
-      set { SetProperty(EnumTestProperty, value); }
+      get => GetProperty(EnumTestProperty);
+      set => SetProperty(EnumTestProperty, value);
     }
 
     public static readonly PropertyInfo<bool> BoolTestProperty = RegisterProperty<bool>(c => c.BoolTest);
@@ -95,8 +95,8 @@
     /// </Summary>
     public bool BoolTest
     {
-      get { return GetProperty(BoolTestProperty); }
-      set { SetProperty(BoolTestProperty, value); }
+      get => GetProperty(BoolTestProperty);
+      set => SetProperty(BoolTestProperty, value);
     }
 
     public static readonly PropertyInfo<char> CharTestProperty = RegisterProperty<char>(c => c.CharTest);
@@ -105,8 +105,8 @@
     /// </Summary>
     public char CharTest
     {
-      get { return GetProperty(CharTestProperty); }
-      set { SetProperty(CharTestProperty, value); }
+      get => GetProperty(CharTestProperty);
+      set => SetProperty(CharTestProperty, value);
     }
 
     public static readonly PropertyInfo<SByte> SByteTestProperty = RegisterProperty<SByte>(c => c.SByteTest);
@@ -115,8 +115,8 @@
     /// </Summary>
     public SByte SByteTest
     {
-      get { return GetProperty(SByteTestProperty); }
-      set { SetProperty(SByteTestProperty, value); }
+      get => GetProperty(SByteTestProperty);
+      set => SetProperty(SByteTestProperty, value);
     }
 
     public static readonly PropertyInfo<byte> ByteTestProperty = RegisterProperty<byte>(c => c.ByteTest);
@@ -125,8 +125,8 @@
     /// </Summary>
     public byte ByteTest
     {
-      get { return GetProperty(ByteTestProperty); }
-      set { SetProperty(ByteTestProperty, value); }
+      get => GetProperty(ByteTestProperty);
+      set => SetProperty(ByteTestProperty, value);
     }
 
     public static readonly PropertyInfo<Int16> Int16TestProperty = RegisterProperty<Int16>(c => c.Int16Test);
@@ -135,8 +135,8 @@
     /// </Summary>
     public Int16 Int16Test
     {
-      get { return GetProperty(Int16TestProperty); }
-      set { SetProperty(Int16TestProperty, value); }
+      get => GetProperty(Int16TestProperty);
+      set => SetProperty(Int16TestProperty, value);
     }
 
     public static readonly PropertyInfo<UInt16> UInt16TestProperty = RegisterProperty<UInt16>(c => c.UInt16Test);
@@ -145,8 +145,8 @@
     /// </Summary>
     public UInt16 UInt16Test
     {
-      get { return GetProperty(UInt16TestProperty); }
-      set { SetProperty(UInt16TestProperty, value); }
+      get => GetProperty(UInt16TestProperty);
+      set => SetProperty(UInt16TestProperty, value);
     }
 
     public static readonly PropertyInfo<Int32> Int32TestProperty = RegisterProperty<Int32>(c => c.Int32Test);
@@ -155,8 +155,8 @@
     /// </Summary>
     public Int32 Int32Test
     {
-      get { return GetProperty(Int32TestProperty); }
-      set { SetProperty(Int32TestProperty, value); }
+      get => GetProperty(Int32TestProperty);
+      set => SetProperty(Int32TestProperty, value);
     }
 
     public static readonly PropertyInfo<UInt32> UInt32TestProperty = RegisterProperty<UInt32>(c => c.UInt32Test);
@@ -165,8 +165,8 @@
     /// </Summary>
     public UInt32 UInt32Test
     {
-      get { return GetProperty(UInt32TestProperty); }
-      set { SetProperty(UInt32TestProperty, value); }
+      get => GetProperty(UInt32TestProperty);
+      set => SetProperty(UInt32TestProperty, value);
     }
 
     public static readonly PropertyInfo<Int64> Int64TestProperty = RegisterProperty<Int64>(c => c.Int64Test);
@@ -175,8 +175,8 @@
     /// </Summary>
     public Int64 Int64Test
     {
-      get { return GetProperty(Int64TestProperty); }
-      set { SetProperty(Int64TestProperty, value); }
+      get => GetProperty(Int64TestProperty);
+      set => SetProperty(Int64TestProperty, value);
     }
 
     public static readonly PropertyInfo<UInt64> UInt64TestProperty = RegisterProperty<UInt64>(c => c.UInt64Test);
@@ -185,8 +185,8 @@
     /// </Summary>
     public UInt64 UInt64Test
     {
-      get { return GetProperty(UInt64TestProperty); }
-      set { SetProperty(UInt64TestProperty, value); }
+      get => GetProperty(UInt64TestProperty);
+      set => SetProperty(UInt64TestProperty, value);
     }
 
     public static readonly PropertyInfo<Single> SingleTestProperty = RegisterProperty<Single>(c => c.SingleTest);
@@ -195,8 +195,8 @@
     /// </Summary>
     public Single SingleTest
     {
-      get { return GetProperty(SingleTestProperty); }
-      set { SetProperty(SingleTestProperty, value); }
+      get => GetProperty(SingleTestProperty);
+      set => SetProperty(SingleTestProperty, value);
     }
 
     public static readonly PropertyInfo<double> DoubleTestProperty = RegisterProperty<double>(c => c.DoubleTest);
@@ -205,8 +205,8 @@
     /// </Summary>
     public double DoubleTest
     {
-      get { return GetProperty(DoubleTestProperty); }
-      set { SetProperty(DoubleTestProperty, value); }
+      get => GetProperty(DoubleTestProperty);
+      set => SetProperty(DoubleTestProperty, value);
     }
 
     public static readonly PropertyInfo<decimal> DecimalTestProperty = RegisterProperty<decimal>(c => c.DecimalTest);
@@ -215,8 +215,8 @@
     /// </Summary>
     public decimal DecimalTest
     {
-      get { return GetProperty(DecimalTestProperty); }
-      set { SetProperty(DecimalTestProperty, value); }
+      get => GetProperty(DecimalTestProperty);
+      set => SetProperty(DecimalTestProperty, value);
     }
 
     public static readonly PropertyInfo<DateTime> DateTimeTestProperty = RegisterProperty<DateTime>(c => c.DateTimeTest);
@@ -225,8 +225,8 @@
     /// </Summary>
     public DateTime DateTimeTest
     {
-      get { return GetProperty(DateTimeTestProperty); }
-      set { SetProperty(DateTimeTestProperty, value); }
+      get => GetProperty(DateTimeTestProperty);
+      set => SetProperty(DateTimeTestProperty, value);
     }
 
     public static readonly PropertyInfo<string> StringTestProperty = RegisterProperty<string>(c => c.StringTest);
@@ -235,8 +235,8 @@
     /// </Summary>
     public string StringTest
     {
-      get { return GetProperty(StringTestProperty); }
-      set { SetProperty(StringTestProperty, value); }
+      get => GetProperty(StringTestProperty);
+      set => SetProperty(StringTestProperty, value);
     }
 
     public static readonly PropertyInfo<TimeSpan> TimeSpanTestProperty = RegisterProperty<TimeSpan>(c => c.TimeSpanTest);
@@ -245,8 +245,8 @@
     /// </Summary>
     public TimeSpan TimeSpanTest
     {
-      get { return GetProperty(TimeSpanTestProperty); }
-      set { SetProperty(TimeSpanTestProperty, value); }
+      get => GetProperty(TimeSpanTestProperty);
+      set => SetProperty(TimeSpanTestProperty, value);
     }
 
     public static readonly PropertyInfo<DateTimeOffset> DateTimeOffsetTestProperty = RegisterProperty<DateTimeOffset>(c => c.DateTimeOffsetTest);
@@ -255,8 +255,8 @@
     /// </Summary>
     public DateTimeOffset DateTimeOffsetTest
     {
-      get { return GetProperty(DateTimeOffsetTestProperty); }
-      set { SetProperty(DateTimeOffsetTestProperty, value); }
+      get => GetProperty(DateTimeOffsetTestProperty);
+      set => SetProperty(DateTimeOffsetTestProperty, value);
     }
 
     public static readonly PropertyInfo<byte[]> ByteArrayTestProperty = RegisterProperty<byte[]>(c => c.ByteArrayTest);
@@ -265,8 +265,8 @@
     /// </Summary>
     public byte[] ByteArrayTest
     {
-      get { return GetProperty(ByteArrayTestProperty); }
-      set { SetProperty(ByteArrayTestProperty, value); }
+      get => GetProperty(ByteArrayTestProperty);
+      set => SetProperty(ByteArrayTestProperty, value);
     }
 
     public static readonly PropertyInfo<char[]> CharArrayTestProperty = RegisterProperty<char[]>(c => c.CharArrayTest);
@@ -275,8 +275,8 @@
     /// </Summary>
     public char[] CharArrayTest
     {
-      get { return GetProperty(CharArrayTestProperty); }
-      set { SetProperty(CharArrayTestProperty, value); }
+      get => GetProperty(CharArrayTestProperty);
+      set => SetProperty(CharArrayTestProperty, value);
     }
 
     public static readonly PropertyInfo<Guid> GuidTestProperty = RegisterProperty<Guid>(c => c.GuidTest);
@@ -285,8 +285,8 @@
     /// </Summary>
     public Guid GuidTest
     {
-      get { return GetProperty(GuidTestProperty); }
-      set { SetProperty(GuidTestProperty, value); }
+      get => GetProperty(GuidTestProperty);
+      set => SetProperty(GuidTestProperty, value);
     }
 
 
@@ -296,8 +296,8 @@
     /// </Summary>
     public int? NullableInt
     {
-      get { return GetProperty(NullableIntProperty); }
-      set { SetProperty(NullableIntProperty, value); }
+      get => GetProperty(NullableIntProperty);
+      set => SetProperty(NullableIntProperty, value);
     }
 
     public static readonly PropertyInfo<int?> NullableButSetIntProperty = RegisterProperty<int?>(c => c.NullableButSetInt);
@@ -306,8 +306,8 @@
     /// </Summary>
     public int? NullableButSetInt
     {
-      get { return GetProperty(NullableButSetIntProperty); }
-      set { SetProperty(NullableButSetIntProperty, value); }
+      get => GetProperty(NullableButSetIntProperty);
+      set => SetProperty(NullableButSetIntProperty, value);
     }
 
     public static readonly PropertyInfo<Csla.SmartDate> EmptySmartDateTestProperty = RegisterProperty<Csla.SmartDate>(c => c.EmptySmartDateTest);
@@ -316,8 +316,8 @@
     /// </Summary>
     public Csla.SmartDate EmptySmartDateTest
     {
-      get { return GetProperty(EmptySmartDateTestProperty); }
-      set { SetProperty(EmptySmartDateTestProperty, value); }
+      get => GetProperty(EmptySmartDateTestProperty);
+      set => SetProperty(EmptySmartDateTestProperty, value);
     }
 
     public static readonly PropertyInfo<Csla.SmartDate> FilledSmartDateTestProperty = RegisterProperty<Csla.SmartDate>(c => c.FilledSmartDateTest);
@@ -326,8 +326,8 @@
     /// </Summary>
     public Csla.SmartDate FilledSmartDateTest
     {
-      get { return GetProperty(FilledSmartDateTestProperty); }
-      set { SetProperty(FilledSmartDateTestProperty, value); }
+      get => GetProperty(FilledSmartDateTestProperty);
+      set => SetProperty(FilledSmartDateTestProperty, value);
     }
 
     internal static BinaryReaderWriterTestClass NewBinaryReaderWriterTestClass(IDataPortal<BinaryReaderWriterTestClass> dataPortal)

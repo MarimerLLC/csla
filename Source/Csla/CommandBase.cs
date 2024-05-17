@@ -67,10 +67,7 @@ namespace Csla
 
     #region Identity
 
-    int IBusinessObject.Identity
-    {
-      get { return 0; }
-    }
+    int IBusinessObject.Identity => 0;
 
     #endregion
 
@@ -376,10 +373,7 @@ namespace Csla
 
     #region IManageProperties Members
 
-    bool IManageProperties.HasManagedProperties
-    {
-      get { return (FieldManager != null && FieldManager.HasFields); }
-    }
+    bool IManageProperties.HasManagedProperties => (FieldManager != null && FieldManager.HasFields);
 
     List<IPropertyInfo> IManageProperties.GetManagedProperties()
     {

@@ -22,16 +22,13 @@ namespace Csla.Test.Nullable
 
     public string Name
     {
-      get { return _name; }
-      set
-      {
-        _name = value;
-      }
+      get => _name;
+      set => _name = value;
     }
 
     public Nullable<int> NullableInteger
     {
-      get { return _nullableInteger; }
+      get => _nullableInteger;
       set
       {
         if (this._nullableInteger != value)

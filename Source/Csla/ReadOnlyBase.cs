@@ -111,10 +111,7 @@ namespace Csla
 
     #region Identity
 
-    int IBusinessObject.Identity
-    {
-      get { return 0; }
-    }
+    int IBusinessObject.Identity => 0;
 
     #endregion
 
@@ -1521,10 +1518,7 @@ namespace Csla
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsBusy
-    {
-      get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
-    }
+    public virtual bool IsBusy => IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy());
 
     /// <summary>
     /// Gets a value indicating whether this
@@ -1534,10 +1528,7 @@ namespace Csla
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsSelfBusy
-    {
-      get { return _isBusy || LoadManager.IsLoading; }
-    }
+    public virtual bool IsSelfBusy => _isBusy || LoadManager.IsLoading;
 
     void Child_PropertyBusy(object sender, BusyChangedEventArgs e)
     {
@@ -1554,8 +1545,8 @@ namespace Csla
     /// </summary>
     public event BusyChangedEventHandler BusyChanged
     {
-      add { _propertyBusy = (BusyChangedEventHandler)Delegate.Combine(_propertyBusy, value); }
-      remove { _propertyBusy = (BusyChangedEventHandler)Delegate.Remove(_propertyBusy, value); }
+      add => _propertyBusy = (BusyChangedEventHandler)Delegate.Combine(_propertyBusy, value);
+      remove => _propertyBusy = (BusyChangedEventHandler)Delegate.Remove(_propertyBusy, value);
     }
 
     /// <summary>
@@ -1632,10 +1623,7 @@ namespace Csla
 
 #region IManageProperties Members
 
-    bool IManageProperties.HasManagedProperties
-    {
-      get { return (_fieldManager != null && _fieldManager.HasFields); }
-    }
+    bool IManageProperties.HasManagedProperties => (_fieldManager != null && _fieldManager.HasFields);
 
     List<IPropertyInfo> IManageProperties.GetManagedProperties()
     {
@@ -1747,8 +1735,8 @@ namespace Csla
     /// </summary>
     public event EventHandler<Csla.Core.ErrorEventArgs> UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<Csla.Core.ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     /// <summary>

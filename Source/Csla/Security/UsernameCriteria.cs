@@ -25,8 +25,8 @@ namespace Csla.Security
     /// </summary>
     public string Username
     {
-      get { return ReadProperty(UsernameProperty); }
-      private set { LoadProperty(UsernameProperty, value); }
+      get => ReadProperty(UsernameProperty);
+      private set => LoadProperty(UsernameProperty, value);
     }
 
     /// <summary>
@@ -38,8 +38,8 @@ namespace Csla.Security
     /// </summary>
     public string Password
     {
-      get { return ReadProperty(PasswordProperty); }
-      private set { LoadProperty(PasswordProperty, value); }
+      get => ReadProperty(PasswordProperty);
+      private set => LoadProperty(PasswordProperty, value);
     }
 
     /// <summary>

@@ -33,10 +33,7 @@ namespace Csla.Test.Basic
       this.MarkAsChild();
     }
 
-    public int DeletedCount
-    {
-      get { return this.DeletedList.Count; }
-    }
+    public int DeletedCount => this.DeletedList.Count;
 
     [Create]
     private void Create()

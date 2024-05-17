@@ -93,15 +93,9 @@ namespace Csla.Core.LoadManager
 
     #region INotifyBusy Members
 
-    bool INotifyBusy.IsBusy
-    {
-      get { return (this as INotifyBusy).IsSelfBusy; }
-    }
+    bool INotifyBusy.IsBusy => (this as INotifyBusy).IsSelfBusy;
 
-    bool INotifyBusy.IsSelfBusy
-    {
-      get { return IsLoading; }
-    }
+    bool INotifyBusy.IsSelfBusy => IsLoading;
 
     #endregion
 
@@ -113,8 +107,8 @@ namespace Csla.Core.LoadManager
 
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)

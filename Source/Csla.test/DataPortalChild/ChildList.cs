@@ -16,10 +16,7 @@ namespace Csla.Test.DataPortalChild
       MarkAsChild();
     }
 
-    public object MyParent
-    {
-      get { return this.Parent; }
-    }
+    public object MyParent => this.Parent;
 
     public string Status { get; private set; }
 

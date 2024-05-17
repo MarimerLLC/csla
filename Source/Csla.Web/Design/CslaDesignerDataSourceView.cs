@@ -92,27 +92,16 @@ namespace Csla.Web.Design
     /// with the <see cref="BrowsableAttribute">Browsable attribute</see>
     /// as False.
     /// </remarks>
-    public override IDataSourceViewSchema Schema
-    {
-      get
-      {
-        return new ObjectSchema(
-          _owner, 
-          _owner.DataSourceControl.TypeName).GetViews()[0];
-      }
-    }
+    public override IDataSourceViewSchema Schema =>
+      new ObjectSchema(
+        _owner, 
+        _owner.DataSourceControl.TypeName).GetViews()[0];
 
     /// <summary>
     /// Get a value indicating whether data binding can retrieve
     /// the total number of rows of data.
     /// </summary>
-    public override bool CanRetrieveTotalRowCount
-    {
-      get
-      {
-        return true;
-      }
-    }
+    public override bool CanRetrieveTotalRowCount => true;
 
     private Type GetObjectType()
     {
@@ -213,24 +202,12 @@ namespace Csla.Web.Design
     /// Gets a value indicating whether the data source supports
     /// paging.
     /// </summary>
-    public override bool CanPage
-    {
-      get
-      {
-        return _owner.DataSourceControl.TypeSupportsPaging;
-      }
-    }
+    public override bool CanPage => _owner.DataSourceControl.TypeSupportsPaging;
 
     /// <summary>
     /// Gets a value indicating whether the data source supports
     /// sorting.
     /// </summary>
-    public override bool CanSort
-    {
-      get
-      {
-        return _owner.DataSourceControl.TypeSupportsSorting;
-      }
-    }
+    public override bool CanSort => _owner.DataSourceControl.TypeSupportsSorting;
   }
 }

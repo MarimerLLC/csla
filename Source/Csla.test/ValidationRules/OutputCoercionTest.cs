@@ -9,22 +9,22 @@ namespace Csla.Test.ValidationRules
     public static readonly PropertyInfo<int> PropertyAProperty = RegisterProperty<int>(nameof(PropertyA));
     public int PropertyA
     {
-      get { return GetProperty(PropertyAProperty); }
-      set { SetProperty(PropertyAProperty, value); }
+      get => GetProperty(PropertyAProperty);
+      set => SetProperty(PropertyAProperty, value);
     }
 
     public static readonly PropertyInfo<int> PropertyBProperty = RegisterProperty<int>(nameof(PropertyB));
     public int PropertyB
     {
-      get { return GetProperty(PropertyBProperty); }
-      set { SetProperty(PropertyBProperty, value); }
+      get => GetProperty(PropertyBProperty);
+      set => SetProperty(PropertyBProperty, value);
     }
 
     public static readonly PropertyInfo<string> SumPropertyProperty = RegisterProperty<string>(nameof(SumProperty));
     public string SumProperty
     {
-      get { return GetProperty(SumPropertyProperty); }
-      private set { LoadProperty(SumPropertyProperty, value); }
+      get => GetProperty(SumPropertyProperty);
+      private set => LoadProperty(SumPropertyProperty, value);
     }
 
     protected override void AddBusinessRules()

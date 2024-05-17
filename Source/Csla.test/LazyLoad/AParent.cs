@@ -14,19 +14,13 @@ namespace Csla.Test.LazyLoad
     public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
     public Guid Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
     private static PropertyInfo<AChildList> ChildListProperty = 
       RegisterProperty<AChildList>(c => c.ChildList, "Child list", null, RelationshipTypes.LazyLoad);
-    public AChildList ChildList
-    {
-      get 
-      {
-        return LazyGetProperty(ChildListProperty, FetchChildList);
-      }
-    }
+    public AChildList ChildList => LazyGetProperty(ChildListProperty, FetchChildList);
 
     public AChildList GetChildList()
     {
@@ -36,10 +30,7 @@ namespace Csla.Test.LazyLoad
         return null;
     }
 
-    public new int EditLevel
-    {
-      get { return base.EditLevel; }
-    }
+    public new int EditLevel => base.EditLevel;
 
     [Create]
     private void Create()

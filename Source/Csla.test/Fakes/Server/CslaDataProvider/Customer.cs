@@ -35,50 +35,29 @@ namespace cslalighttest.CslaDataProvider
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "Customer Id", 0);
     public int Id
     {
-      get
-      {
-        return GetProperty<int>(IdProperty);
-      }
-      set
-      {
-        SetProperty<int>(IdProperty, value);
-      }
+      get => GetProperty<int>(IdProperty);
+      set => SetProperty<int>(IdProperty, value);
     }
 
     private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name, "Customer Name", "");
     public string Name
     {
-      get
-      {
-        return GetProperty<string>(NameProperty);
-      }
-      set
-      {
-        SetProperty<string>(NameProperty, value);
-      }
+      get => GetProperty<string>(NameProperty);
+      set => SetProperty<string>(NameProperty, value);
     }
 
     private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c=>c.Method, "Method", "");
     public string Method
     {
-      get
-      {
-        return GetProperty<string>(MethodProperty);
-      }
-      set
-      {
-        SetProperty<string>(MethodProperty, value);
-      }
+      get => GetProperty<string>(MethodProperty);
+      set => SetProperty<string>(MethodProperty, value);
     }
 
 
     private static PropertyInfo<SmartDate> DateCreatedProperty = RegisterProperty<SmartDate>(c=>c.DateCreated, "Date Created On");
     public string DateCreated
     {
-      get
-      {
-        return GetProperty<SmartDate>(DateCreatedProperty).Text;
-      }
+      get => GetProperty<SmartDate>(DateCreatedProperty).Text;
       set
       {
         SmartDate test = new SmartDate();
@@ -93,77 +72,41 @@ namespace cslalighttest.CslaDataProvider
     private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(c=>c.ThrowException, "ThrowException", false);
     public bool ThrowException
     {
-      get
-      {
-        return GetProperty<bool>(ThrowExceptionProperty);
-      }
-      set
-      {
-        LoadProperty<bool>(ThrowExceptionProperty, value);
-      }
+      get => GetProperty<bool>(ThrowExceptionProperty);
+      set => LoadProperty<bool>(ThrowExceptionProperty, value);
     }
 
     private static PropertyInfo<DateTimeOffset> DateTimeOffsetNullProperty = RegisterProperty<DateTimeOffset>(c=>c.DateTimeOffsetNull, "DateTimeOffsetNull");
     public DateTimeOffset DateTimeOffsetNull
     {
-      get
-      {
-        return GetProperty(DateTimeOffsetNullProperty);
-      }
-      set
-      {
-        LoadProperty(DateTimeOffsetNullProperty, value);
-      }
+      get => GetProperty(DateTimeOffsetNullProperty);
+      set => LoadProperty(DateTimeOffsetNullProperty, value);
     }
 
     private static PropertyInfo<DateTimeOffset> DateTimeOffsetNotNullProperty = RegisterProperty<DateTimeOffset>(c=>c.DateTimeOffsetNotNull, "DateTimeOffsetNotNull", DateTimeOffset.Now);
     public DateTimeOffset DateTimeOffsetNotNull
     {
-      get
-      {
-        return GetProperty(DateTimeOffsetNotNullProperty);
-      }
-      set
-      {
-        LoadProperty(DateTimeOffsetNotNullProperty, value);
-      }
+      get => GetProperty(DateTimeOffsetNotNullProperty);
+      set => LoadProperty(DateTimeOffsetNotNullProperty, value);
     }
 
     private static PropertyInfo<DateTimeOffset?> DateTimeOffsetNullableProperty = RegisterProperty<DateTimeOffset?>(c=>c.DateTimeOffsetNullable, "DateTimeOffsetNullable");
     public DateTimeOffset? DateTimeOffsetNullable
     {
-      get
-      {
-        return GetProperty(DateTimeOffsetNullableProperty);
-      }
-      set
-      {
-        LoadProperty(DateTimeOffsetNullableProperty, value);
-      }
+      get => GetProperty(DateTimeOffsetNullableProperty);
+      set => LoadProperty(DateTimeOffsetNullableProperty, value);
     }
 
     private static PropertyInfo<CustomeType> TypeProperty = RegisterProperty(c=>c.Type, "Customer Type", CustomeType.Active);
     public CustomeType Type
     {
-      get
-      {
-        return GetProperty(TypeProperty);
-      }
-      set
-      {
-        SetProperty(TypeProperty, value);
-      }
+      get => GetProperty(TypeProperty);
+      set => SetProperty(TypeProperty, value);
     }
 
 
     private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(c=>c.Contacts, "Contacts List");
-    public CustomerContactList Contacts
-    {
-      get
-      {
-        return GetProperty<CustomerContactList>(ContactsProperty);
-      }
-    }
+    public CustomerContactList Contacts => GetProperty<CustomerContactList>(ContactsProperty);
 
     protected override void AddBusinessRules()
     {
@@ -184,13 +127,7 @@ namespace cslalighttest.CslaDataProvider
 
       private int _customerId;
 
-      public int CustomerID
-      {
-        get
-        {
-          return _customerId;
-        }
-      }
+      public int CustomerID => _customerId;
 
       protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
       {

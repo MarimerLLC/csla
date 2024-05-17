@@ -82,8 +82,8 @@ namespace Csla.Test.ValidationRules
     private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name", "Name"));
     public string Name
     {
-      get { return GetProperty<string>(NameProperty); }
-      set { SetProperty<string>(NameProperty, value); }
+      get => GetProperty<string>(NameProperty);
+      set => SetProperty<string>(NameProperty, value);
     }
 
     protected override void AddBusinessRules()
@@ -91,10 +91,7 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new MyRule { PrimaryProperty = NameProperty });
     }
 
-    public string[] Rules
-    {
-      get { return this.BusinessRules.GetRuleDescriptions(); }
-    }
+    public string[] Rules => this.BusinessRules.GetRuleDescriptions();
   }
 
   public class MyRule : Rules.BusinessRule

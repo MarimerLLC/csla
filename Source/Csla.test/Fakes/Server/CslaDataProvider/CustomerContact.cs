@@ -19,62 +19,35 @@ namespace cslalighttest.CslaDataProvider
     private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "Contact Id", 0);
     public int Id
     {
-      get
-      {
-        return GetProperty<int>(IdProperty);
-      }
-      set
-      {
-        SetProperty<int>(IdProperty, value);
-      }
+      get => GetProperty<int>(IdProperty);
+      set => SetProperty<int>(IdProperty, value);
     }
 
     private static PropertyInfo<int> CustomerIdProperty = RegisterProperty<int>(c=>c.CustomerId, "Customer Id", 0);
     public int CustomerId
     {
-      get
-      {
-        return GetProperty<int>(CustomerIdProperty);
-      }
-      set
-      {
-        SetProperty<int>(CustomerIdProperty, value);
-      }
+      get => GetProperty<int>(CustomerIdProperty);
+      set => SetProperty<int>(CustomerIdProperty, value);
     }
 
     private static PropertyInfo<string>FirstNameProperty = RegisterProperty<string>(c=>c.FirstName, "Contact's First Name", "");
     public string FirstName
     {
-      get
-      {
-        return GetProperty<string>(FirstNameProperty);
-      }
-      set
-      {
-        SetProperty<string>(FirstNameProperty, value);
-      }
+      get => GetProperty<string>(FirstNameProperty);
+      set => SetProperty<string>(FirstNameProperty, value);
     }
 
     private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c=>c.LastName, "Contact's Last Name", "");
     public string LastName
     {
-      get
-      {
-        return GetProperty<string>(LastNameProperty);
-      }
-      set
-      {
-        SetProperty<string>(LastNameProperty, value);
-      }
+      get => GetProperty<string>(LastNameProperty);
+      set => SetProperty<string>(LastNameProperty, value);
     }
 
     private static PropertyInfo<SmartDate> BirthdayProperty = RegisterProperty<SmartDate>(c=>c.Birthday, "Contact's Birthday");
     public string Birthday
     {
-      get
-      {
-        return GetProperty<SmartDate>(BirthdayProperty).Text;
-      }
+      get => GetProperty<SmartDate>(BirthdayProperty).Text;
       set
       {
         SmartDate test = new SmartDate();
@@ -88,14 +61,8 @@ namespace cslalighttest.CslaDataProvider
     private static PropertyInfo<string> ParentNameProperty = RegisterProperty<string>(c=>c.ParentName, "Parent Name", "");
     public string ParentName
     {
-      get
-      {
-        return GetProperty<string>(ParentNameProperty);
-      }
-      set
-      {
-        SetProperty<string>(ParentNameProperty, value);
-      }
+      get => GetProperty<string>(ParentNameProperty);
+      set => SetProperty<string>(ParentNameProperty, value);
     }
 
     protected override void AddBusinessRules()

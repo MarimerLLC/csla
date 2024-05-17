@@ -16,11 +16,13 @@ namespace Csla.Test.MethodCaller
     private string one;
     private string three;
 
-    public string Test1 { get { return "one"; } }
+    public string Test1 => "one";
 
-    public string Test2 { get { return "two"; } set { one = value; } }
+    public string Test2 { get => "two";
+      set => one = value;
+    }
 
-    public string Test3 { set { three = value; } }
+    public string Test3 { set => three = value; }
 
     [TestMethod]
     public void PropertyGetNoSetSuccess()

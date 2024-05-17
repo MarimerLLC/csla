@@ -8,16 +8,16 @@ namespace Csla.Test.BasicModern
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     [CreateChild]

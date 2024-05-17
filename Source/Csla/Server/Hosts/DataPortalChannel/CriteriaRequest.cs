@@ -26,8 +26,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string TypeName
     {
-      get { return GetProperty(TypeNameProperty); }
-      set { LoadProperty(TypeNameProperty, value); }
+      get => GetProperty(TypeNameProperty);
+      set => LoadProperty(TypeNameProperty, value);
     }
 
     /// <summary>
@@ -40,8 +40,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public byte[] CriteriaData
     {
-      get { return GetProperty(CriteriaDataProperty); }
-      set { LoadProperty(CriteriaDataProperty, value); }
+      get => GetProperty(CriteriaDataProperty);
+      set => LoadProperty(CriteriaDataProperty, value);
     }
 
     /// <summary>
@@ -54,8 +54,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public byte[] Principal
     {
-      get { return GetProperty(PrincipalProperty); }
-      set { LoadProperty(PrincipalProperty, value); }
+      get => GetProperty(PrincipalProperty);
+      set => LoadProperty(PrincipalProperty, value);
     }
 
     /// <summary>
@@ -68,8 +68,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public byte[] ClientContext
     {
-      get { return GetProperty(ClientContextProperty); }
-      set { LoadProperty(ClientContextProperty, value); }
+      get => GetProperty(ClientContextProperty);
+      set => LoadProperty(ClientContextProperty, value);
     }
 
     /// <summary>
@@ -84,8 +84,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <value>The client culture.</value>
     public string ClientCulture
     {
-      get { return GetProperty(ClientCultureProperty); }
-      set { LoadProperty(ClientCultureProperty, value); }
+      get => GetProperty(ClientCultureProperty);
+      set => LoadProperty(ClientCultureProperty, value);
     }
 
     /// <summary>
@@ -100,8 +100,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <value>The client UI culture.</value>
     public string ClientUICulture
     {
-      get { return GetProperty(ClientUICultureProperty); }
-      set { LoadProperty(ClientUICultureProperty, value); }
+      get => GetProperty(ClientUICultureProperty);
+      set => LoadProperty(ClientUICultureProperty, value);
     }
   }
 }

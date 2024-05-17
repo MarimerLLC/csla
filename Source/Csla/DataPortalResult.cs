@@ -54,19 +54,10 @@ namespace Csla
       this.UserState = userState;
     }
 
-    object IDataPortalResult.Object
-    {
-      get { return this.Object; }
-    }
+    object IDataPortalResult.Object => this.Object;
 
-    Exception IDataPortalResult.Error
-    {
-      get { return this.Error; }
-    }
+    Exception IDataPortalResult.Error => this.Error;
 
-    object IDataPortalResult.UserState
-    {
-      get { return this.UserState; }
-    }
+    object IDataPortalResult.UserState => this.UserState;
   }
 }

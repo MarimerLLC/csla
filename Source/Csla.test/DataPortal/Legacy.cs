@@ -17,8 +17,8 @@ namespace Csla.Test.DataPortalTest
     private int _id = IdProperty.DefaultValue;
     public int Id
     {
-      get { return GetProperty(IdProperty, _id); }
-      set { SetProperty(IdProperty, ref _id, value); }
+      get => GetProperty(IdProperty, _id);
+      set => SetProperty(IdProperty, ref _id, value);
     }
 
     #endregion

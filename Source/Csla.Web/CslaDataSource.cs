@@ -78,8 +78,8 @@ namespace Csla.Web
     /// <value>Obsolete - do not use.</value>
     public string TypeAssemblyName
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName = value; }
+      get => ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName;
+      set => ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName = value;
     }
 
     /// <summary>
@@ -90,8 +90,8 @@ namespace Csla.Web
     /// including assembly name.</value>
     public string TypeName
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeName; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeName = value; }
+      get => ((CslaDataSourceView)this.GetView("Default")).TypeName;
+      set => ((CslaDataSourceView)this.GetView("Default")).TypeName = value;
     }
 
     /// <summary>
@@ -105,8 +105,8 @@ namespace Csla.Web
     /// </remarks>
     public bool TypeSupportsPaging
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging = value; }
+      get => ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging;
+      set => ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging = value;
     }
 
     /// <summary>
@@ -115,8 +115,8 @@ namespace Csla.Web
     /// </summary>
     public bool TypeSupportsSorting
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value; }
+      get => ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting;
+      set => ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value;
     }
 
     private static System.Collections.Generic.Dictionary<string,Type> _typeCache = [];

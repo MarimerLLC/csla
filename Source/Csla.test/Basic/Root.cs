@@ -16,31 +16,22 @@ namespace Csla.Test.Basic
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public static PropertyInfo<int> CreatedDomainProperty = RegisterProperty<int>(c => c.CreatedDomain);
     public int CreatedDomain
     {
-      get { return GetProperty(CreatedDomainProperty); }
-      private set { LoadProperty(CreatedDomainProperty, value); }
+      get => GetProperty(CreatedDomainProperty);
+      private set => LoadProperty(CreatedDomainProperty, value);
     }
 
-    public Children Children
-    {
-      get { return GetProperty(ChildrenProperty); }
-    }
+    public Children Children => GetProperty(ChildrenProperty);
 
     ///start editing
     ///
-    public override bool IsDirty
-    {
-      get
-      {
-        return base.IsDirty || ReadProperty(ChildrenProperty).IsDirty;
-      }
-    }
+    public override bool IsDirty => base.IsDirty || ReadProperty(ChildrenProperty).IsDirty;
 
     [Serializable]
     internal class Criteria

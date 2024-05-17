@@ -70,7 +70,7 @@ namespace Csla.Windows
     [AttributeProvider(typeof (IListSource))]
     public object DataSource
     {
-      get { return _dataSource; }
+      get => _dataSource;
       set
       {
         if (value != null)

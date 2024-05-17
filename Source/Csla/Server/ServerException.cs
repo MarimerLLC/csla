@@ -31,12 +31,7 @@ namespace Csla.Server
     /// The unique identifier for the request that failed
     /// Use this identifier to look for the exception details in server logs
     /// </summary>
-    public string RequestIdentifier 
-    { get 
-      {
-        return Data[IdentifierKey].ToString();
-      }
-    }
+    public string RequestIdentifier => Data[IdentifierKey].ToString();
 
     /// <summary>
     /// Override of the ToString method to insert the unique identifier

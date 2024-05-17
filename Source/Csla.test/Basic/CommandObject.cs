@@ -18,8 +18,8 @@ namespace Csla.Test.Basic
 
     public string AProperty
     {
-      get { return ReadProperty(APropertyProperty); }
-      set { LoadProperty(APropertyProperty, value); }
+      get => ReadProperty(APropertyProperty);
+      set => LoadProperty(APropertyProperty, value);
     }
 
     [RunLocal]

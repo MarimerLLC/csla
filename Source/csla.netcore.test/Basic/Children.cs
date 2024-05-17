@@ -27,10 +27,7 @@ namespace Csla.Test.Basic
       }
     }
 
-    public int DeletedCount
-    {
-      get { return this.DeletedList.Count; }
-    }
+    public int DeletedCount => this.DeletedList.Count;
 
     public List<Child> GetDeletedList()
     {

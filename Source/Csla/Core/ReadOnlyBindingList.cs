@@ -28,10 +28,7 @@ namespace Csla.Core
   {
     #region Identity
 
-    int IBusinessObject.Identity
-    {
-      get { return 0; }
-    }
+    int IBusinessObject.Identity => 0;
 
     #endregion
 
@@ -47,8 +44,8 @@ namespace Csla.Core
     /// <value>True indicates that the list is readonly.</value>
     public bool IsReadOnly
     {
-      get { return IsReadOnlyCore; }
-      protected set { IsReadOnlyCore = value; }
+      get => IsReadOnlyCore;
+      protected set => IsReadOnlyCore = value;
     }
 
     /// <summary>
@@ -57,14 +54,14 @@ namespace Csla.Core
     /// </summary>
     protected virtual bool IsReadOnlyCore
     {
-      get { return _isReadOnly; }
-      set { _isReadOnly = value; }
+      get => _isReadOnly;
+      set => _isReadOnly = value;
     }
 
     bool Core.IReadOnlyBindingList.IsReadOnly
     {
-      get { return IsReadOnly; }
-      set { IsReadOnly = value; }
+      get => IsReadOnly;
+      set => IsReadOnly = value;
     }
 
     /// <summary>

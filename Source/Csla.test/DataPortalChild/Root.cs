@@ -14,27 +14,15 @@ namespace Csla.Test.DataPortalChild
     private static PropertyInfo<string> DataProperty = RegisterProperty<string>(typeof(Root), new PropertyInfo<string>("Data"));
     public string Data
     {
-      get { return GetProperty<string>(DataProperty); }
-      set { SetProperty<string>(DataProperty, value); }
+      get => GetProperty<string>(DataProperty);
+      set => SetProperty<string>(DataProperty, value);
     }
 
     private static PropertyInfo<Child> ChildProperty = RegisterProperty<Child>(typeof(Root), new PropertyInfo<Child>("Child"));
-    public Child Child
-    {
-      get 
-      {
-        return GetProperty(ChildProperty); 
-      }
-    }
+    public Child Child => GetProperty(ChildProperty);
 
     private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(typeof(Root), new PropertyInfo<ChildList>("ChildList"));
-    public ChildList ChildList
-    {
-      get
-      {
-        return GetProperty(ChildListProperty);
-      }
-    }
+    public ChildList ChildList => GetProperty(ChildListProperty);
 
     public void FetchChild(IChildDataPortal<Child> childDataPortal)
     {

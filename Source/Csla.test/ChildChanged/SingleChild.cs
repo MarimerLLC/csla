@@ -23,18 +23,12 @@ namespace Csla.Test.ChildChanged
     private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name"));
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     private static PropertyInfo<SingleRoot> ChildProperty = RegisterProperty(new PropertyInfo<SingleRoot>("Child"));
-    public SingleRoot Child
-    {
-      get 
-      {
-        return GetProperty(ChildProperty); 
-      }
-    }
+    public SingleRoot Child => GetProperty(ChildProperty);
 
     [Fetch]
     [FetchChild]

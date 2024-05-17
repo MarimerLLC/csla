@@ -22,7 +22,7 @@ namespace Csla.Test.Basic
 
     public string Data
     {
-      get { return _data; }
+      get => _data;
       set
       {
         if (_data != value)

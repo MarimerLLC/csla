@@ -580,8 +580,8 @@ namespace Csla.Test.ValidationRules
     public static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
     public void Validate()
@@ -621,8 +621,8 @@ namespace Csla.Test.ValidationRules
     private string _name = NameProperty.DefaultValue;
     public string Name
     {
-      get { return GetProperty(NameProperty, _name); }
-      set { SetProperty(NameProperty, ref _name, value); }
+      get => GetProperty(NameProperty, _name);
+      set => SetProperty(NameProperty, ref _name, value);
     }
 
     public void Validate()
@@ -656,22 +656,22 @@ namespace Csla.Test.ValidationRules
     private static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data, null, 1);
     public int Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     private static PropertyInfo<string> MinCheckProperty = RegisterProperty<string>(c => c.MinCheck, null, "123456");
     public string MinCheck
     {
-      get { return GetProperty(MinCheckProperty); }
-      set { SetProperty(MinCheckProperty, value); }
+      get => GetProperty(MinCheckProperty);
+      set => SetProperty(MinCheckProperty, value);
     }
 
     private static PropertyInfo<string> MaxCheckProperty = RegisterProperty<string>(c => c.MaxCheck);
     public string MaxCheck
     {
-      get { return GetProperty(MaxCheckProperty); }
-      set { SetProperty(MaxCheckProperty, value); }
+      get => GetProperty(MaxCheckProperty);
+      set => SetProperty(MaxCheckProperty, value);
     }
 
     protected override void AddBusinessRules()
@@ -697,8 +697,8 @@ namespace Csla.Test.ValidationRules
     private static PropertyInfo<int?> DataNullableProperty = RegisterProperty<int?>(c => c.DataNullable);
     public int? DataNullable
     {
-      get { return GetProperty(DataNullableProperty); }
-      set { SetProperty(DataNullableProperty, value); }
+      get => GetProperty(DataNullableProperty);
+      set => SetProperty(DataNullableProperty, value);
     }
 
     protected override void AddBusinessRules()
@@ -722,15 +722,15 @@ namespace Csla.Test.ValidationRules
     public static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1);
     public string Value1
     {
-      get { return GetProperty(Value1Property); }
-      set { SetProperty(Value1Property, value); }
+      get => GetProperty(Value1Property);
+      set => SetProperty(Value1Property, value);
     }
 
     public static PropertyInfo<string> Value2Property = RegisterProperty<string>(c => c.Value2);
     public string Value2
     {
-      get { return GetProperty(Value2Property); }
-      set { SetProperty(Value2Property, value); }
+      get => GetProperty(Value2Property);
+      set => SetProperty(Value2Property, value);
     }
 
     protected override void AddBusinessRules()
@@ -768,14 +768,11 @@ namespace Csla.Test.ValidationRules
     public static PropertyInfo<string> Value1Property = RegisterProperty<string>(nameof(Value1), RelationshipTypes.LazyLoad);
     public string Value1
     {
-      get
-      {
-        return LazyGetProperty(Value1Property, () => string.Empty);
-        //if (!FieldManager.FieldExists(Value1Property))
-        //  SetProperty(Value1Property, string.Empty);
-        //return GetProperty(Value1Property);
-      }
-      set { SetProperty(Value1Property, value); }
+      get => LazyGetProperty(Value1Property, () => string.Empty);
+      //if (!FieldManager.FieldExists(Value1Property))
+      //  SetProperty(Value1Property, string.Empty);
+      //return GetProperty(Value1Property);
+      set => SetProperty(Value1Property, value);
     }
 
     protected override void AddBusinessRules()
@@ -796,8 +793,8 @@ namespace Csla.Test.ValidationRules
     public static PropertyInfo<string> Value1Property = RegisterProperty<string>(c => c.Value1);
     public string Value1
     {
-      get { return GetProperty(Value1Property); }
-      set { SetProperty(Value1Property, value); }
+      get => GetProperty(Value1Property);
+      set => SetProperty(Value1Property, value);
     }
 
     public DirtyAfterOutValueChangesProperty() 

@@ -823,10 +823,7 @@ namespace Csla.Test.PropertyGetSet
   public class Command : CommandBase<Command>
   {
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-    public string Name
-    {
-      get { return ReadProperty(NameProperty); }
-    }
+    public string Name => ReadProperty(NameProperty);
 
     public void Load(string name)
     {
@@ -844,22 +841,13 @@ namespace Csla.Test.PropertyGetSet
   public class ReadOnly : ReadOnlyBase<ReadOnly>
   {
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
-    public string Name
-    {
-      get { return ReadProperty(NameProperty); }
-    }
+    public string Name => ReadProperty(NameProperty);
 
     public static readonly PropertyInfo<string> _originalNameProperty = RegisterProperty<string>(c => c.OriginalName);
-    internal string OriginalName
-    {
-      get { return ReadProperty(_originalNameProperty); }
-    }
+    internal string OriginalName => ReadProperty(_originalNameProperty);
 
     public static readonly PropertyInfo<string> _originalNamePrivateProperty = RegisterProperty<string>(c => c.OriginalNamePrivate);
-    private string OriginalNamePrivate
-    {
-      get { return ReadProperty(_originalNamePrivateProperty); }
-    }
+    private string OriginalNamePrivate => ReadProperty(_originalNamePrivateProperty);
 
     public void Load(string name)
     {

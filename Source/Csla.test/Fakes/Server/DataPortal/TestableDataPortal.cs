@@ -49,23 +49,10 @@ namespace Csla.Testing.Business.DataPortal
     {
     }
 
-    public Type AuthProviderType
-    {
-      get
-      {
-        return AuthProvider.GetType();
-      }
-    }
+    public Type AuthProviderType => AuthProvider.GetType();
 
     public IAuthorizeDataPortal AuthProvider { get; }
 
-    public bool NullAuthorizerUsed
-    {
-      get
-      {
-        return AuthProviderType == typeof(NullAuthorizer);
-      }
-    }
-
+    public bool NullAuthorizerUsed => AuthProviderType == typeof(NullAuthorizer);
   }
 }

@@ -14,18 +14,12 @@ namespace Csla.Test.ChildChanged
     private static PropertyInfo<string> NameProperty = RegisterProperty(new PropertyInfo<string>("Name"));
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     private static PropertyInfo<SingleChild> ChildProperty = RegisterProperty(new PropertyInfo<SingleChild>("Child"));
-    public SingleChild Child
-    {
-      get
-      {
-        return GetProperty(ChildProperty);
-      }
-    }
+    public SingleChild Child => GetProperty(ChildProperty);
 
     [Fetch]
     private void Fetch([Inject] IChildDataPortal<SingleChild> childDataPortal)

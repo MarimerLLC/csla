@@ -361,14 +361,9 @@ namespace Csla.DataPortalClient
 
     }
 
-    internal bool ExecutionIsNotOnLogicalOrPhysicalServer
-    {
-      get
-      {
-        return ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server
-          && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server;
-      }
-    }
+    internal bool ExecutionIsNotOnLogicalOrPhysicalServer =>
+      ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server
+      && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server;
 
     #region Criteria
 

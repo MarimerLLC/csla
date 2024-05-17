@@ -16,16 +16,16 @@ namespace Csla.Test.BusinessListBase
     private static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
 
     private static PropertyInfo<string> AsyncRuleTextProperty = RegisterProperty<string>(nameof(AsyncRuleText));
     public string AsyncRuleText 
     {
-      get { return GetProperty(AsyncRuleTextProperty); }
-      set { SetProperty<string>(AsyncRuleTextProperty, value);}
+      get => GetProperty(AsyncRuleTextProperty);
+      set => SetProperty<string>(AsyncRuleTextProperty, value);
     }
 
     protected override void AddBusinessRules() 

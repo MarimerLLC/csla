@@ -51,10 +51,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public virtual T Value
     {
-      get
-      {
-        return _data;
-      }
+      get => _data;
       set
       {
         _data = value;
@@ -64,10 +61,7 @@ namespace Csla.Core.FieldManager
 
     object IFieldData.Value
     {
-      get
-      {
-        return this.Value;
-      }
+      get => this.Value;
       set
       {
         if (value == null)
@@ -88,10 +82,7 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    bool ITrackStatus.IsSavable
-    {
-      get { return true; }
-    }
+    bool ITrackStatus.IsSavable => true;
 
     bool ITrackStatus.IsChild
     {
@@ -108,10 +99,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
-    public virtual bool IsSelfDirty
-    {
-      get { return IsDirty; }
-    }
+    public virtual bool IsSelfDirty => IsDirty;
 
     /// <summary>
     /// Gets a value indicating whether the field
@@ -147,15 +135,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    bool ITrackStatus.IsSelfValid
-    {
-      get { return IsValid; }
-    }
+    bool ITrackStatus.IsSelfValid => IsValid;
 
-    bool ITrackStatus.IsValid
-    {
-      get { return IsValid; }
-    }
+    bool ITrackStatus.IsValid => IsValid;
 
     /// <summary>
     /// Gets a value indicating whether this field
@@ -174,8 +156,8 @@ namespace Csla.Core.FieldManager
 
     event BusyChangedEventHandler INotifyBusy.BusyChanged
     {
-      add { throw new NotImplementedException(); }
-      remove { throw new NotImplementedException(); }
+      add => throw new NotImplementedException();
+      remove => throw new NotImplementedException();
     }
 
     /// <summary>
@@ -197,10 +179,7 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    bool INotifyBusy.IsSelfBusy
-    {
-      get { return IsBusy; }
-    }
+    bool INotifyBusy.IsSelfBusy => IsBusy;
 
     T IFieldData<T>.Value { get => Value; set => Value = value; }
 
@@ -222,14 +201,14 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     event EventHandler<ErrorEventArgs> INotifyUnhandledAsyncException.UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     void IFieldData.MarkClean()

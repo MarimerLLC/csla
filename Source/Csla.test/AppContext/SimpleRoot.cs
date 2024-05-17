@@ -26,7 +26,7 @@ namespace Csla.Test.AppContext
     /// </summary>
     public string Data
     {
-      get { return this._Data; }
+      get => this._Data;
       set
       {
         if (!this._Data.Equals(value))
@@ -49,8 +49,8 @@ namespace Csla.Test.AppContext
 
       public string Data
       {
-        get { return this._Data; }
-        set { this._Data = value; }
+        get => this._Data;
+        set => this._Data = value;
       }
 
       public Criteria()

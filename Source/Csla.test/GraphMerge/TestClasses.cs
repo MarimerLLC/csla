@@ -14,22 +14,22 @@ namespace Csla.Test.GraphMerge
       RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     public static readonly PropertyInfo<Foo> ChildProperty = RegisterProperty<Foo>(c => c.Child);
     public Foo Child
     {
-      get { return GetProperty(ChildProperty); }
-      set { SetProperty(ChildProperty, value); }
+      get => GetProperty(ChildProperty);
+      set => SetProperty(ChildProperty, value);
     }
 
     public static readonly PropertyInfo<FooList> ChildListProperty = RegisterProperty<FooList>(c => c.ChildList);
     public FooList ChildList
     {
-      get { return GetProperty(ChildListProperty); }
-      private set { LoadProperty(ChildListProperty, value); }
+      get => GetProperty(ChildListProperty);
+      private set => LoadProperty(ChildListProperty, value);
     }
 
     public void AddChild(IDataPortal<Foo> dataPortal)

@@ -106,8 +106,8 @@ namespace Csla.Test.DataAnnotations
     [Required(ErrorMessage = "Name value required")]
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     [Create]
@@ -131,8 +131,8 @@ namespace Csla.Test.DataAnnotations
     [System.ComponentModel.DataAnnotations.Range(typeof(string), "0", "9")]
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     [Create]
@@ -154,8 +154,8 @@ namespace Csla.Test.DataAnnotations
     [TestRule]
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     [Create]
@@ -192,16 +192,16 @@ namespace Csla.Test.DataAnnotations
       [Required(ErrorMessage="Please enter an amount")]
       public decimal Amount
       {
-          get { return GetProperty(AmountProperty); }
-          set { SetProperty(AmountProperty, value); }
+          get => GetProperty(AmountProperty);
+          set => SetProperty(AmountProperty, value);
       }
 
 
       public static readonly PropertyInfo<int> QuantityProperty = RegisterProperty<int>(c => c.Quantity);
       public int Quantity
       { 
-        get { return GetProperty(QuantityProperty); }
-        set { SetProperty(QuantityProperty, value); }
+        get => GetProperty(QuantityProperty);
+        set => SetProperty(QuantityProperty, value);
       }
 
     [Fetch]

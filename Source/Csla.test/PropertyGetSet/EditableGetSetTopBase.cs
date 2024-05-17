@@ -22,8 +22,8 @@ namespace Csla.Test.PropertyGetSet
     private static PropertyInfo<string> TopBaseProperty = RegisterProperty<string>(new PropertyInfo<string>("TopBase", "TopBase"));
     public string TopBase
     {
-      get { return GetProperty<string>(TopBaseProperty); }
-      set { SetProperty<string>(TopBaseProperty, value); }
+      get => GetProperty<string>(TopBaseProperty);
+      set => SetProperty<string>(TopBaseProperty, value);
     }
   }
 
@@ -38,8 +38,8 @@ namespace Csla.Test.PropertyGetSet
     public static PropertyInfo<string> TopBaseProperty = RegisterProperty<string>(new PropertyInfo<string>("TopBase", "TopBase"));
     public string TopBase
     {
-      get { return GetProperty<string>(TopBaseProperty); }
-      set { SetProperty<string>(TopBaseProperty, value); }
+      get => GetProperty<string>(TopBaseProperty);
+      set => SetProperty<string>(TopBaseProperty, value);
     }
   }
 }

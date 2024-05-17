@@ -18,22 +18,22 @@ namespace Csla.Test.Server.Interceptors
     [Required]
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public static PropertyInfo<int> CreatedDomainProperty = RegisterProperty<int>(c => c.CreatedDomain);
     public int CreatedDomain
     {
-      get { return GetProperty(CreatedDomainProperty); }
-      private set { LoadProperty(CreatedDomainProperty, value); }
+      get => GetProperty(CreatedDomainProperty);
+      private set => LoadProperty(CreatedDomainProperty, value);
     }
 
     public static readonly PropertyInfo<Children> ChildrenProperty = RegisterProperty<Children>(c => c.Children);
     public Children Children
     {
-      get { return GetProperty(ChildrenProperty); }
-      private set { LoadProperty(ChildrenProperty, value); }
+      get => GetProperty(ChildrenProperty);
+      private set => LoadProperty(ChildrenProperty, value);
     }
 
     [Serializable]

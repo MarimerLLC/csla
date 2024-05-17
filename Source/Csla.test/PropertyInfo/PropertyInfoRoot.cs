@@ -40,59 +40,59 @@ namespace Csla.Test.PropertyInfo
     public static readonly PropertyInfo<System.String> _nameProperty = RegisterProperty<System.String>(p => p.Name);
     public System.String Name
     {
-      get { return GetProperty(_nameProperty); }
-      set { SetProperty(_nameProperty, value); }
+      get => GetProperty(_nameProperty);
+      set => SetProperty(_nameProperty, value);
     }
 
     public static readonly PropertyInfo<System.String> _nameDataAnnotationsProperty = RegisterProperty<System.String>(p => p.NameDataAnnotations);
     [Display(Name = "Name: DataAnnotations")]
     public System.String NameDataAnnotations
     {
-      get { return GetProperty(_nameDataAnnotationsProperty); }
-      set { SetProperty(_nameDataAnnotationsProperty, value); }
+      get => GetProperty(_nameDataAnnotationsProperty);
+      set => SetProperty(_nameDataAnnotationsProperty, value);
     }
 
     public static readonly PropertyInfo<System.String> _nameComponentModelProperty = RegisterProperty<System.String>(p => p.NameComponentModel);
     [DisplayName("Name: ComponentModel")]
     public System.String NameComponentModel
     {
-      get { return GetProperty(_nameComponentModelProperty); }
-      set { SetProperty(_nameComponentModelProperty, value); }
+      get => GetProperty(_nameComponentModelProperty);
+      set => SetProperty(_nameComponentModelProperty, value);
     }
 
     public static readonly PropertyInfo<System.String> _nameFriendlyNameProperty = RegisterProperty<System.String>(p => p.NameFriendlyName, "Name: Friendly Name");
     public System.String NameFriendlyName
     {
-      get { return GetProperty(_nameFriendlyNameProperty); }
-      set { SetProperty(_nameFriendlyNameProperty, value); }
+      get => GetProperty(_nameFriendlyNameProperty);
+      set => SetProperty(_nameFriendlyNameProperty, value);
     }
 
     public static readonly PropertyInfo<string> NameDefaultValueProperty = RegisterProperty<string>(c => c.NameDefaultValue, string.Empty, "x");
     public string NameDefaultValue
     {
-      get { return GetProperty(NameDefaultValueProperty); }
-      set { SetProperty(NameDefaultValueProperty, value); }
+      get => GetProperty(NameDefaultValueProperty);
+      set => SetProperty(NameDefaultValueProperty, value);
     }
 
     public static readonly PropertyInfo<string> StringNullDefaultValueProperty = RegisterProperty<string>(c => c.StringNullDefaultValue, string.Empty, null);
     public string StringNullDefaultValue
     {
-      get { return GetProperty(StringNullDefaultValueProperty); }
-      set { SetProperty(StringNullDefaultValueProperty, value); }
+      get => GetProperty(StringNullDefaultValueProperty);
+      set => SetProperty(StringNullDefaultValueProperty, value);
     }
 
     public static readonly PropertyInfo<string> ContainingTypeProperty = RegisterProperty<string>(new PropertyInfo<string>(nameof(ContainingType), null, typeof(PropertyInfoRoot), RelationshipTypes.None));
     public string ContainingType
     {
-      get { return GetProperty(ContainingTypeProperty); }
-      set { SetProperty(ContainingTypeProperty, value); }
+      get => GetProperty(ContainingTypeProperty);
+      set => SetProperty(ContainingTypeProperty, value);
     }
 
     public static readonly PropertyInfo<string> ContainingTypeNullProperty = RegisterProperty<string>(new PropertyInfo<string>(nameof(ContainingTypeNull), null, null, RelationshipTypes.None));
     public string ContainingTypeNull
     {
-      get { return GetProperty(ContainingTypeNullProperty); }
-      set { SetProperty(ContainingTypeNullProperty, value); }
+      get => GetProperty(ContainingTypeNullProperty);
+      set => SetProperty(ContainingTypeNullProperty, value);
     }
 
     #endregion

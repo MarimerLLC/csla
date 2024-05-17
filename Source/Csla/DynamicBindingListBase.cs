@@ -84,10 +84,7 @@ namespace Csla
 
     private int _identity = -1;
 
-    int IBusinessObject.Identity
-    {
-      get { return _identity; }
-    }
+    int IBusinessObject.Identity => _identity;
 
     private void InitializeIdentity()
     {
@@ -342,12 +339,9 @@ namespace Csla
         Remove((T)child);
     }
 
-    IParent Csla.Core.IParent.Parent
-    {
-      get { return null; }
-    }
+    IParent Csla.Core.IParent.Parent => null;
 
-#endregion
+    #endregion
 
 #region  Cascade Child events
 

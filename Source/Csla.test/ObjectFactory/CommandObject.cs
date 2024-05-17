@@ -42,8 +42,8 @@ namespace Csla.Test.ObjectFactory
     public static readonly PropertyInfo<bool> ResultProperty = RegisterProperty<CommandObject, bool>(p => p.Result);
     public bool Result
     {
-      get { return ReadProperty<bool>(ResultProperty); }
-      set { LoadProperty<bool>(ResultProperty, value); }
+      get => ReadProperty<bool>(ResultProperty);
+      set => LoadProperty<bool>(ResultProperty, value);
     }
 
     private void BeforeServer()

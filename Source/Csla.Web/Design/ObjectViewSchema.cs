@@ -95,12 +95,6 @@ namespace Csla.Web.Design
     /// <summary>
     /// Returns the name of the schema.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return "Default";
-      }
-    }
+    public string Name => "Default";
   }
 }

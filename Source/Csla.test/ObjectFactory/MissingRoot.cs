@@ -15,15 +15,15 @@ namespace Csla.Test.ObjectFactory
     private static PropertyInfo<string> DataProperty = RegisterProperty(new PropertyInfo<string>("Data"));
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     private static PropertyInfo<Csla.ApplicationContext.ExecutionLocations> LocationProperty = RegisterProperty(new PropertyInfo<Csla.ApplicationContext.ExecutionLocations>("Location"));
     public Csla.ApplicationContext.ExecutionLocations Location
     {
-      get { return GetProperty(LocationProperty); }
-      set { SetProperty(LocationProperty, value); }
+      get => GetProperty(LocationProperty);
+      set => SetProperty(LocationProperty, value);
     }
 
     public void MarkAsNew()

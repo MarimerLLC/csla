@@ -84,10 +84,7 @@ namespace Csla.Core
 
     private int _identity = -1;
 
-    int IBusinessObject.Identity
-    {
-      get { return _identity; }
-    }
+    int IBusinessObject.Identity => _identity;
 
     private void InitializeIdentity()
     {
@@ -131,10 +128,7 @@ namespace Csla.Core
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Core.IParent Parent
-    {
-      get { return _parent; }
-    }
+    public Core.IParent Parent => _parent;
 
     /// <summary>
     /// Used by BusinessListBase as a child object is 
@@ -215,10 +209,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsDirty
-    {
-      get { return IsSelfDirty || (_fieldManager != null && FieldManager.IsDirty()); }
-    }
+    public virtual bool IsDirty => IsSelfDirty || (_fieldManager != null && FieldManager.IsDirty());
 
     /// <summary>
     /// Returns true if this object's data has been changed.
@@ -240,10 +231,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsSelfDirty
-    {
-      get { return _isDirty; }
-    }
+    public virtual bool IsSelfDirty => _isDirty;
 
     /// <summary>
     /// Marks the object as being a new object. This also marks the object
@@ -748,14 +736,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected bool DisableIEditableObject
     {
-      get
-      {
-        return _disableIEditableObject;
-      }
-      set
-      {
-        _disableIEditableObject = value;
-      }
+      get => _disableIEditableObject;
+      set => _disableIEditableObject = value;
     }
 
     /// <summary>
@@ -920,10 +902,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public bool IsChild
-    {
-      get { return _isChild; }
-    }
+    public bool IsChild => _isChild;
 
     /// <summary>
     /// Marks the object as being a child object.
@@ -994,19 +973,13 @@ namespace Csla.Core
     /// </remarks>
     internal int EditLevelAdded
     {
-      get { return _editLevelAdded; }
-      set { _editLevelAdded = value; }
+      get => _editLevelAdded;
+      set => _editLevelAdded = value;
     }
 
-    int IUndoableObject.EditLevel
-    {
-      get
-      {
-        return this.EditLevel;
-      }
-    }
+    int IUndoableObject.EditLevel => this.EditLevel;
 
-#endregion
+    #endregion
 
 #region ICloneable
 
@@ -1040,16 +1013,12 @@ namespace Csla.Core
     /// </summary>
     public event EventHandler ValidationComplete
     {
-      add
-      {
+      add =>
         _validationCompleteHandlers = (EventHandler)
           System.Delegate.Combine(_validationCompleteHandlers, value);
-      }
-      remove
-      {
+      remove =>
         _validationCompleteHandlers = (EventHandler)
           System.Delegate.Remove(_validationCompleteHandlers, value);
-      }
     }
 
     /// <summary>
@@ -1181,10 +1150,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsValid
-    {
-      get { return IsSelfValid && (_fieldManager == null || FieldManager.IsValid()); }
-    }
+    public virtual bool IsValid => IsSelfValid && (_fieldManager == null || FieldManager.IsValid());
 
     /// <summary>
     /// Returns true if the object is currently 
@@ -1204,10 +1170,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsSelfValid
-    {
-      get { return BusinessRules.IsValid; }
-    }
+    public virtual bool IsSelfValid => BusinessRules.IsValid;
 
     /// <summary>
     /// Provides access to the readonly collection of broken business rules
@@ -1218,12 +1181,9 @@ namespace Csla.Core
     [ScaffoldColumn(false)]
     [System.ComponentModel.DataAnnotations.Schema.NotMapped]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public virtual Rules.BrokenRulesCollection BrokenRulesCollection
-    {
-      get { return BusinessRules.GetBrokenRules(); }
-    }
+    public virtual Rules.BrokenRulesCollection BrokenRulesCollection => BusinessRules.GetBrokenRules();
 
-#endregion
+    #endregion
 
 #region Data Access
 
@@ -1342,16 +1302,12 @@ namespace Csla.Core
 
     event EventHandler<DataErrorsChangedEventArgs> INotifyDataErrorInfo.ErrorsChanged
     {
-      add
-      {
+      add =>
         _errorsChanged = (EventHandler<DataErrorsChangedEventArgs>)
           System.Delegate.Combine(_errorsChanged, value);
-      }
-      remove
-      {
+      remove =>
         _errorsChanged = (EventHandler<DataErrorsChangedEventArgs>)
           System.Delegate.Remove(_errorsChanged, value);
-      }
     }
 
     /// <summary>
@@ -1489,14 +1445,8 @@ namespace Csla.Core
 
     int IEditableBusinessObject.EditLevelAdded
     {
-      get
-      {
-        return this.EditLevelAdded;
-      }
-      set
-      {
-        this.EditLevelAdded = value;
-      }
+      get => this.EditLevelAdded;
+      set => this.EditLevelAdded = value;
     }
 
     void IEditableBusinessObject.DeleteChild()
@@ -3055,10 +3005,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsBusy
-    {
-      get { return IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy()); }
-    }
+    public virtual bool IsBusy => IsSelfBusy || (_fieldManager != null && FieldManager.IsBusy());
 
     /// <summary>
     /// Gets a value indicating if this
@@ -3067,10 +3014,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsSelfBusy
-    {
-      get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
-    }
+    public virtual bool IsSelfBusy => _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading;
 
     [NotUndoable]
     [NonSerialized]
@@ -3081,8 +3025,8 @@ namespace Csla.Core
     /// </summary>
     public event BusyChangedEventHandler BusyChanged
     {
-      add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
-      remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
+      add => _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value);
+      remove => _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value);
     }
 
     /// <summary>
@@ -3136,8 +3080,8 @@ namespace Csla.Core
     /// </summary>
     public event EventHandler<ErrorEventArgs> UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     /// <summary>
@@ -3177,16 +3121,12 @@ namespace Csla.Core
       "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<Csla.Core.ChildChangedEventArgs> ChildChanged
     {
-      add
-      {
+      add =>
         _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
           System.Delegate.Combine(_childChangedHandlers, value);
-      }
-      remove
-      {
+      remove =>
         _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
           System.Delegate.Remove(_childChangedHandlers, value);
-      }
     }
 
     /// <summary>
@@ -3361,12 +3301,9 @@ namespace Csla.Core
       FieldManager.RemoveField(info);
     }
 
-    IParent Csla.Core.IParent.Parent
-    {
-      get { return this.Parent; }
-    }
+    IParent Csla.Core.IParent.Parent => this.Parent;
 
-#endregion
+    #endregion
 
 #region IDataPortalTarget Members
 
@@ -3428,10 +3365,7 @@ namespace Csla.Core
 
 #region IManageProperties Members
 
-    bool IManageProperties.HasManagedProperties
-    {
-      get { return (_fieldManager != null && _fieldManager.HasFields); }
-    }
+    bool IManageProperties.HasManagedProperties => (_fieldManager != null && _fieldManager.HasFields);
 
     List<IPropertyInfo> IManageProperties.GetManagedProperties()
     {
@@ -3594,8 +3528,8 @@ namespace Csla.Core
     /// <summary>
     /// Gets a value whether the business object is currently bypassing property checks?
     /// </summary>
-    protected internal bool IsBypassingPropertyChecks { get { return _bypassPropertyChecks; } }
-  
+    protected internal bool IsBypassingPropertyChecks => _bypassPropertyChecks;
+
     [NonSerialized]
     [NotUndoable]
     private BypassPropertyChecksObject _bypassPropertyChecksObject = null;
@@ -3607,13 +3541,7 @@ namespace Csla.Core
     /// and checking user rights.
     /// </summary>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    protected internal BypassPropertyChecksObject BypassPropertyChecks
-    {
-      get
-      {
-        return BypassPropertyChecksObject.GetManager(this);
-      }
-    }
+    protected internal BypassPropertyChecksObject BypassPropertyChecks => BypassPropertyChecksObject.GetManager(this);
 
     /// <summary>
     /// Class that allows setting of property values on 

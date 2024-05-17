@@ -81,11 +81,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public TimeSpan StepInterval
     {
-      get { return (TimeSpan)GetValue(StepIntervalProperty); }
-      set
-      {
-        SetValue(StepIntervalProperty, value);
-      }
+      get => (TimeSpan)GetValue(StepIntervalProperty);
+      set => SetValue(StepIntervalProperty, value);
     }
 
     /// <summary>
@@ -95,14 +92,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public bool IsRunning
     {
-      get
-      {
-        return (bool)GetValue(IsRunningProperty);
-      }
-      set
-      {
-        SetValue(IsRunningProperty, value);
-      }
+      get => (bool)GetValue(IsRunningProperty);
+      set => SetValue(IsRunningProperty, value);
     }
 
     private void SetupRunningState(bool isRunning)

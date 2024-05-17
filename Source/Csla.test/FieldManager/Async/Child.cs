@@ -29,22 +29,19 @@ namespace Csla.Test.FieldManager.Async
     private static PropertyInfo<string> DataProperty = RegisterProperty<string>(typeof(Child), new PropertyInfo<string>("Data"));
     public string Data
     {
-      get { return GetProperty<string>(DataProperty); }
-      set { SetProperty<string>(DataProperty, value); }
+      get => GetProperty<string>(DataProperty);
+      set => SetProperty<string>(DataProperty, value);
     }
 
     private static PropertyInfo<string> RootDataProperty = RegisterProperty<string>(typeof(Child), new PropertyInfo<string>("RootData", string.Empty));
     public string RootData
     {
-      get { return GetProperty<string>(RootDataProperty); }
-      set { SetProperty<string>(RootDataProperty, value); }
+      get => GetProperty<string>(RootDataProperty);
+      set => SetProperty<string>(RootDataProperty, value);
     }
 
     private static PropertyInfo<string> StatusProperty = RegisterProperty<string>(c => c.Status);
-    public string Status
-    {
-      get { return GetProperty(StatusProperty); }
-    }
+    public string Status => GetProperty(StatusProperty);
 
     [CreateChild]
     private async Task CreateAsync()

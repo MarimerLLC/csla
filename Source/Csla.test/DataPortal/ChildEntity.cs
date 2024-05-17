@@ -15,21 +15,18 @@ namespace Csla.Test.DataBinding
     public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
     public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
 
-    public int ID
-    {
-      get { return GetProperty(IDProperty); }
-    }
+    public int ID => GetProperty(IDProperty);
 
     public string FirstName
     {
-      get { return GetProperty(FirstNameProperty); }
-      set { SetProperty(FirstNameProperty, value); }
+      get => GetProperty(FirstNameProperty);
+      set => SetProperty(FirstNameProperty, value);
     }
 
     public string LastName
     {
-      get { return GetProperty(LastNameProperty); }
-      set { SetProperty(LastNameProperty, value); }
+      get => GetProperty(LastNameProperty);
+      set => SetProperty(LastNameProperty, value);
     }
 
     #region "Object ID value"

@@ -19,15 +19,15 @@ namespace Csla.Test.DataPortalTest
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     public int Id
     {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
     }
 
     private static PropertyInfo<string> MethodCalledProperty = RegisterProperty<string>(c => c.MethodCalled);
     public string MethodCalled
     {
-      get { return GetProperty(MethodCalledProperty); }
-      set { SetProperty(MethodCalledProperty, value); }
+      get => GetProperty(MethodCalledProperty);
+      set => SetProperty(MethodCalledProperty, value);
     }
 
     protected override object GetIdValue()

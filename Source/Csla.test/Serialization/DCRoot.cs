@@ -18,8 +18,8 @@ namespace Csla.Test.Serialization
     public static PropertyInfo<int> DataProperty = RegisterProperty<int>(c => c.Data, RelationshipTypes.PrivateField);
     public int Data
     {
-      get { return GetProperty(DataProperty, _data); }
-      set { SetProperty(DataProperty, ref _data, value); }
+      get => GetProperty(DataProperty, _data);
+      set => SetProperty(DataProperty, ref _data, value);
     }
 
     public NonCslaChild Child { get; } = new NonCslaChild();
@@ -43,8 +43,8 @@ namespace Csla.Test.Serialization
 
     public int TheValue
     {
-      get { return _value; }
-      set { _value = value; }
+      get => _value;
+      set => _value = value;
     }
   }
 }

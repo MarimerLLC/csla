@@ -28,10 +28,7 @@ namespace Csla.Core
     /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
-    public bool IsValid
-    {
-      get { return true; }
-    }
+    public bool IsValid => true;
 
     /// <summary>
     /// Gets the current user principal.
@@ -100,10 +97,7 @@ namespace Csla.Core
     /// </summary>
     public ApplicationContext ApplicationContext 
     {
-      get
-      {
-        return _applicationContext.Value;
-      }
+      get => _applicationContext.Value;
       set
       {
         _applicationContext.Value = value;

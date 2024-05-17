@@ -621,8 +621,8 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     public string MessageText
     {
-      get { return MessageDelegate.Invoke(); }
-      protected set { MessageDelegate = () => value; }
+      get => MessageDelegate.Invoke();
+      protected set => MessageDelegate = () => value;
     }
 
     /// <summary>

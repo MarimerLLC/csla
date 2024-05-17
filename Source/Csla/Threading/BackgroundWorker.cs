@@ -41,14 +41,8 @@ namespace Csla.Threading
     [Description("Event handler to be run on a different thread when the operation begins."), Category("Asynchronous")]
     public event DoWorkEventHandler DoWork
     {
-      add
-      {
-        _myDoWork += value;
-      }
-      remove
-      {
-        _myDoWork -= value;
-      }
+      add => _myDoWork += value;
+      remove => _myDoWork -= value;
     }
 
     /// <summary>
@@ -57,14 +51,8 @@ namespace Csla.Threading
     [Description("Raised when the worker has completed (either through success, failure or cancellation)."), Category("Asynchronous")]
     public event RunWorkerCompletedEventHandler RunWorkerCompleted
     {
-      add
-      {
-        _myWorkerCompleted += value;
-      }
-      remove
-      {
-        _myWorkerCompleted -= value;
-      }
+      add => _myWorkerCompleted += value;
+      remove => _myWorkerCompleted -= value;
     }
 
 
@@ -74,14 +62,8 @@ namespace Csla.Threading
     [Description("Occurs when ReportProgress is called.).")]
     public event ProgressChangedEventHandler ProgressChanged
     {
-      add
-      {
-        _myWorkerProgressChanged += value;
-      }
-      remove
-      {
-        _myWorkerProgressChanged -= value;
-      }
+      add => _myWorkerProgressChanged += value;
+      remove => _myWorkerProgressChanged -= value;
     }
 
     /// <summary>
@@ -90,13 +72,7 @@ namespace Csla.Threading
     /// <value></value>
     /// <returns>true, if the <see cref="T:System.ComponentModel.BackgroundWorker"/> is running an asynchronous operation; otherwise, false.
     /// </returns>
-    public bool IsBusy
-    {
-      get
-      {
-        return _myWorker.IsBusy;
-      }
-    }
+    public bool IsBusy => _myWorker.IsBusy;
 
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> can report progress updates.
@@ -106,14 +82,8 @@ namespace Csla.Threading
     /// </returns>
     public bool WorkerReportsProgress
     {
-      get
-      {
-        return _myWorker.WorkerReportsProgress;
-      }
-      set
-      {
-        _myWorker.WorkerReportsProgress = value;
-      }
+      get => _myWorker.WorkerReportsProgress;
+      set => _myWorker.WorkerReportsProgress = value;
     }
 
     /// <summary>
@@ -124,14 +94,8 @@ namespace Csla.Threading
     /// </returns>
     public bool WorkerSupportsCancellation
     {
-      get
-      {
-        return _myWorker.WorkerSupportsCancellation;
-      }
-      set
-      {
-        _myWorker.WorkerSupportsCancellation = value;
-      }
+      get => _myWorker.WorkerSupportsCancellation;
+      set => _myWorker.WorkerSupportsCancellation = value;
     }
 
     /// <summary>
@@ -154,15 +118,9 @@ namespace Csla.Threading
     /// <value></value>
     /// <returns>true if the application has requested cancellation of a background operation; otherwise, false. The default is false.
     /// </returns>
-    public bool CancellationPending
-    {
-      get
-      {
-        return _myWorker.CancellationPending;
-      }
-    }
+    public bool CancellationPending => _myWorker.CancellationPending;
 
-#region Worker Async Request
+    #region Worker Async Request
 
     private class WorkerAsyncRequest : ContextParams
     {

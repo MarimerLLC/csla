@@ -120,10 +120,7 @@ namespace Csla.Web.Design
     /// Gets the property's numeric precision.
     /// </summary>
     /// <returns>Always returns -1.</returns>
-    public int Precision
-    {
-      get { return -1; }
-    }
+    public int Precision => -1;
 
     /// <summary>
     /// Gets a value indicating whether the property
@@ -134,18 +131,12 @@ namespace Csla.Web.Design
     /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
     /// attribute on the property.
     /// </remarks>
-    public bool PrimaryKey
-    {
-      get { return IsUnique; }
-    }
+    public bool PrimaryKey => IsUnique;
 
     /// <summary>
     /// Gets the property's scale.
     /// </summary>
     /// <returns>Always returns -1.</returns>
-    public int Scale
-    {
-      get { return -1; }
-    }
+    public int Scale => -1;
   }
 }

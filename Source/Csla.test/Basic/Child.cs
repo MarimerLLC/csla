@@ -24,8 +24,8 @@ namespace Csla.Test.Basic
 
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     public override bool Equals(object obj)
@@ -43,15 +43,9 @@ namespace Csla.Test.Basic
       return base.GetHashCode();
     }
 
-    public Guid Guid
-    {
-      get { return ReadProperty(GuidProperty); }
-    }
+    public Guid Guid => ReadProperty(GuidProperty);
 
-    public GrandChildren GrandChildren
-    {
-      get { return GetProperty(GrandChildrenProperty); }
-    }
+    public GrandChildren GrandChildren => GetProperty(GrandChildrenProperty);
 
     internal static Child NewChild(IDataPortal<Child> dataPortal, string data)
     {

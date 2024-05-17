@@ -25,31 +25,31 @@ namespace Csla.Test.BypassPropertyChecks
     protected static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Id");
     public int Id
     {
-      get { return GetProperty<int>(IdProperty); }
-      set { SetProperty<int>(IdProperty, value); }
+      get => GetProperty<int>(IdProperty);
+      set => SetProperty<int>(IdProperty, value);
     }
 
     protected static PropertyInfo<int> Id2Property = RegisterProperty<int>(c => c.Id2, "Id2");
     public int Id2
     {
-      get { return GetProperty<int>(Id2Property); }
-      set { SetProperty<int>(Id2Property, value); }
+      get => GetProperty<int>(Id2Property);
+      set => SetProperty<int>(Id2Property, value);
     }
 
     private int _id3;
     protected static PropertyInfo<int> Id3Property = RegisterProperty<int>(c => c.Id3, "Id3");
     public int Id3
     {
-      get { return GetProperty<int>(Id3Property, _id3); }
-      set { SetProperty(Id3Property, ref _id3, value); }
+      get => GetProperty<int>(Id3Property, _id3);
+      set => SetProperty(Id3Property, ref _id3, value);
     }
 
     private int _id4;
     protected static PropertyInfo<int> Id4Property = RegisterProperty<int>(c => c.Id4, "Id4");
     public int Id4
     {
-      get { return GetProperty<int>(Id4Property, _id4); }
-      set { SetProperty(Id4Property, ref _id4, value); }
+      get => GetProperty<int>(Id4Property, _id4);
+      set => SetProperty(Id4Property, ref _id4, value);
     }
 
     protected override void AddBusinessRules()

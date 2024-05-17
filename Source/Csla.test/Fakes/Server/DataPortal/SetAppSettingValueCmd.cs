@@ -25,14 +25,14 @@ namespace  Csla.Testing.Business.DataPortal
 
     public string AppSettingKey
     {
-      get { return ReadProperty(AppSettingsKeyProperty); }
-      protected set { LoadProperty(AppSettingsKeyProperty, value); }
+      get => ReadProperty(AppSettingsKeyProperty);
+      protected set => LoadProperty(AppSettingsKeyProperty, value);
     }
 
     public string AppSettingValue
     {
-      get { return ReadProperty(AppSettingsValueProperty); }
-      protected set { LoadProperty(AppSettingsValueProperty, value); }
+      get => ReadProperty(AppSettingsValueProperty);
+      protected set => LoadProperty(AppSettingsValueProperty, value);
     }
 
     public SetAppSettingValueCmd(string appSettingKey, string appSettingValue)

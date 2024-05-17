@@ -14,15 +14,15 @@ namespace Csla.Test.BusinessListBase
     private static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     private static PropertyInfo<ChildList> ChildrenProperty = RegisterProperty<ChildList>(c => c.Children);
     public ChildList Children
     {
-      get { return GetProperty(ChildrenProperty); }
-      private set { LoadProperty(ChildrenProperty, value); }
+      get => GetProperty(ChildrenProperty);
+      private set => LoadProperty(ChildrenProperty, value);
     }
 
     [Create]

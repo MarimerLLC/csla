@@ -25,8 +25,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public DataPortalErrorInfo ErrorData
     {
-      get { return GetProperty(ErrorDataProperty); }
-      set { LoadProperty(ErrorDataProperty, value); }
+      get => GetProperty(ErrorDataProperty);
+      set => LoadProperty(ErrorDataProperty, value);
     }
 
     /// <summary>
@@ -39,8 +39,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public byte[] ObjectData
     {
-      get { return GetProperty(ObjectDataProperty); }
-      set { LoadProperty(ObjectDataProperty, value); }
+      get => GetProperty(ObjectDataProperty);
+      set => LoadProperty(ObjectDataProperty, value);
     }
   }
 }

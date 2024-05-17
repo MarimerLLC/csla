@@ -44,8 +44,8 @@ namespace Csla.Rules
     /// <value>The name of the rule.</value>
     public string RuleName
     {
-      get { return _ruleName; }
-      internal set { _ruleName = value; }
+      get => _ruleName;
+      internal set => _ruleName = value;
     }
 
     /// <summary>
@@ -54,8 +54,8 @@ namespace Csla.Rules
     /// <value>The description of the rule.</value>
     public string Description
     {
-      get { return _description; }
-      internal set { _description = value; }
+      get => _description;
+      internal set => _description = value;
     }
 
     /// <summary>
@@ -64,8 +64,8 @@ namespace Csla.Rules
     /// <value>The property affected by the rule.</value>
     public string Property
     {
-      get { return _property; }
-      internal set { _property = value; }
+      get => _property;
+      internal set => _property = value;
     }
 
     /// <summary>
@@ -75,8 +75,8 @@ namespace Csla.Rules
     /// <remarks></remarks>
     public RuleSeverity Severity
     {
-      get { return _severity; }
-      internal set { _severity = value; }
+      get => _severity;
+      internal set => _severity = value;
     }
 
     /// <summary>
@@ -85,8 +85,8 @@ namespace Csla.Rules
     /// <value>The origin property.</value>
     public string OriginProperty
     {
-      get { return _originProperty; }
-      internal set { _originProperty = value; }
+      get => _originProperty;
+      internal set => _originProperty = value;
     }
     /// <summary>
     /// Gets or sets the DisplayIndex property.
@@ -94,8 +94,8 @@ namespace Csla.Rules
     /// <value>The DisplayIndex property.</value>
     public int DisplayIndex
     {
-      get { return _displayIndex; }
-      internal set { _displayIndex = value; }
+      get => _displayIndex;
+      internal set => _displayIndex = value;
     }
     
     #region MobileObject overrides

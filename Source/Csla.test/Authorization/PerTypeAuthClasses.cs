@@ -16,15 +16,15 @@ namespace Csla.Test.Authorization
     public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get { return GetProperty(TestProperty); }
-      set { SetProperty(TestProperty, value); }
+      get => GetProperty(TestProperty);
+      set => SetProperty(TestProperty, value);
     }
 
     public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     protected override void AddBusinessRules()

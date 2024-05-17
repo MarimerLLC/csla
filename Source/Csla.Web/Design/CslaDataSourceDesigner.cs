@@ -33,13 +33,8 @@ namespace Csla.Web.Design
       _control = (DataSourceControl)component;
     }
 
-    internal System.ComponentModel.ISite Site
-    {
-      get
-      {
-        return _control.Site;
-      }
-    }
+    internal System.ComponentModel.ISite Site => _control.Site;
+
     /// <summary>
     /// Returns the default view for this designer.
     /// </summary>
@@ -81,13 +76,7 @@ namespace Csla.Web.Design
     /// Get a value indicating whether the control can
     /// refresh its schema.
     /// </summary>
-    public override bool CanRefreshSchema
-    {
-      get
-      {
-        return true;
-      }
-    }
+    public override bool CanRefreshSchema => true;
 
     /// <summary>
     /// Invoke the design time configuration
@@ -133,36 +122,18 @@ namespace Csla.Web.Design
     /// Get a value indicating whether this control
     /// supports design time configuration.
     /// </summary>
-    public override bool CanConfigure
-    {
-      get
-      {
-        return true;
-      }
-    }
+    public override bool CanConfigure => true;
 
     /// <summary>
     /// Get a value indicating whether the control can
     /// be resized.
     /// </summary>
-    public override bool AllowResize
-    {
-      get
-      {
-        return false;
-      }
-    }
+    public override bool AllowResize => false;
 
     /// <summary>
     /// Get a reference to the CslaDataSource control being
     /// designed.
     /// </summary>
-    internal CslaDataSource DataSourceControl
-    {
-      get
-      {
-        return (CslaDataSource)_control;
-      }
-    }
+    internal CslaDataSource DataSourceControl => (CslaDataSource)_control;
   }
 }

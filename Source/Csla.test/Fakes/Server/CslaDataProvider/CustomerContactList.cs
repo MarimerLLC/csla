@@ -14,10 +14,7 @@ namespace cslalighttest.CslaDataProvider
   public class CustomerContactList : BusinessListBase<CustomerContactList, CustomerContact>
   {
 
-    public Customer MyParent
-    {
-      get { return (Customer)this.Parent; }
-    }
+    public Customer MyParent => (Customer)this.Parent;
 
     private CustomerContactList() { }
 

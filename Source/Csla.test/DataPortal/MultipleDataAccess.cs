@@ -7,21 +7,21 @@
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     public static readonly PropertyInfo<bool?> BooleanValueProperty = RegisterProperty<bool?>(c => c.BooleanValue);
     public bool? BooleanValue
     {
-      get { return GetProperty(BooleanValueProperty); }
-      set { SetProperty(BooleanValueProperty, value); }
+      get => GetProperty(BooleanValueProperty);
+      set => SetProperty(BooleanValueProperty, value);
     }
     public static readonly PropertyInfo<int?> IntValueProperty = RegisterProperty<int?>(c => c.IntValue);
     public int? IntValue
     {
-      get { return GetProperty(IntValueProperty); }
-      set { SetProperty(IntValueProperty, value); }
+      get => GetProperty(IntValueProperty);
+      set => SetProperty(IntValueProperty, value);
     }
 
     [Fetch]

@@ -115,10 +115,7 @@ namespace Csla.Rules
           _results = new List<RuleResult>();
         return _results;
       }
-      private set
-      {
-        _results = value;
-      }
+      private set => _results = value;
     }
 
     private readonly Action<IRuleContext> _completeHandler;
@@ -163,10 +160,7 @@ namespace Csla.Rules
     /// 	<c>true</c> if this instance is cascade context; otherwise, <c>false</c>.
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool IsCascadeContext
-    {
-      get { return (ExecuteContext & RuleContextModes.AsAffectedProperty) > 0; }
-    }
+    public bool IsCascadeContext => (ExecuteContext & RuleContextModes.AsAffectedProperty) > 0;
 
     /// <summary>
     /// Gets a value indicating whether this instance is property changed context.
@@ -175,10 +169,7 @@ namespace Csla.Rules
     /// 	<c>true</c> if this instance is property changed context; otherwise, <c>false</c>.
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool IsPropertyChangedContext
-    {
-      get { return (ExecuteContext & RuleContextModes.PropertyChanged) > 0; }
-    }
+    public bool IsPropertyChangedContext => (ExecuteContext & RuleContextModes.PropertyChanged) > 0;
 
     /// <summary>
     /// Gets a value indicating whether this instance is check rules context.
@@ -187,10 +178,7 @@ namespace Csla.Rules
     /// 	<c>true</c> if this instance is check rules context; otherwise, <c>false</c>.
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool IsCheckRulesContext
-    {
-      get { return (ExecuteContext & RuleContextModes.CheckRules) > 0; }
-    }
+    public bool IsCheckRulesContext => (ExecuteContext & RuleContextModes.CheckRules) > 0;
 
     /// <summary>
     /// Gets a value indicating whether this instance is check object rules context.
@@ -199,10 +187,7 @@ namespace Csla.Rules
     /// 	<c>true</c> if this instance is check object rules context; otherwise, <c>false</c>.
     /// </value>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public bool IsCheckObjectRulesContext
-    {
-      get { return (ExecuteContext & RuleContextModes.CheckObjectRules) > 0; }
-    }
+    public bool IsCheckObjectRulesContext => (ExecuteContext & RuleContextModes.CheckObjectRules) > 0;
 
     internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler)
     {

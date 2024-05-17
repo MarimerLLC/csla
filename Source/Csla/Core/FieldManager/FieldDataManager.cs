@@ -99,10 +99,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether there
     /// are any managed fields available.
     /// </summary>
-    public bool HasFields
-    {
-      get { return _propertyList.Count > 0; }
-    }
+    public bool HasFields => _propertyList.Count > 0;
 
     #region ConsolidatedPropertyList
 
@@ -483,10 +480,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets the current edit level of the object.
     /// </summary>
-    public int EditLevel
-    {
-      get { return _stateStack.Count; }
-    }
+    public int EditLevel => _stateStack.Count;
 
     void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {

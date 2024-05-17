@@ -15,42 +15,39 @@ namespace Csla.Test.ObjectFactory
     internal static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     private static PropertyInfo<Csla.ApplicationContext.ExecutionLocations> LocationProperty = RegisterProperty<Csla.ApplicationContext.ExecutionLocations>(nameof(Location));
     public Csla.ApplicationContext.ExecutionLocations Location
     {
-      get { return GetProperty(LocationProperty); }
-      set { SetProperty(LocationProperty, value); }
+      get => GetProperty(LocationProperty);
+      set => SetProperty(LocationProperty, value);
     }
 
     private static PropertyInfo<TransactionalTypes> TransactionalTypeProperty = RegisterProperty<TransactionalTypes>(nameof(TransactionalType));
     public TransactionalTypes TransactionalType
     {
-      get { return GetProperty(TransactionalTypeProperty); }
-      set { SetProperty(TransactionalTypeProperty, value); }
+      get => GetProperty(TransactionalTypeProperty);
+      set => SetProperty(TransactionalTypeProperty, value);
     }
 
     private static PropertyInfo<string> IsolationLevelProperty = RegisterProperty<string>(nameof(IsolationLevel));
     public string IsolationLevel
     {
-      get { return GetProperty(IsolationLevelProperty); }
-      set { SetProperty(IsolationLevelProperty, value); }
+      get => GetProperty(IsolationLevelProperty);
+      set => SetProperty(IsolationLevelProperty, value);
     }
 
     private static PropertyInfo<int> TransactionTimeoutProperty = RegisterProperty<int>(nameof(TransactionTimeout));
     public int TransactionTimeout
     {
-      get { return GetProperty(TransactionTimeoutProperty); }
-      set { SetProperty(TransactionTimeoutProperty, value); }
+      get => GetProperty(TransactionTimeoutProperty);
+      set => SetProperty(TransactionTimeoutProperty, value);
     }
 
-    public ApplicationContext.ExecutionLocations ExecutionLocation
-    {
-      get { return ApplicationContext.ExecutionLocation; }
-    }
+    public ApplicationContext.ExecutionLocations ExecutionLocation => ApplicationContext.ExecutionLocation;
 
     public void MarkAsNew()
     {

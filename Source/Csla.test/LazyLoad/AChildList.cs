@@ -19,9 +19,6 @@ namespace Csla.Test.LazyLoad
       this.Add(childDataPortal.CreateChild());
     }
 
-    public new int EditLevel
-    {
-      get { return base.EditLevel; }
-    }
+    public new int EditLevel => base.EditLevel;
   }
 }

@@ -99,30 +99,21 @@ namespace Csla.Server.Dashboard
     /// Gets the total number of times the data portal
     /// has been invoked
     /// </summary>
-    public long TotalCalls
-    {
-      get { return Interlocked.Read(ref _totalCalls); }
-    }
+    public long TotalCalls => Interlocked.Read(ref _totalCalls);
 
     private long _completedCalls;
     /// <summary>
     /// Gets the number of times data portal
     /// calls have successfully completed
     /// </summary>
-    public long CompletedCalls
-    {
-      get { return Interlocked.Read(ref _completedCalls); }
-    }
+    public long CompletedCalls => Interlocked.Read(ref _completedCalls);
 
     private long _failedCalls;
     /// <summary>
     /// Gets the number of times data portal
     /// calls have failed
     /// </summary>
-    public long FailedCalls
-    {
-      get { return Interlocked.Read(ref _failedCalls); }
-    }
+    public long FailedCalls => Interlocked.Read(ref _failedCalls);
 
     /// <summary>
     /// Gets the items in the recent activity queue.

@@ -17,7 +17,7 @@ namespace Csla.Test.Fakes.Server.DataPortal
       _implementingProxy = implementingProxy;
     }
 
-    public bool IsServerRemote { get => true; }
+    public bool IsServerRemote => true;
 
     public Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync) 
       => _implementingProxy.Create(objectType, criteria, context, isSync);

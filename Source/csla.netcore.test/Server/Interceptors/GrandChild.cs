@@ -18,8 +18,8 @@ namespace Csla.Test.Server.Interceptors
     [Required]
     public string Data
     {
-      get { return GetProperty(DataProperty); }
-      set { SetProperty(DataProperty, value); }
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
     }
 
     internal static GrandChild NewGrandChild(string data)

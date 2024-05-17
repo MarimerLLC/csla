@@ -14,8 +14,8 @@ namespace Csla.Test.ValidationRules
     public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
     {
-      get { return GetProperty(TestProperty); }
-      set { SetProperty(TestProperty, value); }
+      get => GetProperty(TestProperty);
+      set => SetProperty(TestProperty, value);
     }
 
     protected override void AddBusinessRules()
@@ -27,8 +27,8 @@ namespace Csla.Test.ValidationRules
 
     public int Threshold
     {
-      get { return BusinessRules.ProcessThroughPriority; }
-      set { BusinessRules.ProcessThroughPriority = value; }
+      get => BusinessRules.ProcessThroughPriority;
+      set => BusinessRules.ProcessThroughPriority = value;
     }
 
     public void CheckRules()

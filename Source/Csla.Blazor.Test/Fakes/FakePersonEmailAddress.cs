@@ -13,8 +13,8 @@ namespace Csla.Blazor.Test.Fakes
     [MaxLength(250)]
     public string EmailAddress
     {
-      get { return GetProperty(EmailAddressProperty); }
-      set { SetProperty(EmailAddressProperty, value); }
+      get => GetProperty(EmailAddressProperty);
+      set => SetProperty(EmailAddressProperty, value);
     }
 
     #endregion

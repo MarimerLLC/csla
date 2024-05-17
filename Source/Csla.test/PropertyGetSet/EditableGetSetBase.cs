@@ -22,8 +22,8 @@ namespace Csla.Test.PropertyGetSet
     private static PropertyInfo<string> BaseProperty = RegisterProperty<string>(typeof(EditableGetSetBase<T>), new PropertyInfo<string>("Base", "Base"));
     public string Base
     {
-      get { return GetProperty<string>(BaseProperty); }
-      set { SetProperty<string>(BaseProperty, value); }
+      get => GetProperty<string>(BaseProperty);
+      set => SetProperty<string>(BaseProperty, value);
     }
   }
 
@@ -38,8 +38,8 @@ namespace Csla.Test.PropertyGetSet
     public static PropertyInfo<string> BaseProperty = RegisterProperty<string>(new PropertyInfo<string>("Base", "Base"));
     public string Base
     {
-      get { return GetProperty<string>(BaseProperty); }
-      set { SetProperty<string>(BaseProperty, value); }
+      get => GetProperty<string>(BaseProperty);
+      set => SetProperty<string>(BaseProperty, value);
     }
   }
 }

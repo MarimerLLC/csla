@@ -29,44 +29,20 @@ namespace Csla.Test.Authorization
       return new ReadOnlyPerson();
     }
     private static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(new PropertyInfo<string>("FirstName"));
-    public string FirstName
-    {
-      get
-      {
-        return GetProperty(FirstNameProperty, Csla.Security.NoAccessBehavior.ThrowException);
-      }
-    }
+    public string FirstName => GetProperty(FirstNameProperty, Csla.Security.NoAccessBehavior.ThrowException);
 
-   
+
     private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(new PropertyInfo<string>("LastName"));
 
-    public string LastName
-    {
-      get
-      {
-        return GetProperty(LastNameProperty, Csla.Security.NoAccessBehavior.ThrowException);
-      }
-    }
+    public string LastName => GetProperty(LastNameProperty, Csla.Security.NoAccessBehavior.ThrowException);
 
     private static PropertyInfo<string> MiddleNameProperty = RegisterProperty<string>(new PropertyInfo<string>("MiddleName"));
-    public string MiddleName
-    {
-      get
-      {
-        return GetProperty(MiddleNameProperty, Csla.Security.NoAccessBehavior.ThrowException);
-      }
-    }
+    public string MiddleName => GetProperty(MiddleNameProperty, Csla.Security.NoAccessBehavior.ThrowException);
 
 
     private static PropertyInfo<string> PlaceOfBirthProperty = RegisterProperty<string>(new PropertyInfo<string>("PlaceOfBirth"));
 
-    public string PlaceOfBirth
-    {
-      get
-      {
-        return GetProperty(PlaceOfBirthProperty, Csla.Security.NoAccessBehavior.ThrowException);
-      }
-    }
+    public string PlaceOfBirth => GetProperty(PlaceOfBirthProperty, Csla.Security.NoAccessBehavior.ThrowException);
 
     protected override void AddBusinessRules()
     {

@@ -19,12 +19,6 @@ namespace Csla.Core
       this.message = message + " ";
     }
 
-    public override string Message
-    {
-      get
-      {
-        return Resources.ClientQueryIsInvalid + message;
-      }
-    }
+    public override string Message => Resources.ClientQueryIsInvalid + message;
   }
 }

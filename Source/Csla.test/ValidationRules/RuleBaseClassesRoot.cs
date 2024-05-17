@@ -12,64 +12,64 @@ namespace Csla.Test.ValidationRules
     public static readonly PropertyInfo<int> CustomerIdProperty = RegisterProperty<int>(c => c.CustomerId);
     public int CustomerId
     {
-      get { return GetProperty(CustomerIdProperty); }
-      set { SetProperty(CustomerIdProperty, value); }
+      get => GetProperty(CustomerIdProperty);
+      set => SetProperty(CustomerIdProperty, value);
     }
 
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
     }
 
     public static readonly PropertyInfo<int> Num1Property = RegisterProperty<int>(c => c.Num1);
     public int Num1
     {
-      get { return GetProperty(Num1Property); }
-      set { SetProperty(Num1Property, value); }
+      get => GetProperty(Num1Property);
+      set => SetProperty(Num1Property, value);
     }
 
     public static readonly PropertyInfo<int> Num2Property = RegisterProperty<int>(c => c.Num2);
     public int Num2
     {
-      get { return GetProperty(Num2Property); }
-      set { SetProperty(Num2Property, value); }
+      get => GetProperty(Num2Property);
+      set => SetProperty(Num2Property, value);
     }
 
     public static readonly PropertyInfo<int> SumProperty = RegisterProperty<int>(c => c.Sum);
     public int Sum
     {
-      get { return GetProperty(SumProperty); }
-      set { SetProperty(SumProperty, value); }
+      get => GetProperty(SumProperty);
+      set => SetProperty(SumProperty, value);
     }
 
     public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
     public string Country
     {
-      get { return GetProperty(CountryProperty); }
-      set { SetProperty(CountryProperty, value); }
+      get => GetProperty(CountryProperty);
+      set => SetProperty(CountryProperty, value);
     }
 
     public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(c => c.State);
     public string State
     {
-      get { return GetProperty(StateProperty); }
-      set { SetProperty(StateProperty, value); }
+      get => GetProperty(StateProperty);
+      set => SetProperty(StateProperty, value);
     }
 
     public static readonly PropertyInfo<Csla.SmartDate> StartDateProperty = RegisterProperty<Csla.SmartDate>(c => c.StartDate, null, new Csla.SmartDate());
     public string StartDate
     {
-      get { return GetPropertyConvert<Csla.SmartDate, string>(StartDateProperty); }
-      set { SetPropertyConvert<Csla.SmartDate, string>(StartDateProperty, value); }
+      get => GetPropertyConvert<Csla.SmartDate, string>(StartDateProperty);
+      set => SetPropertyConvert<Csla.SmartDate, string>(StartDateProperty, value);
     }
 
     public static readonly PropertyInfo<Csla.SmartDate> EndDateProperty = RegisterProperty<Csla.SmartDate>(c => c.EndDate, null, new Csla.SmartDate());
     public string EndDate
     {
-      get { return GetPropertyConvert<Csla.SmartDate, string>(EndDateProperty); }
-      set { SetPropertyConvert<Csla.SmartDate, string>(EndDateProperty, value); }
+      get => GetPropertyConvert<Csla.SmartDate, string>(EndDateProperty);
+      set => SetPropertyConvert<Csla.SmartDate, string>(EndDateProperty, value);
     }
 
     #endregion

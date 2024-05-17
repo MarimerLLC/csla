@@ -72,6 +72,30 @@ namespace Csla.Blazor.Test
       Assert.IsNull(vm.ViewModelErrorText);
     }
 
+    [TestMethod]
+    public async Task CheckBusyHelper()
+    {
+      // Arrange
+      IDataPortal<PersonEdit> dataPortal;
+      PersonEdit person;
+
+      // Create an instance of a DataPortal that can be used for instantiating objects
+      dataPortal = _testDIContext.CreateDataPortal<PersonEdit>();
+      person = dataPortal.Create();
+
+      person.Name = "z";
+      
+      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var vm = new ViewModel<PersonEdit>(appCntxt)
+      {
+        Model = person,
+      };
+
+      // Act
+      await vm.SaveAsync();
+      Assert.IsNotNull(vm.ViewModelErrorText);
+    }
+
     #region Helper Methods
 
     FakePerson GetValidFakePerson()

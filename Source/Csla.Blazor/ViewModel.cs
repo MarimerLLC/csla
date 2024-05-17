@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using Csla.Rules;
+using Csla.Core;
 
 namespace Csla.Blazor
 {
@@ -236,15 +237,11 @@ namespace Csla.Blazor
       {
         if (Model is Core.ITrackStatus obj && !obj.IsSavable)
         {
-          if (obj.IsBusy)
+          if (obj is INotifyBusy notifyBusy)
           {
-            var stopTime = DateTime.Now + BusyTimeout;
-            while (obj.IsBusy)
-            {
-              if (DateTime.Now > stopTime)
-                throw new TimeoutException("SaveAsync");
-              await Task.Delay(1);
-            }
+            var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+            var _waitForIdleTimeout = TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds);
+            await BusyHelper.WaitForIdle(notifyBusy, _waitForIdleTimeout, "SaveAsync").ConfigureAwait(false);
           }
           if (!obj.IsValid)
           {

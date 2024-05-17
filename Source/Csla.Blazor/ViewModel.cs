@@ -370,6 +370,7 @@ namespace Csla.Blazor
     /// </summary>
     public bool IsBusy { get; protected set; } = false;
 
+    private const string TextSeparator = " ";
     #endregion
 
     #region GetPropertyInfo
@@ -387,7 +388,7 @@ namespace Csla.Blazor
 
       var keyName = property.GetKey();
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
-      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName, " ");
+      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName, TextSeparator);
     }
 
     /// <summary>
@@ -421,7 +422,7 @@ namespace Csla.Blazor
 
       var keyName = property.GetKey() + $"[{id}]";
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
-      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName, " ");
+      return GetPropertyInfo(keyName, identifier.Model, identifier.FieldName, TextSeparator);
     }
 
     /// <summary>

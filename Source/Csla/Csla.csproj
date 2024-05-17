@@ -12,7 +12,6 @@
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>9.0.0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>

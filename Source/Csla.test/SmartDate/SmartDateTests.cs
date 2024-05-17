@@ -30,20 +30,20 @@ namespace Csla.Test.SmartDate
     {
 
       // store current cultures
-      CurrentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
-      CurrentUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
+      CurrentCulture = Thread.CurrentThread.CurrentCulture;
+      CurrentUICulture = Thread.CurrentThread.CurrentUICulture;
 
       // set to "en-US" for all tests
-      System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
-      System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+      Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+      Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
     }
 
     [TestCleanup]
     public void Cleanup()
     {
       // restore original cultures
-      System.Threading.Thread.CurrentThread.CurrentCulture = CurrentCulture;
-      System.Threading.Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
+      Thread.CurrentThread.CurrentCulture = CurrentCulture;
+      Thread.CurrentThread.CurrentUICulture = CurrentUICulture;
     }
 
     #region Test Constructors
@@ -133,7 +133,7 @@ namespace Csla.Test.SmartDate
       }
       catch (Exception ex)
       {
-        Assert.IsTrue(ex is System.ArgumentException);
+        Assert.IsTrue(ex is ArgumentException);
       }
 
       d = Csla.SmartDate.StringToDate("");
@@ -232,7 +232,7 @@ namespace Csla.Test.SmartDate
       Csla.SmartDate d5 = new Csla.SmartDate(Csla.SmartDate.EmptyValue.MaxDate);
 
       Assert.IsTrue(d2.Equals(d3), "Empty dates should be equal");
-      Assert.IsTrue(Csla.SmartDate.Equals(d2, d3), "Empty dates should be equal (shared)");
+      Assert.IsTrue(Equals(d2, d3), "Empty dates should be equal (shared)");
       Assert.IsTrue(d2.Equals(d3), "Empty dates should be equal (unary)");
       Assert.IsTrue(d2.Equals(""), "Should be equal to an empty string (d2)");
       Assert.IsTrue(d3.Equals(""), "Should be equal to an empty string (d3)");
@@ -291,15 +291,15 @@ namespace Csla.Test.SmartDate
       d3 = new Csla.SmartDate();
       Assert.AreEqual(0, d2.CompareTo(d3), "d2 and d3 should be the same");
       Assert.IsTrue(d2.Equals(d3), "d2 and d3 should be the same");
-      Assert.IsTrue(Csla.SmartDate.Equals(d2, d3), "d2 and d3 should be the same");
+      Assert.IsTrue(Equals(d2, d3), "d2 and d3 should be the same");
 
       d3.Date = DateTime.Now;
       Assert.AreEqual(-1, d2.CompareTo(d3), "d2 and d3 should not be the same");
       Assert.AreEqual(1, d3.CompareTo(d2), "d2 and d3 should not be the same");
       Assert.IsFalse(d2.Equals(d3), "d2 and d3 should not be the same");
-      Assert.IsFalse(Csla.SmartDate.Equals(d2, d3), "d2 and d3 should not be the same");
+      Assert.IsFalse(Equals(d2, d3), "d2 and d3 should not be the same");
       Assert.IsFalse(d3.Equals(d2), "d2 and d3 should not be the same");
-      Assert.IsFalse(Csla.SmartDate.Equals(d3, d2), "d2 and d3 should not be the same");
+      Assert.IsFalse(Equals(d3, d2), "d2 and d3 should not be the same");
     }
 
     [TestMethod]

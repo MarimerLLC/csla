@@ -49,7 +49,7 @@ namespace Csla.Web.Mvc
         ModelObject = (T)savable.Save(forceUpdate);
         return true;
       }
-      catch (Csla.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         if (ex.BusinessException != null)
           modelState.AddModelError("", ex.BusinessException.Message);

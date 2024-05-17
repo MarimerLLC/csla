@@ -51,7 +51,7 @@ namespace Csla.Blazor.Test.Rules
     /// <value></value>
     protected override string GetMessage()
     {
-      return HasMessageDelegate ? base.MessageText : "One of the properties must be provided";
+      return HasMessageDelegate ? MessageText : "One of the properties must be provided";
     }
 
     /// <summary>

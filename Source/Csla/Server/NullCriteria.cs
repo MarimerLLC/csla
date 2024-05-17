@@ -14,7 +14,7 @@ namespace Csla.Server
   /// has a single null criteria parameter.
   /// </summary>
   [Serializable]
-  public sealed class NullCriteria : Csla.Core.MobileObject
+  public sealed class NullCriteria : Core.MobileObject
   {
     private NullCriteria() { }
 

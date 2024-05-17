@@ -16,13 +16,13 @@ namespace Csla.Test.Basic
     {
       TestResults.Add("NameValueListObj", "Fetched");
 
-      this.IsReadOnly = false;
+      IsReadOnly = false;
       for (int i = 0; i < 10; i++)
       {
-        this.Add(new NameValuePair(i, $"element_{i}"));
+        Add(new NameValuePair(i, $"element_{i}"));
       }
 
-      this.IsReadOnly = true;
+      IsReadOnly = true;
     }
   }
 }

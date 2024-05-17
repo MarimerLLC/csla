@@ -112,8 +112,8 @@ namespace Csla.Test.SafeDataReader
       cn.Close();
 
       Assert.AreEqual("BIGINTFIELD", dtSchema.Rows[0][0]);
-      Assert.AreEqual(typeof(System.Int64), dtSchema.Rows[0][12]);
-      Assert.AreEqual(typeof(System.Byte[]), dtSchema.Rows[1][12]);
+      Assert.AreEqual(typeof(Int64), dtSchema.Rows[0][12]);
+      Assert.AreEqual(typeof(byte[]), dtSchema.Rows[1][12]);
     }
 
     [TestMethod]
@@ -152,10 +152,10 @@ namespace Csla.Test.SafeDataReader
       char charfield;
       Csla.SmartDate datetimefield;
       Guid uniqueidentifierfield;
-      System.Int16 smallintfield;
-      System.Int32 intfield;
-      System.Int64 bigintfield;
-      System.String text;
+      Int16 smallintfield;
+      Int32 intfield;
+      Int64 bigintfield;
+      String text;
 
       cn.Open();
       using (cm)

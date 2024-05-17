@@ -50,7 +50,7 @@ namespace Csla.Web.Mvc
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
     protected Task<bool> SaveObjectAsync<T>(T item, bool forceUpdate) 
-      where T : class, Core.ISavable
+      where T : class, ISavable
     {
       return SaveObjectAsync(item, null, forceUpdate);
     }
@@ -66,7 +66,7 @@ namespace Csla.Web.Mvc
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
     protected virtual async Task<bool> SaveObjectAsync<T>(T item, Action<T> updateModel, bool forceUpdate) 
-      where T : class, Core.ISavable
+      where T : class, ISavable
     {
       try
       {

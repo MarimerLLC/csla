@@ -34,7 +34,7 @@ namespace Csla.Serialization.Mobile
       {
         if (_cslaLibAssembly == null)
         {
-          _cslaLibAssembly = typeof(Csla.Serialization.Mobile.NullPlaceholder).AssemblyQualifiedName;
+          _cslaLibAssembly = typeof(NullPlaceholder).AssemblyQualifiedName;
           _cslaLibAssembly = _cslaLibAssembly.Substring(_cslaLibAssembly.IndexOf(", ") + 2);
         }
         return _cslaLibAssembly;

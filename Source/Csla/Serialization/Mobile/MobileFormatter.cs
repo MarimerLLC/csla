@@ -155,8 +155,8 @@ namespace Csla.Serialization.Mobile
           if (thisType.Equals(typeof(Security.CslaClaimsPrincipal)))
           {
             var principal = (Security.CslaClaimsPrincipal)obj;
-            using var buffer = new System.IO.MemoryStream();
-            using var writer = new System.IO.BinaryWriter(buffer);
+            using var buffer = new MemoryStream();
+            using var writer = new BinaryWriter(buffer);
             principal.WriteTo(writer);
             info.AddValue("s", buffer.ToArray());
           }
@@ -186,7 +186,7 @@ namespace Csla.Serialization.Mobile
       Type result;
       if (!_typeCache.TryGetValue(typeName, out result))
       {
-        result = Csla.Reflection.MethodCaller.GetType(typeName);
+        result = MethodCaller.GetType(typeName);
 
         if (result == null)
         {
@@ -335,7 +335,7 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public byte[] SerializeToByteArray(object obj)
     {
-      using var buffer = new System.IO.MemoryStream();
+      using var buffer = new MemoryStream();
       var formatter = new MobileFormatter(_applicationContext);
       formatter.Serialize(buffer, obj);
       return buffer.ToArray();

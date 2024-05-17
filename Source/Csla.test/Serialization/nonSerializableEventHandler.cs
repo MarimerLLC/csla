@@ -12,7 +12,7 @@ namespace Csla.Test.Serialization
   {
     private int _count;
 
-    public void Reg(Csla.Core.BusinessBase obj)
+    public void Reg(Core.BusinessBase obj)
     {
       obj.PropertyChanged += obj_PropertyChanged;
     }

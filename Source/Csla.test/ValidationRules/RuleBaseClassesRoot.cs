@@ -131,7 +131,7 @@ namespace Csla.Test.ValidationRules
   /// <summary>
   /// CalcSum rule will set primary property to the sum of all.
   /// </summary>
-  public class CalcSum : Csla.Rules.PropertyRule
+  public class CalcSum : PropertyRule
   {
     /// <summary>
     /// Initializes a new instance of the <see cref="CalcSum"/> class.
@@ -157,7 +157,7 @@ namespace Csla.Test.ValidationRules
     }
   }
 
-  public class ValidateRootObject : Csla.Rules.ObjectRule
+  public class ValidateRootObject : ObjectRule
   {
     public ValidateRootObject()
       : base()

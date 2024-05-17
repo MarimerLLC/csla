@@ -31,7 +31,7 @@ namespace Csla.Server
     private readonly TimeSpan _waitForIdleTimeout;
     private readonly DataPortalMethodNames _methodNames;
 
-    public DataPortalTarget(object obj, Csla.Configuration.CslaOptions cslaOptions)
+    public DataPortalTarget(object obj, Configuration.CslaOptions cslaOptions)
       : base(obj)
     {
       _target = obj as IDataPortalTarget;
@@ -108,7 +108,7 @@ namespace Csla.Server
 
     public void ThrowIfBusy()
     {
-      if (Instance is Csla.Core.ITrackStatus busy && busy.IsBusy)
+      if (Instance is ITrackStatus busy && busy.IsBusy)
         throw new InvalidOperationException($"{Instance.GetType().Name}.IsBusy == true");
     }
 
@@ -186,7 +186,7 @@ namespace Csla.Server
 
     public async Task UpdateAsync(bool isSync)
     {
-      if (Instance is Core.BusinessBase busObj)
+      if (Instance is BusinessBase busObj)
       {
         if (busObj.IsDeleted)
         {
@@ -225,7 +225,7 @@ namespace Csla.Server
     public async Task UpdateChildAsync(params object[] parameters)
     {
       // tell the business object to update itself
-      if (Instance is Core.BusinessBase busObj)
+      if (Instance is BusinessBase busObj)
       {
         if (busObj.IsDeleted)
         {
@@ -252,7 +252,7 @@ namespace Csla.Server
         }
 
       }
-      else if (Instance is Core.ICommandObject)
+      else if (Instance is ICommandObject)
       {
         // tell the object to update itself
         await CallMethodTryAsyncDI<ExecuteChildAttribute>(false, parameters).ConfigureAwait(false);

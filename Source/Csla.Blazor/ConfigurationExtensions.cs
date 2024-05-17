@@ -51,7 +51,7 @@ namespace Csla.Configuration
       var managerType = Type.GetType(managerTypeName);
       if (managerType is null)
         throw new TypeLoadException(managerTypeName);
-      var contextManagerType = typeof(Core.IContextManager);
+      var contextManagerType = typeof(IContextManager);
       var managers = config.Services.Where(i => i.ServiceType.Equals(contextManagerType)).ToList();
       foreach ( var manager in managers )
         config.Services.Remove(manager);

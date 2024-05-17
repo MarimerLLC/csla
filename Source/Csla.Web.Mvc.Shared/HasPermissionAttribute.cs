@@ -77,7 +77,7 @@ namespace Csla.Web.Mvc
           JsonRequestBehavior = JsonRequestBehavior.AllowGet,
           Data = new
           {
-            ErrorType = this.GetType().Name,
+            ErrorType = GetType().Name,
             Action = filterContext.ActionDescriptor.ActionName,
             Message = _errorMsg
           }

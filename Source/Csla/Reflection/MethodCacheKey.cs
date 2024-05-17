@@ -17,9 +17,9 @@ namespace Csla.Reflection
 
     public MethodCacheKey(string typeName, string methodName, Type[] paramTypes)
     {
-      this.TypeName = typeName;
-      this.MethodName = methodName;
-      this.ParamTypes = paramTypes;
+      TypeName = typeName;
+      MethodName = methodName;
+      ParamTypes = paramTypes;
 
       _hashKey = typeName.GetHashCode();
       _hashKey ^= methodName.GetHashCode();
@@ -32,9 +32,9 @@ namespace Csla.Reflection
     public override bool Equals(object obj)
     {
       if (obj is MethodCacheKey key &&
-          key.TypeName == this.TypeName &&
-          key.MethodName == this.MethodName &&
-          ArrayEquals(key.ParamTypes, this.ParamTypes))
+          key.TypeName == TypeName &&
+          key.MethodName == MethodName &&
+          ArrayEquals(key.ParamTypes, ParamTypes))
         return true;
 
       return false;

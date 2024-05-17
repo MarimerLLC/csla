@@ -12,7 +12,7 @@ namespace Csla.Core
   /// Implements behavior to merge one object graph
   /// into a clone of itself (typically post-serialization).
   /// </summary>
-  public class GraphMerger : Csla.Server.ObjectFactory
+  public class GraphMerger : Server.ObjectFactory
   {
     /// <summary>
     /// Creates an instance of the type.
@@ -58,7 +58,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Csla.Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
+                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
               else
                 LoadProperty(target, item, sourceChild);
             }
@@ -77,7 +77,7 @@ namespace Csla.Core
               else
               {
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                  Csla.Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
+                  Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
                 else
                   LoadProperty(target, item, sourceList);
               }
@@ -85,7 +85,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Csla.Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
+                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
               else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
                 LoadProperty(target, item, sourceValue);
             }
@@ -136,9 +136,9 @@ namespace Csla.Core
       var genericTypeParams = new Type[] { listType, childType };
       System.Reflection.MethodInfo methodReference;
       if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
-        methodReference = this.GetType().GetMethod("MergeBusinessBindingListGraph");
+        methodReference = GetType().GetMethod("MergeBusinessBindingListGraph");
       else
-        methodReference = this.GetType().GetMethod("MergeBusinessListGraph");
+        methodReference = GetType().GetMethod("MergeBusinessListGraph");
       var gr = methodReference.MakeGenericMethod(genericTypeParams);
       gr.Invoke(this, [target, source]);
     }
@@ -150,7 +150,7 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     public void MergeBusinessListGraph<T, C>(T target, T source)
       where T : BusinessListBase<T, C>
-      where C : Core.IEditableBusinessObject
+      where C : IEditableBusinessObject
     {
       var deleted = new List<C>();
       foreach (var item in target)
@@ -180,7 +180,7 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     public void MergeBusinessBindingListGraph<T, C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
-      where C : Core.IEditableBusinessObject
+      where C : IEditableBusinessObject
     {
       var deleted = new List<C>();
       foreach (var item in target)

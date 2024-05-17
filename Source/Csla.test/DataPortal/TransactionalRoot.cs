@@ -83,7 +83,7 @@ namespace Csla.Test.DataPortal
 
       public Criteria(int id)
       {
-        this._id = id;
+        _id = id;
       }
     }
 
@@ -107,7 +107,7 @@ namespace Csla.Test.DataPortal
 
       if (crit._id == 13)
       {
-        throw new System.ApplicationException("DataPortal_Fetch: you chose an unlucky number");
+        throw new ApplicationException("DataPortal_Fetch: you chose an unlucky number");
       }
 
       Console.WriteLine("DataPortal_Fetch");
@@ -121,9 +121,9 @@ namespace Csla.Test.DataPortal
     protected void DataPortal_Insert()
     { 
       SqlConnection cn = new SqlConnection(WellKnownValues.DataPortalTestDatabase);
-      string firstName = this.FirstName;
-      string lastName = this.LastName;
-      string smallColumn = this.SmallColumn;
+      string firstName = FirstName;
+      string lastName = LastName;
+      string smallColumn = SmallColumn;
 
       //this command will always execute successfully
       //since it inserts a string less than 5 characters
@@ -175,7 +175,7 @@ namespace Csla.Test.DataPortal
       Criteria crit = (Criteria)(criteria);
       if (crit._id == 13)
       {
-        throw new System.ApplicationException("DataPortal_Delete: you chose an unlucky number");
+        throw new ApplicationException("DataPortal_Delete: you chose an unlucky number");
       }
 
       Console.WriteLine("DataPortal_Delete");

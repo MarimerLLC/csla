@@ -113,7 +113,7 @@ namespace Csla.Rules
             Severity = result.Severity,
             OriginProperty = originPropertyName,
 
-            Priority = Priority
+            Priority = Priority,
 
             DisplayIndex = resultDisplayIndex
 

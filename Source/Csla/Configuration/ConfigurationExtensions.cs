@@ -59,7 +59,7 @@ namespace Csla.Configuration
       var proxyInit = services.Any(i => i.ServiceType.Equals(typeof(IDataPortalProxy)));
       if (!proxyInit)
       {
-        cslaOptions.DataPortal((options) => options.DataPortalClientOptions.UseLocalProxy());
+        cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
       }
 
       return services;

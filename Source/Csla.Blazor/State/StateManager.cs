@@ -92,7 +92,6 @@ namespace Csla.Blazor.State
     /// at which you know the user is navigating to another
     /// page.
     /// </remarks>
-    /// <param name="timeout">Time to wait before timing out</param>
     public async Task SaveState(TimeSpan timeout)
     {
       var isBrowser = OperatingSystem.IsBrowser();

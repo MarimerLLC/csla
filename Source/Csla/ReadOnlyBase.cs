@@ -17,7 +17,6 @@ using Csla.Core.LoadManager;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Rules;
-using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using System.Collections.Concurrent;

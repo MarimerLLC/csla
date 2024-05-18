@@ -7,8 +7,6 @@
 //-----------------------------------------------------------------------
 
 using System.Net.Http.Json;
-using System.Reflection;
-using System.Threading;
 using Csla.Blazor.Authentication;
 using Csla.Blazor.State.Messages;
 using Csla.Blazor.WebAssembly.Configuration;

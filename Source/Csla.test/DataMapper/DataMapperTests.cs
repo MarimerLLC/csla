@@ -31,7 +31,7 @@ namespace Csla.Test.DataMapper
       var source = new Dictionary<string, object>();
       source.Add("MyInt", 42);
 
-      Csla.Data.DataMapper.Load(source, target, (n) => n);
+      Csla.Data.DataMapper.Load(source, target, n => n);
       Assert.AreEqual(42, target.MyInt, "Int should match");
 
     }

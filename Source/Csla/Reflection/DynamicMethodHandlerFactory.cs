@@ -8,7 +8,9 @@
 //-----------------------------------------------------------------------
 using System.Linq.Expressions;
 using System.Reflection;
+#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
 using System.Reflection.Emit;
+#endif
 using Csla.Properties;
 
 namespace Csla.Reflection

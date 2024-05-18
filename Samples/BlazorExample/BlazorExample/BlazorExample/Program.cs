@@ -19,7 +19,7 @@ builder.Services.AddHttpContextAccessor();
 // Add CSLA
 builder.Services.AddCsla(o => o
   .AddAspNetCore()
-  .AddServerSideBlazor()
+  .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false)
   .Security(so => so.FlowSecurityPrincipalFromClient = true)
   .DataPortal(dpo => dpo
     .AddServerSideDataPortal()

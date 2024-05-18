@@ -39,7 +39,7 @@ namespace Csla.Configuration
       var blazorOptions = new BlazorWebAssemblyConfigurationOptions();
       options?.Invoke(blazorOptions);
 
-      config.Services.AddScoped((_) => blazorOptions);
+      config.Services.AddScoped(_ => blazorOptions);
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
       config.Services.TryAddScoped<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
       config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();

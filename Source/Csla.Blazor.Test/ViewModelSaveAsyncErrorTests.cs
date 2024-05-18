@@ -1,4 +1,5 @@
 ﻿using Csla.Blazor.Test.Fakes;
+using Csla.Core;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -71,6 +72,86 @@ namespace Csla.Blazor.Test
       Assert.IsNull(vm.Exception);
       Assert.IsNull(vm.ViewModelErrorText);
     }
+
+
+    [TestMethod]
+    public async Task SavingWithCancellationToken_Success()
+    {
+      // Arrange
+      var person = GetValidFakePerson();
+      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var vm = new ViewModel<FakePerson>(appCntxt)
+      {
+        Model = person,
+      };
+      var cancellationToken = new CancellationToken();
+
+      // Act
+      await vm.SaveAsync(cancellationToken);
+
+      // Assert
+
+      Assert.IsNull(vm.Exception);
+      Assert.IsNull(vm.ViewModelErrorText);
+    }
+
+    [TestMethod]
+    public async Task SavingWithCancelledCancellationToken_ErrorEventIsInvoked()
+    {
+
+      // Arrange
+      var person = new FakeBusy();
+      person.IsBusy = true;
+      person.IsSavable = false;
+
+      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var vm = new ViewModel<FakeBusy>(appCntxt)
+      {
+        Model = person,
+      };
+
+      var cancellationTokenSource = new CancellationTokenSource();
+      cancellationTokenSource.Cancel();
+      var task = vm.RefreshAsync(async () =>
+        {
+          await Task.Delay(TimeSpan.FromHours(1));
+          return person;
+        });
+      // Act
+      await vm.SaveAsync(cancellationTokenSource.Token);
+
+      // Assert
+      Assert.IsNotNull(vm.Exception);
+      Assert.IsNotNull(vm.ViewModelErrorText);
+    }
+
+
+    private class FakeBusy : Core.ITrackStatus
+    {
+      public bool IsValid { get; set; }
+
+      public bool IsSelfValid { get; set; }
+
+      public bool IsDirty { get; set; }
+
+      public bool IsSelfDirty { get; set; }
+
+      public bool IsDeleted { get; set; }
+
+      public bool IsNew { get; set; }
+
+      public bool IsSavable { get; set; }
+
+      public bool IsChild { get; set; }
+
+      public bool IsBusy { get; set; }
+
+      public bool IsSelfBusy { get; set; }
+
+      public event BusyChangedEventHandler BusyChanged;
+      public event EventHandler<Core.ErrorEventArgs> UnhandledAsyncException;
+    }
+
 
     #region Helper Methods
 

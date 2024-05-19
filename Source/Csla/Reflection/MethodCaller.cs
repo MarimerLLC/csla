@@ -421,9 +421,9 @@ namespace Csla.Reflection
       else
       {
         if (obj == null)
-          throw new ArgumentNullException("obj");
+          throw new ArgumentNullException(nameof(obj));
         if (string.IsNullOrEmpty(property))
-          throw new ArgumentException("Argument is null or empty.", "property");
+          throw new ArgumentException("Argument is null or empty.", nameof(property));
 
         var mh = GetCachedProperty(obj.GetType(), property);
         if (mh.DynamicMemberGet == null)
@@ -449,9 +449,9 @@ namespace Csla.Reflection
     public static void CallPropertySetter(object obj, string property, object value)
     {
       if (obj == null)
-        throw new ArgumentNullException("obj");
+        throw new ArgumentNullException(nameof(obj));
       if (string.IsNullOrEmpty(property))
-        throw new ArgumentException("Argument is null or empty.", "property");
+        throw new ArgumentException("Argument is null or empty.", nameof(property));
 
       if (ApplicationContext.UseReflectionFallback)
       {

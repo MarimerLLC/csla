@@ -461,7 +461,7 @@ namespace Csla.Test.SmartDate
     [TestMethod]
     public void CustomParserReturnsDateTime()
     {
-      Csla.SmartDate.CustomParser = (s) =>
+      Csla.SmartDate.CustomParser = s =>
                                       {
                                         if (s == "test") return DateTime.Now;
                                         return null;

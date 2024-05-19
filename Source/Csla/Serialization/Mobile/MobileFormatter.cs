@@ -262,11 +262,9 @@ namespace Csla.Serialization.Mobile
           {
             var state = info.GetValue<byte[]>("s");
             using var buffer = new MemoryStream(state);
-            using (var reader = new BinaryReader(buffer))
-            {
-              var mobile = new Security.CslaClaimsPrincipal(reader);
-              _deserializationReferences.Add(info.ReferenceId, mobile);
-            }
+            using var reader = new BinaryReader(buffer);
+            var mobile = new Security.CslaClaimsPrincipal(reader);
+            _deserializationReferences.Add(info.ReferenceId, mobile);
           }
           else
           {

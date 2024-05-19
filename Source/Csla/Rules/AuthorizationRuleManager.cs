@@ -40,12 +40,12 @@ namespace Csla.Rules
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
-          (_) => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
+          _ => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
         );
 
       var result = rulesInfo.Item2;
 #else
-      var result = _perTypeRules.Value.GetOrAdd(key, (_) => { return new AuthorizationRuleManager(); });
+      var result = _perTypeRules.Value.GetOrAdd(key, _ => { return new AuthorizationRuleManager(); });
 #endif
 
       InitializePerTypeRules(applicationContext, result, type);

@@ -91,7 +91,7 @@ namespace Csla.Server
         case TransactionIsolationLevel.ReadUncommitted:
           return _applicationContext.CreateInstanceDI<ServicedDataPortalReadUncommitted>();
         default:
-          throw new ArgumentOutOfRangeException("transactionalAttribute");
+          throw new ArgumentOutOfRangeException(nameof(transactionalAttribute));
       }
     }
 #endif

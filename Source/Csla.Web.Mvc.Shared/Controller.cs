@@ -9,8 +9,6 @@
 #if NETSTANDARD2_0  || NET5_0_OR_GREATER || NETCOREAPP3_1
 using Csla.Core;
 using Csla.Rules;
-#else
-using System.Web.Mvc;
 #endif
 
 namespace Csla.Web.Mvc

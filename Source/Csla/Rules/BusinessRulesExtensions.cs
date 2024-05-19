@@ -28,7 +28,7 @@ namespace Csla.Rules
     public static void AddRule<T>(this BusinessRules businessRules, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity) 
       where T: BusinessBase
     {
-      var rule = new CommonRules.Lambda(primaryProperty, (o) =>
+      var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
         var target = (T) o.Target;
         using (target.BypassPropertyChecks)
@@ -71,7 +71,7 @@ namespace Csla.Rules
     public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity)
       where T : BusinessBase
     {
-      var rule = new CommonRules.Lambda(primaryProperty, (o) =>
+      var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
         var target = (T)o.Target;
         using (target.BypassPropertyChecks)
@@ -143,7 +143,7 @@ namespace Csla.Rules
     public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate, RuleSeverity severity)
       where T : BusinessBase
     {
-      var rule = new CommonRules.Lambda(primaryProperty, (o) =>
+      var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
         var target = (T)o.Target;
         using (target.BypassPropertyChecks)

@@ -19,6 +19,7 @@ using Csla.Reflection;
 using Csla.Rules;
 using Csla.Serialization.Mobile;
 using Csla.Server;
+using Csla.Security;
 using System.Collections.Concurrent;
 
 namespace Csla

@@ -54,14 +54,14 @@ namespace Csla.Rules
     /// </summary>
     /// <returns>bool, true by default to allow cache result.</returns>
     public bool CacheResult
+    {
+      get { return _cacheResult; }
+      protected set
       {
-          get { return _cacheResult; }
-          protected set
-          {
-            CanWriteProperty("CacheResult");
-            _cacheResult = value;
-          }
+        CanWriteProperty("CacheResult");
+        _cacheResult = value;
       }
+    }
 
     /// <summary>
     /// Gets the name of the element (property/method)
@@ -105,7 +105,7 @@ namespace Csla.Rules
       Execute(context);
     }
 
-    Csla.Core.IMemberInfo IAuthorizationRule.Element
+    Csla.Core.IMemberInfo IAuthorizationRuleBase.Element
     {
       get { return Element; }
     }
@@ -114,7 +114,7 @@ namespace Csla.Rules
     /// Gets the authorization action this rule
     /// will enforce.
     /// </summary>
-    AuthorizationActions IAuthorizationRule.Action
+    AuthorizationActions IAuthorizationRuleBase.Action
     {
       get { return Action; }
     }

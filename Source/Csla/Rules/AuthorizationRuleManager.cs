@@ -159,7 +159,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the list of rule objects for the business type.
     /// </summary>
-    public List<IAuthorizationRule> Rules { get; private set; }
+    public List<IAuthorizationRuleBase> Rules { get; private set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the rules have been
@@ -174,7 +174,7 @@ namespace Csla.Rules
 
     private AuthorizationRuleManager()
     {
-      Rules = new List<IAuthorizationRule>();
+      Rules = new List<IAuthorizationRuleBase>();
     }
 #if NET5_0_OR_GREATER
 

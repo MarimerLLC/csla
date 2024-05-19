@@ -94,7 +94,7 @@ namespace Csla.Rules
     {
 
       if (string.IsNullOrEmpty(description))
-        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), "description");
+        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), nameof(description));
 
       RuleName = ruleName;
       PrimaryProperty = property;

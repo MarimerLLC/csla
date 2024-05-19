@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Wraps the <see cref="BinaryFormatter"/></summary>
 //-----------------------------------------------------------------------
-using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Csla.Serialization

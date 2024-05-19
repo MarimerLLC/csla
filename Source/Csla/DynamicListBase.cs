@@ -425,9 +425,9 @@ namespace Csla
     }
 
 
-    IParent  Csla.Core.IParent.Parent
+    IParent Csla.Core.IParent.Parent
     {
-      get { return null;  }
+      get { return null; }
     }
 
     #endregion
@@ -473,22 +473,6 @@ namespace Csla
         return false;
       }
     }
-    #endregion
-
-    #region  Serialization Notification
-
-    /// <summary>
-    /// Set parent reference.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      foreach (IEditableBusinessObject child in this)
-        child.SetParent(this);
-
-      base.OnDeserialized();
-    }
-
     #endregion
 
     #region  Data Access

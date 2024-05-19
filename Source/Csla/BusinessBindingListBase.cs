@@ -851,33 +851,6 @@ namespace Csla
 
     #endregion
 
-    #region Serialization Notification
-
-    [NonSerialized]
-    [NotUndoable]
-    private bool _deserialized = false;
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      _deserialized = true;
-      base.OnDeserialized();
-
-      foreach (Core.IEditableBusinessObject child in this)
-      {
-        child.SetParent(this);
-      }
-
-      foreach (Core.IEditableBusinessObject child in DeletedList)
-        child.SetParent(this);
-    }
-
-    #endregion
-
     #region  Child Data Access
 
     /// <summary>
@@ -1351,7 +1324,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (_deserialized && RaiseListChangedEvents && e != null)
+      if (RaiseListChangedEvents && e != null)
       {
         for (int index = 0; index < Count; index++)
         {

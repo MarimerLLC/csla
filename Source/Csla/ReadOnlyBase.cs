@@ -6,6 +6,7 @@
 // <summary>This is a base class from which readonly business classes</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -19,7 +20,6 @@ using Csla.Reflection;
 using Csla.Rules;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-using System.Collections.Concurrent;
 
 namespace Csla
 {
@@ -78,8 +78,8 @@ namespace Csla
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
     protected ApplicationContext ApplicationContext { get; set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext 
-    { 
+    ApplicationContext IUseApplicationContext.ApplicationContext
+    {
       get => ApplicationContext;
       set
       {
@@ -211,7 +211,8 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual bool CanReadProperty(Csla.Core.IPropertyInfo property)
     {
-      if (IsCanReadPropertyAuthorizationCheckDisabled) {
+      if (IsCanReadPropertyAuthorizationCheckDisabled)
+      {
         return true;
       }
 
@@ -374,9 +375,9 @@ namespace Csla
       return result;
     }
 
-#endregion
+    #endregion
 
-#region IClonable
+    #region IClonable
 
     object ICloneable.Clone()
     {
@@ -502,9 +503,9 @@ namespace Csla
     {
     }
 
-#endregion
+    #endregion
 
-#region Serialization Notification
+    #region Serialization Notification
 
     void ISerializationNotification.Deserialized()
     {
@@ -517,24 +518,12 @@ namespace Csla
       if (_fieldManager != null)
         FieldManager.SetPropertyList(this.GetType());
       InitializeBusinessRules();
-      OnDeserialized(context);
     }
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
-    }
 
-#endregion
+    #endregion
 
-#region  Register Properties
+    #region  Register Properties
 
     /// <summary>
     /// Indicates that the specified property belongs
@@ -767,9 +756,9 @@ namespace Csla
       return RegisterMethod(reflectedMethodInfo.Name);
     }
 
-#endregion
+    #endregion
 
-#region  Get Properties
+    #region  Get Properties
 
     /// <summary>
     /// Gets a property's value, first checking authorization.
@@ -812,14 +801,14 @@ namespace Csla
     /// user is not authorized to read this property.</param>
     protected P GetProperty<P>(string propertyName, P field, P defaultValue, Security.NoAccessBehavior noAccess)
     {
-#region Check to see if the property is marked with RelationshipTypes.PrivateField
+      #region Check to see if the property is marked with RelationshipTypes.PrivateField
 
       var propertyInfo = FieldManager.GetRegisteredProperty(propertyName);
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField)
         throw new InvalidOperationException(Resources.PrivateFieldException);
 
-#endregion
+      #endregion
 
       if (CanReadProperty(propertyInfo, noAccess == Csla.Security.NoAccessBehavior.ThrowException))
         return field;
@@ -1106,9 +1095,9 @@ namespace Csla
       return result;
     }
 
-#endregion
+    #endregion
 
-#region  Read Properties
+    #region  Read Properties
 
     /// <summary>
     /// Gets a property's value from the list of 
@@ -1235,9 +1224,9 @@ namespace Csla
       return LazyReadPropertyAsync(propertyInfo, factory);
     }
 
-#endregion
+    #endregion
 
-#region  Load Properties
+    #region  Load Properties
 
     /// <summary>
     /// Loads a property's managed field with the 
@@ -1434,9 +1423,9 @@ namespace Csla
     {
       LoadManager.BeginLoad(new TaskLoader<R>(property, factory));
     }
-#endregion
+    #endregion
 
-#region  Field Manager
+    #region  Field Manager
 
     [NotUndoable]
     private FieldDataManager _fieldManager;
@@ -1579,9 +1568,9 @@ namespace Csla
       _propertyBusy?.Invoke(this, args);
     }
 
-#endregion
+    #endregion
 
-#region IDataPortalTarget Members
+    #region IDataPortalTarget Members
 
     void Csla.Server.IDataPortalTarget.CheckRules()
     { }
@@ -1627,9 +1616,9 @@ namespace Csla
       this.Child_OnDataPortalException(e, ex);
     }
 
-#endregion
+    #endregion
 
-#region IManageProperties Members
+    #region IManageProperties Members
 
     bool IManageProperties.HasManagedProperties
     {
@@ -1686,9 +1675,9 @@ namespace Csla
     {
       return FieldManager.GetChildren();
     }
-#endregion
+    #endregion
 
-#region MobileFormatter
+    #region MobileFormatter
 
     /// <summary>
     /// Override this method to insert your child object
@@ -1732,9 +1721,9 @@ namespace Csla
       base.OnSetChildren(info, formatter);
     }
 
-#endregion
+    #endregion
 
-#region INotifyUnhandledAsyncException Members
+    #region INotifyUnhandledAsyncException Members
 
     [NotUndoable]
     [NonSerialized]
@@ -1772,6 +1761,6 @@ namespace Csla
       OnUnhandledAsyncException(new Csla.Core.ErrorEventArgs(originalSender, error));
     }
 
-#endregion
+    #endregion
   }
 }

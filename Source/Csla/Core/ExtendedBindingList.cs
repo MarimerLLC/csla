@@ -249,32 +249,11 @@ namespace Csla.Core
         child.ChildChanged -= Child_Changed;
     }
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized()
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
-    }
-
     void ISerializationNotification.Deserialized()
     {
       // don't rehook events here, because the MobileFormatter has
       // created new objects and so the lists will auto-subscribe
-      // the events
-      OnDeserialized();
-    }
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
-      foreach (T item in this)
-        OnAddEventHooks(item);
-
-      OnDeserialized();
+      // the events;
     }
 
     [NonSerialized]

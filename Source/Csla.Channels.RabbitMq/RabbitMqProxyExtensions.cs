@@ -22,15 +22,15 @@ namespace Csla.Configuration
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
     public static DataPortalClientOptions UseRabbitMqProxy(
-      this DataPortalClientOptions config, Action<Csla.Channels.RabbitMq.RabbitMqProxyOptions> options)
+      this DataPortalClientOptions config, Action<Channels.RabbitMq.RabbitMqProxyOptions> options)
     {
-      var proxyOptions = new Csla.Channels.RabbitMq.RabbitMqProxyOptions();
+      var proxyOptions = new Channels.RabbitMq.RabbitMqProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient(typeof(IDataPortalProxy),
         sp =>
         {
           var applicationContext = sp.GetRequiredService<ApplicationContext>();
-          return new Csla.Channels.RabbitMq.RabbitMqProxy(applicationContext, proxyOptions);
+          return new Channels.RabbitMq.RabbitMqProxy(applicationContext, proxyOptions);
         });
       return config;
     }

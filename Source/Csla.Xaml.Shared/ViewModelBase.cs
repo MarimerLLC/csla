@@ -37,7 +37,7 @@ namespace Csla.Xaml
     INotifyPropertyChanged, IViewModel
 #endif
   {
-    private ApplicationContext ApplicationContext { get => Csla.Xaml.ApplicationContextManager.GetApplicationContext(); }
+    private ApplicationContext ApplicationContext { get => ApplicationContextManager.GetApplicationContext(); }
 
 #if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI
     private T _model;
@@ -511,10 +511,10 @@ namespace Csla.Xaml
 
       Type sourceType = typeof(T);
 
-      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.CreateObject, sourceType);
-      CanGetObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.GetObject, sourceType);
-      CanEditObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, sourceType);
-      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.DeleteObject, sourceType);
+      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, sourceType);
+      CanGetObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, sourceType);
+      CanEditObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, sourceType);
+      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, sourceType);
 
       // call SetProperties to set "instance" values 
       OnSetProperties();

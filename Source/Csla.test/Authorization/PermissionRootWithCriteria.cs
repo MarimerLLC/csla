@@ -14,13 +14,13 @@ namespace Csla.Test.Authorization
   public class PermissionRootWithCriteria : BusinessBase<PermissionRootWithCriteria>
   {
     public static void AddObjectAuthorizationRules() {
-      Csla.Rules.BusinessRules.AddRule(
+      BusinessRules.AddRule(
         typeof(PermissionRootWithCriteria),
         new AuthRuleExpectsCriteria(AuthorizationActions.CreateObject));
-      Csla.Rules.BusinessRules.AddRule(
+      BusinessRules.AddRule(
         typeof(PermissionRootWithCriteria),
         new AuthRuleExpectsCriteria(AuthorizationActions.GetObject));
-      Csla.Rules.BusinessRules.AddRule(
+      BusinessRules.AddRule(
         typeof(PermissionRootWithCriteria),
         new AuthRuleExpectsCriteria(AuthorizationActions.DeleteObject));
     }

@@ -40,12 +40,12 @@ namespace Csla.Rules
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
-          (_) => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
+          _ => AssemblyLoadContextManager.CreateCacheInstance(type, new AuthorizationRuleManager(), OnAssemblyLoadContextUnload)
         );
 
       var result = rulesInfo.Item2;
 #else
-      var result = _perTypeRules.Value.GetOrAdd(key, (_) => { return new AuthorizationRuleManager(); });
+      var result = _perTypeRules.Value.GetOrAdd(key, _ => { return new AuthorizationRuleManager(); });
 #endif
 
       InitializePerTypeRules(applicationContext, result, type);
@@ -147,12 +147,12 @@ namespace Csla.Rules
         if (obj is not RuleSetKey other)
           return false;
         else
-          return this.Type.Equals(other.Type) && RuleSet == other.RuleSet;
+          return Type.Equals(other.Type) && RuleSet == other.RuleSet;
       }
 
       public override int GetHashCode()
       {
-        return (this.Type.FullName + RuleSet).GetHashCode();
+        return (Type.FullName + RuleSet).GetHashCode();
       }
     }
 

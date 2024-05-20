@@ -9,7 +9,7 @@
 namespace Csla.Test.DataPortalTest
 {
   [Serializable]
-  public abstract class SplitOverloadBase<T> : Csla.BusinessBase<T>
+  public abstract class SplitOverloadBase<T> : BusinessBase<T>
       where T : SplitOverloadBase<T>
   {
     #region Business Methods

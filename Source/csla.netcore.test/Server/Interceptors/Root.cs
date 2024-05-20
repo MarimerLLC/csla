@@ -48,7 +48,7 @@ namespace Csla.Test.Server.Interceptors
 
       public Criteria(string data)
       {
-        this._data = data;
+        _data = data;
       }
     }
 

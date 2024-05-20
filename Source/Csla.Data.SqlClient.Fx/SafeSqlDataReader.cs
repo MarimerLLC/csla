@@ -56,7 +56,7 @@ namespace Csla.Data.SqlClient
     /// <typeparam name="T">Type of value</typeparam>
     /// <param name="ordinal">Ordinal position of value</param>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<T> GetFieldValueAsync<T>(int ordinal, System.Threading.CancellationToken cancellationToken)
+    public Task<T> GetFieldValueAsync<T>(int ordinal, CancellationToken cancellationToken)
     {
       if (SqlDataReader == null)
         throw new NotSupportedException("GetFieldValueAsync");
@@ -81,7 +81,7 @@ namespace Csla.Data.SqlClient
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> IsDbNullAsync(int ordinal, System.Threading.CancellationToken cancellationToken)
+    public Task<bool> IsDbNullAsync(int ordinal, CancellationToken cancellationToken)
     {
       if (SqlDataReader == null)
         throw new NotSupportedException("IsDbNullAsync");
@@ -102,7 +102,7 @@ namespace Csla.Data.SqlClient
     /// Advances the reader to the next result.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> NextResultAsync(System.Threading.CancellationToken cancellationToken)
+    public Task<bool> NextResultAsync(CancellationToken cancellationToken)
     {
       if (SqlDataReader == null)
         throw new NotSupportedException("NextResultAsync");
@@ -123,7 +123,7 @@ namespace Csla.Data.SqlClient
     /// Advances to the next record in a recordset.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> ReadAsync(System.Threading.CancellationToken cancellationToken)
+    public Task<bool> ReadAsync(CancellationToken cancellationToken)
     {
       if (SqlDataReader == null)
         throw new NotSupportedException("NextResultAsync");

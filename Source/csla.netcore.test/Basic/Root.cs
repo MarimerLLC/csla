@@ -44,7 +44,7 @@ namespace Csla.Test.Basic
 
       public Criteria(string data)
       {
-        this._data = data;
+        _data = data;
       }
     }
 

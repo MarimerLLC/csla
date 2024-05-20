@@ -22,11 +22,11 @@ namespace Csla.Reflection
     {
       if (info == null)
       {
-        this.DynamicMethod = null;
+        DynamicMethod = null;
       }
       else
       {
-        this.MethodName = info.Name;
+        MethodName = info.Name;
         var infoParams = info.GetParameters();
         object[] inParams = null;
         if (parameters == null)
@@ -44,13 +44,13 @@ namespace Csla.Reflection
            ((pCount == 1 && infoParams[0].ParameterType.IsArray) ||
            (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)))
         {
-          this.HasFinalArrayParam = true;
-          this.MethodParamsLength = pCount;
-          this.FinalArrayElementType = infoParams[pCount - 1].ParameterType;
+          HasFinalArrayParam = true;
+          MethodParamsLength = pCount;
+          FinalArrayElementType = infoParams[pCount - 1].ParameterType;
         }
-        IsAsyncTask = (info.ReturnType == typeof(System.Threading.Tasks.Task));
-        IsAsyncTaskObject = (isgeneric && (info.ReturnType.GetGenericTypeDefinition() == typeof(System.Threading.Tasks.Task<>)));
-        this.DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(info);
+        IsAsyncTask = (info.ReturnType == typeof(Task));
+        IsAsyncTaskObject = (isgeneric && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+        DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(info);
       }
     }
   }

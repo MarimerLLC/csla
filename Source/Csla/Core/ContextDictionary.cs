@@ -25,7 +25,7 @@ namespace Csla.Core
     /// <param name="key">Key of value to get from dictionary.</param>
     public object GetValueOrNull(string key)
     {
-      if (this.Contains(key))
+      if (Contains(key))
         return this[key];
       return null;
     }
@@ -34,7 +34,7 @@ namespace Csla.Core
 
     void IMobileObject.GetState(SerializationInfo info)
     {
-      foreach (string key in this.Keys)
+      foreach (string key in Keys)
       {
         object value = this[key];
         if (value is not IMobileObject)
@@ -44,7 +44,7 @@ namespace Csla.Core
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      foreach (string key in this.Keys)
+      foreach (string key in Keys)
       {
         object value = this[key];
         if (value is IMobileObject mobile)
@@ -68,7 +68,7 @@ namespace Csla.Core
       foreach (var item in info.Children)
       {
         var referenceId = item.Value.ReferenceId;
-        this.Add(item.Key, formatter.GetObject(referenceId));
+        Add(item.Key, formatter.GetObject(referenceId));
       }
     }
 

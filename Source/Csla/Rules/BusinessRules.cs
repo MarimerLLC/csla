@@ -309,7 +309,7 @@ namespace Csla.Rules
     /// property has any async rules running.
     /// </summary>
     /// <param name="property">Property to check.</param>
-    public bool GetPropertyBusy(Csla.Core.IPropertyInfo property)
+    public bool GetPropertyBusy(IPropertyInfo property)
     {
       return BusyProperties.Contains(property);
     }
@@ -405,7 +405,7 @@ namespace Csla.Rules
     /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="element">Property or method to check.</param>
-    public bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Csla.Core.IMemberInfo element)
+    public bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, IMemberInfo element)
     {
       if (_suppressRuleChecking)
         return true;
@@ -421,7 +421,7 @@ namespace Csla.Rules
         TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+        var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
         rule.Execute(context);
         result = context.HasPermission;
       }
@@ -604,7 +604,7 @@ namespace Csla.Rules
       // rerun property level rules for affected properties 
       if (cascade)
       {
-        var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
+        var propertiesToRun = new List<IPropertyInfo>();
         foreach (var item in rules)
           if (!item.IsAsync)
           {
@@ -638,12 +638,12 @@ namespace Csla.Rules
     /// property.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">If property is null</exception>
-    public List<string> CheckRules(Csla.Core.IPropertyInfo property)
+    public List<string> CheckRules(IPropertyInfo property)
     {
       return CheckRules(property, RuleContextModes.PropertyChanged);
     }
 
-    private  List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
+    private  List<string> CheckRules(IPropertyInfo property, RuleContextModes executionContext)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
@@ -697,7 +697,7 @@ namespace Csla.Rules
     /// <param name="property">The property.</param>
     /// <param name="cascade">if set to <c>true</c> [cascade].</param>
     /// <param name="executionMode">The execute mode.</param>
-    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleContextModes executionMode)
+    private List<string> CheckRulesForProperty(IPropertyInfo property, bool cascade, RuleContextModes executionMode)
     {
       // checking rules for the primary property
       var primaryRules = from r in TypeRules.Rules
@@ -713,7 +713,7 @@ namespace Csla.Rules
       if (cascade)
       {
         // get properties affected by all rules
-        var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
+        var propertiesToRun = new List<IPropertyInfo>();
         foreach (var item in primaryRules)
           if (!item.IsAsync)
           {
@@ -758,16 +758,16 @@ namespace Csla.Rules
     }
 
     [NonSerialized]
-    private List<Csla.Core.IPropertyInfo> _busyProperties;
+    private List<IPropertyInfo> _busyProperties;
 
     private bool _cascadeOnDirtyProperties;
 
-    private List<Csla.Core.IPropertyInfo> BusyProperties
+    private List<IPropertyInfo> BusyProperties
     {
       get
       {
         if (_busyProperties == null)
-          _busyProperties = new List<Csla.Core.IPropertyInfo>();
+          _busyProperties = new List<IPropertyInfo>();
         return _busyProperties;
       }
     }
@@ -790,7 +790,7 @@ namespace Csla.Rules
           break;
         bool complete = false;
         // set up context
-        var context = new RuleContext(_applicationContext, (r) =>
+        var context = new RuleContext(_applicationContext, r =>
         {
           if (r.Rule.IsAsync)
           {
@@ -1140,7 +1140,7 @@ namespace Csla.Rules
     private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object parentKey, object obj, bool errorsOnly, ref long childBrokenRuleCount)
     {
       // is this a single editable object 
-      if (obj is Csla.Core.BusinessBase bbase)
+      if (obj is BusinessBase bbase)
       {
         var nodeKey = counter++;
         var bo = bbase;

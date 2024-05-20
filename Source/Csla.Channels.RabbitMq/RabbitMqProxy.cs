@@ -218,7 +218,7 @@ namespace Csla.Channels.RabbitMq
     protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
     {
       var correlationId = Guid.NewGuid().ToString();
-      var resetEvent = new Csla.Threading.AsyncManualResetEvent();
+      var resetEvent = new Threading.AsyncManualResetEvent();
       var wip = Wip.WorkInProgress.GetOrAdd(correlationId, new WipItem { ResetEvent = resetEvent });
 
       SendMessage(QueueListener.ReplyQueue.QueueName, correlationId, operation, serialized);

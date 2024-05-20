@@ -30,7 +30,7 @@ namespace Csla.Serialization.Mobile
     public List<SerializationInfo> Read(Stream serializationStream)
     {
       var returnValue = new List<SerializationInfo>();
-      this.keywordsDictionary.Clear();
+      keywordsDictionary.Clear();
 
       using var reader = new BinaryReader(serializationStream);
       var totalCount = reader.ReadInt32();
@@ -69,7 +69,7 @@ namespace Csla.Serialization.Mobile
     }
 
     private string ReadString(BinaryReader reader) =>
-      this.ReadString(reader, (CslaKnownTypes)reader.ReadByte());
+      ReadString(reader, (CslaKnownTypes)reader.ReadByte());
 
     private string ReadString(BinaryReader reader, CslaKnownTypes knownType)
     {
@@ -79,10 +79,10 @@ namespace Csla.Serialization.Mobile
           return reader.ReadString();
         case CslaKnownTypes.StringWithDictionaryKey:
           var systemString = reader.ReadString();
-          this.keywordsDictionary.Add(reader.ReadInt32(), systemString);
+          keywordsDictionary.Add(reader.ReadInt32(), systemString);
           return systemString;
         case CslaKnownTypes.StringDictionaryKey:
-          return this.keywordsDictionary[reader.ReadInt32()];
+          return keywordsDictionary[reader.ReadInt32()];
         default:
           throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
       }

@@ -421,9 +421,9 @@ namespace Csla.Reflection
       else
       {
         if (obj == null)
-          throw new ArgumentNullException("obj");
+          throw new ArgumentNullException(nameof(obj));
         if (string.IsNullOrEmpty(property))
-          throw new ArgumentException("Argument is null or empty.", "property");
+          throw new ArgumentException("Argument is null or empty.", nameof(property));
 
         var mh = GetCachedProperty(obj.GetType(), property);
         if (mh.DynamicMemberGet == null)
@@ -449,9 +449,9 @@ namespace Csla.Reflection
     public static void CallPropertySetter(object obj, string property, object value)
     {
       if (obj == null)
-        throw new ArgumentNullException("obj");
+        throw new ArgumentNullException(nameof(obj));
       if (string.IsNullOrEmpty(property))
-        throw new ArgumentException("Argument is null or empty.", "property");
+        throw new ArgumentException("Argument is null or empty.", nameof(property));
 
       if (ApplicationContext.UseReflectionFallback)
       {
@@ -727,7 +727,7 @@ namespace Csla.Reflection
 
     private static object[] GetExtrasArray(int count, Type arrayType)
     {
-      return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
+      return (object[])(Array.CreateInstance(arrayType.GetElementType(), count));
     }
 #endregion
 
@@ -1245,7 +1245,7 @@ namespace Csla.Reflection
         }
         else
         {
-          var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+          var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, null);
           var gr = methodReference.MakeGenericMethod(typeParams);
           task = (Task)gr.Invoke(null, null);
         }
@@ -1253,7 +1253,7 @@ namespace Csla.Reflection
         if (task.Exception != null)
           tcs.SetException(task.Exception);
         else
-          tcs.SetResult(Csla.Reflection.MethodCaller.CallPropertyGetter(task, "Result"));
+          tcs.SetResult(CallPropertyGetter(task, "Result"));
       }
       catch (Exception ex)
       {
@@ -1287,7 +1287,7 @@ namespace Csla.Reflection
       }
       else
       {
-        var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+        var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, null);
         if (methodReference == null)
           throw new InvalidOperationException(objectType.Name + "." + method);
         var gr = methodReference.MakeGenericMethod(typeParams);
@@ -1308,7 +1308,7 @@ namespace Csla.Reflection
       object returnValue;
       System.Reflection.MethodInfo factory = objectType.GetMethod(
            method, factoryFlags, null,
-           MethodCaller.GetParameterTypes(parameters), null);
+           GetParameterTypes(parameters), null);
 
       if (factory == null)
       {

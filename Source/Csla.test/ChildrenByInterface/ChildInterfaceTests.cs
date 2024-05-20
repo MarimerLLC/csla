@@ -28,10 +28,10 @@ namespace Csla.Test.ChildrenByInterface
     }
   }
 
-  public interface IItem : Csla.Core.IEditableBusinessObject;
+  public interface IItem : Core.IEditableBusinessObject;
 
   [Serializable]
-  public class Item1 : Csla.BusinessBase<Item1>, IItem
+  public class Item1 : BusinessBase<Item1>, IItem
   {
     public Item1()
     {
@@ -45,7 +45,7 @@ namespace Csla.Test.ChildrenByInterface
   }
 
   [Serializable]
-  public class Item2 : Csla.BusinessBase<Item2>, IItem
+  public class Item2 : BusinessBase<Item2>, IItem
   {
     public Item2()
     {
@@ -59,5 +59,5 @@ namespace Csla.Test.ChildrenByInterface
   }
 
   [Serializable]
-  public class ItemList : Csla.BusinessBindingListBase<ItemList, IItem>;
+  public class ItemList : BusinessBindingListBase<ItemList, IItem>;
 }

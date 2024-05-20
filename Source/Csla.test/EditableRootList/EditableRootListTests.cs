@@ -85,12 +85,12 @@ namespace Csla.Test.EditableRootList
     private bool _itemIsNew;
     private bool _isListSaved;
 
-    void item_Saved(object sender, Csla.Core.SavedEventArgs e)
+    void item_Saved(object sender, Core.SavedEventArgs e)
     {
       _itemIsNew = ((ERitem)e.NewObject).IsNew;
     }
 
-    void List_Saved(object sender, Csla.Core.SavedEventArgs e)
+    void List_Saved(object sender, Core.SavedEventArgs e)
     {
       _isListSaved = (e.Error==null && e.NewObject != null);
     }

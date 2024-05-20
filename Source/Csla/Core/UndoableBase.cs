@@ -19,8 +19,8 @@ namespace Csla.Core
   /// described in Chapters 2 and 3.
   /// </summary>
   [Serializable]
-  public abstract class UndoableBase : Csla.Core.BindableBase,
-    Csla.Core.IUndoableObject, IUseApplicationContext
+  public abstract class UndoableBase : BindableBase,
+    IUndoableObject, IUseApplicationContext
   {
     // keep a stack of object state values.
     [NotUndoable]
@@ -137,11 +137,11 @@ namespace Csla.Core
     {
       CopyingState();
 
-      Type currentType = this.GetType();
+      Type currentType = GetType();
       var state = new MobileDictionary<string, object>();
 
-      if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, null, this.EditLevel, parentEditLevel - 1);
+      if (EditLevel + 1 > parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), GetType().Name, null, EditLevel, parentEditLevel - 1);
 
       do
       {
@@ -164,7 +164,7 @@ namespace Csla.Core
             else
             {
               // this is a child object, cascade the call
-              ((IUndoableObject)value).CopyState(this.EditLevel + 1, BindingEdit);
+              ((IUndoableObject)value).CopyState(EditLevel + 1, BindingEdit);
             }
           }
           else if (value is IMobileObject)
@@ -233,8 +233,8 @@ namespace Csla.Core
       // so just do nothing in that case
       if (EditLevel > 0)
       {
-        if (this.EditLevel - 1 != parentEditLevel)
-          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
+        if (EditLevel - 1 != parentEditLevel)
+          throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), GetType().Name, null, EditLevel, parentEditLevel + 1);
 
         MobileDictionary<string, object> state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
@@ -244,7 +244,7 @@ namespace Csla.Core
           state = (MobileDictionary<string, object>)formatter.Deserialize(buffer);
         }
 
-        Type currentType = this.GetType();
+        Type currentType = GetType();
 
         do
         {
@@ -272,7 +272,7 @@ namespace Csla.Core
               {
                 // make sure the variable has a value
                 // this is a child object, cascade the call.
-                ((IUndoableObject) value)?.UndoChanges(this.EditLevel, BindingEdit);
+                ((IUndoableObject) value)?.UndoChanges(EditLevel, BindingEdit);
               }
             }
             else if (value is IMobileObject && state[fieldName] != null)
@@ -329,13 +329,13 @@ namespace Csla.Core
     {
       AcceptingChanges();
 
-      if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, null, this.EditLevel, parentEditLevel + 1);
+      if (EditLevel - 1 != parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), GetType().Name, null, EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {
         _stateStack.Pop();
-        Type currentType = this.GetType();
+        Type currentType = GetType();
 
         do
         {
@@ -344,12 +344,12 @@ namespace Csla.Core
           foreach (var h in handlers)
           {
             // the field is undoable so see if it is a child object
-            if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(h.MemberType))
+            if (typeof(IUndoableObject).IsAssignableFrom(h.MemberType))
             {
               object value = h.DynamicMemberGet(this);
               // make sure the variable has a value
               // it is a child object so cascade the call
-              ((IUndoableObject) value)?.AcceptChanges(this.EditLevel, BindingEdit);
+              ((IUndoableObject) value)?.AcceptChanges(EditLevel, BindingEdit);
             }
           }
 

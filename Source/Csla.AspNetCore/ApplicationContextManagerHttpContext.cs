@@ -103,7 +103,7 @@ namespace Csla.AspNetCore
       var result = HttpContext?.User;
       if (result == null)
       {
-        result = new Csla.Security.CslaClaimsPrincipal();
+        result = new Security.CslaClaimsPrincipal();
         SetUser(result);
       }
       return result;

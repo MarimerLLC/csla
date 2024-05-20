@@ -88,7 +88,7 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.DataPortalEventArgs args)
+    public void Invoke(DataPortalEventArgs args)
     {
       _transactionalType = args.DataPortalContext.TransactionalType;
     }
@@ -117,7 +117,7 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.DataPortalEventArgs args)
+    public void Invoke(DataPortalEventArgs args)
     {
       _transactionalType = args.DataPortalContext.TransactionalType;
     }
@@ -129,7 +129,7 @@ namespace Csla.Test.ObjectFactory
     {
       var obj = ApplicationContext.CreateInstanceDI<Root>();
       LoadProperty(obj, Root.DataProperty, "Fetch");
-      this.MarkOld(obj);
+      MarkOld(obj);
       return obj;
     }
     
@@ -147,7 +147,7 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.DataPortalEventArgs args)
+    public void Invoke(DataPortalEventArgs args)
     {
       _transactionalType = args.DataPortalContext.TransactionalType;
     }
@@ -163,7 +163,7 @@ namespace Csla.Test.ObjectFactory
     {
       var obj = ApplicationContext.CreateInstanceDI<Root>();
       LoadProperty(obj, Root.DataProperty, "Fetch");
-      this.MarkOld(obj);
+      MarkOld(obj);
       return obj;
     }
   }
@@ -196,7 +196,7 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.DataPortalEventArgs args)
+    public void Invoke(DataPortalEventArgs args)
     {
       _transactionalType = args.DataPortalContext.TransactionalType;
     }
@@ -230,7 +230,7 @@ namespace Csla.Test.ObjectFactory
 
     private TransactionalTypes _transactionalType;
 
-    public void Invoke(Csla.DataPortalEventArgs args)
+    public void Invoke(DataPortalEventArgs args)
     {
       _transactionalType = args.DataPortalContext.TransactionalType;
     }

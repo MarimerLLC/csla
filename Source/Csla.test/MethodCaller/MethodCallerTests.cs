@@ -31,7 +31,7 @@ namespace Csla.Test.MethodCaller
       }
       catch (Exception ex)
       {
-        Assert.IsInstanceOfType(ex, typeof(Csla.Reflection.CallMethodException), "Should be a CallMethodException");
+        Assert.IsInstanceOfType(ex, typeof(CallMethodException), "Should be a CallMethodException");
       }
     }
 
@@ -44,7 +44,7 @@ namespace Csla.Test.MethodCaller
       }
       catch (Exception ex)
       {
-        Assert.IsInstanceOfType(ex, typeof(Csla.Reflection.CallMethodException), "Should be a CallMethodException");
+        Assert.IsInstanceOfType(ex, typeof(CallMethodException), "Should be a CallMethodException");
         Assert.IsInstanceOfType(ex.InnerException, typeof(MemberAccessException), "Inner should be a MemberAccessException");
         Assert.IsInstanceOfType(ex.InnerException.InnerException, typeof(NotSupportedException), "Inner inner should be a NotSupportedException");
       }
@@ -120,7 +120,7 @@ namespace Csla.Test.MethodCaller
       start = DateTime.Now;
       for (int x = 0; x < times; x++)
       {
-        var doSuccess = this.GetType().GetMethod("DoSuccess", BindingFlags.Instance | BindingFlags.Public);
+        var doSuccess = GetType().GetMethod("DoSuccess", BindingFlags.Instance | BindingFlags.Public);
         doSuccess.Invoke(this, null);
       }
       end = DateTime.Now;
@@ -136,7 +136,7 @@ namespace Csla.Test.MethodCaller
     public void CallWithInvalidParameterTypeFails()
     {
       MemoryStream ms = new MemoryStream();
-      var t = this.GetType();
+      var t = GetType();
       var foo = t.GetMethod("foo");
       Csla.Reflection.MethodCaller.CallMethod(this, foo, "This should be a MemoryStream object not a string...");
     }
@@ -145,7 +145,7 @@ namespace Csla.Test.MethodCaller
     public void CallWithValidParameterTypeSucceeds()
     {
       MemoryStream ms = new MemoryStream();
-      var t = this.GetType();
+      var t = GetType();
       var foo = t.GetMethod("foo");
       Csla.Reflection.MethodCaller.CallMethod(this, foo, ms);
     }

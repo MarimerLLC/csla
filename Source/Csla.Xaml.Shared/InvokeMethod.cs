@@ -198,16 +198,16 @@ namespace Csla.Xaml
             {
               var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
                 this,
-                this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
               eventRef.AddEventHandler(ctrl, del);
             }
             else
             {
-              throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+              throw new NotSupportedException(Properties.Resources.ExecuteBadTriggerEvent);
             }
           }
           else
-            throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+            throw new NotSupportedException(Properties.Resources.ExecuteBadTriggerEvent);
         }
       }
     }
@@ -238,7 +238,7 @@ namespace Csla.Xaml
               }
             ]);
         else
-          throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
+          throw new NotSupportedException(Properties.Resources.ExecuteBadParams);
       }
       catch (System.Reflection.TargetInvocationException ex)
       {

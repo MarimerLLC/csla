@@ -49,7 +49,7 @@ namespace Csla.Test.ValidationRules
     {
       base.Initialize();
       ChildList.ListChanged += ChildList_ListChanged;
-      this.ChildChanged += HasChildren_ChildChanged;
+      ChildChanged += HasChildren_ChildChanged;
     }
 
     void ChildList_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)

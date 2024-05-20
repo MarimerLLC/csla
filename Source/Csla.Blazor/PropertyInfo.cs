@@ -50,7 +50,7 @@ namespace Csla.Blazor
     /// </summary>
     public void Refresh()
     {
-      foreach (var item in this.GetType().GetProperties())
+      foreach (var item in GetType().GetProperties())
         OnPropertyChanged(item.Name);
     }
 
@@ -59,8 +59,8 @@ namespace Csla.Blazor
     /// </summary>
     public object Value
     {
-      get => Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
-      set => Csla.Utilities.CallByName(Model, PropertyName, CallType.Set, value);
+      get => Utilities.CallByName(Model, PropertyName, CallType.Get);
+      set => Utilities.CallByName(Model, PropertyName, CallType.Set, value);
     }
 
     /// <summary>

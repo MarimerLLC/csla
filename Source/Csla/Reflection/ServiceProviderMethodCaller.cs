@@ -88,10 +88,10 @@ namespace Csla.Reflection
       }
 
       var candidates = new List<ScoredMethodInfo>();
-      var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
+      var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
       {
-        var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
+        var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(IObjectFactoryLoader)) as IObjectFactoryLoader;
         var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
         var ftList = new List<System.Reflection.MethodInfo>();
         var level = 0;

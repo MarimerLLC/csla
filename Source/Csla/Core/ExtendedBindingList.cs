@@ -39,19 +39,19 @@ namespace Csla.Core
       {
         if (value.Method.IsPublic)
           _serializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            System.Delegate.Combine(_serializableHandlers, value);
+            Delegate.Combine(_serializableHandlers, value);
         else
           _nonSerializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            System.Delegate.Combine(_nonSerializableHandlers, value);
+            Delegate.Combine(_nonSerializableHandlers, value);
       }
       remove
       {
         if (value.Method.IsPublic)
           _serializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            System.Delegate.Remove(_serializableHandlers, value);
+            Delegate.Remove(_serializableHandlers, value);
         else
           _nonSerializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            System.Delegate.Remove(_nonSerializableHandlers, value);
+            Delegate.Remove(_nonSerializableHandlers, value);
       }
     }
 
@@ -90,10 +90,10 @@ namespace Csla.Core
     /// Add a range of items to the list.
     /// </summary>
     /// <param name="range">List of items to add.</param>
-    public void AddRange(System.Collections.Generic.IEnumerable<T> range)
+    public void AddRange(IEnumerable<T> range)
     {
       foreach (var element in range)
-        this.Add(element);
+        Add(element);
     }
 
     [NotUndoable]
@@ -279,22 +279,22 @@ namespace Csla.Core
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<Csla.Core.ChildChangedEventArgs> _childChangedHandlers;
+    private EventHandler<ChildChangedEventArgs> _childChangedHandlers;
 
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    public event EventHandler<Csla.Core.ChildChangedEventArgs> ChildChanged
+    public event EventHandler<ChildChangedEventArgs> ChildChanged
     {
       add
       {
-        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
-          System.Delegate.Combine(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
+          Delegate.Combine(_childChangedHandlers, value);
       }
       remove
       {
-        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
-          System.Delegate.Remove(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
+          Delegate.Remove(_childChangedHandlers, value);
       }
     }
 
@@ -399,7 +399,7 @@ namespace Csla.Core
 
       public SuppressListChangedEventsClass(BindingList<TC> businessObject)
       {
-        this._businessObject = businessObject;
+        _businessObject = businessObject;
         _initialRaiseListChangedEvents = businessObject.RaiseListChangedEvents;
         businessObject.RaiseListChangedEvents = false;
       }

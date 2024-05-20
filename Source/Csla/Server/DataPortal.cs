@@ -131,10 +131,10 @@ namespace Csla.Server
         DataPortalMethodInfo method;
 
         Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
-        if (criteria is Server.EmptyCriteria)
+        if (criteria is EmptyCriteria)
           serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
         else
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, GetCriteriaArray(criteria));
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
 
@@ -170,7 +170,7 @@ namespace Csla.Server
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Create, IsSync = isSync });
         return result;
       }
-      catch (Csla.Server.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Create, IsSync = isSync });
         throw;
@@ -182,7 +182,7 @@ namespace Csla.Server
           error = ex.InnerExceptions[0].InnerException;
         else
           error = ex;
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Create", error),
             null, DataPortalOptions);
@@ -191,7 +191,7 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Create", ex),
             null, DataPortalOptions);
@@ -235,7 +235,7 @@ namespace Csla.Server
         if (criteria is EmptyCriteria)
           serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
         else
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, GetCriteriaArray(criteria));
 
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
@@ -269,7 +269,7 @@ namespace Csla.Server
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Fetch, IsSync = isSync });
         return result;
       }
-      catch (Csla.Server.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
         throw;
@@ -281,7 +281,7 @@ namespace Csla.Server
           error = ex.InnerExceptions[0].InnerException;
         else
           error = ex;
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Fetch", error),
             null, DataPortalOptions);
@@ -290,7 +290,7 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Fetch", ex),
             null, DataPortalOptions);
@@ -329,7 +329,7 @@ namespace Csla.Server
         if (criteria is EmptyCriteria)
           serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
         else
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, GetCriteriaArray(criteria));
 
         serviceProviderMethodInfo.PrepForInvocation();
         method = serviceProviderMethodInfo.DataPortalMethodInfo;
@@ -363,7 +363,7 @@ namespace Csla.Server
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Execute, IsSync = isSync });
         return result;
       }
-      catch (Csla.Server.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Execute, IsSync = isSync });
         throw;
@@ -375,7 +375,7 @@ namespace Csla.Server
           error = ex.InnerExceptions[0].InnerException;
         else
           error = ex;
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", error),
             null, DataPortalOptions);
@@ -384,7 +384,7 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", ex),
             null, DataPortalOptions);
@@ -429,7 +429,7 @@ namespace Csla.Server
         if (factoryInfo != null)
         {
           string methodName;
-          var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
+          var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(IObjectFactoryLoader)) as IObjectFactoryLoader;
           var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
           if (obj is Core.BusinessBase bbase)
           {
@@ -442,7 +442,7 @@ namespace Csla.Server
             methodName = factoryInfo.ExecuteMethodName;
           else
             methodName = factoryInfo.UpdateMethodName;
-          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, [obj]);
+          method = DataPortalMethodCache.GetMethodInfo(factoryType, methodName, [obj]);
         }
         else
         {
@@ -496,7 +496,7 @@ namespace Csla.Server
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Result = result, Operation = operation, IsSync = isSync });
         return result;
       }
-      catch (Csla.Server.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = ex, Operation = operation, IsSync = isSync });
         throw;
@@ -508,7 +508,7 @@ namespace Csla.Server
           error = ex.InnerExceptions[0].InnerException;
         else
           error = ex;
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(obj.GetType(), obj, null, "DataPortal.Update", error),
             obj, DataPortalOptions);
@@ -517,7 +517,7 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
             obj, DataPortalOptions);
@@ -554,10 +554,10 @@ namespace Csla.Server
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
-          var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
+          var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(IObjectFactoryLoader)) as IObjectFactoryLoader;
           var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
           string methodName = factoryInfo.DeleteMethodName;
-          method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, methodName, criteria);
+          method = DataPortalMethodCache.GetMethodInfo(factoryType, methodName, criteria);
         }
         else
         {
@@ -565,7 +565,7 @@ namespace Csla.Server
           if (criteria is EmptyCriteria)
             serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, null);
           else
-            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria));
+            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, GetCriteriaArray(criteria));
           serviceProviderMethodInfo.PrepForInvocation();
           method = serviceProviderMethodInfo.DataPortalMethodInfo;
         }
@@ -599,7 +599,7 @@ namespace Csla.Server
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Delete, IsSync = isSync });
         return result;
       }
-      catch (Csla.Server.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Delete, IsSync = isSync });
         throw;
@@ -611,7 +611,7 @@ namespace Csla.Server
           error = ex.InnerExceptions[0].InnerException;
         else
           error = ex;
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Delete", error),
             null, DataPortalOptions);
@@ -620,7 +620,7 @@ namespace Csla.Server
       }
       catch (Exception ex)
       {
-        var fex = DataPortal.NewDataPortalException(
+        var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
             DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Delete", ex),
             null, DataPortalOptions);
@@ -687,8 +687,8 @@ namespace Csla.Server
         // When using platform-supplied security, Principal must be null
         if (context.Principal != null)
         {
-          Csla.Security.SecurityException ex =
-            new Csla.Security.SecurityException(Resources.NoPrincipalAllowedException);
+          Security.SecurityException ex =
+            new Security.SecurityException(Resources.NoPrincipalAllowedException);
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
         }
@@ -703,8 +703,8 @@ namespace Csla.Server
         // We expect some Principal object to be available
         if (context.Principal == null)
         {
-          Csla.Security.SecurityException ex =
-            new Csla.Security.SecurityException(
+          Security.SecurityException ex =
+            new Security.SecurityException(
               Resources.BusinessPrincipalException + " Nothing");
           //ex.Action = System.Security.Permissions.SecurityAction.Deny;
           throw ex;
@@ -716,9 +716,9 @@ namespace Csla.Server
     private static void SetCulture(DataPortalContext context)
     {
       // set the thread's culture to match the client
-      System.Threading.Thread.CurrentThread.CurrentCulture =
+      Thread.CurrentThread.CurrentCulture =
         new System.Globalization.CultureInfo(context.ClientCulture);
-      System.Threading.Thread.CurrentThread.CurrentUICulture =
+      Thread.CurrentThread.CurrentUICulture =
         new System.Globalization.CultureInfo(context.ClientUICulture);
     }
 

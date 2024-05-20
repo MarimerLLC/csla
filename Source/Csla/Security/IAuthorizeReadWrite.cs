@@ -28,7 +28,7 @@ namespace Csla.Security
     /// </summary>
     /// <returns>true if write is allowed.</returns>
     /// <param name="property">Property to write.</param>
-    bool CanWriteProperty(Csla.Core.IPropertyInfo property);
+    bool CanWriteProperty(Core.IPropertyInfo property);
     /// <summary>
     /// Returns true if the user is allowed to read the
     /// specified property.
@@ -42,7 +42,7 @@ namespace Csla.Security
     /// </summary>
     /// <returns>true if read is allowed.</returns>
     /// <param name="property">Property to read.</param>
-    bool CanReadProperty(Csla.Core.IPropertyInfo property);
+    bool CanReadProperty(Core.IPropertyInfo property);
     /// <summary>
     /// Returns true if the user is allowed to execute 
     /// the specified method.
@@ -56,6 +56,6 @@ namespace Csla.Security
     /// </summary>
     /// <returns>true if execute is allowed.</returns>
     /// <param name="method">Method to execute.</param>
-    bool CanExecuteMethod(Csla.Core.IMemberInfo method);
+    bool CanExecuteMethod(Core.IMemberInfo method);
   }
 }

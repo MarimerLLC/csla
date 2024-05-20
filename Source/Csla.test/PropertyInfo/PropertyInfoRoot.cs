@@ -37,31 +37,31 @@ namespace Csla.Test.PropertyInfo
     /// </summary>
     #region Properties
 
-    public static readonly PropertyInfo<System.String> _nameProperty = RegisterProperty<System.String>(p => p.Name);
-    public System.String Name
+    public static readonly PropertyInfo<String> _nameProperty = RegisterProperty<String>(p => p.Name);
+    public String Name
     {
       get { return GetProperty(_nameProperty); }
       set { SetProperty(_nameProperty, value); }
     }
 
-    public static readonly PropertyInfo<System.String> _nameDataAnnotationsProperty = RegisterProperty<System.String>(p => p.NameDataAnnotations);
+    public static readonly PropertyInfo<String> _nameDataAnnotationsProperty = RegisterProperty<String>(p => p.NameDataAnnotations);
     [Display(Name = "Name: DataAnnotations")]
-    public System.String NameDataAnnotations
+    public String NameDataAnnotations
     {
       get { return GetProperty(_nameDataAnnotationsProperty); }
       set { SetProperty(_nameDataAnnotationsProperty, value); }
     }
 
-    public static readonly PropertyInfo<System.String> _nameComponentModelProperty = RegisterProperty<System.String>(p => p.NameComponentModel);
+    public static readonly PropertyInfo<String> _nameComponentModelProperty = RegisterProperty<String>(p => p.NameComponentModel);
     [DisplayName("Name: ComponentModel")]
-    public System.String NameComponentModel
+    public String NameComponentModel
     {
       get { return GetProperty(_nameComponentModelProperty); }
       set { SetProperty(_nameComponentModelProperty, value); }
     }
 
-    public static readonly PropertyInfo<System.String> _nameFriendlyNameProperty = RegisterProperty<System.String>(p => p.NameFriendlyName, "Name: Friendly Name");
-    public System.String NameFriendlyName
+    public static readonly PropertyInfo<String> _nameFriendlyNameProperty = RegisterProperty<String>(p => p.NameFriendlyName, "Name: Friendly Name");
+    public String NameFriendlyName
     {
       get { return GetProperty(_nameFriendlyNameProperty); }
       set { SetProperty(_nameFriendlyNameProperty, value); }

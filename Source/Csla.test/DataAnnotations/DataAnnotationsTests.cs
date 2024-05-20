@@ -128,7 +128,7 @@ namespace Csla.Test.DataAnnotations
     private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     [Required(ErrorMessage = "Name value required")]
     [RegularExpression("[0-9]")]
-    [System.ComponentModel.DataAnnotations.Range(typeof(string), "0", "9")]
+    [Range(typeof(string), "0", "9")]
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -185,7 +185,7 @@ namespace Csla.Test.DataAnnotations
   }
 
   [Serializable]
-  public partial class MultipleMeta : Csla.BusinessBase<MultipleMeta>
+  public partial class MultipleMeta : BusinessBase<MultipleMeta>
   {
       public static PropertyInfo<decimal> AmountProperty = RegisterProperty<decimal>(p => p.Amount);
 
@@ -214,11 +214,11 @@ namespace Csla.Test.DataAnnotations
   {
       [Required(ErrorMessage = "Amount is required")]
       [Range(typeof(decimal), "1", "100", ErrorMessage = "Please enter a value between 1 and 100")]
-      public System.Decimal Amount { get; set; }
+      public Decimal Amount { get; set; }
 
       [Required(ErrorMessage = "Quantity is required")]
       [Range(1, 100, ErrorMessage = "Please enter a value between 1 and 100")]
-      public System.Int32 Quantity { get; set; }
+      public Int32 Quantity { get; set; }
 
   }
 
@@ -226,7 +226,7 @@ namespace Csla.Test.DataAnnotations
   /// Non-Generate code that can be modified
   /// </summary>
   [MetadataType(typeof(MultipleMetaDataClass))]
-  public partial class MultipleMeta : Csla.BusinessBase<MultipleMeta>
+  public partial class MultipleMeta : BusinessBase<MultipleMeta>
   {
     public new BusinessRuleManager GetRegisteredRules()
     {

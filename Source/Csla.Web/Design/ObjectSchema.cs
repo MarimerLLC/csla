@@ -40,7 +40,7 @@ namespace Csla.Web.Design
     /// Returns a single element array containing the
     /// schema for the CSLA .NET business object.
     /// </summary>
-    public System.Web.UI.Design.IDataSourceViewSchema[] GetViews()
+    public IDataSourceViewSchema[] GetViews()
     {
       return [new ObjectViewSchema(_designer, _typeName)];
     }

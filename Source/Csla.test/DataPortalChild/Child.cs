@@ -39,7 +39,7 @@ namespace Csla.Test.DataPortalChild
 
     public void DeleteChild()
     {
-      base.MarkDeleted();
+      MarkDeleted();
     }
 
     [CreateChild]
@@ -58,13 +58,13 @@ namespace Csla.Test.DataPortalChild
     protected void Child_Insert(Root parent)
     {
       LoadProperty(StatusProperty, "Inserted");
-      if (this.Parent is ChildList)
+      if (Parent is ChildList)
       {
-        LoadProperty(RootDataProperty, ((Root)((ChildList)this.Parent).MyParent).Data);
+        LoadProperty(RootDataProperty, ((Root)((ChildList)Parent).MyParent).Data);
       }
       else
       {
-        LoadProperty(RootDataProperty, ((Root)this.Parent).Data);
+        LoadProperty(RootDataProperty, ((Root)Parent).Data);
       }
     }
 
@@ -72,13 +72,13 @@ namespace Csla.Test.DataPortalChild
     protected void Child_Update(Root parent)
     {
       LoadProperty(StatusProperty, "Updated");
-      if (this.Parent is ChildList)
+      if (Parent is ChildList)
       {
-        LoadProperty(RootDataProperty, ((Root)((ChildList)this.Parent).MyParent).Data);
+        LoadProperty(RootDataProperty, ((Root)((ChildList)Parent).MyParent).Data);
       }
       else
       {
-        LoadProperty(RootDataProperty, ((Root)this.Parent).Data);
+        LoadProperty(RootDataProperty, ((Root)Parent).Data);
       }
     }
 

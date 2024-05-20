@@ -24,7 +24,7 @@ namespace Csla.Core
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
   public abstract class ReadOnlyBindingList<C> :
-    Core.ExtendedBindingList<C>, Core.IBusinessObject, Core.IReadOnlyBindingList
+    ExtendedBindingList<C>, IBusinessObject, IReadOnlyBindingList
   {
     #region Identity
 
@@ -61,7 +61,7 @@ namespace Csla.Core
       set { _isReadOnly = value; }
     }
 
-    bool Core.IReadOnlyBindingList.IsReadOnly
+    bool IReadOnlyBindingList.IsReadOnly
     {
       get { return IsReadOnly; }
       set { IsReadOnly = value; }
@@ -82,11 +82,11 @@ namespace Csla.Core
     /// </summary>
     protected ReadOnlyBindingList()
     {
-      this.RaiseListChangedEvents = false;
+      RaiseListChangedEvents = false;
       AllowEdit = false;
       AllowRemove = false;
       AllowNew = false;
-      this.RaiseListChangedEvents = true;
+      RaiseListChangedEvents = true;
     }
 
     /// <summary>
@@ -210,7 +210,7 @@ namespace Csla.Core
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnGetState(Serialization.Mobile.SerializationInfo info)
     {
       base.OnGetState(info);
       info.AddValue("Csla.Core.ReadOnlyBindingList._isReadOnly", _isReadOnly);
@@ -223,7 +223,7 @@ namespace Csla.Core
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
+    protected override void OnSetState(Serialization.Mobile.SerializationInfo info)
     {
       base.OnSetState(info);
       _isReadOnly = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList._isReadOnly");
@@ -240,7 +240,7 @@ namespace Csla.Core
     /// Reference to MobileFormatter instance. Use this to
     /// convert child references to/from reference id values.
     /// </param>
-    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    protected override void OnSetChildren(Serialization.Mobile.SerializationInfo info, Serialization.Mobile.MobileFormatter formatter)
     {
       var old = IsReadOnly;
       IsReadOnly = false;

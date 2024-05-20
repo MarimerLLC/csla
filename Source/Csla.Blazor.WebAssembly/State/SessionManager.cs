@@ -54,7 +54,7 @@ namespace Csla.Blazor.WebAssembly.State
             }
             catch (TaskCanceledException tcex)
             {
-                throw new TimeoutException($"{this.GetType().FullName}.{nameof(RetrieveSession)}.", tcex);
+                throw new TimeoutException($"{GetType().FullName}.{nameof(RetrieveSession)}.", tcex);
             }
         }
 
@@ -116,7 +116,7 @@ namespace Csla.Blazor.WebAssembly.State
             }
             catch (TaskCanceledException tcex)
             {
-                throw new TimeoutException($"{this.GetType().FullName}.{nameof(SendSession)}.", tcex);
+                throw new TimeoutException($"{GetType().FullName}.{nameof(SendSession)}.", tcex);
             }
         }
 

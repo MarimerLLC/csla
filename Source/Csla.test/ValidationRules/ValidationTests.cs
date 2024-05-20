@@ -769,9 +769,6 @@ namespace Csla.Test.ValidationRules
     public string Value1
     {
       get => LazyGetProperty(Value1Property, () => string.Empty);
-      //if (!FieldManager.FieldExists(Value1Property))
-      //  SetProperty(Value1Property, string.Empty);
-      //return GetProperty(Value1Property);
       set => SetProperty(Value1Property, value);
     }
 

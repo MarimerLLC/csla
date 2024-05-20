@@ -42,13 +42,13 @@ namespace Csla.Test.ValidationRules
 
       Assert.AreEqual(1, root.BrokenRulesCollection.ErrorCount, "Only one rule should be broken");
       Assert.AreEqual("Always error", root.BrokenRulesCollection.GetFirstBrokenRule("Test").Description, "'Always error' should be broken (GetFirstBrokenRule)");
-      Assert.AreEqual("Always error", root.BrokenRulesCollection.GetFirstMessage("Test", Csla.Rules.RuleSeverity.Error).Description, "'Always error' should be broken");
+      Assert.AreEqual("Always error", root.BrokenRulesCollection.GetFirstMessage("Test", Rules.RuleSeverity.Error).Description, "'Always error' should be broken");
 
       Assert.AreEqual(1, root.BrokenRulesCollection.WarningCount, "Only one warning should be broken");
-      Assert.AreEqual("Always warns", root.BrokenRulesCollection.GetFirstMessage("Test", Csla.Rules.RuleSeverity.Warning).Description, "'Always warns' should be broken");
+      Assert.AreEqual("Always warns", root.BrokenRulesCollection.GetFirstMessage("Test", Rules.RuleSeverity.Warning).Description, "'Always warns' should be broken");
 
       Assert.AreEqual(1, root.BrokenRulesCollection.InformationCount, "Only one info should be broken");
-      Assert.AreEqual("Always info", root.BrokenRulesCollection.GetFirstMessage("Test", Csla.Rules.RuleSeverity.Information).Description, "'Always info' should be broken");
+      Assert.AreEqual("Always info", root.BrokenRulesCollection.GetFirstMessage("Test", Rules.RuleSeverity.Information).Description, "'Always info' should be broken");
     }
 
     [TestMethod]
@@ -64,10 +64,10 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual(0, root.BrokenRulesCollection.ErrorCount, "No rules (errors) should be broken");
 
       Assert.AreEqual(1, root.BrokenRulesCollection.WarningCount, "Only one warning should be broken");
-      Assert.AreEqual("Always warns", root.BrokenRulesCollection.GetFirstMessage("Test", Csla.Rules.RuleSeverity.Warning).Description, "'Always warns' should be broken");
+      Assert.AreEqual("Always warns", root.BrokenRulesCollection.GetFirstMessage("Test", Rules.RuleSeverity.Warning).Description, "'Always warns' should be broken");
 
       Assert.AreEqual(1, root.BrokenRulesCollection.InformationCount, "Only one info should be broken");
-      Assert.AreEqual("Always info", root.BrokenRulesCollection.GetFirstMessage("Test", Csla.Rules.RuleSeverity.Information).Description, "'Always info' should be broken");
+      Assert.AreEqual("Always info", root.BrokenRulesCollection.GetFirstMessage("Test", Rules.RuleSeverity.Information).Description, "'Always info' should be broken");
     }
   }
 }

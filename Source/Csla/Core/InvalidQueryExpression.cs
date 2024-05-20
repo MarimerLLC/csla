@@ -10,7 +10,7 @@ using Csla.Properties;
 
 namespace Csla.Core
 {
-  class InvalidQueryException : System.Exception
+  class InvalidQueryException : Exception
   {
     private string message;
 

@@ -47,7 +47,7 @@ namespace Csla.Reflection
     public static DynamicCtorDelegate CreateConstructor(ConstructorInfo constructor)
     {
       if (constructor == null)
-        throw new ArgumentNullException("constructor");
+        throw new ArgumentNullException(nameof(constructor));
       if (constructor.GetParameters().Length > 0)
         throw new NotSupportedException(Resources.ConstructorsWithParametersNotSupported);
 
@@ -63,7 +63,7 @@ namespace Csla.Reflection
     public static DynamicMethodDelegate CreateMethod(System.Reflection.MethodInfo method)
     {
       if (method == null)
-        throw new ArgumentNullException("method");
+        throw new ArgumentNullException(nameof(method));
 
       ParameterInfo[] pi = method.GetParameters();
       var targetExpression = Expression.Parameter(typeof(object));
@@ -110,7 +110,7 @@ namespace Csla.Reflection
     public static DynamicMemberGetDelegate CreatePropertyGetter(PropertyInfo property)
     {
       if (property == null)
-        throw new ArgumentNullException("property");
+        throw new ArgumentNullException(nameof(property));
 
       if (!property.CanRead) return null;
 
@@ -134,7 +134,7 @@ namespace Csla.Reflection
     public static DynamicMemberSetDelegate CreatePropertySetter(PropertyInfo property)
     {
       if (property == null)
-        throw new ArgumentNullException("property");
+        throw new ArgumentNullException(nameof(property));
 
       if (!property.CanWrite) return null;
 
@@ -158,7 +158,7 @@ namespace Csla.Reflection
     public static DynamicMemberGetDelegate CreateFieldGetter(FieldInfo field)
     {
       if (field == null)
-        throw new ArgumentNullException("field");
+        throw new ArgumentNullException(nameof(field));
 
       var target = Expression.Parameter(typeof(object));
       Expression body = Expression.Field(

@@ -18,12 +18,12 @@ namespace Csla.Rules
     /// Indicates that a rule has started processing.
     /// </summary>
     /// <param name="property">Property for rule.</param>
-    void RuleStart(Csla.Core.IPropertyInfo property);
+    void RuleStart(Core.IPropertyInfo property);
     /// <summary>
     /// Indicates that a rule has finished processing.
     /// </summary>
     /// <param name="property">Property for rule.</param>
-    void RuleComplete(Csla.Core.IPropertyInfo property);
+    void RuleComplete(Core.IPropertyInfo property);
     /// <summary>
     /// Indicates that a rule has finished processing.
     /// </summary>

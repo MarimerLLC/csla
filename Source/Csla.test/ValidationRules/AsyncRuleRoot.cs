@@ -42,8 +42,8 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNumberProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNameProperty));
+      BusinessRules.AddRule(new Rules.CommonRules.Required(CustomerNumberProperty));
+      BusinessRules.AddRule(new Rules.CommonRules.Required(CustomerNameProperty));
 
       // async rule will only run when CustomerNumber has value
       BusinessRules.AddRule(new LookupCustomerRule(CustomerNumberProperty, CustomerNameProperty) { Priority = 10 });
@@ -51,7 +51,7 @@ namespace Csla.Test.ValidationRules
       BusinessRules.AddRule(new AsyncAwaitRule(AsyncAwaitProperty));
     }
 
-    private class LookupCustomerRule : Csla.Rules.BusinessRule
+    private class LookupCustomerRule : BusinessRule
     {
       private IPropertyInfo _nameProperty;
 

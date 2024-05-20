@@ -43,7 +43,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the primary property for this result.
     /// </summary>
-    public Csla.Core.IPropertyInfo PrimaryProperty { get; private set; }
+    public Core.IPropertyInfo PrimaryProperty { get; private set; }
     /// <summary>
     /// Gets or sets a list of properties that were affected
     /// by the rule, so appropriate PropertyChanged events
@@ -98,7 +98,7 @@ namespace Csla.Rules
     {
 
       if (string.IsNullOrEmpty(description))
-        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), "description");
+        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), nameof(description));
 
       RuleName = ruleName;
       PrimaryProperty = property;

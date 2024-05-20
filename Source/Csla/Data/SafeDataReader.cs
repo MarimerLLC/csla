@@ -62,7 +62,7 @@ namespace Csla.Data
     /// <typeparam name="T">Type of value</typeparam>
     /// <param name="ordinal">Ordinal position of value</param>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<T> GetFieldValueAsync<T>(int ordinal, System.Threading.CancellationToken cancellationToken)
+    public Task<T> GetFieldValueAsync<T>(int ordinal, CancellationToken cancellationToken)
     {
       if (_sqlDataReader == null)
         throw new NotSupportedException("GetFieldValueAsync");
@@ -87,7 +87,7 @@ namespace Csla.Data
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> IsDbNullAsync(int ordinal, System.Threading.CancellationToken cancellationToken)
+    public Task<bool> IsDbNullAsync(int ordinal, CancellationToken cancellationToken)
     {
       if (_sqlDataReader == null)
         throw new NotSupportedException("IsDbNullAsync");
@@ -108,7 +108,7 @@ namespace Csla.Data
     /// Advances the reader to the next result.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> NextResultAsync(System.Threading.CancellationToken cancellationToken)
+    public Task<bool> NextResultAsync(CancellationToken cancellationToken)
     {
       if (_sqlDataReader == null)
         throw new NotSupportedException("NextResultAsync");
@@ -129,7 +129,7 @@ namespace Csla.Data
     /// Advances to the next record in a recordset.
     /// </summary>
     /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> ReadAsync(System.Threading.CancellationToken cancellationToken)
+    public Task<bool> ReadAsync(CancellationToken cancellationToken)
     {
       if (_sqlDataReader == null)
         throw new NotSupportedException("NextResultAsync");
@@ -248,7 +248,7 @@ namespace Csla.Data
     /// See Chapter 5 for more details on the SmartDate class.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
-    public Csla.SmartDate GetSmartDate(string name)
+    public SmartDate GetSmartDate(string name)
     {
       return GetSmartDate(DataReader.GetOrdinal(name), true);
     }
@@ -261,7 +261,7 @@ namespace Csla.Data
     /// See Chapter 5 for more details on the SmartDate class.
     /// </remarks>
     /// <param name="i">Ordinal column position of the value.</param>
-    public virtual Csla.SmartDate GetSmartDate(int i)
+    public virtual SmartDate GetSmartDate(int i)
     {
       return GetSmartDate(i, true);
     }
@@ -278,7 +278,7 @@ namespace Csla.Data
     /// <param name="minIsEmpty">
     /// A flag indicating whether the min or max 
     /// value of a data means an empty date.</param>
-    public Csla.SmartDate GetSmartDate(string name, bool minIsEmpty)
+    public SmartDate GetSmartDate(string name, bool minIsEmpty)
     {
       return GetSmartDate(DataReader.GetOrdinal(name), minIsEmpty);
     }
@@ -290,13 +290,13 @@ namespace Csla.Data
     /// <param name="minIsEmpty">
     /// A flag indicating whether the min or max 
     /// value of a data means an empty date.</param>
-    public virtual Csla.SmartDate GetSmartDate(
+    public virtual SmartDate GetSmartDate(
       int i, bool minIsEmpty)
     {
       if (DataReader.IsDBNull(i))
-        return new Csla.SmartDate(minIsEmpty);
+        return new SmartDate(minIsEmpty);
       else
-        return new Csla.SmartDate(
+        return new SmartDate(
           DataReader.GetDateTime(i), minIsEmpty);
     }
 
@@ -307,7 +307,7 @@ namespace Csla.Data
     /// Returns Guid.Empty for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
-    public System.Guid GetGuid(string name)
+    public Guid GetGuid(string name)
     {
       return GetGuid(DataReader.GetOrdinal(name));
     }
@@ -319,7 +319,7 @@ namespace Csla.Data
     /// Returns Guid.Empty for null.
     /// </remarks>
     /// <param name="i">Ordinal column position of the value.</param>
-    public virtual System.Guid GetGuid(int i)
+    public virtual Guid GetGuid(int i)
     {
       if (DataReader.IsDBNull(i))
         return Guid.Empty;
@@ -811,8 +811,8 @@ namespace Csla.Data
     /// <param name="name">Name of the column containing the value.</param>
     public virtual bool IsDBNull(string name)
     {
-      int index = this.GetOrdinal(name);
-      return this.IsDBNull(index);
+      int index = GetOrdinal(name);
+      return IsDBNull(index);
     }
 
     /// <summary>

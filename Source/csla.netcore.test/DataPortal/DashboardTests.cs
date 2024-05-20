@@ -34,7 +34,7 @@ namespace csla.netcore.test.DataPortal
       serviceProvider = services.BuildServiceProvider();
 
       IDashboard dashboard = serviceProvider.GetRequiredService<IDashboard>();
-      Assert.IsInstanceOfType(dashboard, typeof(Csla.Server.Dashboard.NullDashboard));
+      Assert.IsInstanceOfType(dashboard, typeof(NullDashboard));
     }
 
     // This would really be testing the behaviour of the service provider not the dashboard
@@ -170,7 +170,7 @@ namespace csla.netcore.test.DataPortal
     private void DataPortal_Fetch(int id)
     {
       // load values into object
-      System.Threading.Thread.Sleep(10);
+      Thread.Sleep(10);
     }
 
     [Insert]

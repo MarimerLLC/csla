@@ -18,7 +18,7 @@ namespace Csla.Test.DataPortalChild
 
     public object MyParent
     {
-      get { return this.Parent; }
+      get { return Parent; }
     }
 
     public string Status { get; private set; }

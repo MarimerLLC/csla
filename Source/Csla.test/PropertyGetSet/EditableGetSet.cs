@@ -16,7 +16,7 @@ namespace Csla.Test.PropertyGetSet
   [Serializable]
   public class EditableGetSet : EditableGetSetBase<EditableGetSet>
   {
-    private static Csla.PropertyInfo<string> FieldBackedStringProperty = RegisterProperty<string>(typeof(EditableGetSet), new Csla.PropertyInfo<string>("FieldBackedString", RelationshipTypes.PrivateField));
+    private static PropertyInfo<string> FieldBackedStringProperty = RegisterProperty<string>(typeof(EditableGetSet), new PropertyInfo<string>("FieldBackedString", RelationshipTypes.PrivateField));
     private string _fieldBackedString = FieldBackedStringProperty.DefaultValue;
     public string FieldBackedString
     {
@@ -24,7 +24,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<string>(FieldBackedStringProperty, ref _fieldBackedString, value); }
     }
 
-    private static Csla.PropertyInfo<int> F02Property = RegisterProperty<int>(typeof(EditableGetSet), new Csla.PropertyInfo<int>("F02", RelationshipTypes.PrivateField));
+    private static PropertyInfo<int> F02Property = RegisterProperty<int>(typeof(EditableGetSet), new PropertyInfo<int>("F02", RelationshipTypes.PrivateField));
     private int _f02 = F02Property.DefaultValue;
     public int F02
     {
@@ -32,7 +32,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<int>(F02Property, ref _f02, value); }
     }
 
-    private static Csla.PropertyInfo<string> F03Property = RegisterProperty<string>(c => c.F03, "field 3", "n/a", RelationshipTypes.PrivateField);
+    private static PropertyInfo<string> F03Property = RegisterProperty<string>(c => c.F03, "field 3", "n/a", RelationshipTypes.PrivateField);
     private string _f03 = F03Property.DefaultValue;
     public string F03
     {
@@ -40,7 +40,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<string>(F03Property, ref _f03, value); }
     }
 
-    private static Csla.PropertyInfo<Csla.SmartDate> F04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("F04", RelationshipTypes.PrivateField));
+    private static PropertyInfo<Csla.SmartDate> F04Property = RegisterProperty<Csla.SmartDate>(typeof(EditableGetSet), new PropertyInfo<Csla.SmartDate>("F04", RelationshipTypes.PrivateField));
     private Csla.SmartDate _F04 = F04Property.DefaultValue;
     public string F04
     {
@@ -48,7 +48,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetPropertyConvert(F04Property, ref _F04, value); }
     }
 
-    private static Csla.PropertyInfo<bool> F05Property = RegisterProperty<bool>(nameof(F05), "field 5", false, RelationshipTypes.PrivateField);
+    private static PropertyInfo<bool> F05Property = RegisterProperty<bool>(nameof(F05), "field 5", false, RelationshipTypes.PrivateField);
     private bool _f05 = F05Property.DefaultValue;
     public bool F05
     {
@@ -56,7 +56,7 @@ namespace Csla.Test.PropertyGetSet
       set { SetProperty<bool>(F05Property, ref _f05, value); }
     }
 
-    private static Csla.PropertyInfo<object> F06Property = RegisterProperty<object>(c => c.F06, "field 6", null, RelationshipTypes.PrivateField);
+    private static PropertyInfo<object> F06Property = RegisterProperty<object>(c => c.F06, "field 6", null, RelationshipTypes.PrivateField);
     private object _F06 = string.Empty;
     public string F06
     {
@@ -76,7 +76,7 @@ namespace Csla.Test.PropertyGetSet
       get { return FieldManager.IsFieldDirty(ManagedStringFieldProperty); }
     }
 
-    private static Csla.PropertyInfo<int> M02Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<int>("M02"));
+    private static PropertyInfo<int> M02Property = RegisterProperty(typeof(EditableGetSet), new PropertyInfo<int>("M02"));
     public int M02
     {
       get { return GetProperty<int>(M02Property); }
@@ -89,35 +89,35 @@ namespace Csla.Test.PropertyGetSet
       LoadProperty(p, value);
     }
 
-    private static Csla.PropertyInfo<string> M03Property = RegisterProperty(c => c.M03, "field 3", "n/a");
+    private static PropertyInfo<string> M03Property = RegisterProperty(c => c.M03, "field 3", "n/a");
     public string M03
     {
       get { return GetProperty<string>(M03Property); }
       set { SetProperty<string>(M03Property, value); }
     }
 
-    private static Csla.PropertyInfo<Csla.SmartDate> M04Property = RegisterProperty(typeof(EditableGetSet), new Csla.PropertyInfo<Csla.SmartDate>("M04"));
+    private static PropertyInfo<Csla.SmartDate> M04Property = RegisterProperty(typeof(EditableGetSet), new PropertyInfo<Csla.SmartDate>("M04"));
     public string M04
     {
       get { return GetPropertyConvert<Csla.SmartDate, string>(M04Property); }
       set { SetPropertyConvert(M04Property, value); }
     }
 
-    private static Csla.PropertyInfo<bool> M05Property = RegisterProperty<bool>(c => c.M05, "field 5");
+    private static PropertyInfo<bool> M05Property = RegisterProperty<bool>(c => c.M05, "field 5");
     public bool M05
     {
       get { return GetProperty(M05Property); }
       set { SetProperty(M05Property, value); }
     }
 
-    private static Csla.PropertyInfo<Guid> M06Property = RegisterProperty<Guid>(c => c.M06, "field 6");
+    private static PropertyInfo<Guid> M06Property = RegisterProperty<Guid>(c => c.M06, "field 6");
     public Guid M06
     {
       get { return GetProperty(M06Property); }
       set { SetProperty(M06Property, value); }
     }
 
-    private static Csla.PropertyInfo<object> M07Property = RegisterProperty<object>(c => c.M07, "field 7");
+    private static PropertyInfo<object> M07Property = RegisterProperty<object>(c => c.M07, "field 7");
     public string M07
     {
       get { return GetPropertyConvert<object, string>(M07Property); }
@@ -147,8 +147,8 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
-    private static Csla.PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(
-      typeof(EditableGetSet), new Csla.PropertyInfo<EditableGetSet>("ManagedChild", RelationshipTypes.LazyLoad));
+    private static PropertyInfo<EditableGetSet> ManagedChildProperty = RegisterProperty(
+      typeof(EditableGetSet), new PropertyInfo<EditableGetSet>("ManagedChild", RelationshipTypes.LazyLoad));
     public EditableGetSet ManagedChild
     {
       get 
@@ -157,8 +157,8 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
-    private static Csla.PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty(
-      typeof(EditableGetSet), new Csla.PropertyInfo<ChildList>("ManagedChildList", RelationshipTypes.LazyLoad));
+    private static PropertyInfo<ChildList> ManagedChildListProperty = RegisterProperty(
+      typeof(EditableGetSet), new PropertyInfo<ChildList>("ManagedChildList", RelationshipTypes.LazyLoad));
     public ChildList ManagedChildList
     {
       get
@@ -253,7 +253,7 @@ namespace Csla.Test.PropertyGetSet
 
     #region MobileObject
 
-    protected override void OnGetState(SerializationInfo info, Csla.Core.StateMode mode)
+    protected override void OnGetState(SerializationInfo info, Core.StateMode mode)
     {
       if(_fieldBackedString!=null)
         info.AddValue("_fieldBackedString", _fieldBackedString);
@@ -269,7 +269,7 @@ namespace Csla.Test.PropertyGetSet
       base.OnGetState(info, mode);
     }
 
-    protected override void OnSetState(SerializationInfo info, Csla.Core.StateMode mode)
+    protected override void OnSetState(SerializationInfo info, Core.StateMode mode)
     {
       if (info.Values.ContainsKey("_fieldBackedString"))
         _fieldBackedString = info.GetValue<string>("_fieldBackedString");

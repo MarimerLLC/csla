@@ -147,7 +147,7 @@ namespace Csla.Rules
         if (innerRule is IBusinessRule syncRule)
           syncRule.Execute(chainedContext);
         else if (innerRule is IBusinessRuleAsync asyncRule)
-          asyncRule.ExecuteAsync(chainedContext).ContinueWith((_) => { chainedContext.Complete(); });
+          asyncRule.ExecuteAsync(chainedContext).ContinueWith(_ => { chainedContext.Complete(); });
         else
           throw new ArgumentOutOfRangeException(innerRule.GetType().FullName);
       }

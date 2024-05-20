@@ -784,7 +784,7 @@ namespace Csla.Rules
           break;
         bool complete = false;
         // set up context
-        var context = new RuleContext(_applicationContext, (r) =>
+        var context = new RuleContext(_applicationContext, r =>
         {
           if (r.Rule.IsAsync)
           {

@@ -18,7 +18,9 @@ namespace Csla.Test.MethodCaller
 
     public string Test1 => "one";
 
-    public string Test2 { get => "two";
+    public string Test2
+    {
+      get => "two";
       set => one = value;
     }
 

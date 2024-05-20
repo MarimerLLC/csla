@@ -237,12 +237,8 @@ namespace Csla.Blazor
       {
         if (Model is Core.ITrackStatus obj && !obj.IsSavable)
         {
-          if (obj is INotifyBusy notifyBusy)
-          {
-            var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
-            var _waitForIdleTimeout = TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds);
-            await BusyHelper.WaitForIdle(notifyBusy, _waitForIdleTimeout, "SaveAsync").ConfigureAwait(false);
-          }
+          await BusyHelper.WaitForIdle(obj, BusyTimeout).ConfigureAwait(false);
+          
           if (!obj.IsValid)
           {
             ViewModelErrorText = ModelErrorText;
@@ -275,6 +271,11 @@ namespace Csla.Blazor
       {
         Exception = ex;
         ViewModelErrorText = ex.BusinessExceptionMessage;
+      }
+      catch (TimeoutException ex)
+      {
+        Exception = ex;
+        ViewModelErrorText = ex.Message;
       }
       catch (Exception ex)
       {

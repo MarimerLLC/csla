@@ -128,11 +128,8 @@ namespace Csla.Rules
       info.AddValue("_property", _property);
       info.AddValue("_severity", (int)_severity);
       info.AddValue("_originProperty", _originProperty);
-
       info.AddValue("_priority", _priority);
-
       info.AddValue("_displayIndex", (int)_displayIndex);
-
 
       base.OnGetState(info, mode);
     }

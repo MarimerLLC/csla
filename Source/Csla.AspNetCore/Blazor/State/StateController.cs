@@ -19,8 +19,6 @@ namespace Csla.AspNetCore.Blazor.State
   /// </summary>
   /// <param name="applicationContext"></param>
   /// <param name="sessionManager"></param>
-  [ApiController]
-  [Route("[controller]")]
   public class StateController(ApplicationContext applicationContext, ISessionManager sessionManager) : ControllerBase
   {
     /// <summary>
@@ -53,7 +51,7 @@ namespace Csla.AspNetCore.Blazor.State
           var principal = new CslaClaimsPrincipal(applicationContext.Principal);
           message.Principal = principal;
         }
-        var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
+        var formatter = Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, message);
         result.ResultStatus = ResultStatuses.Success;
@@ -70,7 +68,7 @@ namespace Csla.AspNetCore.Blazor.State
     [HttpPut]
     public virtual void Put(byte[] updatedSessionData)
     {
-      var formatter = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
+      var formatter = Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
       var buffer = new MemoryStream(updatedSessionData)
       {
         Position = 0

@@ -8,7 +8,7 @@
 
 namespace Csla.Test.ValidationRules
 {
-  public class SeverityRoot : Csla.BusinessBase<SeverityRoot>
+  public class SeverityRoot : BusinessBase<SeverityRoot>
   {
     public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
@@ -60,7 +60,7 @@ namespace Csla.Test.ValidationRules
     }
   }
 
-  public class NoErrorRoot : Csla.BusinessBase<NoErrorRoot>
+  public class NoErrorRoot : BusinessBase<NoErrorRoot>
   {
     public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test

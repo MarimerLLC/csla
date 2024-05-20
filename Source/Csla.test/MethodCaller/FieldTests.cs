@@ -26,7 +26,7 @@ namespace Csla.Test.MethodCaller
     {
       var instance = new Test1();
       var expected = "private";
-      var actual = Csla.Data.DataMapper.GetFieldValue(instance, "_f1");
+      var actual = Data.DataMapper.GetFieldValue(instance, "_f1");
       Assert.AreEqual(expected, actual);
     }
 
@@ -35,8 +35,8 @@ namespace Csla.Test.MethodCaller
     {
       var instance = new Test1();
       var expected = "success";
-      Csla.Data.DataMapper.SetFieldValue(instance, "_f1", expected);
-      var actual = Csla.Data.DataMapper.GetFieldValue(instance, "_f1");
+      Data.DataMapper.SetFieldValue(instance, "_f1", expected);
+      var actual = Data.DataMapper.GetFieldValue(instance, "_f1");
       Assert.AreEqual(expected, actual);
     }
 
@@ -45,7 +45,7 @@ namespace Csla.Test.MethodCaller
     {
       var instance = new Test1();
       var expected = "public";
-      var actual = Csla.Data.DataMapper.GetFieldValue(instance, "_f2");
+      var actual = Data.DataMapper.GetFieldValue(instance, "_f2");
       Assert.AreEqual(expected, actual);
     }
 
@@ -54,7 +54,7 @@ namespace Csla.Test.MethodCaller
     {
       var instance = new Test1();
       var expected = "one";
-      Csla.Data.DataMapper.SetFieldValue(instance, "_f2", expected);
+      Data.DataMapper.SetFieldValue(instance, "_f2", expected);
 
       var actual = instance._f2;
       Assert.AreEqual(expected, actual);

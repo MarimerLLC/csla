@@ -568,7 +568,7 @@ namespace Csla.Xaml
       get
       {
         var result = string.Empty;
-        if (Source is Core.BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
+        if (Source is BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
           result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Error, BindingPath);
         return result;
       }
@@ -583,7 +583,7 @@ namespace Csla.Xaml
       get
       {
         var result = string.Empty;
-        if (Source is Core.BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
+        if (Source is BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
           result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Warning, BindingPath);
         return result;
       }
@@ -598,7 +598,7 @@ namespace Csla.Xaml
       get
       {
         var result = string.Empty;
-        if (Source is Core.BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
+        if (Source is BusinessBase obj && !string.IsNullOrEmpty(BindingPath))
           result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Information, BindingPath);
         return result;
       }
@@ -792,7 +792,7 @@ namespace Csla.Xaml
       }
       else
       {
-        if (Source is Csla.Security.IAuthorizeReadWrite iarw)
+        if (Source is Security.IAuthorizeReadWrite iarw)
         {
           CanWrite = iarw.CanWriteProperty(BindingPath);
           CanRead = iarw.CanReadProperty(BindingPath);

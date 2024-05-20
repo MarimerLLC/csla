@@ -22,6 +22,7 @@ namespace Csla.Rules
     private bool _provideTargetWhenAsync;
     private int _priority;
     private RuleUri _ruleUri;
+    private int _displayIndex;
 
     /// <summary>
     /// If true, rule will only cascade if the primary property
@@ -46,7 +47,7 @@ namespace Csla.Rules
       {
         CanWriteProperty(nameof(PrimaryProperty));
         _primaryProperty = value;
-        this.RuleUri = new RuleUri(this, value);
+        RuleUri = new RuleUri(this, value);
         if (_primaryProperty != null)
           AffectedProperties.Add(_primaryProperty);
       }
@@ -91,7 +92,7 @@ namespace Csla.Rules
     /// of the rule within the context of the business object
     /// where the rule is used.
     /// </summary>
-    public string RuleName { get { return this.RuleUri.ToString(); } }
+    public string RuleName { get { return RuleUri.ToString(); } }
 
     /// <summary>
     /// Sets or gets the rule:// URI object for this rule.
@@ -132,6 +133,18 @@ namespace Csla.Rules
         _runMode = value;
       }
     }
+    /// <summary>
+    /// Gets the rule DisplayIndex in UI.
+    /// </summary>
+    public int DisplayIndex
+    {
+      get { return _displayIndex; }
+      set
+      {
+        CanWriteProperty(nameof(DisplayIndex));
+        _displayIndex = value;
+      }
+    }
 
     /// <summary>
     /// Allows or blocks changing a property value.
@@ -153,7 +166,7 @@ namespace Csla.Rules
       AffectedProperties = [];
       InputProperties = [];
       PrimaryProperty = primaryProperty;
-      this.RuleUri = new RuleUri(this, primaryProperty);
+      RuleUri = new RuleUri(this, primaryProperty);
       RunMode = RunModes.Default;
     }
 

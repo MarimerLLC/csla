@@ -103,17 +103,15 @@ namespace Csla.Test.SafeDataReader
 
       using (cm)
       {
-        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
-        {
-          dtSchema = dr.GetSchemaTable();
-          dr.Close();
-        }
+        using var dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
+        dtSchema = dr.GetSchemaTable();
+        dr.Close();
       }
       cn.Close();
 
       Assert.AreEqual("BIGINTFIELD", dtSchema.Rows[0][0]);
-      Assert.AreEqual(typeof(System.Int64), dtSchema.Rows[0][12]);
-      Assert.AreEqual(typeof(System.Byte[]), dtSchema.Rows[1][12]);
+      Assert.AreEqual(typeof(Int64), dtSchema.Rows[0][12]);
+      Assert.AreEqual(typeof(byte[]), dtSchema.Rows[1][12]);
     }
 
     [TestMethod]
@@ -128,13 +126,11 @@ namespace Csla.Test.SafeDataReader
       cn.Open();
       using (cm)
       {
-        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
-        {
-          dr.Read();
-          Assert.AreEqual(true, dr.IsDBNull(2));
-          Assert.AreEqual(false, dr.IsDBNull(1));
-          dr.Close();
-        }
+        using var dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
+        dr.Read();
+        Assert.AreEqual(true, dr.IsDBNull(2));
+        Assert.AreEqual(false, dr.IsDBNull(1));
+        dr.Close();
       }
       cn.Close();
     }
@@ -152,29 +148,27 @@ namespace Csla.Test.SafeDataReader
       char charfield;
       Csla.SmartDate datetimefield;
       Guid uniqueidentifierfield;
-      System.Int16 smallintfield;
-      System.Int32 intfield;
-      System.Int64 bigintfield;
-      System.String text;
+      Int16 smallintfield;
+      Int32 intfield;
+      Int64 bigintfield;
+      String text;
 
       cn.Open();
       using (cm)
       {
-        using (Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader()))
-        {
-          dr.Read();
-          bitfield = dr.GetBoolean("BITFIELD");
-          //this causes an error in vb version (char array initialized to nothing in vb version
-          //and it's initialized with new Char[1] in c# version)
-          charfield = dr.GetChar("CHARFIELD");
-          datetimefield = dr.GetSmartDate("DATETIMEFIELD");
-          uniqueidentifierfield = dr.GetGuid("UNIQUEIDENTIFIERFIELD");
-          smallintfield = dr.GetInt16("SMALLINTFIELD");
-          intfield = dr.GetInt32("INTFIELD");
-          bigintfield = dr.GetInt64("BIGINTFIELD");
-          text = dr.GetString("TEXT");
-          dr.Close();
-        }
+        using var dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
+        dr.Read();
+        bitfield = dr.GetBoolean("BITFIELD");
+        //this causes an error in vb version (char array initialized to nothing in vb version
+        //and it's initialized with new Char[1] in c# version)
+        charfield = dr.GetChar("CHARFIELD");
+        datetimefield = dr.GetSmartDate("DATETIMEFIELD");
+        uniqueidentifierfield = dr.GetGuid("UNIQUEIDENTIFIERFIELD");
+        smallintfield = dr.GetInt16("SMALLINTFIELD");
+        intfield = dr.GetInt32("INTFIELD");
+        bigintfield = dr.GetInt64("BIGINTFIELD");
+        text = dr.GetString("TEXT");
+        dr.Close();
       }
       cn.Close();
 

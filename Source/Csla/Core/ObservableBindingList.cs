@@ -111,12 +111,12 @@ namespace Csla.Core
       add
       {
         _removingItemHandler = (EventHandler<RemovingItemEventArgs>)
-          System.Delegate.Combine(_removingItemHandler, value);
+          Delegate.Combine(_removingItemHandler, value);
       }
       remove
       {
         _removingItemHandler = (EventHandler<RemovingItemEventArgs>)
-          System.Delegate.Remove(_removingItemHandler, value);
+          Delegate.Remove(_removingItemHandler, value);
       }
     }
 
@@ -161,10 +161,10 @@ namespace Csla.Core
     /// Add a range of items to the list.
     /// </summary>
     /// <param name="range">List of items to add.</param>
-    public void AddRange(System.Collections.Generic.IEnumerable<T> range)
+    public void AddRange(IEnumerable<T> range)
     {
       foreach (var element in range)
-        this.Add(element);
+        Add(element);
     }
 
     #endregion
@@ -378,22 +378,22 @@ namespace Csla.Core
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<Csla.Core.ChildChangedEventArgs> _childChangedHandlers;
+    private EventHandler<ChildChangedEventArgs> _childChangedHandlers;
 
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    public event EventHandler<Csla.Core.ChildChangedEventArgs> ChildChanged
+    public event EventHandler<ChildChangedEventArgs> ChildChanged
     {
       add
       {
-        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
-          System.Delegate.Combine(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
+          Delegate.Combine(_childChangedHandlers, value);
       }
       remove
       {
-        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
-          System.Delegate.Remove(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
+          Delegate.Remove(_childChangedHandlers, value);
       }
     }
 
@@ -470,12 +470,12 @@ namespace Csla.Core
       add
       {
         _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>)
-          System.Delegate.Combine(_addedNewHandlers, value);
+          Delegate.Combine(_addedNewHandlers, value);
       }
       remove
       {
         _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>)
-          System.Delegate.Remove(_addedNewHandlers, value);
+          Delegate.Remove(_addedNewHandlers, value);
       }
     }
 
@@ -589,7 +589,7 @@ namespace Csla.Core
 
       public SuppressListChangedEventsClass(ObservableBindingList<TC> businessObject)
       {
-        this._businessObject = businessObject;
+        _businessObject = businessObject;
         _initialRaiseListChangedEvents = businessObject.RaiseListChangedEvents;
         businessObject.RaiseListChangedEvents = false;
       }

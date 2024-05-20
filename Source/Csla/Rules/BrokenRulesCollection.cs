@@ -44,17 +44,17 @@ namespace Csla.Rules
       lock (_syncRoot)
       {
         IsReadOnly = false;
-        base.Clear();
+        Clear();
         ErrorCount = WarningCount = InformationCount = 0;
         IsReadOnly = true;
       }
     }
 
-    internal void ClearRules(Csla.Core.IPropertyInfo property)
+    internal void ClearRules(Core.IPropertyInfo property)
     {
       lock (_syncRoot)
       {
-        this.IsReadOnly = false;
+        IsReadOnly = false;
 
         var propertyName = property == null ? null : property.Name;
         for (int i = 0, n = Count; i < n; i++)
@@ -68,7 +68,7 @@ namespace Csla.Rules
             }
         }
 
-        this.IsReadOnly = true;
+        IsReadOnly = true;
       }
     }
     
@@ -76,7 +76,7 @@ namespace Csla.Rules
     {
       lock (_syncRoot)
       {
-        this.IsReadOnly = false;
+        IsReadOnly = false;
 
         ISet<string> rulesDone = new HashSet<string>();
 
@@ -85,7 +85,7 @@ namespace Csla.Rules
           var result = results[i];
           var resultRuleName = result.RuleName;
 
-          if(!rulesDone.Contains(resultRuleName))
+          if (!rulesDone.Contains(resultRuleName))
           {
             rulesDone.Add(resultRuleName);
 
@@ -102,6 +102,7 @@ namespace Csla.Rules
                                                       resultRuleName));
 
           var resultPrimaryProperty = result.PrimaryProperty;
+          var resultDisplayIndex = result.DisplayIndex;
 
           BrokenRule broken = new BrokenRule
           {
@@ -110,13 +111,14 @@ namespace Csla.Rules
             Property = resultPrimaryProperty == null
                        ? null : resultPrimaryProperty.Name,
             Severity = result.Severity,
-            OriginProperty = originPropertyName
+            OriginProperty = originPropertyName,
+            DisplayIndex = resultDisplayIndex
           };
 
           Add(broken);
         }
 
-        this.IsReadOnly = true;
+        IsReadOnly = true;
       }
     }
 
@@ -208,7 +210,7 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or null if 
     /// there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstBrokenRule(Csla.Core.IPropertyInfo property)
+    public BrokenRule GetFirstBrokenRule(Core.IPropertyInfo property)
     {
       return GetFirstMessage(property.Name, RuleSeverity.Error);
     }
@@ -246,7 +248,7 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or Nothing
     /// (null in C#) if there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstMessage(Csla.Core.IPropertyInfo property)
+    public BrokenRule GetFirstMessage(Core.IPropertyInfo property)
     {
       return this.FirstOrDefault(c => c.Property == property.Name);
     }
@@ -262,7 +264,7 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or Nothing
     /// (null in C#) if there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstMessage(Csla.Core.IPropertyInfo property, RuleSeverity severity)
+    public BrokenRule GetFirstMessage(Core.IPropertyInfo property, RuleSeverity severity)
     {
       return GetFirstMessage(property.Name, severity);
     }

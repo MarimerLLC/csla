@@ -26,7 +26,7 @@ namespace Csla
     /// <summary>
     /// Event raised when the underlying source list is changed.
     /// </summary>
-    public event System.Collections.Specialized.NotifyCollectionChangedEventHandler CollectionChanged;
+    public event NotifyCollectionChangedEventHandler CollectionChanged;
 
     private System.Collections.ObjectModel.ObservableCollection<T> _baseCollection;
     private bool _suppressEvents = false;

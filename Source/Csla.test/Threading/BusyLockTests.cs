@@ -31,12 +31,12 @@ namespace Csla.Test.Threading
 
       public event BusyChangedEventHandler BusyChanged;
 
-      public event EventHandler<Csla.Core.ErrorEventArgs> UnhandledAsyncException;
+      public event EventHandler<Core.ErrorEventArgs> UnhandledAsyncException;
 
       protected virtual void OnUnhandledAsyncException()
       {
         if (UnhandledAsyncException != null)
-          UnhandledAsyncException(this, new Csla.Core.ErrorEventArgs(null, null));
+          UnhandledAsyncException(this, new Core.ErrorEventArgs(null, null));
       }
     }
 
@@ -48,7 +48,7 @@ namespace Csla.Test.Threading
       System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
       worker.DoWork += (_, _) => 
       {
-        System.Threading.Thread.Sleep(10);
+        Thread.Sleep(10);
         busy.MarkBusy(false);
       };
       worker.RunWorkerAsync();

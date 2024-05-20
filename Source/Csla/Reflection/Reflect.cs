@@ -60,12 +60,12 @@ namespace Csla.Reflection
 
     private static System.Reflection.MethodInfo GetMethodInfo(Expression method)
     {
-      if (method == null) throw new ArgumentNullException("method");
+      if (method == null) throw new ArgumentNullException(nameof(method));
 
       if (method is not LambdaExpression lambda)
-        throw new ArgumentException("Not a lambda expression", "method");
+        throw new ArgumentException("Not a lambda expression", nameof(method));
       if (lambda.Body.NodeType != ExpressionType.Call)
-        throw new ArgumentException("Not a method call", "method");
+        throw new ArgumentException("Not a method call", nameof(method));
 
       return ((MethodCallExpression)lambda.Body).Method;
     }
@@ -113,10 +113,10 @@ namespace Csla.Reflection
 
     private static MemberInfo GetMemberInfo(Expression member)
     {
-      if (member == null) throw new ArgumentNullException("member");
+      if (member == null) throw new ArgumentNullException(nameof(member));
 
       if (member is not LambdaExpression lambda)
-        throw new ArgumentException("Not a lambda expression", "member");
+        throw new ArgumentException("Not a lambda expression", nameof(member));
 
       MemberExpression memberExpr = null;
 
@@ -133,7 +133,7 @@ namespace Csla.Reflection
         memberExpr = lambda.Body as MemberExpression;
       }
 
-      if (memberExpr == null) throw new ArgumentException("Not a member access", "member");
+      if (memberExpr == null) throw new ArgumentException("Not a member access", nameof(member));
 
       return memberExpr.Member;
     }

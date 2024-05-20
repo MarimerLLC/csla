@@ -76,13 +76,13 @@ namespace Csla.Core
     /// <param name="key">Key value</param>
     public bool Contains(K key)
     {
-      return base.ContainsKey(key);
+      return ContainsKey(key);
     }
 
     private void DetermineTypes()
     {
-      _keyIsMobile = typeof(Csla.Serialization.Mobile.IMobileObject).IsAssignableFrom(typeof(K));
-      _valueIsMobile = typeof(Csla.Serialization.Mobile.IMobileObject).IsAssignableFrom(typeof(V));
+      _keyIsMobile = typeof(IMobileObject).IsAssignableFrom(typeof(K));
+      _valueIsMobile = typeof(IMobileObject).IsAssignableFrom(typeof(V));
     }
 
     #region IMobileObject Members
@@ -92,7 +92,7 @@ namespace Csla.Core
 
     void IMobileObject.GetState(SerializationInfo info)
     {
-      info.AddValue("count", this.Keys.Count);
+      info.AddValue("count", Keys.Count);
       GetState(info);
     }
 
@@ -106,7 +106,7 @@ namespace Csla.Core
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       int count = 0;
-      foreach (var key in this.Keys)
+      foreach (var key in Keys)
       {
         if (_keyIsMobile)
         {

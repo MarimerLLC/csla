@@ -43,7 +43,7 @@ namespace Csla.Web.Design
     /// <remarks>This schema object only returns
     /// schema for the object itself, so GetChildren will
     /// always return Nothing (null in C#).</remarks>
-    public System.Web.UI.Design.IDataSourceViewSchema[] GetChildren()
+    public IDataSourceViewSchema[] GetChildren()
     {
       return null;
     }
@@ -58,7 +58,7 @@ namespace Csla.Web.Design
     /// <see cref="BrowsableAttribute">Browsable</see> attribute
     /// is False.
     /// </remarks>
-    public System.Web.UI.Design.IDataSourceFieldSchema[] GetFields()
+    public IDataSourceFieldSchema[] GetFields()
     {
       ITypeResolutionService typeService = null;
       List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();

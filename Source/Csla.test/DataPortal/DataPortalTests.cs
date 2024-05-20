@@ -96,7 +96,7 @@ namespace Csla.Test.DataPortal
 
       ClearDataBase();
 
-      Csla.Test.DataPortal.TransactionalRoot tr2 = Csla.Test.DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
+      TransactionalRoot tr2 = TransactionalRoot.NewTransactionalRoot(dataPortal);
       tr2.FirstName = "Jimmy";
       tr2.LastName = "Smith";
       //intentionally input a string longer than varchar(5) to 
@@ -143,7 +143,7 @@ namespace Csla.Test.DataPortal
       IDataPortal<StronglyTypedDP> dataPortal = _testDIContext.CreateDataPortal<StronglyTypedDP>();
 
       //test strongly-typed DataPortal_Fetch method
-      Csla.Test.DataPortal.StronglyTypedDP root = Csla.Test.DataPortal.StronglyTypedDP.GetStronglyTypedDP(456, dataPortal);
+      StronglyTypedDP root = StronglyTypedDP.GetStronglyTypedDP(456, dataPortal);
 
       Assert.AreEqual("Fetched", TestResults.GetResult("StronglyTypedDP"));
       Assert.AreEqual("fetched existing data", root.Data);
@@ -151,14 +151,14 @@ namespace Csla.Test.DataPortal
 
       //test strongly-typed DataPortal_Create method
       TestResults.Reinitialise();
-      Csla.Test.DataPortal.StronglyTypedDP root2 = Csla.Test.DataPortal.StronglyTypedDP.NewStronglyTypedDP(dataPortal);
+      StronglyTypedDP root2 = StronglyTypedDP.NewStronglyTypedDP(dataPortal);
 
       Assert.AreEqual("Created", TestResults.GetResult("StronglyTypedDP"));
       Assert.AreEqual("new default data", root2.Data);
       Assert.AreEqual(56, root2.Id);
 
       //test strongly-typed DataPortal_Delete method
-      Csla.Test.DataPortal.StronglyTypedDP.DeleteStronglyTypedDP(567, dataPortal);
+      StronglyTypedDP.DeleteStronglyTypedDP(567, dataPortal);
       Assert.AreEqual("567", TestResults.GetResult("StronglyTypedDP_Criteria"));
     }
 
@@ -192,7 +192,7 @@ namespace Csla.Test.DataPortal
     public void DataPortalBrokerTests()
     {
       var dps = _testDIContext.ServiceProvider.GetRequiredService<Server.DataPortalSelector>();
-      var oldServer = Csla.Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer(dps);
+      var oldServer = Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer(dps);
 
       try
       {
@@ -232,7 +232,7 @@ namespace Csla.Test.DataPortal
       finally
       {
         TestResults.Reinitialise();
-        Csla.Server.DataPortalBroker.DataPortalServer = oldServer;
+        Server.DataPortalBroker.DataPortalServer = oldServer;
       }
     }
 
@@ -398,7 +398,7 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  [Csla.Server.ObjectFactory(typeof(FactoryBusyFactory))]
+  [Server.ObjectFactory(typeof(FactoryBusyFactory))]
   public class FactoryBusy : BusinessBase<FactoryBusy>
   {
     public void MarkObjectBusy()

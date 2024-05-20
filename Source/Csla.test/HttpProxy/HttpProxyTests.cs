@@ -18,9 +18,9 @@ public class HttpProxyTests
   {
     _testDIContext = TestDIContextFactory.CreateDefaultContext();
     var applicationContext = _testDIContext.CreateTestApplicationContext();
-    var dataPortalOptions = applicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
+    var dataPortalOptions = applicationContext.GetRequiredService<DataPortalOptions>();
 
-    var proxyOptions = new Csla.Channels.Http.HttpProxyOptions();
+    var proxyOptions = new HttpProxyOptions();
     _systemUnderTest = new TestHttpProxy(applicationContext, null, proxyOptions, dataPortalOptions);
     _testHttClientHandler = new TestHttpClientHandler();
     _systemUnderTest.TestHttpClientHandlerToReturn = _testHttClientHandler;

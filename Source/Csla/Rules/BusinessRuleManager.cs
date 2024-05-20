@@ -38,12 +38,12 @@ namespace Csla.Rules
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
-          (_) => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
+          _ => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
         );
 
       return rulesInfo.Item2;
 #else
-      return _perTypeRules.Value.GetOrAdd(key, (_) => { return new BusinessRuleManager(); });
+      return _perTypeRules.Value.GetOrAdd(key, _ => { return new BusinessRuleManager(); });
 #endif
     }
 
@@ -77,12 +77,12 @@ namespace Csla.Rules
         if (!(obj is RuleSetKey other))
           return false;
         else
-          return this.Type.Equals(other.Type) && RuleSet == other.RuleSet;
+          return Type.Equals(other.Type) && RuleSet == other.RuleSet;
       }
 
       public override int GetHashCode()
       {
-        return (this.Type.FullName + RuleSet).GetHashCode();
+        return (Type.FullName + RuleSet).GetHashCode();
       }
     }
 

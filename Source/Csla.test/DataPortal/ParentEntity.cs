@@ -103,7 +103,7 @@ namespace Csla.Test.DataBinding
 
       public Criteria(int id)
       {
-        this._id = id;
+        _id = id;
       }
     }
 

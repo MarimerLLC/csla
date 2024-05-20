@@ -25,17 +25,17 @@ namespace Csla.Rules
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="message">The message.</param>
     /// <param name="severity">The rule severity.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity) 
-      where T: Csla.Core.BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity) 
+      where T: BusinessBase
     {
-      var rule = new CommonRules.Lambda(primaryProperty, (o) =>
+      var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
         var target = (T) o.Target;
         using (target.BypassPropertyChecks)
         {
           if (!ruleHandler.Invoke(target))
           {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName)) {Severity = severity});
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName), o.Rule.DisplayIndex) {Severity = severity});
           }
         }
       });
@@ -53,7 +53,7 @@ namespace Csla.Rules
     /// <param name="primaryProperty">The primary property.</param>
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="message">The message.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message) where T : BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message) where T : BusinessBase
     {
       AddRule(businessRules, primaryProperty, ruleHandler, message, RuleSeverity.Error);
     }
@@ -68,17 +68,17 @@ namespace Csla.Rules
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="message">The message.</param>
     /// <param name="severity">The rule severity.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity)
-      where T : Csla.Core.BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity)
+      where T : BusinessBase
     {
-      var rule = new CommonRules.Lambda(primaryProperty, (o) =>
+      var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
         var target = (T)o.Target;
         using (target.BypassPropertyChecks)
         {
           if (!ruleHandler.Invoke(target))
           {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName)) { Severity = severity });
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, string.Format(message, o.Rule.PrimaryProperty.FriendlyName), o.Rule.DisplayIndex) { Severity = severity });
           }
         }
       });
@@ -96,7 +96,7 @@ namespace Csla.Rules
     /// <param name="primaryProperty">The primary property.</param>
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="message">The message.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message) where T : BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message) where T : BusinessBase
     {
       AddRule(businessRules, ruleSet, primaryProperty, ruleHandler, message, RuleSeverity.Error);
     }
@@ -110,8 +110,8 @@ namespace Csla.Rules
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="messageDelegate">The message delegate.</param>
     /// <param name="severity">The rule severity.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate, RuleSeverity severity) 
-      where T: Csla.Core.BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate, RuleSeverity severity) 
+      where T: BusinessBase
     {
       AddRule(businessRules, ApplicationContext.DefaultRuleSet, primaryProperty, ruleHandler, messageDelegate, severity);
     }
@@ -125,7 +125,7 @@ namespace Csla.Rules
     /// <param name="primaryProperty">The primary property.</param>
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="messageDelegate">The message delegate.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate) where T : BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate) where T : BusinessBase
     {
       AddRule(businessRules, ApplicationContext.DefaultRuleSet, primaryProperty, ruleHandler, messageDelegate, RuleSeverity.Error);
     }
@@ -140,17 +140,17 @@ namespace Csla.Rules
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="messageDelegate">The message delegate.</param>
     /// <param name="severity">The rule severity.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate, RuleSeverity severity)
-      where T : Csla.Core.BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate, RuleSeverity severity)
+      where T : BusinessBase
     {
-      var rule = new CommonRules.Lambda(primaryProperty, (o) =>
+      var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
         var target = (T)o.Target;
         using (target.BypassPropertyChecks)
         {
           if (!ruleHandler.Invoke(target))
           {
-            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, messageDelegate.Invoke()) { Severity = severity });
+            o.Results.Add(new RuleResult(o.Rule.RuleName, primaryProperty, messageDelegate.Invoke(), o.Rule.DisplayIndex) { Severity = severity });
           }
         }
       });
@@ -168,7 +168,7 @@ namespace Csla.Rules
     /// <param name="primaryProperty">The primary property.</param>
     /// <param name="ruleHandler">The rule handler.</param>
     /// <param name="messageDelegate">The message delegate.</param>
-    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, Csla.Core.IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate) where T : BusinessBase
+    public static void AddRule<T>(this BusinessRules businessRules, string ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate) where T : BusinessBase
     {
       AddRule(businessRules, ruleSet, primaryProperty, ruleHandler, messageDelegate, RuleSeverity.Error);
     }

@@ -72,7 +72,7 @@ namespace Csla.Rules
       }
     }
     
-    internal void SetBrokenRules(List<RuleResult> results, string originPropertyName, int Priority)
+    internal void SetBrokenRules(List<RuleResult> results, string originPropertyName, int priority)
     {
       lock (_syncRoot)
       {
@@ -112,11 +112,8 @@ namespace Csla.Rules
                        ? null : resultPrimaryProperty.Name,
             Severity = result.Severity,
             OriginProperty = originPropertyName,
-
-            Priority = Priority,
-
+            Priority = priority,
             DisplayIndex = resultDisplayIndex
-
           };
 
           Add(broken);

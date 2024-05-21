@@ -60,6 +60,8 @@ namespace Csla.Test.Threading
 
       // Assert
       Assert.IsTrue(taskr.IsCompleted);
+      Assert.IsFalse(taskr.IsFaulted);
+      Assert.IsFalse(taskr.IsCanceled);
     }
 
     [TestMethod]

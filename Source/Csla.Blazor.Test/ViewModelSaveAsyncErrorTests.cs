@@ -112,11 +112,6 @@ namespace Csla.Blazor.Test
 
       var cancellationTokenSource = new CancellationTokenSource();
       cancellationTokenSource.Cancel();
-      var task = vm.RefreshAsync(async () =>
-        {
-          await Task.Delay(TimeSpan.FromHours(1));
-          return person;
-        });
       // Act
       await vm.SaveAsync(cancellationTokenSource.Token);
 
@@ -128,6 +123,22 @@ namespace Csla.Blazor.Test
 
     private class FakeBusy : Core.ITrackStatus
     {
+      public FakeBusy()
+      {
+        BusyChanged += FakeBusy_BusyChanged;
+        UnhandledAsyncException += FakeBusy_UnhandledAsyncException;
+      }
+
+      private void FakeBusy_UnhandledAsyncException(object sender, Core.ErrorEventArgs e)
+      {
+
+      }
+
+      private void FakeBusy_BusyChanged(object sender, BusyChangedEventArgs e)
+      {
+
+      }
+
       public bool IsValid { get; set; }
 
       public bool IsSelfValid { get; set; }

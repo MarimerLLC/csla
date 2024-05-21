@@ -67,7 +67,7 @@ namespace Csla.Rules
     /// Gets the name of the element (property/method)
     /// to which this rule is associated.
     /// </summary>
-    protected IMemberInfo Element
+    public IMemberInfo Element
     {
       get { return _element; }
       set
@@ -103,11 +103,6 @@ namespace Csla.Rules
       if (!_locked)
         _locked = true;
       Execute(context);
-    }
-
-    IMemberInfo IAuthorizationRule.Element
-    {
-      get { return Element; }
     }
 
     /// <summary>

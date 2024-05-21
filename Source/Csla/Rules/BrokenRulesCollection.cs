@@ -283,7 +283,7 @@ namespace Csla.Rules
     /// </returns>
     public BrokenRule GetFirstMessage(string property, RuleSeverity severity)
     {
-      return this.OrderBy(c => c.Property).FirstOrDefault(c => c.Property == property && c.Severity == severity);
+      return this.OrderBy(c => c.Priority).FirstOrDefault(c => c.Property == property && c.Severity == severity);
     }
 
     /// <summary>

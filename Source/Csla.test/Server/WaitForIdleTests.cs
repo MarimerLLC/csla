@@ -59,6 +59,8 @@ namespace Csla.Server.Tests
       // Add assertion for idle state
     }
 
+
+
     [TestMethod]
     public async Task WaitForIdle_Should_ThrowCancelledTaskException()
     {

@@ -5,28 +5,9 @@ namespace Csla.Server.Tests
 {
   public class FakeEntity : IEditableBusinessObject, IUndoableObject, ISavable, IMobileObject, IBusinessObject
   {
-    public FakeEntity()
-    {
-      BusyChanged += FakeEntity_BusyChanged;
-      UnhandledAsyncException += FakeEntity_UnhandledAsyncException;
-      Saved += FakeEntity_Saved;
-    }
-
     public event BusyChangedEventHandler BusyChanged;
     public event EventHandler<Core.ErrorEventArgs> UnhandledAsyncException;
     public event EventHandler<SavedEventArgs> Saved;
-
-    private void FakeEntity_Saved(object sender, SavedEventArgs e)
-    {
-    }
-
-    private void FakeEntity_UnhandledAsyncException(object sender, Core.ErrorEventArgs e)
-    {
-    }
-
-    private void FakeEntity_BusyChanged(object sender, BusyChangedEventArgs e)
-    {
-    }
     public int EditLevelAdded { get; set; }
 
     public int Identity { get; set; }
@@ -49,7 +30,19 @@ namespace Csla.Server.Tests
 
     public bool IsChild { get; set; }
 
-    public bool IsBusy { get; set; }
+    private bool _IsBusy;
+    public bool IsBusy
+    {
+      get
+      {
+        return _IsBusy;
+      }
+      set
+      {
+        _IsBusy = value;
+        BusyChanged?.Invoke(value, new BusyChangedEventArgs(nameof(IsBusy), value));
+      }
+    }
 
     public bool IsSelfBusy { get; set; }
 
@@ -62,9 +55,23 @@ namespace Csla.Server.Tests
     public void DeleteChild() { }
     public void GetChildren(SerializationInfo info, MobileFormatter formatter) { }
     public void GetState(SerializationInfo info) { }
-    public object Save() { return string.Empty; }
+    public object Save()
+    {
+      Saved?.Invoke(this, new SavedEventArgs(this)); return string.Empty;
+    }
     public object Save(bool forceUpdate) { return string.Empty; }
-    public Task SaveAndMergeAsync() { return Task.CompletedTask; }
+    public Task SaveAndMergeAsync()
+    {
+      try
+      {
+        return Task.CompletedTask;
+      }
+      catch (Exception ex)
+      {
+        UnhandledAsyncException?.Invoke(this, new Core.ErrorEventArgs(this, ex));
+      }
+      return Task.CompletedTask;
+    }
     public Task SaveAndMergeAsync(bool forceUpdate) { return Task.CompletedTask; }
     public Task<object> SaveAsync() { return Task.FromResult(new object()); }
     public Task<object> SaveAsync(bool forceUpdate) { return Task.FromResult(new object()); }

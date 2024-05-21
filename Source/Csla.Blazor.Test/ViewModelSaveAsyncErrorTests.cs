@@ -125,18 +125,6 @@ namespace Csla.Blazor.Test
     {
       public FakeBusy()
       {
-        BusyChanged += FakeBusy_BusyChanged;
-        UnhandledAsyncException += FakeBusy_UnhandledAsyncException;
-      }
-
-      private void FakeBusy_UnhandledAsyncException(object sender, Core.ErrorEventArgs e)
-      {
-
-      }
-
-      private void FakeBusy_BusyChanged(object sender, BusyChangedEventArgs e)
-      {
-
       }
 
       public bool IsValid { get; set; }
@@ -155,7 +143,20 @@ namespace Csla.Blazor.Test
 
       public bool IsChild { get; set; }
 
-      public bool IsBusy { get; set; }
+      private bool _IsBusy;
+      public bool IsBusy
+      {
+        get
+        {
+          UnhandledAsyncException?.Invoke(this, new Core.ErrorEventArgs(this, new Exception()));
+          return _IsBusy;
+        }
+        set
+        {
+          _IsBusy = value;
+          BusyChanged?.Invoke(value, new BusyChangedEventArgs(nameof(IsBusy), value));
+        }
+      }
 
       public bool IsSelfBusy { get; set; }
 

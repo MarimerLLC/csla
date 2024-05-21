@@ -237,7 +237,7 @@ namespace Csla.Blazor
       {
         if (Model is Core.ITrackStatus obj && !obj.IsSavable)
         {
-          await BusyHelper.WaitForIdle(obj, BusyTimeout).ConfigureAwait(false);
+          await BusyHelper.WaitForIdle(obj, BusyTimeout);
           
           if (!obj.IsValid)
           {

@@ -76,18 +76,19 @@ namespace Csla.Blazor.Test
     public async Task SavingSuccess_BusyHelper()
     {
       // Arrange
-      IDataPortal<PersonEdit> dataPortal;
-      PersonEdit person;
+      IDataPortal<Person> dataPortal;
+      Person person;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = _testDIContext.CreateDataPortal<PersonEdit>();
+      dataPortal = _testDIContext.CreateDataPortal<Person>();
       person = dataPortal.Create();
       person.Name = "TestTest";
       
       var appCntxt = _testDIContext.CreateTestApplicationContext();
-      var vm = new ViewModel<PersonEdit>(appCntxt)
+      var vm = new ViewModel<Person>(appCntxt)
       {
-        Model = person
+        Model = person,
+        BusyTimeout = TimeSpan.FromSeconds(3)
       };
 
       await vm.SaveAsync();
@@ -109,12 +110,13 @@ namespace Csla.Blazor.Test
       var appCntxt = _testDIContext.CreateTestApplicationContext();
       var vm = new ViewModel<Person>(appCntxt)
       {
-        Model = person
+        Model = person,
+        BusyTimeout = TimeSpan.FromSeconds(1)
       };
 
       await vm.SaveAsync();
       Assert.IsNotNull(vm.Exception);
-      Assert.AreEqual(vm.Exception.Message, "Csla.Blazor.Test.Person.SaveAsync - 00:00:30.");
+      Assert.AreEqual(vm.Exception.Message, "Csla.Blazor.Test.Person.SaveAsync - 00:00:01.");
     }
 
     #region Helper Methods

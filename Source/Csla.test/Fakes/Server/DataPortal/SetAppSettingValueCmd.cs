@@ -13,7 +13,7 @@ using System.Reflection;
 namespace  Csla.Testing.Business.DataPortal
 {
   [Serializable]
-  public class SetAppSettingValueCmd : Csla.CommandBase<SetAppSettingValueCmd>
+  public class SetAppSettingValueCmd : CommandBase<SetAppSettingValueCmd>
   {
     public static readonly PropertyInfo<string> AppSettingsKeyProperty = RegisterProperty(
       typeof(SetAppSettingValueCmd),

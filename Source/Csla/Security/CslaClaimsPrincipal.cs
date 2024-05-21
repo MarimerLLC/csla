@@ -77,7 +77,7 @@ namespace Csla.Security
     /// a binary stream.
     /// </summary>
     /// <param name="reader">Binary reader</param>
-    public CslaClaimsPrincipal(System.IO.BinaryReader reader)
+    public CslaClaimsPrincipal(BinaryReader reader)
       : base(reader)
     { }
 

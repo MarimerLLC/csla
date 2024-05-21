@@ -39,9 +39,9 @@ namespace Csla.AspNetCore.Mvc.TagHelpers
       var propertyName = parts[parts.Length - 1];
       object source = model;
       for (int i = 0; i < parts.Length - 1; i++)
-        source = Csla.Reflection.MethodCaller.CallPropertyGetter(source, parts[i]);
+        source = Reflection.MethodCaller.CallPropertyGetter(source, parts[i]);
       var result = string.Empty;
-      if (source is Csla.Core.BusinessBase obj)
+      if (source is Core.BusinessBase obj)
         result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Warning, propertyName);
       output.Content.SetContent(result);
     }

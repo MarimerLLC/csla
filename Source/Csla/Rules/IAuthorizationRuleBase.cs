@@ -18,7 +18,7 @@ namespace Csla.Rules
     /// Gets the element (property/method)
     /// to which this rule is associated.
     /// </summary>
-    Csla.Core.IMemberInfo Element { get; }
+    Core.IMemberInfo Element { get; }
     /// <summary>
     /// Gets the authorization action this rule
     /// will enforce.

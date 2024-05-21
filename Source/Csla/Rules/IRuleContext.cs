@@ -29,7 +29,7 @@ namespace Csla.Rules
     /// Gets a dictionary containing copies of property values from
     /// the target business object.
     /// </summary>
-    Dictionary<Csla.Core.IPropertyInfo, object> InputPropertyValues { get; }
+    Dictionary<IPropertyInfo, object> InputPropertyValues { get; }
     /// <summary>
     /// Gets a list of dirty properties (value was updated).
     /// </summary>
@@ -41,7 +41,7 @@ namespace Csla.Rules
     /// Gets a dictionary containing copies of property values that
     /// should be updated in the target object.
     /// </summary>
-    Dictionary<Csla.Core.IPropertyInfo, object> OutputPropertyValues { get; }
+    Dictionary<IPropertyInfo, object> OutputPropertyValues { get; }
     /// <summary>
     /// Gets a list of RuleResult objects containing the
     /// results of the rule.
@@ -120,7 +120,7 @@ namespace Csla.Rules
     /// <param name="description">Human-readable description of
     /// why the rule failed.</param>
     /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
-    void AddErrorResult(Csla.Core.IPropertyInfo property, string description);
+    void AddErrorResult(IPropertyInfo property, string description);
     /// <summary>
     /// Add a Warning severity result to the Results list.
     /// </summary>
@@ -142,7 +142,7 @@ namespace Csla.Rules
     /// <param name="property">Property to which the result applies.</param>
     /// <param name="description">Human-readable description of  why the rule failed.</param>
     /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>    
-    void AddWarningResult(Csla.Core.IPropertyInfo property, string description);
+    void AddWarningResult(IPropertyInfo property, string description);
     /// <summary>
     /// Add an Information severity result to the Results list.
     /// </summary>
@@ -162,7 +162,7 @@ namespace Csla.Rules
     /// <param name="property">Property to which the result applies.</param>
     /// <param name="description">Human-readable description of why the rule failed.</param>
     /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
-    void AddInformationResult(Csla.Core.IPropertyInfo property, string description);
+    void AddInformationResult(IPropertyInfo property, string description);
     /// <summary>
     /// Add a Success severity result to the Results list.
     /// </summary>
@@ -181,13 +181,13 @@ namespace Csla.Rules
     /// <param name="property">Property to update.</param>
     /// <param name="value">New property value.</param>
     /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
-    void AddOutValue(Csla.Core.IPropertyInfo property, object value);
+    void AddOutValue(IPropertyInfo property, object value);
     /// <summary>
     /// Adds a property name as a dirty field (changed value).
     /// </summary>
     /// <param name="property">The property.</param>
     /// <exception cref="System.ArgumentOutOfRangeException"></exception>
-    void AddDirtyProperty(Csla.Core.IPropertyInfo property);
+    void AddDirtyProperty(IPropertyInfo property);
     /// <summary>
     /// Indicates that the rule processing is complete, so
     /// CSLA .NET will process the Results list. This method

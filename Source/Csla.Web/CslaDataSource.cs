@@ -18,7 +18,7 @@ namespace Csla.Web
   /// A Web Forms data binding control designed to support
   /// CSLA .NET business objects as data sources.
   /// </summary>
-  [Designer(typeof(Csla.Web.Design.CslaDataSourceDesigner))]
+  [Designer(typeof(Design.CslaDataSourceDesigner))]
   [DisplayName("CslaDataSource")]
   [Description("CSLA .NET Data Source Control")]
   [ToolboxData("<{0}:CslaDataSource runat=\"server\"></{0}:CslaDataSource>")]
@@ -78,8 +78,8 @@ namespace Csla.Web
     /// <value>Obsolete - do not use.</value>
     public string TypeAssemblyName
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeAssemblyName = value; }
+      get { return ((CslaDataSourceView)GetView("Default")).TypeAssemblyName; }
+      set { ((CslaDataSourceView)GetView("Default")).TypeAssemblyName = value; }
     }
 
     /// <summary>
@@ -90,8 +90,8 @@ namespace Csla.Web
     /// including assembly name.</value>
     public string TypeName
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeName; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeName = value; }
+      get { return ((CslaDataSourceView)GetView("Default")).TypeName; }
+      set { ((CslaDataSourceView)GetView("Default")).TypeName = value; }
     }
 
     /// <summary>
@@ -105,8 +105,8 @@ namespace Csla.Web
     /// </remarks>
     public bool TypeSupportsPaging
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsPaging = value; }
+      get { return ((CslaDataSourceView)GetView("Default")).TypeSupportsPaging; }
+      set { ((CslaDataSourceView)GetView("Default")).TypeSupportsPaging = value; }
     }
 
     /// <summary>
@@ -115,11 +115,11 @@ namespace Csla.Web
     /// </summary>
     public bool TypeSupportsSorting
     {
-      get { return ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting; }
-      set { ((CslaDataSourceView)this.GetView("Default")).TypeSupportsSorting = value; }
+      get { return ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting; }
+      set { ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting = value; }
     }
 
-    private static System.Collections.Generic.Dictionary<string,Type> _typeCache = [];
+    private static Dictionary<string,Type> _typeCache = [];
 
     /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the

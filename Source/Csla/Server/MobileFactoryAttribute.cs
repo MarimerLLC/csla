@@ -77,12 +77,12 @@ namespace Csla.Server
     /// </remarks>
     public MobileFactoryAttribute(string factoryType)
     {
-      this.FactoryTypeName = factoryType;
-      this.CreateMethodName = "Create";
-      this.FetchMethodName = "Fetch";
-      this.UpdateMethodName = "Update";
-      this.DeleteMethodName = "Delete";
-      this.ExecuteMethodName = "Execute";
+      FactoryTypeName = factoryType;
+      CreateMethodName = "Create";
+      FetchMethodName = "Fetch";
+      UpdateMethodName = "Update";
+      DeleteMethodName = "Delete";
+      ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -98,12 +98,12 @@ namespace Csla.Server
     /// </param>
     public MobileFactoryAttribute(string factoryType, string createMethod, string fetchMethod)
     {
-      this.FactoryTypeName = factoryType;
-      this.CreateMethodName = createMethod;
-      this.FetchMethodName = fetchMethod;
-      this.UpdateMethodName = "Update";
-      this.DeleteMethodName = "Delete";
-      this.ExecuteMethodName = "Execute";
+      FactoryTypeName = factoryType;
+      CreateMethodName = createMethod;
+      FetchMethodName = fetchMethod;
+      UpdateMethodName = "Update";
+      DeleteMethodName = "Delete";
+      ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -117,12 +117,12 @@ namespace Csla.Server
     /// </param>
     public MobileFactoryAttribute(string factoryType, string fetchMethod)
     {
-      this.FactoryTypeName = factoryType;
-      this.FetchMethodName = fetchMethod;
-      this.CreateMethodName = "Create";
-      this.UpdateMethodName = "Update";
-      this.DeleteMethodName = "Delete";
-      this.ExecuteMethodName = "Execute";
+      FactoryTypeName = factoryType;
+      FetchMethodName = fetchMethod;
+      CreateMethodName = "Create";
+      UpdateMethodName = "Update";
+      DeleteMethodName = "Delete";
+      ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -143,12 +143,12 @@ namespace Csla.Server
     public MobileFactoryAttribute(
       string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
     {
-      this.FactoryTypeName = factoryType;
-      this.CreateMethodName = createMethod;
-      this.FetchMethodName = fetchMethod;
-      this.UpdateMethodName = updateMethod;
-      this.DeleteMethodName = deleteMethod;
-      this.ExecuteMethodName = "Execute";
+      FactoryTypeName = factoryType;
+      CreateMethodName = createMethod;
+      FetchMethodName = fetchMethod;
+      UpdateMethodName = updateMethod;
+      DeleteMethodName = deleteMethod;
+      ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -171,12 +171,12 @@ namespace Csla.Server
     public MobileFactoryAttribute(
       string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
     {
-      this.FactoryTypeName = factoryType;
-      this.CreateMethodName = createMethod;
-      this.FetchMethodName = fetchMethod;
-      this.UpdateMethodName = updateMethod;
-      this.DeleteMethodName = deleteMethod;
-      this.ExecuteMethodName = executeMethod;
+      FactoryTypeName = factoryType;
+      CreateMethodName = createMethod;
+      FetchMethodName = fetchMethod;
+      UpdateMethodName = updateMethod;
+      DeleteMethodName = deleteMethod;
+      ExecuteMethodName = executeMethod;
     }
 
   }

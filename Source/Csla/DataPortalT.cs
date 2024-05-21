@@ -41,7 +41,7 @@ namespace Csla
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
     private ApplicationContext _applicationContext;
-    private DataPortalClient.IDataPortalProxy DataPortalProxy { get; set; }
+    private IDataPortalProxy DataPortalProxy { get; set; }
 
     private IDataPortalCache Cache { get; set; }
     private DataPortalClientOptions DataPortalClientOptions { get; set; }
@@ -52,7 +52,7 @@ namespace Csla
 
       public object Argument { get; set; }
       public System.Security.Principal.IPrincipal Principal { get; set; }
-      public Csla.Core.ContextDictionary ClientContext { get; set; }
+      public Core.ContextDictionary ClientContext { get; set; }
       public object UserState { get; set; }
       // passes CurrentCulture and CurrentUICulture to the async thread
       public CultureInfo CurrentCulture;
@@ -61,12 +61,12 @@ namespace Csla
       public DataPortalAsyncRequest(ApplicationContext applicationContext, object argument, object userState)
       {
         _applicationContext = applicationContext;
-        this.Argument = argument;
-        this.Principal = _applicationContext.User;
-        this.ClientContext = _applicationContext.ClientContext;
-        this.UserState = userState;
-        this.CurrentCulture = System.Globalization.CultureInfo.CurrentCulture;
-        this.CurrentUICulture = System.Globalization.CultureInfo.CurrentUICulture;
+        Argument = argument;
+        Principal = _applicationContext.User;
+        ClientContext = _applicationContext.ClientContext;
+        UserState = userState;
+        CurrentCulture = CultureInfo.CurrentCulture;
+        CurrentUICulture = CultureInfo.CurrentUICulture;
       }
     }
 
@@ -78,9 +78,9 @@ namespace Csla
 
       public DataPortalAsyncResult(T result, Exception error, object userState)
       {
-        this.Result = result;
-        this.UserState = userState;
-        this.Error = error;
+        Result = result;
+        UserState = userState;
+        Error = error;
       }
     }
 
@@ -114,7 +114,7 @@ namespace Csla
         var proxy = GetDataPortalProxy(method);
 
         dpContext =
-          new Csla.Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+          new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -214,7 +214,7 @@ namespace Csla
         var proxy = GetDataPortalProxy(method);
 
         dpContext =
-          new Csla.Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+          new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -258,7 +258,7 @@ namespace Csla
         var proxy = GetDataPortalProxy(method);
 
         dpContext =
-          new Csla.Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+          new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -343,11 +343,11 @@ namespace Csla
       Type objectType = obj.GetType();
       try
       {
-        DataPortalClient.IDataPortalProxy proxy = null;
-        var factoryInfo = Csla.Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
+        IDataPortalProxy proxy = null;
+        var factoryInfo = Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
-          Csla.Server.DataPortalMethodInfo method = null;
+          Server.DataPortalMethodInfo method = null;
           var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
           var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
 
@@ -406,7 +406,7 @@ namespace Csla
             }
           }
           if (method == null)
-            method = new Csla.Server.DataPortalMethodInfo();
+            method = new Server.DataPortalMethodInfo();
           proxy = GetDataPortalProxy(method.RunLocal);
         }
         else
@@ -664,7 +664,7 @@ namespace Csla
       return (T)await DoFetchAsync(typeof(T), criteria, false);
     }
 
-    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo method)
+    private IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo method)
     {
       if (method != null)
         return GetDataPortalProxy(method.MethodInfo.RunLocal());
@@ -672,10 +672,10 @@ namespace Csla
         return GetDataPortalProxy(false);
     }
 
-    private DataPortalClient.IDataPortalProxy GetDataPortalProxy(bool forceLocal)
+    private IDataPortalProxy GetDataPortalProxy(bool forceLocal)
     {
       if (forceLocal || _applicationContext.IsOffline)
-        return _applicationContext.CreateInstanceDI<Csla.Channels.Local.LocalProxy>();
+        return _applicationContext.CreateInstanceDI<Channels.Local.LocalProxy>();
       else
         return DataPortalProxy;
     }

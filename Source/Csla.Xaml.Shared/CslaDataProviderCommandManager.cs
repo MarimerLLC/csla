@@ -102,7 +102,7 @@ namespace Csla.Xaml
         if (ctl.Provider.Data is IBindingList list)
         {
           result = list.AllowNew;
-          if (result && !Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
+          if (result && !Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
             result = false;
         }
       }
@@ -130,7 +130,7 @@ namespace Csla.Xaml
           if (list != null)
           {
             result = list.AllowRemove;
-            if (result && !Csla.Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
+            if (result && !Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
               result = false;
           }
         }

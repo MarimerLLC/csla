@@ -43,10 +43,10 @@ namespace Csla.Test.LogicalExecutionLocation
       LocationBusinessBase item = LocationBusinessBase.GetLocationBusinessBase(dataPortal);
 #pragma warning restore CS0436 // Type conflicts with imported type
 
-      Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), item.Data, "Should be server");
-      Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), item.NestedData, "Nested should be server");
+      Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server.ToString(), item.Data, "Should be server");
+      Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server.ToString(), item.NestedData, "Nested should be server");
 
-      Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Client, applicationContext.LogicalExecutionLocation, "Should be client");
+      Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, applicationContext.LogicalExecutionLocation, "Should be client");
 
     }
 
@@ -61,10 +61,10 @@ namespace Csla.Test.LogicalExecutionLocation
       LocationBusinessBase item = LocationBusinessBase.GetLocationBusinessBase(dataPortal);
 #pragma warning restore CS0436 // Type conflicts with imported type
 
-      Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Server.ToString(), item.Rule, "Should be server");
+      Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Server.ToString(), item.Rule, "Should be server");
 
       item.Data = "random";
-      Assert.AreEqual(Csla.ApplicationContext.LogicalExecutionLocations.Client.ToString(), item.Rule, "Should be client");
+      Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client.ToString(), item.Rule, "Should be client");
 
     }
   }

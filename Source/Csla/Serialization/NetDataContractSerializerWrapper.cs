@@ -25,7 +25,7 @@ namespace Csla.Serialization
     /// <param name="serializationStream">
     /// Byte stream containing the serialized data.</param>
     /// <returns>A deserialized object graph.</returns>
-    public object Deserialize(System.IO.Stream serializationStream)
+    public object Deserialize(Stream serializationStream)
     {
       return Formatter.Deserialize(serializationStream);
     }
@@ -49,7 +49,7 @@ namespace Csla.Serialization
     /// <param name="serializationStream">
     /// Stream that will contain the the serialized data.</param>
     /// <param name="graph">Object graph to be serialized.</param>
-    public void Serialize(System.IO.Stream serializationStream, object graph)
+    public void Serialize(Stream serializationStream, object graph)
     {
       Formatter.Serialize(serializationStream, graph);
     }

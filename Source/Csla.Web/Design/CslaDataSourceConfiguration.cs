@@ -38,7 +38,7 @@ namespace Csla.Web.Design
     {
       _control = control;
       DiscoverTypes();
-      this.TypeComboBox.Text = oldTypeName;
+      TypeComboBox.Text = oldTypeName;
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ namespace Csla.Web.Design
     /// </summary>
     public string TypeName
     {
-      get { return this.TypeComboBox.Text; }
+      get { return TypeComboBox.Text; }
     }
 
     private void DiscoverTypes()
@@ -71,7 +71,7 @@ namespace Csla.Web.Design
           foreach (Type type in types)
           {
             if (type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) != "Csla" &&
-              typeof(Csla.Core.IBusinessObject).IsAssignableFrom(type))
+              typeof(Core.IBusinessObject).IsAssignableFrom(type))
             {
               string name = type.AssemblyQualifiedName;
               if (name.Substring(name.Length - 19, 19) == "PublicKeyToken=null")

@@ -76,7 +76,7 @@ namespace Csla.Server
         if (CallExceptionInspector(objectType, businessObject, criteria, methodName, ex.InnerException, out handledException))
         {
           // developer should only transform and if rethrows a new we will wrap as new CallMethodException
-          ex = new Csla.Reflection.CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException);
+          ex = new CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException);
         }
       }
       else

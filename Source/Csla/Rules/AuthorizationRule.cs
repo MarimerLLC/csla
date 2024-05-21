@@ -17,7 +17,7 @@ namespace Csla.Rules
   /// </summary>
   public abstract class AuthorizationRule : IAuthorizationRule
   {
-    private Csla.Core.IMemberInfo _element;
+    private IMemberInfo _element;
     private AuthorizationActions _action;
     private bool _cacheResult = true;
     private bool _locked = false;
@@ -35,7 +35,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Method or property.</param>
-    public AuthorizationRule(AuthorizationActions action, Csla.Core.IMemberInfo element)
+    public AuthorizationRule(AuthorizationActions action, IMemberInfo element)
       : this(action)
     {
       _element = element;
@@ -67,7 +67,7 @@ namespace Csla.Rules
     /// Gets the name of the element (property/method)
     /// to which this rule is associated.
     /// </summary>
-    protected Csla.Core.IMemberInfo Element
+    protected IMemberInfo Element
     {
       get { return _element; }
       set
@@ -105,7 +105,7 @@ namespace Csla.Rules
       Execute(context);
     }
 
-    Csla.Core.IMemberInfo IAuthorizationRuleBase.Element
+    IMemberInfo IAuthorizationRule.Element
     {
       get { return Element; }
     }
@@ -133,7 +133,7 @@ namespace Csla.Rules
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>
-    protected object ReadProperty(object obj, Csla.Core.IPropertyInfo propertyInfo)
+    protected object ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);

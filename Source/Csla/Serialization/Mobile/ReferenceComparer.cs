@@ -24,7 +24,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="y">Second object.</param>
     public bool Equals(T x, T y)
     {
-      return Object.ReferenceEquals(x, y);
+      return ReferenceEquals(x, y);
     }
 
     /// <summary>

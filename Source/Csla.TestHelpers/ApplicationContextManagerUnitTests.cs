@@ -1,6 +1,6 @@
 ﻿namespace Csla.TestHelpers
 {
-  public class ApplicationContextManagerUnitTests : Csla.Core.ApplicationContextManagerAsyncLocal
+  public class ApplicationContextManagerUnitTests : Core.ApplicationContextManagerAsyncLocal
   {
     public Guid InstanceId { get; private set; } = Guid.NewGuid();
 

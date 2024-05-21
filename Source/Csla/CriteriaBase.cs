@@ -57,7 +57,7 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ namespace Csla
     /// referenced object.</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ namespace Csla
     /// <param name="defaultValue">Default Value for the property</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ namespace Csla
     /// referenced object.</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
 
     /// <summary>

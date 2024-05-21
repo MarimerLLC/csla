@@ -34,9 +34,9 @@ namespace Csla.Test.Nullable
       get { return _nullableInteger; }
       set
       {
-        if (this._nullableInteger != value)
+        if (_nullableInteger != value)
         {
-          this._nullableInteger = value;
+          _nullableInteger = value;
           MarkDirty();
         }
       }
@@ -54,7 +54,7 @@ namespace Csla.Test.Nullable
 
       public Criteria(string name)
       {
-        this._name = name;
+        _name = name;
       }
     }
 
@@ -105,7 +105,7 @@ namespace Csla.Test.Nullable
       }
       else
       {
-        if (this.IsNew)
+        if (IsNew)
         {
           //we would insert here
           TestResults.Add("NullableObject", "Inserted");

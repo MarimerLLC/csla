@@ -40,7 +40,7 @@ namespace Csla.Test.ValidationRules
 
     public class RuleBroken : BusinessRule
     {
-      public RuleBroken(Csla.Core.IPropertyInfo primaryProperty)
+      public RuleBroken(Core.IPropertyInfo primaryProperty)
         : base(primaryProperty)
       { }
 

@@ -48,12 +48,12 @@ namespace Csla.Server.Hosts
 
         // unpack criteria data into object
         object criteria = GetCriteria(_applicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
+        if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
           true,
@@ -94,12 +94,12 @@ namespace Csla.Server.Hosts
 
         // unpack criteria data into object
         object criteria = GetCriteria(_applicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
+        if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
           true,
@@ -181,12 +181,12 @@ namespace Csla.Server.Hosts
 
         // unpack criteria data into object
         object criteria = GetCriteria(_applicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
+        if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
           true,

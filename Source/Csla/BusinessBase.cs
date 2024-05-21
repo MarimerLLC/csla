@@ -33,7 +33,7 @@ namespace Csla
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   [Serializable]
   public abstract class BusinessBase<T> :
-    Core.BusinessBase, Core.ISavable, Core.ISavable<T>, IBusinessBase where T : BusinessBase<T>
+    BusinessBase, ISavable, ISavable<T>, IBusinessBase where T : BusinessBase<T>
   {
 
     #region Object ID Value
@@ -90,7 +90,7 @@ namespace Csla
     /// </summary>
     public async Task WaitForIdle()
     {
-      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
     }
 
@@ -192,7 +192,7 @@ namespace Csla
         MarkDirty(true);
       }
       T result = default;
-      if (this.IsChild)
+      if (IsChild)
         throw new InvalidOperationException(Resources.NoSaveChildException);
       if (EditLevel > 0)
         throw new InvalidOperationException(Resources.NoSaveEditingException);
@@ -209,7 +209,7 @@ namespace Csla
         }
         else
         {
-          var dataPortalOptions = ApplicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
+          var dataPortalOptions = ApplicationContext.GetRequiredService<Configuration.DataPortalOptions>();
           if (dataPortalOptions.DataPortalClientOptions.AutoCloneOnUpdate)
             MarkBusy();
           try
@@ -258,7 +258,7 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      return this.Save();
+      return Save();
     }
 
     /// <summary>
@@ -289,56 +289,56 @@ namespace Csla
 
     #region ISavable Members
 
-    void Csla.Core.ISavable.SaveComplete(object newObject)
+    void ISavable.SaveComplete(object newObject)
     {
       OnSaved((T)newObject, null, null);
     }
 
-    void Csla.Core.ISavable<T>.SaveComplete(T newObject)
+    void ISavable<T>.SaveComplete(T newObject)
     {
       OnSaved(newObject, null, null);
     }
 
-    object Csla.Core.ISavable.Save()
+    object ISavable.Save()
     {
       return Save();
     }
 
-    object Csla.Core.ISavable.Save(bool forceUpdate)
+    object ISavable.Save(bool forceUpdate)
     {
       return Save(forceUpdate);
     }
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
+    private EventHandler<SavedEventArgs> _nonSerializableSavedHandlers;
     [NotUndoable]
-    private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
+    private EventHandler<SavedEventArgs> _serializableSavedHandlers;
 
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved
+    public event EventHandler<SavedEventArgs> Saved
     {
       add
       {
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Combine(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Combine(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Combine(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Combine(_nonSerializableSavedHandlers, value);
       }
       remove
       {
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Remove(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Remove(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Remove(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
 
@@ -363,7 +363,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
-      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
+      SavedEventArgs args = new SavedEventArgs(newObject, e, userState);
       _nonSerializableSavedHandlers?.Invoke(this, args);
       _serializableSavedHandlers?.Invoke(this, args);
     }
@@ -398,7 +398,7 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
     }
 
     /// <summary>
@@ -422,7 +422,7 @@ namespace Csla
     /// <param name="relationship">Relationship with property value.</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
     }
 
     /// <summary>
@@ -447,7 +447,7 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
 
     /// <summary>
@@ -473,7 +473,7 @@ namespace Csla
     /// <param name="defaultValue">Default Value for the property</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
 
     /// <summary>
@@ -501,7 +501,7 @@ namespace Csla
     /// <param name="relationship">Relationship with property value.</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
 
     /// <summary>

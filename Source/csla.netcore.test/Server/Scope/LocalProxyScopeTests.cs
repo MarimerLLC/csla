@@ -36,8 +36,8 @@ namespace Csla.Test.Server.Scope
 
       // test code
       var gp = provider.GetRequiredService<GuidProvider>();
-      var proxy = applicationContext.CurrentServiceProvider.GetRequiredService<Csla.DataPortalClient.IDataPortalProxy>();
-      var options = applicationContext.CurrentServiceProvider.GetRequiredService<Csla.Channels.Local.LocalProxyOptions>();
+      var proxy = applicationContext.CurrentServiceProvider.GetRequiredService<DataPortalClient.IDataPortalProxy>();
+      var options = applicationContext.CurrentServiceProvider.GetRequiredService<Channels.Local.LocalProxyOptions>();
       Assert.IsNotNull(applicationContext);
       Assert.IsInstanceOfType(proxy, typeof(Channels.Local.LocalProxy));
       Assert.IsTrue(options.UseLocalScope, "UseLocalScope");

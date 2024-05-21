@@ -49,8 +49,8 @@ namespace Csla.Server
     public GenericBusinessException(Exception wrappedException)
       : base(wrappedException.Message)
     {
-      this.Source = wrappedException.Source;
-      this.HelpLink = wrappedException.HelpLink;
+      Source = wrappedException.Source;
+      HelpLink = wrappedException.HelpLink;
       Data = wrappedException.Data;
       StackTrace = wrappedException.StackTrace;
       TypeName = wrappedException.GetType().ToString();
@@ -64,8 +64,8 @@ namespace Csla.Server
     public GenericBusinessException(Exception wrappedException, Exception innerException)
       : base(wrappedException.Message, innerException)
     {
-      this.Source = wrappedException.Source;
-      this.HelpLink = wrappedException.HelpLink;
+      Source = wrappedException.Source;
+      HelpLink = wrappedException.HelpLink;
       Data = wrappedException.Data;
       StackTrace = wrappedException.StackTrace;
       TypeName = wrappedException.GetType().ToString();
@@ -83,7 +83,7 @@ namespace Csla.Server
     public override string ToString()
     {
       string className;
-      string message = this.Message;
+      string message = Message;
       if ((message == null) || (message.Length <= 0))
       {
         className = TypeName;
@@ -93,7 +93,7 @@ namespace Csla.Server
         className = TypeName + ": " + message;
       }
 
-      string stackTrace = this.StackTrace;
+      string stackTrace = StackTrace;
       if (stackTrace != null)
       {
         className = className + Environment.NewLine + stackTrace;

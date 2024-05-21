@@ -15,7 +15,7 @@ namespace Csla.Test.DataBinding
   {
     public ChildEntityList()
     {
-      this.MarkAsChild();
+      MarkAsChild();
     }
 
     #region "Criteria"

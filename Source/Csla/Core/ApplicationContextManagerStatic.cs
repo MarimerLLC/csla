@@ -17,7 +17,7 @@ namespace Csla.Core
   /// that uses static fields to maintain 
   /// per-thread context.
   /// </summary>
-  public class ApplicationContextManagerStatic : Csla.Core.IContextManager
+  public class ApplicationContextManagerStatic : IContextManager
   {
     /// <summary>
     /// Gets a value indicating whether the context manager

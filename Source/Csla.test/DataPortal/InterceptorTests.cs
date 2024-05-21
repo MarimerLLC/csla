@@ -241,7 +241,7 @@ namespace Csla.Test.DataPortal
     }
   }
 
-  public class TestInterceptor : Csla.Server.IInterceptDataPortal
+  public class TestInterceptor : Server.IInterceptDataPortal
   {
     public Task InitializeAsync(Server.InterceptArgs e)
     {
@@ -259,7 +259,7 @@ namespace Csla.Test.DataPortal
     }
   }
 
-  public class TestActivator(IServiceProvider serviceProvider) : Csla.Server.DefaultDataPortalActivator(serviceProvider)
+  public class TestActivator(IServiceProvider serviceProvider) : Server.DefaultDataPortalActivator(serviceProvider)
   {
     public override object CreateInstance(Type requestedType, params object[] parameters)
     {

@@ -43,7 +43,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
-    public RuleUri(IBusinessRuleBase rule, Csla.Core.IPropertyInfo property)
+    public RuleUri(IBusinessRuleBase rule, Core.IPropertyInfo property)
       : this(GetTypeName(rule), ((property == null) ? "(object)" : property.Name))
       //: this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
     { }
@@ -165,8 +165,8 @@ namespace Csla.Rules
           {
             string[] argParams = arg.Split('=');
             result.Add(
-              System.Uri.UnescapeDataString(argParams[0]),
-              System.Uri.UnescapeDataString(argParams[1]));
+              Uri.UnescapeDataString(argParams[0]),
+              Uri.UnescapeDataString(argParams[1]));
           }
         }
         return result;
@@ -223,7 +223,7 @@ namespace Csla.Rules
     /// <returns>
     /// Returns the Segments property. 
     /// </returns>
-    public static string[] Parts(this System.Uri uri)
+    public static string[] Parts(this Uri uri)
     {
       return uri.Segments;
     }

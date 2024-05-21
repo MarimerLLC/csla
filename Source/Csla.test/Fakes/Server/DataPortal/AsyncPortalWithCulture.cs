@@ -9,7 +9,7 @@
 namespace Csla.Testing.Business.DataPortal
 {
   [Serializable]
-  public class AsyncPortalWithCulture : Csla.CommandBase<AsyncPortalWithCulture>
+  public class AsyncPortalWithCulture : CommandBase<AsyncPortalWithCulture>
   {
     public string CurrentUICulture
     {

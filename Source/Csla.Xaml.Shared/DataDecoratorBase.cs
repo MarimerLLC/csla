@@ -42,8 +42,8 @@ namespace Csla.Xaml
     /// </summary>
     public DataDecoratorBase()
     {
-      this.DataContextChanged += Panel_DataContextChanged;
-      this.Loaded += Panel_Loaded;
+      DataContextChanged += Panel_DataContextChanged;
+      Loaded += Panel_Loaded;
     }
 
     private void Panel_Loaded(object sender, RoutedEventArgs e)
@@ -117,7 +117,7 @@ namespace Csla.Xaml
         provider.DataChanged -= DataProvider_DataChanged;
         oldContext = provider.Data;
       }
-      UnHookChildChanged(oldContext as Csla.Core.INotifyChildChanged);
+      UnHookChildChanged(oldContext as Core.INotifyChildChanged);
       UnHookPropertyChanged(oldContext as INotifyPropertyChanged);
       if (oldContext is INotifyCollectionChanged observable)
         UnHookObservableListChanged(observable);
@@ -139,7 +139,7 @@ namespace Csla.Xaml
         provider.DataChanged += DataProvider_DataChanged;
         newContext = provider.Data;
       }
-      HookChildChanged(newContext as Csla.Core.INotifyChildChanged);
+      HookChildChanged(newContext as Core.INotifyChildChanged);
       HookPropertyChanged(newContext as INotifyPropertyChanged);
       if (newContext is INotifyCollectionChanged observable)
         HookObservableListChanged(observable);
@@ -159,13 +159,13 @@ namespace Csla.Xaml
         newContext.PropertyChanged += DataObject_PropertyChanged;
     }
 
-    private void UnHookChildChanged(Csla.Core.INotifyChildChanged oldContext)
+    private void UnHookChildChanged(Core.INotifyChildChanged oldContext)
     {
       if (oldContext != null)
         oldContext.ChildChanged -= DataObject_ChildChanged;
     }
 
-    private void HookChildChanged(Csla.Core.INotifyChildChanged newContext)
+    private void HookChildChanged(Core.INotifyChildChanged newContext)
     {
       if (newContext != null)
         newContext.ChildChanged += DataObject_ChildChanged;
@@ -204,7 +204,7 @@ namespace Csla.Xaml
       DataPropertyChanged(e);
     }
 
-    private void DataObject_ChildChanged(object sender, Csla.Core.ChildChangedEventArgs e)
+    private void DataObject_ChildChanged(object sender, Core.ChildChangedEventArgs e)
     {
       DataPropertyChanged(e.PropertyChangedArgs);
     }

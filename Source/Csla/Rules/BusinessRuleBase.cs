@@ -47,7 +47,7 @@ namespace Csla.Rules
       {
         CanWriteProperty(nameof(PrimaryProperty));
         _primaryProperty = value;
-        this.RuleUri = new RuleUri(this, value);
+        RuleUri = new RuleUri(this, value);
         if (_primaryProperty != null)
           AffectedProperties.Add(_primaryProperty);
       }
@@ -92,7 +92,7 @@ namespace Csla.Rules
     /// of the rule within the context of the business object
     /// where the rule is used.
     /// </summary>
-    public string RuleName { get { return this.RuleUri.ToString(); } }
+    public string RuleName { get { return RuleUri.ToString(); } }
 
     /// <summary>
     /// Sets or gets the rule:// URI object for this rule.
@@ -166,7 +166,7 @@ namespace Csla.Rules
       AffectedProperties = [];
       InputProperties = [];
       PrimaryProperty = primaryProperty;
-      this.RuleUri = new RuleUri(this, primaryProperty);
+      RuleUri = new RuleUri(this, primaryProperty);
       RunMode = RunModes.Default;
     }
 

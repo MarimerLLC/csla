@@ -51,7 +51,7 @@ namespace Csla.Test.Security
       }
     }
 
-    public readonly static Csla.Core.IMemberInfo DoWorkMethod = RegisterMethod(typeof(PermissionsRoot), "DoWork");
+    public readonly static Core.IMemberInfo DoWorkMethod = RegisterMethod(typeof(PermissionsRoot), "DoWork");
 
     public void DoWork()
     {
@@ -70,9 +70,9 @@ namespace Csla.Test.Security
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, FirstNameProperty, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new IsInRole(AuthorizationActions.ExecuteMethod, DoWorkMethod, new List<string> { "Admin" }));
     }
 
     #endregion

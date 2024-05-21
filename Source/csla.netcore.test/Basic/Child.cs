@@ -20,7 +20,7 @@ namespace Csla.Test.Basic
       set { SetProperty(DataProperty, value); }
     }
 
-    public Guid Guid { get; } = System.Guid.NewGuid();
+    public Guid Guid { get; } = Guid.NewGuid();
 
     public static readonly PropertyInfo<GrandChildren> GrandChildrenProperty = RegisterProperty<GrandChildren>(c => c.GrandChildren);
     public GrandChildren GrandChildren

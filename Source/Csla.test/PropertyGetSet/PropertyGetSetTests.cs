@@ -830,7 +830,7 @@ namespace Csla.Test.PropertyGetSet
 
     public void Load(string name)
     {
-      LoadProperty((Csla.Core.IPropertyInfo)NameProperty, name);
+      LoadProperty((Core.IPropertyInfo)NameProperty, name);
     }
 
     [RunLocal]
@@ -863,9 +863,9 @@ namespace Csla.Test.PropertyGetSet
 
     public void Load(string name)
     {
-      LoadProperty((Csla.Core.IPropertyInfo)NameProperty, name);
-      LoadProperty((Csla.Core.IPropertyInfo)_originalNameProperty, name);
-      LoadProperty((Csla.Core.IPropertyInfo)_originalNamePrivateProperty, name);
+      LoadProperty((Core.IPropertyInfo)NameProperty, name);
+      LoadProperty((Core.IPropertyInfo)_originalNameProperty, name);
+      LoadProperty((Core.IPropertyInfo)_originalNamePrivateProperty, name);
     }
 
     [Fetch]

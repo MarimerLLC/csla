@@ -26,7 +26,7 @@ namespace GraphMergerTest.Business
         item = ChildItem.New(dataPortal, childItemId);
 
         list.Add(item);
-        this.Add(item);
+        Add(item);
       }
 
       return list;

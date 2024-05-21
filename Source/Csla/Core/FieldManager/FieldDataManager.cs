@@ -423,7 +423,7 @@ namespace Csla.Core.FieldManager
       }
       catch (IndexOutOfRangeException ex)
       {
-        throw new InvalidOperationException(Properties.Resources.PropertyNotRegistered, ex);
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
       }
     }
 
@@ -488,13 +488,13 @@ namespace Csla.Core.FieldManager
       get { return _stateStack.Count; }
     }
 
-    void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
-      if (this.EditLevel + 1 > parentEditLevel)
+      if (EditLevel + 1 > parentEditLevel)
         throw new UndoException(
           string.Format(
-            Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, 
-            _parent?.GetType().Name, this.EditLevel, parentEditLevel - 1);
+            Resources.EditLevelMismatchException, "CopyState"), GetType().Name, 
+            _parent?.GetType().Name, EditLevel, parentEditLevel - 1);
 
       IFieldData[] state = new IFieldData[_propertyList.Count];
 
@@ -526,14 +526,14 @@ namespace Csla.Core.FieldManager
       _stateStack.Push(buffer.ToArray());
     }
 
-    void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (EditLevel > 0)
       {
-        if (this.EditLevel - 1 != parentEditLevel)
+        if (EditLevel - 1 != parentEditLevel)
           throw new UndoException(
             string.Format(Resources.EditLevelMismatchException, "UndoChanges"), 
-            this.GetType().Name, _parent?.GetType().Name, this.EditLevel, parentEditLevel + 1);
+            GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
         IFieldData[] state = null;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
@@ -572,12 +572,12 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      if (this.EditLevel - 1 != parentEditLevel)
+      if (EditLevel - 1 != parentEditLevel)
         throw new UndoException(
           string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), 
-          this.GetType().Name, _parent?.GetType().Name, this.EditLevel, parentEditLevel + 1);
+          GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {
@@ -763,7 +763,7 @@ namespace Csla.Core.FieldManager
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       string type = (string)info.Values["_businessObjectType"].Value;
-      Type businessObjecType = Csla.Reflection.MethodCaller.GetType(type);
+      Type businessObjecType = Reflection.MethodCaller.GetType(type);
       SetPropertyList(businessObjecType);
 
       if (mode == StateMode.Serialization)

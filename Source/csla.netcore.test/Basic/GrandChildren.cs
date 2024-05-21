@@ -15,7 +15,7 @@ namespace Csla.Test.Basic
   {
     public void Add(string data)
     {
-      var grandChild = this.AddNew();
+      var grandChild = AddNew();
       grandChild.Data = data;
     }
 

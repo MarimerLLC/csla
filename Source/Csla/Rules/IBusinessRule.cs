@@ -47,17 +47,17 @@ namespace Csla.Rules
     /// Gets a list of secondary property values to be supplied to the
     /// rule when it is executed.
     /// </summary>
-    List<Csla.Core.IPropertyInfo> InputProperties { get; }
+    List<Core.IPropertyInfo> InputProperties { get; }
     /// <summary>
     /// Gets a list of properties affected by this rule. Rules for these
     /// properties are executed after rules for the primary
     /// property.
     /// </summary>
-    List<Csla.Core.IPropertyInfo> AffectedProperties { get; }
+    List<Core.IPropertyInfo> AffectedProperties { get; }
     /// <summary>
     /// Gets the primary property affected by this rule.
     /// </summary>
-    Csla.Core.IPropertyInfo PrimaryProperty { get; }
+    Core.IPropertyInfo PrimaryProperty { get; }
     /// <summary>
     /// Gets a unique rule:// URI for the specific instance
     /// of the rule within the context of the business object

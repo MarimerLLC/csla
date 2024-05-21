@@ -11,7 +11,7 @@ namespace Csla.Core
   internal interface IManageProperties
   {
     bool HasManagedProperties { get; }
-    bool FieldExists(Csla.Core.IPropertyInfo property);
+    bool FieldExists(IPropertyInfo property);
     List<IPropertyInfo> GetManagedProperties();
     object GetProperty(IPropertyInfo propertyInfo);
     object LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);

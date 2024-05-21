@@ -46,7 +46,7 @@ namespace Csla.AspNetCore
     /// </summary>
     public void Refresh()
     {
-      foreach (var item in this.GetType().GetProperties())
+      foreach (var item in GetType().GetProperties())
         OnPropertyChanged(item.Name);
     }
 

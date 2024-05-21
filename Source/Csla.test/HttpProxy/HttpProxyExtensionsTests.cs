@@ -30,7 +30,7 @@ public class HttpProxyExtensionsTests
         )
       );
 
-    _ = diContext.ServiceProvider.GetRequiredService<Csla.DataPortalClient.IDataPortalProxy>();
+    _ = diContext.ServiceProvider.GetRequiredService<DataPortalClient.IDataPortalProxy>();
 
     hasBeenCalled.Should().BeTrue();
   }

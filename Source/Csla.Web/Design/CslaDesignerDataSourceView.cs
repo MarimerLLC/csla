@@ -42,7 +42,7 @@ namespace Csla.Web.Design
     /// is sample data.</param>
     public override IEnumerable GetDesignTimeData(int minimumRows, out bool isSampleData)
     {
-      IDataSourceViewSchema schema = this.Schema;
+      IDataSourceViewSchema schema = Schema;
       DataTable result = new DataTable();
 
       // create the columns
@@ -60,10 +60,10 @@ namespace Csla.Web.Design
         {
           if (col.DataType.Equals(typeof(string)))
             values[colIndex] = "abc";
-          else if (col.DataType.Equals(typeof(System.DateTime)))
-            values[colIndex] = System.DateTime.Today.ToShortDateString();
-          else if (col.DataType.Equals(typeof(System.DateTimeOffset)))
-            values[colIndex] = System.DateTime.Today.ToShortDateString();
+          else if (col.DataType.Equals(typeof(DateTime)))
+            values[colIndex] = DateTime.Today.ToShortDateString();
+          else if (col.DataType.Equals(typeof(DateTimeOffset)))
+            values[colIndex] = DateTime.Today.ToShortDateString();
           else if (col.DataType.Equals(typeof(bool)))
             values[colIndex] = false;
           else if (col.DataType.IsPrimitive)
@@ -121,7 +121,7 @@ namespace Csla.Web.Design
       {
         ITypeResolutionService typeService = null;
         typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
-        result = typeService.GetType(this._owner.DataSourceControl.TypeName, true, false);
+        result = typeService.GetType(_owner.DataSourceControl.TypeName, true, false);
       }
       catch
       {
@@ -144,7 +144,7 @@ namespace Csla.Web.Design
       get
       {
         Type objectType = GetObjectType();
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        if (typeof(Core.IUndoableObject).IsAssignableFrom(objectType))
         {
           return true;
         }
@@ -173,7 +173,7 @@ namespace Csla.Web.Design
       get
       {
         Type objectType = GetObjectType();
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        if (typeof(Core.IUndoableObject).IsAssignableFrom(objectType))
         {
           return true;
         }
@@ -198,7 +198,7 @@ namespace Csla.Web.Design
       get
       {
         Type objectType = GetObjectType();
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(objectType))
+        if (typeof(Core.IUndoableObject).IsAssignableFrom(objectType))
         {
           return true;
         }

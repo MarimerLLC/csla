@@ -73,7 +73,7 @@ namespace Csla.Core
     /// </returns>
     protected static PropertyInfo<P> RegisterProperty<P>(Type objectType, PropertyInfo<P> info)
     {
-      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(objectType, info);
+      return PropertyInfoManager.RegisterProperty<P>(objectType, info);
     }
 
 
@@ -89,7 +89,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
     }
 
     #endregion
@@ -172,7 +172,7 @@ namespace Csla.Core
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
       P result = default(P);
-      FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
+      IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
         if (data is IFieldData<P> fd)
@@ -359,7 +359,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      var t = this.GetType();
+      var t = GetType();
       var method = t.GetRuntimeMethods().FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
@@ -379,7 +379,7 @@ namespace Csla.Core
         LoadProperty(propertyInfo, newValue);
         return false;
       }
-      var t = this.GetType();
+      var t = GetType();
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
       var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);

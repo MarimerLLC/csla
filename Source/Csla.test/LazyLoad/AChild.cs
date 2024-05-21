@@ -9,7 +9,7 @@
 namespace Csla.Test.LazyLoad
 {
   [Serializable]
-  public class AChild : Csla.BusinessBase<AChild>
+  public class AChild : BusinessBase<AChild>
   {
     public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(c => c.Id);
     public Guid Id

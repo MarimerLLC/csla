@@ -52,31 +52,31 @@
 
     public void Setup()
     {
-      this.BoolTest = true;
-      this.ByteArrayTest = [1, 2, 3, 4];
-      this.ByteTest = 3;
-      this.CharArrayTest = "abc".ToArray();
-      this.CharTest = "a".ToArray()[0];
-      this.DateTimeOffsetTest = new DateTimeOffset(new DateTime(2001, 1, 2, 3, 4, 5, 6), new TimeSpan(0, 1, 0, 0));
-      this.DateTimeTest = new DateTime(2000, 1, 2, 3, 4, 5, 6);
-      this.DecimalTest = 1.2m;
-      this.DoubleTest = 123.45567;
-      this.GuidTest = Guid.NewGuid();
-      this.Int16Test = 1;
-      this.Int32Test = 2;
-      this.Int64Test = 3;
-      this.SByteTest = 4;
-      this.SingleTest = (Single)12.3;
-      this.StringTest = "abcd";
-      this.TimeSpanTest = new TimeSpan(2, 3, 4, 5, 7);
-      this.UInt16Test = 11;
-      this.UInt32Test = 22;
-      this.UInt64Test = 33;
-      this.EnumTest = RandomEnum.Value1;
-      this.NullableInt = null;
-      this.NullableButSetInt = 22;
-      this.EmptySmartDateTest = new Csla.SmartDate(false);
-      this.FilledSmartDateTest = new Csla.SmartDate(new DateTime(2001, 1, 1), true) { FormatString = "yyyy/MM/dd" };
+      BoolTest = true;
+      ByteArrayTest = [1, 2, 3, 4];
+      ByteTest = 3;
+      CharArrayTest = "abc".ToArray();
+      CharTest = "a".ToArray()[0];
+      DateTimeOffsetTest = new DateTimeOffset(new DateTime(2001, 1, 2, 3, 4, 5, 6), new TimeSpan(0, 1, 0, 0));
+      DateTimeTest = new DateTime(2000, 1, 2, 3, 4, 5, 6);
+      DecimalTest = 1.2m;
+      DoubleTest = 123.45567;
+      GuidTest = Guid.NewGuid();
+      Int16Test = 1;
+      Int32Test = 2;
+      Int64Test = 3;
+      SByteTest = 4;
+      SingleTest = (Single)12.3;
+      StringTest = "abcd";
+      TimeSpanTest = new TimeSpan(2, 3, 4, 5, 7);
+      UInt16Test = 11;
+      UInt32Test = 22;
+      UInt64Test = 33;
+      EnumTest = RandomEnum.Value1;
+      NullableInt = null;
+      NullableButSetInt = 22;
+      EmptySmartDateTest = new Csla.SmartDate(false);
+      FilledSmartDateTest = new Csla.SmartDate(new DateTime(2001, 1, 1), true) { FormatString = "yyyy/MM/dd" };
     }
 
     public static readonly PropertyInfo<RandomEnum> EnumTestProperty = RegisterProperty<RandomEnum>(c => c.EnumTest);

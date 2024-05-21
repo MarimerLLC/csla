@@ -442,7 +442,7 @@ namespace Csla.Test.Serialization
       // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
       //Csla.ApplicationContext.User = new ClaimsPrincipal();
 
-      Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
+      Security.PermissionsRoot rootClone = root.Clone();
 
       try
       {
@@ -536,7 +536,7 @@ namespace Csla.Test.Serialization
       IDataPortal<Basic.Children> dataPortal = _testDIContext.CreateDataPortal<Basic.Children>();
       IDataPortal<Basic.Child> childDataPortal = _testDIContext.CreateDataPortal<Basic.Child>();
 
-      Csla.Test.Basic.Children list = Csla.Test.Basic.Children.NewChildren(dataPortal);
+      Basic.Children list = Basic.Children.NewChildren(dataPortal);
       list.Add(childDataPortal, "1");
       list.Add(childDataPortal, "2");
       IEditableObject item = list[1] as IEditableObject;

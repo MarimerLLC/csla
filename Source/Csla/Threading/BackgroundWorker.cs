@@ -14,7 +14,7 @@ namespace Csla.Threading
   /// A BackgroundWorker that wraps a System.ComponentModel.BackgroundWorkertransfers ApplicationContext.User, ClientContext, CurrentCulture 
   /// and CurrentUICulture to the background thread.
   /// </summary>
-  public class BackgroundWorker : System.ComponentModel.Component
+  public class BackgroundWorker : Component
   {
     private readonly System.ComponentModel.BackgroundWorker _myWorker = new System.ComponentModel.BackgroundWorker();
     /// <summary>
@@ -171,7 +171,7 @@ namespace Csla.Threading
       public WorkerAsyncRequest(ApplicationContext applicationContext, object argument)
         : base(applicationContext)
       {
-        this.Argument = argument;
+        Argument = argument;
       }
     }
 
@@ -183,8 +183,8 @@ namespace Csla.Threading
 
       public WorkerAsyncResult(object result, Exception error)
       {
-        this.Result = result;
-        this.Error = error;
+        Result = result;
+        Error = error;
       }
     }
 

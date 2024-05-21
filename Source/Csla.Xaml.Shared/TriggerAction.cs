@@ -25,7 +25,7 @@ namespace Csla.Xaml
     /// </summary>
     public TriggerAction()
     {
-      Visibility = System.Windows.Visibility.Collapsed;
+      Visibility = Visibility.Collapsed;
       Height = 20;
       Width = 20;
     }
@@ -35,7 +35,7 @@ namespace Csla.Xaml
     /// </summary>
     private void CallMethod(object sender, EventArgs e)
     {
-      object target = this.DataContext;
+      object target = DataContext;
       if (target is CollectionViewSource cvs && cvs.View != null)
       {
         target = cvs.View.CurrentItem;
@@ -52,7 +52,7 @@ namespace Csla.Xaml
       {
 #if NETFX_CORE
 #else
-        Trace.TraceError("Csla.Xaml.TriggerAction Error: CallMethod path error: '{0}' method not found on '{1}', DataContext '{2}'", MethodName, target.GetType(), this.DataContext.GetType());
+        Trace.TraceError("Csla.Xaml.TriggerAction Error: CallMethod path error: '{0}' method not found on '{1}', DataContext '{2}'", MethodName, target.GetType(), DataContext.GetType());
 #endif
         throw new MissingMethodException(MethodName);
       }
@@ -80,7 +80,7 @@ namespace Csla.Xaml
         ]);
       }
       else
-        throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadParams);
+        throw new NotSupportedException(Properties.Resources.ExecuteBadParams);
     }
 
     private void HookEvent(FrameworkElement oldTarget, string oldEvent, FrameworkElement newTarget, string newEvent)
@@ -101,16 +101,16 @@ namespace Csla.Xaml
               {
                 var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
                   this,
-                  this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                  GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
                 eventRef.RemoveEventHandler(oldTarget, del);
               }
               else
               {
-                throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+                throw new NotSupportedException(Properties.Resources.ExecuteBadTriggerEvent);
               }
             }
             else
-              throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+              throw new NotSupportedException(Properties.Resources.ExecuteBadTriggerEvent);
           }
         }
 
@@ -128,16 +128,16 @@ namespace Csla.Xaml
               {
                 var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
                   this,
-                  this.GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                  GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
                 eventRef.AddEventHandler(newTarget, del);
               }
               else
               {
-                throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+                throw new NotSupportedException(Properties.Resources.ExecuteBadTriggerEvent);
               }
             }
             else
-              throw new NotSupportedException(Csla.Properties.Resources.ExecuteBadTriggerEvent);
+              throw new NotSupportedException(Properties.Resources.ExecuteBadTriggerEvent);
           }
         }
       }
@@ -250,7 +250,7 @@ namespace Csla.Xaml
 
     private object GetMethodParameter()
     {
-      var be = this.GetBindingExpression(MethodParameterProperty);
+      var be = GetBindingExpression(MethodParameterProperty);
       if (be != null && be.ParentBinding != null)
       {
         var newBinding = CopyBinding(be.ParentBinding);
@@ -259,9 +259,9 @@ namespace Csla.Xaml
       return MethodParameter;
     }
 
-    private static System.Windows.Data.Binding CopyBinding(System.Windows.Data.Binding oldBinding)
+    private static Binding CopyBinding(Binding oldBinding)
     {
-      var result = new System.Windows.Data.Binding();
+      var result = new Binding();
       result.BindsDirectlyToSource = oldBinding.BindsDirectlyToSource;
       result.Converter = oldBinding.Converter;
       result.ConverterCulture = oldBinding.ConverterCulture;

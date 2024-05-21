@@ -90,9 +90,9 @@ namespace Csla.Server.Hosts
       if (_client == null)
       {
         _client = new HttpClient();
-        if (this.HttpClientTimeout > 0)
+        if (HttpClientTimeout > 0)
         {
-          _client.Timeout = TimeSpan.FromMilliseconds(this.HttpClientTimeout);
+          _client.Timeout = TimeSpan.FromMilliseconds(HttpClientTimeout);
         }
       }
 
@@ -217,7 +217,7 @@ namespace Csla.Server.Hosts
       string requestString;
       using (var reader = new StreamReader(requestStream))
         requestString = await reader.ReadToEndAsync();
-      var requestArray = System.Convert.FromBase64String(requestString);
+      var requestArray = Convert.FromBase64String(requestString);
       var requestBuffer = new MemoryStream(requestArray);
 
       var serializer = SerializationFormatterFactory.GetFormatter(_applicationContext);
@@ -245,7 +245,7 @@ namespace Csla.Server.Hosts
       {
         AutoFlush = true
       };
-      await writer.WriteAsync(System.Convert.ToBase64String(responseBuffer.ToArray()));
+      await writer.WriteAsync(Convert.ToBase64String(responseBuffer.ToArray()));
     }
 
 #else

@@ -29,7 +29,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write to stream</param>
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
-      this.keywordsDictionary.Clear();
+      keywordsDictionary.Clear();
       using var writer = new CslaNonClosingBinaryWriter(serializationStream);
       writer.Write(objectData.Count);
       foreach (var serializationInfo in objectData)

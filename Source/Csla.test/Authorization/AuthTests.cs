@@ -590,9 +590,9 @@ namespace Csla.Test.Authorization
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public static void AddObjectAuthorizationRules()
     {
-      Csla.Rules.BusinessRules.AddRule(
+      BusinessRules.AddRule(
         typeof(PerTypeAuthRoot),
-        new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.EditObject, "Test"));
+        new Rules.CommonRules.IsInRole(AuthorizationActions.EditObject, "Test"));
     }
   }
 
@@ -622,7 +622,7 @@ namespace Csla.Test.Authorization
       BusinessRules.AddRule(new NoAuth(AuthorizationActions.DeleteObject));
     }
 
-    private class NoAuth : Csla.Rules.AuthorizationRule
+    private class NoAuth : AuthorizationRule
     {
       public NoAuth(AuthorizationActions action)
         : base(action)

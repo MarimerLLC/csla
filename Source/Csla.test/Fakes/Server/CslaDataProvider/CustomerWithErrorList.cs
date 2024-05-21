@@ -34,7 +34,7 @@ namespace cslalighttest.CslaDataProvider
     [Update]
     protected void DataPortal_Update()
     {
-      if (this.Items[0].ThrowException)
+      if (Items[0].ThrowException)
         throw new Exception();
       TestResults.Add("CustomerWithErrorUpdate", "Updating CustomerWithError List");
     }

@@ -210,7 +210,7 @@ namespace Csla.Serialization.Mobile
 
     internal SerializationInfo(int referenceId)
     {
-      this.ReferenceId = referenceId;
+      ReferenceId = referenceId;
     }
 
     /// <summary>

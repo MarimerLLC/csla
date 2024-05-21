@@ -57,7 +57,7 @@ namespace Csla.Test.MethodCaller
     {
       var expected = "two";
       Csla.Reflection.MethodCaller.CallPropertySetter(this, "Test2", expected);
-      Assert.AreEqual(expected, this.one);
+      Assert.AreEqual(expected, one);
     }
 
     [TestMethod]
@@ -65,7 +65,7 @@ namespace Csla.Test.MethodCaller
     {
       var expected = "three";
       Csla.Reflection.MethodCaller.CallPropertySetter(this, "Test3", expected);
-      Assert.AreEqual(expected, this.three);
+      Assert.AreEqual(expected, three);
     }
 
   }

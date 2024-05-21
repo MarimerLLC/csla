@@ -66,14 +66,14 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        return this.Value;
+        return Value;
       }
       set
       {
         if (value == null)
-          this.Value = default(T);
+          Value = default(T);
         else
-          this.Value = (T)value;
+          Value = (T)value;
       }
     }
 
@@ -184,7 +184,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+    [ScaffoldColumn(false)]
     public bool IsBusy
     {
       get

@@ -42,7 +42,7 @@ namespace Csla.Rules
     /// to a specfic property.
     /// </summary>
     /// <param name="primaryProperty">Primary property for this rule.</param>
-    protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
+    protected BusinessRule(Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     { }
 

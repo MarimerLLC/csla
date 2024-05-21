@@ -63,7 +63,7 @@ namespace Csla.Reflection
     /// </param>
     public object CallMethodIfImplemented(string method)
     {
-      return MethodCaller.CallMethodIfImplemented(this.Instance, method);
+      return MethodCaller.CallMethodIfImplemented(Instance, method);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ namespace Csla.Reflection
     /// </param>
     public object CallMethodIfImplemented(string method, params object[] parameters)
     {
-      return MethodCaller.CallMethodIfImplemented(this.Instance, method, parameters);
+      return MethodCaller.CallMethodIfImplemented(Instance, method, parameters);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ namespace Csla.Reflection
     /// </param>
     public object CallMethod(string method)
     {
-      return MethodCaller.CallMethod(this.Instance, method);
+      return MethodCaller.CallMethod(Instance, method);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ namespace Csla.Reflection
     /// </param>
     public object CallMethod(string method, params object[] parameters)
     {
-      return MethodCaller.CallMethod(this.Instance, method, parameters);
+      return MethodCaller.CallMethod(Instance, method, parameters);
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ namespace Csla.Reflection
     {
       try
       {
-        await MethodCaller.CallMethodTryAsync(this.Instance, methodName);
+        await MethodCaller.CallMethodTryAsync(Instance, methodName);
       }
       catch (CallMethodException)
       {
@@ -145,7 +145,7 @@ namespace Csla.Reflection
     {
       try
       {
-        await MethodCaller.CallMethodTryAsync(this.Instance, methodName, parameters);
+        await MethodCaller.CallMethodTryAsync(Instance, methodName, parameters);
       }
       catch (CallMethodException)
       {
@@ -157,13 +157,13 @@ namespace Csla.Reflection
       }
     }
 
-    private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
-    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
+    private ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = (ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(ServiceProviderMethodCaller));
         return serviceProviderMethodCaller;
       }
     }

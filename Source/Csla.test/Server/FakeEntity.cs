@@ -12,6 +12,10 @@ namespace Csla.Server.Tests
       Saved += FakeEntity_Saved;
     }
 
+    public event BusyChangedEventHandler BusyChanged;
+    public event EventHandler<Core.ErrorEventArgs> UnhandledAsyncException;
+    public event EventHandler<SavedEventArgs> Saved;
+
     private void FakeEntity_Saved(object sender, SavedEventArgs e)
     {
     }
@@ -23,56 +27,52 @@ namespace Csla.Server.Tests
     private void FakeEntity_BusyChanged(object sender, BusyChangedEventArgs e)
     {
     }
-    public int EditLevelAdded { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int EditLevelAdded { get; set; }
 
-    public int Identity => throw new NotImplementedException();
+    public int Identity { get; set; }
 
-    public int EditLevel => throw new NotImplementedException();
+    public int EditLevel { get; set; }
 
-    public bool IsValid => throw new NotImplementedException();
+    public bool IsValid { get; set; }
 
-    public bool IsSelfValid => throw new NotImplementedException();
+    public bool IsSelfValid { get; set; }
 
-    public bool IsDirty => throw new NotImplementedException();
+    public bool IsDirty { get; set; }
 
-    public bool IsSelfDirty => throw new NotImplementedException();
+    public bool IsSelfDirty { get; set; }
 
-    public bool IsDeleted => throw new NotImplementedException();
+    public bool IsDeleted { get; set; }
 
-    public bool IsNew => throw new NotImplementedException();
+    public bool IsNew { get; set; }
 
-    public bool IsSavable => throw new NotImplementedException();
+    public bool IsSavable { get; set; }
 
-    public bool IsChild => throw new NotImplementedException();
+    public bool IsChild { get; set; }
 
     public bool IsBusy { get; set; }
 
-    public bool IsSelfBusy => throw new NotImplementedException();
+    public bool IsSelfBusy { get; set; }
 
-    public event BusyChangedEventHandler BusyChanged;
-    public event EventHandler<Core.ErrorEventArgs> UnhandledAsyncException;
-    public event EventHandler<SavedEventArgs> Saved;
-
-    public void AcceptChanges(int parentEditLevel, bool parentBindingEdit) => throw new NotImplementedException();
-    public void ApplyEdit() => throw new NotImplementedException();
-    public void BeginEdit() => throw new NotImplementedException();
-    public void CancelEdit() => throw new NotImplementedException();
-    public void CopyState(int parentEditLevel, bool parentBindingEdit) => throw new NotImplementedException();
-    public void Delete() => throw new NotImplementedException();
-    public void DeleteChild() => throw new NotImplementedException();
-    public void GetChildren(SerializationInfo info, MobileFormatter formatter) => throw new NotImplementedException();
-    public void GetState(SerializationInfo info) => throw new NotImplementedException();
-    public object Save() => throw new NotImplementedException();
-    public object Save(bool forceUpdate) => throw new NotImplementedException();
-    public Task SaveAndMergeAsync() => throw new NotImplementedException();
-    public Task SaveAndMergeAsync(bool forceUpdate) => throw new NotImplementedException();
-    public Task<object> SaveAsync() => throw new NotImplementedException();
-    public Task<object> SaveAsync(bool forceUpdate) => throw new NotImplementedException();
-    public void SaveComplete(object newObject) => throw new NotImplementedException();
-    public void SetChildren(SerializationInfo info, MobileFormatter formatter) => throw new NotImplementedException();
+    public void AcceptChanges(int parentEditLevel, bool parentBindingEdit) { }
+    public void ApplyEdit() { }
+    public void BeginEdit() { }
+    public void CancelEdit() { }
+    public void CopyState(int parentEditLevel, bool parentBindingEdit) { }
+    public void Delete() { }
+    public void DeleteChild() { }
+    public void GetChildren(SerializationInfo info, MobileFormatter formatter) { }
+    public void GetState(SerializationInfo info) { }
+    public object Save() { return string.Empty; }
+    public object Save(bool forceUpdate) { return string.Empty; }
+    public Task SaveAndMergeAsync() { return Task.CompletedTask; }
+    public Task SaveAndMergeAsync(bool forceUpdate) { return Task.CompletedTask; }
+    public Task<object> SaveAsync() { return Task.FromResult(new object()); }
+    public Task<object> SaveAsync(bool forceUpdate) { return Task.FromResult(new object()); }
+    public void SaveComplete(object newObject) { }
+    public void SetChildren(SerializationInfo info, MobileFormatter formatter) { }
     public void SetParent(IParent parent) { }
-    public void SetState(SerializationInfo info) => throw new NotImplementedException();
-    public void UndoChanges(int parentEditLevel, bool parentBindingEdit) => throw new NotImplementedException();
+    public void SetState(SerializationInfo info) { }
+    public void UndoChanges(int parentEditLevel, bool parentBindingEdit) { }
   }
 
 }

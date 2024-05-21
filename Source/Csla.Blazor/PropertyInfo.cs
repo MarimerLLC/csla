@@ -16,8 +16,10 @@ namespace Csla.Blazor
   /// </summary>
   public class PropertyInfo : IPropertyInfo, INotifyPropertyChanged
   {
-    private const string TextSeparator = ", ";
-    
+    /// <summary>
+    /// Gets the value of the TextSeparator
+    /// </summary>
+    public string TextSeparator { get; }
     /// <summary>
     /// Gets the model
     /// </summary>
@@ -28,7 +30,8 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="model">Model object</param>
     /// <param name="propertyName">Property name</param>
-    public PropertyInfo(object model, string propertyName)
+    /// <param name="textSeprator">Text Seprator</param>
+    public PropertyInfo(object model, string propertyName, string textSeprator = " ")
     {
       Model = model;
       PropertyName = propertyName;
@@ -36,6 +39,7 @@ namespace Csla.Blazor
       {
         npc.PropertyChanged += Npc_PropertyChanged;
       }
+      TextSeparator = textSeprator;
     }
 
     private void Npc_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -50,7 +54,7 @@ namespace Csla.Blazor
     /// </summary>
     public void Refresh()
     {
-      foreach (var item in this.GetType().GetProperties())
+      foreach (var item in GetType().GetProperties())
         OnPropertyChanged(item.Name);
     }
 
@@ -59,8 +63,8 @@ namespace Csla.Blazor
     /// </summary>
     public object Value
     {
-      get => Csla.Utilities.CallByName(Model, PropertyName, CallType.Get);
-      set => Csla.Utilities.CallByName(Model, PropertyName, CallType.Set, value);
+      get => Utilities.CallByName(Model, PropertyName, CallType.Get);
+      set => Utilities.CallByName(Model, PropertyName, CallType.Set, value);
     }
 
     /// <summary>

@@ -632,7 +632,7 @@ namespace Csla.Xaml
       for (int x = 0; x < count; x++)
       {
         DependencyObject child = VisualTreeHelper.GetChild(parent, x);
-        string childName = child.GetValue(FrameworkElement.NameProperty) as string;
+        string childName = child.GetValue(NameProperty) as string;
         if (childName == name)
         {
           found = child;

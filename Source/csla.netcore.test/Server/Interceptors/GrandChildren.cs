@@ -15,7 +15,7 @@ namespace Csla.Test.Server.Interceptors
   {
     public void Add(string data)
     {
-      var grandChild = this.AddNew();
+      var grandChild = AddNew();
       grandChild.Data = data;
     }
 

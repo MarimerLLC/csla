@@ -33,7 +33,7 @@ namespace Csla.Web.Design
       _control = (DataSourceControl)component;
     }
 
-    internal System.ComponentModel.ISite Site
+    internal ISite Site
     {
       get
       {
@@ -74,7 +74,7 @@ namespace Csla.Web.Design
     /// <remarks></remarks>
     public override void RefreshSchema(bool preferSilent)
     {
-      this.OnSchemaRefreshed(EventArgs.Empty);
+      OnSchemaRefreshed(EventArgs.Empty);
     }
 
     /// <summary>

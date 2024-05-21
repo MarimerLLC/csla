@@ -48,19 +48,19 @@ namespace Csla.Test.BypassPropertyChecks
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, IdProperty, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, IdProperty, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id2Property, new List<string> { "Random" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id2Property, new List<string> { "Random" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id3Property, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id3Property, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id4Property, new List<string> { "Random" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id4Property, new List<string> { "Random" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, IdProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, IdProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id2Property, new List<string> { "Random" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id2Property, new List<string> { "Random" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id3Property, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id3Property, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, Id4Property, new List<string> { "Random" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.WriteProperty, Id4Property, new List<string> { "Random" }));
     }
 
     public void LoadIdByPass(int id)
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         Id = id;
       }
@@ -68,9 +68,9 @@ namespace Csla.Test.BypassPropertyChecks
 
     public void LoadIdByNestedPass(int id)
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
-        using (this.BypassPropertyChecks)
+        using (BypassPropertyChecks)
         {
           
         }
@@ -86,7 +86,7 @@ namespace Csla.Test.BypassPropertyChecks
 
     public int ReadIdByPass()
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         return Id;
       }
@@ -99,7 +99,7 @@ namespace Csla.Test.BypassPropertyChecks
 
     public void LoadId2ByPass(int id)
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         Id2 = id;
       }
@@ -112,7 +112,7 @@ namespace Csla.Test.BypassPropertyChecks
 
     public int ReadId2ByPass()
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         return Id2;
       }
@@ -126,7 +126,7 @@ namespace Csla.Test.BypassPropertyChecks
 
     public void LoadId3ByPass(int id)
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         Id3 = id;
       }
@@ -139,7 +139,7 @@ namespace Csla.Test.BypassPropertyChecks
 
     public int ReadId3ByPass()
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         return Id3;
       }
@@ -152,7 +152,7 @@ namespace Csla.Test.BypassPropertyChecks
 
     public void LoadId4ByPass(int id)
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         Id4 = id;
       }
@@ -165,7 +165,7 @@ namespace Csla.Test.BypassPropertyChecks
 
     public int ReadId4ByPass()
     {
-      using (this.BypassPropertyChecks)
+      using (BypassPropertyChecks)
       {
         return Id4;
       }

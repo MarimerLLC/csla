@@ -49,7 +49,7 @@ namespace Csla.Test.DPException
       {
         root = root.Save();
       }
-      catch (Csla.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         baseException = ex.Message;
         baseInnerException = ex.InnerException.Message;
@@ -92,9 +92,9 @@ namespace Csla.Test.DPException
       try
       {
         //this will throw an exception
-        Csla.Test.DataPortal.TransactionalRoot.DeleteTransactionalRoot(13, dataPortal);
+        DataPortal.TransactionalRoot.DeleteTransactionalRoot(13, dataPortal);
       }
-      catch (Csla.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         baseException = ex.Message;
         baseInnerException = ex.InnerException.Message;
@@ -123,10 +123,10 @@ namespace Csla.Test.DPException
       try
       {
         //this will throw an exception
-        Csla.Test.DataPortal.TransactionalRoot root =
-            Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
+        DataPortal.TransactionalRoot root =
+            DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
       }
-      catch (Csla.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         baseException = ex.Message;
         baseInnerException = ex.InnerException.Message;
@@ -150,7 +150,7 @@ namespace Csla.Test.DPException
 
       try 
       {
-        Csla.Test.DataPortal.TransactionalRoot root = Csla.Test.DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
+        DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
 
         Assert.Fail("The previous operation should have thrown an Exception and not executed successfully.");
       } 

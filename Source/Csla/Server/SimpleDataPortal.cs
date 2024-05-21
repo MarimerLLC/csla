@@ -34,7 +34,7 @@ namespace Csla.Server
     private ApplicationContext _applicationContext;
     private IDataPortalActivator Activator { get; set; }
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
-    private Csla.Configuration.DataPortalOptions DataPortalOptions { get; set; }
+    private Configuration.DataPortalOptions DataPortalOptions { get; set; }
 
     /// <summary>
     /// Create a new business object.

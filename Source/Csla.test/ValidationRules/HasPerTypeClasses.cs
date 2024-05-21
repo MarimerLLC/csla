@@ -8,7 +8,7 @@
 
 namespace Csla.Test.ValidationRules
 {
-  public class HasPerTypeRules : Csla.BusinessBase<HasPerTypeRules>
+  public class HasPerTypeRules : BusinessBase<HasPerTypeRules>
   {
     public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
@@ -19,8 +19,8 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
+      BusinessRules.AddRule(new Rules.CommonRules.Required(TestProperty));
+      BusinessRules.AddRule(new Rules.CommonRules.MaxLength(TestProperty, 5));
 
       int value = int.Parse(TestResults.GetResult("Shared"));
       TestResults.AddOrOverwrite("Shared", (++value).ToString());
@@ -37,7 +37,7 @@ namespace Csla.Test.ValidationRules
     }
   }
 
-  public class HasPerTypeRules2 : Csla.BusinessBase<HasPerTypeRules2>
+  public class HasPerTypeRules2 : BusinessBase<HasPerTypeRules2>
   {
     public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
@@ -48,8 +48,8 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
+      BusinessRules.AddRule(new Rules.CommonRules.Required(TestProperty));
+      BusinessRules.AddRule(new Rules.CommonRules.MaxLength(TestProperty, 5));
 
       int value = int.Parse(TestResults.GetResult("Shared"));
       TestResults.AddOrOverwrite("Shared", (++value).ToString());
@@ -67,7 +67,7 @@ namespace Csla.Test.ValidationRules
   }
 
 
-  public class HasOnlyPerTypeRules : Csla.BusinessBase<HasOnlyPerTypeRules>
+  public class HasOnlyPerTypeRules : BusinessBase<HasOnlyPerTypeRules>
   {
     public static PropertyInfo<string> TestProperty = RegisterProperty<string>(c => c.Test);
     public string Test
@@ -78,8 +78,8 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(TestProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(TestProperty, 5));
+      BusinessRules.AddRule(new Rules.CommonRules.Required(TestProperty));
+      BusinessRules.AddRule(new Rules.CommonRules.MaxLength(TestProperty, 5));
 
       int value = int.Parse(TestResults.GetResult("Shared"));
       TestResults.AddOrOverwrite("Shared", (++value).ToString());
@@ -96,7 +96,7 @@ namespace Csla.Test.ValidationRules
     }
   }
 
-  public class HasRuleSetRules : Csla.BusinessBase<HasRuleSetRules>
+  public class HasRuleSetRules : BusinessBase<HasRuleSetRules>
   {
     public static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
@@ -108,10 +108,10 @@ namespace Csla.Test.ValidationRules
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+      BusinessRules.AddRule(new Rules.CommonRules.Required(NameProperty));
       BusinessRules.RuleSet = "test";
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(NameProperty, 5));
+      BusinessRules.AddRule(new Rules.CommonRules.Required(NameProperty));
+      BusinessRules.AddRule(new Rules.CommonRules.MaxLength(NameProperty, 5));
     }
 
     public string[] GetDefaultRules()

@@ -21,7 +21,7 @@ namespace Csla.Channels.Grpc
   /// Exposes server-side DataPortal functionality
   /// through gRPC.
   /// </summary>
-  public class GrpcPortal : Csla.Channels.Grpc.GrpcService.GrpcServiceBase
+  public class GrpcPortal : GrpcService.GrpcServiceBase
   {
     private IDataPortalServer dataPortalServer;
     private ApplicationContext _applicationContext;
@@ -75,7 +75,7 @@ namespace Csla.Channels.Grpc
       {
         var options = new GrpcProxyOptions { DataPortalUrl = $"{route}?operation={operation}" };
         var channel = _applicationContext.CreateInstanceDI<global::Grpc.Net.Client.GrpcChannel>();
-        var dataPortalOptions = _applicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
+        var dataPortalOptions = _applicationContext.GetRequiredService<Configuration.DataPortalOptions>();
         var proxy = new GrpcProxy(_applicationContext, channel, options, dataPortalOptions);
         var clientRequest = new RequestMessage
         {
@@ -151,12 +151,12 @@ namespace Csla.Channels.Grpc
 
         // unpack criteria data into object
         object criteria = GetCriteria(_applicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
+        if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
           true,
@@ -195,12 +195,12 @@ namespace Csla.Channels.Grpc
 
         // unpack criteria data into object
         object criteria = GetCriteria(_applicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
+        if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
           true,
@@ -278,12 +278,12 @@ namespace Csla.Channels.Grpc
 
         // unpack criteria data into object
         object criteria = GetCriteria(_applicationContext, request.CriteriaData);
-        if (criteria is Csla.DataPortalClient.PrimitiveCriteria primitiveCriteria)
+        if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Csla.Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
           true,

@@ -22,10 +22,10 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void EditLevelsWorkWithMobileFormatter()
     {
-      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+      var oldSetting = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
       try
       {
-        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+        ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
 
         var root = NewRoot();
 
@@ -45,17 +45,17 @@ namespace Csla.Test.BasicModern
       }
       finally
       {
-        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
+        ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
       }
     }
 
     [TestMethod]
     public void CloneWorkswithMobileFormatter()
     {
-      var oldSetting = Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"];
+      var oldSetting = ConfigurationManager.AppSettings["CslaSerializationFormatter"];
       try
       {
-        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
+        ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", "MobileFormatter");
 
         var original = NewRoot();
 
@@ -81,7 +81,7 @@ namespace Csla.Test.BasicModern
       }
       finally
       {
-        Configuration.ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
+        ConfigurationManager.AppSettings.Set("CslaSerializationFormatter", oldSetting);
       }
     }
 

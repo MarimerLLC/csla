@@ -71,7 +71,7 @@ namespace Csla.Channels.Http
         _httpClient = new HttpClient(handler);
         if (Timeout > 0)
         {
-          _httpClient.Timeout = TimeSpan.FromMilliseconds(this.Timeout);
+          _httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
         }
       }
       
@@ -95,7 +95,7 @@ namespace Csla.Channels.Http
     /// </summary>
     protected virtual WebClient GetWebClient()
     {
-      return new DefaultWebClient(this.Timeout);
+      return new DefaultWebClient(Timeout);
     }
 
     /// <summary>
@@ -142,7 +142,7 @@ namespace Csla.Channels.Http
       if (Options.UseTextSerialization)
       {
         httpRequest.Content = new StringContent(
-          System.Convert.ToBase64String(serialized),
+          Convert.ToBase64String(serialized),
           mediaType: new MediaTypeHeaderValue("application/base64,text/plain"));
       }
       else
@@ -153,7 +153,7 @@ namespace Csla.Channels.Http
 #else
       if (Options.UseTextSerialization)
       {
-        httpRequest.Content = new StringContent(System.Convert.ToBase64String(serialized));
+        httpRequest.Content = new StringContent(Convert.ToBase64String(serialized));
         httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
       }
       else
@@ -185,8 +185,8 @@ namespace Csla.Channels.Http
       {
         if (Options.UseTextSerialization)
         {
-          var result = client.UploadString(url, System.Convert.ToBase64String(serialized));
-          serialized = System.Convert.FromBase64String(result);
+          var result = client.UploadString(url, Convert.ToBase64String(serialized));
+          serialized = Convert.FromBase64String(result);
         }
         else
         {

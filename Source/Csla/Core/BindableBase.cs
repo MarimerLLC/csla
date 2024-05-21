@@ -42,19 +42,19 @@ namespace Csla.Core
       {
         if (ShouldHandlerSerialize(value))
           _serializableChangedHandlers = (PropertyChangedEventHandler)
-            System.Delegate.Combine(_serializableChangedHandlers, value);
+            Delegate.Combine(_serializableChangedHandlers, value);
         else
           _nonSerializableChangedHandlers = (PropertyChangedEventHandler)
-            System.Delegate.Combine(_nonSerializableChangedHandlers, value);
+            Delegate.Combine(_nonSerializableChangedHandlers, value);
       }
       remove
       {
           if (ShouldHandlerSerialize(value))
           _serializableChangedHandlers = (PropertyChangedEventHandler)
-            System.Delegate.Remove(_serializableChangedHandlers, value);
+            Delegate.Remove(_serializableChangedHandlers, value);
         else
           _nonSerializableChangedHandlers = (PropertyChangedEventHandler)
-            System.Delegate.Remove(_nonSerializableChangedHandlers, value);
+            Delegate.Remove(_nonSerializableChangedHandlers, value);
       }
     }
 
@@ -167,19 +167,19 @@ namespace Csla.Core
       {
           if (ShouldHandlerSerialize(value))
           _serializableChangingHandlers = (PropertyChangingEventHandler)
-            System.Delegate.Combine(_serializableChangingHandlers, value);
+            Delegate.Combine(_serializableChangingHandlers, value);
         else
           _nonSerializableChangingHandlers = (PropertyChangingEventHandler)
-            System.Delegate.Combine(_nonSerializableChangingHandlers, value);
+            Delegate.Combine(_nonSerializableChangingHandlers, value);
       }
       remove
       {
           if (ShouldHandlerSerialize(value))
           _serializableChangingHandlers = (PropertyChangingEventHandler)
-            System.Delegate.Remove(_serializableChangingHandlers, value);
+            Delegate.Remove(_serializableChangingHandlers, value);
         else
           _nonSerializableChangingHandlers = (PropertyChangingEventHandler)
-            System.Delegate.Remove(_nonSerializableChangingHandlers, value);
+            Delegate.Remove(_nonSerializableChangingHandlers, value);
       }
     }
 

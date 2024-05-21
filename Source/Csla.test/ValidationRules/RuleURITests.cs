@@ -4,7 +4,7 @@ using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
 {
-  public class AddressEdit : Csla.BusinessBase<AddressEdit>;
+  public class AddressEdit : BusinessBase<AddressEdit>;
 
   public class GenericRule<T> : ObjectRule;
 
@@ -40,7 +40,7 @@ namespace Csla.Test.ValidationRules
     public void RuleURIWithNonGenericType()
     {
       var property = new PropertyInfo<string>("test1");
-      var rule = new Csla.Rules.CommonRules.MaxLength(property, 30);
+      var rule = new Rules.CommonRules.MaxLength(property, 30);
       Assert.AreEqual("rule://csla.rules.commonrules.maxlength/test1?max=30", rule.RuleName);
     }
 
@@ -48,7 +48,7 @@ namespace Csla.Test.ValidationRules
     public void RuleURIWithGenericType()
     {
       var property = new PropertyInfo<int>("test1");
-      var rule = new Csla.Rules.CommonRules.MaxValue<int>(property, 30);
+      var rule = new Rules.CommonRules.MaxValue<int>(property, 30);
       Assert.AreEqual("rule://csla.rules.commonrules.maxvalue-system.int32-/test1?max=30", rule.RuleName);
     }
 
@@ -57,7 +57,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void RuleURIWithObjectRule()
     {
-      var rule = new Csla.Rules.CommonRules.Required(null);
+      var rule = new Rules.CommonRules.Required(null);
       Assert.AreEqual("rule://csla.rules.commonrules.required/(object)", rule.RuleName);
     }
 

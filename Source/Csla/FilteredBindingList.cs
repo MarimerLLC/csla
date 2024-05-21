@@ -67,7 +67,7 @@ namespace Csla
         get { return _list[_filterIndex[_index].BaseIndex]; }
       }
 
-      Object System.Collections.IEnumerator.Current
+      Object IEnumerator.Current
       {
         get { return _list[_filterIndex[_index].BaseIndex]; }
       }
@@ -497,7 +497,7 @@ namespace Csla
       }
     }
 
-    void System.Collections.ICollection.CopyTo(System.Array array, int index)
+    void ICollection.CopyTo(Array array, int index)
     {
       T[] tmp = new T[array.Length];
       CopyTo(tmp, index);
@@ -518,17 +518,17 @@ namespace Csla
       }
     }
 
-    bool System.Collections.ICollection.IsSynchronized
+    bool ICollection.IsSynchronized
     {
       get { return false; }
     }
 
-    object System.Collections.ICollection.SyncRoot
+    object ICollection.SyncRoot
     {
       get { return SourceList; }
     }
 
-    IEnumerator System.Collections.IEnumerable.GetEnumerator()
+    IEnumerator IEnumerable.GetEnumerator()
     {
       return GetEnumerator();
     }
@@ -542,7 +542,7 @@ namespace Csla
       SourceList.Add(item);
     }
 
-    int System.Collections.IList.Add(object value)
+    int IList.Add(object value)
     {
       Add((T)value);
       int index = FilteredIndex(SourceList.Count - 1);
@@ -576,7 +576,7 @@ namespace Csla
       return SourceList.Contains(item);
     }
 
-    bool System.Collections.IList.Contains(object value)
+    bool IList.Contains(object value)
     {
       return Contains((T)value);
     }
@@ -593,7 +593,7 @@ namespace Csla
       return FilteredIndex(SourceList.IndexOf(item));
     }
 
-    int System.Collections.IList.IndexOf(object value)
+    int IList.IndexOf(object value)
     {
       return IndexOf((T)value);
     }
@@ -609,12 +609,12 @@ namespace Csla
       SourceList.Insert(index, item);
     }
 
-    void System.Collections.IList.Insert(int index, object value)
+    void IList.Insert(int index, object value)
     {
       Insert(index, (T)value);
     }
 
-    bool System.Collections.IList.IsFixedSize
+    bool IList.IsFixedSize
     {
       get { return false; }
     }
@@ -628,7 +628,7 @@ namespace Csla
       get { return SourceList.IsReadOnly; }
     }
 
-    object System.Collections.IList.this[int index]
+    object IList.this[int index]
     {
       get
       {
@@ -651,7 +651,7 @@ namespace Csla
       return SourceList.Remove(item);
     }
 
-    void System.Collections.IList.Remove(object value)
+    void IList.Remove(object value)
     {
       Remove((T)value);
     }

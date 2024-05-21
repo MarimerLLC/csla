@@ -26,8 +26,8 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.RegExMatch(SsnProperty, @"^\d{3}-\d{2}-\d{4}$"));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.RegExMatch(Ssn2Property, @"^\d{3}-\d{2}-\d{4}$"));
+      BusinessRules.AddRule(new Rules.CommonRules.RegExMatch(SsnProperty, @"^\d{3}-\d{2}-\d{4}$"));
+      BusinessRules.AddRule(new Rules.CommonRules.RegExMatch(Ssn2Property, @"^\d{3}-\d{2}-\d{4}$"));
     }
 
     [Create]

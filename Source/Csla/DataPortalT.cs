@@ -643,6 +643,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Execute a command on the logical server.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria provided to the command object.
+    /// </param>
+    /// <returns>The resulting command object.</returns>
+    public T Execute(params object[] criteria)
+    {
+        return (T)DoFetchAsync(typeof(T), criteria, true).Result;
+    }
+
+    /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.
     /// </summary>
@@ -854,6 +866,7 @@ namespace Csla
     object IDataPortal.Create(params object[] criteria) => Create(criteria);
     object IDataPortal.Fetch(params object[] criteria) => Fetch(criteria);
     object IDataPortal.Execute(object obj) => Execute((T)obj);
+    object IDataPortal.Execute(params object[] criteria) => Execute(criteria);
     object IDataPortal.Update(object obj) => Update((T)obj);
 
     async Task<object> IChildDataPortal.CreateChildAsync(params object[] criteria) => Task.FromResult(await CreateChildAsync(criteria));

@@ -93,6 +93,14 @@ namespace Csla
     /// <returns>A reference to the updated Command object.</returns>
     T Execute(T obj);
     /// <summary>
+    /// Execute a command on the logical server.
+    /// </summary>
+    /// <param name="criteria">
+    /// Criteria provided to the command object.
+    /// </param>
+    /// <returns>The resulting command object.</returns>
+    T Execute(params object[] criteria);
+    /// <summary>
     /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
     /// </summary>

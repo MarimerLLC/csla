@@ -6,11 +6,11 @@ namespace Csla.Blazor.Test.Fakes
   [Serializable]
   public class FakePerson : BusinessBase<FakePerson>
   {
-    public static Csla.PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));
-    public static Csla.PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
-    public static Csla.PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
-    public static Csla.PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
-    public static Csla.PropertyInfo<FakePersonEmailAddresses> EmailAddressesProperty = RegisterProperty<FakePersonEmailAddresses>(nameof(EmailAddresses));
+    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));
+    public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
+    public static PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
+    public static PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
+    public static PropertyInfo<FakePersonEmailAddresses> EmailAddressesProperty = RegisterProperty<FakePersonEmailAddresses>(nameof(EmailAddresses));
 
     public static string FirstNameFailOnInsertValue = "FailOnInsert";
 
@@ -69,7 +69,7 @@ namespace Csla.Blazor.Test.Fakes
       BusinessRules.AddRule(rule);
     }
 
-    protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
+    protected override void OnChildChanged(Core.ChildChangedEventArgs e)
     {
       if (e.ChildObject is FakePersonEmailAddresses)
       {

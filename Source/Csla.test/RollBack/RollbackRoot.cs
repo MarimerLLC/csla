@@ -43,7 +43,7 @@ namespace Csla.Test.RollBack
 
       public Criteria(string data)
       {
-        this.Data = data;
+        Data = data;
       }
 
       public string Data

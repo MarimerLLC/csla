@@ -13,8 +13,6 @@ using Csla.Serialization;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
 using Csla.Blazor.State.Messages;
-using System.Reflection;
-using System.Threading;
 
 namespace Csla.Blazor.WebAssembly.State
 {
@@ -56,7 +54,7 @@ namespace Csla.Blazor.WebAssembly.State
             }
             catch (TaskCanceledException tcex)
             {
-                throw new TimeoutException($"{this.GetType().FullName}.{nameof(RetrieveSession)}.", tcex);
+                throw new TimeoutException($"{GetType().FullName}.{nameof(RetrieveSession)}.", tcex);
             }
         }
 
@@ -118,7 +116,7 @@ namespace Csla.Blazor.WebAssembly.State
             }
             catch (TaskCanceledException tcex)
             {
-                throw new TimeoutException($"{this.GetType().FullName}.{nameof(SendSession)}.", tcex);
+                throw new TimeoutException($"{GetType().FullName}.{nameof(SendSession)}.", tcex);
             }
         }
 

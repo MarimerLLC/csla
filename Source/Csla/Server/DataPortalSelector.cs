@@ -34,7 +34,7 @@ namespace Csla.Server
     private ApplicationContext _applicationContext;
     private SimpleDataPortal SimpleDataPortal { get; set; }
     private FactoryDataPortal FactoryDataPortal { get; set; }
-    private Csla.Configuration.DataPortalOptions DataPortalOptions { get; set; }
+    private Configuration.DataPortalOptions DataPortalOptions { get; set; }
 
     /// <summary>
     /// Create a new business object.

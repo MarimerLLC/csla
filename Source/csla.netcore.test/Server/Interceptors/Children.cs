@@ -15,7 +15,7 @@ namespace Csla.Test.Server.Interceptors
   {
     public void Add(string data)
     {
-      var child = this.AddNew();
+      var child = AddNew();
       child.Data = data;
     }
 
@@ -29,12 +29,12 @@ namespace Csla.Test.Server.Interceptors
 
     public int DeletedCount
     {
-      get { return this.DeletedList.Count; }
+      get { return DeletedList.Count; }
     }
 
     public List<Child> GetDeletedList()
     {
-      return this.DeletedList;
+      return DeletedList;
     }
   }
 }

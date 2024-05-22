@@ -67,7 +67,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Csla.DataPortalException))]
+    [ExpectedException(typeof(DataPortalException))]
     public async Task BeginCreate_with_exception()
     {
       IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
@@ -111,7 +111,7 @@ namespace Csla.Test.DataPortal
         }
         catch (Exception ex)
         {
-          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+          Assert.IsInstanceOfType(ex, typeof(DataPortalException));
         }
         finally
         {
@@ -178,7 +178,7 @@ namespace Csla.Test.DataPortal
         }
         catch (Exception ex)
         {
-          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+          Assert.IsInstanceOfType(ex, typeof(DataPortalException));
         }
         finally
         {
@@ -246,7 +246,7 @@ namespace Csla.Test.DataPortal
           }
           catch (Exception ex)
           {
-            context.Assert.IsTrue(ex.GetType() == typeof(Csla.DataPortalException));
+            context.Assert.IsTrue(ex.GetType() == typeof(DataPortalException));
           }
           finally
           {
@@ -300,7 +300,7 @@ namespace Csla.Test.DataPortal
         }
         catch (Exception ex)
         {
-          Assert.IsInstanceOfType(ex, typeof(Csla.DataPortalException));
+          Assert.IsInstanceOfType(ex, typeof(DataPortalException));
         }
         finally
         {

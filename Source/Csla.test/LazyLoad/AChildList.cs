@@ -9,14 +9,14 @@
 namespace Csla.Test.LazyLoad
 {
   [Serializable]
-  public class AChildList : Csla.BusinessBindingListBase<AChildList, AChild>
+  public class AChildList : BusinessBindingListBase<AChildList, AChild>
   {
 
     [Fetch]
     private void Fetch([Inject] IChildDataPortal<AChild> childDataPortal)
     {
       MarkAsChild();
-      this.Add(childDataPortal.CreateChild());
+      Add(childDataPortal.CreateChild());
     }
 
     public new int EditLevel

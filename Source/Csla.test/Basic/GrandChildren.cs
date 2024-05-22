@@ -15,7 +15,7 @@ namespace Csla.Test.Basic
   {
     public void Add(string data)
     {
-      this.Add(GrandChild.NewGrandChild(data));
+      Add(GrandChild.NewGrandChild(data));
     }
 
     internal static GrandChildren NewGrandChildren()

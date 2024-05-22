@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Base class used to create ViewModel objects that contain the Model object and related elements.</summary>
 //-----------------------------------------------------------------------
-using System.Text;
 using System.Web.Mvc;
 using Csla.Core;
 
@@ -49,7 +48,7 @@ namespace Csla.Web.Mvc
         ModelObject = (T)savable.Save(forceUpdate);
         return true;
       }
-      catch (Csla.DataPortalException ex)
+      catch (DataPortalException ex)
       {
         if (ex.BusinessException != null)
           modelState.AddModelError("", ex.BusinessException.Message);

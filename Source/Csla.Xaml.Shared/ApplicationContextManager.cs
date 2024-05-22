@@ -25,7 +25,7 @@ namespace Csla.Xaml
     /// Method called when the ApplicationContext
     /// property has been set to a new value.
     /// </summary>
-    protected override void OnApplicationContextSet() => applicationContext = base.ApplicationContext;
+    protected override void OnApplicationContextSet() => applicationContext = ApplicationContext;
 
     /// <summary>
     /// Gets the current ApplicationContext.

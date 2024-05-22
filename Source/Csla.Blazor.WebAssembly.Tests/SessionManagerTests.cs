@@ -1,16 +1,11 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Csla.Blazor.WebAssembly.State;
 using Csla.State;
-using System.Net.Http;
 using Csla.Blazor.WebAssembly.Configuration;
 using Csla.Core;
 using Csla.Runtime;
 using System.Net;
 using Csla.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Components.Authorization;
 using NSubstitute;
@@ -48,14 +43,14 @@ namespace Csla.Test.State
       mockFormatter.Deserialize(Arg.Any<Stream>()).Returns(_sessionValue);
 
       // Mock IServiceProvider
-      mockServiceProvider.GetService(typeof(Csla.Serialization.Mobile.MobileFormatter)).Returns(mockFormatter);
+      mockServiceProvider.GetService(typeof(MobileFormatter)).Returns(mockFormatter);
 
-      var mockActivator = Substitute.For<Csla.Server.IDataPortalActivator>();
-      mockActivator.CreateInstance(Arg.Is<Type>(t => t == typeof(Csla.Serialization.Mobile.MobileFormatter))).Returns(mockFormatter);
+      var mockActivator = Substitute.For<Server.IDataPortalActivator>();
+      mockActivator.CreateInstance(Arg.Is<Type>(t => t == typeof(MobileFormatter))).Returns(mockFormatter);
       mockActivator.InitializeInstance(Arg.Any<object>());
 
       // Mock IServiceProvider
-      mockServiceProvider.GetService(typeof(Csla.Server.IDataPortalActivator)).Returns(mockActivator);
+      mockServiceProvider.GetService(typeof(Server.IDataPortalActivator)).Returns(mockActivator);
 
       // Mock IContextManager
       var mockContextManager = Substitute.For<IContextManager>();

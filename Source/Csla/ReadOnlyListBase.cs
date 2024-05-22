@@ -25,7 +25,7 @@ namespace Csla
 #if ANDROID || IOS
     Core.ReadOnlyBindingList<C>,
 #else
-    Core.ReadOnlyObservableBindingList<C>,
+    ReadOnlyObservableBindingList<C>,
 #endif
     Server.IDataPortalTarget,
     IReadOnlyListBase<C>,
@@ -36,7 +36,7 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext 
+    ApplicationContext IUseApplicationContext.ApplicationContext 
     { 
       get => ApplicationContext;
       set
@@ -66,7 +66,7 @@ namespace Csla
 
     #region Identity
 
-    int Core.IBusinessObject.Identity
+    int IBusinessObject.Identity
     {
       get { return 0; }
     }
@@ -86,7 +86,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>
@@ -120,7 +120,7 @@ namespace Csla
       throw new NotSupportedException(Resources.UpdateNotSupportedException);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
+    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [Delete]
     private void DataPortal_Delete(object criteria)
     {
@@ -132,7 +132,7 @@ namespace Csla
     /// requested DataPortal_xyz method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
@@ -144,7 +144,7 @@ namespace Csla
     /// requested DataPortal_xyz method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
@@ -157,7 +157,7 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
@@ -169,7 +169,7 @@ namespace Csla
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
     {
@@ -180,7 +180,7 @@ namespace Csla
     /// requested DataPortal_XYZ method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
@@ -192,7 +192,7 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
@@ -202,50 +202,50 @@ namespace Csla
 
     #region IDataPortalTarget Members
 
-    void Csla.Server.IDataPortalTarget.CheckRules()
+    void Server.IDataPortalTarget.CheckRules()
     { }
 
-    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+    Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+    async Task Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
 
-    void Csla.Server.IDataPortalTarget.MarkAsChild()
+    void Server.IDataPortalTarget.MarkAsChild()
     { }
 
-    void Csla.Server.IDataPortalTarget.MarkNew()
+    void Server.IDataPortalTarget.MarkNew()
     { }
 
-    void Csla.Server.IDataPortalTarget.MarkOld()
+    void Server.IDataPortalTarget.MarkOld()
     { }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvoke(e);
+      DataPortal_OnDataPortalInvoke(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvokeComplete(e);
+      DataPortal_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      this.DataPortal_OnDataPortalException(e, ex);
+      DataPortal_OnDataPortalException(e, ex);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      this.Child_OnDataPortalInvoke(e);
+      Child_OnDataPortalInvoke(e);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      this.Child_OnDataPortalInvokeComplete(e);
+      Child_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      this.Child_OnDataPortalException(e, ex);
+      Child_OnDataPortalException(e, ex);
     }
 
     #endregion

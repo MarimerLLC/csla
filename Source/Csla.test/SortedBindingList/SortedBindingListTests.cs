@@ -163,7 +163,7 @@ namespace Csla.Test.SortedBindingList
 
       Assert.AreEqual(1, sortedList.IndexOf(barney), "Unsorted index should be 1");
 
-      sortedList.ApplySort(string.Empty, System.ComponentModel.ListSortDirection.Ascending);
+      sortedList.ApplySort(string.Empty, ListSortDirection.Ascending);
 
       Assert.AreEqual(1, sortedList.IndexOf(charlie), "Sorted index should be 1");
     }

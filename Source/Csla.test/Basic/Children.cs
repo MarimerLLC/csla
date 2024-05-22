@@ -15,7 +15,7 @@ namespace Csla.Test.Basic
   {
     public void Add(IDataPortal<Child> dataPortal, string data)
     {
-      this.Add(Child.NewChild(dataPortal, data));
+      Add(Child.NewChild(dataPortal, data));
     }
 
     internal static Children NewChildren(IDataPortal<Children> dataPortal)
@@ -30,12 +30,12 @@ namespace Csla.Test.Basic
 
     public Children()
     {
-      this.MarkAsChild();
+      MarkAsChild();
     }
 
     public int DeletedCount
     {
-      get { return this.DeletedList.Count; }
+      get { return DeletedList.Count; }
     }
 
     [Create]

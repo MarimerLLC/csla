@@ -16,7 +16,7 @@ namespace Csla.Analyzers
     : CodeFixProvider
   {
     public override ImmutableArray<string> FixableDiagnosticIds =>
-      ImmutableArray.Create(Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance);
+      ImmutableArray.Create(AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance);
 
     public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 

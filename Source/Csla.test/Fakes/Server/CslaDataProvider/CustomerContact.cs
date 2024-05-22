@@ -115,14 +115,14 @@ namespace cslalighttest.CslaDataProvider
     protected void Child_Insert()
     {
       TestResults.Add("CustomerContactInsert", "Inserted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
-      CustomerContactList parent = this.Parent as CustomerContactList;
+      CustomerContactList parent = Parent as CustomerContactList;
       Customer grandParent = parent.MyParent;
       LoadProperty(ParentNameProperty, grandParent.Name);
     }
     protected void Child_Update()
     {
       TestResults.Add("CustomerContactUpdate", "Updated  Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
-      CustomerContactList parent = this.Parent as CustomerContactList;
+      CustomerContactList parent = Parent as CustomerContactList;
       Customer grandParent = parent.MyParent;
       LoadProperty(ParentNameProperty,grandParent.Name);
     }

@@ -258,7 +258,7 @@ namespace Csla
       get
       {
         var ruleSet = (string)ClientContext.GetValueOrNull("__ruleSet");
-        return string.IsNullOrEmpty(ruleSet) ? ApplicationContext.DefaultRuleSet : ruleSet;
+        return string.IsNullOrEmpty(ruleSet) ? DefaultRuleSet : ruleSet;
       }
       set
       {

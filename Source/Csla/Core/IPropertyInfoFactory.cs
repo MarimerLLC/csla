@@ -22,7 +22,7 @@ namespace Csla.Core
     /// declaration.
     /// </param>
     /// <param name="name">Name of the property.</param>
-    Csla.PropertyInfo<T> Create<T>(Type containingType, string name);
+    PropertyInfo<T> Create<T>(Type containingType, string name);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -34,7 +34,7 @@ namespace Csla.Core
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
-    Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -48,7 +48,7 @@ namespace Csla.Core
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -63,7 +63,7 @@ namespace Csla.Core
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -80,6 +80,6 @@ namespace Csla.Core
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    Csla.PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship);
   }
 }

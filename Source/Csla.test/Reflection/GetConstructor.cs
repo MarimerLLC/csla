@@ -17,7 +17,7 @@ namespace Csla.Test.Reflection
     [TestMethod]
     public void GetsStaticConstructor()
     {
-      var flags = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
+      var flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
       var obj = new HasStaticCtor();
       var ctor = GetConstructor(obj.GetType(), flags, null, [], null);
       Assert.IsNotNull(ctor);
@@ -27,7 +27,7 @@ namespace Csla.Test.Reflection
     [TestMethod]
     public void GetsInstanceConstructor()
     {
-      var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic;
+      var flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
       var obj = new HasStaticCtor();
       var ctor = GetConstructor(obj.GetType(), flags, null, [], null);
       Assert.IsNotNull(ctor);

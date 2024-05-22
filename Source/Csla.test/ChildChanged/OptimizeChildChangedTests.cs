@@ -71,7 +71,7 @@ namespace Csla.Test.ChildChanged
       {
         base.AddBusinessRules();
 
-        BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));
+        BusinessRules.AddRule(new Rules.CommonRules.Required(NameProperty));
 
       }
 

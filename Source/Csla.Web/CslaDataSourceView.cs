@@ -72,7 +72,7 @@ namespace Csla.Web
     /// </summary>
     /// <param name="arguments">Arguments object.</param>
     /// <returns>The data returned from the select.</returns>
-    protected override System.Collections.IEnumerable 
+    protected override IEnumerable 
       ExecuteSelect(DataSourceSelectArguments arguments)
     {
       // get the object from the page
@@ -85,7 +85,7 @@ namespace Csla.Web
         int rowCount;
         if (result == null)
           rowCount = 0;
-        else if (result is Csla.Core.IReportTotalRowCount totalRowCount)
+        else if (result is Core.IReportTotalRowCount totalRowCount)
           rowCount = totalRowCount.TotalRowCount;
         else if (result is IList list)
           rowCount = list.Count;
@@ -127,7 +127,7 @@ namespace Csla.Web
     {
       get
       {
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
+        if (typeof(Core.IUndoableObject).IsAssignableFrom(
           CslaDataSource.GetType(TypeAssemblyName, TypeName)))
           return true;
         else
@@ -165,7 +165,7 @@ namespace Csla.Web
     {
       get
       {
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
+        if (typeof(Core.IUndoableObject).IsAssignableFrom(
           CslaDataSource.GetType(TypeAssemblyName, TypeName)))
           return true;
         else
@@ -204,7 +204,7 @@ namespace Csla.Web
     {
       get
       {
-        if (typeof(Csla.Core.IUndoableObject).IsAssignableFrom(
+        if (typeof(Core.IUndoableObject).IsAssignableFrom(
           CslaDataSource.GetType(TypeAssemblyName, TypeName)))
           return true;
         else

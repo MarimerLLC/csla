@@ -67,7 +67,7 @@ namespace Csla
     public DataPortalException(DataPortalErrorInfo info)
       : base(info.Message)
     {
-      this.ErrorInfo = info;
+      ErrorInfo = info;
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ namespace Csla
       if (ErrorInfo != null)
       {
         sb.AppendLine("------------------------------");
-        var error = this.ErrorInfo;
+        var error = ErrorInfo;
         while (error != null)
         {
           sb.AppendFormat("{0}: {1}", error.ExceptionTypeName, error.Message);
@@ -151,8 +151,8 @@ namespace Csla
       {
         if (_businessException == null)
         {
-          _businessException = this.InnerException;
-          while (_businessException is Csla.Reflection.CallMethodException || _businessException is DataPortalException)
+          _businessException = InnerException;
+          while (_businessException is Reflection.CallMethodException || _businessException is DataPortalException)
             _businessException = _businessException.InnerException;
         }
         return _businessException;

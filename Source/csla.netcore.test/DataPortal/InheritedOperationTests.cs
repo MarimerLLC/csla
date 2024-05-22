@@ -39,7 +39,7 @@ namespace Csla.Test.DataPortal
     private PersonList FetchPersonList()
     {
       IDataPortal<PersonList> dataPortal = _testDIContext.CreateDataPortal<PersonList>();
-      return dataPortal.Fetch(new PersonList.Criteria());
+      return dataPortal.Fetch(new PersonListBase.Criteria());
     }
 
     private PersonEdit CreatePersonEdit()
@@ -53,14 +53,14 @@ namespace Csla.Test.DataPortal
   public class PersonList : PersonListBase;
 
   [Serializable]
-  public class PersonListBase : Csla.BusinessBindingListBase<PersonList, PersonEdit>
+  public class PersonListBase : BusinessBindingListBase<PersonList, PersonEdit>
   {
     private void DataPortal_Fetch(Criteria criteria)
     {
     }
 
     [Serializable]
-    public class Criteria : Csla.CriteriaBase<Criteria>;
+    public class Criteria : CriteriaBase<Criteria>;
   }
 
   [Serializable]

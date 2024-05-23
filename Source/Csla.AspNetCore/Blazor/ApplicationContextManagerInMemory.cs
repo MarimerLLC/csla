@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -40,14 +41,18 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     protected ActiveCircuitState ActiveCircuitState { get; }
 
+    private readonly HttpContext HttpContext;
+
     /// <summary>
     /// Creates an instance of the object, initializing it
     /// with the required IServiceProvider.
     /// </summary>
+    /// <param name="httpContextAccessor"></param>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
     /// <param name="activeCircuitState"></param>
-    public ApplicationContextManagerInMemory(AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
+    public ApplicationContextManagerInMemory(IHttpContextAccessor httpContextAccessor, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
+      HttpContext = httpContextAccessor.HttpContext;
       AuthenticationStateProvider = authenticationStateProvider;
       ActiveCircuitState = activeCircuitState;
       CurrentPrincipal = UnauthenticatedPrincipal;
@@ -57,29 +62,30 @@ namespace Csla.AspNetCore.Blazor
 
     private async Task InitializeUser()
     {
-      Task<AuthenticationState> task = default;
-      try
+      var httpContext = HttpContext;
+      if (httpContext != null)
       {
-        task = AuthenticationStateProvider.GetAuthenticationStateAsync();
-        await task;
-      }
-      catch (InvalidOperationException ex)
-      {
-        task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
-
-        string message = ex.Message;
-        //see ms error https://github.com/dotnet/aspnetcore/blob/87e324a61dcd15db4086b8a8ca7bd74ca1e0a513/src/Components/Server/src/Circuits/ServerAuthenticationStateProvider.cs#L16
-        //not much safe to test on except the error type and the use of this method name in message.
-        if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync)))
+        var user = httpContext.User;
+        if (user != null)
         {
-          SetHostPrincipal(task);
-        }
-        else
-        {
-          throw;
+          CurrentPrincipal = user;
+          SetHostPrincipal(Task.FromResult(new AuthenticationState(user)));
         }
       }
-      AuthenticationStateProvider_AuthenticationStateChanged(task);
+      else
+      {
+        Task<AuthenticationState> task;
+        try
+        {
+          task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+          await task;
+        }
+        catch (InvalidOperationException)
+        {
+          task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
+        }
+        AuthenticationStateProvider_AuthenticationStateChanged(task);
+      }
     }
 
     private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
@@ -156,8 +162,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     public ContextDictionary GetLocalContext()
     {
-      if (LocalContext == null)
-        LocalContext = new ContextDictionary();
+      LocalContext ??= [];
       return LocalContext;
     }
 
@@ -176,8 +181,7 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="executionLocation"></param>
     public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      if (ClientContext == null)
-        ClientContext = new ContextDictionary();
+      ClientContext ??= [];
       return ClientContext;
     }
 

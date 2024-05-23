@@ -5,54 +5,53 @@
 // </copyright>
 // <summary>Interface defining an object that notifies when it</summary>
 //-----------------------------------------------------------------------
-
 using System.Runtime.CompilerServices;
 
-namespace Csla.Core {
+namespace Csla.Core;
+
+/// <summary>
+/// Helper class for busy related functionality spread across different business type implementations.
+/// </summary>
+public static class BusyHelper 
+{
   /// <summary>
-  /// Helper class for busy related functionality spread across different business type implementations.
+  /// Helper class method for busy related functionality spread across different business type implementations.
   /// </summary>
-  public static class BusyHelper 
+  public static async Task WaitForIdle(INotifyBusy source, TimeSpan timeout, [CallerMemberName] string methodName = "") 
   {
-    /// <summary>
-    /// Helper class method for busy related functionality spread across different business type implementations.
-    /// </summary>
-    public static async Task WaitForIdle(INotifyBusy source, TimeSpan timeout, [CallerMemberName] string methodName = "") 
+    if (!source.IsBusy) 
     {
+      return;
+    }
+
+    var tcs = new TaskCompletionSource<object>();
+    try 
+    {
+      source.BusyChanged += ObserverForIsBusyChange;
+
       if (!source.IsBusy) 
       {
         return;
       }
 
-      var tcs = new TaskCompletionSource<object>();
-      try 
+      var timeoutTask = Task.Delay(timeout);
+      var finishedTask = await Task.WhenAny(tcs.Task, timeoutTask).ConfigureAwait(false);
+
+      if (finishedTask == timeoutTask)
       {
-        source.BusyChanged += ObserverForIsBusyChange;
-
-        if (!source.IsBusy) 
-        {
-          return;
-        }
-
-        var timeoutTask = Task.Delay(timeout);
-        var finishedTask = await Task.WhenAny(tcs.Task, timeoutTask).ConfigureAwait(false);
-
-        if (finishedTask == timeoutTask)
-        {
-          throw new TimeoutException($"{source.GetType().FullName}.{methodName} - {timeout}.");
-        }
+        throw new TimeoutException($"{source.GetType().FullName}.{methodName} - {timeout}.");
       }
-      finally 
-      {
-        source.BusyChanged -= ObserverForIsBusyChange;
-      }
+    }
+    finally 
+    {
+      source.BusyChanged -= ObserverForIsBusyChange;
+    }
 
-      void ObserverForIsBusyChange(object sender, BusyChangedEventArgs e)
+    void ObserverForIsBusyChange(object sender, BusyChangedEventArgs e)
+    {
+      if (!source.IsBusy && !e.Busy) 
       {
-        if (!source.IsBusy && !e.Busy) 
-        {
-          tcs.TrySetResult(null);
-        }
+        tcs.TrySetResult(null);
       }
     }
   }

@@ -162,7 +162,7 @@ namespace Csla.Serialization.Mobile
             serializer.ApplicationContext = _applicationContext;
             info = new SerializationInfo(_serializationReferences.Count + 1);
             _serializationReferences.Add(obj, info);
-            info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(serializer.GetType());
+            info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
             serializer.Serialize(obj, info);
           }
         }
@@ -184,7 +184,7 @@ namespace Csla.Serialization.Mobile
 
 #region Deserialize
 
-    private Dictionary<int, IMobileObject> _deserializationReferences = [];
+    private Dictionary<int, object> _deserializationReferences = [];
 
     private Dictionary<string, Type> _typeCache = [];
 
@@ -263,41 +263,36 @@ namespace Csla.Serialization.Mobile
         {
           _deserializationReferences.Add(info.ReferenceId, null);
         }
-        else if (type is IMobileSerializer)
+        else if (typeof(IMobileObject).IsAssignableFrom(type))
         {
-          var options = GetOptions();
-          foreach (var deserializer in options.CustomSerializers.Values)
-          {
-            if (deserializer.GetType() == type)
-            {
-              IMobileObject mobile = deserializer;
-              _deserializationReferences.Add(info.ReferenceId, mobile);
-              mobile.SetState(info);
-            }
-          }
-          if (options.CustomSerializers.TryGetValue(type, out var serializer))
-          {
-            IMobileObject mobile = serializer;
-            _deserializationReferences.Add(info.ReferenceId, mobile);
-            mobile.SetState(info);
-          }
+          var mobile = (IMobileObject)_applicationContext.CreateInstance(type);
+          _deserializationReferences.Add(info.ReferenceId, mobile);
+          ConvertEnumsFromIntegers(info);
+          mobile.SetState(info);
         }
         else
         {
-          IMobileObject mobile = (IMobileObject)_applicationContext.CreateInstance(type);
-
-          _deserializationReferences.Add(info.ReferenceId, mobile);
-
-          ConvertEnumsFromIntegers(info);
-          mobile.SetState(info);
+          var options = GetOptions();
+          var serializer = options.CustomSerializers.FirstOrDefault(
+            s => s.Serializer.GetType() == type)?.Serializer;
+          if (serializer != null)
+          {
+            object mobile = serializer.Deserialize(info);
+            _deserializationReferences.Add(info.ReferenceId, mobile);
+          }
+          else
+          {
+            throw new SerializationException(string.Format(
+              Resources.MustImplementIMobileObject, type.Name));
+          }
         }
       }
 
       foreach (SerializationInfo info in deserialized)
       {
-        IMobileObject mobile = _deserializationReferences[info.ReferenceId];
-
-        mobile?.SetChildren(info, this);
+        var obj = _deserializationReferences[info.ReferenceId];
+        if (obj is IMobileObject mobile)
+          mobile?.SetChildren(info, this);
       }
 
       foreach (SerializationInfo info in deserialized)
@@ -330,7 +325,7 @@ namespace Csla.Serialization.Mobile
     /// reference id within the serialization stream.
     /// </summary>
     /// <param name="referenceId">Id of object in stream.</param>
-    public IMobileObject GetObject(int referenceId)
+    public object GetObject(int referenceId)
     {
       return _deserializationReferences[referenceId];
     }

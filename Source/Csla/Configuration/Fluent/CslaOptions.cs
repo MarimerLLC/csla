@@ -67,6 +67,7 @@ namespace Csla.Configuration
     /// Gets the SecurityOptions instance.
     /// </summary>
     internal SecurityOptions SecurityOptions { get; } = new SecurityOptions();
+    /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
     internal SerializationOptions SerializationOptions { get; } = new SerializationOptions();

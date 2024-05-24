@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using Csla.Rules;
+using Csla.Core;
 
 namespace Csla.Blazor
 {
@@ -293,6 +294,11 @@ namespace Csla.Blazor
       {
         Exception = ex;
         ViewModelErrorText = ex.BusinessExceptionMessage;
+      }
+      catch (TimeoutException ex)
+      {
+        Exception = ex;
+        ViewModelErrorText = ex.Message;
       }
       catch (Exception ex)
       {

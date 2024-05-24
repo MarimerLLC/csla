@@ -13,7 +13,7 @@ namespace Csla.Core
   /// <summary>
   /// Helper class for busy related functionality spread across different business type implementations.
   /// </summary>
-  internal static class BusyHelper
+  public static class BusyHelper 
   {
     /// <summary>
     /// Waits for the specified <see cref="INotifyBusy"/> object to become idle within the specified timeout.

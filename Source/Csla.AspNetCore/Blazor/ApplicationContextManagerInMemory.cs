@@ -62,15 +62,11 @@ namespace Csla.AspNetCore.Blazor
 
     private async Task InitializeUser()
     {
-      var httpContext = HttpContext;
-      if (httpContext != null)
+      if (HttpContext != null)
       {
-        var user = httpContext.User;
+        var user = HttpContext.User;
         if (user != null)
-        {
           CurrentPrincipal = user;
-          SetHostPrincipal(Task.FromResult(new AuthenticationState(user)));
-        }
       }
       else
       {
@@ -131,31 +127,10 @@ namespace Csla.AspNetCore.Blazor
     }
 
     /// <summary>
-    /// Attempts to set the current principal on the registered
-    /// IHostEnvironmentAuthenticationStateProvider service.
+    /// Not supported in Blazor.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal principal)
-    {
-      if (!ReferenceEquals(CurrentPrincipal, principal))
-      {
-        if (principal is ClaimsPrincipal claimsPrincipal)
-        {
-          CurrentPrincipal = principal;
-          SetHostPrincipal(Task.FromResult(new AuthenticationState(claimsPrincipal)));
-        }
-        else
-        {
-          throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
-        }
-      }
-    }
-
-    private void SetHostPrincipal(Task<AuthenticationState> task)
-    {
-      if (AuthenticationStateProvider is IHostEnvironmentAuthenticationStateProvider hostProvider)
-        hostProvider.SetAuthenticationState(task);
-    }
+    public virtual void SetUser(IPrincipal principal) => throw new NotSupportedException(nameof(SetUser));
 
     /// <summary>
     /// Gets the local context.

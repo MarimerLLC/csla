@@ -12,8 +12,11 @@ namespace Csla.Core {
   /// <summary>
   /// Helper class for busy related functionality spread across different business type implementations.
   /// </summary>
-  internal static class BusyHelper 
+  public static class BusyHelper 
   {
+    /// <summary>
+    /// Helper class method for busy related functionality spread across different business type implementations.
+    /// </summary>
     public static async Task WaitForIdle(INotifyBusy source, TimeSpan timeout, [CallerMemberName] string methodName = "") 
     {
       if (!source.IsBusy) 

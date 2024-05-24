@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 using Csla.Reflection;
 using Csla.Rules;
+using Csla.Core;
 
 namespace Csla.Blazor
 {
@@ -236,16 +237,8 @@ namespace Csla.Blazor
       {
         if (Model is Core.ITrackStatus obj && !obj.IsSavable)
         {
-          if (obj.IsBusy)
-          {
-            var stopTime = DateTime.Now + BusyTimeout;
-            while (obj.IsBusy)
-            {
-              if (DateTime.Now > stopTime)
-                throw new TimeoutException("SaveAsync");
-              await Task.Delay(1);
-            }
-          }
+          await BusyHelper.WaitForIdle(obj, BusyTimeout);
+          
           if (!obj.IsValid)
           {
             ViewModelErrorText = ModelErrorText;
@@ -278,6 +271,11 @@ namespace Csla.Blazor
       {
         Exception = ex;
         ViewModelErrorText = ex.BusinessExceptionMessage;
+      }
+      catch (TimeoutException ex)
+      {
+        Exception = ex;
+        ViewModelErrorText = ex.Message;
       }
       catch (Exception ex)
       {

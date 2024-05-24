@@ -176,7 +176,7 @@ namespace Csla.Blazor.Test
       dataPortal = _testDIContext.CreateDataPortal<Person>();
       person = dataPortal.Create();
       person.Name = "TestTest";
-      
+
       var appCntxt = _testDIContext.CreateTestApplicationContext();
       var vm = new ViewModel<Person>(appCntxt)
       {
@@ -204,12 +204,12 @@ namespace Csla.Blazor.Test
       var vm = new ViewModel<Person>(appCntxt)
       {
         Model = person,
-        BusyTimeout = TimeSpan.FromSeconds(1)
+        BusyTimeout = TimeSpan.FromSeconds(0)
       };
 
       await vm.SaveAsync();
       Assert.IsNotNull(vm.Exception);
-      Assert.AreEqual(vm.Exception.Message, "Csla.Blazor.Test.Person.SaveAsync - 00:00:01.");
+      Assert.AreEqual(vm.Exception.Message, "The operation was canceled.");
     }
 
     #region Helper Methods

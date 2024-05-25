@@ -964,7 +964,7 @@ namespace Csla.Rules
                     r.AddDirtyProperty(item.Key);
                 }
               // update broken rules list
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
               // run rules on affected properties for this async rule
               var affected = new List<string>();
@@ -1012,7 +1012,7 @@ namespace Csla.Rules
             // update broken rules list
             if (r.Results != null)
             {
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
               // is any rules here broken with severity Error
               if (r.Results.Any(p => !p.Success && p.Severity == RuleSeverity.Error))

@@ -9,8 +9,8 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
-using Csla.Properties;
 using Csla.Core;
+using Csla.Properties;
 using Csla.Reflection;
 
 namespace Csla
@@ -102,6 +102,16 @@ namespace Csla
     public Task WaitForIdle(TimeSpan timeout)
     {
       return BusyHelper.WaitForIdle(this, timeout);
+    }
+
+    /// <summary>
+    /// Await this method to ensure the business object
+    /// is not busy running async rules.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    public Task WaitForIdle(CancellationToken ct)
+    {
+      return BusyHelper.WaitForIdle(this, ct);
     }
 
     /// <summary>

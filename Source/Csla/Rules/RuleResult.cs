@@ -51,6 +51,10 @@ namespace Csla.Rules
     /// </summary>
     public List<Core.IPropertyInfo> Properties { get; set; }
     /// <summary>
+    /// Gets or sets the broken rule priority.
+    /// </summary>
+    public int Priority { get; set; }
+    /// <summary>
     /// Gets or sets a dictionary of new property values used
     /// to update the business object's properties after
     /// the rule is complete.

@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
-using Csla.Properties;
 using Csla.Core;
+using Csla.Properties;
 using Csla.Serialization.Mobile;
 
 namespace Csla
@@ -327,7 +327,8 @@ namespace Csla
 
     Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    async Task Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => await BusyHelper.WaitForIdle(this, ct).ConfigureAwait(false);
 
     void Server.IDataPortalTarget.MarkAsChild()
     { }

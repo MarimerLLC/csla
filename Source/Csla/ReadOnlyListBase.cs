@@ -8,8 +8,8 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Csla.Properties;
 using Csla.Core;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -36,8 +36,8 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext 
-    { 
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
       get => ApplicationContext;
       set
       {
@@ -207,7 +207,8 @@ namespace Csla
 
     Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    async Task Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => await BusyHelper.WaitForIdle(this, ct).ConfigureAwait(false);
 
     void Server.IDataPortalTarget.MarkAsChild()
     { }

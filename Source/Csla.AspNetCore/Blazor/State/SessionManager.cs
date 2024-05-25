@@ -82,5 +82,7 @@ namespace Csla.Blazor.State
     Task<Session> ISessionManager.RetrieveSession(TimeSpan timeout) => throw new NotImplementedException();
     Session ISessionManager.GetCachedSession() => throw new NotImplementedException();
     Task ISessionManager.SendSession(TimeSpan timeout) => throw new NotImplementedException();
+    Task<Session> ISessionManager.RetrieveSession(CancellationToken ct) => throw new NotImplementedException();
+    Task ISessionManager.SendSession(CancellationToken ct) => throw new NotImplementedException();
   }
 }

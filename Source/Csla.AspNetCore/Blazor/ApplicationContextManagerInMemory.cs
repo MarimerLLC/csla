@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------
 using Csla.Core;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using System.Security.Principal;
 
@@ -40,14 +41,18 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     protected ActiveCircuitState ActiveCircuitState { get; }
 
+    private readonly HttpContext HttpContext;
+
     /// <summary>
     /// Creates an instance of the object, initializing it
     /// with the required IServiceProvider.
     /// </summary>
+    /// <param name="httpContextAccessor"></param>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
     /// <param name="activeCircuitState"></param>
-    public ApplicationContextManagerInMemory(AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
+    public ApplicationContextManagerInMemory(IHttpContextAccessor httpContextAccessor, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
+      HttpContext = httpContextAccessor.HttpContext;
       AuthenticationStateProvider = authenticationStateProvider;
       ActiveCircuitState = activeCircuitState;
       CurrentPrincipal = UnauthenticatedPrincipal;
@@ -57,29 +62,27 @@ namespace Csla.AspNetCore.Blazor
 
     private async Task InitializeUser()
     {
-      Task<AuthenticationState> task = default;
-      try
+      var httpContext = HttpContext;
+      if (httpContext != null)
       {
-        task = AuthenticationStateProvider.GetAuthenticationStateAsync();
-        await task;
+        var user = httpContext.User;
+        if (user != null)
+          CurrentPrincipal = user;
       }
-      catch (InvalidOperationException ex)
+      else
       {
-        task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
-
-        string message = ex.Message;
-        //see ms error https://github.com/dotnet/aspnetcore/blob/87e324a61dcd15db4086b8a8ca7bd74ca1e0a513/src/Components/Server/src/Circuits/ServerAuthenticationStateProvider.cs#L16
-        //not much safe to test on except the error type and the use of this method name in message.
-        if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync)))
+        Task<AuthenticationState> task;
+        try
         {
-          SetHostPrincipal(task);
+          task = AuthenticationStateProvider.GetAuthenticationStateAsync();
+          await task;
         }
-        else
+        catch (InvalidOperationException)
         {
-          throw;
+          task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
         }
+        AuthenticationStateProvider_AuthenticationStateChanged(task);
       }
-      AuthenticationStateProvider_AuthenticationStateChanged(task);
     }
 
     private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
@@ -125,31 +128,10 @@ namespace Csla.AspNetCore.Blazor
     }
 
     /// <summary>
-    /// Attempts to set the current principal on the registered
-    /// IHostEnvironmentAuthenticationStateProvider service.
+    /// Not supported in Blazor.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal principal)
-    {
-      if (!ReferenceEquals(CurrentPrincipal, principal))
-      {
-        if (principal is ClaimsPrincipal claimsPrincipal)
-        {
-          CurrentPrincipal = principal;
-          SetHostPrincipal(Task.FromResult(new AuthenticationState(claimsPrincipal)));
-        }
-        else
-        {
-          throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
-        }
-      }
-    }
-
-    private void SetHostPrincipal(Task<AuthenticationState> task)
-    {
-      if (AuthenticationStateProvider is IHostEnvironmentAuthenticationStateProvider hostProvider)
-        hostProvider.SetAuthenticationState(task);
-    }
+    public virtual void SetUser(IPrincipal principal) => throw new NotSupportedException(nameof(SetUser));
 
     /// <summary>
     /// Gets the local context.

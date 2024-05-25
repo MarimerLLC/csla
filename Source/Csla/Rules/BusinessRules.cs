@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using Csla.Serialization.Mobile;
 using Csla.Core;
-using Csla.Threading;
+using Csla.Serialization.Mobile;
 using Csla.Server;
+using Csla.Threading;
 
 namespace Csla.Rules
 {
@@ -524,8 +524,9 @@ namespace Csla.Rules
       return result;
     }
 
-    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout) {
-      if (!RunningAsyncRules) 
+    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout)
+    {
+      if (!RunningAsyncRules)
       {
         return;
       }
@@ -589,7 +590,7 @@ namespace Csla.Rules
     {
       if (_suppressRuleChecking)
         return new List<string>();
-       
+
       var oldRR = RunningRules;
       RunningRules = true;
       var rules = from r in TypeRules.Rules
@@ -643,7 +644,7 @@ namespace Csla.Rules
       return CheckRules(property, RuleContextModes.PropertyChanged);
     }
 
-    private  List<string> CheckRules(IPropertyInfo property, RuleContextModes executionContext)
+    private List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
@@ -682,7 +683,7 @@ namespace Csla.Rules
       if ((contextMode & RuleContextModes.AsAffectedProperty) > 0)
         canRun &= (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
 
-      if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0) 
+      if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0)
         canRun &= applicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
 
       if ((contextMode & RuleContextModes.CheckRules) > 0)
@@ -701,15 +702,15 @@ namespace Csla.Rules
     {
       // checking rules for the primary property
       var primaryRules = from r in TypeRules.Rules
-                  where ReferenceEquals(r.PrimaryProperty, property)
-                    && CanRunRule(_applicationContext, r, executionMode)
-                  orderby r.Priority
-                  select r;
+                         where ReferenceEquals(r.PrimaryProperty, property)
+                           && CanRunRule(_applicationContext, r, executionMode)
+                         orderby r.Priority
+                         select r;
 
       BrokenRules.ClearRules(property);
       var primaryResult = RunRules(primaryRules, cascade, executionMode);
       if (CascadeOnDirtyProperties)
-          cascade = cascade || primaryResult.DirtyProperties.Any();
+        cascade = cascade || primaryResult.DirtyProperties.Any();
       if (cascade)
       {
         // get properties affected by all rules
@@ -725,11 +726,11 @@ namespace Csla.Rules
         // gets a list rules of of "affected" properties by adding
         // PrimaryProperty where property is in InputProperties
         var inputRules = from r in TypeRules.Rules
-                    where !ReferenceEquals(r.PrimaryProperty, property)
-                          && r.PrimaryProperty != null
-                          && r.InputProperties != null
-                          && r.InputProperties.Contains(property)
-                    select r;
+                         where !ReferenceEquals(r.PrimaryProperty, property)
+                               && r.PrimaryProperty != null
+                               && r.InputProperties != null
+                               && r.InputProperties.Contains(property)
+                         select r;
 
         var dirtyProperties = primaryResult.DirtyProperties;
         var inputProperties = from r in inputRules
@@ -738,13 +739,13 @@ namespace Csla.Rules
 
         foreach (var p in inputProperties)
         {
-            if (!ReferenceEquals(property, p))
-                propertiesToRun.Add(p);
+          if (!ReferenceEquals(property, p))
+            propertiesToRun.Add(p);
         }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
         {
-          var doCascade = false; 
+          var doCascade = false;
           if (CascadeOnDirtyProperties)
             doCascade = primaryResult.DirtyProperties.Any(p => p == item.Name);
           primaryResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
@@ -805,7 +806,7 @@ namespace Csla.Rules
                     r.AddDirtyProperty(item.Key);
                 }
               // update broken rules list
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
               // run rules on affected properties for this async rule
               var affected = new List<string>();
@@ -853,7 +854,7 @@ namespace Csla.Rules
             // update broken rules list
             if (r.Results != null)
             {
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
               // is any rules here broken with severity Error
               if (r.Results.Any(p => !p.Success && p.Severity == RuleSeverity.Error))
@@ -875,7 +876,7 @@ namespace Csla.Rules
         // get input properties
         if (rule.InputProperties != null)
         {
-          var target = (IManageProperties) _target;
+          var target = (IManageProperties)_target;
           context.InputPropertyValues = new Dictionary<IPropertyInfo, object>();
           foreach (var item in rule.InputProperties)
           {
@@ -933,7 +934,7 @@ namespace Csla.Rules
           affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
           // copy output property names
           if (context.OutputPropertyValues != null)
-            affectedProperties.AddRange(context.OutputPropertyValues.Select(c =>c.Key.Name));
+            affectedProperties.AddRange(context.OutputPropertyValues.Select(c => c.Key.Name));
           // copy dirty properties 
           if (context.DirtyProperties != null)
             dirtyProperties.AddRange(context.DirtyProperties.Select(c => c.Name));

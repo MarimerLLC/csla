@@ -18,10 +18,9 @@ using Csla.Core.LoadManager;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Rules;
+using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
-using Csla.Security;
-using System.Collections.Concurrent;
 
 namespace Csla
 {
@@ -1472,6 +1471,16 @@ namespace Csla
     public Task WaitForIdle(TimeSpan timeout)
     {
       return BusyHelper.WaitForIdle(this, timeout);
+    }
+
+    /// <summary>
+    /// Waits for the object to become idle.
+    /// </summary>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    public Task WaitForIdle(CancellationToken ct)
+    {
+      return BusyHelper.WaitForIdle(this, ct);
     }
 
     [NonSerialized]

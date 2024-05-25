@@ -76,7 +76,7 @@ namespace Csla.DataPortalClient
         request.CriteriaData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(criteria);
         request = ConvertRequest(request);
         var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
-        serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);
 
@@ -137,7 +137,7 @@ namespace Csla.DataPortalClient
 
         var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);
@@ -192,7 +192,7 @@ namespace Csla.DataPortalClient
 
         var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync);
+        serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync).ConfigureAwait(false);
 
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);
@@ -237,8 +237,7 @@ namespace Csla.DataPortalClient
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context,
-      bool isSync)
+    public async virtual Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
       try
@@ -254,7 +253,7 @@ namespace Csla.DataPortalClient
 
         var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
         var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
         response = ConvertResponse(response);

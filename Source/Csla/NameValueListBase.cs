@@ -269,6 +269,15 @@ namespace Csla
 
     #region Data Access
 
+    /// <summary>
+    /// Await this method to ensure business object is not busy.
+    /// </summary>
+    public async Task WaitForIdle()
+    {
+      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
+      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
+    }
+
     private void DataPortal_Update()
     {
       throw new NotSupportedException(Resources.UpdateNotSupportedException);
@@ -327,8 +336,8 @@ namespace Csla
 
     Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
-    async Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => await BusyHelper.WaitForIdle(this, ct).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await WaitForIdle(timeout).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => await WaitForIdle(ct).ConfigureAwait(false);
 
     void Server.IDataPortalTarget.MarkAsChild()
     { }

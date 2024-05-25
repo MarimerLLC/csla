@@ -20,17 +20,17 @@ namespace Csla
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyBindingListBase<T, C> : 
-    ReadOnlyBindingList<C>, IReadOnlyCollection, 
-    ICloneable, Server.IDataPortalTarget, IUseApplicationContext
+  public abstract class ReadOnlyBindingListBase<T, C> :
+    Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection,
+    ICloneable, Server.IDataPortalTarget, Core.IUseApplicationContext
     where T : ReadOnlyBindingListBase<T, C>
   {
     /// <summary>
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext 
-    { 
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
       get => ApplicationContext;
       set
       {
@@ -45,7 +45,7 @@ namespace Csla
     protected ReadOnlyBindingListBase()
     { }
 
-#region Initialize
+    #region Initialize
 
     /// <summary>
     /// Override this method to set up event handlers so user
@@ -55,9 +55,9 @@ namespace Csla
     protected virtual void Initialize()
     { /* allows subclass to initialize events before any other activity occurs */ }
 
-#endregion
+    #endregion
 
-#region ICloneable
+    #region ICloneable
 
     object ICloneable.Clone()
     {
@@ -84,9 +84,9 @@ namespace Csla
       return (T)GetClone();
     }
 
-#endregion
+    #endregion
 
-#region Data Access
+    #region Data Access
 
     private void DataPortal_Update()
     {
@@ -171,9 +171,9 @@ namespace Csla
     {
     }
 
-#endregion
+    #endregion
 
-#region ToArray
+    #region ToArray
 
     /// <summary>
     /// Get an array containing all items in the list.
@@ -185,16 +185,17 @@ namespace Csla
         result.Add(item);
       return result.ToArray();
     }
-#endregion
+    #endregion
 
-#region IDataPortalTarget Members
+    #region IDataPortalTarget Members
 
     void Server.IDataPortalTarget.CheckRules()
     { }
 
     Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    async Task Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
+    async Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => await BusyHelper.WaitForIdle(this, ct).ConfigureAwait(false);
 
     void Server.IDataPortalTarget.MarkAsChild()
     { }
@@ -235,6 +236,6 @@ namespace Csla
       Child_OnDataPortalException(e, ex);
     }
 
-#endregion
+    #endregion
   }
 }

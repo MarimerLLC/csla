@@ -24,6 +24,15 @@ namespace Csla.Threading
     public Task WaitAsync() { return _tcs.Task; }
 
     /// <summary>
+    /// Sets the cancellation token for the event.
+    /// </summary>
+    /// <param name="ct">The cancellation token to set.</param>
+    public void SetCancellationToken(CancellationToken ct)
+    {
+      ct.Register(() => _tcs.TrySetCanceled(), useSynchronizationContext: false);
+    }
+
+    /// <summary>
     /// Set the event, unblocking any code awaiting the event
     /// </summary>
     public void Set() { _tcs.TrySetResult(true); }

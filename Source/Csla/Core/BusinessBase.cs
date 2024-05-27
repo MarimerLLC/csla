@@ -3018,9 +3018,11 @@ namespace Csla.Core
 
     #region IsBusy / IsIdle
 
-    [NonSerialized]
-    [NotUndoable]
-    private bool _isBusy;
+    private int _isBusyCounter;
+    /// <summary>
+    /// Indicates object is busy or not 
+    /// </summary>
+    public bool _isBusy => _isBusyCounter > 0;
 
     /// <summary>
     /// Mark the object as busy (it is
@@ -3029,11 +3031,12 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
-      if (_isBusy)
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
+      Interlocked.Increment(ref _isBusyCounter);
 
-      _isBusy = true;
-      OnBusyChanged(new BusyChangedEventArgs("", true));
+      if(_isBusyCounter == 1)
+      {
+        OnBusyChanged(new BusyChangedEventArgs("", true));
+      }
     }
 
     /// <summary>
@@ -3043,8 +3046,12 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkIdle()
     {
-      _isBusy = false;
-      OnBusyChanged(new BusyChangedEventArgs("", false));
+      Interlocked.Decrement(ref _isBusyCounter);
+
+      if (_isBusyCounter == 0)
+      {
+        OnBusyChanged(new BusyChangedEventArgs("", false));
+      }
     }
 
     /// <summary>

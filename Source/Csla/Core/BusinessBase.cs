@@ -457,9 +457,7 @@ namespace Csla.Core
       get
       {
         if (!IsDirty || !IsValid || IsBusy)
-        {
           return false;
-        }
 
         bool auth;
         if (IsDeleted)
@@ -468,6 +466,7 @@ namespace Csla.Core
           auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, this);
         else
           auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, this);
+        
         return auth;
       }
     }    

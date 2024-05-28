@@ -11,6 +11,16 @@ using Csla.Core;
 
 namespace Csla.Blazor.Test
 {
+  public class MyViewModel<T> : ViewModel<T>
+  {
+    public MyViewModel(ApplicationContext context) : base(context) { }
+
+    public void Cancel()
+    {
+      DoCancel();
+    }
+  }
+
   [TestClass]
   public class ViewModelEditChildListSaveEditLevelTests
   {
@@ -50,7 +60,42 @@ namespace Csla.Blazor.Test
 
     }
 
+    [TestMethod]
+    public async Task SaveThenCancel_ValidatePropertyValue()
+    {
+      // Arrange
+      //FakePerson person = GetValidFakePerson();
+      //var iuo = person as IUndoableObject;
+      var appCntxt = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var vm = new MyViewModel<FakePerson>(appCntxt);
+      vm.ManageObjectLifetime = true;
+      //vm.Model = person;
+      await vm.RefreshAsync(FetchFakePerson);
+
+      await vm.SaveAsync();
+
+      // Act
+      string firstName = "SaveThis";
+      vm.Model.FirstName = firstName;
+      await vm.SaveAsync();
+      Assert.IsTrue(vm.Model.FirstName == firstName);
+
+      string cancelName = "Cancel This";
+      vm.Model.FirstName = cancelName;
+      vm.Cancel();
+
+      // Assert
+      Assert.IsTrue(vm.Model.FirstName == firstName);
+
+    }
+
     #region Helper Methods
+
+    async Task<FakePerson> FetchFakePerson()
+    {
+      FakePerson person = GetValidFakePerson();
+      return await Task.FromResult(person);
+    }
 
     FakePerson GetValidFakePerson()
     {

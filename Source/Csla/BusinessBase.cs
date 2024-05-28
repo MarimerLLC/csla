@@ -292,7 +292,7 @@ namespace Csla
     /// </param>
     public async Task SaveAndMergeAsync(bool forceUpdate)
     {
-      new GraphMerger(ApplicationContext).MergeGraph(this, await SaveAsync(forceUpdate));
+      await new GraphMerger(ApplicationContext).MergeGraphAsync(this, await SaveAsync(forceUpdate));
     }
 
     #endregion

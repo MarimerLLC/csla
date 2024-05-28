@@ -13,7 +13,7 @@ namespace Csla.Blazor.Test
 {
   public class MyViewModel<T> : ViewModel<T>
   {
-    public MyViewModel(ApplicationContext context) : base(context) { }
+    public MyViewModel(ApplicationContext context) : base(context) { ManageObjectLifetime = true; }
 
     public void Cancel()
     {
@@ -68,8 +68,6 @@ namespace Csla.Blazor.Test
       //var iuo = person as IUndoableObject;
       var appCntxt = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
       var vm = new MyViewModel<FakePerson>(appCntxt);
-      vm.ManageObjectLifetime = true;
-      //vm.Model = person;
       await vm.RefreshAsync(FetchFakePerson);
 
       await vm.SaveAsync();

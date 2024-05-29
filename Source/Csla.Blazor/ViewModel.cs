@@ -282,6 +282,11 @@ namespace Csla.Blazor
       }
       finally
       {
+        //if (ManageObjectLifetime && Model is Core.ISupportUndo undo)
+        //  undo.BeginEdit();
+
+        _propertyInfoCache.Clear();
+
         HookChangedEvents(Model);
         IsBusy = false;
       }

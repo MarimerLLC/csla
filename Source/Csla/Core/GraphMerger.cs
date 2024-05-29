@@ -129,27 +129,16 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    /// <param name="isAsync">Called from sync or async method.</param>
-    private void MergeGraph(IEditableCollection target, IEditableCollection source, bool isAsync = false)
+    private void MergeGraph(IEditableCollection target, IEditableCollection source)
     {
       var listType = target.GetType();
       var childType = Utilities.GetChildItemType(listType);
       var genericTypeParams = new Type[] { listType, childType };
       System.Reflection.MethodInfo methodReference;
-      if(isAsync)
-      {
-        if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
-          methodReference = GetType().GetMethod("MergeBusinessBindingListGraphAsync");
-        else
-          methodReference = GetType().GetMethod("MergeBusinessListGraphAsync");
-      }
+      if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
+        methodReference = GetType().GetMethod("MergeBusinessBindingListGraph");
       else
-      {
-        if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
-          methodReference = GetType().GetMethod("MergeBusinessBindingListGraph");
-        else
-          methodReference = GetType().GetMethod("MergeBusinessListGraph");
-      }
+        methodReference = GetType().GetMethod("MergeBusinessListGraph");
       var gr = methodReference.MakeGenericMethod(genericTypeParams);
       gr.Invoke(this, [target, source]);
     }
@@ -266,7 +255,7 @@ namespace Csla.Core
                 targetFieldExists = targetFieldManager.FieldExists(item);
               if (targetFieldExists && ReadProperty(target, item) is IEditableCollection targetList)
               {
-                MergeGraph(targetList, sourceList,true);
+                MergeGraph(targetList, sourceList);
               }
               else
               {
@@ -302,7 +291,8 @@ namespace Csla.Core
         await CheckRulesAsync(target);
       }
     }
-        /// <summary>
+
+    /// <summary>
     /// Merges state from source graph into target graph.
     /// </summary>
     /// <param name="target">Target of merge.</param>

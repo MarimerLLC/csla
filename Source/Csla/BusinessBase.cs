@@ -196,6 +196,10 @@ namespace Csla
           {
             result = await dp.UpdateAsync((T)this);
           }
+          catch(Exception ex)
+          {
+            var msg = ex.Message;
+          }
           finally
           {
             if (ApplicationContext.AutoCloneOnUpdate)

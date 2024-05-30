@@ -96,6 +96,21 @@ namespace Csla.Core
       return AddNew();
     }
 
+    /// <summary>
+    /// Adds a new item to this collection.
+    /// </summary>
+    public async Task<T> AddNewAsync()
+    {
+      var result = await AddNewCoreAsync();
+      await OnAddedNewAsync(result);
+      return result;
+    }
+
+    async Task<object> IObservableBindingList.AddNewAsync()
+    {
+      return await AddNewAsync();
+    }
+
     #endregion
 
     #region RemovingItem event
@@ -493,6 +508,25 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Raises the AddedNew event.
+    /// </summary>
+    /// <param name="item"></param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    public async virtual Task OnAddedNewAsync(T item)
+    {
+      if (_addedNewHandlers != null)
+      {
+        var args = new AddedNewEventArgs<T>(item);
+        var handlerTasks = _addedNewHandlers
+            .GetInvocationList()
+            .Cast<EventHandler<AddedNewEventArgs<T>>>()
+            .Select(handler => Task.Run(() => handler(this, args)));
+
+        await Task.WhenAll(handlerTasks);
+      }
+    }
+
 #if ANDROID || IOS
     /// <summary>
     /// Override this method to create a new object that is added
@@ -510,6 +544,15 @@ namespace Csla.Core
     protected virtual T AddNewCore()
     {
       throw new NotImplementedException(Resources.AddNewCoreMustBeOverriden);
+    }
+
+    /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected virtual async Task<T> AddNewCoreAsync()
+    {
+      return await Task.FromException<T>(new NotImplementedException(Resources.AddNewCoreMustBeOverriden));
     }
 #endif
 

@@ -312,6 +312,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Adds a new item to the list.
+    /// </summary>
+    /// <returns>The added object</returns>
+    protected override async Task<T> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
+      T item = await dp.CreateAsync();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
     /// Gives the new object a parent reference to this
     /// list.
     /// </summary>

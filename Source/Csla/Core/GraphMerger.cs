@@ -243,7 +243,7 @@ namespace Csla.Core
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                 Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
               else
-               LoadProperty(target, item, sourceChild);
+                await Task.Run(() => LoadProperty(target, item, sourceChild));
             }
           }
           else
@@ -255,14 +255,14 @@ namespace Csla.Core
                 targetFieldExists = targetFieldManager.FieldExists(item);
               if (targetFieldExists && ReadProperty(target, item) is IEditableCollection targetList)
               {
-                MergeGraph(targetList, sourceList);
+                await MergeGraphAsync(targetList, sourceList);
               }
               else
               {
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                   Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
                 else
-                  LoadProperty(target, item, sourceList);
+                  await Task.Run(() => LoadProperty(target, item, sourceList));
               }
             }
             else
@@ -270,17 +270,17 @@ namespace Csla.Core
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                 Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
               else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
-                LoadProperty(target, item, sourceValue);
+                await Task.Run(() => LoadProperty(target, item, sourceValue));
             }
           }
         }
         if (source.IsNew)
         {
-          MarkNew(target);
+          await Task.Run(() => MarkNew(target));
         }
         else if (!source.IsDirty)
         {
-          MarkOld(target);
+          await Task.Run(() => MarkOld(target));
         }
         else
         {
@@ -291,7 +291,24 @@ namespace Csla.Core
         await CheckRulesAsync(target);
       }
     }
-
+    /// <summary>
+    /// Merges state from source graph into target graph.
+    /// </summary>
+    /// <param name="target">Target of merge.</param>
+    /// <param name="source">Source for merge.</param>
+    private async Task MergeGraphAsync(IEditableCollection target, IEditableCollection source)
+    {
+      var listType = await Task.Run(() => target.GetType());
+      var childType = await Task.Run(() => Utilities.GetChildItemType(listType));
+      var genericTypeParams = new Type[] { listType, childType };
+      System.Reflection.MethodInfo methodReference;
+      if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
+        methodReference = await Task.Run(() => GetType().GetMethod("MergeBusinessBindingListGraphAsync"));
+      else
+        methodReference = await Task.Run(() => GetType().GetMethod("MergeBusinessListGraphAsync"));
+      var gr = await Task.Run(() => methodReference.MakeGenericMethod(genericTypeParams));
+      await Task.Run(() => gr.Invoke(this, [target, source]));
+    }
     /// <summary>
     /// Merges state from source graph into target graph.
     /// </summary>

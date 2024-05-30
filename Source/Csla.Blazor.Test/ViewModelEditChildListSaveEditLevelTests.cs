@@ -70,19 +70,35 @@ namespace Csla.Blazor.Test
       var vm = new MyViewModel<FakePerson>(appCntxt);
       await vm.RefreshAsync(FetchFakePerson);
 
+      // Act
       await vm.SaveAsync();
+   
+      // Assert
+      Assert.IsFalse(vm.Model.IsSavable);
+      Assert.IsFalse(vm.Model.IsDirty);
+      Assert.IsFalse(vm.Model.IsNew);
 
       // Act
       string firstName = "SaveThis";
       vm.Model.FirstName = firstName;
       await vm.SaveAsync();
+
+      // Assert
+      Assert.IsFalse(vm.Model.IsSavable);
+      Assert.IsFalse(vm.Model.IsDirty);
+      Assert.IsFalse(vm.Model.IsNew);
       Assert.IsTrue(vm.Model.FirstName == firstName);
 
+      // Act
       string cancelName = "Cancel This";
       vm.Model.FirstName = cancelName;
       vm.Cancel();
 
       // Assert
+      Assert.IsFalse(vm.Model.IsSavable);
+      Assert.IsFalse(vm.Model.IsDirty);
+      Assert.IsFalse(vm.Model.IsNew);
+
       Assert.IsTrue(vm.Model.FirstName == firstName);
 
     }

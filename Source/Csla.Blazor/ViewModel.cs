@@ -227,9 +227,26 @@ namespace Csla.Blazor
     public TimeSpan BusyTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     /// <summary>
-    /// Saves the Model.
+    /// Saves the Model asynchronously.
     /// </summary>
     public async Task SaveAsync()
+    {
+      try
+      {
+        await SaveAsync(BusyTimeout.ToCancellationToken());
+      }
+      catch (TaskCanceledException tcex)
+      {
+        Exception = new TimeoutException(nameof(SaveAsync), tcex);
+        ViewModelErrorText = Exception.Message;
+      }
+    }
+
+    /// <summary>
+    /// Saves the Model.
+    /// </summary>
+    /// <param name="ct">The cancellation token.</param>
+    public async Task SaveAsync(CancellationToken ct)
     {
       Exception = null;
       ViewModelErrorText = null;
@@ -237,8 +254,14 @@ namespace Csla.Blazor
       {
         if (Model is Core.ITrackStatus obj && !obj.IsSavable)
         {
-          await BusyHelper.WaitForIdle(obj, BusyTimeout);
-          
+          if (obj.IsBusy)
+          {
+            while (obj.IsBusy)
+            {
+              ct.ThrowIfCancellationRequested();
+              await Task.Delay(1, ct);
+            }
+          }
           if (!obj.IsValid)
           {
             ViewModelErrorText = ModelErrorText;
@@ -246,7 +269,7 @@ namespace Csla.Blazor
           }
           else if (!obj.IsSavable)
             throw new InvalidOperationException(
-              $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
+                $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
         }
 
         UnhookChangedEvents(Model);
@@ -286,8 +309,9 @@ namespace Csla.Blazor
       {
         HookChangedEvents(Model);
         IsBusy = false;
-        if (Exception != null) {
-          Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception)); 
+        if (Exception != null)
+        {
+          Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception));
         }
       }
     }
@@ -340,7 +364,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model 
+    public T Model
     {
       get => _model;
       set
@@ -499,7 +523,7 @@ namespace Csla.Blazor
     #region ObjectLevelPermissions
 
     private bool _canCreateObject;
-    
+
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to create an instance of the
@@ -509,7 +533,7 @@ namespace Csla.Blazor
     {
       get
       {
-        SetPropertiesAtObjectLevel(); 
+        SetPropertiesAtObjectLevel();
         return _canCreateObject;
       }
       protected set
@@ -562,7 +586,7 @@ namespace Csla.Blazor
     }
 
     private bool _canDeleteObject;
-    
+
     /// <summary>
     /// Gets a value indicating whether the current user
     /// is authorized to delete an instance of the

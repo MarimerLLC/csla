@@ -312,6 +312,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Adds a new item to the list.
+    /// </summary>
+    /// <returns>The added object</returns>
+    protected override async Task<T> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
+      T item = await dp.CreateAsync();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
     /// Gives the new object a parent reference to this
     /// list.
     /// </summary>
@@ -452,6 +464,16 @@ namespace Csla
     public Task WaitForIdle(TimeSpan timeout)
     {
       return BusyHelper.WaitForIdle(this, timeout);
+    }
+
+    /// <summary>
+    /// Await this method to ensure the business object
+    /// is not busy running async rules.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    public Task WaitForIdle(CancellationToken ct)
+    {
+        return BusyHelper.WaitForIdle(this, ct);
     }
 
     /// <summary>

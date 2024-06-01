@@ -610,7 +610,6 @@ namespace Csla
         if (child.EditLevelAdded > EditLevel)
           DeletedList.RemoveAt(index);
       }
-
       if (EditLevel < 0) EditLevel = 0;
     }
 
@@ -879,24 +878,6 @@ namespace Csla
       {
         return false;
       }
-    }
-
-    #endregion
-
-    #region Serialization Notification
-
-    /// <summary>
-    /// Reset parent references on deserialization.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      base.OnDeserialized();
-      foreach (IEditableBusinessObject child in this)
-        child.SetParent(this);
-
-      foreach (IEditableBusinessObject child in DeletedList)
-        child.SetParent(this);
     }
 
     #endregion

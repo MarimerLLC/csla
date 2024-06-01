@@ -6,11 +6,11 @@
 // <summary>Extends ObservableCollection with behaviors required</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Csla.Properties;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -77,7 +77,7 @@ namespace Csla.Core
     /// </summary>
     public bool RaiseListChangedEvents
     {
-      get { return _raiseListChangedEvents; } 
+      get { return _raiseListChangedEvents; }
       set { _raiseListChangedEvents = value; }
     }
 
@@ -359,32 +359,11 @@ namespace Csla.Core
 
     #region ISerializationNotification Members
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized()
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
-    }
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
-      foreach (T item in this)
-        OnAddEventHooks(item);
-
-      OnDeserialized();
-    }
-
     void ISerializationNotification.Deserialized()
     {
       // don't rehook events here, because the MobileFormatter has
       // created new objects and so the lists will auto-subscribe
       // the events
-      OnDeserialized();
     }
 
     #endregion
@@ -665,7 +644,7 @@ namespace Csla.Core
       else
       {
         if (_oldRLCE.Count > 0)
-         _raiseListChangedEvents = _oldRLCE.Pop();
+          _raiseListChangedEvents = _oldRLCE.Pop();
       }
     }
   }

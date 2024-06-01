@@ -812,8 +812,11 @@ namespace Csla
     {
       get
       {
-        bool auth = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
-        return (IsDirty && IsValid && auth && !IsBusy);
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+
+        return result;
       }
     }
 

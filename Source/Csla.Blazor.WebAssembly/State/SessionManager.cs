@@ -74,7 +74,7 @@ namespace Csla.Blazor.WebAssembly.State
         if (_session != null)
           lastTouched = _session.LastTouched;
         var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
-        var stateResult = await client.GetFromJsonAsync<StateResult>(url, ct);
+        var stateResult = await client.GetFromJsonAsync<StateResult>(url, ct).ConfigureAwait(false);
         if (stateResult.ResultStatus == ResultStatuses.Success)
         {
           var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
@@ -144,7 +144,7 @@ namespace Csla.Blazor.WebAssembly.State
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);
         buffer.Position = 0;
-        await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray(), ct);
+        await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray(), ct).ConfigureAwait(false);
       }
     }
 

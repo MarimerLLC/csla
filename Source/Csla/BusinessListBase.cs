@@ -309,6 +309,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected override async Task<C> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
+      var item = await dp.CreateChildAsync();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
     /// This method is called by a child object when it
     /// wants to be removed from the collection.
     /// </summary>

@@ -812,10 +812,11 @@ namespace Csla
     {
       get
       {
-        if (!IsDirty || !IsValid || IsBusy)
-          return false;
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
 
-        return Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+        return result;
       }
     }
 

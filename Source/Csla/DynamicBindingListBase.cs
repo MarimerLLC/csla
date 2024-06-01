@@ -416,26 +416,6 @@ namespace Csla
 
     #endregion
 
-    #region  Serialization Notification
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      foreach (IEditableBusinessObject child in this)
-      {
-        child.SetParent(this);
-        if (child is INotifyPropertyChanged c)
-          c.PropertyChanged += Child_PropertyChanged;
-      }
-      base.OnDeserialized();
-    }
-
-    #endregion
-
     #region  Data Access
 
     private void DataPortal_Update()

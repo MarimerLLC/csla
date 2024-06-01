@@ -791,8 +791,11 @@ namespace Csla
     {
       get
       {
-        bool auth = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
-        return (IsDirty && IsValid && auth && !IsBusy);
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+
+        return result;
       }
     }
 
@@ -836,33 +839,6 @@ namespace Csla
       {
         return false;
       }
-    }
-
-    #endregion
-
-    #region Serialization Notification
-
-    [NonSerialized]
-    [NotUndoable]
-    private bool _deserialized = false;
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      _deserialized = true;
-      base.OnDeserialized();
-
-      foreach (IEditableBusinessObject child in this)
-      {
-        child.SetParent(this);
-      }
-
-      foreach (IEditableBusinessObject child in DeletedList)
-        child.SetParent(this);
     }
 
     #endregion
@@ -1340,7 +1316,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      if (_deserialized && RaiseListChangedEvents && e != null)
+      if (RaiseListChangedEvents && e != null)
       {
         for (int index = 0; index < Count; index++)
         {

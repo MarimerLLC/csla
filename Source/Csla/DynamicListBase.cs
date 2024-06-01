@@ -312,6 +312,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Adds a new item to the list.
+    /// </summary>
+    /// <returns>The added object</returns>
+    protected override async Task<T> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
+      T item = await dp.CreateAsync();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
     /// Gives the new object a parent reference to this
     /// list.
     /// </summary>
@@ -425,9 +437,9 @@ namespace Csla
     }
 
 
-    IParent  IParent.Parent
+    IParent Csla.Core.IParent.Parent
     {
-      get { return null;  }
+      get { return null; }
     }
 
     #endregion
@@ -462,22 +474,6 @@ namespace Csla
         return false;
       }
     }
-    #endregion
-
-    #region  Serialization Notification
-
-    /// <summary>
-    /// Set parent reference.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      foreach (IEditableBusinessObject child in this)
-        child.SetParent(this);
-
-      base.OnDeserialized();
-    }
-
     #endregion
 
     #region  Data Access

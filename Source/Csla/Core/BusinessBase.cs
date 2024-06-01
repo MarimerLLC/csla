@@ -456,14 +456,18 @@ namespace Csla.Core
     {
       get
       {
-        bool auth;
-        if (IsDeleted)
-          auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, this);
-        else if (IsNew)
-          auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, this);
-        else
-          auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, this);
-        return (auth && IsDirty && IsValid && !IsBusy);
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+        {
+          if (IsDeleted)
+            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, this);
+          else if (IsNew)
+            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, this);
+          else
+            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, this);
+        }
+
+        return result;
       }
     }
 

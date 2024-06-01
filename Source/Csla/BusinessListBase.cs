@@ -309,6 +309,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected override async Task<C> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
+      var item = await dp.CreateChildAsync();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
     /// This method is called by a child object when it
     /// wants to be removed from the collection.
     /// </summary>
@@ -598,7 +610,6 @@ namespace Csla
         if (child.EditLevelAdded > EditLevel)
           DeletedList.RemoveAt(index);
       }
-
       if (EditLevel < 0) EditLevel = 0;
     }
 
@@ -801,8 +812,11 @@ namespace Csla
     {
       get
       {
-        bool auth = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
-        return (IsDirty && IsValid && auth && !IsBusy);
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+
+        return result;
       }
     }
 
@@ -846,24 +860,6 @@ namespace Csla
       {
         return false;
       }
-    }
-
-    #endregion
-
-    #region Serialization Notification
-
-    /// <summary>
-    /// Reset parent references on deserialization.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      base.OnDeserialized();
-      foreach (IEditableBusinessObject child in this)
-        child.SetParent(this);
-
-      foreach (IEditableBusinessObject child in DeletedList)
-        child.SetParent(this);
     }
 
     #endregion

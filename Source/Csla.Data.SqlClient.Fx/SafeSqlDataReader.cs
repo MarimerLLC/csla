@@ -25,7 +25,7 @@ namespace Csla.Data.SqlClient
     /// Get a reference to the underlying
     /// SqlDataReader if present.
     /// </summary>
-    public SqlDataReader SqlDataReader { get; }
+    public SqlDataReader? SqlDataReader { get; }
 
     /// <summary>
     /// Initializes the SafeDataReader object to use data from

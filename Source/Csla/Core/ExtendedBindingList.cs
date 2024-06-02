@@ -161,9 +161,9 @@ namespace Csla.Core
     /// Await this method to ensure business object is not busy.
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
-    public virtual Task WaitForIdle(TimeSpan timeout)
+    public Task WaitForIdle(TimeSpan timeout)
     {
-      return BusyHelper.WaitForIdle(this, timeout);
+      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
     }
 
     /// <summary>

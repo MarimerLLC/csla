@@ -343,7 +343,7 @@ namespace Csla.Channels.Grpc
 
     #region Criteria
 
-    private static object? GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
+    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
     {
       object? criteria = null;
       if (criteriaData != null)

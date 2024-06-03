@@ -247,6 +247,24 @@ namespace Csla.Core
       OnBusyChanged(e);
     }
 
+    /// <summary>
+    /// Await this method to ensure business object is not busy.
+    /// </summary>
+    /// <param name="timeout">Timeout duration</param>
+    public Task WaitForIdle(TimeSpan timeout)
+    {
+      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
+    }
+
+    /// <summary>
+    /// Await this method to ensure the business object is not busy.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    public virtual Task WaitForIdle(CancellationToken ct)
+    {
+      return BusyHelper.WaitForIdle(this, ct);
+    }
+
     #endregion
 
     #region INotifyUnhandledAsyncException Members

@@ -734,33 +734,12 @@ namespace Csla
     #region IsDirty, IsValid, IsSavable
 
     /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
+    /// Await this method to ensure business object is not busy.
     /// </summary>
     public async Task WaitForIdle()
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
-    {
-      return BusyHelper.WaitForIdle(this, timeout);
-    }
-
-    /// <summary>
-    /// Await this method to ensure the business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="ct">Cancellation token.</param>
-    public Task WaitForIdle(CancellationToken ct)
-    {
-      return BusyHelper.WaitForIdle(this, ct);
     }
 
     /// <summary>

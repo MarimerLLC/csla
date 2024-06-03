@@ -16,6 +16,6 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Data portal server endpoint URL
     /// </summary>
-    public string DataPortalUrl { get; set; }
+    public string DataPortalUrl { get; set; } = string.Empty;
   }
 }

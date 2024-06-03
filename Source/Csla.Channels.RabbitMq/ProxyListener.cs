@@ -6,6 +6,7 @@
 // <summary>Handles replies from data portal server</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
@@ -19,36 +20,46 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Gets or sets the connection to the RabbitMQ service.
     /// </summary>
-    protected IConnection Connection { get; set; }
+    protected IConnection? Connection { get; set; }
 
     /// <summary>
     /// Gets or sets the channel (model) for RabbitMQ.
     /// </summary>
-    protected IModel Channel { get; set; }
+    protected IModel? Channel { get; set; }
 
     /// <summary>
     /// Gets or sets the queue for inbound messages
     /// and replies.
     /// </summary>
-    public QueueDeclareOk ReplyQueue { get; set; }
+    public QueueDeclareOk? ReplyQueue { get; set; }
 
-    private Uri QueueUri;
+    private readonly Uri _queueUri;
 
-    private static ProxyListener _instance;
+    private static ProxyListener? _instance;
 
-    private ProxyListener()
+    private ProxyListener(Uri queueUri)
     {
+      _queueUri = queueUri;
     }
 
+    /// <summary>
+    /// Gets an already existing listener or creates a new listener for the given URI.
+    /// </summary>
+    /// <param name="queueUri">The uri to listen for.</param>
+    /// <returns>A new listener</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="queueUri"/> is <see langword="null"/>.</exception>
     public static ProxyListener GetListener(Uri queueUri)
     {
+      if (queueUri is null)
+        throw new ArgumentNullException(nameof(queueUri));
+
       if (_instance == null)
       {
         lock (typeof(ProxyListener))
         {
           if (_instance == null)
           {
-            _instance = new ProxyListener { QueueUri = queueUri };
+            _instance = new ProxyListener(queueUri);
           }
         }
       }
@@ -62,12 +73,15 @@ namespace Csla.Channels.RabbitMq
     /// Channel, ReplyQueue, and DataPortalQueueName values
     /// used for bi-directional communication.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [MemberNotNull(nameof(Connection), nameof(Channel), nameof(ReplyQueue))]
+#endif
     private void InitializeRabbitMQ()
     {
-      var factory = new ConnectionFactory { HostName = QueueUri.Host };
-      if (QueueUri.Port < 0)
-        factory.Port = QueueUri.Port;
-      var userInfo = QueueUri.UserInfo.Split(':');
+      var factory = new ConnectionFactory { HostName = _queueUri.Host };
+      if (_queueUri.Port < 0)
+        factory.Port = _queueUri.Port;
+      var userInfo = _queueUri.UserInfo.Split(':');
       if (userInfo.Length > 0 && !string.IsNullOrWhiteSpace(userInfo[0]))
         factory.UserName = userInfo[0];
       if (userInfo.Length > 1)
@@ -75,10 +89,10 @@ namespace Csla.Channels.RabbitMq
       Connection = factory.CreateConnection();
       Channel = Connection.CreateModel();
       string[] query;
-      if (string.IsNullOrWhiteSpace(QueueUri.Query))
+      if (string.IsNullOrWhiteSpace(_queueUri.Query))
         query = [];
       else
-        query = QueueUri.Query.Substring(1).Split('&');
+        query = _queueUri.Query.Substring(1).Split('&');
       if (query.Length == 0 || !query[0].StartsWith("reply="))
       {
         IsNamedReplyQueue = false;
@@ -115,7 +129,7 @@ namespace Csla.Channels.RabbitMq
       consumer.Received += (_, ea) =>
       {
         Console.WriteLine($"Received reply for {ea.BasicProperties.CorrelationId}");
-        if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem item))
+        if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem? item))
         {
           item.Response = ea.Body.ToArray();
           item.ResetEvent.Set();

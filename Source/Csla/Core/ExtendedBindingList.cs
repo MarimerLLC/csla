@@ -157,6 +157,24 @@ namespace Csla.Core
       OnBusyChanged(e);
     }
 
+    /// <summary>
+    /// Await this method to ensure business object is not busy.
+    /// </summary>
+    /// <param name="timeout">Timeout duration</param>
+    public Task WaitForIdle(TimeSpan timeout)
+    {
+      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
+    }
+
+    /// <summary>
+    /// Await this method to ensure the business object is not busy.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    public virtual Task WaitForIdle(CancellationToken ct)
+    {
+      return BusyHelper.WaitForIdle(this, ct);
+    }
+
     [NotUndoable]
     [NonSerialized]
     private EventHandler<ErrorEventArgs> _unhandledAsyncException;
@@ -249,32 +267,11 @@ namespace Csla.Core
         child.ChildChanged -= Child_Changed;
     }
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized()
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
-    }
-
     void ISerializationNotification.Deserialized()
     {
       // don't rehook events here, because the MobileFormatter has
       // created new objects and so the lists will auto-subscribe
-      // the events
-      OnDeserialized();
-    }
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
-      foreach (T item in this)
-        OnAddEventHooks(item);
-
-      OnDeserialized();
+      // the events;
     }
 
     [NonSerialized]

@@ -38,7 +38,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Serialized data for the criteria object.
     /// </summary>
-    public byte[] CriteriaData
+    public byte[]? CriteriaData
     {
       get { return GetProperty(CriteriaDataProperty); }
       set { LoadProperty(CriteriaDataProperty, value); }

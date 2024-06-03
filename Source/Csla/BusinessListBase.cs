@@ -309,6 +309,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected override async Task<C> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
+      var item = await dp.CreateChildAsync();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
     /// This method is called by a child object when it
     /// wants to be removed from the collection.
     /// </summary>
@@ -598,7 +610,6 @@ namespace Csla
         if (child.EditLevelAdded > EditLevel)
           DeletedList.RemoveAt(index);
       }
-
       if (EditLevel < 0) EditLevel = 0;
     }
 
@@ -723,33 +734,12 @@ namespace Csla
     #region IsDirty, IsValid, IsSavable
 
     /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
+    /// Await this method to ensure business object is not busy.
     /// </summary>
     public async Task WaitForIdle()
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
-    {
-      return BusyHelper.WaitForIdle(this, timeout);
-    }
-
-    /// <summary>
-    /// Await this method to ensure the business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="ct">Cancellation token.</param>
-    public Task WaitForIdle(CancellationToken ct)
-    {
-      return BusyHelper.WaitForIdle(this, ct);
     }
 
     /// <summary>
@@ -822,8 +812,11 @@ namespace Csla
     {
       get
       {
-        bool auth = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
-        return (IsDirty && IsValid && auth && !IsBusy);
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+
+        return result;
       }
     }
 
@@ -867,24 +860,6 @@ namespace Csla
       {
         return false;
       }
-    }
-
-    #endregion
-
-    #region Serialization Notification
-
-    /// <summary>
-    /// Reset parent references on deserialization.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      base.OnDeserialized();
-      foreach (IEditableBusinessObject child in this)
-        child.SetParent(this);
-
-      foreach (IEditableBusinessObject child in DeletedList)
-        child.SetParent(this);
     }
 
     #endregion

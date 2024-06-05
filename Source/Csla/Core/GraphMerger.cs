@@ -6,6 +6,8 @@
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.Concurrent;
+
 namespace Csla.Core
 {
   /// <summary>
@@ -14,6 +16,7 @@ namespace Csla.Core
   /// </summary>
   public class GraphMerger : Server.ObjectFactory
   {
+    private static readonly ConcurrentDictionary<(Type, Type, bool), System.Reflection.MethodInfo> _methodCache = new();
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -243,7 +246,7 @@ namespace Csla.Core
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                 Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
               else
-                await Task.Run(() => LoadProperty(target, item, sourceChild));
+                LoadProperty(target, item, sourceChild);
             }
           }
           else
@@ -262,7 +265,7 @@ namespace Csla.Core
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                   Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
                 else
-                  await Task.Run(() => LoadProperty(target, item, sourceList));
+                 LoadProperty(target, item, sourceList);
               }
             }
             else
@@ -270,17 +273,17 @@ namespace Csla.Core
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                 Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
               else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
-                await Task.Run(() => LoadProperty(target, item, sourceValue));
+                LoadProperty(target, item, sourceValue);
             }
           }
         }
         if (source.IsNew)
         {
-          await Task.Run(() => MarkNew(target));
+          MarkNew(target);
         }
         else if (!source.IsDirty)
         {
-          await Task.Run(() => MarkOld(target));
+          MarkOld(target);
         }
         else
         {
@@ -298,16 +301,21 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     private async Task MergeGraphAsync(IEditableCollection target, IEditableCollection source)
     {
-      var listType = await Task.Run(() => target.GetType());
-      var childType = await Task.Run(() => Utilities.GetChildItemType(listType));
-      var genericTypeParams = new Type[] { listType, childType };
-      System.Reflection.MethodInfo methodReference;
-      if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
-        methodReference = await Task.Run(() => GetType().GetMethod("MergeBusinessBindingListGraphAsync"));
-      else
-        methodReference = await Task.Run(() => GetType().GetMethod("MergeBusinessListGraphAsync"));
-      var gr = await Task.Run(() => methodReference.MakeGenericMethod(genericTypeParams));
-      await Task.Run(() => gr.Invoke(this, [target, source]));
+      var listType = target.GetType();
+      var childType = Utilities.GetChildItemType(listType);
+      var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
+
+      var cacheKey = (listType, childType, isExtendedBindingList);
+
+      if (!_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo methodReference))
+      {
+        var methodName = isExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
+        methodReference = GetType().GetMethod(methodName).MakeGenericMethod(listType, childType);
+        _methodCache.TryAdd(cacheKey, methodReference);
+      }
+
+      var task = (Task)methodReference.Invoke(this, new object[] { target, source });
+      await task;
     }
     /// <summary>
     /// Merges state from source graph into target graph.

@@ -25,28 +25,22 @@ namespace cslalighttest.BusyStatus
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
-    [TestInitialize]
-    public void Initialize()
-    {
-      TestResults.Reinitialise();
-    }
-
     [TestMethod]
-    public void ObjectIsNotBusy()
+    public void IsBusyWhenHavingTheSameInvocationsOfMarkBusyAndMarkIdleItShouldBeInAnIdleStateAgain()
     {
       UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<ObjectBusy>();
-      root.One();
+      root.IdealStateSubMethod();
       Assert.IsFalse(root.IsBusy);
     }
 
     [TestMethod]
-    public void ObjectIsBusy()
+    public void IsBusyWhenHavingTheInvocationsOfMarkBusyAndMarkIdleItShouldNotBeInAnIdleStateAgain()
     {
       UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<ObjectBusy>();
 
-      root.Three();
+      root.NonIdealStateMethod();
       Assert.IsTrue(root.IsBusy);
     }
 
@@ -59,12 +53,12 @@ namespace cslalighttest.BusyStatus
 
       }
 
-      public void One()
+      public void IdealStateMethod()
       {
         try
         {
           MarkBusy();
-          Two();
+          IdealStateSubMethod();
         }
         finally
         {
@@ -72,7 +66,7 @@ namespace cslalighttest.BusyStatus
         }
       }
 
-      public void Two()
+      public void IdealStateSubMethod()
       {
         try
         {
@@ -84,7 +78,7 @@ namespace cslalighttest.BusyStatus
         }
       }
 
-      public void Three()
+      public void NonIdealStateMethod()
       {
         MarkBusy();
         MarkBusy();

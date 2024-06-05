@@ -31,31 +31,4 @@ namespace Csla.Rules
     /// </summary>
     bool CacheResult { get; }
   }
-
-  /// <summary>
-  /// Interface defining an authorization
-  /// rule implementation.
-  /// </summary>
-  public interface IAuthorizationRule : IAuthorizationRuleBase
-  {
-    /// <summary>
-    /// Authorization rule implementation.
-    /// </summary>
-    /// <param name="context">Rule context object.</param>
-    void Execute(IAuthorizationContext context);
-  }
-
-  /// <summary>
-  /// Interface defining an authorization
-  /// rule implementation.
-  /// </summary>
-  public interface IAuthorizationRuleAsync : IAuthorizationRuleBase
-  {
-    /// <summary>
-    /// Authorization rule implementation.
-    /// </summary>
-    /// <param name="context">Rule context object.</param>
-    /// <param name="ct">Cancellation token.</param>
-    Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct);
-  }
 }

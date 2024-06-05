@@ -10,7 +10,6 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Claims;
 using Csla.Configuration;
-using Csla.Core;
 using Csla.Rules;
 using Csla.Test.Security;
 using Csla.TestHelpers;
@@ -697,25 +696,21 @@ namespace Csla.Test.Authorization
     {
       BusinessRules.AddRule(
         typeof(PerTypeAuthRootAsync),
-        new NoAuthAsync());
+        new NoAuthAsync(AuthorizationActions.EditObject));
     }
-    private class NoAuthAsync : IAuthorizationRuleAsync
+    private class NoAuthAsync : AuthorizationRuleAsync
     {
-      public IMemberInfo Element { get; set; }
+      public NoAuthAsync(AuthorizationActions action) : base(action)
+      {
+      }
 
-      public AuthorizationActions Action { get; set; } = AuthorizationActions.EditObject;
-
-      public bool CacheResult { get; set; }
-
-      public Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
+      protected override Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
       {
         context.HasPermission = false;
         return Task.CompletedTask;
       }
     }
   }
-
-
 
   [Serializable]
   public class RootList : BusinessListBase<RootList, ChildItem>

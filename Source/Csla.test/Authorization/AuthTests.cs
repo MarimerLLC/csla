@@ -6,13 +6,14 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics;
 using System.Reflection;
+using System.Security.Claims;
+using Csla.Configuration;
+using Csla.Core;
 using Csla.Rules;
 using Csla.Test.Security;
-using System.Diagnostics;
-using System.Security.Claims;
 using Csla.TestHelpers;
-using Csla.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Authorization
@@ -355,7 +356,7 @@ namespace Csla.Test.Authorization
 
     [Ignore]
     [TestMethod]
-    public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
+    public async Task TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
     {
       IDataPortal<PermissionsRoot> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot>();
       ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
@@ -368,22 +369,28 @@ namespace Csla.Test.Authorization
       // implicit usage of ApplicationContext.RuleSet
       applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), CancellationToken.None));
       applicationContext.RuleSet = "custom1";
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), CancellationToken.None));
       applicationContext.RuleSet = "custom2";
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot)));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), CancellationToken.None));
 
       applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
 
       // directly specifying which ruleset to use
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), ApplicationContext.DefaultRuleSet));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), ApplicationContext.DefaultRuleSet, CancellationToken.None));
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom1"));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom1", CancellationToken.None));
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2"));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot), "custom2", CancellationToken.None));
     }
 
     [Ignore]
     [TestMethod]
-    public void TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
+    public async Task TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
     {
       IDataPortal<PermissionsRoot2> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot2>();
       ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
@@ -400,17 +407,23 @@ namespace Csla.Test.Authorization
       // implicit usage of ApplicationContext.RuleSet
       applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), CancellationToken.None));
       applicationContext.RuleSet = "custom1";
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), CancellationToken.None));
       applicationContext.RuleSet = "custom2";
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2)));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), CancellationToken.None));
 
       applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
 
       // directly specifying which ruleset to use
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), ApplicationContext.DefaultRuleSet));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), ApplicationContext.DefaultRuleSet, CancellationToken.None));
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom1"));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom1", CancellationToken.None));
       Assert.IsTrue(BusinessRules.HasPermission(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom2"));
+      Assert.IsTrue(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, typeof(PermissionsRoot2), "custom2", CancellationToken.None));
     }
 
     [TestMethod]
@@ -457,7 +470,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
-    public void PerTypeAuthEditObject()
+    public async Task PerTypeAuthEditObject()
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(
         options => options.DataPortal(
@@ -467,6 +480,21 @@ namespace Csla.Test.Authorization
       ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
 
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRoot)));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRoot), CancellationToken.None));
+    }
+
+    [TestMethod]
+    public async Task PerTypeAuthEditObjectAsyncThrowsException()
+    {
+      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
+        options => options.DataPortal(
+          dp => dp.AddServerSideDataPortal(
+            cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
+        ));
+      ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
+
+      Assert.ThrowsException<ArgumentOutOfRangeException>(() => BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootAsync)));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootAsync), CancellationToken.None));
     }
 
     /// <summary>
@@ -475,7 +503,7 @@ namespace Csla.Test.Authorization
     /// to a concrete type is missing. Should be resolved in #3557
     /// </summary>
     [TestMethod]
-    public void PerTypeAuthEditObjectViaInterface()
+    public async Task PerTypeAuthEditObjectViaInterface()
     {
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(
         options => options.DataPortal(
@@ -484,10 +512,11 @@ namespace Csla.Test.Authorization
       ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
 
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot)));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot), CancellationToken.None));
     }
 
     [TestMethod]
-    public void PerTypeAuthCreateWithCriteria()
+    public async Task PerTypeAuthCreateWithCriteria()
     {
       ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
 
@@ -505,17 +534,38 @@ namespace Csla.Test.Authorization
           typeof(PermissionRootWithCriteria),
           [new object()]));
 
-
       Assert.IsFalse(
         BusinessRules.HasPermission(
           applicationContext,
           AuthorizationActions.CreateObject,
           typeof(PermissionRootWithCriteria),
           (object[])null));
+
+      Assert.IsTrue(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          [new PermissionRootWithCriteria.Criteria()], CancellationToken.None));
+
+      Assert.IsFalse(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          [new object()], CancellationToken.None));
+
+
+      Assert.IsFalse(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.CreateObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null, CancellationToken.None));
     }
 
     [TestMethod]
-    public void PerTypeAuthFetchWithCriteria()
+    public async Task PerTypeAuthFetchWithCriteria()
     {
       ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
 
@@ -533,17 +583,38 @@ namespace Csla.Test.Authorization
           typeof(PermissionRootWithCriteria),
           [new object()]));
 
-
       Assert.IsFalse(
         BusinessRules.HasPermission(
           applicationContext,
           AuthorizationActions.GetObject,
           typeof(PermissionRootWithCriteria),
           (object[])null));
+
+      Assert.IsTrue(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          [new PermissionRootWithCriteria.Criteria()], CancellationToken.None));
+
+      Assert.IsFalse(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          [new object()], CancellationToken.None));
+
+
+      Assert.IsFalse(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.GetObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null, CancellationToken.None));
     }
 
     [TestMethod]
-    public void PerTypeAuthDeleteWithCriteria()
+    public async Task PerTypeAuthDeleteWithCriteria()
     {
       ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
 
@@ -561,13 +632,33 @@ namespace Csla.Test.Authorization
           typeof(PermissionRootWithCriteria),
           [new object()]));
 
-
       Assert.IsFalse(
         BusinessRules.HasPermission(
           applicationContext,
           AuthorizationActions.DeleteObject,
           typeof(PermissionRootWithCriteria),
           (object[])null));
+
+      Assert.IsTrue(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          [new PermissionRootWithCriteria.Criteria()], CancellationToken.None));
+
+      Assert.IsFalse(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          [new object()], CancellationToken.None));
+
+      Assert.IsFalse(await
+        BusinessRules.HasPermissionAsync(
+          applicationContext,
+          AuthorizationActions.DeleteObject,
+          typeof(PermissionRootWithCriteria),
+          (object[])null, CancellationToken.None));
     }
   }
 
@@ -577,12 +668,15 @@ namespace Csla.Test.Authorization
     {
       if (requestedType.Equals(typeof(IPerTypeAuthRoot)))
         return typeof(PerTypeAuthRoot);
+      if (requestedType.Equals(typeof(IPerTypeAuthRootAsync)))
+        return typeof(PerTypeAuthRootAsync);
       else
         return base.ResolveType(requestedType);
     }
   }
 
   public interface IPerTypeAuthRoot;
+  public interface IPerTypeAuthRootAsync;
 
   [Serializable]
   public class PerTypeAuthRoot : BusinessBase<PerTypeAuthRoot>, IPerTypeAuthRoot
@@ -595,6 +689,33 @@ namespace Csla.Test.Authorization
         new Rules.CommonRules.IsInRole(AuthorizationActions.EditObject, "Test"));
     }
   }
+  [Serializable]
+  public class PerTypeAuthRootAsync : BusinessBase<PerTypeAuthRootAsync>, IPerTypeAuthRootAsync
+  {
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      BusinessRules.AddRule(
+        typeof(PerTypeAuthRootAsync),
+        new NoAuthAsync());
+    }
+    private class NoAuthAsync : IAuthorizationRuleAsync
+    {
+      public IMemberInfo Element { get; set; }
+
+      public AuthorizationActions Action { get; set; } = AuthorizationActions.EditObject;
+
+      public bool CacheResult { get; set; }
+
+      public Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
+      {
+        context.HasPermission = false;
+        return Task.CompletedTask;
+      }
+    }
+  }
+
+
 
   [Serializable]
   public class RootList : BusinessListBase<RootList, ChildItem>

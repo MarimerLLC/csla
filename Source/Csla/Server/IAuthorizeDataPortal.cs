@@ -21,6 +21,9 @@ namespace Csla.Server
     /// <param name="clientRequest">
     /// Object containing information about the client request.
     /// </param>
-    void Authorize(AuthorizeRequest clientRequest);
+    /// <param name="ct">
+    /// The cancellation token.
+    /// </param>
+    Task AuthorizeAsync(AuthorizeRequest clientRequest, CancellationToken ct);
   }
 }

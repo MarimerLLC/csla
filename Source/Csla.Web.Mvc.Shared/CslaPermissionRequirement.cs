@@ -57,12 +57,11 @@ namespace Csla.Web.Mvc
     /// Handles CSLA permissions
     /// </summary>
     /// <param name="context">Authorization handler context</param>
-    public override Task HandleAsync(AuthorizationHandlerContext context)
+    public override async Task HandleAsync(AuthorizationHandlerContext context)
     {
       foreach (var item in context.PendingRequirements)
         if (item is CslaPermissionRequirement cr)
-          HandleRequirementAsync(context, cr);
-      return Task.CompletedTask;
+          await HandleRequirementAsync(context, cr);
     }
 
     /// <summary>
@@ -70,14 +69,13 @@ namespace Csla.Web.Mvc
     /// </summary>
     /// <param name="context">Authorization handler context</param>
     /// <param name="requirement">CSLA permissions requirement</param>
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, 
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
       CslaPermissionRequirement requirement)
     {
       if (context.User == null || !context.User.Identity.IsAuthenticated)
         context.Fail();
-      else if (BusinessRules.HasPermission(_applicationContext, requirement.Action, requirement.ObjectType))
+      else if (await BusinessRules.HasPermissionAsync(_applicationContext, requirement.Action, requirement.ObjectType, CancellationToken.None))
         context.Succeed(requirement);
-      return Task.CompletedTask;
     }
   }
 }

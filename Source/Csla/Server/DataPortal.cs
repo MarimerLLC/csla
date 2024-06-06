@@ -6,8 +6,8 @@
 // <summary>Implements the server-side DataPortal </summary>
 //-----------------------------------------------------------------------
 
-using Csla.Configuration;
 using System.Security.Principal;
+using Csla.Configuration;
 using Csla.Properties;
 using Csla.Server.Dashboard;
 
@@ -52,8 +52,8 @@ namespace Csla.Server
     /// <param name="exceptionHandler"></param>
     /// <param name="securityOptions"></param>
     public DataPortal(
-      ApplicationContext applicationContext, 
-      IDashboard dashboard, 
+      ApplicationContext applicationContext,
+      IDashboard dashboard,
       CslaOptions options,
       IAuthorizeDataPortal authorizer,
       InterceptorManager interceptors,
@@ -123,7 +123,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create));
+        await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create), CancellationToken.None);
 
         await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Create, IsSync = isSync });
 
@@ -224,7 +224,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch));
+        await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch), CancellationToken.None);
 
         await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, IsSync = isSync });
 
@@ -318,7 +318,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Execute));
+        await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Execute), CancellationToken.None);
 
         await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Execute, IsSync = isSync });
 
@@ -419,7 +419,7 @@ namespace Csla.Server
         if (obj is Core.ICommandObject)
           operation = DataPortalOperations.Execute;
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, obj, operation));
+        await AuthorizeRequestAsync(new AuthorizeRequest(objectType, obj, operation), CancellationToken.None);
 
         await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
 
@@ -545,7 +545,7 @@ namespace Csla.Server
       {
         SetContext(context);
 
-        AuthorizeRequest(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete));
+        await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete), CancellationToken.None);
 
         await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Delete, IsSync = isSync });
 
@@ -653,9 +653,9 @@ namespace Csla.Server
       await InterceptorManager.InitializeAsync(e);
     }
 
-#endregion
+    #endregion
 
-#region Context
+    #region Context
 
     ApplicationContext.LogicalExecutionLocations _oldLocation;
 
@@ -735,9 +735,9 @@ namespace Csla.Server
 
     #endregion
 
-    private void AuthorizeRequest(AuthorizeRequest clientRequest)
+    private async Task AuthorizeRequestAsync(AuthorizeRequest clientRequest, CancellationToken ct)
     {
-      Authorizer.Authorize(clientRequest);
+      await Authorizer.AuthorizeAsync(clientRequest, ct);
     }
 
     internal static DataPortalException NewDataPortalException(

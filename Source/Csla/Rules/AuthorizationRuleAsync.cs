@@ -15,7 +15,7 @@ namespace Csla.Rules
   /// Base class providing basic authorization rule
   /// implementation.
   /// </summary>
-  public abstract class AuthorizationRule : IAuthorizationRule
+  public abstract class AuthorizationRuleAsync : IAuthorizationRuleAsync
   {
     private IMemberInfo _element;
     private AuthorizationActions _action;
@@ -26,7 +26,7 @@ namespace Csla.Rules
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
-    public AuthorizationRule(AuthorizationActions action)
+    public AuthorizationRuleAsync(AuthorizationActions action)
     {
       _action = action;
     }
@@ -35,7 +35,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Method or property.</param>
-    public AuthorizationRule(AuthorizationActions action, IMemberInfo element)
+    public AuthorizationRuleAsync(AuthorizationActions action, IMemberInfo element)
       : this(action)
     {
       _element = element;
@@ -44,8 +44,8 @@ namespace Csla.Rules
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    protected abstract void Execute(IAuthorizationContext context);
-
+    /// <param name="ct">The cancellation token.</param>
+    protected abstract Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct);
 
     /// <summary>
     /// Gets a value indicating whether the results
@@ -96,13 +96,13 @@ namespace Csla.Rules
         throw new ArgumentException($"{Resources.PropertySetNotAllowed} ({argument})", argument);
     }
 
-    #region IAuthorizationRule
+    #region IAuthorizationRuleAsync
 
-    void IAuthorizationRule.Execute(IAuthorizationContext context)
+    Task IAuthorizationRuleAsync.ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
     {
       if (!_locked)
         _locked = true;
-      Execute(context);
+      return ExecuteAsync(context, ct);
     }
 
     /// <summary>

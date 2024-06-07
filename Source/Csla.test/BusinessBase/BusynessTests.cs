@@ -44,6 +44,16 @@ namespace cslalighttest.BusyStatus
       Assert.IsTrue(root.IsBusy);
     }
 
+    [TestMethod]
+    public void IsBusyWhenHavingTheInvocationsOFMarkIdleItShoulBeInIdleState()
+    {
+      UnitTestContext context = GetContext();
+      var root = CreateWithoutCriteria<ObjectBusy>();
+
+      root.IsBusyShouldNotGoInMinus();
+      Assert.IsFalse(root.IsBusy);
+    }
+
     [Serializable]
     public class ObjectBusy : BusinessBase<ObjectBusy>
     {
@@ -82,6 +92,12 @@ namespace cslalighttest.BusyStatus
       {
         MarkBusy();
         MarkBusy();
+        MarkIdle();
+      }
+      public void IsBusyShouldNotGoInMinus()
+      {
+        MarkBusy();
+        MarkIdle();
         MarkIdle();
       }
     }

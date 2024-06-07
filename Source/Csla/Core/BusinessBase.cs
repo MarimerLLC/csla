@@ -3018,9 +3018,9 @@ namespace Csla.Core
 
     #region IsBusy / IsIdle
     /// <summary>
-    /// Counter Indicates object is busy or not 
+    /// Indicates object is busy or not 
     /// </summary>
-    public int _isBusy;
+    private int _isBusy;
 
     /// <summary>
     /// Mark the object as busy (it is
@@ -3045,7 +3045,11 @@ namespace Csla.Core
     protected void MarkIdle()
     {
       int updatedValue = Interlocked.Decrement(ref _isBusy);
-
+      if (updatedValue < 0)
+      {
+        _ = Interlocked.CompareExchange(ref _isBusy, 0, updatedValue);
+         updatedValue = 0;
+      }
       if (updatedValue == 0)
       {
         OnBusyChanged(new BusyChangedEventArgs("", false));
@@ -3074,7 +3078,7 @@ namespace Csla.Core
     [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
-      get { return (_isBusy > 0 ? true : false) || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
+      get { return _isBusy > 0 || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
     }
 
     [NotUndoable]

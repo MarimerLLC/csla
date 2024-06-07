@@ -1522,7 +1522,11 @@ namespace Csla
     protected void MarkIdle()
     {
       int updatedValue = Interlocked.Decrement(ref _isBusy);
-
+      if (updatedValue < 0)
+      {
+        _ = Interlocked.CompareExchange(ref _isBusy, 0, updatedValue);
+        updatedValue = 0;
+      }
       if (updatedValue == 0)
       {
         OnBusyChanged(new BusyChangedEventArgs("", false));
@@ -1552,7 +1556,7 @@ namespace Csla
     [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
-      get { return (_isBusy > 0 ? true : false) || LoadManager.IsLoading; }
+      get { return _isBusy > 0 || LoadManager.IsLoading; }
     }
 
     void Child_PropertyBusy(object sender, BusyChangedEventArgs e)

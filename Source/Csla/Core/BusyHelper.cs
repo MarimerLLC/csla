@@ -15,6 +15,18 @@ namespace Csla.Core
   /// </summary>
   public static class BusyHelper 
   {
+    internal static async Task WaitForIdleAsTimeout(Func<Task> operation, Type source, string methodName, TimeSpan timeout)
+    {
+      try
+      {
+        await operation();
+      }
+      catch (TaskCanceledException tcex)
+      {
+        throw new TimeoutException($"{source.GetType().FullName}.{methodName} - {timeout}.", tcex);
+      }
+    }
+
     /// <summary>
     /// Waits for the specified <see cref="INotifyBusy"/> object to become idle within the specified timeout.
     /// </summary>

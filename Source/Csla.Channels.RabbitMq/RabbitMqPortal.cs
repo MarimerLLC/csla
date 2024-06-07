@@ -6,6 +6,7 @@
 // <summary>Exposes server-side DataPortal functionality through RabbitMQ</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Principal;
 using Csla.Core;
 using Csla.Serialization;
@@ -22,28 +23,29 @@ namespace Csla.Channels.RabbitMq
   /// </summary>
   public class RabbitMqPortal : IDisposable
   {
-    private IDataPortalServer dataPortalServer;
-    private ApplicationContext _applicationContext;
+    private IDataPortalServer? dataPortalServer;
+    private ApplicationContext? _applicationContext;
 
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
     /// <param name="applicationContext"></param>
     /// <param name="dataPortal">Data portal server service</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="dataPortal"/> is <see langword="null"/>.</exception>
     public RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal)
     {
-      dataPortalServer = dataPortal;
-      _applicationContext = applicationContext;
+      dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
     /// Gets the URI for the data portal service.
     /// </summary>
-    public string DataPortalUrl { get; }
+    public string DataPortalUrl { get; } = string.Empty;
 
-    private IConnection Connection;
-    private IModel Channel;
-    private string DataPortalQueueName;
+    private IConnection? Connection;
+    private IModel? Channel;
+    private string? DataPortalQueueName;
 
     /// <summary>
     /// Gets or sets the timeout for network
@@ -55,16 +57,23 @@ namespace Csla.Channels.RabbitMq
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="dataPortalUrl">URI for the data portal</param>
+    /// <exception cref="ArgumentException"><paramref name="dataPortalUrl"/> is null, empty or only consists of white spaces.</exception>
     public RabbitMqPortal(string dataPortalUrl)
     {
+      if (string.IsNullOrWhiteSpace(dataPortalUrl))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(dataPortalUrl)), nameof(dataPortalUrl));
+
       DataPortalUrl = dataPortalUrl;
     }
 
-    private Uri DataPortalUri { get; set; }
+    private Uri? DataPortalUri { get; set; }
 
+#if NET5_0_OR_GREATER
+    [MemberNotNull(nameof(DataPortalUri), nameof(DataPortalQueueName), nameof(Connection), nameof(Channel))]
+#endif
     private void InitializeRabbitMQ()
     {
-      if (Connection == null)
+      if (Connection == null || DataPortalUri == null || Channel == null || DataPortalQueueName == null)
       {
         Console.WriteLine($"Initializing connection to {DataPortalUrl}");
         DataPortalUri = new Uri(DataPortalUrl);
@@ -198,7 +207,7 @@ namespace Csla.Channels.RabbitMq
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -242,7 +251,7 @@ namespace Csla.Channels.RabbitMq
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -285,7 +294,7 @@ namespace Csla.Channels.RabbitMq
       {
         request = ConvertRequest(request);
         // unpack object
-        object obj = GetCriteria(_applicationContext, request.ObjectData);
+        object? obj = GetCriteria(_applicationContext, request.ObjectData);
 
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.Principal),
@@ -325,7 +334,7 @@ namespace Csla.Channels.RabbitMq
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -359,9 +368,9 @@ namespace Csla.Channels.RabbitMq
 
     #region Criteria
 
-    private static object GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
+    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
     {
-      object criteria = null;
+      object? criteria = null;
       if (criteriaData != null)
         criteria = SerializationFormatterFactory.GetFormatter(applicationContext).Deserialize(criteriaData);
       return criteria;

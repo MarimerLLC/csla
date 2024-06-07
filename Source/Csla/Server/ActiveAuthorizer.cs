@@ -36,7 +36,10 @@ namespace Csla.Server
     /// <param name="clientRequest">
     /// Client request information.
     /// </param>
-    public void Authorize(AuthorizeRequest clientRequest)
+    /// <param name="ct">
+    /// The cancellation token.
+    /// </param>
+    public async Task AuthorizeAsync(AuthorizeRequest clientRequest, CancellationToken ct)
     {
       if (_applicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server &&
           _applicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
@@ -45,7 +48,7 @@ namespace Csla.Server
             clientRequest.Operation == DataPortalOperations.Execute)
         {
           // Per-Instance checks
-          if (!BusinessRules.HasPermission(_applicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.RequestObject))
+          if (!await BusinessRules.HasPermissionAsync(_applicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.RequestObject, ct))
           {
             throw new SecurityException(
                string.Format(Resources.UserNotAuthorizedException,
@@ -56,7 +59,7 @@ namespace Csla.Server
         }
 
         // Per-Type checks
-        if (!BusinessRules.HasPermission(_applicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.ObjectType))
+        if (!await BusinessRules.HasPermissionAsync(_applicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.ObjectType, ct))
         {
           throw new SecurityException(
              string.Format(Resources.UserNotAuthorizedException,

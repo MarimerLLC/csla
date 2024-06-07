@@ -110,7 +110,7 @@ namespace Csla.Channels.Http
     {
       return isSync
         ? CallViaWebClient(serialized, operation, routingToken)
-        : await CallViaHttpClient(serialized, operation, routingToken);
+        : await CallViaHttpClient(serialized, operation, routingToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -162,12 +162,12 @@ namespace Csla.Channels.Http
         httpRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
       }
 #endif
-      using var httpResponse = await client.SendAsync(httpRequest);
-      await VerifyResponseSuccess(httpResponse);
+      using var httpResponse = await client.SendAsync(httpRequest).ConfigureAwait(false);
+      await VerifyResponseSuccess(httpResponse).ConfigureAwait(false);
       if (Options.UseTextSerialization)
-        serialized = Convert.FromBase64String(await httpResponse.Content.ReadAsStringAsync());
+        serialized = Convert.FromBase64String(await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false));
       else
-        serialized = await httpResponse.Content.ReadAsByteArrayAsync();
+        serialized = await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
       return serialized;
     }
 
@@ -219,7 +219,7 @@ namespace Csla.Channels.Http
         message.Append((int)httpResponse.StatusCode);
         message.Append(": ");
         message.Append(httpResponse.ReasonPhrase);
-        var content = await httpResponse.Content.ReadAsStringAsync();
+        var content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
         if (!string.IsNullOrWhiteSpace(content))
         {
           message.AppendLine();

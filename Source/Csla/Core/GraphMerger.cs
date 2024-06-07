@@ -305,17 +305,36 @@ namespace Csla.Core
       var childType = Utilities.GetChildItemType(listType);
       var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
 
-      var cacheKey = (listType, childType, isExtendedBindingList);
+      //var cacheKey = (listType, childType, isExtendedBindingList);
 
-      if (!_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo methodReference))
+      //if (!_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo methodReference))
+      //{
+      //  var methodName = isExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
+      //  methodReference = GetType().GetMethod(methodName).MakeGenericMethod(listType, childType);
+      //  _methodCache.TryAdd(cacheKey, methodReference);
+      //}
+
+      //var task = (Task)methodReference.Invoke(this, new object[] { target, source });
+      //await task;
+
+      var cacheKey = GetCacheKey(target);
+
+      var methodReference = _methodCache.GetOrAdd(cacheKey, ((Type ListType, Type ChildType, bool IsExtendedBindingList) key) =>
       {
-        var methodName = isExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
-        methodReference = GetType().GetMethod(methodName).MakeGenericMethod(listType, childType);
-        _methodCache.TryAdd(cacheKey, methodReference);
-      }
+        var methodName = key.IsExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
+        return GetType().GetMethod(methodName).MakeGenericMethod(key.ListType, key.ChildType);
+      });
 
-      var task = (Task)methodReference.Invoke(this, new object[] { target, source });
+      var task = (Task)methodReference.Invoke(this, [target, source]);
       await task;
+
+      static (Type ListType, Type ChildType, bool IsExtendedBindingList) GetCacheKey(IEditableCollection target)
+      {
+        var listType = target.GetType();
+        var childType = Utilities.GetChildItemType(listType);
+        var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
+        return (listType, childType, isExtendedBindingList);
+      }
     }
     /// <summary>
     /// Merges state from source graph into target graph.

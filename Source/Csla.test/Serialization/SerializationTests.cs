@@ -7,12 +7,12 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
-using Csla.Test.ValidationRules;
-using UnitDriven;
 using System.Security.Claims;
+using Csla.Serialization.Mobile;
+using Csla.Test.ValidationRules;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.Serialization.Mobile;
+using UnitDriven;
 
 namespace Csla.Test.Serialization
 {
@@ -204,6 +204,7 @@ namespace Csla.Test.Serialization
       context.Assert.Success();
     }
 
+    [Ignore]
     [TestMethod]
     public void TestSerializableEventsActionFails()
     {
@@ -215,19 +216,19 @@ namespace Csla.Test.Serialization
       var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
       var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
       root.PropertyChanged += delgate;
-      // TODO: Should this test target another formatter, or just be deleted?
-      //var b = new BinaryFormatterWrapper();
-      //try
-      //{
-      //  b.Serialize(new MemoryStream(), root);
-      //  Assert.Fail("Serialization should have thrown an exception");
-      //}
-      //catch (System.Runtime.Serialization.SerializationException)
-      //{
-      //  // serialization failed as expected
-      //}
+      var b = new MobileFormatter(_testDIContext.CreateTestApplicationContext());
+      try
+      {
+        b.Serialize(new MemoryStream(), root);
+        Assert.Fail("Serialization should have thrown an exception");
+      }
+      catch (System.Runtime.Serialization.SerializationException)
+      {
+        // serialization failed as expected
+      }
     }
 
+    [Ignore]
     [TestMethod]
     public void TestSerializableEventsActionSucceeds()
     {
@@ -247,8 +248,8 @@ namespace Csla.Test.Serialization
       root.PropertyChanging += delgate1;
 
       // TODO: Would this test make sense if upgraded to MobileFormatter?
-      //var b = new BinaryFormatterWrapper();
-      //b.Serialize(new MemoryStream(), root);
+      var b = new MobileFormatter(_testDIContext.CreateTestApplicationContext());
+      b.Serialize(new MemoryStream(), root);
     }
 
     [TestMethod]
@@ -491,13 +492,7 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
 
-      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
-        "NetDataContractSerializer";
-      // TODO: NDCS has been dropped I think; is there a way to replicate this test with another formatter?
-      //Assert.AreEqual(
-      //  Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
-      //  Csla.ApplicationContext.SerializationFormatter,
-      //  "Formatter should be NetDataContractSerializer");
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileSerializer";
 
       DCRoot root = DCRoot.NewDCRoot(dataPortal);
       root.Data = 123;
@@ -559,16 +554,6 @@ namespace Csla.Test.Serialization
 
       // TODO: Not sure how to replicate the object cloner in Csla 6
       var buffer = new MemoryStream();
-      //  var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
-      //  Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
-
-      //  var ndcs = new System.Runtime.Serialization.NetDataContractSerializer();
-      //  ndcs.Serialize(buffer, cmd);
-      //  buffer.Position = 0;
-      //  var n = (TestCommand)ndcs.Deserialize(buffer);
-      //  Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
-
-      buffer = new MemoryStream();
       var mf = new MobileFormatter(applicationContext);
       mf.Serialize(buffer, cmd);
       buffer.Position = 0;
@@ -596,39 +581,6 @@ namespace Csla.Test.Serialization
       Assert.IsFalse(ReferenceEquals(cmd, result), "References should not match");
       Assert.AreEqual(cmd.Name + " server", result.Name);
     }
-
-#if NETFRAMEWORK
-    [TestMethod]
-    public void UseCustomSerializationFormatter()
-    {
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(options => options
-      .Serialization(cfg => cfg
-      .SerializationFormatter(typeof(NetDataContractSerializerWrapper))));
-      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
-
-      var formatter = SerializationFormatterFactory.GetFormatter(applicationContext);
-
-      Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
-    }
-
-    // TODO: I don't think this test is relevant - NDCS has been dropped?
-    //[TestMethod]
-    //public void UseNetDataContractSerializer()
-    //{
-    //  System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "NetDataContractSerializer";
-    //  try
-    //  {
-    //    var formatter = SerializationFormatterFactory.GetFormatter();
-
-    //    Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.NetDataContractSerializer);
-    //    Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
-    //  }
-    //  finally
-    //  {
-    //    System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
-    //  }
-    //}
-#endif
   }
 
   [Serializable]

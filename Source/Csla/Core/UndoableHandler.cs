@@ -8,7 +8,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System.Reflection;
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -19,7 +19,7 @@ namespace Csla.Core
 {
     internal static class UndoableHandler
     {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
         private static readonly Dictionary<Type, Tuple<string, List<DynamicMemberHandle>>> _undoableFieldCache = [];
 #else
         private static readonly Dictionary<Type, List<DynamicMemberHandle>> _undoableFieldCache = [];
@@ -29,7 +29,7 @@ namespace Csla.Core
         {
             List<DynamicMemberHandle> handlers;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
             var found = _undoableFieldCache.TryGetValue(type, out var handlersInfo);
 
             handlers = handlersInfo?.Item2;
@@ -105,7 +105,7 @@ namespace Csla.Core
             // see if this field is marked as not undoable or IsInitOnly (ie: readonly property)
             return field.IsInitOnly || Attribute.IsDefined(field, typeof(NotUndoableAttribute));
         }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
         private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
         {

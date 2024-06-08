@@ -6,7 +6,7 @@
 // <summary>Manages the list of rules for a business type.</summary>
 //-----------------------------------------------------------------------
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -19,7 +19,7 @@ namespace Csla.Rules
   /// </summary>
   public class BusinessRuleManager
   {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>>();
 #else
@@ -34,7 +34,7 @@ namespace Csla.Rules
 
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
@@ -102,7 +102,7 @@ namespace Csla.Rules
       Rules = new List<IBusinessRuleBase>();
     }
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_perTypeRules)

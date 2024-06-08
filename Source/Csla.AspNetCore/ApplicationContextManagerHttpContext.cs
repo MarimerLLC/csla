@@ -25,7 +25,7 @@ namespace Csla.AspNetCore
     private readonly IRuntimeInfo runtimeInfo;
 
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Gets the active circuit state.
     /// </summary>
@@ -80,7 +80,7 @@ namespace Csla.AspNetCore
         if (runtimeInfo.LocalProxyNewScopeExists)
           return false;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
         if (ActiveCircuitState.CircuitExists)
           return false;
 #endif

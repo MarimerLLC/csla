@@ -5,7 +5,7 @@
 // </copyright>
 //-----------------------------------------------------------------------
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -16,7 +16,7 @@ namespace Csla.Server
 {
   internal static class DataPortalMethodCache
   {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static Dictionary<MethodCacheKey, Tuple<string, DataPortalMethodInfo>> _cache = [];
 #else
     private static Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache = [];
@@ -30,7 +30,7 @@ namespace Csla.Server
 
       var found = false;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       try
       {
         found = _cache.TryGetValue(key, out var methodInfo);
@@ -83,7 +83,7 @@ namespace Csla.Server
       return result;
     }
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_cache)

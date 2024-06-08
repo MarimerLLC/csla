@@ -8,7 +8,7 @@
 //-----------------------------------------------------------------------
 using System.Linq.Expressions;
 using System.Reflection;
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 using System.Reflection.Emit;
 #endif
 using Csla.Properties;
@@ -199,7 +199,7 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
     private static void EmitCastToReference(ILGenerator il, Type type)
     {
       if (type.IsValueType)

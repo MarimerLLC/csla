@@ -14,13 +14,13 @@ namespace Csla.Rules
   /// Context information provided to an authorization
   /// rule when it is invoked.
   /// </summary>
-  public class AuthorizationContext : IAuthorizationContext 
+  public class AuthorizationContext : IAuthorizationContext
   {
     /// <summary>
     /// Gets the rule object.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public IAuthorizationRule Rule { get; internal set; }
+    public IAuthorizationRuleBase Rule { get; internal set; }
     /// <summary>
     /// Gets a reference to the target business object.
     /// </summary>
@@ -48,7 +48,7 @@ namespace Csla.Rules
     /// <param name="rule">The rule.</param>
     /// <param name="target">The target.</param>
     /// <param name="targetType">Type of the target.</param>
-    public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRule rule, object target, Type targetType)
+    public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object target, Type targetType)
     {
       ApplicationContext = applicationContext;
       Rule = rule;

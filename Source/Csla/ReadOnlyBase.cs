@@ -519,20 +519,8 @@ namespace Csla
       if (_fieldManager != null)
         FieldManager.SetPropertyList(GetType());
       InitializeBusinessRules();
-      OnDeserialized(context);
     }
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
-    }
 
     #endregion
 

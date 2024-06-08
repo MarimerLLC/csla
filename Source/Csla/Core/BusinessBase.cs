@@ -456,14 +456,18 @@ namespace Csla.Core
     {
       get
       {
-        bool auth;
-        if (IsDeleted)
-          auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, this);
-        else if (IsNew)
-          auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, this);
-        else
-          auth = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, this);
-        return (auth && IsDirty && IsValid && !IsBusy);
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+        {
+          if (IsDeleted)
+            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, this);
+          else if (IsNew)
+            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, this);
+          else
+            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, this);
+        }
+
+        return result;
       }
     }
 
@@ -1226,6 +1230,33 @@ namespace Csla.Core
     #endregion
 
     #region Data Access
+
+    /// <summary>
+    /// Await this method to ensure business object is not busy.
+    /// </summary>
+    public async Task WaitForIdle()
+    {
+      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
+      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Await this method to ensure business object is not busy.
+    /// </summary>
+    /// <param name="timeout">Timeout duration</param>
+    public Task WaitForIdle(TimeSpan timeout)
+    {
+      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), this.GetType(), nameof(WaitForIdle), timeout);
+    }
+
+    /// <summary>
+    /// Await this method to ensure the business object is not busy.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    public virtual Task WaitForIdle(CancellationToken ct)
+    {
+      return BusyHelper.WaitForIdle(this, ct);
+    }
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
@@ -3386,8 +3417,8 @@ namespace Csla.Core
 
     async Task IDataPortalTarget.CheckRulesAsync() => await BusinessRules.CheckRulesAsync().ConfigureAwait(false);
 
-    async Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => await BusyHelper.WaitForIdle(this, timeout).ConfigureAwait(false);
-    async Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => await BusyHelper.WaitForIdle(this, ct).ConfigureAwait(false);
+    Task IDataPortalTarget.WaitForIdle(TimeSpan timeout) => WaitForIdle(timeout);
+    Task IDataPortalTarget.WaitForIdle(CancellationToken ct) => WaitForIdle(ct);
 
     void IDataPortalTarget.MarkAsChild()
     {

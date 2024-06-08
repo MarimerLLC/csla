@@ -85,36 +85,6 @@ namespace Csla
     #region Data Access
 
     /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    public async Task WaitForIdle()
-    {
-      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
-      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
-    {
-      return BusyHelper.WaitForIdle(this, timeout);
-    }
-
-    /// <summary>
-    /// Await this method to ensure the business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="ct">Cancellation token.</param>
-    public Task WaitForIdle(CancellationToken ct)
-    {
-      return BusyHelper.WaitForIdle(this, ct);
-    }
-
-    /// <summary>
     /// Saves the object to the database.
     /// </summary>
     /// <remarks>

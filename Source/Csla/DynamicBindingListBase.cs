@@ -416,26 +416,6 @@ namespace Csla
 
     #endregion
 
-    #region  Serialization Notification
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      foreach (IEditableBusinessObject child in this)
-      {
-        child.SetParent(this);
-        if (child is INotifyPropertyChanged c)
-          c.PropertyChanged += Child_PropertyChanged;
-      }
-      base.OnDeserialized();
-    }
-
-    #endregion
-
     #region  Data Access
 
     private void DataPortal_Update()
@@ -546,33 +526,12 @@ namespace Csla
     #region IsBusy
 
     /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
+    /// Await this method to ensure business object is not busy.
     /// </summary>
     public async Task WaitForIdle()
     {
       var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
-    {
-      return BusyHelper.WaitForIdle(this, timeout);
-    }
-
-    /// <summary>
-    /// Await this method to ensure the business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="ct">Cancellation token.</param>
-    public Task WaitForIdle(CancellationToken ct)
-    {
-      return BusyHelper.WaitForIdle(this, ct);
     }
 
     /// <summary>

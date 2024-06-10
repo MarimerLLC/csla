@@ -3051,7 +3051,7 @@ namespace Csla.Core
     /// <summary>
     /// Indicates object is busy or not 
     /// </summary>
-    private int _isBusy;
+    private int _isBusyCounter;
 
     /// <summary>
     /// Mark the object as busy (it is
@@ -3060,7 +3060,7 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
-      int updatedValue = Interlocked.Increment(ref _isBusy);
+      int updatedValue = Interlocked.Increment(ref _isBusyCounter);
 
       if (updatedValue == 1)
       {
@@ -3075,11 +3075,10 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkIdle()
     {
-      int updatedValue = Interlocked.Decrement(ref _isBusy);
+      int updatedValue = Interlocked.Decrement(ref _isBusyCounter);
       if (updatedValue < 0)
       {
-        _ = Interlocked.CompareExchange(ref _isBusy, 0, updatedValue);
-         updatedValue = 0;
+        _ = Interlocked.CompareExchange(ref _isBusyCounter, 0, updatedValue);
       }
       if (updatedValue == 0)
       {
@@ -3109,7 +3108,7 @@ namespace Csla.Core
     [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
-      get { return _isBusy > 0 || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
+      get { return _isBusyCounter > 0 || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
     }
 
     [NotUndoable]

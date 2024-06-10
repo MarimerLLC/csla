@@ -301,10 +301,6 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     private async Task MergeGraphAsync(IEditableCollection target, IEditableCollection source)
     {
-      var listType = target.GetType();
-      var childType = Utilities.GetChildItemType(listType);
-      var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
-
       var cacheKey = GetCacheKey(target);
 
       var methodReference = _methodCache.GetOrAdd(cacheKey, ((Type ListType, Type ChildType, bool IsExtendedBindingList) key) =>

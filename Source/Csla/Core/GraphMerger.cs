@@ -305,18 +305,6 @@ namespace Csla.Core
       var childType = Utilities.GetChildItemType(listType);
       var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
 
-      //var cacheKey = (listType, childType, isExtendedBindingList);
-
-      //if (!_methodCache.TryGetValue(cacheKey, out System.Reflection.MethodInfo methodReference))
-      //{
-      //  var methodName = isExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
-      //  methodReference = GetType().GetMethod(methodName).MakeGenericMethod(listType, childType);
-      //  _methodCache.TryAdd(cacheKey, methodReference);
-      //}
-
-      //var task = (Task)methodReference.Invoke(this, new object[] { target, source });
-      //await task;
-
       var cacheKey = GetCacheKey(target);
 
       var methodReference = _methodCache.GetOrAdd(cacheKey, ((Type ListType, Type ChildType, bool IsExtendedBindingList) key) =>

@@ -102,7 +102,7 @@ namespace Csla.Core
     public async Task<T> AddNewAsync()
     {
       var result = await AddNewCoreAsync();
-      await OnAddedNewAsync(result);
+      OnAddedNew(result);
       return result;
     }
 
@@ -502,25 +502,6 @@ namespace Csla.Core
       {
         var args = new AddedNewEventArgs<T>(item);
         _addedNewHandlers(this, args);
-      }
-    }
-
-    /// <summary>
-    /// Raises the AddedNew event.
-    /// </summary>
-    /// <param name="item"></param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public async virtual Task OnAddedNewAsync(T item)
-    {
-      if (_addedNewHandlers != null)
-      {
-        var args = new AddedNewEventArgs<T>(item);
-        var handlerTasks = _addedNewHandlers
-            .GetInvocationList()
-            .Cast<EventHandler<AddedNewEventArgs<T>>>()
-            .Select(handler => Task.Run(() => handler(this, args)));
-
-        await Task.WhenAll(handlerTasks);
       }
     }
 

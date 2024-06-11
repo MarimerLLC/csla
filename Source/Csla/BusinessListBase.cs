@@ -1023,7 +1023,7 @@ namespace Csla
     /// </summary>
     public async Task SaveAndMergeAsync()
     {
-      new GraphMerger(ApplicationContext).MergeBusinessListGraph<T, C>((T)this, await SaveAsync());
+      await new GraphMerger(ApplicationContext).MergeBusinessListGraphAsync<T, C>((T)this, await SaveAsync());
     }
 
     /// <summary>

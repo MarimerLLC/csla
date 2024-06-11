@@ -10,7 +10,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
 using Csla.Properties;
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
@@ -55,7 +55,7 @@ namespace Csla.Reflection
 
     #region Dynamic Method Cache
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache = [];
 #else
     private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = [];
@@ -69,7 +69,7 @@ namespace Csla.Reflection
 
       DynamicMethodHandle mh = null;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var key = new MethodCacheKey(objectType.FullName, info.Name, GetParameterTypes(parameters));
 
       try
@@ -133,7 +133,7 @@ namespace Csla.Reflection
 
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var objectType = obj.GetType();
 
       var key = new MethodCacheKey(objectType.FullName, method, GetParameterTypes(hasParameters, parameters));
@@ -243,7 +243,7 @@ namespace Csla.Reflection
       }
       catch
       {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
         string[] splitName = typeName.Split(',');
 
         if (splitName.Length > 2)
@@ -289,7 +289,7 @@ namespace Csla.Reflection
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache = [];
 #else
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
@@ -299,7 +299,7 @@ namespace Csla.Reflection
     {
       var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
 
       var mh = memberHandleInfo?.Item2;
@@ -354,7 +354,7 @@ namespace Csla.Reflection
     {
       var key = new MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(null));
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
 
       var mh = memberHandleInfo?.Item2;
@@ -1380,7 +1380,7 @@ namespace Csla.Reflection
 
       return info;
     }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
     private static void OnMethodAssemblyLoadContextUnload(AssemblyLoadContext context)
     {

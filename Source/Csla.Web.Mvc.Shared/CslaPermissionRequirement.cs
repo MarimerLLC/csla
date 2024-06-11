@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using Csla.Rules;
 using Microsoft.AspNetCore.Authorization;
 

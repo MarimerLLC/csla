@@ -8,7 +8,7 @@
 
 using System.Collections.Concurrent;
 using System.Reflection;
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -27,7 +27,7 @@ namespace Csla.Reflection
     private static readonly BindingFlags _bindingAttr = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static readonly ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>> _methodCache = [];
 #else
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache = [];
@@ -74,7 +74,7 @@ namespace Csla.Reflection
 
       var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
       {
         var cachedMethod = unloadableCachedMethodInfo?.Item2;
@@ -313,7 +313,7 @@ namespace Csla.Reflection
 
       if (resultingMethod != null)
       {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
         var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(targetType, resultingMethod, OnAssemblyLoadContextUnload);
         _ = _methodCache.TryAdd(cacheKey, cacheInstance);
 #else
@@ -525,7 +525,7 @@ namespace Csla.Reflection
         throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
     }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {

@@ -1,4 +1,4 @@
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="NetDataContractSerializerWrapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

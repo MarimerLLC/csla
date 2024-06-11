@@ -68,7 +68,7 @@ namespace Csla.Channels.RabbitMq
 
     private Uri? DataPortalUri { get; set; }
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(DataPortalUri), nameof(DataPortalQueueName), nameof(Connection), nameof(Channel))]
 #endif
     private void InitializeRabbitMQ()

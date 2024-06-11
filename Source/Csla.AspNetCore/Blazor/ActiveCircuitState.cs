@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Circuit handler indicating if code in server-side Blazor</summary>
 //-----------------------------------------------------------------------
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
 namespace Csla.AspNetCore.Blazor
 {

@@ -73,7 +73,7 @@ namespace Csla.Channels.RabbitMq
     /// Channel, ReplyQueue, and DataPortalQueueName values
     /// used for bi-directional communication.
     /// </summary>
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(Connection), nameof(Channel), nameof(ReplyQueue))]
 #endif
     private void InitializeRabbitMQ()

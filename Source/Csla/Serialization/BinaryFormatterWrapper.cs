@@ -1,4 +1,4 @@
-#if !NET6_0_OR_GREATER
+#if !NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="BinaryFormatterWrapper.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

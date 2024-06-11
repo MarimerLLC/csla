@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
-#if !NETSTANDARD2_0 && !NETCOREAPP3_1 && !NET5_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 using System.Web;
 using System.Web.Mvc;
 using Csla.Rules;

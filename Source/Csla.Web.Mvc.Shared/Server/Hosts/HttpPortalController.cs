@@ -9,7 +9,7 @@
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
 
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using Microsoft.AspNetCore.Mvc;
 #else
 using System.Net.Http;
@@ -22,7 +22,7 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 
   public class HttpPortalController : Controller
   {
@@ -169,7 +169,7 @@ namespace Csla.Server.Hosts
       set { _portal = value; }
     }
 
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 
     /// <summary>
     /// Override to add elements to the HttpReponse

@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Reflection;
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -106,7 +106,7 @@ namespace Csla.Core.FieldManager
 
     #region ConsolidatedPropertyList
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new Dictionary<Type, Tuple<string, List<IPropertyInfo>>>();
 #else
     private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
@@ -120,7 +120,7 @@ namespace Csla.Core.FieldManager
 
       try
       {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
         found = _consolidatedLists.TryGetValue(type, out var consolidatedListsInfo);
 
         result = consolidatedListsInfo?.Item2;
@@ -135,7 +135,7 @@ namespace Csla.Core.FieldManager
       {
         lock (_consolidatedLists)
         {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
           if (_consolidatedLists.TryGetValue(type, out var list))
           {
             result = list.Item2;
@@ -859,7 +859,7 @@ namespace Csla.Core.FieldManager
         }
       }
     }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {

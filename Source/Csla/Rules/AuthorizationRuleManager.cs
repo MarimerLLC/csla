@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Reflection;
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -21,7 +21,7 @@ namespace Csla.Rules
   /// </summary>
   public class AuthorizationRuleManager
   {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>>();
 #else
@@ -36,7 +36,7 @@ namespace Csla.Rules
 
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
@@ -176,7 +176,7 @@ namespace Csla.Rules
     {
       Rules = new List<IAuthorizationRuleBase>();
     }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {

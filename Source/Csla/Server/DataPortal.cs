@@ -77,7 +77,7 @@ namespace Csla.Server
 
     #region Data Access
 
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
       switch (transactionalAttribute.TransactionIsolationLevel)
@@ -141,7 +141,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -243,7 +243,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -337,7 +337,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -470,7 +470,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try
@@ -573,7 +573,7 @@ namespace Csla.Server
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
-#if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
           case TransactionalTypes.EnterpriseServices:
             portal = GetServicedComponentPortal(method.TransactionalAttribute);
             try

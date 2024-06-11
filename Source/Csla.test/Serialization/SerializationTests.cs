@@ -204,54 +204,6 @@ namespace Csla.Test.Serialization
       context.Assert.Success();
     }
 
-    [Ignore]
-    [TestMethod]
-    public void TestSerializableEventsActionFails()
-    {
-      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
-
-      var root = SerializationRoot.NewSerializationRoot(dataPortal);
-      var nonSerClass = new NonSerializedClass();
-      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
-      var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
-      root.PropertyChanged += delgate;
-      var b = new MobileFormatter(_testDIContext.CreateTestApplicationContext());
-      try
-      {
-        b.Serialize(new MemoryStream(), root);
-        Assert.Fail("Serialization should have thrown an exception");
-      }
-      catch (System.Runtime.Serialization.SerializationException)
-      {
-        // serialization failed as expected
-      }
-    }
-
-    [Ignore]
-    [TestMethod]
-    public void TestSerializableEventsActionSucceeds()
-    {
-      IDataPortal<OverrideSerializationRoot> dataPortal = _testDIContext.CreateDataPortal<OverrideSerializationRoot>();
-
-      var root = OverrideSerializationRoot.NewOverrideSerializationRoot(dataPortal);
-      var nonSerClass = new NonSerializedClass();
-
-      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
-      var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
-      root.PropertyChanged += delgate;
-
-      Action<object, PropertyChangingEventArgs> h1 = (_, _) => { nonSerClass.Do(); };
-      var method1 = typeof(Action<object, PropertyChangingEventArgs>).GetMethod("Invoke");
-      var delgate1 = (PropertyChangingEventHandler)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
-      root.PropertyChanging += delgate1;
-
-      // TODO: Would this test make sense if upgraded to MobileFormatter?
-      var b = new MobileFormatter(_testDIContext.CreateTestApplicationContext());
-      b.Serialize(new MemoryStream(), root);
-    }
-
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task TestValidationRulesAfterSerialization()

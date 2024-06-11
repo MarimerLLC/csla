@@ -3048,10 +3048,9 @@ namespace Csla.Core
     #endregion
 
     #region IsBusy / IsIdle
-
     [NonSerialized]
     [NotUndoable]
-    private bool _isBusy;
+    private int _isBusyCounter;
 
     /// <summary>
     /// Mark the object as busy (it is
@@ -3060,11 +3059,12 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
-      if (_isBusy)
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
+      int updatedValue = Interlocked.Increment(ref _isBusyCounter);
 
-      _isBusy = true;
-      OnBusyChanged(new BusyChangedEventArgs("", true));
+      if (updatedValue == 1)
+      {
+        OnBusyChanged(new BusyChangedEventArgs("", true));
+      }
     }
 
     /// <summary>
@@ -3074,8 +3074,15 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkIdle()
     {
-      _isBusy = false;
-      OnBusyChanged(new BusyChangedEventArgs("", false));
+      int updatedValue = Interlocked.Decrement(ref _isBusyCounter);
+      if (updatedValue < 0)
+      {
+        _ = Interlocked.CompareExchange(ref _isBusyCounter, 0, updatedValue);
+      }
+      if (updatedValue == 0)
+      {
+        OnBusyChanged(new BusyChangedEventArgs("", false));
+      }
     }
 
     /// <summary>
@@ -3100,7 +3107,7 @@ namespace Csla.Core
     [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
-      get { return _isBusy || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
+      get { return _isBusyCounter > 0 || BusinessRules.RunningAsyncRules || LoadManager.IsLoading; }
     }
 
     [NotUndoable]

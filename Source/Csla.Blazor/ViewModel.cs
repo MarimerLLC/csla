@@ -325,7 +325,7 @@ namespace Csla.Blazor
       {
         var saved = (T)await cloned.SaveAsync();
         if (Model is Core.IEditableBusinessObject editable)
-          new Core.GraphMerger(ApplicationContext).MergeGraph(editable, (Core.IEditableBusinessObject)saved);
+          await new Core.GraphMerger(ApplicationContext).MergeGraphAsync(editable, (Core.IEditableBusinessObject)saved);
         else
           Model = saved;
       }

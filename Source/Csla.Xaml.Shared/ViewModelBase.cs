@@ -582,7 +582,7 @@ namespace Csla.Xaml
       {
         var saved = (T)await cloned.SaveAsync();
         if (Model is IEditableBusinessObject editable)
-          new GraphMerger(ApplicationContext).MergeGraph(editable, (IEditableBusinessObject)saved);
+          await new GraphMerger(ApplicationContext).MergeGraphAsync(editable, (IEditableBusinessObject)saved);
         else
           Model = saved;
       }

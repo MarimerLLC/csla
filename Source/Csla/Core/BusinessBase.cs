@@ -3048,9 +3048,8 @@ namespace Csla.Core
     #endregion
 
     #region IsBusy / IsIdle
-    /// <summary>
-    /// Indicates object is busy or not 
-    /// </summary>
+    [NonSerialized]
+    [NotUndoable]
     private int _isBusyCounter;
 
     /// <summary>

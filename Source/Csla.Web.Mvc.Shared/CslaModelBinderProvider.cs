@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Model binder provider.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Csla.Web.Mvc

@@ -9,7 +9,7 @@
 using System.Collections.Concurrent;
 using Csla.Core;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -20,7 +20,7 @@ namespace Csla.Server
 {
   internal class DataPortalTarget : LateBoundObject
   {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static readonly ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>> _methodNameList =
       new ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>>();
 #else
@@ -37,7 +37,7 @@ namespace Csla.Server
       _target = obj as IDataPortalTarget;
       _waitForIdleTimeout = TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds);
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var objectType = obj.GetType();
 
       var methodNameListInfo = _methodNameList.GetOrAdd(
@@ -276,7 +276,7 @@ namespace Csla.Server
     {
       return InvokeOperationAsync<DeleteAttribute>(criteria, isSync);
     }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {

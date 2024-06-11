@@ -1,4 +1,4 @@
-﻿#if NET5_0_OR_GREATER
+﻿#if NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

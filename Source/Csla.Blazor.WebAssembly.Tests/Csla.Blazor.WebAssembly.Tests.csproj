@@ -21,10 +21,6 @@
     <PackageReference Include="NSubstitute" Version="5.1.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Csla.AspNetCore\Csla.AspNetCore.csproj" />
     <ProjectReference Include="..\Csla.Blazor.WebAssembly\Csla.Blazor.WebAssembly.csproj" />

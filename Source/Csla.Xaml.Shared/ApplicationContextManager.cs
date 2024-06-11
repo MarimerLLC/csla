@@ -44,7 +44,7 @@ namespace Csla.Xaml
     {
       if (_principal == null)
       {
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
         if (OperatingSystem.IsWindows() && !SecurityOptions.FlowSecurityPrincipalFromClient)
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
         else

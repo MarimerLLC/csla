@@ -23,7 +23,7 @@ namespace Csla.Threading
     private ApplicationContext _applicationContext;
 
     public IPrincipal User { get; }
-    public Core.IClientContext ClientContext { get; }
+    public Core.IContextDictionary ClientContext { get; }
     public CultureInfo UICulture { get; }
     public CultureInfo Culture { get; }
 

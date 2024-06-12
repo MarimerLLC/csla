@@ -46,17 +46,9 @@ namespace Csla.Configuration
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
       RegisterContextManager(services);
-      RegisterLocalContext(services);
-      RegisterClientContext(services);
 
       if (cslaOptions.ContextManagerType != null)
         services.AddScoped(typeof(Core.IContextManager), cslaOptions.ContextManagerType);
-
-      if (cslaOptions.LocalContextType != null)
-        services.AddScoped(typeof(Core.ILocalContext), cslaOptions.LocalContextType);
-
-      if (cslaOptions.ClientContextType != null)
-        services.AddScoped(typeof(Core.IClientContext), cslaOptions.ClientContextType);
 
       // Runtime Info defaults
       services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));
@@ -92,28 +84,6 @@ namespace Csla.Configuration
 
       // default to AsyncLocal context manager
       services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
-    }
-
-    private static void RegisterLocalContext(IServiceCollection services)
-    {
-      var contextManagerType = typeof(Core.ILocalContext);
-
-      var managerInit = services.Any(i => i.ServiceType.Equals(contextManagerType));
-      if (managerInit) return;
-
-      // default to ContextDictionary local context
-      services.AddScoped(contextManagerType, typeof(Core.ContextDictionary));
-    }
-
-    private static void RegisterClientContext(IServiceCollection services)
-    {
-      var contextManagerType = typeof(Core.IClientContext);
-
-      var managerInit = services.Any(i => i.ServiceType.Equals(contextManagerType));
-      if (managerInit) return;
-
-      // default to ContextDictionary client context
-      services.AddScoped(contextManagerType, typeof(Core.ContextDictionary));
     }
 
     private static bool LoadContextManager(IServiceCollection services, string managerTypeName)

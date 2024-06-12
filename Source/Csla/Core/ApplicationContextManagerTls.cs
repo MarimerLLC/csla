@@ -62,17 +62,17 @@ namespace Csla.Core
     /// <summary>
     /// Gets the local context dictionary.
     /// </summary>
-    public ILocalContext GetLocalContext()
+    public IContextDictionary GetLocalContext()
     {
       LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
-      return (ILocalContext)Thread.GetData(slot);
+      return (IContextDictionary)Thread.GetData(slot);
     }
 
     /// <summary>
     /// Sets the local context dictionary.
     /// </summary>
     /// <param name="localContext">Context dictionary</param>
-    public void SetLocalContext(ILocalContext localContext)
+    public void SetLocalContext(IContextDictionary localContext)
     {
       LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_localContextName);
       Thread.SetData(slot, localContext);
@@ -82,16 +82,16 @@ namespace Csla.Core
     /// Gets the client context dictionary.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public IClientContext GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       if (executionLocation == ApplicationContext.ExecutionLocations.Client)
       {
-        return (IClientContext)AppDomain.CurrentDomain.GetData(_clientContextName);
+        return (IContextDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);
       }
       else
       {
         LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);
-        return (IClientContext)Thread.GetData(slot);
+        return (IContextDictionary)Thread.GetData(slot);
       }
     }
 
@@ -100,7 +100,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="clientContext">Context dictionary</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(IClientContext clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       if (executionLocation == ApplicationContext.ExecutionLocations.Client)
       {

@@ -10,7 +10,7 @@ namespace Csla.Core
   /// <remarks>
   /// The local context is serializable and implements the IDictionary, ICollection, and IEnumerable interfaces.
   /// </remarks>
-  public interface ILocalContext : IMobileObject, IDictionary, ICollection, IEnumerable
+  public interface IContextDictionary : IMobileObject, IDictionary, ICollection, IEnumerable
   {
     /// <summary>
     /// Retrieves the value associated with the specified key from the local context.

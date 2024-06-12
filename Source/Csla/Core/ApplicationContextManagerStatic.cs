@@ -31,8 +31,8 @@ namespace Csla.Core
     /// </summary>
     public bool IsValid => true;
 
-    private static ILocalContext currentLocalContext;
-    private static IClientContext currentClientContext;
+    private static IContextDictionary currentLocalContext;
+    private static IContextDictionary currentClientContext;
     private static IPrincipal currentPrincipal = new ClaimsPrincipal();
     private static IServiceProvider currentDefaultServiceProvider;
     private static IServiceProvider currentServiceProvider;
@@ -41,10 +41,10 @@ namespace Csla.Core
     /// Gets the client context dictionary.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public IClientContext GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       if (currentClientContext == null)
-        currentClientContext = GetServiceProvider().GetService<IClientContext>();
+        currentClientContext = new ContextDictionary();
       return currentClientContext;
     }
 
@@ -59,10 +59,10 @@ namespace Csla.Core
     /// <summary>
     /// Gets the local context dictionary.
     /// </summary>
-    public ILocalContext GetLocalContext()
+    public IContextDictionary GetLocalContext()
     {
       if (currentLocalContext == null)
-        currentLocalContext = GetServiceProvider().GetService<ILocalContext>();
+        currentLocalContext = new ContextDictionary();
       return currentLocalContext;
     }
 
@@ -80,7 +80,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="clientContext">Context dictionary</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(IClientContext clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       currentClientContext = clientContext;
     }
@@ -98,7 +98,7 @@ namespace Csla.Core
     /// Sets the local context dictionary.
     /// </summary>
     /// <param name="localContext">Context dictionary</param>
-    public void SetLocalContext(ILocalContext localContext)
+    public void SetLocalContext(IContextDictionary localContext)
     {
       currentLocalContext = localContext;
     }

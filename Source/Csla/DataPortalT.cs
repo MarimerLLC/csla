@@ -52,7 +52,7 @@ namespace Csla
 
       public object Argument { get; set; }
       public System.Security.Principal.IPrincipal Principal { get; set; }
-      public Core.IClientContext ClientContext { get; set; }
+      public Core.IContextDictionary ClientContext { get; set; }
       public object UserState { get; set; }
       // passes CurrentCulture and CurrentUICulture to the async thread
       public CultureInfo CurrentCulture;

@@ -16,7 +16,7 @@ namespace Csla.Core
   /// with the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
-  public class ContextDictionary : HybridDictionary, ILocalContext, IClientContext
+  public class ContextDictionary : HybridDictionary, IContextDictionary
   {
     /// <summary>
     /// Get a value from the dictionary, or return null

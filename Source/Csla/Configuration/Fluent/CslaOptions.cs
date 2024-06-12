@@ -37,18 +37,6 @@ namespace Csla.Configuration
     public Type ContextManagerType { get; set; }
 
     /// <summary>
-    /// Gets or sets the type for the ILocalContext to
-    /// be used by LocalContext.
-    /// </summary>
-    public Type LocalContextType { get; set; }
-
-    /// <summary>
-    /// Gets or sets the type for the IClientContext to
-    /// be used by ClientContext.
-    /// </summary>
-    public Type ClientContextType { get; set; }
-
-    /// <summary>
     /// Sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
     /// System.Linq.Expressions (true, default).

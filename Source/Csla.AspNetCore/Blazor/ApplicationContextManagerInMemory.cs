@@ -20,8 +20,8 @@ namespace Csla.AspNetCore.Blazor
   /// </summary>
   public class ApplicationContextManagerInMemory : IContextManager, IDisposable
   {
-    private ILocalContext LocalContext { get; set; }
-    private IClientContext ClientContext { get; set; }
+    private IContextDictionary LocalContext { get; set; }
+    private IContextDictionary ClientContext { get; set; }
     private IPrincipal CurrentPrincipal { get; set; }
     private IServiceProvider ServiceProvider { get; set; }
     private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
@@ -171,10 +171,10 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    public ILocalContext GetLocalContext()
+    public IContextDictionary GetLocalContext()
     {
       if (LocalContext == null)
-        LocalContext = ApplicationContext.GetRequiredService<ILocalContext>();
+        LocalContext = new ContextDictionary();
       return LocalContext;
     }
 
@@ -182,7 +182,7 @@ namespace Csla.AspNetCore.Blazor
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    public void SetLocalContext(ILocalContext localContext)
+    public void SetLocalContext(IContextDictionary localContext)
     {
       LocalContext = localContext;
     }
@@ -191,10 +191,10 @@ namespace Csla.AspNetCore.Blazor
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public IClientContext GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       if (ClientContext == null)
-        ClientContext = ApplicationContext.GetRequiredService<IClientContext>();
+        ClientContext = new ContextDictionary();
       return ClientContext;
     }
 
@@ -203,7 +203,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(IClientContext clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ClientContext = clientContext;
     }

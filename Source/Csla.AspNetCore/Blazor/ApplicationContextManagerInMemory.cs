@@ -23,7 +23,6 @@ namespace Csla.AspNetCore.Blazor
     private IContextDictionary LocalContext { get; set; }
     private IContextDictionary ClientContext { get; set; }
     private IPrincipal CurrentPrincipal { get; set; }
-    private IServiceProvider ServiceProvider { get; set; }
     private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
     private bool disposedValue;
 
@@ -52,7 +51,7 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
     /// <param name="activeCircuitState"></param>
     /// <param name="serviceProvider"></param>
-    public ApplicationContextManagerInMemory(IHttpContextAccessor httpContextAccessor, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState, IServiceProvider serviceProvider)
+    public ApplicationContextManagerInMemory(IHttpContextAccessor httpContextAccessor, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
       HttpContext = httpContextAccessor.HttpContext;
       AuthenticationStateProvider = authenticationStateProvider;
@@ -60,7 +59,6 @@ namespace Csla.AspNetCore.Blazor
       CurrentPrincipal = UnauthenticatedPrincipal;
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
       _ = InitializeUser();
-      ServiceProvider = serviceProvider;
     }
 
     private async Task InitializeUser()

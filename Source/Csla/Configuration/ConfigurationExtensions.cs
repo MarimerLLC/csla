@@ -46,7 +46,6 @@ namespace Csla.Configuration
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
       RegisterContextManager(services);
-
       if (cslaOptions.ContextManagerType != null)
         services.AddScoped(typeof(Core.IContextManager), cslaOptions.ContextManagerType);
 

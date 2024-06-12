@@ -9,7 +9,6 @@
 using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
-using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

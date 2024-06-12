@@ -8,7 +8,6 @@
 
 using System.Security.Principal;
 using System.Security.Claims;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Core
 {
@@ -31,8 +30,8 @@ namespace Csla.Core
     /// </summary>
     public bool IsValid => true;
 
-    private static IContextDictionary currentLocalContext;
-    private static IContextDictionary currentClientContext;
+    private static IContextDictionary currentLocalContext = new ContextDictionary();
+    private static IContextDictionary currentClientContext = new ContextDictionary();
     private static IPrincipal currentPrincipal = new ClaimsPrincipal();
     private static IServiceProvider currentDefaultServiceProvider;
     private static IServiceProvider currentServiceProvider;
@@ -43,8 +42,6 @@ namespace Csla.Core
     /// <param name="executionLocation"></param>
     public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      if (currentClientContext == null)
-        currentClientContext = new ContextDictionary();
       return currentClientContext;
     }
 
@@ -61,8 +58,6 @@ namespace Csla.Core
     /// </summary>
     public IContextDictionary GetLocalContext()
     {
-      if (currentLocalContext == null)
-        currentLocalContext = new ContextDictionary();
       return currentLocalContext;
     }
 

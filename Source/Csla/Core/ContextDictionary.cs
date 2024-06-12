@@ -130,7 +130,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets an object that can be used to synchronize access to the System.Collections.ICollection.
     /// </summary>
-    ///<returns>An object that can be used to synchronize access to the System.Collections.ICollection.</returns>
+    /// <returns>An object that can be used to synchronize access to the System.Collections.ICollection.</returns>
     public object SyncRoot
     {
       get => ((IDictionary)this).SyncRoot;

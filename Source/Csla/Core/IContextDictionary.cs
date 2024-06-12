@@ -119,8 +119,8 @@ namespace Csla.Core
     public object GetOrAdd(object key, object value);
 
     /// <summary>
-    /// Uses the specified functions to add a key/value pair to the System.Collections.Concurrent.ConcurrentDictionary`2
-    /// if the key does not already exist, or to update a key/value pair in the System.Collections.Concurrent.ConcurrentDictionary`2
+    /// Uses the specified functions to add a key/value pair to the ContextDictionary
+    /// if the key does not already exist, or to update a key/value pair in the ContextDictionary
     /// if the key already exists.
     /// </summary>
     /// <param name="key">The key to be added or whose value should be updated.</param>
@@ -135,8 +135,8 @@ namespace Csla.Core
     public object AddOrUpdate(object key, Func<object, object> addValueFactory, Func<object, object, object> updateValueFactory);
 
     /// <summary>
-    /// Adds a key/value pair to the System.Collections.Concurrent.ConcurrentDictionary`2
-    /// if the key does not already exist, or updates a key/value pair in the System.Collections.Concurrent.ConcurrentDictionary`2
+    /// Adds a key/value pair to the ContextDictionary
+    /// if the key does not already exist, or updates a key/value pair in the ContextDictionary
     /// by using the specified function if the key already exists.
     /// </summary>
     /// <param name="key">The key to be added or whose value should be updated.</param>

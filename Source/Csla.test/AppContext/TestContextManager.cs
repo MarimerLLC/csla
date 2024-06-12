@@ -39,26 +39,26 @@ namespace Csla.Test.AppContext
       _principal.Value = principal;
     }
 
-    public ContextDictionary GetLocalContext()
+    public ILocalContext GetLocalContext()
     {
       if (_myContext[_localContextName] == null)
         SetLocalContext(new ContextDictionary());
       return (ContextDictionary)_myContext[_localContextName];
     }
 
-    public void SetLocalContext(ContextDictionary localContext)
+    public void SetLocalContext(ILocalContext localContext)
     {
       _myContext[_localContextName] = localContext;
     }
 
-    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IClientContext GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       if (_myContext[_clientContextName] == null)
         SetClientContext(new ContextDictionary(), executionLocation);
       return (ContextDictionary) _myContext[_clientContextName];
     }
 
-    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IClientContext clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       _myContext[_clientContextName] = clientContext;
     }

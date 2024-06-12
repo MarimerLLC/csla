@@ -9,6 +9,7 @@
 using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
+using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -75,6 +76,8 @@ namespace Csla.TestHelpers
 
       // Add Csla
       services.TryAddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
+      services.TryAddSingleton<Core.ILocalContext, ContextDictionary>();
+      services.TryAddSingleton<Core.IClientContext, ContextDictionary>();
       services.TryAddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
       services.AddCsla(customCslaOptions);
 

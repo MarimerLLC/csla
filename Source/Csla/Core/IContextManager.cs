@@ -41,23 +41,23 @@ namespace Csla.Core
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    ContextDictionary GetLocalContext();
+    ILocalContext GetLocalContext();
     /// <summary>
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    void SetLocalContext(ContextDictionary localContext);
+    void SetLocalContext(ILocalContext localContext);
     /// <summary>
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation);
+    IClientContext GetClientContext(ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
     /// Sets the client context.
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation);
+    void SetClientContext(IClientContext clientContext, ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>

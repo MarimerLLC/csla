@@ -59,7 +59,7 @@ namespace Csla.Server.Hosts
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
+          (IClientContext)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -105,7 +105,7 @@ namespace Csla.Server.Hosts
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
+          (IClientContext)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -145,7 +145,7 @@ namespace Csla.Server.Hosts
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
+          (IClientContext)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Update(obj, context, true);
 
@@ -192,7 +192,7 @@ namespace Csla.Server.Hosts
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (ContextDictionary)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
+          (IClientContext)SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(request.ClientContext));
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 

@@ -79,14 +79,14 @@ namespace Csla
     /// the client and server.
     /// </para>
     /// </remarks>
-    public ContextDictionary LocalContext
+    public ILocalContext LocalContext
     {
       get
       {
-        ContextDictionary ctx = ContextManager.GetLocalContext();
+        ILocalContext ctx = ContextManager.GetLocalContext();
         if (ctx == null)
         {
-          ctx = [];
+          ctx = CurrentServiceProvider.GetRequiredService<ILocalContext>();
           ContextManager.SetLocalContext(ctx);
         }
         return ctx;
@@ -114,16 +114,16 @@ namespace Csla
     /// client setting (i.e. in your ASP.NET UI).
     /// </para>
     /// </remarks>
-    public ContextDictionary ClientContext
+    public IClientContext ClientContext
     {
       get
       {
         lock (_syncContext)
         {
-          ContextDictionary ctx = ContextManager.GetClientContext(ExecutionLocation);
+          IClientContext ctx = ContextManager.GetClientContext(ExecutionLocation);
           if (ctx == null)
           {
-            ctx = [];
+            ctx = CurrentServiceProvider.GetRequiredService<IClientContext>();
             ContextManager.SetClientContext(ctx, ExecutionLocation);
           }
           return ctx;
@@ -131,7 +131,7 @@ namespace Csla
       }
     }
 
-    internal void SetContext(ContextDictionary clientContext)
+    internal void SetContext(IClientContext clientContext)
     {
       lock (_syncContext)
         ContextManager.SetClientContext(clientContext, ExecutionLocation);

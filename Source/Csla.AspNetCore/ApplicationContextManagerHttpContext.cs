@@ -121,16 +121,16 @@ namespace Csla.AspNetCore
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    public ContextDictionary GetLocalContext()
+    public ILocalContext GetLocalContext()
     {
-      return (ContextDictionary)HttpContext?.Items[_localContextName];
+      return (ILocalContext)HttpContext?.Items[_localContextName];
     }
 
     /// <summary>
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    public void SetLocalContext(ContextDictionary localContext)
+    public void SetLocalContext(ILocalContext localContext)
     {
       HttpContext.Items[_localContextName] = localContext;
     }
@@ -139,9 +139,9 @@ namespace Csla.AspNetCore
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IClientContext GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      return (ContextDictionary)HttpContext?.Items[_clientContextName];
+      return (IClientContext)HttpContext?.Items[_clientContextName];
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ namespace Csla.AspNetCore
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IClientContext clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       HttpContext.Items[_clientContextName] = clientContext;
     }

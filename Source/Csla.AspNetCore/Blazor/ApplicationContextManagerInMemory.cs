@@ -20,9 +20,10 @@ namespace Csla.AspNetCore.Blazor
   /// </summary>
   public class ApplicationContextManagerInMemory : IContextManager, IDisposable
   {
-    private ContextDictionary LocalContext { get; set; }
-    private ContextDictionary ClientContext { get; set; }
+    private ILocalContext LocalContext { get; set; }
+    private IClientContext ClientContext { get; set; }
     private IPrincipal CurrentPrincipal { get; set; }
+    private IServiceProvider ServiceProvider { get; set; }
     private readonly ClaimsPrincipal UnauthenticatedPrincipal = new();
     private bool disposedValue;
 
@@ -50,7 +51,8 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="httpContextAccessor"></param>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
     /// <param name="activeCircuitState"></param>
-    public ApplicationContextManagerInMemory(IHttpContextAccessor httpContextAccessor, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
+    /// <param name="serviceProvider"></param>
+    public ApplicationContextManagerInMemory(IHttpContextAccessor httpContextAccessor, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState, IServiceProvider serviceProvider)
     {
       HttpContext = httpContextAccessor.HttpContext;
       AuthenticationStateProvider = authenticationStateProvider;
@@ -58,6 +60,7 @@ namespace Csla.AspNetCore.Blazor
       CurrentPrincipal = UnauthenticatedPrincipal;
       AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
       _ = InitializeUser();
+      ServiceProvider = serviceProvider;
     }
 
     private async Task InitializeUser()
@@ -168,10 +171,10 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    public ContextDictionary GetLocalContext()
+    public ILocalContext GetLocalContext()
     {
       if (LocalContext == null)
-        LocalContext = new ContextDictionary();
+        LocalContext = ApplicationContext.GetRequiredService<ILocalContext>();
       return LocalContext;
     }
 
@@ -179,7 +182,7 @@ namespace Csla.AspNetCore.Blazor
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    public void SetLocalContext(ContextDictionary localContext)
+    public void SetLocalContext(ILocalContext localContext)
     {
       LocalContext = localContext;
     }
@@ -188,10 +191,10 @@ namespace Csla.AspNetCore.Blazor
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IClientContext GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       if (ClientContext == null)
-        ClientContext = new ContextDictionary();
+        ClientContext = ApplicationContext.GetRequiredService<IClientContext>();
       return ClientContext;
     }
 
@@ -200,7 +203,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IClientContext clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ClientContext = clientContext;
     }

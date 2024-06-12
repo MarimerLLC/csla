@@ -49,7 +49,7 @@ namespace Csla.Server
     /// </summary>
     public string ClientUICulture { get; private set; }
 
-    internal ContextDictionary ClientContext { get; private set; }
+    internal IClientContext ClientContext { get; private set; }
 
     /// <summary>
     /// Gets the current transactional type. Only valid
@@ -101,7 +101,7 @@ namespace Csla.Server
     /// <param name="clientContext">Client context.</param>
     /// <param name="clientCulture">Client culture.</param>
     /// <param name="clientUICulture">Client UI culture.</param>
-    public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, ContextDictionary clientContext)
+    public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, IClientContext clientContext)
     {
       _applicationContext = applicationContext;
       Principal = principal;
@@ -148,7 +148,7 @@ namespace Csla.Server
     void Serialization.Mobile.IMobileObject.SetState(Serialization.Mobile.SerializationInfo info)
     {
       Principal = (IPrincipal)Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(info.GetValue<byte[]>("principal"));
-      ClientContext = (ContextDictionary)Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(info.GetValue<byte[]>("clientContext"));
+      ClientContext = (IClientContext)Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(info.GetValue<byte[]>("clientContext"));
       ClientCulture = info.GetValue<string>("clientCulture");
       ClientUICulture = info.GetValue<string>("clientUICulture");
       IsRemotePortal = info.GetValue<bool>("isRemotePortal");

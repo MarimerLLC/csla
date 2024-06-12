@@ -16,11 +16,6 @@
     <description>UI helpers for using CSLA .NET business types with AspNetCore.</description>
     <language>en-US</language>
     <dependencies>
-      <group targetFramework="net6.0">
-        <dependency id="Csla" version="[4.6.3-Beta10]" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
-        <dependency id="Microsoft.AspNetCore.Components.Authorization" version="6.0.25" />
-      </group>
       <group targetFramework="net8.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="8.0.0" />
@@ -29,8 +24,6 @@
     </dependencies>
   </metadata>
   <files>
-    <!-- Net6.0 Assembly -->
-    <file src="..\..\bin\Release\net6.0\**\Csla.AspNetCore.*" target="lib\net6.0" />
     <!-- Net8.0 Assembly -->
     <file src="..\..\bin\Release\net8.0\**\Csla.AspNetCore.*" target="lib\net8.0" />
     <!-- resources -->

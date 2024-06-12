@@ -64,7 +64,7 @@ namespace Csla.Channels.Grpc
     /// </summary>
     /// <param name="channel">GrpcChannel instance</param>
     /// <exception cref="ArgumentNullException"><paramref name="channel"/> is <see langword="null"/>.</exception>
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_defaultChannel))]
 #endif
     protected static void SetChannel(GrpcChannel channel)

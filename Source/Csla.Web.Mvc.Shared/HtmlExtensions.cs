@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Html extension methods providing support for HTML rendering based on security permissions in an application.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Rendering;
 

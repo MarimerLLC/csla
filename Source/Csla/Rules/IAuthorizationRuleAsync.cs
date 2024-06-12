@@ -12,12 +12,13 @@ namespace Csla.Rules
   /// Interface defining an authorization
   /// rule implementation.
   /// </summary>
-  public interface IAuthorizationRule : IAuthorizationRuleBase
+  public interface IAuthorizationRuleAsync : IAuthorizationRuleBase
   {
     /// <summary>
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
-    void Execute(IAuthorizationContext context);
+    /// <param name="ct">Cancellation token.</param>
+    Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct);
   }
 }

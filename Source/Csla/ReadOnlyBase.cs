@@ -1485,7 +1485,7 @@ namespace Csla
 
     [NonSerialized]
     [NotUndoable]
-    private bool _isBusy;
+    private int _isBusyCounter;
 
     /// <summary>
     /// Marks the object as being busy (it is
@@ -1494,11 +1494,12 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkBusy()
     {
-      if (_isBusy)
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeMarkedBusy);
+      int updatedValue = Interlocked.Increment(ref _isBusyCounter);
 
-      _isBusy = true;
-      OnBusyChanged(new BusyChangedEventArgs("", true));
+      if (updatedValue == 1)
+      {
+        OnBusyChanged(new BusyChangedEventArgs("", true));
+      }
     }
 
     /// <summary>
@@ -1508,8 +1509,15 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void MarkIdle()
     {
-      _isBusy = false;
-      OnBusyChanged(new BusyChangedEventArgs("", false));
+      int updatedValue = Interlocked.Decrement(ref _isBusyCounter);
+      if (updatedValue < 0)
+      {
+        _ = Interlocked.CompareExchange(ref _isBusyCounter, 0, updatedValue);
+      }
+      if (updatedValue == 0)
+      {
+        OnBusyChanged(new BusyChangedEventArgs("", false));
+      }
     }
 
     /// <summary>
@@ -1535,7 +1543,7 @@ namespace Csla
     [ScaffoldColumn(false)]
     public virtual bool IsSelfBusy
     {
-      get { return _isBusy || LoadManager.IsLoading; }
+      get { return _isBusyCounter > 0 || LoadManager.IsLoading; }
     }
 
     void Child_PropertyBusy(object sender, BusyChangedEventArgs e)

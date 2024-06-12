@@ -187,7 +187,7 @@ namespace Csla.Rules
     /// Associates an authorization rule with the business object.
     /// </summary>
     /// <param name="rule">Rule object.</param>
-    public void AddRule(IAuthorizationRule rule)
+    public void AddRule(IAuthorizationRuleBase rule)
     {
       EnsureUniqueRule(TypeAuthRules, rule);
       TypeAuthRules.Rules.Add(rule);
@@ -199,7 +199,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="objectType">Type of business object.</param>
     /// <param name="rule">Rule object.</param>
-    public static void AddRule(Type objectType, IAuthorizationRule rule)
+    public static void AddRule(Type objectType, IAuthorizationRuleBase rule)
     {
       AddRule(objectType, rule, ApplicationContext.DefaultRuleSet);
     }
@@ -211,7 +211,7 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     /// <param name="rule">Rule object.</param>
     /// <param name="ruleSet">Rule set name.</param>
-    public static void AddRule(Type objectType, IAuthorizationRule rule, string ruleSet)
+    public static void AddRule(Type objectType, IAuthorizationRuleBase rule, string ruleSet)
     {
       AddRule(null, objectType, rule, ruleSet);
     }
@@ -224,16 +224,16 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     /// <param name="rule">Rule object.</param>
     /// <param name="ruleSet">Rule set name.</param>
-    public static void AddRule(ApplicationContext applicationContext, Type objectType, IAuthorizationRule rule, string ruleSet)
+    public static void AddRule(ApplicationContext applicationContext, Type objectType, IAuthorizationRuleBase rule, string ruleSet)
     {
       var typeRules = AuthorizationRuleManager.GetRulesForType(applicationContext, objectType, ruleSet);
       EnsureUniqueRule(typeRules, rule);
       typeRules.Rules.Add(rule);
     }
 
-    private static void EnsureUniqueRule(AuthorizationRuleManager mgr, IAuthorizationRule rule)
+    private static void EnsureUniqueRule(AuthorizationRuleManager mgr, IAuthorizationRuleBase rule)
     {
-      IAuthorizationRule oldRule = null;
+      IAuthorizationRuleBase oldRule = null;
       if (rule.Element != null)
         oldRule = mgr.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == rule.Element.Name && c.Action == rule.Action);
       else
@@ -392,9 +392,14 @@ namespace Csla.Rules
         AuthorizationRuleManager.GetRulesForType(applicationContext, objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
-        rule.Execute(context);
-        result = context.HasPermission;
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
       }
       return result;
     }
@@ -421,9 +426,162 @@ namespace Csla.Rules
         TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
-        rule.Execute(context);
-        result = context.HasPermission;
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="objectType">The type of the business object.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation that returns a boolean indicating whether the permission is granted.</returns>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
+
+      // no object specified so must use RuleSet from ApplicationContext
+      return HasPermissionAsync(action, null, applicationContext, realType, null, applicationContext.RuleSet, ct);
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="objectType">The type of the business object.</param>
+    /// <param name="criteria">The criteria object provided.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the permission is granted.</returns>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object[] criteria, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
+
+      // no object specified so must use RuleSet from ApplicationContext
+      return HasPermissionAsync(action, null, applicationContext, realType, criteria, applicationContext.RuleSet, ct);
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="ruleSet">The rule set.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>
+    /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
+    /// </returns>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string ruleSet, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
+      return HasPermissionAsync(action, null, applicationContext, realType, null, ruleSet, ct);
+    }
+
+    /// <summary>
+    /// Checks per-instance authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="obj">The business object instance.</param>
+    /// <param name="ct">The cancellation token.</param>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, object obj, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+      return HasPermissionAsync(action, obj, applicationContext, obj.GetType(), null, applicationContext.RuleSet, ct);
+    }
+
+    private static async Task<bool> HasPermissionAsync(AuthorizationActions action, object obj, ApplicationContext applicationContext, Type objType, object[] criteria, string ruleSet, CancellationToken ct)
+    {
+
+      if (action == AuthorizationActions.ReadProperty ||
+          action == AuthorizationActions.WriteProperty ||
+          action == AuthorizationActions.ExecuteMethod)
+        throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
+
+      bool result = true;
+      var rule =
+        AuthorizationRuleManager.GetRulesForType(applicationContext, objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
+      if (rule != null)
+      {
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else if (rule is IAuthorizationRuleAsync nsync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
+          await nsync.ExecuteAsync(context, ct);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Checks per-property authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="element">The property or method to check.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the permission is granted.</returns>
+    public async Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Csla.Core.IMemberInfo element, CancellationToken ct)
+    {
+      if (_suppressRuleChecking)
+        return true;
+
+      if (action == AuthorizationActions.CreateObject ||
+          action == AuthorizationActions.DeleteObject ||
+          action == AuthorizationActions.GetObject ||
+          action == AuthorizationActions.EditObject)
+        throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
+
+      bool result = true;
+      var rule =
+          TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
+      if (rule != null)
+      {
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else if (rule is IAuthorizationRuleAsync nsync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          await nsync.ExecuteAsync(context, ct);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
       }
       return result;
     }
@@ -973,7 +1131,7 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !NETSTANDARD2_0 || NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 || NET8_0_OR_GREATER
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
       if (classAttList.Length > 0)

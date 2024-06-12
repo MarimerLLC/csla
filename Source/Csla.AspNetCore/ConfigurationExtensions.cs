@@ -6,7 +6,7 @@
 // <summary>Implement extension methods for AspNet configuration</summary>
 //-----------------------------------------------------------------------
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using Csla.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 #endif
@@ -39,7 +39,7 @@ namespace Csla.Configuration
     {
       var localOptions = new AspNetCoreConfigurationOptions();
       options?.Invoke(localOptions);
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       config.Services.AddScoped<ActiveCircuitState>();
       config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
 #endif

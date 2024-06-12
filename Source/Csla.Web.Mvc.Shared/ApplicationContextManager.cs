@@ -62,16 +62,16 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    public ContextDictionary GetLocalContext()
+    public IContextDictionary GetLocalContext()
     {
-      return (ContextDictionary)HttpContext.Current.Items[_localContextName];
+      return (IContextDictionary)HttpContext.Current.Items[_localContextName];
     }
 
     /// <summary>
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    public void SetLocalContext(ContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary localContext)
     {
       HttpContext.Current.Items[_localContextName] = localContext;
     }
@@ -80,9 +80,9 @@ namespace Csla.Web.Mvc
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      return (ContextDictionary)HttpContext.Current.Items[_clientContextName];
+      return (IContextDictionary)HttpContext.Current.Items[_clientContextName];
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace Csla.Web.Mvc
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       HttpContext.Current.Items[_clientContextName] = clientContext;
     }

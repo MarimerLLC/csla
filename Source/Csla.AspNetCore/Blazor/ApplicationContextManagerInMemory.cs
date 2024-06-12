@@ -50,7 +50,6 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="httpContextAccessor"></param>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
     /// <param name="activeCircuitState"></param>
-    /// <param name="serviceProvider"></param>
     public ApplicationContextManagerInMemory(IHttpContextAccessor httpContextAccessor, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
       HttpContext = httpContextAccessor.HttpContext;

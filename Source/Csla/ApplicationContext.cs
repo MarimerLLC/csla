@@ -187,7 +187,7 @@ namespace Csla
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc).
     /// </summary>
-    public static Type SerializationFormatter { get; internal set; } = typeof(Serialization.Mobile.MobileFormatter);
+    public static Type SerializationFormatter { get; internal set; } = null;
 
     private PropertyChangedModes _propertyChangedMode;
     private bool _propertyChangedModeSet;

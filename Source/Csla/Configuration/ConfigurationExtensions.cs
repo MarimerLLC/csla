@@ -10,6 +10,7 @@ using Csla.DataPortalClient;
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Csla.Configuration;
 
 namespace Csla.Configuration
 {
@@ -62,6 +63,8 @@ namespace Csla.Configuration
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
       }
 
+      if (ApplicationContext.SerializationFormatter == null)
+        cslaOptions.Serialization(o => o.AddMobileFormatter());
       return services;
     }
 

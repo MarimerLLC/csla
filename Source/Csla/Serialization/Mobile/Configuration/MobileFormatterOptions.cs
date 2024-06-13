@@ -52,5 +52,5 @@ public class TypeMap
   /// <summary>
   /// Gets or sets the serializer type.
   /// </summary>
-  public IMobileSerializer Serializer { get; set; }
+  public Type SerializerType { get; set; }
 }

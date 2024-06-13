@@ -25,5 +25,10 @@ namespace Csla.Configuration
       ApplicationContext.SerializationFormatter = typeof(T);
       return this;
     }
+
+    /// <summary>
+    /// Options for the serialization formatter.
+    /// </summary>
+    public object FormatterOptions { get; set; }
   }
 }

@@ -20,7 +20,7 @@ public static class MobileFormatterConfigurationExtensions
   /// </summary>
   /// <param name="config"></param>
   /// <returns></returns>
-  public static CslaOptions AddMobileFormatter(this CslaOptions config)
+  public static SerializationOptions AddMobileFormatter(this SerializationOptions config)
   {
     return AddMobileFormatter(config, null);
   }
@@ -31,12 +31,12 @@ public static class MobileFormatterConfigurationExtensions
   /// <param name="config"></param>
   /// <param name="options"></param>
   /// <returns></returns>
-  public static CslaOptions AddMobileFormatter(this CslaOptions config, Action<MobileFormatterOptions> options)
+  public static SerializationOptions AddMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions> options)
   {
     ApplicationContext.SerializationFormatter = typeof(MobileFormatter);
     var mobileFormatterOptions = new MobileFormatterOptions();
     options?.Invoke(mobileFormatterOptions);
-    config.Services.AddScoped(_ => mobileFormatterOptions);
+    config.FormatterOptions = mobileFormatterOptions;
     return config;
   }
 }

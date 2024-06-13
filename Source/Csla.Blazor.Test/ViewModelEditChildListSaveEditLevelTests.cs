@@ -69,11 +69,14 @@ namespace Csla.Blazor.Test
       var appCntxt = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
       var vm = new MyViewModel<FakePerson>(appCntxt);
       await vm.RefreshAsync(FetchFakePerson);
+      var id = vm.Model.Id;
 
       // Act
       await vm.SaveAsync();
-   
+
       // Assert
+      var save1_Id = vm.Model.Id;
+      Assert.AreEqual(save1_Id, id);
       Assert.IsFalse(vm.Model.IsSavable);
       Assert.IsFalse(vm.Model.IsDirty);
       Assert.IsFalse(vm.Model.IsNew);
@@ -84,6 +87,8 @@ namespace Csla.Blazor.Test
       await vm.SaveAsync();
 
       // Assert
+      save1_Id = vm.Model.Id;
+      Assert.AreEqual(save1_Id, id);
       Assert.IsFalse(vm.Model.IsSavable);
       Assert.IsFalse(vm.Model.IsDirty);
       Assert.IsFalse(vm.Model.IsNew);
@@ -95,6 +100,8 @@ namespace Csla.Blazor.Test
       vm.Cancel();
 
       // Assert
+      save1_Id = vm.Model.Id;
+      Assert.AreEqual(save1_Id, id);
       Assert.IsFalse(vm.Model.IsSavable);
       Assert.IsFalse(vm.Model.IsDirty);
       Assert.IsFalse(vm.Model.IsNew);
@@ -111,7 +118,16 @@ namespace Csla.Blazor.Test
       return await Task.FromResult(person);
     }
 
-    FakePerson GetValidFakePerson()
+    private async Task<FakePerson> NewFakePerson()
+    {
+      IDataPortal<FakePerson> dataPortal;
+
+      // Create an instance of a DataPortal that can be used for instantiating objects
+      dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
+      return await dataPortal.CreateAsync();
+    }
+
+    private FakePerson GetValidFakePerson()
     {
       IDataPortal<FakePerson> dataPortal;
       FakePerson person;

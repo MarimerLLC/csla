@@ -9,6 +9,7 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Microsoft.AspNetCore.Components.Authorization;
 using NSubstitute;
+using System.Security.Claims;
 
 namespace Csla.Test.State
 {
@@ -33,7 +34,7 @@ namespace Csla.Test.State
       {
         // Set properties here
         // For example:
-        Principal = new Security.CslaClaimsPrincipal() { },
+        Principal = new ClaimsPrincipal() { },
         Session = []
       };
 

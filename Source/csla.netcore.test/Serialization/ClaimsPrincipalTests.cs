@@ -63,7 +63,7 @@ namespace Csla.Test.Serialization
       var state = info.GetValue<byte[]>("s");
       using var buffer = new MemoryStream(state);
       using var reader = new BinaryReader(buffer);
-      var mobile = new Security.CslaClaimsPrincipal(reader);
+      var mobile = new ClaimsPrincipal(reader);
       return mobile;
     }
 

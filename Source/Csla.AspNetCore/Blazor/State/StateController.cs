@@ -48,8 +48,7 @@ namespace Csla.AspNetCore.Blazor.State
         message.Session = session;
         if (FlowUserIdentityToWebAssembly)
         {
-          var principal = new CslaClaimsPrincipal(applicationContext.Principal);
-          message.Principal = principal;
+          message.Principal = applicationContext.Principal;
         }
         var formatter = Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
         var buffer = new MemoryStream();

@@ -725,7 +725,7 @@ namespace Csla.Core.FieldManager
             info.AddValue("child_" + data.Name, true, false);
           else if (mode == StateMode.Undo && data.Value is IMobileObject)
             info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(data.Value), data.IsDirty);
-          else if(data.Value is not IMobileObject)
+          else if(SerializationInfo.IsNativeType(data.Value.GetType()))
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
       }

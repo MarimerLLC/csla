@@ -420,5 +420,24 @@ namespace Csla.Serialization.Mobile
     }
 
     #endregion
+
+    /// <summary>
+    /// Returns true if the type is considered a simple
+    /// (non-complex) serializable type by MobileFormatter.
+    /// </summary>
+    /// <param name="type">Type to evaluate</param>
+    /// <returns></returns>
+    public static bool IsNativeType(Type type)
+    {
+      bool result;
+      if (type is IMobileObject)
+        result = false;
+      else if (type.IsPrimitive || type.IsEnum)
+        result = true;
+      else
+        result = Enum.TryParse<CslaKnownTypes>(type.Name, out _);
+
+      return result;
+    }
   }
 }

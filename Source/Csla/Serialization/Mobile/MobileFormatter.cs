@@ -17,22 +17,15 @@ namespace Csla.Serialization.Mobile
   /// Serializes and deserializes objects
   /// at the field level. 
   /// </summary>
+  /// <remarks>
+  /// Creates an instance of the type.
+  /// </remarks>
+  /// <param name="applicationContext"></param>
 #if TESTING
   [System.Diagnostics.DebuggerStepThrough]
 #endif
-  public sealed class MobileFormatter : ISerializationFormatter
+  public sealed class MobileFormatter(ApplicationContext applicationContext) : ISerializationFormatter
   {
-    private ApplicationContext _applicationContext;
-
-    /// <summary>
-    /// Creates an instance of the type.
-    /// </summary>
-    /// <param name="applicationContext"></param>
-    public MobileFormatter(ApplicationContext applicationContext)
-    {
-      _applicationContext = applicationContext;
-    }
-
     #region Serialize
 
     /// <summary>
@@ -48,7 +41,7 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void Serialize(Stream serializationStream, object graph)
     {
-      ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter(_applicationContext);
+      ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter(applicationContext);
       writer.Write(serializationStream, SerializeToDTO(graph));
     }
 
@@ -118,12 +111,13 @@ namespace Csla.Serialization.Mobile
       }
     }
 
-    private MobileFormatterOptions _options;
     private MobileFormatterOptions GetOptions()
     {
-      var cslaOptions = _applicationContext.GetRequiredService<CslaOptions>();
-      _options = (MobileFormatterOptions)cslaOptions.SerializationOptions.FormatterOptions;
-      return _options;
+      var cslaOptions = applicationContext.GetRequiredService<CslaOptions>();
+      var options = (MobileFormatterOptions)cslaOptions.SerializationOptions.FormatterOptions;
+      if (options is null)
+        throw new ArgumentNullException("MobileFormatterOptions");
+      return options;
     }
 
     /// <summary>
@@ -160,9 +154,8 @@ namespace Csla.Serialization.Mobile
             s => s.OriginalType == obj.GetType())?.SerializerType;
           if (serializerType != null)
           {
-            if (_applicationContext.CreateInstance(serializerType) is IMobileSerializer serializer)
+            if (applicationContext.CreateInstanceDI(serializerType) is IMobileSerializer serializer)
             {
-              serializer.ApplicationContext = _applicationContext;
               info = new SerializationInfo(_serializationReferences.Count + 1);
               _serializationReferences.Add(obj, info);
               info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
@@ -233,7 +226,7 @@ namespace Csla.Serialization.Mobile
       if (serializationStream == null)
         return null;
 
-      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(_applicationContext);
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(applicationContext);
       var data = reader.Read(serializationStream);
       return DeserializeAsDTO(data);
     }
@@ -250,7 +243,7 @@ namespace Csla.Serialization.Mobile
       if (buffer.Length == 0)
         return null;
       using var serializationStream = new MemoryStream(buffer);
-      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(_applicationContext);
+      ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(applicationContext);
       var data = reader.Read(serializationStream);
       return DeserializeAsDTO(data);
     }
@@ -279,7 +272,7 @@ namespace Csla.Serialization.Mobile
         }
         else if (typeof(IMobileObject).IsAssignableFrom(type))
         {
-          var mobile = (IMobileObject)_applicationContext.CreateInstance(type);
+          var mobile = (IMobileObject)applicationContext.CreateInstance(type);
           _deserializationReferences.Add(info.ReferenceId, mobile);
           ConvertEnumsFromIntegers(info);
           mobile.SetState(info);
@@ -291,7 +284,7 @@ namespace Csla.Serialization.Mobile
             s => s.OriginalType == type)?.SerializerType;
           if (serializerType != null)
           {
-            if (_applicationContext.CreateInstance(serializerType) is IMobileSerializer serializer)
+            if (applicationContext.CreateInstanceDI(serializerType) is IMobileSerializer serializer)
             {
               object mobile = serializer.Deserialize(info);
               _deserializationReferences.Add(info.ReferenceId, mobile);
@@ -365,7 +358,7 @@ namespace Csla.Serialization.Mobile
     public byte[] SerializeToByteArray(object obj)
     {
       using var buffer = new MemoryStream();
-      var formatter = new MobileFormatter(_applicationContext);
+      var formatter = new MobileFormatter(applicationContext);
       formatter.Serialize(buffer, obj);
       return buffer.ToArray();
     }
@@ -379,7 +372,7 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public List<SerializationInfo> SerializeToDTO(object obj)
     {
-      var formatter = new MobileFormatter(_applicationContext);
+      var formatter = new MobileFormatter(applicationContext);
       return formatter.SerializeAsDTO(obj);
     }
 
@@ -390,7 +383,7 @@ namespace Csla.Serialization.Mobile
     /// <returns>Deserialized object</returns>
     public object DeserializeFromDTO(List<SerializationInfo> serialized)
     {
-      var formatter = new MobileFormatter(_applicationContext);
+      var formatter = new MobileFormatter(applicationContext);
       return formatter.DeserializeAsDTO(serialized);
     }
 
@@ -412,7 +405,7 @@ namespace Csla.Serialization.Mobile
         return null;
 
       using var buffer = new MemoryStream(data);
-      var formatter = new MobileFormatter(_applicationContext);
+      var formatter = new MobileFormatter(applicationContext);
       return formatter.Deserialize(buffer);
     }
 
@@ -433,7 +426,7 @@ namespace Csla.Serialization.Mobile
       if (data == null)
         return null;
 
-      var formatter = new MobileFormatter(_applicationContext);
+      var formatter = new MobileFormatter(applicationContext);
       return formatter.DeserializeAsDTO(data);
     }
 #endregion

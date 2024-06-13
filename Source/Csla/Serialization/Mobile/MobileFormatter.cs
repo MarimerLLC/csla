@@ -114,9 +114,8 @@ namespace Csla.Serialization.Mobile
     private MobileFormatterOptions GetOptions()
     {
       var cslaOptions = applicationContext.GetRequiredService<CslaOptions>();
-      var options = (MobileFormatterOptions)cslaOptions.SerializationOptions.FormatterOptions;
-      if (options is null)
-        throw new ArgumentNullException("MobileFormatterOptions");
+      if (cslaOptions.SerializationOptions.FormatterOptions is not MobileFormatterOptions options)
+        throw new NotSupportedException("MobileFormatterOptions == null");
       return options;
     }
 
@@ -291,7 +290,7 @@ namespace Csla.Serialization.Mobile
             }
             else
             {
-              throw new InvalidOperationException($"{serializerType?.Name ?? "null"} != IMobileSerializer");
+              throw new InvalidOperationException($"{serializerType.Name} != IMobileSerializer");
             }
           }
           else
@@ -306,7 +305,7 @@ namespace Csla.Serialization.Mobile
       {
         var obj = _deserializationReferences[info.ReferenceId];
         if (obj is IMobileObject mobile)
-          mobile?.SetChildren(info, this);
+          mobile.SetChildren(info, this);
       }
 
       foreach (SerializationInfo info in deserialized)

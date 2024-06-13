@@ -5,8 +5,9 @@
 // </copyright>
 // <summary>Implement extension methods for MobileFormatter configuration</summary>
 //-----------------------------------------------------------------------
+using System.Security.Claims;
 using Csla.Serialization.Mobile;
-using Microsoft.Extensions.DependencyInjection;
+using Csla.Serialization.Mobile.CustomSerializers;
 
 namespace Csla.Configuration;
 
@@ -35,6 +36,11 @@ public static class MobileFormatterConfigurationExtensions
   {
     ApplicationContext.SerializationFormatter = typeof(MobileFormatter);
     var mobileFormatterOptions = new MobileFormatterOptions();
+
+    // add default custom serializers
+    mobileFormatterOptions.CustomSerializers.Add(
+      new TypeMap { OriginalType = typeof(ClaimsPrincipal), SerializerType = typeof(ClaimsPrincipalSerializer) });
+
     options?.Invoke(mobileFormatterOptions);
     config.FormatterOptions = mobileFormatterOptions;
     return config;

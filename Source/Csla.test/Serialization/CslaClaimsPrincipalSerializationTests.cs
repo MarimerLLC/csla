@@ -39,10 +39,12 @@ namespace Csla.Test.Serialization
       services.AddCsla();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
       var identity = new ClaimsIdentity("custom", "rocky", null);
       var principal = new ClaimsPrincipal(identity);
       var cloner = new Core.ObjectCloner(applicationContext);
       var clone = (ClaimsPrincipal)cloner.Clone(principal);
+      
       Assert.AreEqual(principal.Identity.Name, clone.Identity.Name);
       Assert.AreEqual(principal.Identity.AuthenticationType, clone.Identity.AuthenticationType);
       Assert.AreEqual(principal.Identity.IsAuthenticated, clone.Identity.IsAuthenticated);

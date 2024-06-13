@@ -12,7 +12,7 @@ namespace Csla.Serialization.Mobile
   /// <summary>
   /// Custom serializer for a type
   /// </summary>
-  public interface IMobileSerializer : IUseApplicationContext
+  public interface IMobileSerializer
   {
     /// <summary>
     /// Serialize the object into the SerializationInfo

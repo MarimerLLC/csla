@@ -23,11 +23,13 @@ namespace Csla.Test.Serialization
       services.AddCsla();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
       var generic = new System.Security.Principal.GenericIdentity("rocky", "custom");
       var identity = new ClaimsIdentity(generic);
       var principal = new ClaimsPrincipal(identity);
       var cloner = new Core.ObjectCloner(applicationContext);
       var clone = (ClaimsPrincipal)cloner.Clone(principal);
+      
       Assert.AreEqual(principal.Identity.Name, clone.Identity.Name);
       Assert.AreEqual(principal.Identity.IsAuthenticated, clone.Identity.IsAuthenticated);
     }

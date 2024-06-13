@@ -357,8 +357,7 @@ namespace Csla.Serialization.Mobile
     public byte[] SerializeToByteArray(object obj)
     {
       using var buffer = new MemoryStream();
-      var formatter = new MobileFormatter(applicationContext);
-      formatter.Serialize(buffer, obj);
+      Serialize(buffer, obj);
       return buffer.ToArray();
     }
 
@@ -371,8 +370,7 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public List<SerializationInfo> SerializeToDTO(object obj)
     {
-      var formatter = new MobileFormatter(applicationContext);
-      return formatter.SerializeAsDTO(obj);
+      return SerializeAsDTO(obj);
     }
 
     /// <summary>
@@ -382,8 +380,7 @@ namespace Csla.Serialization.Mobile
     /// <returns>Deserialized object</returns>
     public object DeserializeFromDTO(List<SerializationInfo> serialized)
     {
-      var formatter = new MobileFormatter(applicationContext);
-      return formatter.DeserializeAsDTO(serialized);
+      return DeserializeAsDTO(serialized);
     }
 
     /// <summary>
@@ -404,8 +401,7 @@ namespace Csla.Serialization.Mobile
         return null;
 
       using var buffer = new MemoryStream(data);
-      var formatter = new MobileFormatter(applicationContext);
-      return formatter.Deserialize(buffer);
+      return Deserialize(buffer);
     }
 
     /// <summary>
@@ -425,8 +421,7 @@ namespace Csla.Serialization.Mobile
       if (data == null)
         return null;
 
-      var formatter = new MobileFormatter(applicationContext);
-      return formatter.DeserializeAsDTO(data);
+      return DeserializeAsDTO(data);
     }
 #endregion
 

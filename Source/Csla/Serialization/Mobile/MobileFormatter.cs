@@ -121,7 +121,8 @@ namespace Csla.Serialization.Mobile
     private MobileFormatterOptions _options;
     private MobileFormatterOptions GetOptions()
     {
-      _options ??= _applicationContext.GetRequiredService<MobileFormatterOptions>();
+      var cslaOptions = _applicationContext.GetRequiredService<CslaOptions>();
+      _options = (MobileFormatterOptions)cslaOptions.SerializationOptions.FormatterOptions;
       return _options;
     }
 
@@ -155,15 +156,28 @@ namespace Csla.Serialization.Mobile
         else
         {
           var options = GetOptions();
-          var serializer = options.CustomSerializers.FirstOrDefault(
-            s => s.OriginalType == obj.GetType())?.Serializer;
-          if (serializer != null)
+          var serializerType = options.CustomSerializers.FirstOrDefault(
+            s => s.OriginalType == obj.GetType())?.SerializerType;
+          if (serializerType != null)
           {
-            serializer.ApplicationContext = _applicationContext;
-            info = new SerializationInfo(_serializationReferences.Count + 1);
-            _serializationReferences.Add(obj, info);
-            info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
-            serializer.Serialize(obj, info);
+            if (_applicationContext.CreateInstance(serializerType) is IMobileSerializer serializer)
+            {
+              serializer.ApplicationContext = _applicationContext;
+              info = new SerializationInfo(_serializationReferences.Count + 1);
+              _serializationReferences.Add(obj, info);
+              info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
+              serializer.Serialize(obj, info);
+            }
+            else
+            {
+              throw new InvalidOperationException($"{serializerType?.Name ?? "null"} != IMobileSerializer");
+            }
+          }
+          else
+          {
+            throw new InvalidOperationException(
+              string.Format(Resources.MustImplementIMobileObject,
+              obj.GetType().Name));
           }
         }
       }
@@ -273,12 +287,19 @@ namespace Csla.Serialization.Mobile
         else
         {
           var options = GetOptions();
-          var serializer = options.CustomSerializers.FirstOrDefault(
-            s => s.Serializer.GetType() == type)?.Serializer;
-          if (serializer != null)
+          var serializerType = options.CustomSerializers.FirstOrDefault(
+            s => s.OriginalType == type)?.SerializerType;
+          if (serializerType != null)
           {
-            object mobile = serializer.Deserialize(info);
-            _deserializationReferences.Add(info.ReferenceId, mobile);
+            if (_applicationContext.CreateInstance(serializerType) is IMobileSerializer serializer)
+            {
+              object mobile = serializer.Deserialize(info);
+              _deserializationReferences.Add(info.ReferenceId, mobile);
+            }
+            else
+            {
+              throw new InvalidOperationException($"{serializerType?.Name ?? "null"} != IMobileSerializer");
+            }
           }
           else
           {

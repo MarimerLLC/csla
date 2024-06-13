@@ -34,7 +34,7 @@ public static class MobileFormatterConfigurationExtensions
   /// <returns></returns>
   public static SerializationOptions AddMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions> options)
   {
-    ApplicationContext.SerializationFormatter = typeof(MobileFormatter);
+    config.SerializationFormatter<MobileFormatter>();
     var mobileFormatterOptions = new MobileFormatterOptions();
 
     // add default custom serializers

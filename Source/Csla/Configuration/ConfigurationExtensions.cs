@@ -63,7 +63,7 @@ namespace Csla.Configuration
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
       }
 
-      if (ApplicationContext.SerializationFormatter == null)
+      if (cslaOptions.SerializationOptions.SerializationFormatterType == null)
         cslaOptions.Serialization(o => o.AddMobileFormatter());
       return services;
     }

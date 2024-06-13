@@ -36,7 +36,9 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void CorrectDefaultSerializer()
     {
-      var serializer = ApplicationContext.SerializationFormatter;
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var options = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var serializer = options.SerializationOptions.SerializationFormatterType;
       Assert.AreEqual(typeof(Csla.Serialization.Mobile.MobileFormatter), serializer);
     }
 
@@ -46,7 +48,8 @@ namespace Csla.Test.Serialization
       ApplicationContext applicationContext;
       applicationContext = _testDIContext.CreateTestApplicationContext();
 
-      var serializer = ApplicationContext.SerializationFormatter;
+      var options = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var serializer = options.SerializationOptions.SerializationFormatterType;
       Assert.AreEqual(typeof(Csla.Serialization.Mobile.MobileFormatter), serializer);
       var s = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
       Assert.IsInstanceOfType(s, typeof(Csla.Serialization.Mobile.MobileFormatter));
@@ -62,8 +65,9 @@ namespace Csla.Test.Serialization
           .Serialization(o => o.SerializationFormatter<CustomFormatter>()));
         var provider = services.BuildServiceProvider();
         var applicationContext = provider.GetRequiredService<ApplicationContext>();
+        var options = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
 
-        var serializerType = ApplicationContext.SerializationFormatter;
+        var serializerType = options.SerializationOptions.SerializationFormatterType;
         Assert.AreEqual(typeof(CustomFormatter), serializerType);
         var s = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
         Assert.IsInstanceOfType(s, typeof(CustomFormatter));

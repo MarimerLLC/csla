@@ -70,7 +70,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
-    internal SerializationOptions SerializationOptions { get; } = new SerializationOptions();
+    public SerializationOptions SerializationOptions { get; } = new SerializationOptions();
     /// <summary>
     /// Gets the DataPortalClientOptions instance.
     /// </summary>

@@ -74,7 +74,9 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void CorrectDefaultSerializer()
     {
-      var serializer = ApplicationContext.SerializationFormatter;
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var options = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var serializer = options.SerializationOptions.SerializationFormatterType;
       Assert.IsTrue(serializer == typeof(MobileFormatter));
     }
 

@@ -19,7 +19,9 @@ namespace Csla.Serialization
     /// </summary>
     public static ISerializationFormatter GetFormatter(ApplicationContext applicationContext)
     {
-      return (ISerializationFormatter)applicationContext.CreateInstanceDI(ApplicationContext.SerializationFormatter);
+      var options = applicationContext.GetRequiredService<Configuration.CslaOptions>();
+      return (ISerializationFormatter)applicationContext.CreateInstanceDI(
+        options.SerializationOptions.SerializationFormatterType);
     }
   }
 }

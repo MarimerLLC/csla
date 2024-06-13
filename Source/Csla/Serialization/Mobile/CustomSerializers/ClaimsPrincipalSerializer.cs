@@ -15,7 +15,7 @@ namespace Csla.Serialization.Mobile.CustomSerializers;
 /// </summary>
 public class ClaimsPrincipalSerializer : IMobileSerializer
 {
-  /// <inheritdoc cref="IMobileSerializer.Deserialize(SerializationInfo)"/>
+  /// <inheritdoc />
   public object Deserialize(SerializationInfo info)
   {
     var state = info.GetValue<byte[]>("s");
@@ -25,7 +25,7 @@ public class ClaimsPrincipalSerializer : IMobileSerializer
     return mobile;
   }
 
-  /// <inheritdoc cref="IMobileSerializer.Serialize(object, SerializationInfo)"/>
+  /// <inheritdoc />
   public void Serialize(object obj, SerializationInfo info)
   {
     if (obj is not ClaimsPrincipal principal)

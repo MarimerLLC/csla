@@ -39,7 +39,7 @@ public static class MobileFormatterConfigurationExtensions
 
     // add default custom serializers
     mobileFormatterOptions.CustomSerializers.Add(
-      new TypeMap { OriginalType = typeof(ClaimsPrincipal), SerializerType = typeof(ClaimsPrincipalSerializer) });
+      new TypeMap<ClaimsPrincipal, ClaimsPrincipalSerializer>());
 
     options?.Invoke(mobileFormatterOptions);
     config.FormatterOptions = mobileFormatterOptions;

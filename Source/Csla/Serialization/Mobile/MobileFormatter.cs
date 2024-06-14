@@ -153,17 +153,11 @@ namespace Csla.Serialization.Mobile
             s => s.CanSerialize(obj.GetType()))?.SerializerType;
           if (serializerType != null)
           {
-            if (applicationContext.CreateInstanceDI(serializerType) is IMobileSerializer serializer)
-            {
-              info = new SerializationInfo(_serializationReferences.Count + 1);
-              _serializationReferences.Add(obj, info);
-              info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
-              serializer.Serialize(obj, info);
-            }
-            else
-            {
-              throw new InvalidOperationException($"{serializerType?.Name ?? "null"} != IMobileSerializer");
-            }
+            var serializer = (IMobileSerializer)applicationContext.CreateInstanceDI(serializerType);
+            info = new SerializationInfo(_serializationReferences.Count + 1);
+            _serializationReferences.Add(obj, info);
+            info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
+            serializer.Serialize(obj, info);
           }
           else
           {
@@ -283,15 +277,9 @@ namespace Csla.Serialization.Mobile
             s => s.CanSerialize(type))?.SerializerType;
           if (serializerType != null)
           {
-            if (applicationContext.CreateInstanceDI(serializerType) is IMobileSerializer serializer)
-            {
-              object mobile = serializer.Deserialize(info);
-              _deserializationReferences.Add(info.ReferenceId, mobile);
-            }
-            else
-            {
-              throw new InvalidOperationException($"{serializerType.Name} != IMobileSerializer");
-            }
+            var serializer = (IMobileSerializer)applicationContext.CreateInstanceDI(serializerType);
+            object mobile = serializer.Deserialize(info);
+            _deserializationReferences.Add(info.ReferenceId, mobile);
           }
           else
           {

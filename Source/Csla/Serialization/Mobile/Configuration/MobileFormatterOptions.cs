@@ -17,7 +17,7 @@ public class MobileFormatterOptions
   /// <summary>
   /// Gets the list of custom serializers.
   /// </summary>
-  public List<TypeMap> CustomSerializers { get; } = [];
+  public List<ITypeMap> CustomSerializers { get; } = [];
 
   /// <summary>
   /// Sets type of the writer that is used to write data to 
@@ -40,10 +40,17 @@ public class MobileFormatterOptions
   }
 }
 
+public interface ITypeMap
+{
+  Type OriginalType { get; }
+  Type SerializerType { get; }
+  Func<Type, bool> CanSerialize { get; set; }
+}
 /// <summary>
 /// Maps a type to a serializer type.
 /// </summary>
-public class TypeMap
+public class TypeMap<T, S> : ITypeMap
+  where S : IMobileSerializer
 {
   /// <summary>
   /// Creates an instance of the class.
@@ -56,11 +63,11 @@ public class TypeMap
   /// <summary>
   /// Gets or sets the original type.
   /// </summary>
-  public Type OriginalType { get; set; }
+  public Type OriginalType => typeof(T);
   /// <summary>
   /// Gets or sets the serializer type.
   /// </summary>
-  public Type SerializerType { get; set; }
+  public Type SerializerType => typeof(S);
   /// <summary>
   /// Gets or sets a function that determines 
   /// if the type can be serialized.

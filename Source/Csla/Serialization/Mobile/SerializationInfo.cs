@@ -435,7 +435,7 @@ namespace Csla.Serialization.Mobile
       else if (type.IsPrimitive || type.IsEnum)
         result = true;
       else
-        result = Enum.TryParse<CslaKnownTypes>(type.Name, out _);
+        result = Enum.TryParse<CslaKnownTypes>(type.Name.Replace("[]", "Array"), out _);
 
       return result;
     }

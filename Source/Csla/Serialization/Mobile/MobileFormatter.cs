@@ -150,7 +150,7 @@ namespace Csla.Serialization.Mobile
         {
           var options = GetOptions();
           var serializerType = options.CustomSerializers.FirstOrDefault(
-            s => s.OriginalType == obj.GetType())?.SerializerType;
+            s => s.CanSerialize(obj.GetType()))?.SerializerType;
           if (serializerType != null)
           {
             if (applicationContext.CreateInstanceDI(serializerType) is IMobileSerializer serializer)
@@ -280,7 +280,7 @@ namespace Csla.Serialization.Mobile
         {
           var options = GetOptions();
           var serializerType = options.CustomSerializers.FirstOrDefault(
-            s => s.OriginalType == type)?.SerializerType;
+            s => s.CanSerialize(type))?.SerializerType;
           if (serializerType != null)
           {
             if (applicationContext.CreateInstanceDI(serializerType) is IMobileSerializer serializer)

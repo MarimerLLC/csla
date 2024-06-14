@@ -53,4 +53,9 @@ public class TypeMap
   /// Gets or sets the serializer type.
   /// </summary>
   public Type SerializerType { get; set; }
+  /// <summary>
+  /// Gets or sets a function that determines 
+  /// if the type can be serialized.
+  /// </summary>
+  public Func<Type, bool> CanSerialize => (t) => t == OriginalType;
 }

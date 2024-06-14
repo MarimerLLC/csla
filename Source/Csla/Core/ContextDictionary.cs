@@ -7,7 +7,8 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization.Mobile;
-using System.Collections.Specialized;
+using System.Collections;
+using System.Collections.Concurrent;
 
 namespace Csla.Core
 {
@@ -16,16 +17,12 @@ namespace Csla.Core
   /// with the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
-  public class ContextDictionary : HybridDictionary, IMobileObject
+  public class ContextDictionary : ConcurrentDictionary<object, object>, IContextDictionary
   {
-    /// <summary>
-    /// Get a value from the dictionary, or return null
-    /// if the key is not found in the dictionary.
-    /// </summary>
-    /// <param name="key">Key of value to get from dictionary.</param>
+    /// <inheritdoc cref="Csla.Core.IContextDictionary.GetValueOrNull(string)"/>
     public object GetValueOrNull(string key)
     {
-      if (Contains(key))
+      if (ContainsKey(key))
         return this[key];
       return null;
     }
@@ -72,6 +69,56 @@ namespace Csla.Core
       }
     }
 
-#endregion
+    #endregion
+
+    #region IDictionary Members
+
+    /// <inheritdoc cref="System.Collections.IDictionary.IsReadOnly"/>
+    public bool IsReadOnly
+    {
+      get => ((IDictionary)this).IsReadOnly;
+    }
+
+    /// <inheritdoc cref="System.Collections.IDictionary.IsFixedSize"/>
+    public bool IsFixedSize
+    {
+      get => ((IDictionary)this).IsFixedSize;
+    }
+
+    /// <inheritdoc cref="System.Collections.IDictionary.Add(object, object?)"/>
+    public void Add(object key, object value)
+    {
+      ((IDictionary)this).Add(key, value);
+    }
+
+    /// <inheritdoc cref="System.Collections.IDictionary.Remove(object)"/>
+    public void Remove(object key)
+    {
+      ((IDictionary)this).Remove(key);
+    }
+
+    #endregion
+
+    #region ICollection Members
+
+    /// <inheritdoc cref="System.Collections.ICollection.SyncRoot"/>
+    public object SyncRoot
+    {
+      get => ((IDictionary)this).SyncRoot;
+    }
+
+    /// <inheritdoc cref="System.Collections.ICollection.IsSynchronized"/>
+    public bool IsSynchronized
+    {
+      get => ((ICollection)this).IsSynchronized;
+    }
+
+    /// <inheritdoc cref="System.Collections.ICollection.CopyTo(Array, int)"/>
+    public void CopyTo(Array array, int index) 
+    {
+      ((ICollection)this).CopyTo(array, index);
+    }
+
+    #endregion
   }
 }

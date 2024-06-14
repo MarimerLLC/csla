@@ -27,5 +27,10 @@ namespace Csla.Blazor.Test.Fakes
       if (!FakePersonsStorage.ContainsKey(person.Id)) throw new Exception($"Person having Id {person.Id} not found");
       FakePersonsStorage[person.Id] = person;
     }
+
+    public static void ClearDataStorage()
+    {
+      FakePersonsStorage.Clear();
+    }
   }
 }

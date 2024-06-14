@@ -46,6 +46,14 @@ public class MobileFormatterOptions
 public class TypeMap
 {
   /// <summary>
+  /// Creates an instance of the class.
+  /// </summary>
+  public TypeMap()
+  {
+    CanSerialize = (t) => t == OriginalType;
+  }
+
+  /// <summary>
   /// Gets or sets the original type.
   /// </summary>
   public Type OriginalType { get; set; }
@@ -57,5 +65,5 @@ public class TypeMap
   /// Gets or sets a function that determines 
   /// if the type can be serialized.
   /// </summary>
-  public Func<Type, bool> CanSerialize => (t) => t == OriginalType;
+  public Func<Type, bool> CanSerialize { get; set; }
 }

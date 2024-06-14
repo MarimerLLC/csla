@@ -39,6 +39,29 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    public void CustomSerializerInterfaceMap()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla(o => o
+        .Serialization(o => o
+          .AddMobileFormatter(o => o
+            .CustomSerializers.Add(new TypeMap
+            {
+              OriginalType = typeof(INonSerializableType),
+              SerializerType = typeof(NonSerializableTypeSerializer),
+              CanSerialize = t => t.IsAssignableTo(typeof(NonSerializableType))
+            }))));
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
+      var nonSerializable = new NonSerializableType { Name = "test" };
+      var cloner = new Core.ObjectCloner(applicationContext);
+      var clone = (NonSerializableType)cloner.Clone(nonSerializable);
+
+      Assert.AreEqual(nonSerializable.Name, clone.Name);
+    }
+
+    [TestMethod]
     [ExpectedException(typeof(InvalidOperationException), $"{nameof(NonSerializableType)} != IMobileSerializer")]
     public void CustomSerializerRegisteredWrong()
     {
@@ -95,7 +118,12 @@ namespace Csla.Test.Serialization
     }
   }
 
-  public class NonSerializableType
+  public interface INonSerializableType
+  {
+    string Name { get; set; }
+  }
+  
+  public class NonSerializableType : INonSerializableType
   {
     public string Name { get; set; }
   }

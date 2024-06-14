@@ -1,10 +1,26 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Blazor.Test.Fakes;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using Csla.TestHelpers;
+using System.Threading.Tasks;
 using Csla.Core;
 
 namespace Csla.Blazor.Test
 {
+  public class MyViewModel<T> : ViewModel<T>
+  {
+    public MyViewModel(ApplicationContext context) : base(context) { }
+
+    public void Cancel()
+    {
+      DoCancel();
+    }
+  }
+
   [TestClass]
   public class ViewModelEditChildListSaveEditLevelTests
   {
@@ -15,7 +31,7 @@ namespace Csla.Blazor.Test
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
-    
+
     [TestMethod]
     public async Task SaveModelChildListChange_ValidateEditLevel()
     {
@@ -28,7 +44,7 @@ namespace Csla.Blazor.Test
       var vm = new ViewModel<FakePerson>(appCntxt);
       vm.ManageObjectLifetime = true;
       vm.Model = person;
-      
+
       Assert.IsTrue(iuo.EditLevel > 0);
       await vm.SaveAsync();
       Assert.IsTrue(iuo.EditLevel == 1);
@@ -44,7 +60,42 @@ namespace Csla.Blazor.Test
 
     }
 
+    [TestMethod]
+    public async Task SaveThenCancel_ValidatePropertyValue()
+    {
+      // Arrange
+      //FakePerson person = GetValidFakePerson();
+      //var iuo = person as IUndoableObject;
+      var appCntxt = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var vm = new MyViewModel<FakePerson>(appCntxt);
+      vm.ManageObjectLifetime = true;
+      //vm.Model = person;
+      await vm.RefreshAsync(FetchFakePerson);
+
+      await vm.SaveAsync();
+
+      // Act
+      string firstName = "SaveThis";
+      vm.Model.FirstName = firstName;
+      await vm.SaveAsync();
+      Assert.IsTrue(vm.Model.FirstName == firstName);
+
+      string cancelName = "Cancel This";
+      vm.Model.FirstName = cancelName;
+      vm.Cancel();
+
+      // Assert
+      Assert.IsTrue(vm.Model.FirstName == firstName);
+
+    }
+
     #region Helper Methods
+
+    async Task<FakePerson> FetchFakePerson()
+    {
+      FakePerson person = GetValidFakePerson();
+      return await Task.FromResult(person);
+    }
 
     FakePerson GetValidFakePerson()
     {

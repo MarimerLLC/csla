@@ -11,6 +11,16 @@ using Csla.Core;
 
 namespace Csla.Blazor.Test
 {
+  public class MyViewModel<T> : ViewModel<T>
+  {
+    public MyViewModel(ApplicationContext context) : base(context) { ManageObjectLifetime = true; }
+
+    public void Cancel()
+    {
+      DoCancel();
+    }
+  }
+
   [TestClass]
   public class ViewModelEditChildListSaveEditLevelTests
   {
@@ -21,7 +31,13 @@ namespace Csla.Blazor.Test
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
-    
+
+    [TestCleanup]
+    public void CleanupTests()
+    {
+      FakeDataStorage.ClearDataStorage();
+    }
+
     [TestMethod]
     public async Task SaveModelChildListChange_ValidateEditLevel()
     {
@@ -50,9 +66,74 @@ namespace Csla.Blazor.Test
 
     }
 
+    [TestMethod]
+    public async Task SaveThenCancel_ValidatePropertyValue()
+    {
+      // Arrange
+      //FakePerson person = GetValidFakePerson();
+      //var iuo = person as IUndoableObject;
+      var appCntxt = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var vm = new MyViewModel<FakePerson>(appCntxt);
+      await vm.RefreshAsync(FetchFakePerson);
+      var id = vm.Model.Id;
+
+      // Act
+      await vm.SaveAsync();
+
+      // Assert
+      var save1_Id = vm.Model.Id;
+      Assert.AreEqual(save1_Id, id);
+      Assert.IsFalse(vm.Model.IsSavable);
+      Assert.IsFalse(vm.Model.IsDirty);
+      Assert.IsFalse(vm.Model.IsNew);
+
+      // Act
+      string firstName = "SaveThis";
+      vm.Model.FirstName = firstName;
+      await vm.SaveAsync();
+
+      // Assert
+      save1_Id = vm.Model.Id;
+      Assert.AreEqual(save1_Id, id);
+      Assert.IsFalse(vm.Model.IsSavable);
+      Assert.IsFalse(vm.Model.IsDirty);
+      Assert.IsFalse(vm.Model.IsNew);
+      Assert.IsTrue(vm.Model.FirstName == firstName);
+
+      // Act
+      string cancelName = "Cancel This";
+      vm.Model.FirstName = cancelName;
+      vm.Cancel();
+
+      // Assert
+      save1_Id = vm.Model.Id;
+      Assert.AreEqual(save1_Id, id);
+      Assert.IsFalse(vm.Model.IsSavable);
+      Assert.IsFalse(vm.Model.IsDirty);
+      Assert.IsFalse(vm.Model.IsNew);
+
+      Assert.IsTrue(vm.Model.FirstName == firstName);
+
+    }
+
     #region Helper Methods
 
-    FakePerson GetValidFakePerson()
+    async Task<FakePerson> FetchFakePerson()
+    {
+      FakePerson person = GetValidFakePerson();
+      return await Task.FromResult(person);
+    }
+
+    private async Task<FakePerson> NewFakePerson()
+    {
+      IDataPortal<FakePerson> dataPortal;
+
+      // Create an instance of a DataPortal that can be used for instantiating objects
+      dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
+      return await dataPortal.CreateAsync();
+    }
+
+    private FakePerson GetValidFakePerson()
     {
       IDataPortal<FakePerson> dataPortal;
       FakePerson person;

@@ -31,7 +31,13 @@ namespace Csla.Blazor.Test
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
-    
+
+    [TestCleanup]
+    public void CleanupTests()
+    {
+      FakeDataStorage.ClearDataStorage();
+    }
+
     [TestMethod]
     public async Task SaveModelChildListChange_ValidateEditLevel()
     {

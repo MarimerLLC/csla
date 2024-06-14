@@ -244,10 +244,6 @@ namespace Csla.Blazor
           // clone the object if possible
           if (Model is ICloneable clonable)
             savable = (Core.ISavable)clonable.Clone();
-
-          //apply changes
-          //if (savable is Core.ISupportUndo undoable)
-          //  undoable.ApplyEdit();
         }
 
         IsBusy = true;
@@ -268,8 +264,6 @@ namespace Csla.Blazor
       {
         if (ManageObjectLifetime && Model is IUndoableObject udbl && udbl.EditLevel == 0 && Model is Core.ISupportUndo undo)
           undo.BeginEdit();
-
-        _propertyInfoCache.Clear();
 
         HookChangedEvents(Model);
         IsBusy = false;

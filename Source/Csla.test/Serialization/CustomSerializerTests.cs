@@ -10,6 +10,7 @@ using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
+using Csla.Serialization.Mobile.CustomSerializers;
 
 namespace Csla.Test.Serialization
 {
@@ -23,7 +24,9 @@ namespace Csla.Test.Serialization
       services.AddCsla(o => o
         .Serialization(o => o
           .AddMobileFormatter(o => o
-            .CustomSerializers.Add(new TypeMap<NonSerializableType, NonSerializableTypeSerializer>()))));
+            .CustomSerializers.Add(
+            new TypeMap<NonSerializableType, NonSerializableTypeSerializer>(NonSerializableTypeSerializer.CanSerialize))
+            )));
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -41,10 +44,9 @@ namespace Csla.Test.Serialization
       services.AddCsla(o => o
         .Serialization(o => o
           .AddMobileFormatter(o => o
-            .CustomSerializers.Add(new TypeMap<INonSerializableType, NonSerializableTypeSerializer>
-            {
-              CanSerialize = t => t.IsAssignableTo(typeof(NonSerializableType))
-            }))));
+            .CustomSerializers.Add(
+            new TypeMap<INonSerializableType, NonSerializableTypeSerializer>((t) => t.IsAssignableTo(typeof(INonSerializableType))))
+            )));
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -77,7 +79,7 @@ namespace Csla.Test.Serialization
       services.AddCsla(o => o
         .Serialization(o => o
           .AddMobileFormatter(o => o
-            .CustomSerializers.Add(new TypeMap<NonSerializableType, BadSerializer>()))));
+            .CustomSerializers.Add(new TypeMap<NonSerializableType, BadSerializer>(BadSerializer.CanSerialize)))));
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -85,6 +87,28 @@ namespace Csla.Test.Serialization
       var cloner = new Core.ObjectCloner(applicationContext);
       var clone = (NonSerializableType)cloner.Clone(nonSerializable);
     }
+
+    [TestMethod]
+    public void SerializePoco()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla(o => o
+        .Serialization(o => o
+          .AddMobileFormatter(o => o
+            .CustomSerializers.Add(new TypeMap<object, PocoSerializer<SerializablePoco>>(PocoSerializer<SerializablePoco>.CanSerialize)))));
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
+      var poco = new SerializablePoco { Name = "test" };
+      var cloner = new Core.ObjectCloner(applicationContext);
+      var clone = (SerializablePoco)cloner.Clone(poco);
+      Assert.AreEqual(poco.Name, clone.Name);
+    }
+  }
+
+  public class SerializablePoco
+  {
+    public string Name { get; set; }
   }
 
   public interface INonSerializableType
@@ -99,12 +123,16 @@ namespace Csla.Test.Serialization
 
   public class BadSerializer : IMobileSerializer
   {
+    public static bool CanSerialize(Type type) => true;
+
     public object Deserialize(SerializationInfo info) => throw new NotSupportedException();
     public void Serialize(object obj, SerializationInfo info) => throw new NotSupportedException();
   }
 
   public class NonSerializableTypeSerializer : IMobileSerializer
   {
+    public static bool CanSerialize(Type type) => type == typeof(NonSerializableType);
+
     public object Deserialize(SerializationInfo info)
     {
       var state = info.GetValue<string>("n");
@@ -113,9 +141,12 @@ namespace Csla.Test.Serialization
 
     public void Serialize(object obj, SerializationInfo info)
     {
-      if (obj is not NonSerializableType nonSerializableType)
-        throw new ArgumentException("obj.GetType() != NonSerializableType", nameof(obj));
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (!CanSerialize(obj.GetType()))
+        throw new ArgumentException($"{obj.GetType()} != NonSerializableType", nameof(obj));
 
+      var nonSerializableType = (NonSerializableType)obj;
       info.AddValue("n", nonSerializableType.Name);
     }
   }

@@ -39,38 +39,3 @@ public class MobileFormatterOptions
     return this;
   }
 }
-
-public interface ITypeMap
-{
-  Type OriginalType { get; }
-  Type SerializerType { get; }
-  Func<Type, bool> CanSerialize { get; set; }
-}
-/// <summary>
-/// Maps a type to a serializer type.
-/// </summary>
-public class TypeMap<T, S> : ITypeMap
-  where S : IMobileSerializer
-{
-  /// <summary>
-  /// Creates an instance of the class.
-  /// </summary>
-  public TypeMap()
-  {
-    CanSerialize = (t) => t == OriginalType;
-  }
-
-  /// <summary>
-  /// Gets or sets the original type.
-  /// </summary>
-  public Type OriginalType => typeof(T);
-  /// <summary>
-  /// Gets or sets the serializer type.
-  /// </summary>
-  public Type SerializerType => typeof(S);
-  /// <summary>
-  /// Gets or sets a function that determines 
-  /// if the type can be serialized.
-  /// </summary>
-  public Func<Type, bool> CanSerialize { get; set; }
-}

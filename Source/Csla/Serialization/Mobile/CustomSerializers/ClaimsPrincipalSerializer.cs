@@ -17,6 +17,9 @@ namespace Csla.Serialization.Mobile.CustomSerializers;
 public class ClaimsPrincipalSerializer : IMobileSerializer
 {
   /// <inheritdoc />
+  public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);
+
+  /// <inheritdoc />
   public object Deserialize(SerializationInfo info)
   {
     var state = info.GetValue<byte[]>("s");
@@ -29,9 +32,12 @@ public class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public void Serialize(object obj, SerializationInfo info)
   {
-    if (obj is not ClaimsPrincipal principal)
-      throw new ArgumentException("obj.GetType() != ClaimsPrincipal", nameof(obj));
+    if (obj is null)
+      throw new ArgumentNullException(nameof(obj));
+    if (!CanSerialize(obj.GetType()))
+      throw new ArgumentException($"{obj.GetType()} != ClaimsPrincipal", nameof(obj));
 
+    var principal = (ClaimsPrincipal)obj;
     using var buffer = new MemoryStream();
     using var writer = new BinaryWriter(buffer);
     principal.WriteTo(writer);
@@ -46,6 +52,9 @@ using System.Text.Json;
 /// </summary>
 public class ClaimsPrincipalSerializer : IMobileSerializer
 {
+  /// <inheritdoc />
+  public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);
+
   /// <inheritdoc />
   public object Deserialize(SerializationInfo info)
   {

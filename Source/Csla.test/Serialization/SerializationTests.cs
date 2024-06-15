@@ -533,6 +533,26 @@ namespace Csla.Test.Serialization
       Assert.IsFalse(ReferenceEquals(cmd, result), "References should not match");
       Assert.AreEqual(cmd.Name + " server", result.Name);
     }
+
+    [TestMethod]
+    public void DateOnlySerialization()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var obj = portal.Create();
+      obj.DateOnly = new DateOnly(2020, 1, 1);
+      var clone = obj.Clone();
+      Assert.AreEqual(obj.DateOnly, clone.DateOnly);
+    }
+
+    [TestMethod]
+    public void TimeOnlySerialization()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var obj = portal.Create();
+      obj.TimeOnly = new TimeOnly(12, 34, 56);
+      var clone = obj.Clone();
+      Assert.AreEqual(obj.TimeOnly, clone.TimeOnly);
+    }
   }
 
   [Serializable]
@@ -555,5 +575,27 @@ namespace Csla.Test.Serialization
     {
       Name += " server";
     }
+  }
+  
+  [Serializable]
+  public class DateTimeOnlyHolder : BusinessBase<DateTimeOnlyHolder>
+  {
+    public static readonly PropertyInfo<DateOnly> DateOnlyProperty = RegisterProperty<DateOnly>(nameof(DateOnly));
+    public DateOnly DateOnly
+    {
+      get => ReadProperty(DateOnlyProperty);
+      set => LoadProperty(DateOnlyProperty, value);
+    }
+
+    public static readonly PropertyInfo<TimeOnly> TimeOnlyProperty = RegisterProperty<TimeOnly>(nameof(TimeOnly));
+    public TimeOnly TimeOnly
+    {
+      get => ReadProperty(TimeOnlyProperty);
+      set => LoadProperty(TimeOnlyProperty, value);
+    }
+    
+    [Create]
+    private void Create()
+    { }
   }
 }

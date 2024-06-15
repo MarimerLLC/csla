@@ -2,6 +2,17 @@
 
 CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other enhancements.
 
+## CSLA .NET version 7.0.5 release
+
+CSLA .NET version 7.0.5 fixes bugs.
+
+* [#4026](https://github.com/MarimerLLC/csla/issues/4026) Blazor ViewModel with ManagedObjectLifetime save issue
+
+### Contributors
+
+* @russblair
+* @wfacey
+
 ## CSLA .NET version 7.0.4 release
 
 CSLA .NET version 7.0.4 fixes bugs.

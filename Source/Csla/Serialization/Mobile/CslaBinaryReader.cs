@@ -163,6 +163,12 @@ namespace Csla.Serialization.Mobile
         case CslaKnownTypes.StringWithDictionaryKey:
         case CslaKnownTypes.StringDictionaryKey:
           return ReadString(reader, knownType);
+#if NET8_0_OR_GREATER
+        case CslaKnownTypes.DateOnly:
+          return DateOnly.FromDateTime(new DateTime(reader.ReadInt64()));
+        case CslaKnownTypes.TimeOnly:
+          return new TimeOnly(reader.ReadInt64());
+#endif
         default:
           throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
       }

@@ -17,7 +17,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
   internal class DefinitionExtractionContext
   {
 
-    private readonly GeneratorSyntaxContext _context;
+    private readonly SemanticModel _semanticModel;
     private const string _serializationNamespace = "Csla.Serialization";
     private const string _autoSerializableAttributeName = "AutoSerializableAttribute";
     private const string _autoSerializedAttributeName = "AutoSerializedAttribute";
@@ -25,12 +25,11 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     private const string _iMobileObjectInterfaceNamespace = "Csla.Serialization.Mobile";
     private const string _iMobileObjectInterfaceName = "IMobileObject";
 
-    public DefinitionExtractionContext(GeneratorSyntaxContext context)
+    public DefinitionExtractionContext(SemanticModel semanticModel)
     {
-      _context = context;
+      _semanticModel = semanticModel;
     }
 
-    public GeneratorSyntaxContext Context => _context;
 
     /// <summary>
     /// Get the namespace of the type represented by a type declaration
@@ -41,7 +40,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     {
       INamedTypeSymbol typeSymbol;
 
-      typeSymbol = _context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
+      typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
@@ -55,7 +54,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     {
       INamedTypeSymbol typeSymbol;
 
-      typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
@@ -69,7 +68,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     {
       INamedTypeSymbol typeSymbol;
 
-      typeSymbol = _context.SemanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
+      typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
       return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
     }
 
@@ -82,7 +81,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     {
       INamedTypeSymbol typeSymbol;
 
-      typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       if (typeSymbol is null) return false;
       return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
     }
@@ -97,7 +96,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     {
       INamedTypeSymbol typeSymbol;
 
-      typeSymbol = _context.SemanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       if (typeSymbol is null) return false;
 
       foreach (ITypeSymbol interfaceSymbol in typeSymbol.AllInterfaces)
@@ -179,7 +178,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
 
       foreach (AttributeSyntax attributeSyntax in propertyDeclaration.AttributeLists.SelectMany(al => al.Attributes))
       {
-        appliedAttributeSymbol = _context.SemanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
+        appliedAttributeSymbol = _semanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
         if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
         {
           return true;
@@ -201,7 +200,7 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
 
       foreach (AttributeSyntax attributeSyntax in fieldDeclaration.AttributeLists.SelectMany(al => al.Attributes))
       {
-        appliedAttributeSymbol = _context.SemanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
+        appliedAttributeSymbol = _semanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
         if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
         {
           return true;

@@ -155,6 +155,20 @@ namespace Csla.Serialization.Mobile
           writer.Write(oneInt);
         }
       }
+#if NET8_0_OR_GREATER
+      else if (target is DateOnly dateOnly)
+      {
+        Write(CslaKnownTypes.DateOnly, writer);
+        var value = dateOnly.ToDateTime(TimeOnly.MinValue).Ticks;
+        writer.Write(value);
+      }
+      else if (target is TimeOnly timeOnly)
+      {
+        Write(CslaKnownTypes.TimeOnly, writer);
+        var value = timeOnly.Ticks;
+        writer.Write(value);
+      }
+#endif
       else
       {
         var typeCode = Type.GetTypeCode(target.GetType());

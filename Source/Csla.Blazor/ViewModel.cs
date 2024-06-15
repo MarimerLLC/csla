@@ -9,6 +9,8 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
 
@@ -257,13 +259,13 @@ namespace Csla.Blazor
         var savable = Model as Core.ISavable;
         if (ManageObjectLifetime)
         {
+          //apply changes - must apply edit to Model not clone
+          if (Model is Core.ISupportUndo undoable)
+            undoable.ApplyEdit();
+
           // clone the object if possible
           if (Model is ICloneable clonable)
             savable = (Core.ISavable)clonable.Clone();
-
-          //apply changes
-          if (savable is Core.ISupportUndo undoable)
-            undoable.ApplyEdit();
         }
 
         IsBusy = true;
@@ -282,6 +284,9 @@ namespace Csla.Blazor
       }
       finally
       {
+        if (ManageObjectLifetime && Model is IUndoableObject udbl && udbl.EditLevel == 0 && Model is Core.ISupportUndo undo)
+          undo.BeginEdit();
+
         HookChangedEvents(Model);
         IsBusy = false;
       }

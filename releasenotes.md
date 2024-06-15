@@ -2,6 +2,21 @@
 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
+## CSLA .NET version 8.2.3 release
+
+CSLA .NET version 8.2.3 fixes bugs.
+
+* [#4026](https://github.com/MarimerLLC/csla/issues/4026) Blazor ViewModel with ManagedObjectLifetime save issue
+
+### Change List
+
+* https://github.com/MarimerLLC/csla/compare/v8.2.2...v8.2.3
+
+### Contributors
+
+* @russblair
+* @wfacey
+
 ## CSLA .NET version 8.2.2 release
 
 Bug fixes.

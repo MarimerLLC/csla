@@ -72,6 +72,16 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    public void DateTimeKind()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeHolder>();
+      var obj = portal.Create();
+      DateTime.SpecifyKind(obj.Value, System.DateTimeKind.Local);
+      var obj2 = obj.Clone();
+      Assert.AreEqual(obj.Value.Kind, obj2.Value.Kind);
+    }
+
+    [TestMethod]
     public void CorrectDefaultSerializer()
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
@@ -557,5 +567,20 @@ namespace Csla.Test.Serialization
     {
       Name += " server";
     }
+  }
+
+  [Serializable]
+  public class DateTimeHolder : BusinessBase<DateTimeHolder>
+  {
+    public static readonly PropertyInfo<DateTime> ValueProperty = RegisterProperty<DateTime>(nameof(Value));
+    public DateTime Value
+    {
+      get => GetProperty(ValueProperty);
+      set => SetProperty(ValueProperty, value);
+    }
+
+    [Create]
+    private void Create()
+    { }
   }
 }

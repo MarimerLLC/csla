@@ -95,7 +95,7 @@ namespace Csla.Blazor.Test.Fakes
     [Create]
     private void Create([Inject] IChildDataPortal<FakePersonEmailAddresses> dataPortal)
     {
-      Id = new Guid();
+      Id = Guid.NewGuid();
       // Create an empty list for holding email addresses
       LoadProperty(EmailAddressesProperty, dataPortal.CreateChild());
 

@@ -39,13 +39,15 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
     }
 
     #region Private Helper Methods
-    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax fieldDeclaration)
+    /// <summary>
+    /// Determines whether the field type is nullable.
+    /// </summary>
+    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed.</param>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the field declaration.</param>
+    /// <returns><c>true</c> if the field type is nullable; otherwise, <c>false</c>.</returns>
+    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
-      if (fieldDeclaration.Type is NullableTypeSyntax nullableType)
-      {
-        return true;
-      }
-      return false;
+      return propertyDeclaration.Type is NullableTypeSyntax nullableType;
     }
 
     /// <summary>

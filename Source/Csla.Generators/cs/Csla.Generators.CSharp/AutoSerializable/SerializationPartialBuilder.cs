@@ -178,12 +178,6 @@ namespace Csla.Generators.CSharp.AutoSerialization
     {
       textWriter.WriteLine("void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
       AppendBlockStart(textWriter);
-      if (HasChildrenToExpose(typeDefinition))
-      {
-        //textWriter.WriteLine("IMobileObject mobileObject;");
-        //textWriter.WriteLine("SerializationInfo childInfo;");
-        //textWriter.WriteLine();
-      }
 
       foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
       {

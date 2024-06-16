@@ -33,11 +33,20 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
       propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
       propertyDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type);
       propertyDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(propertyDeclaration.Type);
+      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, propertyDeclaration);
 
       return propertyDefinition;
     }
 
     #region Private Helper Methods
+    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax fieldDeclaration)
+    {
+      if (fieldDeclaration.Type is NullableTypeSyntax nullableType)
+      {
+        return true;
+      }
+      return false;
+    }
 
     /// <summary>
     /// Extract the name of the property for which we are building information

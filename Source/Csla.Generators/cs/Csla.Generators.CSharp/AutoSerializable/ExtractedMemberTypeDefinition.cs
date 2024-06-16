@@ -34,6 +34,6 @@ namespace Csla.Generators.CSharp.AutoSerialization
     /// Whether the type implements the IMobileObject interface (directly or indirectly)
     /// </summary>
     public bool ImplementsIMobileObject { get; set; } = false;
-
+    public bool Nullable { get; internal set; }
   }
 }

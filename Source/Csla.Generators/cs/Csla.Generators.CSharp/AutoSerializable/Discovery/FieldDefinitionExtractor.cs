@@ -33,8 +33,17 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
       fieldDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(fieldDeclaration.Declaration.Type);
       fieldDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
       fieldDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(fieldDeclaration.Declaration.Type);
-
+      fieldDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, fieldDeclaration);
       return fieldDefinition;
+    }
+
+    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
+    {
+      if (fieldDeclaration.Declaration.Type is NullableTypeSyntax nullableType)
+      {
+        return true;
+      }
+      return false;
     }
 
     #region Private Helper Methods

@@ -1,6 +1,7 @@
 using System.Text;
 using Csla.Generators.CSharp.AutoSerialization.Discovery;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
@@ -15,13 +16,12 @@ namespace Csla.Generators.CSharp.AutoSerialization
       var classDeclarations = context.SyntaxProvider.ForAttributeWithMetadataName(
               "Csla.Serialization.AutoSerializableAttribute",
 
-              predicate: static (s, _) => s is ClassDeclarationSyntax || s is StructDeclarationSyntax,
+              predicate: static (s, _) => (s is ClassDeclarationSyntax || s is StructDeclarationSyntax) && s is TypeDeclarationSyntax type && type.Modifiers.Any(SyntaxKind.PartialKeyword),
               transform: static (ctx, _) =>
               {
                 if (ctx.TargetNode is TypeDeclarationSyntax typeDeclarationSyntax)
                 {
-                  var typeDefinition = TypeDefinitionExtractor.ExtractTypeDefinition(new DefinitionExtractionContext(ctx.SemanticModel), typeDeclarationSyntax);
-                  return typeDefinition;
+                  return TypeDefinitionExtractor.ExtractTypeDefinition(new DefinitionExtractionContext(ctx.SemanticModel), typeDeclarationSyntax);
                 }
                 return null;
               })
@@ -34,14 +34,12 @@ namespace Csla.Generators.CSharp.AutoSerialization
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
         var (compilation, classes) = source;
+        SerializationPartialBuilder builder = new SerializationPartialBuilder();
 
         foreach (var typeDefinition in classes)
         {
-          GenerationResults generationResults;
-          SerializationPartialBuilder builder = new SerializationPartialBuilder();
-
           // Build the text for the generated type using the builder
-          generationResults = builder.BuildPartialTypeDefinition(typeDefinition);
+          var generationResults = builder.BuildPartialTypeDefinition(typeDefinition);
 
           // Add the generated source to the output
           spc.AddSource($"{generationResults.FullyQualifiedName}.g.cs",

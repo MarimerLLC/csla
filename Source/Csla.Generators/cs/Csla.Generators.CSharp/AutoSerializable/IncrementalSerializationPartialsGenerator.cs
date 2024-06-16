@@ -34,8 +34,7 @@ namespace Csla.Generators.CSharp.AutoSerialization
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
         var (compilation, classes) = source;
-        SerializationPartialBuilder builder = new SerializationPartialBuilder();
-
+        SerializationPartialBuilder builder = new SerializationPartialBuilder(compilation.Options.NullableContextOptions.AnnotationsEnabled());
         foreach (var typeDefinition in classes)
         {
           // Build the text for the generated type using the builder

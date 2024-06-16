@@ -27,14 +27,15 @@ namespace Csla.Generators.CSharp.AutoSerialization
               })
           .Where(static m => m is not null);
 
+      var nullable = context.CompilationProvider.Select((c, _) => c.Options.NullableContextOptions.AnnotationsEnabled());
       // Combine the collected syntax nodes with the semantic model
-      var compilationAndClasses = context.CompilationProvider.Combine(classDeclarations.Collect());
+      var compilationAndClasses = nullable.Combine(classDeclarations.Collect());
 
       // Set up the generation phase
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
-        var (compilation, classes) = source;
-        SerializationPartialBuilder builder = new SerializationPartialBuilder(compilation.Options.NullableContextOptions.AnnotationsEnabled());
+        var (nullable, classes) = source;
+        SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable);
         foreach (var typeDefinition in classes)
         {
           // Build the text for the generated type using the builder

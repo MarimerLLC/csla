@@ -3,6 +3,6 @@
     <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Csla" Version="8.0.0-R24021201" />
+    <PackageReference Include="Csla" />
   </ItemGroup>
 </Project>

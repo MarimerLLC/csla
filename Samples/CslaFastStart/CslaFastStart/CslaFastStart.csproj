@@ -7,9 +7,6 @@
     <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Csla.8.0.0-R24021201\analyzers\c#\Csla.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Csla" Version="8.0.0-R24021201" />
   </ItemGroup>
 </Project>

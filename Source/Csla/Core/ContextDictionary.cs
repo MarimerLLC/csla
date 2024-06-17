@@ -98,8 +98,8 @@ namespace Csla.Core
     /// <inheritdoc cref="System.Collections.IDictionary.Remove(object)"/>
     public void Remove(object key)
     {
-      object dummy;
-      var removed = TryRemove(key, out dummy);
+      object _;
+      var removed = TryRemove(key, out _);
       if (!removed)
       {
         throw new NotSupportedException("The key does not exist in the dictionary.");

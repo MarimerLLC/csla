@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CslaVersion>8.0.0-R24021201</CslaVersion>
+  </PropertyGroup>     
+  <ItemGroup>
+    <PackageVersion Include="Csla" Version="$(CslaVersion)" />
+  </ItemGroup>
+</Project>

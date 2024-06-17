@@ -1,5 +1,6 @@
 ﻿@page "/editperson"
 @page "/editperson/{id}"
+@using Csla.Blazor
 @* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 @rendermode InteractiveAuto
 @inject Csla.Blazor.State.StateManager StateManager
@@ -29,42 +30,16 @@ else
   <p>
     <a href="listpersons">List of people</a>
   </p>
-  <table class="table">
-    <thead>
-      <tr>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Id</td>
-        <td>@vm.Model.Id</td>
-      </tr>
-      @if (vm.GetPropertyInfo(() => vm.Model.Name).CanRead)
-      {
-        <tr>
-          <td>@(vm.GetPropertyInfo(() => vm.Model.Name).FriendlyName)</td>
-          <td>
-            <TextInput Property="@(vm.GetPropertyInfo(() => vm.Model.Name))" />
-          </td>
-        </tr>
-      }
-      <tr>
-        <td>Name length</td>
-        <td>@vm.Model.NameLength</td>
-      </tr>
-      <tr>
-        <td>IsNew</td>
-        <td>@vm.Model.IsNew</td>
-      </tr>
-      <tr>
-        <td>IsSavable</td>
-        <td>@vm.Model.IsSavable</td>
-      </tr>
-    </tbody>
-  </table>
-  <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button>
+    <EditForm Model="@vm.Model" OnSubmit="vm.SaveAsync">
+        <CslaValidator />
+        <ValidationSummary />
+
+        <InputText @bind-Value="vm.Model.Name" />
+        <CslaValidationMessages For="() => vm.Model.Name" />
+        <button type="submit" disabled="@(!vm.Model.IsSavable)">Save</button>
+    </EditForm>
+
+  @* <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable)">Save person</button> *@
 }
 
 @code {

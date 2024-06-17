@@ -1,0 +1,64 @@
+﻿@page "/editpersonv"
+@page "/editpersonv/{id}"
+@using Csla.Blazor
+@using System.ComponentModel.DataAnnotations
+@using Csla.Rules
+@* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
+@rendermode InteractiveAuto
+@inject Csla.Blazor.State.StateManager StateManager
+@inject Csla.IDataPortal<PersonEdit> personEditPortal
+@inject NavigationManager NavigationManager
+@inject ApplicationContext _app
+
+<h1>Edit Person</h1>
+
+<p>This component demonstrates editing a BusinessBase-derived object.</p>
+
+@* <p style="background-color:red;color:white">@vm.ViewModelErrorText</p>
+ *@
+  <p>
+    <a href="listpersons">List of people</a>
+  </p>
+    <EditForm Model="@Person" OnSubmit="Save">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText @bind-Value="Person.Name" />
+        <ValidationMessage For="() => Person.Name" />
+        <button type="submit">Save</button>
+    </EditForm>
+
+@code {
+    [Parameter]
+    public string? id { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+
+        var personEdit = await (string.IsNullOrWhiteSpace(id) ? personEditPortal.CreateAsync() : personEditPortal.FetchAsync(int.Parse(id)));
+
+        Person = new()
+            {
+                Name = personEdit.Name
+            };
+    }
+
+    public PersonModel Person { get; set; } = new();
+
+    public void Save()
+    {
+
+    }
+
+    public class PersonModel
+    {
+        [Required]
+        [MaxLength(4)]
+        public string Name { get; set; }
+    }
+}

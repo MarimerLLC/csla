@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34407.89
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorExample", "BlazorExample\BlazorExample\BlazorExample.csproj", "{F4753295-1FE8-44E6-87AF-543965CB92C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorExample", "BlazorExample\BlazorExample\BlazorExample.csproj", "{F4753295-1FE8-44E6-87AF-543965CB92C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorExample.Client", "BlazorExample\BlazorExample.Client\BlazorExample.Client.csproj", "{2BDEAB41-F3CB-4608-8A93-52B93A47461B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorExample.Client", "BlazorExample\BlazorExample.Client\BlazorExample.Client.csproj", "{2BDEAB41-F3CB-4608-8A93-52B93A47461B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessLibrary", "BlazorExample\BusinessLibrary\BusinessLibrary.csproj", "{A9342BA2-11F2-4535-8CA8-032C3EEC0519}"
 EndProject
@@ -14,6 +14,12 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.EF", "BlazorExample\DataAccess.EF\DataAccess.EF.csproj", "{C09ED17F-A53D-424B-8410-EF25FD89DAE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess.Mock", "BlazorExample\DataAccess.Mock\DataAccess.Mock.csproj", "{041EF3E4-AF97-4860-A300-A0DCFCD20682}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor.WebAssembly", "..\..\Source\Csla.Blazor.WebAssembly\Csla.Blazor.WebAssembly.csproj", "{B9DC1ADA-C140-49C3-BFBE-724746792C20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor", "..\..\Source\Csla.Blazor\Csla.Blazor.csproj", "{441E577B-A0A4-41B0-BE31-6DA24E63BAAA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla", "..\..\Source\Csla\Csla.csproj", "{BD06309F-5452-4C9B-8BAA-69324BF7AA43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +51,18 @@ Global
 		{041EF3E4-AF97-4860-A300-A0DCFCD20682}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{041EF3E4-AF97-4860-A300-A0DCFCD20682}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{041EF3E4-AF97-4860-A300-A0DCFCD20682}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9DC1ADA-C140-49C3-BFBE-724746792C20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9DC1ADA-C140-49C3-BFBE-724746792C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9DC1ADA-C140-49C3-BFBE-724746792C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9DC1ADA-C140-49C3-BFBE-724746792C20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{441E577B-A0A4-41B0-BE31-6DA24E63BAAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{441E577B-A0A4-41B0-BE31-6DA24E63BAAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{441E577B-A0A4-41B0-BE31-6DA24E63BAAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{441E577B-A0A4-41B0-BE31-6DA24E63BAAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD06309F-5452-4C9B-8BAA-69324BF7AA43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD06309F-5452-4C9B-8BAA-69324BF7AA43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD06309F-5452-4C9B-8BAA-69324BF7AA43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD06309F-5452-4C9B-8BAA-69324BF7AA43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

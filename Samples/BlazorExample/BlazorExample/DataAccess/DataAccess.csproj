@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    <UseLocalProject>true</UseLocalProject>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla" Version="9.0.0-R24051102" />
+    <PackageReference Include="Csla" Version="9.0.0-R24051102" Condition="$(UseLocalProject) != true" />
+    <ProjectReference Include="..\Csla\Csla.csproj" Condition="$(UseLocalProject) != true" />
   </ItemGroup>
 
 

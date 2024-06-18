@@ -6,8 +6,8 @@
 // <summary>Dictionary type that is serializable</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Properties;
 using Csla.Serialization.Mobile;
-using System.Collections;
 using System.Collections.Concurrent;
 
 namespace Csla.Core
@@ -76,25 +76,33 @@ namespace Csla.Core
     /// <inheritdoc cref="System.Collections.IDictionary.IsReadOnly"/>
     public bool IsReadOnly
     {
-      get => ((IDictionary)this).IsReadOnly;
+      get => false;
     }
 
     /// <inheritdoc cref="System.Collections.IDictionary.IsFixedSize"/>
     public bool IsFixedSize
     {
-      get => ((IDictionary)this).IsFixedSize;
+      get => false;
     }
 
     /// <inheritdoc cref="System.Collections.IDictionary.Add(object, object?)"/>
     public void Add(object key, object value)
     {
-      ((IDictionary)this).Add(key, value);
+      bool added = TryAdd(key, value);
+      if (!added)
+      {
+        throw new ArgumentException(Resources.KeyAlreadyExistsException);
+      }
     }
 
     /// <inheritdoc cref="System.Collections.IDictionary.Remove(object)"/>
     public void Remove(object key)
     {
-      ((IDictionary)this).Remove(key);
+      var removed = TryRemove(key, out var _);
+      if (!removed)
+      {
+        throw new NotSupportedException(Resources.KeyDoesNotExistException);
+      }
     }
 
     #endregion
@@ -104,19 +112,14 @@ namespace Csla.Core
     /// <inheritdoc cref="System.Collections.ICollection.SyncRoot"/>
     public object SyncRoot
     {
-      get => ((IDictionary)this).SyncRoot;
+      get => throw new NotSupportedException(Resources.SyncrootNotSupportedException);
+
     }
 
     /// <inheritdoc cref="System.Collections.ICollection.IsSynchronized"/>
     public bool IsSynchronized
     {
-      get => ((ICollection)this).IsSynchronized;
-    }
-
-    /// <inheritdoc cref="System.Collections.ICollection.CopyTo(Array, int)"/>
-    public void CopyTo(Array array, int index) 
-    {
-      ((ICollection)this).CopyTo(array, index);
+      get => false;
     }
 
     #endregion

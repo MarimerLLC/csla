@@ -1,12 +1,11 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="SerializationFormatterFactory.GetFormatter().cs" company="Marimer LLC">
+// <copyright file="MobileFormatter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
 
-using System.Runtime.Serialization;
 using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
@@ -115,7 +114,7 @@ namespace Csla.Serialization.Mobile
     {
       var cslaOptions = applicationContext.GetRequiredService<CslaOptions>();
       if (cslaOptions.SerializationOptions.FormatterOptions is not MobileFormatterOptions options)
-        throw new NotSupportedException("MobileFormatterOptions == null");
+        throw new InvalidOperationException("MobileFormatterOptions == null");
       return options;
     }
 
@@ -161,7 +160,7 @@ namespace Csla.Serialization.Mobile
           }
           else
           {
-            throw new InvalidOperationException(
+            throw new MobileFormatterException(
               string.Format(Resources.MustImplementIMobileObject,
               obj.GetType().Name));
           }
@@ -170,7 +169,7 @@ namespace Csla.Serialization.Mobile
 
       if (info is null)
       {
-        throw new InvalidOperationException(
+        throw new MobileFormatterException(
           string.Format(Resources.MustImplementIMobileObject,
           obj.GetType().Name));
       }
@@ -197,7 +196,7 @@ namespace Csla.Serialization.Mobile
 
         if (result == null)
         {
-          throw new SerializationException(string.Format(
+          throw new MobileFormatterException(string.Format(
             Resources.MobileFormatterUnableToDeserialize,
             typeName));
         }
@@ -256,7 +255,7 @@ namespace Csla.Serialization.Mobile
 
         if (type == null)
         {
-          throw new SerializationException(string.Format(
+          throw new MobileFormatterException(string.Format(
             Resources.MobileFormatterUnableToDeserialize, typeName));
         }
         else if (type == typeof(NullPlaceholder))
@@ -283,7 +282,7 @@ namespace Csla.Serialization.Mobile
           }
           else
           {
-            throw new SerializationException(string.Format(
+            throw new MobileFormatterException(string.Format(
               Resources.MustImplementIMobileObject, type.Name));
           }
         }

@@ -9,30 +9,24 @@
 namespace Csla.Serialization.Mobile;
 
 /// <inheritdoc />
-public class TypeMap<T, S> : ITypeMap
+/// <summary>
+/// Creates an instance of the class.
+/// </summary>
+/// <param name="canSerialize">A function that determines if the type can be serialized.</param>
+public class TypeMap<T, S>(Func<Type, bool> canSerialize) : ITypeMap
   where S : IMobileSerializer
 {
   /// <summary>
   /// Creates an instance of the class.
   /// </summary>
   public TypeMap()
-  {
-    CanSerialize = (t) => t == OriginalType;
-  }
-
-  /// <summary>
-  /// Creates an instance of the class.
-  /// </summary>
-  /// <param name="canSerialize">A function that determines if the type can be serialized.</param>
-  public TypeMap(Func<Type, bool> canSerialize)
-  {
-    CanSerialize = canSerialize;
-  }
+    : this(type => type == typeof(T))
+  { }
 
   /// <inheritdoc />
   public Type OriginalType => typeof(T);
   /// <inheritdoc />
   public Type SerializerType => typeof(S);
   /// <inheritdoc />
-  public Func<Type, bool> CanSerialize { get; set; }
+  public Func<Type, bool> CanSerialize { get; private set; } = canSerialize;
 }

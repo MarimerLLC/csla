@@ -14,16 +14,16 @@ namespace Csla.Serialization.Mobile;
 public interface ITypeMap
 {
   /// <summary>
-  /// Gets or sets the original type.
+  /// Gets the original type.
   /// </summary>
   Type OriginalType { get; }
   /// <summary>
-  /// Gets or sets the serializer type.
+  /// Gets the serializer type.
   /// </summary>
   Type SerializerType { get; }
   /// <summary>
-  /// Gets or sets a function that determines 
+  /// Gets a function that determines 
   /// if the type can be serialized.
   /// </summary>
-  Func<Type, bool> CanSerialize { get; internal set; }
+  Func<Type, bool> CanSerialize { get; }
 }

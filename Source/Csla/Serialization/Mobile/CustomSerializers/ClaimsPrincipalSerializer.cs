@@ -14,7 +14,7 @@ namespace Csla.Serialization.Mobile.CustomSerializers;
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.
 /// </summary>
-public class ClaimsPrincipalSerializer : IMobileSerializer
+internal class ClaimsPrincipalSerializer : IMobileSerializer
 {
   /// <inheritdoc />
   public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);
@@ -50,7 +50,7 @@ using System.Text.Json;
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.
 /// </summary>
-public class ClaimsPrincipalSerializer : IMobileSerializer
+internal class ClaimsPrincipalSerializer : IMobileSerializer
 {
   /// <inheritdoc />
   public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);

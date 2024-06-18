@@ -19,9 +19,8 @@ namespace Csla.Configuration
     /// Sets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc). Default is MobileFormatter.
-    /// Gets or sets the serialization formatter type.
     /// </summary>
-    public SerializationOptions SerializationFormatter<T>() where T : ISerializationFormatter
+    public SerializationOptions UseSerializationFormatter<T>() where T : ISerializationFormatter
     {
       SerializationFormatterType = typeof(T);
       return this;

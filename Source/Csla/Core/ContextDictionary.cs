@@ -6,8 +6,8 @@
 // <summary>Dictionary type that is serializable</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Properties;
 using Csla.Serialization.Mobile;
-using System.Collections;
 using System.Collections.Concurrent;
 
 namespace Csla.Core
@@ -91,7 +91,7 @@ namespace Csla.Core
       bool added = TryAdd(key, value);
       if (!added)
       {
-        throw new ArgumentException("An item with the same key has already been added.");
+        throw new ArgumentException(Resources.KeyAlreadyExistsException);
       }
     }
 
@@ -102,7 +102,7 @@ namespace Csla.Core
       var removed = TryRemove(key, out _);
       if (!removed)
       {
-        throw new NotSupportedException("The key does not exist in the dictionary.");
+        throw new NotSupportedException(Resources.KeyDoesNotExistException);
       }
     }
 
@@ -113,7 +113,7 @@ namespace Csla.Core
     /// <inheritdoc cref="System.Collections.ICollection.SyncRoot"/>
     public object SyncRoot
     {
-      get => throw new NotSupportedException("SyncRoot NotSupported");
+      get => throw new NotSupportedException(Resources.SyncrootNotSupportedException);
 
     }
 

@@ -529,6 +529,24 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An element with the same key already exists in the dictionary object..
+        /// </summary>
+        public static string KeyAlreadyExistsException {
+            get {
+                return ResourceManager.GetString("KeyAlreadyExistsException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key is null..
+        /// </summary>
+        public static string KeyDoesNotExistException {
+            get {
+                return ResourceManager.GetString("KeyDoesNotExistException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List item must be marked as a child object.
         /// </summary>
         public static string ListItemNotAChildException {
@@ -1074,6 +1092,15 @@ namespace Csla.Properties {
         public static string SyncDataAccessNotSupportedException {
             get {
                 return ResourceManager.GetString("SyncDataAccessNotSupportedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SyncRoot NotSupported.
+        /// </summary>
+        public static string SyncrootNotSupportedException {
+            get {
+                return ResourceManager.GetString("SyncrootNotSupportedException", resourceCulture);
             }
         }
         

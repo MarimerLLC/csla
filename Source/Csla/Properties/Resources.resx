@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -484,5 +489,14 @@
   </data>
   <data name="StringNotNullOrWhiteSpaceException" xml:space="preserve">
     <value>{0} must not be null, empty or only consisting of white spaces.</value>
+  </data>
+  <data name="KeyAlreadyExistsException" xml:space="preserve">
+    <value>An element with the same key already exists in the dictionary object.</value>
+  </data>
+  <data name="KeyDoesNotExistException" xml:space="preserve">
+    <value>Key is null.</value>
+  </data>
+  <data name="SyncrootNotSupportedException" xml:space="preserve">
+    <value>SyncRoot NotSupported</value>
   </data>
 </root>

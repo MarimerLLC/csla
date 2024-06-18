@@ -58,7 +58,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException), "Type NonSerializableType must implement IMobileObject")]
+    [ExpectedException(typeof(MobileFormatterException))]
     public void CustomSerializerNotRegistered()
     {
       var services = new ServiceCollection();
@@ -68,7 +68,7 @@ namespace Csla.Test.Serialization
 
       var nonSerializable = new NonSerializableType { Name = "test" };
       var cloner = new Core.ObjectCloner(applicationContext);
-      var clone = (NonSerializableType)cloner.Clone(nonSerializable);
+      _ = (NonSerializableType)cloner.Clone(nonSerializable);
     }
 
     [TestMethod]
@@ -85,7 +85,7 @@ namespace Csla.Test.Serialization
 
       var nonSerializable = new NonSerializableType { Name = "test" };
       var cloner = new Core.ObjectCloner(applicationContext);
-      var clone = (NonSerializableType)cloner.Clone(nonSerializable);
+      _ = (NonSerializableType)cloner.Clone(nonSerializable);
     }
 
     [TestMethod]

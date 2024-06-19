@@ -27,9 +27,6 @@ namespace Csla.Test.Serialization
       services.TryAddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
       services.TryAddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
       services.AddCsla();
-      //services.AddCsla(o => o
-      //  .Serialization(o => o
-      //    .AddMobileFormatter(o => o.CustomSerializers.AddRange(customSerializers))));
 
       serviceProvider = services.BuildServiceProvider();
       ApplicationContext = serviceProvider.GetRequiredService<ApplicationContext>();

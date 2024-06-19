@@ -138,28 +138,21 @@ namespace Csla.Serialization.Mobile
         {
           var options = GetOptions();
           var serializerType = options.CustomSerializers.FirstOrDefault(
-            s => s.CanSerialize(obj.GetType()))?.SerializerType;
-          if (serializerType != null)
+            s => s.CanSerialize(obj.GetType()))?.SerializerType ??
+            throw new InvalidOperationException(string.Format(Resources.MustImplementIMobileObject, obj.GetType().Name));
+
+          var serializer = (IMobileSerializer)applicationContext.CreateInstanceDI(serializerType);
+          info = new SerializationInfo(_serializationReferences.Count + 1);
+          _serializationReferences.Add(obj, info);
+          info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
+          try
           {
-            var serializer = (IMobileSerializer)applicationContext.CreateInstanceDI(serializerType);
-            info = new SerializationInfo(_serializationReferences.Count + 1);
-            _serializationReferences.Add(obj, info);
-            info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
-            try
-            {
-              serializer.Serialize(obj, info);
-            }
-            catch (Exception ex)
-            {
-              throw new MobileFormatterException(
-                $"CustomSerializerType:{serializerType}; objectType:{obj.GetType()}", ex);
-            }
+            serializer.Serialize(obj, info);
           }
-          else
+          catch (Exception ex)
           {
             throw new MobileFormatterException(
-              string.Format(Resources.MustImplementIMobileObject,
-              obj.GetType().Name));
+              $"CustomSerializerType:{serializerType}; objectType:{obj.GetType()}", ex);
           }
         }
       }

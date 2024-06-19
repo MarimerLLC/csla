@@ -1,4 +1,4 @@
-﻿#if NET462_OR_GREATER || NETSTANDARD2_0 || NET8_0_OR_GREATER
+#if NET462_OR_GREATER || NETSTANDARD2_0 || NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -82,7 +82,7 @@ namespace Csla.Configuration
       if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
 
       // default to AsyncLocal context manager
-      services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
+      services.TryAddScoped(contextManagerType, typeof(Core.ApplicationContextManagerAsyncLocal));
     }
 
     private static bool LoadContextManager(IServiceCollection services, string managerTypeName)
@@ -90,7 +90,7 @@ namespace Csla.Configuration
       var managerType = Type.GetType(managerTypeName, false);
       if (managerType != null)
       {
-        services.AddScoped(typeof(Core.IContextManager), managerType);
+        services.TryAddScoped(typeof(Core.IContextManager), managerType);
         return true;
       }
       return false;

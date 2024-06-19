@@ -14,10 +14,6 @@ namespace Csla.Serialization.Mobile;
 public interface ITypeMap
 {
   /// <summary>
-  /// Gets the original type.
-  /// </summary>
-  Type OriginalType { get; }
-  /// <summary>
   /// Gets the serializer type.
   /// </summary>
   Type SerializerType { get; }

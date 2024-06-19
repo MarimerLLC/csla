@@ -171,7 +171,7 @@ namespace Csla.Core
           {
             // this is a mobile object, store the serialized value
             using MemoryStream buffer = new MemoryStream();
-            var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+            var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
             formatter.Serialize(buffer, value);
             state.Add(fieldName, buffer.ToArray());
           }
@@ -188,7 +188,7 @@ namespace Csla.Core
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
       {
-        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+        var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
         formatter.Serialize(buffer, state);
         _stateStack.Push(buffer.ToArray());
       }
@@ -240,7 +240,7 @@ namespace Csla.Core
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+          var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
           state = (MobileDictionary<string, object>)formatter.Deserialize(buffer);
         }
 
@@ -280,7 +280,7 @@ namespace Csla.Core
               // this is a mobile object, deserialize the value
               using MemoryStream buffer = new MemoryStream((byte[])state[fieldName]);
               buffer.Position = 0;
-              var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+              var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
               var obj = formatter.Deserialize(buffer);
               h.DynamicMemberSet(this, obj);
             }

@@ -58,7 +58,7 @@ namespace Csla.Test.Serialization
         var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
         var serializerType = serializer.GetType();
         Assert.AreEqual(typeof(CustomFormatter), serializerType);
-        var s = Csla.Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
+        var s = applicationContext.GetRequiredService<ISerializationFormatter>();
         Assert.IsInstanceOfType(s, typeof(CustomFormatter));
       }
       finally

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Csla.State;
 using Csla.Security;
 using Csla.Blazor.State.Messages;
+using Csla.Serialization;
 
 namespace Csla.AspNetCore.Blazor.State
 {
@@ -50,7 +51,7 @@ namespace Csla.AspNetCore.Blazor.State
         {
           message.Principal = applicationContext.Principal;
         }
-        var formatter = Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
+        var formatter = applicationContext.GetRequiredService<ISerializationFormatter>();
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, message);
         result.ResultStatus = ResultStatuses.Success;
@@ -67,7 +68,7 @@ namespace Csla.AspNetCore.Blazor.State
     [HttpPut]
     public virtual void Put(byte[] updatedSessionData)
     {
-      var formatter = Serialization.SerializationFormatterFactory.GetFormatter(applicationContext);
+      var formatter = applicationContext.GetRequiredService<ISerializationFormatter>();
       var buffer = new MemoryStream(updatedSessionData)
       {
         Position = 0

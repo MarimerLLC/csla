@@ -185,7 +185,7 @@ namespace Csla.Server.Hosts
 
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
-      var serializer = SerializationFormatterFactory.GetFormatter(_applicationContext);
+      var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       DataPortalErrorInfo errorData = null;
       if (UseTextSerialization)
@@ -220,7 +220,7 @@ namespace Csla.Server.Hosts
       var requestArray = Convert.FromBase64String(requestString);
       var requestBuffer = new MemoryStream(requestArray);
 
-      var serializer = SerializationFormatterFactory.GetFormatter(_applicationContext);
+      var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       DataPortalErrorInfo errorData = null;
       try
@@ -259,7 +259,7 @@ namespace Csla.Server.Hosts
         {
           Position = 0
         };
-        var request = SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(buffer.ToArray());
+        var request = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(buffer.ToArray());
         result = await CallPortal(operation, request);
       }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -271,7 +271,7 @@ namespace Csla.Server.Hosts
       var portalResult = _applicationContext.CreateInstance<DataPortalResponse>();
       portalResult.ErrorData = errorData;
       portalResult.ObjectData = result.ObjectData;
-      var bytes = SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(portalResult);
+      var bytes = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(portalResult);
       return bytes;
     }
 #endif

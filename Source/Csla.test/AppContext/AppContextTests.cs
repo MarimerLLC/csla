@@ -7,7 +7,9 @@
 //-----------------------------------------------------------------------
 
 using Csla.Configuration;
+using Csla.Core;
 using Csla.TestHelpers;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.AppContext
@@ -87,6 +89,78 @@ namespace Csla.Test.AppContext
       //Assert.AreEqual("client context data", Csla.ApplicationContext.ClientContext["clientcontext"], "Client context data lost");
       Assert.AreEqual("client context data", TestResults.GetResult("clientcontext"), "Global context data lost");
       Assert.AreEqual("new global value", TestResults.GetResult("globalcontext"), "New global value lost");
+    }
+
+    /// <summary>
+    /// Tests the addition of a key-value pair to the ContextDictionary.
+    /// This method verifies that a new key-value pair can be successfully added
+    /// and subsequently retrieved from the ContextDictionary, ensuring the dictionary's
+    /// add functionality works as expected.
+    /// </summary>
+    [TestMethod]
+    public void ContextDictionaryAdd()
+    {
+      var contextDectionary = new ContextDictionary();
+      string key = "key1";
+      string value = "value1";
+
+      contextDectionary.Add(key, value);
+
+      Assert.AreEqual(value, contextDectionary[key]);
+    }
+
+    /// <summary>
+    /// Tests that adding a duplicate key to the ContextDictionary throws the correct exception.
+    /// This method verifies that the ContextDictionary enforces unique keys by attempting to add
+    /// a key-value pair where the key already exists in the dictionary. The expected behavior is
+    /// that an ArgumentException is thrown, indicating the key's presence and preventing the addition.
+    /// </summary>
+    [TestMethod]
+    public void ContextDictionaryAddThrowsCorrectException()
+    {
+      var contextDectionary = new ContextDictionary();
+      string key = "key1";
+      string value = "value1";
+
+      contextDectionary[key] = value;
+
+      Assert.ThrowsException<System.ArgumentException>(() => contextDectionary.Add(key, value));
+    }
+
+    /// <summary>
+    /// Tests the removal of a key-value pair from the ContextDictionary.
+    /// This method verifies that a key-value pair can be successfully removed from the ContextDictionary,
+    /// ensuring the dictionary's remove functionality works as expected. It adds a key-value pair, removes it,
+    /// and then checks that the key no longer exists in the dictionary.
+    /// </summary>
+    [TestMethod]
+    public void ContextDictionaryRemove()
+    {
+      var contextDectionary = new ContextDictionary();
+      string key = "key1";
+      string value = "value1";
+
+
+      contextDectionary[key] = value;
+      contextDectionary.Remove(key);
+
+      Assert.IsFalse(contextDectionary.ContainsKey(key));
+    }
+
+    /// <summary>
+    /// Tests that attempting to remove a non-existent key from the ContextDictionary throws the correct exception.
+    /// This method verifies the dictionary's behavior when a removal operation is attempted for a key that does not exist.
+    /// The expected behavior is that a NotSupportedException is thrown, indicating that the operation is not supported
+    /// for keys that are not present in the dictionary.
+    /// </summary>
+    [TestMethod]
+    public void ContextDictionaryRemoveThrowsCorrectException()
+    {
+      var contextDectionary = new ContextDictionary();
+      string key = "key1";
+      string value = "value1";
+
+      Assert.ThrowsException<System.NotSupportedException>(() => contextDectionary.Remove(key));
     }
 
     #endregion

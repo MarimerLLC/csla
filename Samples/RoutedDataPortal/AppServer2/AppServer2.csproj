@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24021202" />
+    <PackageReference Include="Csla.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

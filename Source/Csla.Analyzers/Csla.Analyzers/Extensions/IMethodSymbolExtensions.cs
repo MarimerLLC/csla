@@ -31,17 +31,17 @@ namespace Csla.Analyzers.Extensions
             @this.Name == CslaMemberConstants.Properties.LoadPropertyConvert)));
     }
 
-    internal static DataPortalOperationQualification IsDataPortalOperation(this IMethodSymbol @this)
+    internal static CslaOperationQualification IsDataPortalOperation(this IMethodSymbol @this)
     {
-      return @this is null ? new DataPortalOperationQualification() :
+      return @this is null ? new CslaOperationQualification() :
         @this.IsRootDataPortalOperation().Combine(@this.IsChildDataPortalOperation());
     }
 
-    internal static DataPortalOperationQualification IsRootDataPortalOperation(this IMethodSymbol @this)
+    internal static CslaOperationQualification IsRootDataPortalOperation(this IMethodSymbol @this)
     {
       if (@this is null)
       {
-        return new DataPortalOperationQualification();
+        return new CslaOperationQualification();
       }
       else
       {
@@ -54,15 +54,15 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Operations.DataPortalDeleteSelf ||
           @this.Name == CslaMemberConstants.Operations.DataPortalExecute;
         var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalRootOperationAttribute());
-        return new DataPortalOperationQualification(byNamingConvention, byAttribute);
+        return new CslaOperationQualification(byNamingConvention, byAttribute);
       }
     }
 
-    internal static DataPortalOperationQualification IsChildDataPortalOperation(this IMethodSymbol @this)
+    internal static CslaOperationQualification IsChildDataPortalOperation(this IMethodSymbol @this)
     {
       if (@this is null)
       {
-        return new DataPortalOperationQualification();
+        return new CslaOperationQualification();
       }
       else
       {
@@ -74,7 +74,22 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf ||
           @this.Name == CslaMemberConstants.Operations.ChildExecute;
         var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalChildOperationAttribute());
-        return new DataPortalOperationQualification(byNamingConvention, byAttribute);
+        return new CslaOperationQualification(byNamingConvention, byAttribute);
+      }
+    }
+
+    internal static CslaOperationQualification IsAddObjectAuthorizationRulesOperation(this IMethodSymbol @this)
+    {
+      if (@this is null)
+      {
+        return new CslaOperationQualification();
+      }
+      else
+      {
+        var byNamingConvention =
+          @this.Name == CslaMemberConstants.Operations.AddObjectAuthorizationRules;
+        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsObjectAuthorizationRulesAttribute());
+        return new CslaOperationQualification(byNamingConvention, byAttribute);
       }
     }
   }

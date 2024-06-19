@@ -59,7 +59,7 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(MobileFormatterException))]
+    [ExpectedException(typeof(InvalidOperationException))]
     public void CustomSerializerNotRegistered()
     {
       var services = new ServiceCollection();

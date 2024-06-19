@@ -23,12 +23,13 @@ namespace Csla.Test.Serialization
       var services = new ServiceCollection();
       services.AddCsla(o => o
         .Serialization(o => o
-          .AddMobileFormatter(o => o
+          .UseMobileFormatter(o => o
             .CustomSerializers.Add(
             new TypeMap<NonSerializableType, NonSerializableTypeSerializer>(NonSerializableTypeSerializer.CanSerialize))
             )));
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
+      var options = applicationContext.GetRequiredService<CslaOptions>();
 
       var nonSerializable = new NonSerializableType { Name = "test" };
       var cloner = new Core.ObjectCloner(applicationContext);
@@ -43,7 +44,7 @@ namespace Csla.Test.Serialization
       var services = new ServiceCollection();
       services.AddCsla(o => o
         .Serialization(o => o
-          .AddMobileFormatter(o => o
+          .UseMobileFormatter(o => o
             .CustomSerializers.Add(
             new TypeMap<INonSerializableType, NonSerializableTypeSerializer>((t) => t.IsAssignableTo(typeof(INonSerializableType))))
             )));
@@ -72,13 +73,13 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
+    [ExpectedException(typeof(MobileFormatterException), "CustomSerializerType:Csla.Test.Serialization.BadSerializer; objectType:Csla.Test.Serialization.NonSerializableType")]
     public void CustomSerializerRegisteredBad()
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o
         .Serialization(o => o
-          .AddMobileFormatter(o => o
+          .UseMobileFormatter(o => o
             .CustomSerializers.Add(new TypeMap<NonSerializableType, BadSerializer>(BadSerializer.CanSerialize)))));
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
@@ -94,7 +95,7 @@ namespace Csla.Test.Serialization
       var services = new ServiceCollection();
       services.AddCsla(o => o
         .Serialization(o => o
-          .AddMobileFormatter(o => o
+          .UseMobileFormatter(o => o
             .CustomSerializers.Add(new TypeMap<object, PocoSerializer<SerializablePoco>>(PocoSerializer<SerializablePoco>.CanSerialize)))));
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();

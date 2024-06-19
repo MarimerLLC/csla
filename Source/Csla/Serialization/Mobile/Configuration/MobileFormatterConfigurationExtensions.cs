@@ -21,9 +21,22 @@ public static class MobileFormatterConfigurationExtensions
   /// </summary>
   /// <param name="config"></param>
   /// <returns></returns>
-  public static SerializationOptions AddMobileFormatter(this SerializationOptions config)
+  internal static SerializationOptions TryUseMobileFormatter(this SerializationOptions config)
   {
-    return AddMobileFormatter(config, null);
+    if (config.SerializationFormatterType is null)
+      return UseMobileFormatter(config, null);
+    else
+      return config;
+  }
+
+  /// <summary>
+  /// Sets the serialization formatter type used by CSLA .NET
+  /// </summary>
+  /// <param name="config"></param>
+  /// <returns></returns>
+  public static SerializationOptions UseMobileFormatter(this SerializationOptions config)
+  {
+    return UseMobileFormatter(config, null);
   }
 
   /// <summary>
@@ -32,7 +45,7 @@ public static class MobileFormatterConfigurationExtensions
   /// <param name="config"></param>
   /// <param name="options"></param>
   /// <returns></returns>
-  public static SerializationOptions AddMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions> options)
+  public static SerializationOptions UseMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions> options)
   {
     config.UseSerializationFormatter<MobileFormatter>();
     var mobileFormatterOptions = new MobileFormatterOptions();

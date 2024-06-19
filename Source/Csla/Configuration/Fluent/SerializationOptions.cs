@@ -7,14 +7,21 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Csla.Configuration
 {
   /// <summary>
   /// Use this type to configure the settings for serialization.
   /// </summary>
-  public class SerializationOptions
+  /// <param name="cslaOptions">The CSLA options.</param>
+  public class SerializationOptions(CslaOptions cslaOptions)
   {
+    /// <summary>
+    /// Gets the CSLA .NET configuration options.
+    /// </summary>
+    protected CslaOptions CslaOptions => cslaOptions;
+
     /// <summary>
     /// Sets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
@@ -22,14 +29,15 @@ namespace Csla.Configuration
     /// </summary>
     public SerializationOptions UseSerializationFormatter<T>() where T : ISerializationFormatter
     {
-      SerializationFormatterType = typeof(T);
+      CslaOptions.Services.TryAddTransient(typeof(ISerializationFormatter), typeof(T));
       return this;
     }
-    
+
     /// <summary>
-    /// Gets the serialization formatter type.
+    /// Gets the serialization formatter type used by CSLA .NET.
     /// </summary>
-    public Type SerializationFormatterType { get; private set; }
+    public Type SerializationFormatterType 
+      => CslaOptions.Services.FirstOrDefault(_ => _.ServiceType == typeof(ISerializationFormatter))?.ServiceType;
 
     /// <summary>
     /// Options for the serialization formatter.

@@ -39,7 +39,7 @@ namespace Csla.Configuration
       var cslaOptions = new CslaOptions(services);
       options?.Invoke(cslaOptions);
 
-      // capture options object
+      // capture options objects
       services.AddScoped(_ => cslaOptions);
       services.AddScoped(_ => cslaOptions.DataPortalOptions);
       services.AddScoped(_ => cslaOptions.SecurityOptions);
@@ -63,8 +63,9 @@ namespace Csla.Configuration
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
       }
 
-      if (cslaOptions.SerializationOptions.SerializationFormatterType == null)
-        cslaOptions.Serialization(o => o.AddMobileFormatter());
+      // Default to using MobileFormatter
+      cslaOptions.Serialization(o => o.TryUseMobileFormatter());
+
       return services;
     }
 
@@ -85,7 +86,7 @@ namespace Csla.Configuration
       if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
 
       // default to AsyncLocal context manager
-      services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
+      services.TryAddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
     }
 
     private static bool LoadContextManager(IServiceCollection services, string managerTypeName)

@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.Security.Claims;
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Test.ValidationRules;
 using Csla.TestHelpers;
@@ -85,9 +86,8 @@ namespace Csla.Test.Serialization
     public void CorrectDefaultSerializer()
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var options = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
-      var serializer = options.SerializationOptions.SerializationFormatterType;
-      Assert.IsTrue(serializer == typeof(MobileFormatter));
+      var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
+      Assert.IsTrue(serializer.GetType() == typeof(MobileFormatter));
     }
 
     [TestMethod]

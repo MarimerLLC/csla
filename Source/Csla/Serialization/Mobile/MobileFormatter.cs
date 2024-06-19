@@ -76,20 +76,9 @@ namespace Csla.Serialization.Mobile
     }
 
     /// <summary>
-    /// <para>
     /// Converts any enum values in the <see cref="SerializationInfo" /> objects to
-    /// integer representations. Normally, <see cref="DataContractSerializer" /> requires
-    /// all non-standard primitive types to be provided to it's constructor both upon
-    /// serialization and deserialization. Since there is no way of knowing what enum
-    /// values are being deserialized, there is no way to supply the types to the constructor
-    /// at the time of deserialization.
-    /// </para>
-    /// <para>
-    /// Instead we convert the enum values to integers prior to serialization and then back
-    /// to proper enum objects after deserialization.
-    /// </para>
+    /// integer representations.
     /// </summary>
-    /// <seealso cref="ConvertEnumsFromIntegers" />
     private void ConvertEnumsToIntegers()
     {
       foreach (SerializationInfo serializationInfo in _serializationReferences.Values)
@@ -156,7 +145,15 @@ namespace Csla.Serialization.Mobile
             info = new SerializationInfo(_serializationReferences.Count + 1);
             _serializationReferences.Add(obj, info);
             info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
-            serializer.Serialize(obj, info);
+            try
+            {
+              serializer.Serialize(obj, info);
+            }
+            catch (Exception ex)
+            {
+              throw new MobileFormatterException(
+                $"CustomSerializerType:{serializerType}; objectType:{obj.GetType()}", ex);
+            }
           }
           else
           {

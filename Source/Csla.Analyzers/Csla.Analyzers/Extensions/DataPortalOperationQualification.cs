@@ -1,16 +1,16 @@
 ﻿namespace Csla.Analyzers.Extensions
 {
-  public readonly struct CslaOperationQualification
+  public readonly struct DataPortalOperationQualification
   {
-    public CslaOperationQualification(bool byNamingConvention, bool byAttribute) =>
+    public DataPortalOperationQualification(bool byNamingConvention, bool byAttribute) =>
       (ByNamingConvention, ByAttribute) = (byNamingConvention, byAttribute);
 
-    public CslaOperationQualification Combine(CslaOperationQualification qualification) =>
-      new CslaOperationQualification(
+    public DataPortalOperationQualification Combine(DataPortalOperationQualification qualification) =>
+      new DataPortalOperationQualification(
         qualification.ByNamingConvention | ByNamingConvention,
         qualification.ByAttribute | ByAttribute);
 
-    public static implicit operator bool(CslaOperationQualification qualification) =>
+    public static implicit operator bool(DataPortalOperationQualification qualification) =>
       qualification.ByAttribute | qualification.ByNamingConvention;
 
     public void Deconstruct(out bool byNamingConvention, out bool byAttribute) =>

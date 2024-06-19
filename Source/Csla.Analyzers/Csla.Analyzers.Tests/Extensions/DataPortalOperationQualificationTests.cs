@@ -9,7 +9,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public void Create()
     {
-      var qualification = new CslaOperationQualification();
+      var qualification = new DataPortalOperationQualification();
       Assert.IsFalse(qualification.ByAttribute, nameof(qualification.ByAttribute));
       Assert.IsFalse(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
     }
@@ -17,7 +17,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public void CreateWithByAttributeArgumentAsTrue()
     {
-      var qualification = new CslaOperationQualification(false, true);
+      var qualification = new DataPortalOperationQualification(false, true);
       Assert.IsTrue(qualification.ByAttribute, nameof(qualification.ByAttribute));
       Assert.IsFalse(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
     }
@@ -25,28 +25,28 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public void CreateWithByNamingConventionArgumentAsTrue()
     {
-      var qualification = new CslaOperationQualification(true, false);
+      var qualification = new DataPortalOperationQualification(true, false);
       Assert.IsFalse(qualification.ByAttribute, nameof(qualification.ByAttribute));
       Assert.IsTrue(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
     }
 
     [TestMethod]
     public void CompareWhenBothFlagsAreFalse() => 
-      Assert.IsFalse(new CslaOperationQualification());
+      Assert.IsFalse(new DataPortalOperationQualification());
 
     [TestMethod]
     public void CompareWhenByAttributeFlagIsTrue() =>
-      Assert.IsTrue(new CslaOperationQualification(false, true));
+      Assert.IsTrue(new DataPortalOperationQualification(false, true));
 
     [TestMethod]
     public void CompareWhenByNamingConventionFlagIsTrue() =>
-      Assert.IsTrue(new CslaOperationQualification(true, false));
+      Assert.IsTrue(new DataPortalOperationQualification(true, false));
 
     [TestMethod]
     public void CombineFalseAndFalseWithFalseAndFalse()
     {
-      var qualification = new CslaOperationQualification(false, false).Combine(
-        new CslaOperationQualification(false, false));
+      var qualification = new DataPortalOperationQualification(false, false).Combine(
+        new DataPortalOperationQualification(false, false));
       Assert.IsFalse(qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
       Assert.IsFalse(qualification.ByAttribute, nameof(qualification.ByAttribute));
     }
@@ -54,7 +54,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public void DeconstructWhenFlagsAreFalseAndFalse()
     {
-      var (byNamingConvention, byAttribute) = new CslaOperationQualification(false, false);
+      var (byNamingConvention, byAttribute) = new DataPortalOperationQualification(false, false);
       Assert.IsFalse(byNamingConvention, nameof(byNamingConvention));
       Assert.IsFalse(byAttribute, nameof(byAttribute));
     }
@@ -62,7 +62,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public void DeconstructWhenFlagsAreFalseAndTrue()
     {
-      var (byNamingConvention, byAttribute) = new CslaOperationQualification(false, true);
+      var (byNamingConvention, byAttribute) = new DataPortalOperationQualification(false, true);
       Assert.IsFalse(byNamingConvention, nameof(byNamingConvention));
       Assert.IsTrue(byAttribute, nameof(byAttribute));
     }
@@ -70,7 +70,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public void DeconstructWhenFlagsAreTrueAndFalse()
     {
-      var (byNamingConvention, byAttribute) = new CslaOperationQualification(true, false);
+      var (byNamingConvention, byAttribute) = new DataPortalOperationQualification(true, false);
       Assert.IsTrue(byNamingConvention, nameof(byNamingConvention));
       Assert.IsFalse(byAttribute, nameof(byAttribute));
     }
@@ -78,7 +78,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public void DeconstructWhenFlagsAreTrueAndTrue()
     {
-      var (byNamingConvention, byAttribute) = new CslaOperationQualification(true, true);
+      var (byNamingConvention, byAttribute) = new DataPortalOperationQualification(true, true);
       Assert.IsTrue(byNamingConvention, nameof(byNamingConvention));
       Assert.IsTrue(byAttribute, nameof(byAttribute));
     }
@@ -103,8 +103,8 @@ namespace Csla.Analyzers.Tests.Extensions
     public void Combine(bool firstByNamingConvention, bool firstByAttribute, bool secondByNamingConvention, bool secondByAttribute,
       bool expectedByNamingConvention, bool expectedByAttribute)
     {
-      var qualification = new CslaOperationQualification(firstByNamingConvention, firstByAttribute).Combine(
-        new CslaOperationQualification(secondByNamingConvention, secondByAttribute));
+      var qualification = new DataPortalOperationQualification(firstByNamingConvention, firstByAttribute).Combine(
+        new DataPortalOperationQualification(secondByNamingConvention, secondByAttribute));
       Assert.AreEqual(expectedByNamingConvention, qualification.ByNamingConvention, nameof(qualification.ByNamingConvention));
       Assert.AreEqual(expectedByAttribute, qualification.ByAttribute, nameof(qualification.ByAttribute));
     }

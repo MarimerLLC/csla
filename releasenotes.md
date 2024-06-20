@@ -2,6 +2,21 @@
 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
+## CSLA .NET version 8.2.4 release
+
+CSLA .NET version 8.2.4 fixes bugs.
+
+* [#4047](https://github.com/MarimerLLC/csla/issues/4047) Cannot change ContextManager through CslaOptions.ContextManagerType
+
+### Change List
+
+* https://github.com/MarimerLLC/csla/compare/v8.2.3...v8.2.4
+
+### Contributors
+
+* @mirecg
+* @rockfordlhotka
+
 ## CSLA .NET version 8.2.3 release
 
 CSLA .NET version 8.2.3 fixes bugs.

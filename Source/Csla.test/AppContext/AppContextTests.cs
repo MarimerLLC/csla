@@ -8,6 +8,7 @@
 
 using Csla.Configuration;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.AppContext
@@ -27,6 +28,17 @@ namespace Csla.Test.AppContext
     public void Initialize()
     {
       TestResults.Reinitialise();
+    }
+
+    [TestMethod]
+    public void UseCustomApplicationContext()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.ContextManagerType = typeof(Core.ApplicationContextManagerTls));
+      var serviceProvider = services.BuildServiceProvider();
+
+      var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+      Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Core.ApplicationContextManagerTls));
     }
 
     #region Simple Test

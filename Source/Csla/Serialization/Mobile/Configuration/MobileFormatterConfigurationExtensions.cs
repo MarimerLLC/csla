@@ -21,19 +21,6 @@ public static class MobileFormatterConfigurationExtensions
   /// </summary>
   /// <param name="config"></param>
   /// <returns></returns>
-  internal static SerializationOptions TryUseMobileFormatter(this SerializationOptions config)
-  {
-    if (config.SerializationFormatterType is null)
-      return UseMobileFormatter(config, null);
-    else
-      return config;
-  }
-
-  /// <summary>
-  /// Sets the serialization formatter type used by CSLA .NET
-  /// </summary>
-  /// <param name="config"></param>
-  /// <returns></returns>
   public static SerializationOptions UseMobileFormatter(this SerializationOptions config)
   {
     return UseMobileFormatter(config, null);

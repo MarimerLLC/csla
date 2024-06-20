@@ -26,5 +26,5 @@ public class TypeMap<T, S>(Func<Type, bool> canSerialize) : ITypeMap
   /// <inheritdoc />
   public Type SerializerType => typeof(S);
   /// <inheritdoc />
-  public Func<Type, bool> CanSerialize { get; private set; } = canSerialize;
+  public Func<Type, bool> CanSerialize { get; } = canSerialize;
 }

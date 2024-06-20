@@ -81,7 +81,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
-    public SerializationOptions SerializationOptions { get; private set; }
+    public SerializationOptions SerializationOptions { get; }
     /// <summary>
     /// Gets the DataPortalClientOptions instance.
     /// </summary>

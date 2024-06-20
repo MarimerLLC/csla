@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {
@@ -29,15 +29,9 @@ namespace Csla.Configuration
     /// </summary>
     public SerializationOptions UseSerializationFormatter<T>() where T : ISerializationFormatter
     {
-      CslaOptions.Services.TryAddTransient(typeof(ISerializationFormatter), typeof(T));
+      CslaOptions.Services.AddTransient(typeof(ISerializationFormatter), typeof(T));
       return this;
     }
-
-    /// <summary>
-    /// Gets the serialization formatter type used by CSLA .NET.
-    /// </summary>
-    public Type SerializationFormatterType 
-      => CslaOptions.Services.FirstOrDefault(_ => _.ServiceType == typeof(ISerializationFormatter))?.ServiceType;
 
     /// <summary>
     /// Options for the serialization formatter.

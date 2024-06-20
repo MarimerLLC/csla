@@ -60,7 +60,8 @@ namespace Csla.Configuration
       }
 
       // Default to using MobileFormatter
-      cslaOptions.Serialization(o => o.TryUseMobileFormatter());
+      if (!services.Any(_ => _.ServiceType == typeof(Serialization.ISerializationFormatter)))
+        cslaOptions.Serialization(o => o.UseMobileFormatter());
 
       return services;
     }

@@ -8,6 +8,7 @@
 using System.Security.Claims;
 using Csla.Serialization.Mobile;
 using Csla.Serialization.Mobile.CustomSerializers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration;
 
@@ -42,7 +43,7 @@ public static class MobileFormatterConfigurationExtensions
       new TypeMap<ClaimsPrincipal, ClaimsPrincipalSerializer>(ClaimsPrincipalSerializer.CanSerialize));
 
     options?.Invoke(mobileFormatterOptions);
-    config.FormatterOptions = mobileFormatterOptions;
+    config.Services.AddScoped(_ => mobileFormatterOptions);
     return config;
   }
 }

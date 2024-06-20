@@ -23,6 +23,11 @@ namespace Csla.Configuration
     protected CslaOptions CslaOptions => cslaOptions;
 
     /// <summary>
+    /// Gets the current services collection.
+    /// </summary>
+    public IServiceCollection Services => CslaOptions.Services;
+
+    /// <summary>
     /// Sets the serialization formatter type used by CSLA .NET
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc). Default is MobileFormatter.
@@ -32,10 +37,5 @@ namespace Csla.Configuration
       CslaOptions.Services.AddTransient(typeof(ISerializationFormatter), typeof(T));
       return this;
     }
-
-    /// <summary>
-    /// Options for the serialization formatter.
-    /// </summary>
-    public object FormatterOptions { get; set; }
   }
 }

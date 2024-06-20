@@ -101,10 +101,7 @@ namespace Csla.Serialization.Mobile
 
     private MobileFormatterOptions GetOptions()
     {
-      var cslaOptions = applicationContext.GetRequiredService<CslaOptions>();
-      if (cslaOptions.SerializationOptions.FormatterOptions is not MobileFormatterOptions options)
-        throw new InvalidOperationException("MobileFormatterOptions == null");
-      return options;
+      return applicationContext.GetRequiredService<MobileFormatterOptions>();
     }
 
     /// <summary>

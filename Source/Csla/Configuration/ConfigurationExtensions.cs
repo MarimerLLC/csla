@@ -1,4 +1,3 @@
-#if NET462_OR_GREATER || NETSTANDARD2_0 || NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -10,7 +9,6 @@ using Csla.DataPortalClient;
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Csla.Configuration;
 
 namespace Csla.Configuration
 {
@@ -101,4 +99,3 @@ namespace Csla.Configuration
     }
   }
 }
-#endif

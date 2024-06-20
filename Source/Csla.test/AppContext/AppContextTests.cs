@@ -10,6 +10,7 @@ using Csla.Configuration;
 using Csla.Core;
 using Csla.TestHelpers;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.AppContext
@@ -31,7 +32,16 @@ namespace Csla.Test.AppContext
       TestResults.Reinitialise();
     }
 
-    #region Simple Test
+    [TestMethod]
+    public void UseCustomApplicationContext()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.UseContextManager<ApplicationContextManagerTls>());
+      var serviceProvider = services.BuildServiceProvider();
+
+      var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+      Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(ApplicationContextManagerTls));
+    }
 
     [TestMethod]
     public void SimpleTest()
@@ -46,10 +56,6 @@ namespace Csla.Test.AppContext
       //Assert.AreEqual("client", ApplicationContext.ClientContext["v1"], "client context didn't roundtrip");
       Assert.AreEqual("Fetched", TestResults.GetResult("Root"), "global context missing server value");
     }
-
-    #endregion
-
-    #region ClientContext
 
     /// <summary>
     /// Test the Client Context
@@ -162,8 +168,6 @@ namespace Csla.Test.AppContext
 
       Assert.ThrowsException<System.NotSupportedException>(() => contextDectionary.Remove(key));
     }
-
-    #endregion
 
     #region FailCreateContext
 

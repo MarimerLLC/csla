@@ -97,7 +97,7 @@ namespace Csla.Serialization.Mobile
       else if (target is IMobileObject)
       {
         using var buffer = new MemoryStream();
-        var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+        var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
         formatter.Serialize(buffer, target);
         var data = buffer.ToArray();
         Write(CslaKnownTypes.IMobileObject, writer);

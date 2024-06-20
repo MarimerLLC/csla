@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
-using Csla.Core;
 
 namespace Csla.Blazor
 {

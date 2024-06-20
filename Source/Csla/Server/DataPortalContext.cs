@@ -9,6 +9,7 @@
 using System.Security.Principal;
 using Csla.Core;
 using Csla.Configuration;
+using Csla.Serialization;
 
 namespace Csla.Server
 {
@@ -134,8 +135,8 @@ namespace Csla.Server
 
     void Serialization.Mobile.IMobileObject.GetState(Serialization.Mobile.SerializationInfo info)
     {
-      info.AddValue("principal", Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(Principal));
-      info.AddValue("clientContext", Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(ClientContext));
+      info.AddValue("principal", _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(Principal));
+      info.AddValue("clientContext", _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ClientContext));
       info.AddValue("clientCulture", ClientCulture);
       info.AddValue("clientUICulture", ClientUICulture);
       info.AddValue("isRemotePortal", IsRemotePortal);
@@ -147,8 +148,8 @@ namespace Csla.Server
 
     void Serialization.Mobile.IMobileObject.SetState(Serialization.Mobile.SerializationInfo info)
     {
-      Principal = (IPrincipal)Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(info.GetValue<byte[]>("principal"));
-      ClientContext = (IContextDictionary)Serialization.SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize(info.GetValue<byte[]>("clientContext"));
+      Principal = (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(info.GetValue<byte[]>("principal"));
+      ClientContext = (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(info.GetValue<byte[]>("clientContext"));
       ClientCulture = info.GetValue<string>("clientCulture");
       ClientUICulture = info.GetValue<string>("clientUICulture");
       IsRemotePortal = info.GetValue<bool>("isRemotePortal");

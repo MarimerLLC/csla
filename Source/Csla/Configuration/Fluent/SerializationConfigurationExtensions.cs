@@ -16,6 +16,14 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaSerializationConfiguration
     /// </summary>
+    public static CslaOptions Serialization(this CslaOptions config)
+    {
+      return Serialization(config, null);
+    }
+
+    /// <summary>
+    /// Extension method for CslaSerializationConfiguration
+    /// </summary>
     public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions> options)
     {
       options?.Invoke(config.SerializationOptions);

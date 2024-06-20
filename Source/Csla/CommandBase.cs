@@ -7,12 +7,12 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
-using Csla.Server;
-using Csla.Properties;
-using Csla.Core;
 using System.Linq.Expressions;
-using Csla.Reflection;
 using System.Reflection;
+using Csla.Core;
+using Csla.Properties;
+using Csla.Reflection;
+using Csla.Server;
 
 namespace Csla
 {
@@ -152,9 +152,10 @@ namespace Csla
     void IDataPortalTarget.CheckRules()
     { }
 
-    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+    Task IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
     Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => Task.CompletedTask;
+    Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => Task.CompletedTask;
 
     void IDataPortalTarget.MarkAsChild()
     { }
@@ -167,17 +168,17 @@ namespace Csla
 
     void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvoke(e);
+      DataPortal_OnDataPortalInvoke(e);
     }
 
     void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvokeComplete(e);
+      DataPortal_OnDataPortalInvokeComplete(e);
     }
 
     void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      this.DataPortal_OnDataPortalException(e, ex);
+      DataPortal_OnDataPortalException(e, ex);
     }
 
     void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
@@ -207,7 +208,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>
@@ -251,7 +252,7 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
     }
 
     /// <summary>
@@ -275,7 +276,7 @@ namespace Csla
     /// <param name="relationship">Relationship with property value.</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
     }
 
     /// <summary>
@@ -300,7 +301,7 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
 
     /// <summary>
@@ -326,7 +327,7 @@ namespace Csla
     /// <param name="defaultValue">Default Value for the property</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
 
     /// <summary>
@@ -354,7 +355,7 @@ namespace Csla
     /// <param name="relationship">Relationship with property value.</param>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
     {
-      return RegisterProperty(Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
 
     /// <summary>
@@ -427,7 +428,7 @@ namespace Csla
       return FieldManager.GetChildren();
     }
 
-    bool IManageProperties.FieldExists(Core.IPropertyInfo property)
+    bool IManageProperties.FieldExists(IPropertyInfo property)
     {
       return FieldManager.FieldExists(property);
     }

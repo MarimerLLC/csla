@@ -22,6 +22,9 @@
       public const string BusinessRuleContextUsage = "CSLA0017";
       public const string CompleteInExecuteAsync = "CSLA0018";
       public const string RefOrOutParameterInOperation = "CSLA0019";
+      public const string ObjectAuthorizationRulesAttributeMissing = "CSLA0020";
+      public const string ObjectAuthorizationRulesPublic = "CSLA0021";
+      public const string ObjectAuthorizationRulesStatic = "CSLA0022";
     }
 
     public static class Categories

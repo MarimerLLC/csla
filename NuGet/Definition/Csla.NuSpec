@@ -73,15 +73,6 @@
         <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
         <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
       </group>
-      <group targetFramework="net6.0">
-        <dependency id="Microsoft.Extensions.Configuration" version="6.0.1" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="6.0.0" />
-        <dependency id="Microsoft.Extensions.DependencyInjection" version="6.0.0" />
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="6.0.0" />
-        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="6.0.4" />
-        <dependency id="System.ComponentModel.Annotations" version="5.0.0" />
-        <dependency id="System.Runtime.Loader" version="4.3.0" />
-      </group>
       <group targetFramework="net8.0">
         <dependency id="Microsoft.Extensions.Configuration" version="8.0.0" />
         <dependency id="Microsoft.Extensions.Configuration.Binder" version="8.0.0" />
@@ -105,11 +96,6 @@
     <file src="..\..\bin\Release\net8.0\**\Csla.pdb*" target="lib\net8.0" />
     <file src="..\..\bin\Release\net8.0\**\Csla.xml*" target="lib\net8.0" />
     <file src="..\..\bin\Release\net8.0\**\Csla.resources.dll*" target="lib\net8.0" />
-    <!-- Net 6.0 Assembly -->
-    <file src="..\..\bin\Release\net6.0\**\Csla.dll*" target="lib\net6.0" />
-    <file src="..\..\bin\Release\net6.0\**\Csla.pdb*" target="lib\net6.0" />
-    <file src="..\..\bin\Release\net6.0\**\Csla.xml*" target="lib\net6.0" />
-    <file src="..\..\bin\Release\net6.0\**\Csla.resources.dll*" target="lib\net6.0" />
     <!-- .NET 4.6.2 -->
     <file src="..\..\Bin\Release\NET462\**\Csla.dll*" target="lib\net462" />
     <file src="..\..\Bin\Release\NET462\**\Csla.pdb*" target="lib\net462" />

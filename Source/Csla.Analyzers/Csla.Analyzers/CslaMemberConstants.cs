@@ -35,6 +35,7 @@
       public const string ChildUpdate = "Child_Update";
       public const string ChildDeleteSelf = "Child_DeleteSelf";
       public const string ChildExecute = "Child_Execute";
+      public const string AddObjectAuthorizationRules = "AddObjectAuthorizationRules";
     }
 
     public static class OperationAttributes
@@ -64,6 +65,7 @@
       public const string DataPortalChildOperationAttribute = nameof(DataPortalChildOperationAttribute);
       public const string DataPortalOperationAttribute = nameof(DataPortalOperationAttribute);
       public const string DataPortalRootOperationAttribute = nameof(DataPortalRootOperationAttribute);
+      public const string ObjectAuthorizationRulesAttribute = nameof(ObjectAuthorizationRulesAttribute);
       public const string DynamicListBase = nameof(DynamicListBase);
       public const string IBusinessObject = nameof(IBusinessObject);
       public const string IMobileObject = nameof(IMobileObject);

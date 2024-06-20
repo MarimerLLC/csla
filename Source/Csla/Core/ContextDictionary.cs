@@ -6,8 +6,9 @@
 // <summary>Dictionary type that is serializable</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Properties;
 using Csla.Serialization.Mobile;
-using System.Collections.Specialized;
+using System.Collections.Concurrent;
 
 namespace Csla.Core
 {
@@ -16,16 +17,12 @@ namespace Csla.Core
   /// with the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
-  public class ContextDictionary : HybridDictionary, IMobileObject
+  public class ContextDictionary : ConcurrentDictionary<object, object>, IContextDictionary
   {
-    /// <summary>
-    /// Get a value from the dictionary, or return null
-    /// if the key is not found in the dictionary.
-    /// </summary>
-    /// <param name="key">Key of value to get from dictionary.</param>
+    /// <inheritdoc cref="Csla.Core.IContextDictionary.GetValueOrNull(string)"/>
     public object GetValueOrNull(string key)
     {
-      if (this.Contains(key))
+      if (ContainsKey(key))
         return this[key];
       return null;
     }
@@ -34,7 +31,7 @@ namespace Csla.Core
 
     void IMobileObject.GetState(SerializationInfo info)
     {
-      foreach (string key in this.Keys)
+      foreach (string key in Keys)
       {
         object value = this[key];
         if (value is not IMobileObject)
@@ -44,7 +41,7 @@ namespace Csla.Core
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      foreach (string key in this.Keys)
+      foreach (string key in Keys)
       {
         object value = this[key];
         if (value is IMobileObject mobile)
@@ -68,10 +65,63 @@ namespace Csla.Core
       foreach (var item in info.Children)
       {
         var referenceId = item.Value.ReferenceId;
-        this.Add(item.Key, formatter.GetObject(referenceId));
+        Add(item.Key, formatter.GetObject(referenceId));
       }
     }
 
-#endregion
+    #endregion
+
+    #region IDictionary Members
+
+    /// <inheritdoc cref="System.Collections.IDictionary.IsReadOnly"/>
+    public bool IsReadOnly
+    {
+      get => false;
+    }
+
+    /// <inheritdoc cref="System.Collections.IDictionary.IsFixedSize"/>
+    public bool IsFixedSize
+    {
+      get => false;
+    }
+
+    /// <inheritdoc cref="System.Collections.IDictionary.Add(object, object?)"/>
+    public void Add(object key, object value)
+    {
+      bool added = TryAdd(key, value);
+      if (!added)
+      {
+        throw new ArgumentException(Resources.KeyAlreadyExistsException);
+      }
+    }
+
+    /// <inheritdoc cref="System.Collections.IDictionary.Remove(object)"/>
+    public void Remove(object key)
+    {
+      var removed = TryRemove(key, out var _);
+      if (!removed)
+      {
+        throw new NotSupportedException(Resources.KeyDoesNotExistException);
+      }
+    }
+
+    #endregion
+
+    #region ICollection Members
+
+    /// <inheritdoc cref="System.Collections.ICollection.SyncRoot"/>
+    public object SyncRoot
+    {
+      get => throw new NotSupportedException(Resources.SyncrootNotSupportedException);
+
+    }
+
+    /// <inheritdoc cref="System.Collections.ICollection.IsSynchronized"/>
+    public bool IsSynchronized
+    {
+      get => false;
+    }
+
+    #endregion
   }
 }

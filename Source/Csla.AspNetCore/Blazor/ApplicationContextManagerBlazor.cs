@@ -1,4 +1,4 @@
-﻿#if NET5_0_OR_GREATER
+﻿#if NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ApplicationContextManager.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -65,7 +65,13 @@ namespace Csla.AspNetCore.Blazor
 
     private async Task InitializeUser()
     {
-      if (ActiveCircuitState.CircuitExists)
+      if (HttpContext != null)
+      {
+        var user = HttpContext.User;
+        if (user != null)
+          CurrentPrincipal = user;
+      }
+      else
       {
         Task<AuthenticationState> task;
         try
@@ -73,31 +79,11 @@ namespace Csla.AspNetCore.Blazor
           task = AuthenticationStateProvider.GetAuthenticationStateAsync();
           await task;
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException)
         {
           task = Task.FromResult(new AuthenticationState(UnauthenticatedPrincipal));
-
-          string message = ex.Message;
-          //see ms error https://github.com/dotnet/aspnetcore/blob/87e324a61dcd15db4086b8a8ca7bd74ca1e0a513/src/Components/Server/src/Circuits/ServerAuthenticationStateProvider.cs#L16
-          //not much safe to test on except the error type and the use of this method name in message.
-          if (message.Contains(nameof(AuthenticationStateProvider.GetAuthenticationStateAsync)))
-          {
-            SetHostPrincipal(task);
-          }
-          else
-          {
-            throw;
-          }
         }
         AuthenticationStateProvider_AuthenticationStateChanged(task);
-      }
-      else if (HttpContext is not null)
-      {
-        CurrentPrincipal = HttpContext.User;
-      }
-      else
-      {
-        throw new InvalidOperationException("HttpContext==null, !CircuitExists");
       }
     }
 
@@ -144,59 +130,27 @@ namespace Csla.AspNetCore.Blazor
     }
 
     /// <summary>
-    /// Attempts to set the current principal on the registered
-    /// IHostEnvironmentAuthenticationStateProvider service.
+    /// Not supported in Blazor.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal principal)
-    {
-      if (!ReferenceEquals(CurrentPrincipal, principal))
-      {
-        if (ActiveCircuitState.CircuitExists)
-        {
-          if (principal is ClaimsPrincipal claimsPrincipal)
-          {
-            SetHostPrincipal(Task.FromResult(new AuthenticationState(claimsPrincipal)));
-          }
-          else
-          {
-            throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
-          }
-        }
-        else if (HttpContext is not null)
-        {
-          HttpContext.User = (ClaimsPrincipal)principal;
-        }
-        else
-        {
-          throw new InvalidOperationException("HttpContext==null, !CircuitExists");
-        }
-        CurrentPrincipal = principal;
-      }
-    }
-
-    private void SetHostPrincipal(Task<AuthenticationState> task)
-    {
-      if (AuthenticationStateProvider is IHostEnvironmentAuthenticationStateProvider hostProvider)
-        hostProvider.SetAuthenticationState(task);
-    }
+    public virtual void SetUser(IPrincipal principal) => throw new NotSupportedException(nameof(SetUser));
 
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    public ContextDictionary GetLocalContext()
+    public IContextDictionary GetLocalContext()
     {
-      ContextDictionary localContext;
+      IContextDictionary localContext;
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
       session.TryGetValue("localContext", out var result);
-      if (result is ContextDictionary context)
+      if (result is IContextDictionary context)
       {
         localContext = context;
       }
       else
       {
-        localContext = [];
+        localContext = new ContextDictionary();
         SetLocalContext(localContext);
       }
       return localContext;
@@ -206,7 +160,7 @@ namespace Csla.AspNetCore.Blazor
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    public void SetLocalContext(ContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary localContext)
     {
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
@@ -217,19 +171,19 @@ namespace Csla.AspNetCore.Blazor
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      ContextDictionary clientContext;
+      IContextDictionary clientContext;
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
       session.TryGetValue("clientContext", out var result);
-      if (result is ContextDictionary context)
+      if (result is IContextDictionary context)
       {
         clientContext = context;
       }
       else
       {
-        clientContext = [];
+        clientContext = new ContextDictionary();
         SetClientContext(clientContext, ApplicationContext.ExecutionLocation);
       }
       return clientContext;
@@ -240,7 +194,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();

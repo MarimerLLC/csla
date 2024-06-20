@@ -57,7 +57,7 @@ namespace Csla.Windows
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.IContainer components = null;
+    private IContainer components = null;
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
@@ -132,7 +132,7 @@ namespace Csla.Windows
     /// </summary>
     [Browsable(false)]
     [DefaultValue(null)]
-#if NETSTANDARD2_0 || NET6_0_OR_GREATER
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
 #endif
     public ContainerControl Host { get; set; }

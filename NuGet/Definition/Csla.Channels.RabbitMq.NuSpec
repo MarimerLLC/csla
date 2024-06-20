@@ -20,7 +20,7 @@
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="RabbitMQ.Client" version="6.8.1" />
       </group>
-      <group targetFramework="net6.0">
+      <group targetFramework="net8.0">
         <dependency id="Csla" version="[4.6.3-Beta10]" />
         <dependency id="RabbitMQ.Client" version="6.8.1" />
       </group>
@@ -29,8 +29,8 @@
   <files>
     <!-- NetStandard Assembly -->
     <file src="..\..\bin\Release\netstandard2.1\**\Csla.Channels.RabbitMq.*" target="lib\netstandard2.1" />
-    <!-- net6.0 Assembly -->
-    <file src="..\..\bin\Release\net6.0\**\Csla.Channels.RabbitMq.*" target="lib\net6.0" />
+    <!-- net8.0 Assembly -->
+    <file src="..\..\bin\Release\net8.0\**\Csla.Channels.RabbitMq.*" target="lib\net8.0" />
     <!-- resources -->
     <file src="..\..\Support\Logos\csla.png" target="images\" />
     <file src="..\..\Support\readme.md" target="docs\" />

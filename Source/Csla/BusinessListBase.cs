@@ -6,11 +6,11 @@
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Csla.Core;
 using Csla.Properties;
-using System.Collections.Specialized;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 
@@ -34,7 +34,7 @@ namespace Csla
       IBusinessListBase<C>,
       IUseApplicationContext
     where T : BusinessListBase<T, C>
-    where C : Core.IEditableBusinessObject
+    where C : IEditableBusinessObject
   {
     /// <summary>
     /// Creates an instance of the type.
@@ -46,7 +46,7 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set
@@ -90,9 +90,9 @@ namespace Csla
 
     int IParent.GetNextIdentity(int current)
     {
-      if (this.Parent != null)
+      if (Parent != null)
       {
-        return this.Parent.GetNextIdentity(current);
+        return Parent.GetNextIdentity(current);
       }
       else
       {
@@ -118,7 +118,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return Core.ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ namespace Csla
     private void DeleteChild(C child)
     {
       // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(child, this.EditLevel, false);
+      UndoableBase.ResetChildEditLevel(child, EditLevel, false);
 
       // mark the object as deleted
       child.DeleteChild();
@@ -221,10 +221,10 @@ namespace Csla
     /// </remarks>
     public void BeginEdit()
     {
-      if (this.IsChild)
+      if (IsChild)
         throw new NotSupportedException(Resources.NoBeginEditChildException);
 
-      CopyState(this.EditLevel + 1);
+      CopyState(EditLevel + 1);
     }
 
     /// <summary>
@@ -242,10 +242,10 @@ namespace Csla
     /// </remarks>
     public void CancelEdit()
     {
-      if (this.IsChild)
+      if (IsChild)
         throw new NotSupportedException(Resources.NoCancelEditChildException);
 
-      UndoChanges(this.EditLevel - 1);
+      UndoChanges(EditLevel - 1);
     }
 
     /// <summary>
@@ -263,20 +263,20 @@ namespace Csla
     /// </remarks>
     public void ApplyEdit()
     {
-      if (this.IsChild)
+      if (IsChild)
         throw new NotSupportedException(Resources.NoApplyEditChildException);
 
-      AcceptChanges(this.EditLevel - 1);
+      AcceptChanges(EditLevel - 1);
     }
 
-    void Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
+    void IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       EditChildComplete(child);
     }
 
-    IParent Core.IParent.Parent
+    IParent IParent.Parent
     {
-      get { return this.Parent; }
+      get { return Parent; }
     }
 
     /// <summary>
@@ -285,7 +285,7 @@ namespace Csla
     /// completed.
     /// </summary>
     /// <param name="child">The child object that was edited.</param>
-    protected virtual void EditChildComplete(Core.IEditableBusinessObject child)
+    protected virtual void EditChildComplete(IEditableBusinessObject child)
     {
 
       // do nothing, we don't really care
@@ -304,6 +304,18 @@ namespace Csla
     {
       var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
       var item = dp.CreateChild();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected override async Task<C> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
+      var item = await dp.CreateChildAsync();
       Add(item);
       return item;
     }
@@ -328,7 +340,7 @@ namespace Csla
     /// wants to be removed from the collection.
     /// </summary>
     /// <param name="child">The child object to remove.</param>
-    void Core.IParent.RemoveChild(Csla.Core.IEditableBusinessObject child)
+    void IParent.RemoveChild(IEditableBusinessObject child)
     {
       Remove((C)child);
     }
@@ -348,7 +360,7 @@ namespace Csla
         if (item is IUseApplicationContext iuac)
           iuac.ApplicationContext = ApplicationContext;
         // set child edit level
-        Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+        UndoableBase.ResetChildEditLevel(item, EditLevel, false);
         // when an object is inserted we assume it is
         // a new object and so the edit level when it was
         // added must be set
@@ -413,9 +425,9 @@ namespace Csla
       // set parent reference
       item.SetParent(this);
       // set child edit level
-      Core.UndoableBase.ResetChildEditLevel(item, this.EditLevel, false);
+      UndoableBase.ResetChildEditLevel(item, EditLevel, false);
       // reset EditLevelAdded 
-      item.EditLevelAdded = this.EditLevel;
+      item.EditLevelAdded = EditLevel;
       // add to list and raise list changed as appropriate
       base.SetItem(index, item);
     }
@@ -426,7 +438,7 @@ namespace Csla
     /// </summary>
     protected override void ClearItems()
     {
-      while (base.Count > 0) RemoveItem(0);
+      while (Count > 0) RemoveItem(0);
       //DeferredLoadIndexIfNotLoaded();
       //_indexSet.ClearIndexes();
       //DeferredLoadPositionMapIfNotLoaded();
@@ -446,11 +458,11 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected int EditLevel { get; private set; }
 
-    int Core.IUndoableObject.EditLevel
+    int IUndoableObject.EditLevel
     {
       get
       {
-        return this.EditLevel;
+        return EditLevel;
       }
     }
 
@@ -458,19 +470,19 @@ namespace Csla
 
     #region N-level undo
 
-    void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
       if (!parentBindingEdit)
         CopyState(parentEditLevel);
     }
 
-    void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (!parentBindingEdit)
         UndoChanges(parentEditLevel);
     }
 
-    void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (!parentBindingEdit)
         AcceptChanges(parentEditLevel);
@@ -478,14 +490,14 @@ namespace Csla
 
     private void CopyState(int parentEditLevel)
     {
-      if (this.EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel - 1);
+      if (EditLevel + 1 > parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), GetType().Name, _parent != null ? _parent.GetType().Name : null, EditLevel, parentEditLevel - 1);
 
       // we are going a level deeper in editing
       EditLevel += 1;
 
       // cascade the call to all child objects
-      for (int x = 0; x < this.Count; x++)
+      for (int x = 0; x < Count; x++)
       {
         C child = this[x];
         child.CopyState(EditLevel, false);
@@ -502,8 +514,8 @@ namespace Csla
     {
       C child;
 
-      if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
+      if (EditLevel - 1 != parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), GetType().Name, _parent != null ? _parent.GetType().Name : null, EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       EditLevel -= 1;
@@ -533,10 +545,10 @@ namespace Csla
             // if item is below its point of addition, remove
             if (child.EditLevelAdded > EditLevel)
             {
-              bool oldAllowRemove = this.AllowRemove;
+              bool oldAllowRemove = AllowRemove;
               try
               {
-                this.AllowRemove = true;
+                AllowRemove = true;
                 _completelyRemoveChild = true;
                 //RemoveIndexItem(child);
                 RemoveAt(index);
@@ -544,7 +556,7 @@ namespace Csla
               finally
               {
                 _completelyRemoveChild = false;
-                this.AllowRemove = oldAllowRemove;
+                AllowRemove = oldAllowRemove;
               }
             }
           }
@@ -575,8 +587,8 @@ namespace Csla
 
     private void AcceptChanges(int parentEditLevel)
     {
-      if (this.EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), this.GetType().Name, _parent != null ? _parent.GetType().Name : null, this.EditLevel, parentEditLevel + 1);
+      if (EditLevel - 1 != parentEditLevel)
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), GetType().Name, _parent != null ? _parent.GetType().Name : null, EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       EditLevel -= 1;
@@ -598,7 +610,6 @@ namespace Csla
         if (child.EditLevelAdded > EditLevel)
           DeletedList.RemoveAt(index);
       }
-      
       if (EditLevel < 0) EditLevel = 0;
     }
 
@@ -649,7 +660,7 @@ namespace Csla
     /// <param name="formatter">
     /// Reference to the formatter performing the serialization.
     /// </param>
-    protected override void OnGetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       base.OnGetChildren(info, formatter);
       if (_deletedList != null)
@@ -670,7 +681,7 @@ namespace Csla
     /// <param name="formatter">
     /// Reference to the formatter performing the deserialization.
     /// </param>
-    protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       if (info.Children.TryGetValue("_deletedList", out var child))
       {
@@ -723,29 +734,18 @@ namespace Csla
     #region IsDirty, IsValid, IsSavable
 
     /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
+    /// Await this method to ensure business object is not busy.
     /// </summary>
     public async Task WaitForIdle()
     {
-      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
-    {
-      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
-    bool Core.ITrackStatus.IsSelfDirty
+    bool ITrackStatus.IsSelfDirty
     {
       get { return IsDirty; }
     }
@@ -772,7 +772,7 @@ namespace Csla
       }
     }
 
-    bool Core.ITrackStatus.IsSelfValid
+    bool ITrackStatus.IsSelfValid
     {
       get { return IsSelfValid; }
     }
@@ -812,8 +812,11 @@ namespace Csla
     {
       get
       {
-        bool auth = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
-        return (IsDirty && IsValid && auth && !IsBusy);
+        var result = IsDirty && IsValid && !IsBusy;
+        if (result)
+          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+
+        return result;
       }
     }
 
@@ -843,7 +846,7 @@ namespace Csla
 
     #region  ITrackStatus
 
-    bool Core.ITrackStatus.IsNew
+    bool ITrackStatus.IsNew
     {
       get
       {
@@ -851,30 +854,12 @@ namespace Csla
       }
     }
 
-    bool Core.ITrackStatus.IsDeleted
+    bool ITrackStatus.IsDeleted
     {
       get
       {
         return false;
       }
-    }
-
-    #endregion
-
-    #region Serialization Notification
-
-    /// <summary>
-    /// Reset parent references on deserialization.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      base.OnDeserialized();
-      foreach (Core.IEditableBusinessObject child in this)
-        child.SetParent(this);
-
-      foreach (Core.IEditableBusinessObject child in DeletedList)
-        child.SetParent(this);
     }
 
     #endregion
@@ -999,7 +984,7 @@ namespace Csla
     protected virtual async Task<T> SaveAsync(object userState, bool isSync)
     {
       T result;
-      if (this.IsChild)
+      if (IsChild)
         throw new InvalidOperationException(Resources.NoSaveChildException);
 
       if (EditLevel > 0)
@@ -1038,7 +1023,7 @@ namespace Csla
     /// </summary>
     public async Task SaveAndMergeAsync()
     {
-      new GraphMerger(ApplicationContext).MergeBusinessListGraph<T, C>((T)this, await SaveAsync());
+      await new GraphMerger(ApplicationContext).MergeBusinessListGraphAsync<T, C>((T)this, await SaveAsync());
     }
 
     /// <summary>
@@ -1101,12 +1086,12 @@ namespace Csla
 
     #region ISavable Members
 
-    object Csla.Core.ISavable.Save()
+    object ISavable.Save()
     {
       return Save();
     }
 
-    object Csla.Core.ISavable.Save(bool forceUpdate)
+    object ISavable.Save(bool forceUpdate)
     {
       return Save();
     }
@@ -1126,12 +1111,12 @@ namespace Csla
       return SaveAndMergeAsync();
     }
 
-    void Csla.Core.ISavable.SaveComplete(object newObject)
+    void ISavable.SaveComplete(object newObject)
     {
       OnSaved((T)newObject, null, null);
     }
 
-    T Csla.Core.ISavable<T>.Save(bool forceUpdate)
+    T ISavable<T>.Save(bool forceUpdate)
     {
       return Save();
     }
@@ -1146,31 +1131,31 @@ namespace Csla
       return SaveAndMergeAsync();
     }
 
-    void Csla.Core.ISavable<T>.SaveComplete(T newObject)
+    void ISavable<T>.SaveComplete(T newObject)
     {
       OnSaved(newObject, null, null);
     }
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<Csla.Core.SavedEventArgs> _savedEvent;
+    private EventHandler<SavedEventArgs> _savedEvent;
 
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved
+    public event EventHandler<SavedEventArgs> Saved
     {
       add
       {
-        _savedEvent = (EventHandler<Csla.Core.SavedEventArgs>)
-          System.Delegate.Combine(_savedEvent, value);
+        _savedEvent = (EventHandler<SavedEventArgs>)
+          Delegate.Combine(_savedEvent, value);
       }
       remove
       {
-        _savedEvent = (EventHandler<Csla.Core.SavedEventArgs>)
-          System.Delegate.Remove(_savedEvent, value);
+        _savedEvent = (EventHandler<SavedEventArgs>)
+          Delegate.Remove(_savedEvent, value);
       }
     }
 
@@ -1182,10 +1167,10 @@ namespace Csla
     /// <param name="newObject">The new object instance.</param>
     /// <param name="e">Execption that occurred during the operation.</param>
     /// <param name="userState">User state object.</param>
-    [System.ComponentModel.EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSaved(T newObject, Exception e, object userState)
     {
-      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, userState);
+      SavedEventArgs args = new SavedEventArgs(newObject, e, userState);
       _savedEvent?.Invoke(this, args);
     }
     #endregion
@@ -1193,7 +1178,7 @@ namespace Csla
     #region  Parent/Child link
 
     [NotUndoable, NonSerialized]
-    private Core.IParent _parent;
+    private IParent _parent;
 
     /// <summary>
     /// Provide access to the parent reference for use
@@ -1203,10 +1188,10 @@ namespace Csla
     /// This value will be Nothing for root objects.
     /// </remarks>
     [Browsable(false)]
-    [Display(AutoGenerateField=false)]
+    [Display(AutoGenerateField = false)]
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public Core.IParent Parent
+    public IParent Parent
     {
       get
       {
@@ -1220,7 +1205,7 @@ namespace Csla
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    protected virtual void SetParent(Core.IParent parent)
+    protected virtual void SetParent(IParent parent)
     {
       // ensure parent & _identity manager not null for case to check
       if (parent != null && _identityManager != null)
@@ -1237,7 +1222,7 @@ namespace Csla
         _parent = parent;
         _identityManager = null;
       }
-      else 
+      else
       {
         // case when current identity manager has next identity of > 1
         // parent next identity incremented by 1 not accounting for this (child collection) next identity
@@ -1253,9 +1238,9 @@ namespace Csla
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    void Core.IEditableCollection.SetParent(Core.IParent parent)
+    void IEditableCollection.SetParent(IParent parent)
     {
-      this.SetParent(parent);
+      SetParent(parent);
     }
 
     #endregion
@@ -1265,11 +1250,11 @@ namespace Csla
     void IDataPortalTarget.CheckRules()
     { }
 
-    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+    Task IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
     void IDataPortalTarget.MarkAsChild()
     {
-      this.MarkAsChild();
+      MarkAsChild();
     }
 
     void IDataPortalTarget.MarkNew()
@@ -1280,32 +1265,32 @@ namespace Csla
 
     void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvoke(e);
+      DataPortal_OnDataPortalInvoke(e);
     }
 
     void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvokeComplete(e);
+      DataPortal_OnDataPortalInvokeComplete(e);
     }
 
     void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      this.DataPortal_OnDataPortalException(e, ex);
+      DataPortal_OnDataPortalException(e, ex);
     }
 
     void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      this.Child_OnDataPortalInvoke(e);
+      Child_OnDataPortalInvoke(e);
     }
 
     void IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      this.Child_OnDataPortalInvokeComplete(e);
+      Child_OnDataPortalInvokeComplete(e);
     }
 
     void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      this.Child_OnDataPortalException(e, ex);
+      Child_OnDataPortalException(e, ex);
     }
 
     #endregion

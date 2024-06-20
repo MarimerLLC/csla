@@ -15,6 +15,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.4" />
     <PackageReference Include="Csla.AspNetCore" Version="8.1.0" />
     <PackageReference Include="Csla.Blazor" Version="8.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+    <PackageReference Include="Csla.AspNetCore" />
+    <PackageReference Include="Csla.Blazor" />
   </ItemGroup>
 
   <ItemGroup>

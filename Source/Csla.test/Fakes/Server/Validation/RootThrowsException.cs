@@ -12,7 +12,7 @@
 
     protected override void AddBusinessRules()
     {
-      System.Threading.Interlocked.Increment(ref _counter);
+      Interlocked.Increment(ref _counter);
       throw new ArgumentException();
     }
 

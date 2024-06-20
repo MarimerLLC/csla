@@ -35,7 +35,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets a new field data container for the property.
     /// </summary>
-    Core.FieldManager.IFieldData NewFieldData(string name);
+    FieldManager.IFieldData NewFieldData(string name);
     /// <summary>
     /// Gets the relationship between the declaring object
     /// and the object reference in the property.

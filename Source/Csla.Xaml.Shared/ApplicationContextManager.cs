@@ -25,7 +25,7 @@ namespace Csla.Xaml
     /// Method called when the ApplicationContext
     /// property has been set to a new value.
     /// </summary>
-    protected override void OnApplicationContextSet() => applicationContext = base.ApplicationContext;
+    protected override void OnApplicationContextSet() => applicationContext = ApplicationContext;
 
     /// <summary>
     /// Gets the current ApplicationContext.
@@ -44,7 +44,7 @@ namespace Csla.Xaml
     {
       if (_principal == null)
       {
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
         if (OperatingSystem.IsWindows() && !SecurityOptions.FlowSecurityPrincipalFromClient)
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
         else

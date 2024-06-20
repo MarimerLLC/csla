@@ -120,7 +120,7 @@ namespace Csla
     /// <summary>
     /// Event raised when an object in the list has been saved.
     /// </summary>
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved;
+    public event EventHandler<SavedEventArgs> Saved;
 
     /// <summary>
     /// Raises the Saved event.
@@ -312,6 +312,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Adds a new item to the list.
+    /// </summary>
+    /// <returns>The added object</returns>
+    protected override async Task<T> AddNewCoreAsync()
+    {
+      var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
+      T item = await dp.CreateAsync();
+      Add(item);
+      return item;
+    }
+
+    /// <summary>
     /// Gives the new object a parent reference to this
     /// list.
     /// </summary>
@@ -396,7 +408,7 @@ namespace Csla
     {
       // SL Data Grid's DataGridDataConnection object does not support replace action.  
       // It throws an excpetioon when this occurs.
-      if (this.RaiseListChangedEvents && (e.Action != NotifyCollectionChangedAction.Replace || RaiseReplaceEvents))
+      if (RaiseListChangedEvents && (e.Action != NotifyCollectionChangedAction.Replace || RaiseReplaceEvents))
         base.OnCollectionChanged(e);
     }
 
@@ -412,22 +424,22 @@ namespace Csla
       }
     }
 
-    void Csla.Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
+    void IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       if (child.EditLevel == 0)
         SaveItem((T)child);
     }
 
-    void Csla.Core.IParent.RemoveChild(Core.IEditableBusinessObject child)
+    void IParent.RemoveChild(IEditableBusinessObject child)
     {
       // do nothing, removal of a child is handled by
       // the RemoveItem override
     }
 
 
-    IParent  Csla.Core.IParent.Parent
+    IParent Csla.Core.IParent.Parent
     {
-      get { return null;  }
+      get { return null; }
     }
 
     #endregion
@@ -435,23 +447,12 @@ namespace Csla
     #region IsBusy
 
     /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
+    /// Await this method to ensure business object is not busy.
     /// </summary>
     public async Task WaitForIdle()
     {
-      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
-    {
-      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>
@@ -473,22 +474,6 @@ namespace Csla
         return false;
       }
     }
-    #endregion
-
-    #region  Serialization Notification
-
-    /// <summary>
-    /// Set parent reference.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      foreach (IEditableBusinessObject child in this)
-        child.SetParent(this);
-
-      base.OnDeserialized();
-    }
-
     #endregion
 
     #region  Data Access
@@ -558,42 +543,42 @@ namespace Csla
 
     #region IDataPortalTarget Members
 
-    void Csla.Server.IDataPortalTarget.CheckRules()
+    void Server.IDataPortalTarget.CheckRules()
     { }
 
-    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+    Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    void Csla.Server.IDataPortalTarget.MarkAsChild()
+    void Server.IDataPortalTarget.MarkAsChild()
     { }
 
-    void Csla.Server.IDataPortalTarget.MarkNew()
+    void Server.IDataPortalTarget.MarkNew()
     { }
 
-    void Csla.Server.IDataPortalTarget.MarkOld()
+    void Server.IDataPortalTarget.MarkOld()
     { }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvoke(e);
+      DataPortal_OnDataPortalInvoke(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvokeComplete(e);
+      DataPortal_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      this.DataPortal_OnDataPortalException(e, ex);
+      DataPortal_OnDataPortalException(e, ex);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     { }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     { }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
 
     #endregion

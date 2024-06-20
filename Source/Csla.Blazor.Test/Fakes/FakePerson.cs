@@ -6,15 +6,22 @@ namespace Csla.Blazor.Test.Fakes
   [Serializable]
   public class FakePerson : BusinessBase<FakePerson>
   {
-    public static Csla.PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));
-    public static Csla.PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
-    public static Csla.PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
-    public static Csla.PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
-    public static Csla.PropertyInfo<FakePersonEmailAddresses> EmailAddressesProperty = RegisterProperty<FakePersonEmailAddresses>(nameof(EmailAddresses));
+    public static PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(nameof(Id));
+    public static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(nameof(FirstName));
+    public static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(nameof(LastName));
+    public static PropertyInfo<string> HomeTelephoneProperty = RegisterProperty<string>(nameof(HomeTelephone));
+    public static PropertyInfo<string> MobileTelephoneProperty = RegisterProperty<string>(nameof(MobileTelephone));
+    public static PropertyInfo<FakePersonEmailAddresses> EmailAddressesProperty = RegisterProperty<FakePersonEmailAddresses>(nameof(EmailAddresses));
 
     public static string FirstNameFailOnInsertValue = "FailOnInsert";
 
     #region Properties 
+
+    public Guid Id
+    {
+      get => GetProperty(IdProperty);
+      private set => SetProperty(IdProperty, value);
+    }
 
     [MaxLength(25)]
     public string FirstName
@@ -69,7 +76,7 @@ namespace Csla.Blazor.Test.Fakes
       BusinessRules.AddRule(rule);
     }
 
-    protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
+    protected override void OnChildChanged(Core.ChildChangedEventArgs e)
     {
       if (e.ChildObject is FakePersonEmailAddresses)
       {
@@ -87,6 +94,7 @@ namespace Csla.Blazor.Test.Fakes
     [Create]
     private void Create([Inject] IChildDataPortal<FakePersonEmailAddresses> dataPortal)
     {
+      Id = Guid.NewGuid();
       // Create an empty list for holding email addresses
       LoadProperty(EmailAddressesProperty, dataPortal.CreateChild());
 
@@ -94,12 +102,29 @@ namespace Csla.Blazor.Test.Fakes
       BusinessRules.CheckRules();
     }
 
+    [RunLocal]
+    [Fetch]
+    private FakePerson Fetch(Guid id)
+    {
+      return FakeDataStorage.GetFakePerson(id);
+    }
+
+    [RunLocal]
     [Insert]
     private void Insert()
     {
       if (FirstName == FirstNameFailOnInsertValue) {
         throw new Exception("Insert failed");
       }
+
+      FakeDataStorage.InsertFakePerson(this);
+    }
+
+    [RunLocal]
+    [Update]
+    private void Update()
+    {
+      FakeDataStorage.UpdateFakePerson(this);
     }
     #endregion
 

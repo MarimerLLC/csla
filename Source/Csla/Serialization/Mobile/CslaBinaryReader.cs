@@ -30,7 +30,7 @@ namespace Csla.Serialization.Mobile
     public List<SerializationInfo> Read(Stream serializationStream)
     {
       var returnValue = new List<SerializationInfo>();
-      this.keywordsDictionary.Clear();
+      keywordsDictionary.Clear();
 
       using var reader = new BinaryReader(serializationStream);
       var totalCount = reader.ReadInt32();
@@ -69,7 +69,7 @@ namespace Csla.Serialization.Mobile
     }
 
     private string ReadString(BinaryReader reader) =>
-      this.ReadString(reader, (CslaKnownTypes)reader.ReadByte());
+      ReadString(reader, (CslaKnownTypes)reader.ReadByte());
 
     private string ReadString(BinaryReader reader, CslaKnownTypes knownType)
     {
@@ -79,10 +79,10 @@ namespace Csla.Serialization.Mobile
           return reader.ReadString();
         case CslaKnownTypes.StringWithDictionaryKey:
           var systemString = reader.ReadString();
-          this.keywordsDictionary.Add(reader.ReadInt32(), systemString);
+          keywordsDictionary.Add(reader.ReadInt32(), systemString);
           return systemString;
         case CslaKnownTypes.StringDictionaryKey:
-          return this.keywordsDictionary[reader.ReadInt32()];
+          return keywordsDictionary[reader.ReadInt32()];
         default:
           throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
       }
@@ -96,7 +96,7 @@ namespace Csla.Serialization.Mobile
         case CslaKnownTypes.IMobileObject:
           using (MemoryStream arrayBuffer = new MemoryStream(reader.ReadBytes(reader.ReadInt32())))
           {
-            var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+            var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
             var obj = formatter.Deserialize(arrayBuffer);
             return obj;
           }
@@ -163,6 +163,12 @@ namespace Csla.Serialization.Mobile
         case CslaKnownTypes.StringWithDictionaryKey:
         case CslaKnownTypes.StringDictionaryKey:
           return ReadString(reader, knownType);
+#if NET8_0_OR_GREATER
+        case CslaKnownTypes.DateOnly:
+          return DateOnly.FromDateTime(new DateTime(reader.ReadInt64()));
+        case CslaKnownTypes.TimeOnly:
+          return new TimeOnly(reader.ReadInt64());
+#endif
         default:
           throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
       }

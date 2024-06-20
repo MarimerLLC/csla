@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Google.Protobuf;
@@ -27,17 +28,23 @@ namespace Csla.Channels.Grpc
     /// <param name="channel">GrpcChannel instance</param>
     /// <param name="options">Proxy options</param>
     /// <param name="dataPortalOptions">Data portal options</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="dataPortalOptions"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     public GrpcProxy(ApplicationContext applicationContext, GrpcChannel channel, GrpcProxyOptions options, DataPortalOptions dataPortalOptions)
       : base(applicationContext)
     {
-      _channel = channel;
+      if (options is null)
+        throw new ArgumentNullException(nameof(options));
+      if (dataPortalOptions is null)
+        throw new ArgumentNullException(nameof(dataPortalOptions));
+
+      _channel = channel ?? throw new ArgumentNullException(nameof(channel));
       DataPortalUrl = options.DataPortalUrl;
       VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
-    private GrpcChannel _channel;
-    private static GrpcChannel _defaultChannel;
-    private string VersionRoutingTag { get; set; }
+    private GrpcChannel? _channel;
+    private static GrpcChannel? _defaultChannel;
+    private string? VersionRoutingTag { get; set; }
 
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
@@ -56,12 +63,16 @@ namespace Csla.Channels.Grpc
     /// Sets the GrpcChannel used by gRPC clients.
     /// </summary>
     /// <param name="channel">GrpcChannel instance</param>
+    /// <exception cref="ArgumentNullException"><paramref name="channel"/> is <see langword="null"/>.</exception>
+#if NET8_0_OR_GREATER
+    [MemberNotNull(nameof(_defaultChannel))]
+#endif
     protected static void SetChannel(GrpcChannel channel)
     {
-      _defaultChannel = channel;
+      _defaultChannel = channel ?? throw new ArgumentNullException(nameof(channel));
     }
 
-    private GrpcService.GrpcServiceClient _grpcClient;
+    private GrpcService.GrpcServiceClient? _grpcClient;
 
     /// <summary>
     /// Get gRPC client object used by data portal.
@@ -101,7 +112,7 @@ namespace Csla.Channels.Grpc
       return await GetGrpcClient().InvokeAsync(request);
     }
 
-    private string CreateOperationTag(string operation, string versionToken, string routingToken)
+    private string CreateOperationTag(string operation, string? versionToken, string routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
         return $"{operation}/{routingToken}-{versionToken}";

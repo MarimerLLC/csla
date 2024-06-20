@@ -28,7 +28,7 @@ namespace Csla.Test.ValidationRules
       base.AddBusinessRules();
     }
 
-    public new Rules.BrokenRulesCollection GetBrokenRules()
+    public new BrokenRulesCollection GetBrokenRules()
     {
       return BusinessRules.GetBrokenRules();
     }
@@ -40,7 +40,7 @@ namespace Csla.Test.ValidationRules
 
     public class InvalidAsyncValidationRule : BusinessRule
     {
-      public InvalidAsyncValidationRule(Csla.Core.IPropertyInfo primaryProperty)
+      public InvalidAsyncValidationRule(Core.IPropertyInfo primaryProperty)
         : base(primaryProperty)
       {
         IsAsync = true;

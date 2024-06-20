@@ -7,12 +7,13 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
-using Csla.Test.ValidationRules;
-using UnitDriven;
 using System.Security.Claims;
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
+using Csla.Test.ValidationRules;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.Serialization.Mobile;
+using UnitDriven;
 
 namespace Csla.Test.Serialization
 {
@@ -72,10 +73,21 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    public void DateTimeKind()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeHolder>();
+      var obj = portal.Create();
+      DateTime.SpecifyKind(obj.Value, System.DateTimeKind.Local);
+      var obj2 = obj.Clone();
+      Assert.AreEqual(obj.Value.Kind, obj2.Value.Kind);
+    }
+
+    [TestMethod]
     public void CorrectDefaultSerializer()
     {
-      var serializer = ApplicationContext.SerializationFormatter;
-      Assert.IsTrue(serializer == typeof(MobileFormatter));
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
+      Assert.IsTrue(serializer.GetType() == typeof(MobileFormatter));
     }
 
     [TestMethod]
@@ -202,53 +214,6 @@ namespace Csla.Test.Serialization
           "Called serializable private handler after clone");
 
       context.Assert.Success();
-    }
-
-    [TestMethod]
-    public void TestSerializableEventsActionFails()
-    {
-      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
-
-      var root = SerializationRoot.NewSerializationRoot(dataPortal);
-      var nonSerClass = new NonSerializedClass();
-      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
-      var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
-      root.PropertyChanged += delgate;
-      // TODO: Should this test target another formatter, or just be deleted?
-      //var b = new BinaryFormatterWrapper();
-      //try
-      //{
-      //  b.Serialize(new MemoryStream(), root);
-      //  Assert.Fail("Serialization should have thrown an exception");
-      //}
-      //catch (System.Runtime.Serialization.SerializationException)
-      //{
-      //  // serialization failed as expected
-      //}
-    }
-
-    [TestMethod]
-    public void TestSerializableEventsActionSucceeds()
-    {
-      IDataPortal<OverrideSerializationRoot> dataPortal = _testDIContext.CreateDataPortal<OverrideSerializationRoot>();
-
-      var root = OverrideSerializationRoot.NewOverrideSerializationRoot(dataPortal);
-      var nonSerClass = new NonSerializedClass();
-
-      Action<object, PropertyChangedEventArgs> h = (_, _) => { nonSerClass.Do(); };
-      var method = typeof(Action<object, PropertyChangedEventArgs>).GetMethod("Invoke");
-      var delgate = (PropertyChangedEventHandler)method.CreateDelegate(typeof(PropertyChangedEventHandler), h);
-      root.PropertyChanged += delgate;
-
-      Action<object, PropertyChangingEventArgs> h1 = (_, _) => { nonSerClass.Do(); };
-      var method1 = typeof(Action<object, PropertyChangingEventArgs>).GetMethod("Invoke");
-      var delgate1 = (PropertyChangingEventHandler)method1.CreateDelegate(typeof(PropertyChangingEventHandler), h1);
-      root.PropertyChanging += delgate1;
-
-      // TODO: Would this test make sense if upgraded to MobileFormatter?
-      //var b = new BinaryFormatterWrapper();
-      //b.Serialize(new MemoryStream(), root);
     }
 
     [TestMethod]
@@ -442,7 +407,7 @@ namespace Csla.Test.Serialization
       // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
       //Csla.ApplicationContext.User = new ClaimsPrincipal();
 
-      Csla.Test.Security.PermissionsRoot rootClone = root.Clone();
+      Security.PermissionsRoot rootClone = root.Clone();
 
       try
       {
@@ -491,13 +456,7 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
 
-      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] =
-        "NetDataContractSerializer";
-      // TODO: NDCS has been dropped I think; is there a way to replicate this test with another formatter?
-      //Assert.AreEqual(
-      //  Csla.ApplicationContext.SerializationFormatters.NetDataContractSerializer,
-      //  Csla.ApplicationContext.SerializationFormatter,
-      //  "Formatter should be NetDataContractSerializer");
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileSerializer";
 
       DCRoot root = DCRoot.NewDCRoot(dataPortal);
       root.Data = 123;
@@ -536,7 +495,7 @@ namespace Csla.Test.Serialization
       IDataPortal<Basic.Children> dataPortal = _testDIContext.CreateDataPortal<Basic.Children>();
       IDataPortal<Basic.Child> childDataPortal = _testDIContext.CreateDataPortal<Basic.Child>();
 
-      Csla.Test.Basic.Children list = Csla.Test.Basic.Children.NewChildren(dataPortal);
+      Basic.Children list = Basic.Children.NewChildren(dataPortal);
       list.Add(childDataPortal, "1");
       list.Add(childDataPortal, "2");
       IEditableObject item = list[1] as IEditableObject;
@@ -559,16 +518,6 @@ namespace Csla.Test.Serialization
 
       // TODO: Not sure how to replicate the object cloner in Csla 6
       var buffer = new MemoryStream();
-      //  var bf = (TestCommand)Csla.Core.ObjectCloner.Clone(cmd);
-      //  Assert.AreEqual(cmd.Name, bf.Name, "after BinaryFormatter");
-
-      //  var ndcs = new System.Runtime.Serialization.NetDataContractSerializer();
-      //  ndcs.Serialize(buffer, cmd);
-      //  buffer.Position = 0;
-      //  var n = (TestCommand)ndcs.Deserialize(buffer);
-      //  Assert.AreEqual(cmd.Name, n.Name, "after NDCS");
-
-      buffer = new MemoryStream();
       var mf = new MobileFormatter(applicationContext);
       mf.Serialize(buffer, cmd);
       buffer.Position = 0;
@@ -597,38 +546,25 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(cmd.Name + " server", result.Name);
     }
 
-#if NETFRAMEWORK
     [TestMethod]
-    public void UseCustomSerializationFormatter()
+    public void DateOnlySerialization()
     {
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(options => options
-      .Serialization(cfg => cfg
-      .SerializationFormatter(typeof(NetDataContractSerializerWrapper))));
-      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
-
-      var formatter = SerializationFormatterFactory.GetFormatter(applicationContext);
-
-      Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
+      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var obj = portal.Create();
+      obj.DateOnly = new DateOnly(2020, 1, 1);
+      var clone = obj.Clone();
+      Assert.AreEqual(obj.DateOnly, clone.DateOnly);
     }
 
-    // TODO: I don't think this test is relevant - NDCS has been dropped?
-    //[TestMethod]
-    //public void UseNetDataContractSerializer()
-    //{
-    //  System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "NetDataContractSerializer";
-    //  try
-    //  {
-    //    var formatter = SerializationFormatterFactory.GetFormatter();
-
-    //    Assert.AreEqual(ApplicationContext.SerializationFormatter, ApplicationContext.SerializationFormatters.NetDataContractSerializer);
-    //    Assert.IsInstanceOfType(formatter, typeof(NetDataContractSerializerWrapper));
-    //  }
-    //  finally
-    //  {
-    //    System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = null;
-    //  }
-    //}
-#endif
+    [TestMethod]
+    public void TimeOnlySerialization()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var obj = portal.Create();
+      obj.TimeOnly = new TimeOnly(12, 34, 56);
+      var clone = obj.Clone();
+      Assert.AreEqual(obj.TimeOnly, clone.TimeOnly);
+    }
   }
 
   [Serializable]
@@ -652,4 +588,42 @@ namespace Csla.Test.Serialization
       Name += " server";
     }
   }
+
+  [Serializable]
+  public class DateTimeOnlyHolder : BusinessBase<DateTimeOnlyHolder>
+  {
+    public static readonly PropertyInfo<DateOnly> DateOnlyProperty = RegisterProperty<DateOnly>(nameof(DateOnly));
+    public DateOnly DateOnly
+    {
+      get => ReadProperty(DateOnlyProperty);
+      set => LoadProperty(DateOnlyProperty, value);
+    }
+
+    public static readonly PropertyInfo<TimeOnly> TimeOnlyProperty = RegisterProperty<TimeOnly>(nameof(TimeOnly));
+    public TimeOnly TimeOnly
+    {
+      get => ReadProperty(TimeOnlyProperty);
+      set => LoadProperty(TimeOnlyProperty, value);
+    }
+    
+    [Create]
+    private void Create()
+    { }
+  }
+
+  [Serializable]
+  public class DateTimeHolder : BusinessBase<DateTimeHolder>
+  {
+    public static readonly PropertyInfo<DateTime> ValueProperty = RegisterProperty<DateTime>(nameof(Value));
+    public DateTime Value
+    {
+      get => GetProperty(ValueProperty);
+      set => SetProperty(ValueProperty, value);
+    }
+
+    [Create]
+    private void Create()
+    { }
+  }
+
 }

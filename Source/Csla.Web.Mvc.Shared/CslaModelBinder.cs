@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Model binder for use with CSLA .NET editable business objects.</summary>
 //-----------------------------------------------------------------------
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER || NETCOREAPP3_1
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using System.Collections;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
@@ -158,7 +158,7 @@ namespace Csla.Web.Mvc
     /// <returns>Bound object</returns>
     public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
     {
-      if (typeof(Core.IEditableCollection).IsAssignableFrom((bindingContext.ModelType)))
+      if (typeof(IEditableCollection).IsAssignableFrom((bindingContext.ModelType)))
         return BindCslaCollection(controllerContext, bindingContext);
 
       if (bindingContext.Model is ICheckRules suppress)
@@ -235,7 +235,7 @@ namespace Csla.Web.Mvc
     {
       if (bindingContext.Model is BusinessBase obj)
       {
-        if (this._checkRulesOnModelUpdated)
+        if (_checkRulesOnModelUpdated)
         {
           if (obj is ICheckRules suppress)
           {
@@ -274,9 +274,9 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     /// <param name="propertyDescriptor">Property descriptor</param>
     /// <param name="value">Value</param>
-    protected override void OnPropertyValidated(ControllerContext controllerContext, ModelBindingContext bindingContext, System.ComponentModel.PropertyDescriptor propertyDescriptor, object value)
+    protected override void OnPropertyValidated(ControllerContext controllerContext, ModelBindingContext bindingContext, PropertyDescriptor propertyDescriptor, object value)
     {
-      if (!(bindingContext.Model is Core.BusinessBase))
+      if (!(bindingContext.Model is BusinessBase))
         base.OnPropertyValidated(controllerContext, bindingContext, propertyDescriptor, value);
     }
   }

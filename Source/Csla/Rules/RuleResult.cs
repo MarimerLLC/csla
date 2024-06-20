@@ -43,13 +43,17 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the primary property for this result.
     /// </summary>
-    public Csla.Core.IPropertyInfo PrimaryProperty { get; private set; }
+    public Core.IPropertyInfo PrimaryProperty { get; private set; }
     /// <summary>
     /// Gets or sets a list of properties that were affected
     /// by the rule, so appropriate PropertyChanged events
     /// can be raised for UI notification.
     /// </summary>
     public List<Core.IPropertyInfo> Properties { get; set; }
+    /// <summary>
+    /// Gets or sets the broken rule priority.
+    /// </summary>
+    public int Priority { get; set; }
     /// <summary>
     /// Gets or sets a dictionary of new property values used
     /// to update the business object's properties after
@@ -94,7 +98,7 @@ namespace Csla.Rules
     {
 
       if (string.IsNullOrEmpty(description))
-        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), "description");
+        throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), nameof(description));
 
       RuleName = ruleName;
       PrimaryProperty = property;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace CustomActivator
 {
@@ -9,9 +10,10 @@ namespace CustomActivator
       Console.WriteLine("Interceptor Complete");
     }
 
-    public void Initialize(Csla.Server.InterceptArgs e)
+    public Task InitializeAsync(Csla.Server.InterceptArgs e)
     {
       Console.WriteLine("Interceptor Initialize");
+      return Task.CompletedTask;
     }
   }
 }

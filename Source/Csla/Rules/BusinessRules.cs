@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using Csla.Serialization.Mobile;
 using Csla.Core;
-using Csla.Threading;
+using Csla.Serialization.Mobile;
 using Csla.Server;
+using Csla.Threading;
 
 namespace Csla.Rules
 {
@@ -187,7 +187,7 @@ namespace Csla.Rules
     /// Associates an authorization rule with the business object.
     /// </summary>
     /// <param name="rule">Rule object.</param>
-    public void AddRule(IAuthorizationRule rule)
+    public void AddRule(IAuthorizationRuleBase rule)
     {
       EnsureUniqueRule(TypeAuthRules, rule);
       TypeAuthRules.Rules.Add(rule);
@@ -199,7 +199,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="objectType">Type of business object.</param>
     /// <param name="rule">Rule object.</param>
-    public static void AddRule(Type objectType, IAuthorizationRule rule)
+    public static void AddRule(Type objectType, IAuthorizationRuleBase rule)
     {
       AddRule(objectType, rule, ApplicationContext.DefaultRuleSet);
     }
@@ -211,7 +211,7 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     /// <param name="rule">Rule object.</param>
     /// <param name="ruleSet">Rule set name.</param>
-    public static void AddRule(Type objectType, IAuthorizationRule rule, string ruleSet)
+    public static void AddRule(Type objectType, IAuthorizationRuleBase rule, string ruleSet)
     {
       AddRule(null, objectType, rule, ruleSet);
     }
@@ -224,16 +224,16 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     /// <param name="rule">Rule object.</param>
     /// <param name="ruleSet">Rule set name.</param>
-    public static void AddRule(ApplicationContext applicationContext, Type objectType, IAuthorizationRule rule, string ruleSet)
+    public static void AddRule(ApplicationContext applicationContext, Type objectType, IAuthorizationRuleBase rule, string ruleSet)
     {
       var typeRules = AuthorizationRuleManager.GetRulesForType(applicationContext, objectType, ruleSet);
       EnsureUniqueRule(typeRules, rule);
       typeRules.Rules.Add(rule);
     }
 
-    private static void EnsureUniqueRule(AuthorizationRuleManager mgr, IAuthorizationRule rule)
+    private static void EnsureUniqueRule(AuthorizationRuleManager mgr, IAuthorizationRuleBase rule)
     {
-      IAuthorizationRule oldRule = null;
+      IAuthorizationRuleBase oldRule = null;
       if (rule.Element != null)
         oldRule = mgr.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == rule.Element.Name && c.Action == rule.Action);
       else
@@ -309,7 +309,7 @@ namespace Csla.Rules
     /// property has any async rules running.
     /// </summary>
     /// <param name="property">Property to check.</param>
-    public bool GetPropertyBusy(Csla.Core.IPropertyInfo property)
+    public bool GetPropertyBusy(IPropertyInfo property)
     {
       return BusyProperties.Contains(property);
     }
@@ -392,9 +392,14 @@ namespace Csla.Rules
         AuthorizationRuleManager.GetRulesForType(applicationContext, objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
-        rule.Execute(context);
-        result = context.HasPermission;
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
       }
       return result;
     }
@@ -405,7 +410,7 @@ namespace Csla.Rules
     /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="element">Property or method to check.</param>
-    public bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Csla.Core.IMemberInfo element)
+    public bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, IMemberInfo element)
     {
       if (_suppressRuleChecking)
         return true;
@@ -421,9 +426,162 @@ namespace Csla.Rules
         TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
       if (rule != null)
       {
-        var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
-        rule.Execute(context);
-        result = context.HasPermission;
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="objectType">The type of the business object.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation that returns a boolean indicating whether the permission is granted.</returns>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
+
+      // no object specified so must use RuleSet from ApplicationContext
+      return HasPermissionAsync(action, null, applicationContext, realType, null, applicationContext.RuleSet, ct);
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="objectType">The type of the business object.</param>
+    /// <param name="criteria">The criteria object provided.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the permission is granted.</returns>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object[] criteria, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
+
+      // no object specified so must use RuleSet from ApplicationContext
+      return HasPermissionAsync(action, null, applicationContext, realType, criteria, applicationContext.RuleSet, ct);
+    }
+
+    /// <summary>
+    /// Checks per-type authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">Authorization action.</param>
+    /// <param name="objectType">Type of business object.</param>
+    /// <param name="ruleSet">The rule set.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>
+    /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
+    /// </returns>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string ruleSet, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+      var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
+      var realType = activator.ResolveType(objectType);
+      return HasPermissionAsync(action, null, applicationContext, realType, null, ruleSet, ct);
+    }
+
+    /// <summary>
+    /// Checks per-instance authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="obj">The business object instance.</param>
+    /// <param name="ct">The cancellation token.</param>
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, object obj, CancellationToken ct)
+    {
+      if (applicationContext == null)
+        throw new ArgumentNullException(nameof(applicationContext));
+      return HasPermissionAsync(action, obj, applicationContext, obj.GetType(), null, applicationContext.RuleSet, ct);
+    }
+
+    private static async Task<bool> HasPermissionAsync(AuthorizationActions action, object obj, ApplicationContext applicationContext, Type objType, object[] criteria, string ruleSet, CancellationToken ct)
+    {
+
+      if (action == AuthorizationActions.ReadProperty ||
+          action == AuthorizationActions.WriteProperty ||
+          action == AuthorizationActions.ExecuteMethod)
+        throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
+
+      bool result = true;
+      var rule =
+        AuthorizationRuleManager.GetRulesForType(applicationContext, objType, ruleSet).Rules.FirstOrDefault(c => c.Element == null && c.Action == action);
+      if (rule != null)
+      {
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else if (rule is IAuthorizationRuleAsync nsync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, obj, objType) { Criteria = criteria };
+          await nsync.ExecuteAsync(context, ct);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Checks per-property authorization rules.
+    /// </summary>
+    /// <param name="applicationContext">The application context.</param>
+    /// <param name="action">The authorization action.</param>
+    /// <param name="element">The property or method to check.</param>
+    /// <param name="ct">The cancellation token.</param>
+    /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the permission is granted.</returns>
+    public async Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Csla.Core.IMemberInfo element, CancellationToken ct)
+    {
+      if (_suppressRuleChecking)
+        return true;
+
+      if (action == AuthorizationActions.CreateObject ||
+          action == AuthorizationActions.DeleteObject ||
+          action == AuthorizationActions.GetObject ||
+          action == AuthorizationActions.EditObject)
+        throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
+
+      bool result = true;
+      var rule =
+          TypeAuthRules.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == element.Name && c.Action == action);
+      if (rule != null)
+      {
+        if (rule is IAuthorizationRule sync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          sync.Execute(context);
+          result = context.HasPermission;
+        }
+        else if (rule is IAuthorizationRuleAsync nsync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          await nsync.ExecuteAsync(context, ct);
+          result = context.HasPermission;
+        }
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
       }
       return result;
     }
@@ -524,8 +682,9 @@ namespace Csla.Rules
       return result;
     }
 
-    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout) {
-      if (!RunningAsyncRules) 
+    private async Task WaitForAsyncRulesToComplete(TimeSpan timeout)
+    {
+      if (!RunningAsyncRules)
       {
         return;
       }
@@ -589,7 +748,7 @@ namespace Csla.Rules
     {
       if (_suppressRuleChecking)
         return new List<string>();
-       
+
       var oldRR = RunningRules;
       RunningRules = true;
       var rules = from r in TypeRules.Rules
@@ -604,7 +763,7 @@ namespace Csla.Rules
       // rerun property level rules for affected properties 
       if (cascade)
       {
-        var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
+        var propertiesToRun = new List<IPropertyInfo>();
         foreach (var item in rules)
           if (!item.IsAsync)
           {
@@ -638,12 +797,12 @@ namespace Csla.Rules
     /// property.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">If property is null</exception>
-    public List<string> CheckRules(Csla.Core.IPropertyInfo property)
+    public List<string> CheckRules(IPropertyInfo property)
     {
       return CheckRules(property, RuleContextModes.PropertyChanged);
     }
 
-    private  List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
+    private List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
@@ -682,7 +841,7 @@ namespace Csla.Rules
       if ((contextMode & RuleContextModes.AsAffectedProperty) > 0)
         canRun &= (rule.RunMode & RunModes.DenyAsAffectedProperty) == 0;
 
-      if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0) 
+      if ((rule.RunMode & RunModes.DenyOnServerSidePortal) > 0)
         canRun &= applicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server;
 
       if ((contextMode & RuleContextModes.CheckRules) > 0)
@@ -697,23 +856,23 @@ namespace Csla.Rules
     /// <param name="property">The property.</param>
     /// <param name="cascade">if set to <c>true</c> [cascade].</param>
     /// <param name="executionMode">The execute mode.</param>
-    private List<string> CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade, RuleContextModes executionMode)
+    private List<string> CheckRulesForProperty(IPropertyInfo property, bool cascade, RuleContextModes executionMode)
     {
       // checking rules for the primary property
       var primaryRules = from r in TypeRules.Rules
-                  where ReferenceEquals(r.PrimaryProperty, property)
-                    && CanRunRule(_applicationContext, r, executionMode)
-                  orderby r.Priority
-                  select r;
+                         where ReferenceEquals(r.PrimaryProperty, property)
+                           && CanRunRule(_applicationContext, r, executionMode)
+                         orderby r.Priority
+                         select r;
 
       BrokenRules.ClearRules(property);
       var primaryResult = RunRules(primaryRules, cascade, executionMode);
       if (CascadeOnDirtyProperties)
-          cascade = cascade || primaryResult.DirtyProperties.Any();
+        cascade = cascade || primaryResult.DirtyProperties.Any();
       if (cascade)
       {
         // get properties affected by all rules
-        var propertiesToRun = new List<Csla.Core.IPropertyInfo>();
+        var propertiesToRun = new List<IPropertyInfo>();
         foreach (var item in primaryRules)
           if (!item.IsAsync)
           {
@@ -725,11 +884,11 @@ namespace Csla.Rules
         // gets a list rules of of "affected" properties by adding
         // PrimaryProperty where property is in InputProperties
         var inputRules = from r in TypeRules.Rules
-                    where !ReferenceEquals(r.PrimaryProperty, property)
-                          && r.PrimaryProperty != null
-                          && r.InputProperties != null
-                          && r.InputProperties.Contains(property)
-                    select r;
+                         where !ReferenceEquals(r.PrimaryProperty, property)
+                               && r.PrimaryProperty != null
+                               && r.InputProperties != null
+                               && r.InputProperties.Contains(property)
+                         select r;
 
         var dirtyProperties = primaryResult.DirtyProperties;
         var inputProperties = from r in inputRules
@@ -738,13 +897,13 @@ namespace Csla.Rules
 
         foreach (var p in inputProperties)
         {
-            if (!ReferenceEquals(property, p))
-                propertiesToRun.Add(p);
+          if (!ReferenceEquals(property, p))
+            propertiesToRun.Add(p);
         }
         // run rules for affected properties
         foreach (var item in propertiesToRun.Distinct())
         {
-          var doCascade = false; 
+          var doCascade = false;
           if (CascadeOnDirtyProperties)
             doCascade = primaryResult.DirtyProperties.Any(p => p == item.Name);
           primaryResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
@@ -758,16 +917,16 @@ namespace Csla.Rules
     }
 
     [NonSerialized]
-    private List<Csla.Core.IPropertyInfo> _busyProperties;
+    private List<IPropertyInfo> _busyProperties;
 
     private bool _cascadeOnDirtyProperties;
 
-    private List<Csla.Core.IPropertyInfo> BusyProperties
+    private List<IPropertyInfo> BusyProperties
     {
       get
       {
         if (_busyProperties == null)
-          _busyProperties = new List<Csla.Core.IPropertyInfo>();
+          _busyProperties = new List<IPropertyInfo>();
         return _busyProperties;
       }
     }
@@ -790,7 +949,7 @@ namespace Csla.Rules
           break;
         bool complete = false;
         // set up context
-        var context = new RuleContext(_applicationContext, (r) =>
+        var context = new RuleContext(_applicationContext, r =>
         {
           if (r.Rule.IsAsync)
           {
@@ -805,7 +964,7 @@ namespace Csla.Rules
                     r.AddDirtyProperty(item.Key);
                 }
               // update broken rules list
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
               // run rules on affected properties for this async rule
               var affected = new List<string>();
@@ -853,7 +1012,7 @@ namespace Csla.Rules
             // update broken rules list
             if (r.Results != null)
             {
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName);
+              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
               // is any rules here broken with severity Error
               if (r.Results.Any(p => !p.Success && p.Severity == RuleSeverity.Error))
@@ -875,7 +1034,7 @@ namespace Csla.Rules
         // get input properties
         if (rule.InputProperties != null)
         {
-          var target = (IManageProperties) _target;
+          var target = (IManageProperties)_target;
           context.InputPropertyValues = new Dictionary<IPropertyInfo, object>();
           foreach (var item in rule.InputProperties)
           {
@@ -933,7 +1092,7 @@ namespace Csla.Rules
           affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
           // copy output property names
           if (context.OutputPropertyValues != null)
-            affectedProperties.AddRange(context.OutputPropertyValues.Select(c =>c.Key.Name));
+            affectedProperties.AddRange(context.OutputPropertyValues.Select(c => c.Key.Name));
           // copy dirty properties 
           if (context.DirtyProperties != null)
             dirtyProperties.AddRange(context.DirtyProperties.Select(c => c.Name));
@@ -972,7 +1131,7 @@ namespace Csla.Rules
     public void AddDataAnnotations()
     {
       Type metadataType;
-#if !NETSTANDARD2_0 || NET6_0_OR_GREATER
+#if !NETSTANDARD2_0 || NET8_0_OR_GREATER
       // add data annotations from metadata class if specified
       var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
       if (classAttList.Length > 0)
@@ -1140,7 +1299,7 @@ namespace Csla.Rules
     private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object parentKey, object obj, bool errorsOnly, ref long childBrokenRuleCount)
     {
       // is this a single editable object 
-      if (obj is Csla.Core.BusinessBase bbase)
+      if (obj is BusinessBase bbase)
       {
         var nodeKey = counter++;
         var bo = bbase;

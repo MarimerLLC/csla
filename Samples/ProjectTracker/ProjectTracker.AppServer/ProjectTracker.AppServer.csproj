@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Csla.AspNetCore" Version="8.1.0" />
+    <PackageReference Include="Csla.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

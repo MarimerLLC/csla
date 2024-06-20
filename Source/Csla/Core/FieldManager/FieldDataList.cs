@@ -101,13 +101,13 @@ namespace Csla.Core.FieldManager
 #else
     #region  ISerializable
 
-    protected FieldDataList(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+    protected FieldDataList(SerializationInfo info, StreamingContext context)
     {
       _fields = (List<IFieldData>)(info.GetValue("Fields", typeof(List<IFieldData>)));
       RebuildIndex();
     }
 
-    public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
     {
       info.AddValue("Fields", _fields);
     }

@@ -6,7 +6,7 @@
 // <summary>Manages the list of rules for a business type.</summary>
 //-----------------------------------------------------------------------
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -19,7 +19,7 @@ namespace Csla.Rules
   /// </summary>
   public class BusinessRuleManager
   {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>>();
 #else
@@ -34,16 +34,16 @@ namespace Csla.Rules
 
       var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var rulesInfo = _perTypeRules.Value
         .GetOrAdd(
           key,
-          (_) => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
+          _ => AssemblyLoadContextManager.CreateCacheInstance(type, new BusinessRuleManager(), OnAssemblyLoadContextUnload)
         );
 
       return rulesInfo.Item2;
 #else
-      return _perTypeRules.Value.GetOrAdd(key, (_) => { return new BusinessRuleManager(); });
+      return _perTypeRules.Value.GetOrAdd(key, _ => { return new BusinessRuleManager(); });
 #endif
     }
 
@@ -77,12 +77,12 @@ namespace Csla.Rules
         if (!(obj is RuleSetKey other))
           return false;
         else
-          return this.Type.Equals(other.Type) && RuleSet == other.RuleSet;
+          return Type.Equals(other.Type) && RuleSet == other.RuleSet;
       }
 
       public override int GetHashCode()
       {
-        return (this.Type.FullName + RuleSet).GetHashCode();
+        return (Type.FullName + RuleSet).GetHashCode();
       }
     }
 
@@ -102,7 +102,7 @@ namespace Csla.Rules
       Rules = new List<IBusinessRuleBase>();
     }
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_perTypeRules)

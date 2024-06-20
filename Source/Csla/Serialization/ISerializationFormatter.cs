@@ -21,7 +21,7 @@ namespace Csla.Serialization
     /// <param name="serializationStream">
     /// Byte stream containing the serialized data.</param>
     /// <returns>A deserialized object graph.</returns>
-    object Deserialize(System.IO.Stream serializationStream);
+    object Deserialize(Stream serializationStream);
     /// <summary>
     /// Converts a serialization stream into an
     /// object graph.
@@ -36,7 +36,7 @@ namespace Csla.Serialization
     /// <param name="serializationStream">
     /// Stream that will contain the the serialized data.</param>
     /// <param name="graph">Object graph to be serialized.</param>
-    void Serialize(System.IO.Stream serializationStream, object graph);
+    void Serialize(Stream serializationStream, object graph);
     /// <summary>
     /// Converts an object graph into a byte stream.
     /// </summary>

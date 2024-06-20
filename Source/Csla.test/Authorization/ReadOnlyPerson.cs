@@ -70,8 +70,8 @@ namespace Csla.Test.Authorization
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
-      BusinessRules.AddRule(new Csla.Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.ReadProperty, MiddleNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsInRole(Rules.AuthorizationActions.ReadProperty, FirstNameProperty, new List<string> { "Admin" }));
+      BusinessRules.AddRule(new Rules.CommonRules.IsNotInRole(Rules.AuthorizationActions.ReadProperty, MiddleNameProperty, new List<string> { "Admin" }));
     }
 
     internal void SetDisableCanReadAuthorizationChecks(bool isCanReadAuthorizationChecksDisabled) => _authorizationCheckDisabled = isCanReadAuthorizationChecksDisabled;

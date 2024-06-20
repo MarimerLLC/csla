@@ -142,6 +142,17 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// IMobileObject serialized into a byte array
     /// </summary>
-    IMobileObject
+    IMobileObject = 26
+#if NET8_0_OR_GREATER
+    ,
+    /// <summary>
+    /// Represents a DateOnly object
+    /// </summary>
+    DateOnly = 27,
+    /// <summary>
+    /// Represents a TimeOnly object
+    /// </summary>
+    TimeOnly = 28
+#endif
   }
 }

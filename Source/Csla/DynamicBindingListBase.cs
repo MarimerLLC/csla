@@ -39,13 +39,13 @@ namespace Csla
   /// </remarks>
   [Serializable]
   public abstract class DynamicBindingListBase<T> :
-    Core.ExtendedBindingList<T>,
-    Core.IParent,
+    ExtendedBindingList<T>,
+    IParent,
     Server.IDataPortalTarget,
     IBusinessObject,
     IUseApplicationContext
     where T : Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable, IMobileObject, IBusinessObject
-    {
+  {
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -56,7 +56,7 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set
@@ -150,8 +150,8 @@ namespace Csla
     /// </remarks>
     public virtual T SaveItem(int index)
     {
-      bool raisingEvents = this.RaiseListChangedEvents;
-      this.RaiseListChangedEvents = false;
+      bool raisingEvents = RaiseListChangedEvents;
+      RaiseListChangedEvents = false;
       _activelySaving = true;
 
       T item = default(T);
@@ -196,47 +196,47 @@ namespace Csla
       finally
       {
         _activelySaving = false;
-        this.RaiseListChangedEvents = raisingEvents;
+        RaiseListChangedEvents = raisingEvents;
       }
-      this.OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
+      OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
       return result;
     }
 
-#endregion
+    #endregion
 
-#region Saved Event
+    #region Saved Event
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<Csla.Core.SavedEventArgs> _nonSerializableSavedHandlers;
+    private EventHandler<SavedEventArgs> _nonSerializableSavedHandlers;
     [NotUndoable]
-    private EventHandler<Csla.Core.SavedEventArgs> _serializableSavedHandlers;
+    private EventHandler<SavedEventArgs> _serializableSavedHandlers;
 
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event EventHandler<Csla.Core.SavedEventArgs> Saved
+    public event EventHandler<SavedEventArgs> Saved
     {
       add
       {
         if (value.Method.IsPublic &&
            value.Method.IsStatic)
-          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Combine(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Combine(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Combine(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Combine(_nonSerializableSavedHandlers, value);
       }
       remove
       {
         if (value.Method.IsPublic &&
            value.Method.IsStatic)
-          _serializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Remove(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Remove(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<Csla.Core.SavedEventArgs>)
-            System.Delegate.Remove(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
+            Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
 
@@ -253,14 +253,14 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSaved(T newObject, Exception e)
     {
-      Csla.Core.SavedEventArgs args = new Csla.Core.SavedEventArgs(newObject, e, null);
+      SavedEventArgs args = new SavedEventArgs(newObject, e, null);
       _nonSerializableSavedHandlers?.Invoke(this, args);
       _serializableSavedHandlers?.Invoke(this, args);
     }
 
-#endregion
+    #endregion
 
-#region  Insert, Remove, Clear
+    #region  Insert, Remove, Clear
 
     /// <summary>
     /// Adds a new item to the list.
@@ -271,7 +271,7 @@ namespace Csla
       var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
       T item = dp.Create();
       Add(item);
-      this.OnAddingNew(new AddingNewEventArgs(item));
+      OnAddingNew(new AddingNewEventArgs(item));
       return item;
     }
 
@@ -326,30 +326,30 @@ namespace Csla
       base.SetItem(index, item);
     }
 
-#endregion
+    #endregion
 
-#region  IParent Members
+    #region  IParent Members
 
-    void Csla.Core.IParent.ApplyEditChild(Core.IEditableBusinessObject child)
+    void IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       if (!_activelySaving && child.EditLevel == 0)
         SaveItem((T)child);
     }
 
-    void Csla.Core.IParent.RemoveChild(Core.IEditableBusinessObject child)
+    void IParent.RemoveChild(IEditableBusinessObject child)
     {
       if (child.IsNew)
         Remove((T)child);
     }
 
-    IParent Csla.Core.IParent.Parent
+    IParent IParent.Parent
     {
       get { return null; }
     }
 
-#endregion
+    #endregion
 
-#region  Cascade Child events
+    #region  Cascade Child events
 
     /// <summary>
     /// Handles any PropertyChanged event from 
@@ -359,9 +359,9 @@ namespace Csla
     /// <param name="sender">Object that raised the event.</param>
     /// <param name="e">Property changed args.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void Child_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-      for (int index = 0; index < this.Count; index++)
+      for (int index = 0; index < Count; index++)
       {
         if (ReferenceEquals(this[index], sender))
         {
@@ -395,7 +395,7 @@ namespace Csla
     /// PropertyChangedEventArgs from the child object.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnChildPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    protected virtual void OnChildPropertyChanged(object sender, PropertyChangedEventArgs e)
     { }
 
     private static PropertyDescriptorCollection _propertyDescriptors;
@@ -403,7 +403,7 @@ namespace Csla
     private PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
       if (_propertyDescriptors == null)
-        _propertyDescriptors = TypeDescriptor.GetProperties(this.GetType());
+        _propertyDescriptors = TypeDescriptor.GetProperties(GetType());
       PropertyDescriptor result = null;
       foreach (PropertyDescriptor desc in _propertyDescriptors)
         if (desc.Name == propertyName)
@@ -414,29 +414,9 @@ namespace Csla
       return result;
     }
 
-#endregion
+    #endregion
 
-#region  Serialization Notification
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnDeserialized()
-    {
-      foreach (IEditableBusinessObject child in this)
-      {
-        child.SetParent(this);
-        if (child is INotifyPropertyChanged c)
-          c.PropertyChanged += Child_PropertyChanged;
-      }
-      base.OnDeserialized();
-    }
-
-#endregion
-
-#region  Data Access
+    #region  Data Access
 
     private void DataPortal_Update()
     {
@@ -484,9 +464,9 @@ namespace Csla
 
     }
 
-#endregion
+    #endregion
 
-#region ToArray
+    #region ToArray
 
     /// <summary>
     /// Get an array containing all items in the list.
@@ -499,46 +479,46 @@ namespace Csla
       return result.ToArray();
     }
 
-#endregion
+    #endregion
 
-#region IDataPortalTarget Members
+    #region IDataPortalTarget Members
 
-    void Csla.Server.IDataPortalTarget.CheckRules()
+    void Server.IDataPortalTarget.CheckRules()
     { }
 
-    Task Csla.Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+    Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    void Csla.Server.IDataPortalTarget.MarkAsChild()
+    void Server.IDataPortalTarget.MarkAsChild()
     { }
 
-    void Csla.Server.IDataPortalTarget.MarkNew()
+    void Server.IDataPortalTarget.MarkNew()
     { }
 
-    void Csla.Server.IDataPortalTarget.MarkOld()
+    void Server.IDataPortalTarget.MarkOld()
     { }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvoke(e);
+      DataPortal_OnDataPortalInvoke(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
-      this.DataPortal_OnDataPortalInvokeComplete(e);
+      DataPortal_OnDataPortalInvokeComplete(e);
     }
 
-    void Csla.Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
-      this.DataPortal_OnDataPortalException(e, ex);
+      DataPortal_OnDataPortalException(e, ex);
     }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     { }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     { }
 
-    void Csla.Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     { }
 
     #endregion
@@ -546,23 +526,12 @@ namespace Csla
     #region IsBusy
 
     /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
+    /// Await this method to ensure business object is not busy.
     /// </summary>
     public async Task WaitForIdle()
     {
-      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Await this method to ensure business object
-    /// is not busy running async rules.
-    /// </summary>
-    /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
-    {
-      return BusyHelper.WaitForIdle(this, timeout);
     }
 
     /// <summary>

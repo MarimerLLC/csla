@@ -37,11 +37,11 @@ namespace Csla.Channels.Local
     /// Application Context supplied in CTOR.  If this LocalProxy was created on client side or 
     /// if <see cref="LocalProxyOptions.UseLocalScope"/> is false then it is the client ApplicationContext 
     /// </summary>
-    protected ApplicationContext CallerApplicationContext => base.ApplicationContext;
+    protected ApplicationContext CallerApplicationContext => ApplicationContext;
 
     private readonly LocalProxyOptions Options;
 
-    private void InitializeContext(out Server.IDataPortalServer _portal, out IServiceScope _logicalServerScope, out ApplicationContext _logicalServerApplicationContext)
+    private void InitializeContext(out IDataPortalServer _portal, out IServiceScope _logicalServerScope, out ApplicationContext _logicalServerApplicationContext)
     {
       var logicalServerServiceProvider = CallerApplicationContext.CurrentServiceProvider;
 
@@ -65,7 +65,7 @@ namespace Csla.Channels.Local
       }
 
       _logicalServerApplicationContext = logicalServerServiceProvider.GetRequiredService<ApplicationContext>();
-      _portal = logicalServerServiceProvider.GetRequiredService<Server.IDataPortalServer>();
+      _portal = logicalServerServiceProvider.GetRequiredService<IDataPortalServer>();
     }
 
     private void SetApplicationContext(object obj, ApplicationContext applicationContext)

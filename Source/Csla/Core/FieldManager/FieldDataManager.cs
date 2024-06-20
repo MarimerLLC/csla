@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Reflection;
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
 using Csla.Runtime;
@@ -106,7 +106,7 @@ namespace Csla.Core.FieldManager
 
     #region ConsolidatedPropertyList
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new Dictionary<Type, Tuple<string, List<IPropertyInfo>>>();
 #else
     private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
@@ -120,7 +120,7 @@ namespace Csla.Core.FieldManager
 
       try
       {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
         found = _consolidatedLists.TryGetValue(type, out var consolidatedListsInfo);
 
         result = consolidatedListsInfo?.Item2;
@@ -135,7 +135,7 @@ namespace Csla.Core.FieldManager
       {
         lock (_consolidatedLists)
         {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
           if (_consolidatedLists.TryGetValue(type, out var list))
           {
             result = list.Item2;
@@ -423,7 +423,7 @@ namespace Csla.Core.FieldManager
       }
       catch (IndexOutOfRangeException ex)
       {
-        throw new InvalidOperationException(Properties.Resources.PropertyNotRegistered, ex);
+        throw new InvalidOperationException(Resources.PropertyNotRegistered, ex);
       }
     }
 
@@ -488,13 +488,13 @@ namespace Csla.Core.FieldManager
       get { return _stateStack.Count; }
     }
 
-    void Core.IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
-      if (this.EditLevel + 1 > parentEditLevel)
+      if (EditLevel + 1 > parentEditLevel)
         throw new UndoException(
           string.Format(
-            Resources.EditLevelMismatchException, "CopyState"), this.GetType().Name, 
-            _parent?.GetType().Name, this.EditLevel, parentEditLevel - 1);
+            Resources.EditLevelMismatchException, "CopyState"), GetType().Name, 
+            _parent?.GetType().Name, EditLevel, parentEditLevel - 1);
 
       IFieldData[] state = new IFieldData[_propertyList.Count];
 
@@ -520,26 +520,26 @@ namespace Csla.Core.FieldManager
 
       // serialize the state and stack it
       using MemoryStream buffer = new MemoryStream();
-      var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+      var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>(); ;
       var stateList = new MobileList<IFieldData>(state.ToList());
       formatter.Serialize(buffer, stateList);
       _stateStack.Push(buffer.ToArray());
     }
 
-    void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
     {
       if (EditLevel > 0)
       {
-        if (this.EditLevel - 1 != parentEditLevel)
+        if (EditLevel - 1 != parentEditLevel)
           throw new UndoException(
             string.Format(Resources.EditLevelMismatchException, "UndoChanges"), 
-            this.GetType().Name, _parent?.GetType().Name, this.EditLevel, parentEditLevel + 1);
+            GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
         IFieldData[] state = null;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+          var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
           state = ((MobileList<IFieldData>)(formatter.Deserialize(buffer))).ToArray();
         }
 
@@ -572,12 +572,12 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
+    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
     {
-      if (this.EditLevel - 1 != parentEditLevel)
+      if (EditLevel - 1 != parentEditLevel)
         throw new UndoException(
           string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), 
-          this.GetType().Name, _parent?.GetType().Name, this.EditLevel, parentEditLevel + 1);
+          GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
       {
@@ -724,8 +724,8 @@ namespace Csla.Core.FieldManager
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
           else if (mode == StateMode.Undo && data.Value is IMobileObject)
-            info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(data.Value), data.IsDirty);
-          else if(data.Value is not IMobileObject)
+            info.AddValue(data.Name, _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(data.Value), data.IsDirty);
+          else if (data.Value == null || SerializationInfo.IsNativeType(data.Value.GetType()))
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
       }
@@ -763,7 +763,7 @@ namespace Csla.Core.FieldManager
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       string type = (string)info.Values["_businessObjectType"].Value;
-      Type businessObjecType = Csla.Reflection.MethodCaller.GetType(type);
+      Type businessObjecType = Reflection.MethodCaller.GetType(type);
       SetPropertyList(businessObjecType);
 
       if (mode == StateMode.Serialization)
@@ -789,7 +789,7 @@ namespace Csla.Core.FieldManager
             typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
             !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
           {
-            data.Value = SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize((byte[])value.Value);
+            data.Value = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize((byte[])value.Value);
           }
           else data.Value = value.Value;
 
@@ -859,7 +859,7 @@ namespace Csla.Core.FieldManager
         }
       }
     }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {

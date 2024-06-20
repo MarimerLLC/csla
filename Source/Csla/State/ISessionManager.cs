@@ -20,6 +20,11 @@ namespace Csla.State
     /// </summary>
     Task<Session> RetrieveSession(TimeSpan timeout);
     /// <summary>
+    /// Retrieves the current user's session from
+    /// the web server to the wasm client.
+    /// </summary>
+    Task<Session> RetrieveSession(CancellationToken ct);
+    /// <summary>
     /// Gets the current user's session from the cache.
     /// </summary>
     Session GetCachedSession();
@@ -28,6 +33,11 @@ namespace Csla.State
     /// the wasm client to the web server.
     /// </summary>
     Task SendSession(TimeSpan timeout);
+    /// <summary>
+    /// Sends the current user's session from
+    /// the wasm client to the web server.
+    /// </summary>
+    Task SendSession(CancellationToken ct);
     #endregion
 
     #region Server

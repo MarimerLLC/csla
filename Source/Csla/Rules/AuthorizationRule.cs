@@ -17,7 +17,7 @@ namespace Csla.Rules
   /// </summary>
   public abstract class AuthorizationRule : IAuthorizationRule
   {
-    private Csla.Core.IMemberInfo _element;
+    private IMemberInfo _element;
     private AuthorizationActions _action;
     private bool _cacheResult = true;
     private bool _locked = false;
@@ -35,7 +35,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Method or property.</param>
-    public AuthorizationRule(AuthorizationActions action, Csla.Core.IMemberInfo element)
+    public AuthorizationRule(AuthorizationActions action, IMemberInfo element)
       : this(action)
     {
       _element = element;
@@ -54,20 +54,20 @@ namespace Csla.Rules
     /// </summary>
     /// <returns>bool, true by default to allow cache result.</returns>
     public bool CacheResult
+    {
+      get { return _cacheResult; }
+      protected set
       {
-          get { return _cacheResult; }
-          protected set
-          {
-            CanWriteProperty("CacheResult");
-            _cacheResult = value;
-          }
+        CanWriteProperty("CacheResult");
+        _cacheResult = value;
       }
+    }
 
     /// <summary>
     /// Gets the name of the element (property/method)
     /// to which this rule is associated.
     /// </summary>
-    protected Csla.Core.IMemberInfo Element
+    public IMemberInfo Element
     {
       get { return _element; }
       set
@@ -105,16 +105,11 @@ namespace Csla.Rules
       Execute(context);
     }
 
-    Csla.Core.IMemberInfo IAuthorizationRule.Element
-    {
-      get { return Element; }
-    }
-
     /// <summary>
     /// Gets the authorization action this rule
     /// will enforce.
     /// </summary>
-    AuthorizationActions IAuthorizationRule.Action
+    AuthorizationActions IAuthorizationRuleBase.Action
     {
       get { return Action; }
     }
@@ -133,7 +128,7 @@ namespace Csla.Rules
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>
-    protected object ReadProperty(object obj, Csla.Core.IPropertyInfo propertyInfo)
+    protected object ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);

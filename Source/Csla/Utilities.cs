@@ -105,7 +105,7 @@ namespace Csla
             BindingFlags.FlattenHierarchy))
           {
             if (prop.Name == indexer.MemberName)
-              result = Utilities.GetPropertyType(prop.PropertyType);
+              result = GetPropertyType(prop.PropertyType);
           }
         }
         if (result == null)
@@ -164,27 +164,27 @@ namespace Csla
           if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
             if (value == null)
               return null;
-            else if (valueType.Equals(typeof(string)) && System.Convert.ToString(value) == string.Empty)
+            else if (valueType.Equals(typeof(string)) && Convert.ToString(value) == string.Empty)
               return null;
         }
-        desiredType = Utilities.GetPropertyType(desiredType);
+        desiredType = GetPropertyType(desiredType);
       }
 
       if (desiredType.IsEnum)
       {
         if (value is byte? && ((byte?) value).HasValue)
-          return System.Enum.Parse(desiredType, ((byte?) value).Value.ToString());
+          return Enum.Parse(desiredType, ((byte?) value).Value.ToString());
         if (value is short? && ((short?) value).HasValue)
-          return System.Enum.Parse(desiredType, ((short?) value).Value.ToString());
+          return Enum.Parse(desiredType, ((short?) value).Value.ToString());
         if (value is int? && ((int?) value).HasValue)
-          return System.Enum.Parse(desiredType, ((int?) value).Value.ToString());
+          return Enum.Parse(desiredType, ((int?) value).Value.ToString());
         if (value is long? && ((long?) value).HasValue)
-          return System.Enum.Parse(desiredType, ((long?) value).Value.ToString());
+          return Enum.Parse(desiredType, ((long?) value).Value.ToString());
       }
 
       if (desiredType.IsEnum && 
         (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
-        return System.Enum.Parse(desiredType, value.ToString());
+        return Enum.Parse(desiredType, value.ToString());
 
       if (desiredType.Equals(typeof(SmartDate)) && oldValue != null)
       {

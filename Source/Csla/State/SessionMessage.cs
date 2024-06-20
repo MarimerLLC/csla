@@ -6,7 +6,7 @@
 // <summary>Per-user session data.</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Security;
+using System.Security.Claims;
 
 namespace Csla.State;
 
@@ -32,11 +32,11 @@ public class SessionMessage : CommandBase<SessionMessage>
   /// <summary>
   /// User principal data
   /// </summary>
-  public static readonly PropertyInfo<CslaClaimsPrincipal> PrincipalProperty = RegisterProperty<CslaClaimsPrincipal>(nameof(Principal));
+  public static readonly PropertyInfo<ClaimsPrincipal> PrincipalProperty = RegisterProperty<ClaimsPrincipal>(nameof(Principal));
   /// <summary>
   /// User principal data
   /// </summary>
-  public CslaClaimsPrincipal Principal
+  public ClaimsPrincipal Principal
   {
     get => ReadProperty(PrincipalProperty);
     set => LoadProperty(PrincipalProperty, value);

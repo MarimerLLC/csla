@@ -6,10 +6,10 @@
 // <summary>Base class for an object that is serializable</summary>
 //-----------------------------------------------------------------------
 
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using Csla.Core.FieldManager;
-using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
 
@@ -21,9 +21,9 @@ namespace Csla.Core
   /// </summary>
   [Serializable]
   public abstract class ManagedObjectBase : MobileObject,
-    INotifyPropertyChanged, 
+    INotifyPropertyChanged,
     IManageProperties,
-    IUseApplicationContext, 
+    IUseApplicationContext,
     IUseFieldManager
   {
     /// <summary>
@@ -73,7 +73,7 @@ namespace Csla.Core
     /// </returns>
     protected static PropertyInfo<P> RegisterProperty<P>(Type objectType, PropertyInfo<P> info)
     {
-      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(objectType, info);
+      return PropertyInfoManager.RegisterProperty<P>(objectType, info);
     }
 
 
@@ -85,11 +85,11 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression)
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace Csla.Core
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
     }
 
     /// <summary>
@@ -116,11 +116,11 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
     }
 
     /// <summary>
@@ -132,11 +132,11 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<T,P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
-      return RegisterProperty(typeof(T), Csla.Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
+      return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
     }
 
     #endregion
@@ -172,7 +172,7 @@ namespace Csla.Core
     protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
       P result = default(P);
-      FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);
+      IFieldData data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
         if (data is IFieldData<P> fd)
@@ -359,7 +359,7 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
     {
-      var t = this.GetType();
+      var t = GetType();
       var method = t.GetRuntimeMethods().FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
@@ -379,12 +379,12 @@ namespace Csla.Core
         LoadProperty(propertyInfo, newValue);
         return false;
       }
-      var t = this.GetType();
+      var t = GetType();
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
       var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       var p = new object[] { propertyInfo, newValue };
-      return (bool) gm.Invoke(this, p);
+      return (bool)gm.Invoke(this, p);
     }
 
     #endregion
@@ -455,28 +455,6 @@ namespace Csla.Core
       }
 
       base.OnSetChildren(info, formatter);
-    }
-
-    #endregion
-
-    #region OnDeserialized
-
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
-      OnDeserialized(context);
-    }
-
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    /// <param name="context">Serialization context object.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized(System.Runtime.Serialization.StreamingContext context)
-    {
-      FieldManager?.SetPropertyList(this.GetType());
     }
 
     #endregion

@@ -16,8 +16,8 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextManager : IContextManager
   {
-    private readonly AsyncLocal<ContextDictionary> _localContext = new();
-    private readonly AsyncLocal<ContextDictionary> _clientContext = new();
+    private readonly AsyncLocal<IContextDictionary> _localContext = new();
+    private readonly AsyncLocal<IContextDictionary> _clientContext = new();
 
     /// <summary>
     /// Gets a value indicating whether the context manager
@@ -60,7 +60,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets the local context dictionary.
     /// </summary>
-    public ContextDictionary GetLocalContext()
+    public IContextDictionary GetLocalContext()
     {
       return _localContext.Value;
     }
@@ -69,7 +69,7 @@ namespace Csla.Core
     /// Sets the local context dictionary.
     /// </summary>
     /// <param name="localContext">Context dictionary</param>
-    public void SetLocalContext(ContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary localContext)
     {
       _localContext.Value = localContext;
     }
@@ -78,7 +78,7 @@ namespace Csla.Core
     /// Gets the client context dictionary.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return _clientContext.Value;
     }
@@ -88,7 +88,7 @@ namespace Csla.Core
     /// </summary>
     /// <param name="clientContext">Context dictionary</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       _clientContext.Value = clientContext;
     }

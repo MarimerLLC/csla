@@ -11,7 +11,7 @@ namespace Csla
   /// <summary>
   /// Maintains metadata about a method.
   /// </summary>
-  public class MethodInfo : Csla.Core.IMemberInfo
+  public class MethodInfo : Core.IMemberInfo
   {
     /// <summary>
     /// Creates an instance of the type.

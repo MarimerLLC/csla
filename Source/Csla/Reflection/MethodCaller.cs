@@ -10,7 +10,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
 using Csla.Properties;
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
@@ -55,7 +55,7 @@ namespace Csla.Reflection
 
     #region Dynamic Method Cache
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache = [];
 #else
     private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = [];
@@ -69,7 +69,7 @@ namespace Csla.Reflection
 
       DynamicMethodHandle mh = null;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var key = new MethodCacheKey(objectType.FullName, info.Name, GetParameterTypes(parameters));
 
       try
@@ -133,7 +133,7 @@ namespace Csla.Reflection
 
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object[] parameters)
     {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var objectType = obj.GetType();
 
       var key = new MethodCacheKey(objectType.FullName, method, GetParameterTypes(hasParameters, parameters));
@@ -243,7 +243,7 @@ namespace Csla.Reflection
       }
       catch
       {
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
         string[] splitName = typeName.Split(',');
 
         if (splitName.Length > 2)
@@ -289,7 +289,7 @@ namespace Csla.Reflection
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
     private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache = [];
 #else
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
@@ -299,7 +299,7 @@ namespace Csla.Reflection
     {
       var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
 
       var mh = memberHandleInfo?.Item2;
@@ -354,7 +354,7 @@ namespace Csla.Reflection
     {
       var key = new MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(null));
 
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
       var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
 
       var mh = memberHandleInfo?.Item2;
@@ -421,9 +421,9 @@ namespace Csla.Reflection
       else
       {
         if (obj == null)
-          throw new ArgumentNullException("obj");
+          throw new ArgumentNullException(nameof(obj));
         if (string.IsNullOrEmpty(property))
-          throw new ArgumentException("Argument is null or empty.", "property");
+          throw new ArgumentException("Argument is null or empty.", nameof(property));
 
         var mh = GetCachedProperty(obj.GetType(), property);
         if (mh.DynamicMemberGet == null)
@@ -449,9 +449,9 @@ namespace Csla.Reflection
     public static void CallPropertySetter(object obj, string property, object value)
     {
       if (obj == null)
-        throw new ArgumentNullException("obj");
+        throw new ArgumentNullException(nameof(obj));
       if (string.IsNullOrEmpty(property))
-        throw new ArgumentException("Argument is null or empty.", "property");
+        throw new ArgumentException("Argument is null or empty.", nameof(property));
 
       if (ApplicationContext.UseReflectionFallback)
       {
@@ -727,7 +727,7 @@ namespace Csla.Reflection
 
     private static object[] GetExtrasArray(int count, Type arrayType)
     {
-      return (object[])(System.Array.CreateInstance(arrayType.GetElementType(), count));
+      return (object[])(Array.CreateInstance(arrayType.GetElementType(), count));
     }
 #endregion
 
@@ -1245,7 +1245,7 @@ namespace Csla.Reflection
         }
         else
         {
-          var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+          var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, null);
           var gr = methodReference.MakeGenericMethod(typeParams);
           task = (Task)gr.Invoke(null, null);
         }
@@ -1253,7 +1253,7 @@ namespace Csla.Reflection
         if (task.Exception != null)
           tcs.SetException(task.Exception);
         else
-          tcs.SetResult(Csla.Reflection.MethodCaller.CallPropertyGetter(task, "Result"));
+          tcs.SetResult(CallPropertyGetter(task, "Result"));
       }
       catch (Exception ex)
       {
@@ -1287,7 +1287,7 @@ namespace Csla.Reflection
       }
       else
       {
-        var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, System.Type.EmptyTypes, null);
+        var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, null);
         if (methodReference == null)
           throw new InvalidOperationException(objectType.Name + "." + method);
         var gr = methodReference.MakeGenericMethod(typeParams);
@@ -1308,7 +1308,7 @@ namespace Csla.Reflection
       object returnValue;
       System.Reflection.MethodInfo factory = objectType.GetMethod(
            method, factoryFlags, null,
-           MethodCaller.GetParameterTypes(parameters), null);
+           GetParameterTypes(parameters), null);
 
       if (factory == null)
       {
@@ -1380,7 +1380,7 @@ namespace Csla.Reflection
 
       return info;
     }
-#if NET5_0_OR_GREATER
+#if NET8_0_OR_GREATER
 
     private static void OnMethodAssemblyLoadContextUnload(AssemblyLoadContext context)
     {

@@ -7,7 +7,7 @@ namespace Csla.Test.AppContext
   public class TestContextManager : IContextManager
   {
     [ThreadStatic]
-    private static HybridDictionary _myContext = [];
+    private static IContextDictionary _myContext = new ContextDictionary();
     private readonly AsyncLocal<IPrincipal> _principal = new();
 
     private const string _localContextName = "Csla.ClientContext";
@@ -39,38 +39,38 @@ namespace Csla.Test.AppContext
       _principal.Value = principal;
     }
 
-    public ContextDictionary GetLocalContext()
+    public IContextDictionary GetLocalContext()
     {
       if (_myContext[_localContextName] == null)
         SetLocalContext(new ContextDictionary());
-      return (ContextDictionary)_myContext[_localContextName];
+      return (IContextDictionary)_myContext[_localContextName];
     }
 
-    public void SetLocalContext(ContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary localContext)
     {
       _myContext[_localContextName] = localContext;
     }
 
-    public ContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       if (_myContext[_clientContextName] == null)
         SetClientContext(new ContextDictionary(), executionLocation);
-      return (ContextDictionary) _myContext[_clientContextName];
+      return (IContextDictionary) _myContext[_clientContextName];
     }
 
-    public void SetClientContext(ContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       _myContext[_clientContextName] = clientContext;
     }
 
-    public ContextDictionary GetGlobalContext()
+    public IContextDictionary GetGlobalContext()
     {
       if (_myContext[_globalContextName] == null)
         SetGlobalContext(new ContextDictionary());
       return (ContextDictionary)_myContext[_globalContextName];
     }
 
-    public void SetGlobalContext(ContextDictionary globalContext)
+    public void SetGlobalContext(IContextDictionary globalContext)
     {
       _myContext[_globalContextName] = globalContext;
     }

@@ -6,11 +6,11 @@
 // <summary>Extends ObservableCollection with behaviors required</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using Csla.Serialization.Mobile;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Csla.Properties;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -77,7 +77,7 @@ namespace Csla.Core
     /// </summary>
     public bool RaiseListChangedEvents
     {
-      get { return _raiseListChangedEvents; } 
+      get { return _raiseListChangedEvents; }
       set { _raiseListChangedEvents = value; }
     }
 
@@ -96,6 +96,21 @@ namespace Csla.Core
       return AddNew();
     }
 
+    /// <summary>
+    /// Adds a new item to this collection.
+    /// </summary>
+    public async Task<T> AddNewAsync()
+    {
+      var result = await AddNewCoreAsync();
+      OnAddedNew(result);
+      return result;
+    }
+
+    async Task<object> IObservableBindingList.AddNewAsync()
+    {
+      return await AddNewAsync();
+    }
+
     #endregion
 
     #region RemovingItem event
@@ -111,12 +126,12 @@ namespace Csla.Core
       add
       {
         _removingItemHandler = (EventHandler<RemovingItemEventArgs>)
-          System.Delegate.Combine(_removingItemHandler, value);
+          Delegate.Combine(_removingItemHandler, value);
       }
       remove
       {
         _removingItemHandler = (EventHandler<RemovingItemEventArgs>)
-          System.Delegate.Remove(_removingItemHandler, value);
+          Delegate.Remove(_removingItemHandler, value);
       }
     }
 
@@ -161,10 +176,10 @@ namespace Csla.Core
     /// Add a range of items to the list.
     /// </summary>
     /// <param name="range">List of items to add.</param>
-    public void AddRange(System.Collections.Generic.IEnumerable<T> range)
+    public void AddRange(IEnumerable<T> range)
     {
       foreach (var element in range)
-        this.Add(element);
+        Add(element);
     }
 
     #endregion
@@ -230,6 +245,24 @@ namespace Csla.Core
     void busy_BusyChanged(object sender, BusyChangedEventArgs e)
     {
       OnBusyChanged(e);
+    }
+
+    /// <summary>
+    /// Await this method to ensure business object is not busy.
+    /// </summary>
+    /// <param name="timeout">Timeout duration</param>
+    public Task WaitForIdle(TimeSpan timeout)
+    {
+      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
+    }
+
+    /// <summary>
+    /// Await this method to ensure the business object is not busy.
+    /// </summary>
+    /// <param name="ct">Cancellation token.</param>
+    public virtual Task WaitForIdle(CancellationToken ct)
+    {
+      return BusyHelper.WaitForIdle(this, ct);
     }
 
     #endregion
@@ -344,32 +377,11 @@ namespace Csla.Core
 
     #region ISerializationNotification Members
 
-    /// <summary>
-    /// This method is called on a newly deserialized object
-    /// after deserialization is complete.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnDeserialized()
-    {
-      // do nothing - this is here so a subclass
-      // could override if needed
-    }
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
-      foreach (T item in this)
-        OnAddEventHooks(item);
-
-      OnDeserialized();
-    }
-
     void ISerializationNotification.Deserialized()
     {
       // don't rehook events here, because the MobileFormatter has
       // created new objects and so the lists will auto-subscribe
       // the events
-      OnDeserialized();
     }
 
     #endregion
@@ -378,22 +390,22 @@ namespace Csla.Core
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<Csla.Core.ChildChangedEventArgs> _childChangedHandlers;
+    private EventHandler<ChildChangedEventArgs> _childChangedHandlers;
 
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    public event EventHandler<Csla.Core.ChildChangedEventArgs> ChildChanged
+    public event EventHandler<ChildChangedEventArgs> ChildChanged
     {
       add
       {
-        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
-          System.Delegate.Combine(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
+          Delegate.Combine(_childChangedHandlers, value);
       }
       remove
       {
-        _childChangedHandlers = (EventHandler<Csla.Core.ChildChangedEventArgs>)
-          System.Delegate.Remove(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
+          Delegate.Remove(_childChangedHandlers, value);
       }
     }
 
@@ -470,12 +482,12 @@ namespace Csla.Core
       add
       {
         _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>)
-          System.Delegate.Combine(_addedNewHandlers, value);
+          Delegate.Combine(_addedNewHandlers, value);
       }
       remove
       {
         _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>)
-          System.Delegate.Remove(_addedNewHandlers, value);
+          Delegate.Remove(_addedNewHandlers, value);
       }
     }
 
@@ -510,6 +522,15 @@ namespace Csla.Core
     protected virtual T AddNewCore()
     {
       throw new NotImplementedException(Resources.AddNewCoreMustBeOverriden);
+    }
+
+    /// <summary>
+    /// Override this method to create a new object that is added
+    /// to the collection. 
+    /// </summary>
+    protected virtual async Task<T> AddNewCoreAsync()
+    {
+      return await Task.FromException<T>(new NotImplementedException(Resources.AddNewCoreMustBeOverriden));
     }
 #endif
 
@@ -589,7 +610,7 @@ namespace Csla.Core
 
       public SuppressListChangedEventsClass(ObservableBindingList<TC> businessObject)
       {
-        this._businessObject = businessObject;
+        _businessObject = businessObject;
         _initialRaiseListChangedEvents = businessObject.RaiseListChangedEvents;
         businessObject.RaiseListChangedEvents = false;
       }
@@ -622,7 +643,7 @@ namespace Csla.Core
       else
       {
         if (_oldRLCE.Count > 0)
-         _raiseListChangedEvents = _oldRLCE.Pop();
+          _raiseListChangedEvents = _oldRLCE.Pop();
       }
     }
   }

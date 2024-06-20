@@ -29,7 +29,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write to stream</param>
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
-      this.keywordsDictionary.Clear();
+      keywordsDictionary.Clear();
       using var writer = new CslaNonClosingBinaryWriter(serializationStream);
       writer.Write(objectData.Count);
       foreach (var serializationInfo in objectData)
@@ -97,7 +97,7 @@ namespace Csla.Serialization.Mobile
       else if (target is IMobileObject)
       {
         using var buffer = new MemoryStream();
-        var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+        var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
         formatter.Serialize(buffer, target);
         var data = buffer.ToArray();
         Write(CslaKnownTypes.IMobileObject, writer);
@@ -155,6 +155,20 @@ namespace Csla.Serialization.Mobile
           writer.Write(oneInt);
         }
       }
+#if NET8_0_OR_GREATER
+      else if (target is DateOnly dateOnly)
+      {
+        Write(CslaKnownTypes.DateOnly, writer);
+        var value = dateOnly.ToDateTime(TimeOnly.MinValue).Ticks;
+        writer.Write(value);
+      }
+      else if (target is TimeOnly timeOnly)
+      {
+        Write(CslaKnownTypes.TimeOnly, writer);
+        var value = timeOnly.Ticks;
+        writer.Write(value);
+      }
+#endif
       else
       {
         var typeCode = Type.GetTypeCode(target.GetType());

@@ -1,4 +1,4 @@
-﻿﻿//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="BusinessRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -24,7 +24,7 @@ namespace Csla.Rules
       get { return _isAsync; }
       protected set
       {
-        CanWriteProperty("IsAsync"); 
+        CanWriteProperty("IsAsync");
         _isAsync = value;
       }
     }
@@ -42,7 +42,7 @@ namespace Csla.Rules
     /// to a specfic property.
     /// </summary>
     /// <param name="primaryProperty">Primary property for this rule.</param>
-    protected BusinessRule(Csla.Core.IPropertyInfo primaryProperty)
+    protected BusinessRule(Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     { }
 

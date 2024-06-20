@@ -73,16 +73,16 @@ namespace Csla.DataPortalClient
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(criteria);
+        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
         request = ConvertRequest(request);
-        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
-        serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync);
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
+        var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
+        serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
         response = ConvertResponse(response);
 
         if (response.ErrorData == null)
         {
-          var obj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
+          var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
         }
         else if (response.ErrorData != null)
@@ -132,18 +132,18 @@ namespace Csla.DataPortalClient
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(criteria);
+        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
+        var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
-          var obj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
+          var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
         }
         else if (response.ErrorData != null)
@@ -187,18 +187,18 @@ namespace Csla.DataPortalClient
       try
       {
         var request = GetBaseUpdateCriteriaRequest();
-        request.ObjectData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(obj);
+        request.ObjectData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(obj);
         request = ConvertRequest(request);
 
-        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
+        var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync);
+        serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
-          var newobj = SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(response.ObjectData);
+          var newobj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, newobj, null);
         }
         else if (response.ErrorData != null)
@@ -237,8 +237,7 @@ namespace Csla.DataPortalClient
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context,
-      bool isSync)
+    public async virtual Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalResult result;
       try
@@ -249,14 +248,14 @@ namespace Csla.DataPortalClient
         {
           criteria = new PrimitiveCriteria(criteria);
         }
-        request.CriteriaData = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(criteria);
+        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
         request = ConvertRequest(request);
 
-        var serialized = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(request);
+        var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
 
-        serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync);
+        serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)SerializationFormatterFactory.GetFormatter(ApplicationContext).Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
@@ -377,8 +376,8 @@ namespace Csla.DataPortalClient
       var result = ApplicationContext.CreateInstanceDI<CriteriaRequest>();
       var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
       result.CriteriaData = null;
-      result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
-      result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
+      result.ClientContext = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ApplicationContext.ClientContext);
+      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>()
           .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
       result.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
       result.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
@@ -390,8 +389,8 @@ namespace Csla.DataPortalClient
       var result = ApplicationContext.CreateInstanceDI<UpdateRequest>();
       var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
       result.ObjectData = null;
-      result.ClientContext = SerializationFormatterFactory.GetFormatter(ApplicationContext).Serialize(ApplicationContext.ClientContext);
-      result.Principal = SerializationFormatterFactory.GetFormatter(ApplicationContext)
+      result.ClientContext = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ApplicationContext.ClientContext);
+      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>()
           .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
       result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
       result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;

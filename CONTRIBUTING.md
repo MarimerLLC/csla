@@ -51,7 +51,7 @@ The rules are detailed below.
    * If an issue doesn't exist, engage with the dev team via [Discussions](https://github.com/MarimerLLC/csla/discussions) or [Discord](https://discord.gg/9ahKjb7ccf) to discuss your concern
 * Create a fork of the MarimerLLC/csla repo
 * In your fork, create a topic/feature/issue branch from where you want to base your work
-   * We recommend naming your branch using the format `issueNumber-test` such as `1234-enhance-dataportal`
+   * We recommend naming your branch using the format `dev/issueNumber-test` such as `dev/1234-enhance-dataportal`
 * Assign the issue
   * If you have permissions, assign the Issue to yourself 
   * If you don't have permissions, **make a comment** in the issue saying that you are working on the issue

@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CslaVersion>8.2.3</CslaVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Csla" Version="$(CslaVersion)" />
+    <PackageVersion Include="Csla.AspNetCore" Version="$(CslaVersion)" />
+  </ItemGroup>
+</Project>

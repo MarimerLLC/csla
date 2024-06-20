@@ -45,7 +45,7 @@ namespace Csla.Configuration
 
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
-      RegisterContextManager(services);
+      RegisterContextManager(services, cslaOptions.ContextManagerType);
       if (cslaOptions.ContextManagerType != null)
         services.AddScoped(typeof(Csla.Core.IContextManager), cslaOptions.ContextManagerType);
 
@@ -65,24 +65,29 @@ namespace Csla.Configuration
       return services;
     }
 
-    private static void RegisterContextManager(IServiceCollection services)
+    private static void RegisterContextManager(IServiceCollection services, Type contextManagerType)
     {
       services.AddScoped<Core.ApplicationContextAccessor>();
       services.TryAddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));
 
-      var contextManagerType = typeof(Core.IContextManager);
-
       var managerInit = services.Any(i => i.ServiceType.Equals(contextManagerType));
       if (managerInit) return;
 
-      if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;
-      if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
-      if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
-      if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
-      if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
+      if (contextManagerType != null)
+      {
+        services.AddScoped(typeof(Core.IContextManager), contextManagerType);
+      }
+      else
+      {
+        if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;
+        if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
+        if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
+        if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
+        if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
 
-      // default to AsyncLocal context manager
-      services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
+        // default to AsyncLocal context manager
+        services.AddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
+      }
     }
 
     private static bool LoadContextManager(IServiceCollection services, string managerTypeName)

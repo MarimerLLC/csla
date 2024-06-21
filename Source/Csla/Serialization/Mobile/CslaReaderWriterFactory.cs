@@ -1,4 +1,11 @@
-﻿using System.Runtime.Serialization;
+﻿//-----------------------------------------------------------------------
+// <copyright file="CslaReaderWriterFactory.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Factory class that is used to create Reader/Writer pair of classes</summary>
+//-----------------------------------------------------------------------
+using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile
 {

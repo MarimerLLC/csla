@@ -1,4 +1,3 @@
-#if NET462_OR_GREATER || NETSTANDARD2_0 || NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -38,7 +37,7 @@ namespace Csla.Configuration
       var cslaOptions = new CslaOptions(services);
       options?.Invoke(cslaOptions);
 
-      // capture options object
+      // capture options objects
       services.AddScoped(_ => cslaOptions);
       services.AddScoped(_ => cslaOptions.DataPortalOptions);
       services.AddScoped(_ => cslaOptions.SecurityOptions);
@@ -59,6 +58,10 @@ namespace Csla.Configuration
       {
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
       }
+
+      // Default to using MobileFormatter
+      if (!services.Any(_ => _.ServiceType == typeof(Serialization.ISerializationFormatter)))
+        cslaOptions.Serialization(o => o.UseMobileFormatter());
 
       return services;
     }
@@ -97,4 +100,3 @@ namespace Csla.Configuration
     }
   }
 }
-#endif

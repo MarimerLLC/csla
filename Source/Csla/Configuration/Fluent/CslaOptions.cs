@@ -23,6 +23,7 @@ namespace Csla.Configuration
     {
       Services = services;
       DataPortalOptions = new DataPortalOptions(this);
+      SerializationOptions = new SerializationOptions(this);
     }
 
     /// <summary>
@@ -80,7 +81,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
-    internal SerializationOptions SerializationOptions { get; } = new SerializationOptions();
+    public SerializationOptions SerializationOptions { get; }
     /// <summary>
     /// Gets the DataPortalClientOptions instance.
     /// </summary>

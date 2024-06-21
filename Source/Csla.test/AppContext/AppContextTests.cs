@@ -162,11 +162,9 @@ namespace Csla.Test.AppContext
     [TestMethod]
     public void ContextDictionaryRemoveThrowsCorrectException()
     {
-      var contextDectionary = new ContextDictionary();
+      var contextDictionary = new ContextDictionary();
       string key = "key1";
-      string value = "value1";
-
-      Assert.ThrowsException<System.NotSupportedException>(() => contextDectionary.Remove(key));
+      Assert.ThrowsException<System.NotSupportedException>(() => contextDictionary.Remove(key));
     }
 
     #region FailCreateContext

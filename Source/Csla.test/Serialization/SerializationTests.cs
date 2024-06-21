@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.Security.Claims;
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Test.ValidationRules;
 using Csla.TestHelpers;
@@ -72,10 +73,21 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    public void DateTimeKind()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeHolder>();
+      var obj = portal.Create();
+      DateTime.SpecifyKind(obj.Value, System.DateTimeKind.Local);
+      var obj2 = obj.Clone();
+      Assert.AreEqual(obj.Value.Kind, obj2.Value.Kind);
+    }
+
+    [TestMethod]
     public void CorrectDefaultSerializer()
     {
-      var serializer = ApplicationContext.SerializationFormatter;
-      Assert.IsTrue(serializer == typeof(MobileFormatter));
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
+      Assert.IsTrue(serializer.GetType() == typeof(MobileFormatter));
     }
 
     [TestMethod]
@@ -576,7 +588,7 @@ namespace Csla.Test.Serialization
       Name += " server";
     }
   }
-  
+
   [Serializable]
   public class DateTimeOnlyHolder : BusinessBase<DateTimeOnlyHolder>
   {
@@ -598,4 +610,20 @@ namespace Csla.Test.Serialization
     private void Create()
     { }
   }
+
+  [Serializable]
+  public class DateTimeHolder : BusinessBase<DateTimeHolder>
+  {
+    public static readonly PropertyInfo<DateTime> ValueProperty = RegisterProperty<DateTime>(nameof(Value));
+    public DateTime Value
+    {
+      get => GetProperty(ValueProperty);
+      set => SetProperty(ValueProperty, value);
+    }
+
+    [Create]
+    private void Create()
+    { }
+  }
+
 }

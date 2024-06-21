@@ -520,7 +520,7 @@ namespace Csla.Core.FieldManager
 
       // serialize the state and stack it
       using MemoryStream buffer = new MemoryStream();
-      var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+      var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>(); ;
       var stateList = new MobileList<IFieldData>(state.ToList());
       formatter.Serialize(buffer, stateList);
       _stateStack.Push(buffer.ToArray());
@@ -539,7 +539,7 @@ namespace Csla.Core.FieldManager
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
-          var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+          var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
           state = ((MobileList<IFieldData>)(formatter.Deserialize(buffer))).ToArray();
         }
 
@@ -724,8 +724,8 @@ namespace Csla.Core.FieldManager
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
           else if (mode == StateMode.Undo && data.Value is IMobileObject)
-            info.AddValue(data.Name, SerializationFormatterFactory.GetFormatter(_applicationContext).Serialize(data.Value), data.IsDirty);
-          else if(data.Value is not IMobileObject)
+            info.AddValue(data.Name, _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(data.Value), data.IsDirty);
+          else if (data.Value == null || SerializationInfo.IsNativeType(data.Value.GetType()))
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
       }
@@ -789,7 +789,7 @@ namespace Csla.Core.FieldManager
             typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
             !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
           {
-            data.Value = SerializationFormatterFactory.GetFormatter(_applicationContext).Deserialize((byte[])value.Value);
+            data.Value = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize((byte[])value.Value);
           }
           else data.Value = value.Value;
 

@@ -182,13 +182,6 @@ namespace Csla
       Server
     }
 
-    /// <summary>
-    /// Gets the serialization formatter type used by CSLA .NET
-    /// for all explicit object serialization (such as cloning,
-    /// n-level undo, etc).
-    /// </summary>
-    public static Type SerializationFormatter { get; internal set; } = typeof(Serialization.Mobile.MobileFormatter);
-
     private PropertyChangedModes _propertyChangedMode;
     private bool _propertyChangedModeSet;
 

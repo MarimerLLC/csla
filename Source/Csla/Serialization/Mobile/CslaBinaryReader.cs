@@ -96,7 +96,7 @@ namespace Csla.Serialization.Mobile
         case CslaKnownTypes.IMobileObject:
           using (MemoryStream arrayBuffer = new MemoryStream(reader.ReadBytes(reader.ReadInt32())))
           {
-            var formatter = SerializationFormatterFactory.GetFormatter(_applicationContext);
+            var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
             var obj = formatter.Deserialize(arrayBuffer);
             return obj;
           }

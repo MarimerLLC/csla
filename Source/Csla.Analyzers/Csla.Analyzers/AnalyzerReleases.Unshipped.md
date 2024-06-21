@@ -22,3 +22,6 @@ CSLA0016 | Usage | Error | AsynchronousBusinessRuleInheritingFromBusinessRuleAna
 CSLA0017 | Usage | Warning | BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer
 CSLA0018 | Usage | Error | IsCompleteCalledInAsynchronousBusinessRuleAnalyzer
 CSLA0019 | Usage | Error | FindRefAndOutParametersInOperationsAnalyzer
+CSLA0020 | Usage | Warning | ObjectAuthorizationRulesAttributeMissing
+CSLA0021 | Usage | Info | ObjectAuthorizationRulesPublic
+CSLA0022 | Usage | Warning | ObjectAuthorizationRulesStatic

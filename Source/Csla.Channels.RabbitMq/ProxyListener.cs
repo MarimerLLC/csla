@@ -112,7 +112,7 @@ namespace Csla.Channels.RabbitMq
     }
 
     private volatile bool IsListening;
-    private object ListeningLock = new object();
+    private readonly object ListeningLock = new();
 
     public void StartListening()
     {
@@ -144,7 +144,7 @@ namespace Csla.Channels.RabbitMq
             ea.BasicProperties.Priority++;
             Channel.BasicPublish(
               exchange: "",
-              routingKey: ReplyQueue.QueueName,
+              routingKey: ReplyQueue?.QueueName,
               basicProperties: ea.BasicProperties,
               body: ea.Body);
           }
@@ -154,8 +154,8 @@ namespace Csla.Channels.RabbitMq
           }
         }
       };
-      Console.WriteLine($"Listening on queue {ReplyQueue.QueueName}");
-      Channel.BasicConsume(queue: ReplyQueue.QueueName, autoAck: true, consumer: consumer);
+      Console.WriteLine($"Listening on queue {ReplyQueue?.QueueName}");
+      Channel.BasicConsume(queue: ReplyQueue?.QueueName, autoAck: true, consumer: consumer);
     }
 
     public void Dispose()

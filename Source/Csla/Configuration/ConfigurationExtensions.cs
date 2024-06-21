@@ -1,4 +1,3 @@
-﻿#if NET462_OR_GREATER || NETSTANDARD2_0 || NET8_0_OR_GREATER
 //-----------------------------------------------------------------------
 // <copyright file="ConfigurationExtensions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -38,16 +37,14 @@ namespace Csla.Configuration
       var cslaOptions = new CslaOptions(services);
       options?.Invoke(cslaOptions);
 
-      // capture options object
+      // capture options objects
       services.AddScoped(_ => cslaOptions);
       services.AddScoped(_ => cslaOptions.DataPortalOptions);
       services.AddScoped(_ => cslaOptions.SecurityOptions);
 
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
-      RegisterContextManager(services);
-      if (cslaOptions.ContextManagerType != null)
-        services.AddScoped(typeof(Core.IContextManager), cslaOptions.ContextManagerType);
+      RegisterContextManager(services, cslaOptions.ContextManagerType);
 
       // Runtime Info defaults
       services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));
@@ -62,27 +59,33 @@ namespace Csla.Configuration
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
       }
 
+      // Default to using MobileFormatter
+      if (!services.Any(_ => _.ServiceType == typeof(Serialization.ISerializationFormatter)))
+        cslaOptions.Serialization(o => o.UseMobileFormatter());
+
       return services;
     }
 
-    private static void RegisterContextManager(IServiceCollection services)
+    private static void RegisterContextManager(IServiceCollection services, Type contextManagerType)
     {
       services.AddScoped<Core.ApplicationContextAccessor>();
       services.TryAddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));
 
-      var contextManagerType = typeof(Core.IContextManager);
+      if (contextManagerType == null)
+      {
+        if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;
+        if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
+        if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
+        if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
+        if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
 
-      var managerInit = services.Any(i => i.ServiceType.Equals(contextManagerType));
-      if (managerInit) return;
-
-      if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;
-      if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
-      if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
-      if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
-      if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
-
-      // default to AsyncLocal context manager
-      services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
+        // default to AsyncLocal context manager
+        services.AddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManagerAsyncLocal));
+      }
+      else
+      {
+        services.AddScoped(typeof(Core.IContextManager), contextManagerType);
+      }
     }
 
     private static bool LoadContextManager(IServiceCollection services, string managerTypeName)
@@ -97,4 +100,3 @@ namespace Csla.Configuration
     }
   }
 }
-#endif

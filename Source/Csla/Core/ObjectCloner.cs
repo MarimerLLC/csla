@@ -50,7 +50,7 @@ namespace Csla.Core
     {
       using var buffer = new MemoryStream();
       ISerializationFormatter formatter =
-        SerializationFormatterFactory.GetFormatter(_applicationContext);
+        _applicationContext.GetRequiredService<ISerializationFormatter>();
       formatter.Serialize(buffer, obj);
       buffer.Position = 0;
       return formatter.Deserialize(buffer);

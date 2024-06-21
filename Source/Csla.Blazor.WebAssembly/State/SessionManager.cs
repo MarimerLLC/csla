@@ -77,7 +77,7 @@ namespace Csla.Blazor.WebAssembly.State
         var stateResult = await client.GetFromJsonAsync<StateResult>(url, ct).ConfigureAwait(false);
         if (stateResult.ResultStatus == ResultStatuses.Success)
         {
-          var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+          var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
           var buffer = new MemoryStream(stateResult.SessionData)
           {
             Position = 0
@@ -140,7 +140,7 @@ namespace Csla.Blazor.WebAssembly.State
       _session.Touch();
       if (_options.SyncContextWithServer)
       {
-        var formatter = SerializationFormatterFactory.GetFormatter(ApplicationContext);
+        var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);
         buffer.Position = 0;

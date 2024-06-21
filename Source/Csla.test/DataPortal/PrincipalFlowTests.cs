@@ -1,6 +1,6 @@
-﻿using System.Security.Principal;
+﻿using System.Security.Claims;
+using System.Security.Principal;
 using Csla.Configuration;
-using Csla.Security;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,7 +12,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void Fetch_FakeRemoteDataPortalWithDefaultFlow_DoesNotFlowPrincipal()
     {
-      var principal = new CslaClaimsPrincipal(new GenericIdentity("rocky", "custom"));
+      var principal = new ClaimsPrincipal(new GenericIdentity("rocky", "custom"));
       var testDIContext = TestDIContextFactory.CreateContext(opts => opts
         .DataPortal(dpo => dpo.ClientSideDataPortal(dp => dp.UseFakeRemoteDataPortalProxy())),
         principal);
@@ -29,7 +29,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void Fetch_FakeRemoteDataPortalWithFlowEnabled_FlowsPrincipal()
     {
-      var principal = new CslaClaimsPrincipal(new GenericIdentity("rocky", "custom"));
+      var principal = new ClaimsPrincipal(new GenericIdentity("rocky", "custom"));
       var testDIContext = TestDIContextFactory.CreateContext(opts => opts.
         DataPortal(dpo => dpo.ClientSideDataPortal(dp => dp.
           UseFakeRemoteDataPortalProxy())).

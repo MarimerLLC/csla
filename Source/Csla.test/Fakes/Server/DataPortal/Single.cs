@@ -229,5 +229,11 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("bad value");
       Value += 1;
     }
+
+    [Execute]
+    protected void DataPortal_ExecuteWithInt(int value)
+    {
+      Value += value;
+    }
   }
 }

@@ -40,7 +40,7 @@ namespace Csla.Generators.CSharp
     /// <returns>A string containing the full details of an exception using semicolon separators</returns>
     private static string GenerateSingleLineExceptionMessage(Exception ex)
     {
-      return ex.ToString().Replace("\n", "; ");
+      return ex.ToString().Replace("\r\n", "; ").Replace("\n", "; ");
     }
 
     #endregion

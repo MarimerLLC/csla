@@ -45,7 +45,7 @@ public class HttpProxyTests
   }
 
   [TestMethod]
-  public async Task ExecuteAsync_WithPrimitiveObject()
+  public async Task ExecuteAsync_WithArrayOfParameters_ItShouldBeSerializable()
   {
     IDataPortal<SingleCommand> dataPortal = _clientSideServiceProvider.GetRequiredService<IDataPortal<SingleCommand>>();
 
@@ -55,7 +55,7 @@ public class HttpProxyTests
   }
 
   [TestMethod]
-  public async Task ExecuteAsync()
+  public async Task ExecuteAsync_WithSingleParameter_ItShouldBeSerializable()
   {
     IDataPortal<SingleCommand> dataPortal = _clientSideServiceProvider.GetRequiredService<IDataPortal<SingleCommand>>();
 

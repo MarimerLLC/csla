@@ -151,7 +151,7 @@ namespace Csla.Server.Hosts
     }
 #endif
 
-    private HttpPortal _portal;
+    private HttpPortal? _portal;
 
     /// <summary>
     /// Gets or sets the HttpPortal implementation
@@ -252,7 +252,7 @@ namespace Csla.Server.Hosts
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
     {
       var result = _applicationContext.CreateInstance<DataPortalResponse>();
-      DataPortalErrorInfo errorData = null;
+      DataPortalErrorInfo? errorData = null;
       try
       {
         var buffer = new MemoryStream(data)

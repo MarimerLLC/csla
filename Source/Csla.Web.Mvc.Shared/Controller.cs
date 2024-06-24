@@ -145,7 +145,7 @@ namespace Csla.Web.Mvc
     /// <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
-    protected virtual bool SaveObject<T>(T item, Action<T> updateModel, bool forceUpdate) 
+    protected virtual bool SaveObject<T>(T item, Action<T>? updateModel, bool forceUpdate) 
       where T : class, Core.ISavable
     {
       try

@@ -45,11 +45,11 @@ namespace Csla.AspNetCore.RazorPages
     {
       try
       {
-        ThrowIfItemIsNull();
         if (Item is BusinessBase bb && !bb.IsValid)
           AddBrokenRuleInfo(Item, string.Empty);
         if (ModelState.IsValid)
         {
+          ThrowIfItemIsNull();
           Item = (T) await Item.SaveAsync(forceUpdate);
           return true;
         }

@@ -9,7 +9,6 @@
 using Csla.State;
 using Microsoft.AspNetCore.Http;
 
-#nullable enable
 namespace Csla.Blazor.State
 {
   /// <summary>
@@ -31,35 +30,31 @@ namespace Csla.Blazor.State
     /// maintained in a browser cookie for the
     /// current user.
     /// </remarks>
-    public string? GetSessionId()
+    public string GetSessionId()
     {
       const string sessionIdName = "cslaSessionId";
       var httpContext = HttpContextAccessor.HttpContext;
       string? result;
 
-      if (httpContext != null)
+      if (httpContext == null)
+        throw new InvalidOperationException("HttpContext == null");
+
+      if (httpContext.Request.Cookies.ContainsKey(sessionIdName))
       {
-        if (httpContext.Request.Cookies.ContainsKey(sessionIdName))
-        {
-          result = httpContext.Request.Cookies[sessionIdName];
-        }
-        else if (httpContext.Items.TryGetValue(sessionIdName, out var item))
-        {
-          result = item as string;
-        }
-        else
-        {
-          result = Guid.NewGuid().ToString();
-          httpContext.Response.Cookies.Append(sessionIdName, result);
-          httpContext.Items[sessionIdName] = result;
-        }
+        result = httpContext.Request.Cookies[sessionIdName];
+      }
+      else if (httpContext.Items.TryGetValue(sessionIdName, out var item))
+      {
+        result = item as string;
       }
       else
       {
-        throw new InvalidOperationException("HttpContext == null");
+        result = Guid.NewGuid().ToString();
+        httpContext.Response.Cookies.Append(sessionIdName, result);
+        httpContext.Items[sessionIdName] = result;
       }
-      return result;
+
+      return result ?? throw new InvalidOperationException(Csla.Properties.Resources.SessionIdManagerIdMustBeNotNull);
     }
   }
 }
-#nullable disable

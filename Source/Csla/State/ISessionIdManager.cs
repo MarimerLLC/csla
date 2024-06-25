@@ -19,7 +19,7 @@ namespace Csla.State
     /// Gets the per-user id value
     /// for the current user state.
     /// </summary>
-    string? GetSessionId();
+    string GetSessionId();
 #nullable disable
   }
 }

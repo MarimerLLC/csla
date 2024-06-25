@@ -6,6 +6,7 @@
 // <summary>Defines the interface for an application </summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Principal;
 
 namespace Csla.Core
@@ -41,7 +42,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    IContextDictionary GetLocalContext();
+    IContextDictionary? GetLocalContext();
     /// <summary>
     /// Sets the local context.
     /// </summary>
@@ -51,7 +52,7 @@ namespace Csla.Core
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation);
+    IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
     /// Sets the client context.
     /// </summary>
@@ -61,6 +62,6 @@ namespace Csla.Core
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext? ApplicationContext { get; set; }
   }
 }

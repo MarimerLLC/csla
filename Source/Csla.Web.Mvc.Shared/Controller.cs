@@ -63,7 +63,7 @@ namespace Csla.Web.Mvc
     /// <param name="updateModel">Delegate that invokes the UpdateModel() method.</param>
     /// <param name="forceUpdate">true to force Save() to be an update.</param>
     /// <returns>true the Save() succeeds, false if not.</returns>
-    protected virtual async Task<bool> SaveObjectAsync<T>(T item, Action<T> updateModel, bool forceUpdate)
+    protected virtual async Task<bool> SaveObjectAsync<T>(T item, Action<T>? updateModel, bool forceUpdate)
       where T : class, ISavable
     {
       try
@@ -72,7 +72,7 @@ namespace Csla.Web.Mvc
         updateModel?.Invoke(item);
         if (item is BusinessBase bb && !bb.IsValid)
         {
-          AddBrokenRuleInfo(item, null);
+          AddBrokenRuleInfo(item, string.Empty);
           return false;
         }
         ViewData.Model = await item.SaveAsync(forceUpdate);

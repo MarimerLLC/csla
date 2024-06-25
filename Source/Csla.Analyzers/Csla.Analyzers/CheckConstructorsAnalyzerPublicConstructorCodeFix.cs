@@ -86,10 +86,11 @@ namespace Csla.Analyzers
     {
       var classSymbol = model.GetDeclaredSymbol(classNode);
 
+      //System.Diagnostics.Debugger.Launch();
       if (classSymbol != null)
       {
         var constructorSymbol = classSymbol.Constructors
-          .Single(_ => _.Parameters.Count() == 0 &&
+          .Single(_ => _.Parameters.Count() == 0 && !_.IsStatic &&
             !_.DeclaredAccessibility.HasFlag(Accessibility.Public));
 
         var constructor = constructorSymbol.DeclaringSyntaxReferences[0].GetSyntax(context.CancellationToken);

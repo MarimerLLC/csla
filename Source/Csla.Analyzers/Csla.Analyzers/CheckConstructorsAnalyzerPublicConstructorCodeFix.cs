@@ -86,7 +86,6 @@ namespace Csla.Analyzers
     {
       var classSymbol = model.GetDeclaredSymbol(classNode);
 
-      //System.Diagnostics.Debugger.Launch();
       if (classSymbol != null)
       {
         var constructorSymbol = classSymbol.Constructors

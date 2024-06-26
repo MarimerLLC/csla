@@ -30,7 +30,7 @@ Unfortunately, Visual Studio doesn't make it easy to get crash information on an
 
 ## Analyzer Proposals
 
-If you have an idea for an analyzer that would be beneficial for developers using CSLA, please propose it in the forums (https://github.com/MarimerLLC/cslaforum/issues). Tag it with "feature discussion". If it's decided that it's a good idea to implement, it'll be moved to the CSLA issues list.
+If you have an idea for an analyzer that would be beneficial for developers using CSLA, please propose it in the forums (https://github.com/MarimerLLC/csla/discussions). Tag it with "feature discussion". If it's decided that it's a good idea to implement, it'll be moved to the CSLA issues list.
 
 ## Analyzer Error/Warning Messages
 

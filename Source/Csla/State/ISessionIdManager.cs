@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Manages the per-user id value</summary>
 //-----------------------------------------------------------------------
+#nullable enable
 
 namespace Csla.State
 {
@@ -14,12 +15,10 @@ namespace Csla.State
   /// </summary>
   public interface ISessionIdManager
   {
-#nullable enable
     /// <summary>
     /// Gets the per-user id value
     /// for the current user state.
     /// </summary>
     string GetSessionId();
-#nullable disable
   }
 }

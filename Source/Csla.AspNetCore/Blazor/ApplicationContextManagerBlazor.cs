@@ -167,7 +167,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     /// <param name="localContext">Local context.</param>
     /// <exception cref="InvalidOperationException"><see cref="ApplicationContext"/> is <see langword="null"/>.</exception>
-    public void SetLocalContext(IContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary? localContext)
     {
       ThrowIfApplicationContextIsNull();
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
@@ -205,7 +205,7 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
     /// <exception cref="InvalidOperationException"><see cref="ApplicationContext"/> is <see langword="null"/>.</exception>
-    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       ThrowIfApplicationContextIsNull();
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();

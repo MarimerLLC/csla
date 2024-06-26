@@ -172,6 +172,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     public IContextDictionary? GetLocalContext()
     {
+      LocalContext ??= new ContextDictionary();
       return LocalContext;
     }
 
@@ -190,6 +191,7 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="executionLocation"></param>
     public IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
+      ClientContext ??= new ContextDictionary();
       return ClientContext;
     }
 

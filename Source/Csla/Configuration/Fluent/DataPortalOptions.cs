@@ -20,7 +20,7 @@ namespace Csla.Configuration
     {
       CslaOptions = cslaOptions;
       DataPortalClientOptions = new DataPortalClientOptions(this);
-      DataPortalServerOptions = new DataPortalServerOptions();
+      DataPortalServerOptions = new DataPortalServerOptions(CslaOptions.Services);
     }
 
     internal CslaOptions CslaOptions { get; set; }

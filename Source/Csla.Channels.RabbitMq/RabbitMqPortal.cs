@@ -21,55 +21,25 @@ namespace Csla.Channels.RabbitMq
   /// <summary>
   /// Exposes server-side DataPortal functionality through RabbitMQ
   /// </summary>
-  public class RabbitMqPortal : IDisposable
+  /// <remarks>
+  /// Creates an instance of the type
+  /// </remarks>
+  /// <param name="applicationContext"></param>
+  /// <param name="dataPortal">Data portal server service</param>
+  /// <param name="rabbitMqPortalOptions">Options for RabbitMqPortal</param>
+  /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="dataPortal"/> is <see langword="null"/>.</exception>
+  public class RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal, RabbitMqPortalOptions rabbitMqPortalOptions) : IDisposable
   {
-    private IDataPortalServer dataPortalServer;
-    private ApplicationContext _applicationContext;
-
-    /// <summary>
-    /// Creates an instance of the type
-    /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="dataPortal">Data portal server service</param>
-    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="dataPortal"/> is <see langword="null"/>.</exception>
-    public RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal)
-    {
-      dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-    }
-
-    /// <summary>
-    /// Creates an instance of the object.
-    /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="dataPortal">Data portal server service</param>
-    /// <param name="dataPortalUrl">URI for the data portal</param>
-    /// <exception cref="ArgumentException"><paramref name="dataPortalUrl"/> is null, empty or only consists of white spaces.</exception>
-    public RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal, string dataPortalUrl)
-      : this(applicationContext, dataPortal)
-    {
-      if (string.IsNullOrWhiteSpace(dataPortalUrl))
-        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(dataPortalUrl)), nameof(dataPortalUrl));
-
-      DataPortalUrl = dataPortalUrl;
-    }
-
-    /// <summary>
-    /// Gets the URI for the data portal service.
-    /// </summary>
-    public string DataPortalUrl { get; } = string.Empty;
+    private IDataPortalServer dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
+    private ApplicationContext _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
 
     private IConnection? Connection;
     private IModel? Channel;
     private string? DataPortalQueueName;
 
-    /// <summary>
-    /// Gets or sets the timeout for network
-    /// operations in seconds (default is 30 seconds).
-    /// </summary>
-    public int Timeout { get; set; } = 30;
+    private int Timeout { get; } = rabbitMqPortalOptions.Timeout;
 
-    private Uri? DataPortalUri { get; set; }
+    private Uri? DataPortalUri { get; set; } = rabbitMqPortalOptions.DataPortalUri;
 
 #if NET8_0_OR_GREATER
     [MemberNotNull(nameof(DataPortalUri), nameof(DataPortalQueueName), nameof(Connection), nameof(Channel))]
@@ -78,21 +48,15 @@ namespace Csla.Channels.RabbitMq
     {
       if (Connection == null || DataPortalUri == null || Channel == null || DataPortalQueueName == null)
       {
-        Console.WriteLine($"Initializing connection to {DataPortalUrl}");
-        DataPortalUri = new Uri(DataPortalUrl);
-        var url = DataPortalUri;
-        if (url.Scheme != "rabbitmq")
-          throw new UriFormatException("Scheme != rabbitmq://");
-        if (string.IsNullOrWhiteSpace(url.Host))
-          throw new UriFormatException("Host");
-        DataPortalQueueName = url.AbsolutePath.Substring(1);
-        if (string.IsNullOrWhiteSpace(DataPortalQueueName))
-          throw new UriFormatException("DataPortalQueueName");
+        Console.WriteLine($"Initializing connection to {DataPortalUri}");
+        if (DataPortalUri == null)
+          throw new NotSupportedException($"{nameof(DataPortalUri)} == null");
+        DataPortalQueueName = DataPortalUri.AbsolutePath[1..];
 
-        var factory = new ConnectionFactory { HostName = url.Host };
-        if (url.Port < 0)
-          factory.Port = url.Port;
-        var userInfo = url.UserInfo.Split(':');
+        var factory = new ConnectionFactory { HostName = DataPortalUri.Host };
+        if (DataPortalUri.Port < 0)
+          factory.Port = DataPortalUri.Port;
+        var userInfo = DataPortalUri.UserInfo.Split(':');
         if (userInfo.Length > 0 && !string.IsNullOrWhiteSpace(userInfo[0]))
           factory.UserName = userInfo[0];
         if (userInfo.Length > 1)

@@ -184,6 +184,54 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExists2()
+    {
+      var code =
+        """
+        using Csla;
+
+        namespace BusinessLibrary
+        {
+
+          [Serializable]
+          public class A : BusinessBase<A>
+          {
+            private static int x = 5;
+
+            private A()
+            {
+            }
+          }
+        }
+        """;
+      var document = TestHelpers.Create(code);
+      var tree = await document.GetSyntaxTreeAsync();
+      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new CheckConstructorsAnalyzer());
+
+      var actions = new List<CodeAction>();
+      var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
+        (a, _) => { actions.Add(a); });
+
+      var fix = new CheckConstructorsAnalyzerPublicConstructorCodeFix();
+      var codeFixContext = new CodeFixContext(document, diagnostics[0],
+        codeActionRegistration, new CancellationToken(false));
+      await fix.RegisterCodeFixesAsync(codeFixContext);
+
+      Assert.AreEqual(1, actions.Count, nameof(actions.Count));
+
+      await TestHelpers.VerifyChangesAsync(actions,
+        CheckConstructorsAnalyzerPublicConstructorCodeFixConstants.UpdateNonPublicConstructorToPublicDescription, document,
+        (model, newRoot) =>
+        {
+          var classNode = newRoot.DescendantNodes(_ => true).OfType<ClassDeclarationSyntax>().Single();
+          var classSymbol = model.GetDeclaredSymbol(classNode);
+          var methodSymbol = classSymbol.GetMembers().OfType<IMethodSymbol>()
+            .Single(_ => _.MethodKind == MethodKind.Constructor && _.Name == ".ctor" && _.DeclaredAccessibility == Accessibility.Public);
+          Assert.IsTrue(methodSymbol.Parameters.Length == 0);
+        });
+    }
+
+    [TestMethod]
     public async Task VerifyGetFixesWhenPrivateConstructorNoArgumentsExistsWithNestedClasses()
     {
       var code =

@@ -15,6 +15,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Object property for the contained business object
     /// </summary>
-    object ModelObject { get; set; }
+    object? ModelObject { get; set; }
   }
 }

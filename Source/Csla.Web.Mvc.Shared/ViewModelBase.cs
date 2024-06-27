@@ -18,16 +18,16 @@ namespace Csla.Web.Mvc
   /// <typeparam name="T">Type of the Model object.</typeparam>
   public abstract class ViewModelBase<T> : IViewModel where T : class
   {
-    object IViewModel.ModelObject
+    object? IViewModel.ModelObject
     {
       get { return ModelObject; }
-      set { ModelObject = (T)value; }
+      set { ModelObject = (T?)value; }
     }
 
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T ModelObject { get; set; }
+    public T? ModelObject { get; set; }
 
     /// <summary>
     /// Saves the current Model object if the object

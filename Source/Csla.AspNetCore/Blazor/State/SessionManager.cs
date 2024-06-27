@@ -39,15 +39,14 @@ namespace Csla.Blazor.State
     /// Updates the current user's session data.
     /// </summary>
     /// <param name="newSession">Current user session data</param>
+    /// <exception cref="ArgumentNullException"><paramref name="newSession"/> is <see langword="null"/>.</exception>
     public void UpdateSession(Session newSession)
     {
-      if (newSession != null)
-      {
-        var key = _sessionIdManager.GetSessionId();
-        var existingSession = _sessions[key];
-        Replace(newSession, existingSession);
-        existingSession.Touch();
-      }
+      ArgumentNullException.ThrowIfNull(newSession);
+      var key = _sessionIdManager.GetSessionId();
+      var existingSession = _sessions[key];
+      Replace(newSession, existingSession);
+      existingSession.Touch();
     }
 
     /// <summary>

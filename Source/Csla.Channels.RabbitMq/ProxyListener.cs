@@ -131,6 +131,7 @@ namespace Csla.Channels.RabbitMq
         Console.WriteLine($"Received reply for {ea.BasicProperties.CorrelationId}");
         if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem? item))
         {
+          Console.WriteLine($"Processing reply for {ea.BasicProperties.CorrelationId}");
           item.Response = ea.Body.ToArray();
           item.ResetEvent.Set();
         }
@@ -160,7 +161,7 @@ namespace Csla.Channels.RabbitMq
 
     public void Dispose()
     {
-      Connection?.Close();
+      //Connection?.Close();
       Channel?.Dispose();
       Connection?.Dispose();
       IsListening = false;

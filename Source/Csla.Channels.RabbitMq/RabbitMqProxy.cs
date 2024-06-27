@@ -33,13 +33,14 @@ namespace Csla.Channels.RabbitMq
         throw new ArgumentNullException(nameof(options));
 
       DataPortalUrl = options.DataPortalUrl;
+      Timeout = options.Timeout;
     }
 
     /// <summary>
     /// Gets or sets the timeout for network
     /// operations in seconds (default is 30 seconds).
     /// </summary>
-    public override int Timeout { get; set; } = 30;
+    public override int Timeout { get; set; }
 
     /// <summary>
     /// Gets or sets the connection to the RabbitMQ service.
@@ -106,7 +107,6 @@ namespace Csla.Channels.RabbitMq
     private void DisposeRabbitMq()
     {
       QueueListener?.Dispose();
-      Connection?.Close();
       Channel?.Dispose();
       Connection?.Dispose();
       Channel = null;
@@ -231,9 +231,11 @@ namespace Csla.Channels.RabbitMq
 
       SendMessage(QueueListener!.ReplyQueue!.QueueName, correlationId, operation, serialized);
 
+      Console.WriteLine($"Waiting for response for {correlationId}");
       var timeout = Task.Delay(Timeout * 1000);
       if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
         throw new TimeoutException();
+      Console.WriteLine($"Got response for {correlationId}");
 
       return wip.Response!;
     }

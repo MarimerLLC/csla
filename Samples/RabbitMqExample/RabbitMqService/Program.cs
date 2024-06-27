@@ -7,7 +7,7 @@ services.AddCsla(o => o.
 DataPortal(o => o.
   AddServerSideDataPortal(o => o.
     UseRabbitMqPortal(o => o.
-      DataPortalUri = new Uri("rabbitmq://rabbithost/myservice")))));
+      DataPortalUri = new Uri("rabbitmq://localhost:5672/myservice")))));
 var serviceProvider = services.BuildServiceProvider();
 
 Console.WriteLine("RabbitMq Service starting");

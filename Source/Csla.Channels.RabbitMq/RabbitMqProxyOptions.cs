@@ -17,5 +17,11 @@ namespace Csla.Channels.RabbitMq
     /// Data portal server endpoint URL
     /// </summary>
     public string DataPortalUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the timeout for network
+    /// operations in seconds (default is 30 seconds).
+    /// </summary>
+    public int Timeout { get; set; } = 30;
   }
 }

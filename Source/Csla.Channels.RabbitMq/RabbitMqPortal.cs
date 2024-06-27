@@ -386,7 +386,6 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     public void Dispose()
     {
-      Connection?.Close();
       Channel?.Dispose();
       Connection?.Dispose();
     }

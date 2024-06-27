@@ -21,7 +21,7 @@ namespace Csla.AspNetCore.Mvc.TagHelpers
     /// <summary>
     /// Model expression
     /// </summary>
-    public ModelExpression CslaWarningsFor { get; set; }
+    public ModelExpression? CslaWarningsFor { get; set; }
 
     /// <summary>
     /// Process method

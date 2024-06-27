@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Defines the interface for an application </summary>
 //-----------------------------------------------------------------------
+#nullable enable
 
 using System.Security.Principal;
 
@@ -41,26 +42,26 @@ namespace Csla.Core
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    IContextDictionary GetLocalContext();
+    IContextDictionary? GetLocalContext();
     /// <summary>
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    void SetLocalContext(IContextDictionary localContext);
+    void SetLocalContext(IContextDictionary? localContext);
     /// <summary>
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation);
+    IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
     /// Sets the client context.
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation);
+    void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation);
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    ApplicationContext ApplicationContext { get; set; }
+    ApplicationContext? ApplicationContext { get; set; }
   }
 }

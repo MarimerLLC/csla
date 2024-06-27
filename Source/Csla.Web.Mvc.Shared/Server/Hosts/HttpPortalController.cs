@@ -6,6 +6,7 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
 
@@ -66,7 +67,7 @@ namespace Csla.Server.Hosts
       }
     }
 
-    private static HttpClient _client;
+    private static HttpClient? _client;
 
     /// <summary>
     /// Gets a dictionary containing the URLs for each
@@ -85,6 +86,7 @@ namespace Csla.Server.Hosts
     /// Gets an HttpClient object for use in
     /// communication with the server.
     /// </summary>
+    [MemberNotNull(nameof(_client))]
     protected virtual HttpClient GetHttpClient()
     {
       if (_client == null)
@@ -106,7 +108,7 @@ namespace Csla.Server.Hosts
     /// <param name="routingTag">Routing tag from caller</param>
     protected virtual async Task PostAsync(string operation, string routingTag)
     {
-      if (RoutingTagUrls.TryGetValue(routingTag, out string route) && route != "localhost")
+      if (RoutingTagUrls.TryGetValue(routingTag, out string? route) && route != "localhost")
       {
         var httpRequest = new HttpRequestMessage(HttpMethod.Post, $"{route}?operation={operation}");
         using (var buffer = new MemoryStream())
@@ -151,7 +153,7 @@ namespace Csla.Server.Hosts
     }
 #endif
 
-    private HttpPortal _portal;
+    private HttpPortal? _portal;
 
     /// <summary>
     /// Gets or sets the HttpPortal implementation
@@ -187,7 +189,7 @@ namespace Csla.Server.Hosts
     {
       var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      DataPortalErrorInfo errorData = null;
+      DataPortalErrorInfo? errorData = null;
       if (UseTextSerialization)
         Response.Headers.ContentType = "text/plain";
       else
@@ -222,7 +224,7 @@ namespace Csla.Server.Hosts
 
       var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      DataPortalErrorInfo errorData = null;
+      DataPortalErrorInfo? errorData = null;
       try
       {
         var request = serializer.Deserialize(requestBuffer);
@@ -252,7 +254,7 @@ namespace Csla.Server.Hosts
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
     {
       var result = _applicationContext.CreateInstance<DataPortalResponse>();
-      DataPortalErrorInfo errorData = null;
+      DataPortalErrorInfo? errorData = null;
       try
       {
         var buffer = new MemoryStream(data)

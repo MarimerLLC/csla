@@ -72,7 +72,7 @@ namespace Csla.Web.Mvc
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
       CslaPermissionRequirement requirement)
     {
-      if (context.User == null || !context.User.Identity.IsAuthenticated)
+      if (context.User == null || context.User.Identity?.IsAuthenticated != true)
         context.Fail();
       else if (await BusinessRules.HasPermissionAsync(_applicationContext, requirement.Action, requirement.ObjectType, CancellationToken.None))
         context.Succeed(requirement);

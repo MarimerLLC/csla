@@ -14,7 +14,7 @@ namespace Csla.Test.DataPortal
     {
       var principal = new ClaimsPrincipal(new GenericIdentity("rocky", "custom"));
       var testDIContext = TestDIContextFactory.CreateContext(opts => opts
-        .DataPortal(dpo => dpo.ClientSideDataPortal(dp => dp.UseFakeRemoteDataPortalProxy())),
+        .DataPortal(dpo => dpo.AddClientSideDataPortal(dp => dp.UseFakeRemoteDataPortalProxy())),
         principal);
 
       var dataPortal = testDIContext.CreateDataPortal<PrincipalInfo>();
@@ -31,7 +31,7 @@ namespace Csla.Test.DataPortal
     {
       var principal = new ClaimsPrincipal(new GenericIdentity("rocky", "custom"));
       var testDIContext = TestDIContextFactory.CreateContext(opts => opts.
-        DataPortal(dpo => dpo.ClientSideDataPortal(dp => dp.
+        DataPortal(dpo => dpo.AddClientSideDataPortal(dp => dp.
           UseFakeRemoteDataPortalProxy())).
         Security(so => so.FlowSecurityPrincipalFromClient = true),
         principal);

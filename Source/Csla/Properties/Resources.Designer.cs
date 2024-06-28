@@ -970,6 +970,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The session id must be not null..
+        /// </summary>
+        public static string SessionIdManagerIdMustBeNotNull {
+            get {
+                return ResourceManager.GetString("SessionIdManagerIdMustBeNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to t.
         /// </summary>
         public static string SmartDateT {

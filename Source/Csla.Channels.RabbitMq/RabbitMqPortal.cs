@@ -37,8 +37,6 @@ namespace Csla.Channels.RabbitMq
     private IModel? Channel;
     private string? DataPortalQueueName;
 
-    private int Timeout { get; } = rabbitMqPortalOptions.Timeout;
-
     private Uri? DataPortalUri { get; set; } = rabbitMqPortalOptions.DataPortalUri;
 
 #if NET8_0_OR_GREATER
@@ -48,9 +46,8 @@ namespace Csla.Channels.RabbitMq
     {
       if (Connection == null || DataPortalUri == null || Channel == null || DataPortalQueueName == null)
       {
-        Console.WriteLine($"Initializing connection to {DataPortalUri}");
         if (DataPortalUri == null)
-          throw new NotSupportedException($"{nameof(DataPortalUri)} == null");
+          throw new InvalidOperationException($"{nameof(DataPortalUri)} == null");
         DataPortalQueueName = DataPortalUri.AbsolutePath[1..];
 
         var factory = new ConnectionFactory { HostName = DataPortalUri.Host };
@@ -82,10 +79,8 @@ namespace Csla.Channels.RabbitMq
       var consumer = new EventingBasicConsumer(Channel);
       consumer.Received += (_, ea) =>
       {
-        Console.WriteLine($"Received {ea.BasicProperties.Type} for {ea.BasicProperties.CorrelationId} from {ea.BasicProperties.ReplyTo}");
         InvokePortal(ea, ea.Body.ToArray());
       };
-      Console.WriteLine($"Listening on queue {DataPortalQueueName}");
       Channel.BasicConsume(queue: DataPortalQueueName, autoAck: true, consumer: consumer);
     }
 
@@ -109,17 +104,10 @@ namespace Csla.Channels.RabbitMq
       }
       catch (Exception ex)
       {
-        try
-        {
-          result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-          result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-          var response = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
-          SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
-        }
-        catch (Exception ex1)
-        {
-          Console.Error.WriteLine($"## ERROR {ex1.Message}");
-        }
+        result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        var response = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
+        SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
       }
     }
 

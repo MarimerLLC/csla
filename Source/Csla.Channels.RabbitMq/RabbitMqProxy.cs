@@ -33,14 +33,8 @@ namespace Csla.Channels.RabbitMq
         throw new ArgumentNullException(nameof(options));
 
       DataPortalUrl = options.DataPortalUrl;
-      Timeout = options.Timeout;
+      Timeout = (int)options.Timeout.TotalSeconds;
     }
-
-    /// <summary>
-    /// Gets or sets the timeout for network
-    /// operations in seconds (default is 30 seconds).
-    /// </summary>
-    public override int Timeout { get; set; }
 
     /// <summary>
     /// Gets or sets the connection to the RabbitMQ service.
@@ -77,7 +71,6 @@ namespace Csla.Channels.RabbitMq
       if (Connection == null || Channel == null || QueueListener == null)
       {
         var url = new Uri(DataPortalUrl);
-        Console.WriteLine($"Initializing {DataPortalUrl}");
         if (url.Scheme != "rabbitmq")
           throw new UriFormatException("Scheme != rabbitmq://");
         if (string.IsNullOrWhiteSpace(url.Host))
@@ -85,7 +78,6 @@ namespace Csla.Channels.RabbitMq
         DataPortalQueueName = url.AbsolutePath.Substring(1);
         if (string.IsNullOrWhiteSpace(DataPortalQueueName))
           throw new UriFormatException("DataPortalQueueName");
-        Console.WriteLine($"Will send to queue {DataPortalQueueName}");
         var factory = new ConnectionFactory { HostName = url.Host };
         if (url.Port < 0)
           factory.Port = url.Port;
@@ -231,11 +223,9 @@ namespace Csla.Channels.RabbitMq
 
       SendMessage(QueueListener!.ReplyQueue!.QueueName, correlationId, operation, serialized);
 
-      Console.WriteLine($"Waiting for response for {correlationId}");
       var timeout = Task.Delay(Timeout * 1000);
       if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
         throw new TimeoutException();
-      Console.WriteLine($"Got response for {correlationId}");
 
       return wip.Response!;
     }

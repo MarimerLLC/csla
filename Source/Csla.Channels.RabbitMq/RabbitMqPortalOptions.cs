@@ -14,9 +14,15 @@ namespace Csla.Channels.RabbitMq;
 public class RabbitMqPortalOptions
 {
   private Uri? _dataPortalUri;
+
   /// <summary>
   /// Gets or sets the data portal server endpoint URL
   /// </summary>
+  /// <exception cref="ArgumentNullException">DataPortalUri</exception>
+  /// <exception cref="UriFormatException">Scheme != rabbitmq://</exception>
+  /// <exception cref="UriFormatException">Host</exception>
+  /// <exception cref="UriFormatException">Port</exception>
+  /// <exception cref="UriFormatException">QueueName</exception>
   public Uri? DataPortalUri 
   {
     get => _dataPortalUri;
@@ -32,14 +38,8 @@ public class RabbitMqPortalOptions
         throw new UriFormatException("Port");
       var dataPortalQueueName = value.AbsolutePath[1..];
       if (string.IsNullOrWhiteSpace(dataPortalQueueName))
-        throw new UriFormatException("DataPortalQueueName");
+        throw new UriFormatException("QueueName");
       _dataPortalUri = value;
     }
   }
-  
-  /// <summary>
-  /// Gets or sets the timeout for network
-  /// operations in seconds (default is 30 seconds).
-  /// </summary>
-  public int Timeout { get; set; } = 30;
 }

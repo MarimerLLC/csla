@@ -20,8 +20,8 @@ namespace Csla.Channels.RabbitMq
 
     /// <summary>
     /// Gets or sets the timeout for network
-    /// operations in seconds (default is 30 seconds).
+    /// operations (default is 30 seconds).
     /// </summary>
-    public int Timeout { get; set; } = 30;
+    public TimeSpan Timeout { get; set; } = new TimeSpan(0, 0, 30);
   }
 }

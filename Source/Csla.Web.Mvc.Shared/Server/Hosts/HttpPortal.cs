@@ -47,7 +47,7 @@ namespace Csla.Server.Hosts
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -93,7 +93,7 @@ namespace Csla.Server.Hosts
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -138,7 +138,7 @@ namespace Csla.Server.Hosts
       {
         request = ConvertRequest(request);
         // unpack object
-        object obj = GetCriteria(_applicationContext, request.ObjectData);
+        object? obj = GetCriteria(_applicationContext, request.ObjectData);
 
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
@@ -180,7 +180,7 @@ namespace Csla.Server.Hosts
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -214,9 +214,9 @@ namespace Csla.Server.Hosts
 
     #region Criteria
 
-    private static object GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
+    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
     {
-      object criteria = null;
+      object? criteria = null;
       if (criteriaData != null)
         criteria = applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(criteriaData);
       return criteria;

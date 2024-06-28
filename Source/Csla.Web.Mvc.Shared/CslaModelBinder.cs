@@ -178,7 +178,7 @@ namespace Csla.Web.Mvc
       if (bindingContext.Model == null)
         bindingContext.ModelMetadata.Model = CreateModel(controllerContext, bindingContext, bindingContext.ModelType);
 
-      var collection = (IList)bindingContext.Model;
+      var collection = (IList)bindingContext.Model!;
       for (int currIdx = 0; currIdx < collection.Count; currIdx++)
       {
         string subIndexKey = CreateSubIndexName(bindingContext.ModelName, currIdx);
@@ -207,7 +207,7 @@ namespace Csla.Web.Mvc
         }
       }
 
-      return bindingContext.Model;
+      return bindingContext.Model!;
     }
 
     /// <summary>

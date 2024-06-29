@@ -12,8 +12,12 @@ var serviceProvider = services.BuildServiceProvider();
 
 Console.WriteLine("RabbitMq Service starting");
 
-var rabbitMqService = serviceProvider.GetRequiredService<RabbitMqPortal>();
-rabbitMqService.StartListening();
+var factory = serviceProvider.GetRequiredService<RabbitMqPortalFactory>();
+var rabbitMqService = factory.GetRabbitMqPortal();
+using (rabbitMqService)
+{
+  rabbitMqService.StartListening();
+}
 
 Console.WriteLine("Press any key to exit");
 Console.ReadKey();

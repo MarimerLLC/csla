@@ -24,20 +24,23 @@ namespace Csla.Channels.RabbitMq
   /// <remarks>
   /// Creates an instance of the type
   /// </remarks>
-  /// <param name="applicationContext"></param>
-  /// <param name="dataPortal">Data portal server service</param>
-  /// <param name="rabbitMqPortalOptions">Options for RabbitMqPortal</param>
-  /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="dataPortal"/> is <see langword="null"/>.</exception>
-  public class RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal, RabbitMqPortalOptions rabbitMqPortalOptions) : IDisposable
+  public class RabbitMqPortal : IDisposable
   {
-    private IDataPortalServer dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
-    private ApplicationContext _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+    internal RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal, RabbitMqPortalOptions rabbitMqPortalOptions)
+    {
+      _dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      DataPortalUri = rabbitMqPortalOptions.DataPortalUri;
+    }
+
+    private readonly IDataPortalServer _dataPortalServer;
+    private readonly ApplicationContext _applicationContext;
 
     private IConnection? Connection;
     private IModel? Channel;
     private string? DataPortalQueueName;
 
-    private Uri? DataPortalUri { get; set; } = rabbitMqPortalOptions.DataPortalUri;
+    private Uri? DataPortalUri { get; set; }
 
 #if NET8_0_OR_GREATER
     [MemberNotNull(nameof(DataPortalUri), nameof(DataPortalQueueName), nameof(Connection), nameof(Channel))]
@@ -127,29 +130,14 @@ namespace Csla.Channels.RabbitMq
 
     private async Task<DataPortalResponse> CallPortal(string operation, object request)
     {
-      DataPortalResponse result;
-      switch (operation)
+      return operation switch
       {
-        case "create":
-          result = await Create((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-
-        case "fetch":
-          result = await Fetch((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-
-        case "update":
-          result = await Update((UpdateRequest)request).ConfigureAwait(false);
-          break;
-
-        case "delete":
-          result = await Delete((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-
-        default:
-          throw new InvalidOperationException(operation);
-      }
-      return result;
+        "create" => await Create((CriteriaRequest)request).ConfigureAwait(false),
+        "fetch" => await Fetch((CriteriaRequest)request).ConfigureAwait(false),
+        "update" => await Update((UpdateRequest)request).ConfigureAwait(false),
+        "delete" => await Delete((CriteriaRequest)request).ConfigureAwait(false),
+        _ => throw new InvalidOperationException(operation),
+      };
     }
 
     /// <summary>
@@ -178,7 +166,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientUICulture,
           (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
 
-        var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
+        var dpr = await _dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
@@ -222,7 +210,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientUICulture,
           (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
 
-        var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
+        var dpr = await _dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
@@ -260,7 +248,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientUICulture,
           (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
 
-        var dpr = await dataPortalServer.Update(obj, context, true);
+        var dpr = await _dataPortalServer.Update(obj, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
@@ -305,7 +293,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientUICulture,
           (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
 
-        var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
+        var dpr = await _dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);

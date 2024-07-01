@@ -8,7 +8,6 @@
 
 using Csla.Channels.RabbitMq;
 using Csla.DataPortalClient;
-using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -54,11 +53,11 @@ namespace Csla.Configuration
       if (config is null)
         throw new ArgumentNullException(nameof(config));
 
-      var portalOptions = new Channels.RabbitMq.RabbitMqPortalOptions();
+      var portalOptions = new RabbitMqPortalOptions();
       options?.Invoke(portalOptions);
 
       config.Services.AddScoped(_ => portalOptions);
-      config.Services.AddTransient<IRabbitMqPortalFactory, RabbitMqPortalFactory>();
+      config.Services.AddTransient(typeof(IRabbitMqPortalFactory), portalOptions.PortalFactoryType);
       return config;
     }
   }

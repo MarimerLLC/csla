@@ -13,7 +13,21 @@ namespace Csla.Channels.RabbitMq;
 /// </summary>
 public class RabbitMqPortalOptions
 {
-  private Uri? _dataPortalUri;
+  private Uri _dataPortalUri = new("bad://");
+
+  /// <summary>
+  /// Gets the type of the portal factory
+  /// </summary>
+  public Type PortalFactoryType { get; private set; } = typeof(RabbitMqPortalFactory);
+
+  /// <summary>
+  /// Sets the type of the portal factory
+  /// </summary>
+  /// <typeparam name="T">Type of portal</typeparam>
+  public void SetPortalFactoryType<T>() where T : IRabbitMqPortalFactory
+  {
+    PortalFactoryType = typeof(T);
+  }
 
   /// <summary>
   /// Gets or sets the data portal server endpoint URL
@@ -23,7 +37,7 @@ public class RabbitMqPortalOptions
   /// <exception cref="UriFormatException">Host</exception>
   /// <exception cref="UriFormatException">Port</exception>
   /// <exception cref="UriFormatException">QueueName</exception>
-  public Uri? DataPortalUri 
+  public Uri DataPortalUri 
   {
     get => _dataPortalUri;
     set

@@ -58,7 +58,7 @@ namespace Csla.Configuration
       options?.Invoke(portalOptions);
 
       config.Services.AddScoped(_ => portalOptions);
-      config.Services.AddTransient<RabbitMqPortalFactory>();
+      config.Services.AddTransient<IRabbitMqPortalFactory, RabbitMqPortalFactory>();
       return config;
     }
   }

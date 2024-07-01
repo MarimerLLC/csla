@@ -21,9 +21,6 @@ namespace Csla.Channels.RabbitMq
   /// <summary>
   /// Exposes server-side DataPortal functionality through RabbitMQ
   /// </summary>
-  /// <remarks>
-  /// Creates an instance of the type
-  /// </remarks>
   public class RabbitMqPortal : IDisposable
   {
     internal RabbitMqPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal, RabbitMqPortalOptions rabbitMqPortalOptions)
@@ -40,7 +37,7 @@ namespace Csla.Channels.RabbitMq
     private IModel? Channel;
     private string? DataPortalQueueName;
 
-    private Uri? DataPortalUri { get; set; }
+    private Uri DataPortalUri { get; set; }
 
 #if NET8_0_OR_GREATER
     [MemberNotNull(nameof(DataPortalUri), nameof(DataPortalQueueName), nameof(Connection), nameof(Channel))]
@@ -118,7 +115,7 @@ namespace Csla.Channels.RabbitMq
     {
       InitializeRabbitMQ();
       if (Channel is null)
-        throw new ArgumentNullException(nameof(Channel));
+        throw new InvalidOperationException($"{nameof(Channel)} == null");
       var props = Channel.CreateBasicProperties();
       props.CorrelationId = correlationId;
       Channel.BasicPublish(
@@ -144,7 +141,7 @@ namespace Csla.Channels.RabbitMq
     /// Create and initialize an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<DataPortalResponse> Create(CriteriaRequest request)
+    private async Task<DataPortalResponse> Create(CriteriaRequest request)
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
@@ -188,7 +185,7 @@ namespace Csla.Channels.RabbitMq
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
+    private async Task<DataPortalResponse> Fetch(CriteriaRequest request)
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
@@ -232,7 +229,7 @@ namespace Csla.Channels.RabbitMq
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<DataPortalResponse> Update(UpdateRequest request)
+    private async Task<DataPortalResponse> Update(UpdateRequest request)
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
@@ -271,7 +268,7 @@ namespace Csla.Channels.RabbitMq
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-    public async Task<DataPortalResponse> Delete(CriteriaRequest request)
+    private async Task<DataPortalResponse> Delete(CriteriaRequest request)
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
@@ -364,6 +361,7 @@ namespace Csla.Channels.RabbitMq
     {
       Channel?.Dispose();
       Connection?.Dispose();
+      GC.SuppressFinalize(this);
     }
   }
 }

@@ -17,11 +17,12 @@ namespace Csla.Channels.RabbitMq;
 /// <param name="dataPortal"></param>
 /// <param name="rabbitMqPortalOptions"></param>
 public class RabbitMqPortalFactory(ApplicationContext applicationContext, IDataPortalServer dataPortal, RabbitMqPortalOptions rabbitMqPortalOptions)
+  : IRabbitMqPortalFactory
 {
   /// <summary>
-  /// Gets an instance of RabbitMqPortal
+  /// Creates an instance of RabbitMqPortal
   /// </summary>
-  public RabbitMqPortal GetRabbitMqPortal()
+  public RabbitMqPortal CreateRabbitMqPortal()
   {
     return new RabbitMqPortal(applicationContext, dataPortal, rabbitMqPortalOptions);
   }

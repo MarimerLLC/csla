@@ -156,10 +156,21 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
+#if NET8_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+            {
+              throw new PlatformNotSupportedException();
+            }
+            else
+            {
+#endif
 
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
-            result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+              var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
+              portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+              result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            }
+#endif
 
             break;
           default:
@@ -257,9 +268,20 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
-            result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+            {
+              throw new PlatformNotSupportedException();
+            }
+            else
+            {
+#endif
+              var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
+              portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+              result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            }
+#endif
             break;
           default:
             portal = _applicationContext.CreateInstanceDI<DataPortalBroker>();
@@ -351,9 +373,20 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
-            result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+            {
+              throw new PlatformNotSupportedException();
+            }
+            else
+            {
+#endif
+              var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
+              portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+              result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            }
+#endif
             break;
           default:
             portal = _applicationContext.CreateInstanceDI<DataPortalBroker>();
@@ -484,9 +517,20 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
-            result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+            {
+              throw new PlatformNotSupportedException();
+            }
+            else
+            {
+#endif
+              var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
+              portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+              result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            }
+#endif
             break;
           default:
             portal = _applicationContext.CreateInstanceDI<DataPortalBroker>();
@@ -587,9 +631,20 @@ namespace Csla.Server
             break;
 #endif
           case TransactionalTypes.TransactionScope:
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
-            result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            if (OperatingSystem.IsBrowser())
+            {
+              throw new PlatformNotSupportedException();
+            }
+            else
+            {
+#endif
+              var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
+              portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+              result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+#if NET8_0_OR_GREATER
+            }
+#endif
             break;
           default:
             portal = _applicationContext.CreateInstanceDI<DataPortalBroker>();

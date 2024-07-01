@@ -83,17 +83,16 @@ namespace Csla.Channels.Http
       HttpClientHandler CreateDefaultHandler()
       {
         var handler = new HttpClientHandler();
+#if NET8_0_OR_GREATER
+        // Browser does not support customization of HttpClientHandler, since it's provided by browser.
+        if (!OperatingSystem.IsBrowser())
+        {
+          return handler;
+        }
+#endif
         if (!Options.UseTextSerialization)
         {
-#if NET8_0_OR_GREATER
-          // Browser does not support customization of HttpClientHandler, since it's provided by browser.
-          if (!OperatingSystem.IsBrowser())
-          {
-#endif
             handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-#if NET8_0_OR_GREATER
-          }
-#endif
         }
 
         return handler;

@@ -6,6 +6,7 @@
 // <summary>Implement extension methods data portal channel</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Channels.RabbitMq;
 using Csla.DataPortalClient;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,7 +15,7 @@ namespace Csla.Configuration
   /// <summary>
   /// Implement extension methods data portal channel
   /// </summary>
-  public static class RabbitMqProxyExtensions
+  public static class RabbitMqChannelExtensions
   {
     /// <summary>
     /// Configure data portal client to use RabbitMqProxy.
@@ -37,6 +38,26 @@ namespace Csla.Configuration
           var applicationContext = sp.GetRequiredService<ApplicationContext>();
           return new Channels.RabbitMq.RabbitMqProxy(applicationContext, proxyOptions);
         });
+      return config;
+    }
+
+    /// <summary>
+    /// Configure the data portal server to use the RabbitMq channel.
+    /// </summary>
+    /// <param name="config"></param>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public static DataPortalServerOptions UseRabbitMqPortal(this DataPortalServerOptions config, Action<Channels.RabbitMq.RabbitMqPortalOptions>? options)
+    {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
+      var portalOptions = new RabbitMqPortalOptions();
+      options?.Invoke(portalOptions);
+
+      config.Services.AddScoped(_ => portalOptions);
+      config.Services.AddTransient(typeof(IRabbitMqPortalFactory), portalOptions.PortalFactoryType);
       return config;
     }
   }

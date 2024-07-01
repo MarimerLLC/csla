@@ -7,14 +7,21 @@
 //-----------------------------------------------------------------------
 
 using Csla.Server;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
 {
   /// <summary>
   /// Server-side data portal options.
   /// </summary>
-  public class DataPortalServerOptions
+  /// <param name="services">Service collection.</param>
+  public class DataPortalServerOptions(IServiceCollection services)
   {
+    /// <summary>
+    /// Gets the service collection.
+    /// </summary>
+    public IServiceCollection Services => services;
+
     /// <summary>
     /// Gets or sets a value containing the type of the
     /// IDashboard to be used by the data portal.

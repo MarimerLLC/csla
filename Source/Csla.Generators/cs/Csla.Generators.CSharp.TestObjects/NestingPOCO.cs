@@ -6,8 +6,6 @@
 // <summary>Class that can be used for testing serialization behaviour related to nested classes</summary>
 //-----------------------------------------------------------------------
 using Csla.Serialization;
-using System;
-using System.Collections.Generic;
 
 namespace Csla.Generators.CSharp.TestObjects
 {
@@ -27,7 +25,7 @@ namespace Csla.Generators.CSharp.TestObjects
     protected internal partial class NestedPOCO
     {
 
-      public string Value { get; set; }
+      public string Value { get; set; } = string.Empty;
 
     }
 

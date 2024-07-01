@@ -26,7 +26,7 @@ namespace Csla.Generators.CSharp.AutoSerialization
     public string TypeNamespace { get; set; }
 
     /// <summary>
-    /// Whether the type is marked as AutoSerialiable
+    /// Whether the type is marked as AutoSerializable
     /// </summary>
     public bool IsAutoSerializable { get; set; } = false;
 
@@ -35,5 +35,9 @@ namespace Csla.Generators.CSharp.AutoSerialization
     /// </summary>
     public bool ImplementsIMobileObject { get; set; } = false;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the type is nullable.
+    /// </summary>
+    public bool Nullable { get; internal set; }
   }
 }

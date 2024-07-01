@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Complex class that can be used for testing serialization behaviour</summary>
 //-----------------------------------------------------------------------
-using System;
 using Csla.Serialization;
 
 namespace Csla.Generators.CSharp.TestObjects
@@ -23,14 +22,14 @@ namespace Csla.Generators.CSharp.TestObjects
 #pragma warning disable CS0414 // Remove unused private members
     private string _fieldTest = "foo";
 #pragma warning restore CS0414 // Remove unused private members
-    private string _lastName;
+    private string _lastName = string.Empty;
 
     [AutoSerialized]
-    private string _middleName;
+    private string _middleName = string.Empty;
 
     public int PersonId { get; set; }
 
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = string.Empty;
 
     public string MiddleName => _middleName;
 
@@ -85,9 +84,9 @@ namespace Csla.Generators.CSharp.TestObjects
       return DateOfBirth;
     }
 
-    public AddressPOCO Address { get; set; }
+    public AddressPOCO? Address { get; set; }
 
-    public EmailAddress EmailAddress { get; set; }
+    public EmailAddress? EmailAddress { get; set; }
 
   }
 

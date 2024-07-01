@@ -85,7 +85,7 @@ namespace Csla.Channels.Http
         var handler = new HttpClientHandler();
 #if NET8_0_OR_GREATER
         // Browser does not support customization of HttpClientHandler, since it's provided by browser.
-        if (!OperatingSystem.IsBrowser())
+        if (OperatingSystem.IsBrowser())
         {
           return handler;
         }

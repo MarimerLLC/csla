@@ -6,8 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))" />
-
   <ItemGroup>
     <ProjectReference Include="..\BlazorExample.Client\BlazorExample.Client.csproj" />
     <ProjectReference Include="..\BusinessLibrary\BusinessLibrary.csproj" />

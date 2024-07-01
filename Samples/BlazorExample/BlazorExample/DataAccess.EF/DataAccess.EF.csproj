@@ -4,8 +4,6 @@
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))" />
-
   <ItemGroup>
     <PackageReference Include="Csla" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />

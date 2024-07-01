@@ -8,8 +8,6 @@
     <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
   </PropertyGroup>
 
-  <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))" />
-
   <ItemGroup>
     <PackageReference Include="Csla.Blazor.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />

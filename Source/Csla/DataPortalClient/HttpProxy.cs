@@ -189,7 +189,7 @@ namespace Csla.Channels.Http
 #if NET8_0_OR_GREATER
       if (OperatingSystem.IsBrowser())
       {
-        throw new PlatformNotSupportedException();
+        throw new PlatformNotSupportedException(Resources.SyncDataAccessNotSupportedException);
       }
 #endif
       if (!WebCallCapabilities.AreSyncWebClientMethodsSupported())

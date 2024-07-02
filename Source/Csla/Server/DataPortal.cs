@@ -159,7 +159,7 @@ namespace Csla.Server
 #if NET8_0_OR_GREATER
             if (OperatingSystem.IsBrowser())
             {
-              throw new PlatformNotSupportedException();
+              throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
             var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
@@ -264,7 +264,7 @@ namespace Csla.Server
 #if NET8_0_OR_GREATER
             if (OperatingSystem.IsBrowser())
             {
-              throw new PlatformNotSupportedException();
+              throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
             var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
@@ -364,7 +364,7 @@ namespace Csla.Server
 #if NET8_0_OR_GREATER
             if (OperatingSystem.IsBrowser())
             {
-              throw new PlatformNotSupportedException();
+              throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
             var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
@@ -503,7 +503,7 @@ namespace Csla.Server
 #if NET8_0_OR_GREATER
             if (OperatingSystem.IsBrowser())
             {
-              throw new PlatformNotSupportedException();
+              throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
             var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
@@ -612,7 +612,7 @@ namespace Csla.Server
 #if NET8_0_OR_GREATER
             if (OperatingSystem.IsBrowser())
             {
-              throw new PlatformNotSupportedException();
+              throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
             var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();

@@ -1123,6 +1123,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Transactions with TransactionTypes.TransactionScope are not supported in the browser platform.
+        /// </summary>
+        public static string TransactionScopeTransactionNotSupportedException {
+            get {
+                return ResourceManager.GetString("TransactionScopeTransactionNotSupportedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load type &apos;{0}&apos;.
         /// </summary>
         public static string TypeLoadException {

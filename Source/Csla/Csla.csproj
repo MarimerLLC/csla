@@ -24,6 +24,10 @@
     <EmbeddedResource Remove="Properties\CslaPrivate.resx" />
     </ItemGroup>
 
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
     <Reference Include="System.Configuration" />
     <Reference Include="System.ServiceModel" />

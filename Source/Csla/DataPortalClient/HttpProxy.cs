@@ -11,6 +11,9 @@ using Csla.Properties;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+#if NET8_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 using System.Text;
 
 namespace Csla.Channels.Http
@@ -80,9 +83,16 @@ namespace Csla.Channels.Http
       HttpClientHandler CreateDefaultHandler()
       {
         var handler = new HttpClientHandler();
+#if NET8_0_OR_GREATER
+        // Browser does not support customization of HttpClientHandler, since it's provided by browser.
+        if (OperatingSystem.IsBrowser())
+        {
+          return handler;
+        }
+#endif
         if (!Options.UseTextSerialization)
         {
-          handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         }
 
         return handler;
@@ -93,6 +103,9 @@ namespace Csla.Channels.Http
     /// Gets an WebClient object for use in
     /// synchronous communication with the server.
     /// </summary>
+#if NET8_0_OR_GREATER
+    [UnsupportedOSPlatform("browser")]
+#endif
     protected virtual WebClient GetWebClient()
     {
       return new DefaultWebClient(Timeout);
@@ -173,6 +186,12 @@ namespace Csla.Channels.Http
 
     private byte[] CallViaWebClient(byte[] serialized, string operation, string routingToken)
     {
+#if NET8_0_OR_GREATER
+      if (OperatingSystem.IsBrowser())
+      {
+        throw new PlatformNotSupportedException();
+      }
+#endif
       if (!WebCallCapabilities.AreSyncWebClientMethodsSupported())
       {
         throw new NotSupportedException(Resources.SyncDataAccessNotSupportedException);
@@ -237,6 +256,9 @@ namespace Csla.Channels.Http
     }
 
 #pragma warning disable SYSLIB0014
+#if NET8_0_OR_GREATER
+    [UnsupportedOSPlatform("browser")]
+#endif
     private class DefaultWebClient : WebClient
     {
       private int Timeout { get; set; }

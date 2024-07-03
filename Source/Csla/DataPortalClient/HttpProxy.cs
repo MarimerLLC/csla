@@ -192,10 +192,6 @@ namespace Csla.Channels.Http
         throw new PlatformNotSupportedException(Resources.SyncDataAccessNotSupportedException);
       }
 #endif
-      if (!WebCallCapabilities.AreSyncWebClientMethodsSupported())
-      {
-        throw new NotSupportedException(Resources.SyncDataAccessNotSupportedException);
-      }
       WebClient client = GetWebClient();
       var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}";
       client.Headers["Content-Type"] = Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream";

@@ -502,4 +502,7 @@
   <data name="SessionIdManagerIdMustBeNotNull" xml:space="preserve">
     <value>The session id must be not null.</value>
   </data>
+  <data name="TransactionScopeTransactionNotSupportedException" xml:space="preserve">
+    <value>Transactions with TransactionTypes.TransactionScope are not supported in the browser platform</value>
+  </data>
 </root>

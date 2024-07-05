@@ -2,6 +2,10 @@
 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
+## CSLA .NET version 8.2.5 release
+
+Updates NuGet package to include latest code changes.
+
 ## CSLA .NET version 8.2.4 release
 
 CSLA .NET version 8.2.4 fixes bugs.

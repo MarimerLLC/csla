@@ -6,6 +6,9 @@
 // <summary>Implements the server-side Serviced </summary>
 //-----------------------------------------------------------------------
 
+#if NET8_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 using System.Transactions;
 
 namespace Csla.Server
@@ -14,6 +17,9 @@ namespace Csla.Server
   /// Implements the server-side Serviced 
   /// DataPortal described in Chapter 4.
   /// </summary>
+#if NET8_0_OR_GREATER
+    [UnsupportedOSPlatform("browser")]
+#endif
   public class TransactionalDataPortal : IDataPortalServer
   {
     private readonly DataPortalBroker _portal;

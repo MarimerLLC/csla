@@ -57,10 +57,7 @@ namespace Csla.Channels.RabbitMq
       {
         lock (typeof(ProxyListener))
         {
-          if (_instance == null)
-          {
-            _instance = new ProxyListener(queueUri);
-          }
+          _instance ??= new ProxyListener(queueUri);
         }
       }
       return _instance;
@@ -92,7 +89,7 @@ namespace Csla.Channels.RabbitMq
       if (string.IsNullOrWhiteSpace(_queueUri.Query))
         query = [];
       else
-        query = _queueUri.Query.Substring(1).Split('&');
+        query = _queueUri.Query[1..].Split('&');
       if (query.Length == 0 || !query[0].StartsWith("reply="))
       {
         IsNamedReplyQueue = false;
@@ -128,7 +125,6 @@ namespace Csla.Channels.RabbitMq
       var consumer = new EventingBasicConsumer(Channel);
       consumer.Received += (_, ea) =>
       {
-        Console.WriteLine($"Received reply for {ea.BasicProperties.CorrelationId}");
         if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem? item))
         {
           item.Response = ea.Body.ToArray();
@@ -148,19 +144,13 @@ namespace Csla.Channels.RabbitMq
               basicProperties: ea.BasicProperties,
               body: ea.Body);
           }
-          else
-          {
-            Console.WriteLine($"## WARN Undeliverable reply for {ea.BasicProperties.CorrelationId} (discarded by {Environment.MachineName})");
-          }
         }
       };
-      Console.WriteLine($"Listening on queue {ReplyQueue?.QueueName}");
       Channel.BasicConsume(queue: ReplyQueue?.QueueName, autoAck: true, consumer: consumer);
     }
 
     public void Dispose()
     {
-      Connection?.Close();
       Channel?.Dispose();
       Connection?.Dispose();
       IsListening = false;

@@ -16,7 +16,7 @@ namespace Csla.AspNetCore
   /// </summary>
   public class PropertyInfo : INotifyPropertyChanged
   {
-    private object Model { get; }
+    private object? Model { get; }
     private string PropertyName { get; }
 
     /// <summary>
@@ -24,7 +24,7 @@ namespace Csla.AspNetCore
     /// </summary>
     /// <param name="model">Model object</param>
     /// <param name="propertyName">Property name</param>
-    public PropertyInfo(object model, string propertyName)
+    public PropertyInfo(object? model, string propertyName)
     {
       Model = model;
       PropertyName = propertyName;
@@ -34,7 +34,7 @@ namespace Csla.AspNetCore
       }
     }
 
-    private void Npc_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void Npc_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       if (e.PropertyName == "IsBusy")
         OnPropertyChanged(nameof(IsBusy));
@@ -143,7 +143,7 @@ namespace Csla.AspNetCore
     /// <summary>
     /// Event raised when a property changes.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged(string propertyName)
     {

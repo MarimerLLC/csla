@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Csla.Rules;
 using Csla.Core;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.AspNetCore.RazorPages
 {
@@ -33,7 +34,7 @@ namespace Csla.AspNetCore.RazorPages
     /// Gets or sets the business domain model object.
     /// </summary>
     [BindProperty]
-    public T Item { get; set; }
+    public T? Item { get; set; }
 
     /// <summary>
     /// Save the Item
@@ -45,9 +46,10 @@ namespace Csla.AspNetCore.RazorPages
       try
       {
         if (Item is BusinessBase bb && !bb.IsValid)
-          AddBrokenRuleInfo(Item, null);
+          AddBrokenRuleInfo(Item, string.Empty);
         if (ModelState.IsValid)
         {
+          ThrowIfItemIsNull();
           Item = (T) await Item.SaveAsync(forceUpdate);
           return true;
         }
@@ -70,7 +72,7 @@ namespace Csla.AspNetCore.RazorPages
       return false;
     }
 
-    private void AddBrokenRuleInfo(T item, string defaultText)
+    private void AddBrokenRuleInfo(T? item, string defaultText)
     {
       if (item is BusinessBase bb)
       {
@@ -106,7 +108,7 @@ namespace Csla.AspNetCore.RazorPages
     /// <param name="propertyName">Property name</param>
     public PropertyInfo GetPropertyInfo(string propertyName)
     {
-      if (!_info.TryGetValue(propertyName, out PropertyInfo info))
+      if (!_info.TryGetValue(propertyName, out PropertyInfo? info))
       {
         info = new PropertyInfo(Item, propertyName);
         _info.Add(propertyName, info);
@@ -152,6 +154,13 @@ namespace Csla.AspNetCore.RazorPages
     public bool CanDeleteItem()
     {
       return BusinessRules.HasPermission(_applicationContext, AuthorizationActions.DeleteObject, typeof(T));
+    }
+
+    [MemberNotNull(nameof(Item))]
+    private void ThrowIfItemIsNull()
+    {
+      if (Item is null)
+        throw new InvalidOperationException($"{nameof(Item)} == null");
     }
   }
 }

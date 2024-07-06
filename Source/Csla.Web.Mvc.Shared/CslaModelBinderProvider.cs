@@ -27,7 +27,7 @@ namespace Csla.Web.Mvc
     /// Gets the CslaModelBinder provider.
     /// </summary>
     /// <param name="context">Model binder provider context.</param>
-    public IModelBinder GetBinder(ModelBinderProviderContext context)
+    public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
       if (typeof(Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType) ||
           typeof(IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))

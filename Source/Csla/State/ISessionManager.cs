@@ -49,6 +49,7 @@ namespace Csla.State
     /// <summary>
     /// Updates the current user's session data.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="newSession"/> is <see langword="null"/>.</exception>
     void UpdateSession(Session newSession);
     /// <summary>
     /// Remove all expired session data.

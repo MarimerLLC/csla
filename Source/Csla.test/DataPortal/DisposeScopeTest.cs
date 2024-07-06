@@ -16,7 +16,7 @@ namespace Csla.Test.DataPortal
       // CSLA should not dispose of the default service provider.
       IServiceCollection serviceCollection = new ServiceCollection();
       serviceCollection.AddScoped<DisposableClass>();
-      serviceCollection.AddCsla(o => o.DataPortal(dp => dp.ClientSideDataPortal((dpo => dpo.UseLocalProxy(lpo => lpo.UseLocalScope = false)))));
+      serviceCollection.AddCsla(o => o.DataPortal(dp => dp.AddClientSideDataPortal((dpo => dpo.UseLocalProxy(lpo => lpo.UseLocalScope = false)))));
 
       var services = serviceCollection.BuildServiceProvider();
       IDataPortal<ClassA> dataPortal = services.GetRequiredService<IDataPortal<ClassA>>();

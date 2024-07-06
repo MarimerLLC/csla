@@ -9,6 +9,7 @@
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <BaseOutputPath>..\..\..\Bin</BaseOutputPath>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
   </PropertyGroup>
 
   <ItemGroup>

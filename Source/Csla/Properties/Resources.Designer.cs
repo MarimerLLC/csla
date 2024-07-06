@@ -970,6 +970,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The session id must be not null..
+        /// </summary>
+        public static string SessionIdManagerIdMustBeNotNull {
+            get {
+                return ResourceManager.GetString("SessionIdManagerIdMustBeNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to t.
         /// </summary>
         public static string SmartDateT {
@@ -1110,6 +1119,15 @@ namespace Csla.Properties {
         public static string TaskOfObjectException {
             get {
                 return ResourceManager.GetString("TaskOfObjectException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Transactions with TransactionTypes.TransactionScope are not supported in the browser platform.
+        /// </summary>
+        public static string TransactionScopeTransactionNotSupportedException {
+            get {
+                return ResourceManager.GetString("TransactionScopeTransactionNotSupportedException", resourceCulture);
             }
         }
         

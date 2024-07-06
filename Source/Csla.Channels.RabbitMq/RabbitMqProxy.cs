@@ -33,13 +33,8 @@ namespace Csla.Channels.RabbitMq
         throw new ArgumentNullException(nameof(options));
 
       DataPortalUrl = options.DataPortalUrl;
+      Timeout = (int)options.Timeout.TotalSeconds;
     }
-
-    /// <summary>
-    /// Gets or sets the timeout for network
-    /// operations in seconds (default is 30 seconds).
-    /// </summary>
-    public override int Timeout { get; set; } = 30;
 
     /// <summary>
     /// Gets or sets the connection to the RabbitMQ service.
@@ -76,7 +71,6 @@ namespace Csla.Channels.RabbitMq
       if (Connection == null || Channel == null || QueueListener == null)
       {
         var url = new Uri(DataPortalUrl);
-        Console.WriteLine($"Initializing {DataPortalUrl}");
         if (url.Scheme != "rabbitmq")
           throw new UriFormatException("Scheme != rabbitmq://");
         if (string.IsNullOrWhiteSpace(url.Host))
@@ -84,7 +78,6 @@ namespace Csla.Channels.RabbitMq
         DataPortalQueueName = url.AbsolutePath.Substring(1);
         if (string.IsNullOrWhiteSpace(DataPortalQueueName))
           throw new UriFormatException("DataPortalQueueName");
-        Console.WriteLine($"Will send to queue {DataPortalQueueName}");
         var factory = new ConnectionFactory { HostName = url.Host };
         if (url.Port < 0)
           factory.Port = url.Port;
@@ -106,7 +99,6 @@ namespace Csla.Channels.RabbitMq
     private void DisposeRabbitMq()
     {
       QueueListener?.Dispose();
-      Connection?.Close();
       Channel?.Dispose();
       Connection?.Dispose();
       Channel = null;

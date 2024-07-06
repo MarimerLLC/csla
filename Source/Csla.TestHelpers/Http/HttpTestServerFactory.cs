@@ -28,7 +28,7 @@ public static class HttpTestServerFactory {
     var clientServices = new ServiceCollection()
       .AddCsla(
       o => o.DataPortal(
-        portalOptions => portalOptions.ClientSideDataPortal(
+        portalOptions => portalOptions.AddClientSideDataPortal(
           a => a.UseHttpProxy(
             proxy => proxy.DataPortalUrl = $"/api/{controllerName}"
             )

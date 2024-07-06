@@ -651,7 +651,7 @@ namespace Csla
     /// <returns>The resulting command object.</returns>
     public T Execute(params object[] criteria)
     {
-        return (T)DoFetchAsync(typeof(T), criteria, true).Result;
+        return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
     }
 
     /// <summary>
@@ -673,7 +673,7 @@ namespace Csla
     /// <returns>The resulting command object.</returns>
     public async Task<T> ExecuteAsync(params object[] criteria)
     {
-      return (T)await DoFetchAsync(typeof(T), criteria, false);
+      return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
     private IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo method)

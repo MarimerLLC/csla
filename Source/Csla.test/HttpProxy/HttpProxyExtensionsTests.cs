@@ -22,7 +22,7 @@ public class HttpProxyExtensionsTests
 
     var diContext = TestDIContextFactory.CreateContext(
       o => o.DataPortal(
-        dp => dp.ClientSideDataPortal(
+        dp => dp.AddClientSideDataPortal(
           cdp => cdp.UseHttpProxy(
             hp => hp.WithHttpClientFactory(CustomFactory)
             )

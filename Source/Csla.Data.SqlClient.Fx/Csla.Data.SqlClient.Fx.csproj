@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,9 +10,9 @@
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Nullable>enable</Nullable>
+    <Title>CSLA .NET System.Data.SqlClient</Title>
+    <PackageTags>CSLA;SqlClient;Sql Server</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net4.8</TargetFramework>
     <OutputType>WinExe</OutputType>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
@@ -14,10 +15,15 @@
   <ItemGroup>
     <PackageReference Include="Csla" />
     <PackageReference Include="Csla.Wpf" />
+    <PackageReference Include="Blend.Interctivity.WPF.v4.0" />
+    <PackageReference Include="BXF" />
     <PackageReference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="MyDialog.xaml.cs" />
     <Page Remove="MyDialog.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
 </Project>

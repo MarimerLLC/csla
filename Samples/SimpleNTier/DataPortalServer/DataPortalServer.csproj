@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="8.0.0-R24021201" />
+    <PackageReference Include="Csla.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

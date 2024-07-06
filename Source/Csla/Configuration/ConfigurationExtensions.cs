@@ -71,7 +71,7 @@ namespace Csla.Configuration
       services.AddScoped<Core.ApplicationContextAccessor>();
       services.TryAddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));
 
-      var managerInit = services.Any(i => i.ServiceType.Equals(typeof(IContextManager)));
+      var managerInit = services.Count(static i => i.ServiceType.Equals(typeof(IContextManager))) > 0;
       if (managerInit) return;
 
       if (contextManagerType != null)

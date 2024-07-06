@@ -10,7 +10,6 @@ using Csla.Blazor;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Csla.Blazor.WebAssembly.Configuration;
 
 namespace Csla.Configuration
@@ -40,11 +39,11 @@ namespace Csla.Configuration
       options?.Invoke(blazorOptions);
 
       config.Services.AddScoped((_) => blazorOptions);
-      config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
-      config.Services.TryAddScoped<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
-      config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
-      config.Services.TryAddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
-      config.Services.TryAddScoped(typeof(AuthenticationStateProvider), typeof(Csla.Blazor.Authentication.CslaAuthenticationStateProvider));
+      config.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+      config.Services.AddScoped<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
+      config.Services.AddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
+      config.Services.AddScoped(typeof(Csla.Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
+      config.Services.AddScoped(typeof(AuthenticationStateProvider), typeof(Csla.Blazor.Authentication.CslaAuthenticationStateProvider));
 
       // use Blazor state management
       config.Services.AddScoped(typeof(ISessionManager), blazorOptions.SessionManagerType);

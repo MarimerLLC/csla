@@ -1,17 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net462;net472;net48;net8.0</TargetFrameworks>
     <PackageId>Csla</PackageId>
     <Product>CSLA .NET Core</Product>
     <Description>CSLA .NET provides a home for your business logic. It is an application development framework that reduces the cost of building and maintaining applications. The framework enables developers to build an object-oriented business layer for their application that encapsulates all business, authorization and validation logic for the application.</Description>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <Title>CSLA .NET Core</Title>
+    <PackageTags>CSLA;Business;Rules</PackageTags>
     <DelaySign>false</DelaySign>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

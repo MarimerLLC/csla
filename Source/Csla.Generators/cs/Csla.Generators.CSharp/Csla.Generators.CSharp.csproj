@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\..\Directory.Package.props" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <IsRoslynComponent>true</IsRoslynComponent>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
@@ -16,6 +16,16 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <BaseOutputPath>..\..\..\..\Bin</BaseOutputPath>
+
+    <AssemblyName>Csla.Generators.CSharp</AssemblyName>
+    <RootNamespace>Csla.Generators.CSharp</RootNamespace>
+    <PackageId>Csla.Generators.CSharp</PackageId>
+    <Description>CSLA .NET Generators for CSharp</Description>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Title>CSLA .NET Generators </Title>
+    <PackageTags>CSLA;Roslyn;Generator</PackageTags>
   </PropertyGroup>
 
    <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
@@ -9,7 +10,8 @@
     <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Title>CSLA .NET Blazor</Title>
+    <PackageTags>CSLA;Blazor;aspnetcore</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -6,6 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\.github\workflows\ci.yaml = ..\.github\workflows\ci.yaml
 		Directory.Build.props = Directory.Build.props
+		Directory.package.props = Directory.package.props
 		readme.md = readme.md
 		..\releasenotes.md = ..\releasenotes.md
 	EndProjectSection
@@ -60,7 +61,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphMergerTest.Business", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphMergerTest.BusinessTests", "GraphMergerTest\GraphMergerTest.BusinessTests\GraphMergerTest.BusinessTests.csproj", "{FE652EBA-94E7-4BB2-99C8-18B0382E0D9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Blazor.WebAssembly.Tests", "Csla.Blazor.WebAssembly.Tests\Csla.Blazor.WebAssembly.Tests.csproj", "{430DDCF1-1570-4193-9B1E-774303F6FC34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Blazor.WebAssembly.Tests", "Csla.Blazor.WebAssembly.Tests\Csla.Blazor.WebAssembly.Tests.csproj", "{430DDCF1-1570-4193-9B1E-774303F6FC34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

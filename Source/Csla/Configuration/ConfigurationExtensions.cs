@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Implement extension methods for base .NET configuration</summary>
 //-----------------------------------------------------------------------
+using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,7 +71,7 @@ namespace Csla.Configuration
       services.AddScoped<Core.ApplicationContextAccessor>();
       services.TryAddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));
 
-      var managerInit = services.Any(i => i.ServiceType.Equals(contextManagerType));
+      var managerInit = services.Count(static i => i.ServiceType.Equals(typeof(IContextManager))) > 0;
       if (managerInit) return;
 
       if (contextManagerType != null)

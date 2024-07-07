@@ -4,7 +4,16 @@ CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other
 
 ## CSLA .NET version 8.2.5 release
 
-Updates NuGet package to include latest code changes.
+* [#4075](https://github.com/MarimerLLC/csla/issues/4075) Fix configuration issue with Blazor DI services
+
+### Change List
+
+* https://github.com/MarimerLLC/csla/compare/v8.2.4...v8.2.5
+
+### Contributors
+
+* @jmpotvin
+* @rockfordlhotka
 
 ## CSLA .NET version 8.2.4 release
 

@@ -37,13 +37,12 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the app settings for the application's default settings.
     /// </summary>
-    public static NameValueCollection AppSettings { get; set; }
+    public static NameValueCollection AppSettings { get; }
 
     /// <summary>
     /// Gets or sets the connection strings from the 
     /// application's default settings.
     /// </summary>
-    public static ConnectionStringSettingsCollection ConnectionStrings { get; set; }
-      = new ConnectionStringSettingsCollection();
+    public static ConnectionStringSettingsCollection ConnectionStrings { get; } = [];
   }
 }

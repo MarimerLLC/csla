@@ -21,6 +21,7 @@ namespace Csla.Configuration
     /// Add CSLA .NET services for use by the application.
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddCsla(this IServiceCollection services)
     {
       return AddCsla(services, null);
@@ -31,8 +32,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
     /// <param name="options">Options for configuring CSLA .NET</param>
-    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
+    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions>? options)
     {
+      if (services is null)
+        throw new ArgumentNullException(nameof(services));
+
       // Custom configuration
       var cslaOptions = new CslaOptions(services);
       options?.Invoke(cslaOptions);
@@ -66,7 +71,7 @@ namespace Csla.Configuration
       return services;
     }
 
-    private static void RegisterContextManager(IServiceCollection services, Type contextManagerType)
+    private static void RegisterContextManager(IServiceCollection services, Type? contextManagerType)
     {
       services.AddScoped<Core.ApplicationContextAccessor>();
       services.TryAddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));

@@ -15,18 +15,19 @@ namespace Csla.Configuration
   /// Server-side data portal options.
   /// </summary>
   /// <param name="services">Service collection.</param>
+  /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
   public class DataPortalServerOptions(IServiceCollection services)
   {
     /// <summary>
     /// Gets the service collection.
     /// </summary>
-    public IServiceCollection Services => services;
+    public IServiceCollection Services{ get; } = services ?? throw new ArgumentNullException(nameof(services));
 
     /// <summary>
     /// Gets or sets a value containing the type of the
     /// IDashboard to be used by the data portal.
     /// </summary>
-    internal Type DashboardType { get; set; } = typeof(Server.Dashboard.NullDashboard);
+    internal Type DashboardType { get; private set; } = typeof(Server.Dashboard.NullDashboard);
 
     /// <summary>
     /// Sets the type of the IDashboard to be 
@@ -45,7 +46,7 @@ namespace Csla.Configuration
     /// An instance of this type is created using dependency
     /// injection.
     /// </summary>
-    internal Type AuthorizerProviderType { get; set; } = typeof(ActiveAuthorizer);
+    internal Type AuthorizerProviderType { get; private set; } = typeof(ActiveAuthorizer);
 
     /// <summary>
     /// Sets the type of the IDataPortalAuthorizer to be 
@@ -99,7 +100,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the ExceptionInspector.
     /// </summary>
-    internal Type ExceptionInspectorType { get; set; } = typeof(DefaultExceptionInspector);
+    internal Type ExceptionInspectorType { get; private set; } = typeof(DefaultExceptionInspector);
 
     /// <summary>
     /// Sets the type of the ExceptionInspector.
@@ -114,7 +115,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the Activator.
     /// </summary>
-    internal Type ActivatorType { get; set; } = typeof(DefaultDataPortalActivator);
+    internal Type ActivatorType { get; private set; } = typeof(DefaultDataPortalActivator);
 
     /// <summary>
     /// Sets the type of the Activator.
@@ -132,7 +133,7 @@ namespace Csla.Configuration
     /// the FactoryDataPortal model. Type must implement
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
-    internal Type ObjectFactoryLoaderType { get; set; } = typeof(ObjectFactoryLoader);
+    internal Type ObjectFactoryLoaderType { get; private set; } = typeof(ObjectFactoryLoader);
 
     /// <summary>
     /// Gets or sets the type name of the factor loader used to create

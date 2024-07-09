@@ -19,9 +19,10 @@ namespace Csla.Configuration
     /// Creates an instance of the type
     /// </summary>
     /// <param name="services">Services collection</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public CslaOptions(IServiceCollection services)
     {
-      Services = services;
+      Services = services ?? throw new ArgumentNullException(nameof(services));
       DataPortalOptions = new DataPortalOptions(this);
       SerializationOptions = new SerializationOptions(this);
     }
@@ -45,7 +46,7 @@ namespace Csla.Configuration
     /// Gets the type for the IContextManager 
     /// used by ApplicationContext.
     /// </summary>
-    public Type ContextManagerType { get; private set; }
+    public Type? ContextManagerType { get; private set; }
 
     /// <summary>
     /// Sets a value indicating whether CSLA

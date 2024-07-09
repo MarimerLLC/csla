@@ -19,7 +19,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public static Type FactoryType { get; internal set; } = typeof(DefaultPropertyInfoFactory);
 
-    private static IPropertyInfoFactory _factory;
+    private static IPropertyInfoFactory? _factory;
 
     /// <summary>
     /// Gets the factory object that
@@ -29,8 +29,7 @@ namespace Csla.Core.FieldManager
     {
       get
       {
-        if (_factory == null)
-            _factory = (IPropertyInfoFactory)Activator.CreateInstance(FactoryType);
+        _factory ??= (IPropertyInfoFactory)Activator.CreateInstance(FactoryType)!;
         return _factory;
       }
     }

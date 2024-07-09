@@ -16,15 +16,16 @@ namespace Csla.Configuration
   /// </summary>
   public class DataPortalClientOptions
   {
+    private readonly DataPortalOptions _parent;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortalClientOptions(DataPortalOptions dataPortalOptions)
     {
-      _parent = dataPortalOptions;
+      _parent = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
-
-    private readonly DataPortalOptions _parent;
 
     /// <summary>
     /// Gets a reference to the current services collection.

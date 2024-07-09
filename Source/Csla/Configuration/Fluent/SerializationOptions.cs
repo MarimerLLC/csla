@@ -15,12 +15,13 @@ namespace Csla.Configuration
   /// Use this type to configure the settings for serialization.
   /// </summary>
   /// <param name="cslaOptions">The CSLA options.</param>
+  /// <exception cref="ArgumentNullException"><paramref name="cslaOptions"/> is <see langword="null"/>.</exception>
   public class SerializationOptions(CslaOptions cslaOptions)
   {
     /// <summary>
     /// Gets the CSLA .NET configuration options.
     /// </summary>
-    protected CslaOptions CslaOptions => cslaOptions;
+    protected CslaOptions CslaOptions { get; } = cslaOptions ?? throw new ArgumentNullException(nameof(cslaOptions));
 
     /// <summary>
     /// Gets the current services collection.

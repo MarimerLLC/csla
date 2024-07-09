@@ -167,10 +167,11 @@ The RabbitMQ data portal channel has been updated to work with dependency inject
 
 ## Nullable Reference Types
 
-CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and CSLA will work correctly.
+CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values.
 
 ### API Changes
 
 Supporting nullable types means that some APIs have changed to support nullable types.
 
 * The `User` and `Principal` properties of `ApplicationContext` no longer return null
+* `Csla.Configuration.ConfigurationManager.AppSettings` and `.ConnectionStrings` are no longer settable

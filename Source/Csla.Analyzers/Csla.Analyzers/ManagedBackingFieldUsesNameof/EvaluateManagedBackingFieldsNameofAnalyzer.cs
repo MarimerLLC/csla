@@ -39,12 +39,9 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
       {
         foreach (var variable in fieldNode.Declaration.Variables)
         {
-          var fieldSymbol = context.SemanticModel.GetDeclaredSymbol(variable) as IFieldSymbol;
-          var invocation = variable.Initializer.Value as InvocationExpressionSyntax;
-
           context.CancellationToken.ThrowIfCancellationRequested();
 
-          if (fieldSymbol != null && invocation !=null)
+          if (context.SemanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol && variable.Initializer.Value is InvocationExpressionSyntax invocation)
           {
             if (fieldSymbol.Type.IsIPropertyInfo() && invocation.Expression is GenericNameSyntax invocationName)
             {
@@ -69,8 +66,6 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
               }
             }
           }
-
-
         }
       }
     }

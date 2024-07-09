@@ -33,11 +33,23 @@ namespace Csla.Generators.CSharp.AutoSerialization.Discovery
       fieldDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(fieldDeclaration.Declaration.Type);
       fieldDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
       fieldDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(fieldDeclaration.Declaration.Type);
-
+      fieldDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, fieldDeclaration);
       return fieldDefinition;
     }
 
     #region Private Helper Methods
+
+    /// <summary>
+    /// Determines whether the field type is nullable.
+    /// </summary>
+    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed.</param>
+    /// <param name="fieldDeclaration">The FieldDeclarationSyntax representing the field declaration.</param>
+    /// <returns><c>true</c> if the field type is nullable; otherwise, <c>false</c>.</returns>
+    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
+    {
+      return fieldDeclaration.Declaration.Type is NullableTypeSyntax nullableType;
+    }
+
 
     /// <summary>
     /// Extract the name of the field for which we are building information

@@ -43,11 +43,6 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
         var memberAccessExpression = (MemberAccessExpressionSyntax)lambdaExpression.Body;
         propertyName = memberAccessExpression.Name.Identifier.ValueText;
       }
-      else if (argumentSyntax.Expression is IdentifierNameSyntax identifier)
-      {
-        propertyName = identifier.Identifier.ValueText;
-      }
-
       var nameofExpression = SyntaxFactory.ParseExpression($"nameof({propertyName})");
 
       var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);

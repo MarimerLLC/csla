@@ -87,24 +87,8 @@ namespace Csla.Analyzers.Tests
       var document = TestHelpers.Create(testCode);
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(testCode, new EvaluateManagedBackingFieldsNameofAnalyzer());
 
-      var actions = new List<CodeAction>();
-      var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
-        (action, _) => actions.Add(action));
 
-      var fix = new EvaluateManagedBackingFieldsNameofCodeFix();
-      var codeFixContext = new CodeFixContext(document, diagnostics[0], codeActionRegistration, new CancellationToken(false));
-      await fix.RegisterCodeFixesAsync(codeFixContext);
-
-      Assert.AreEqual(1, actions.Count, nameof(actions.Count));
-
-      await TestHelpers.VerifyChangesAsync(actions,
-        "Use nameof", document,
-        (model, newRoot) =>
-        {
-          var fieldNode = newRoot.DescendantNodes().OfType<FieldDeclarationSyntax>().Last();
-          var fieldInitializer = fieldNode.Declaration.Variables.First().Initializer.Value.ToString();
-          Assert.IsTrue(fieldInitializer.Contains("nameof(TestPropertyName)"), "Field initializer should contain nameof expression.");
-        });
+      Assert.AreEqual(0, diagnostics.Count, nameof(diagnostics.Count));
     }
   }
 }

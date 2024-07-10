@@ -56,13 +56,6 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
                   var diagnostic = Diagnostic.Create(shouldUseNameofRule, firstArgument.GetLocation(), propertyName);
                   context.ReportDiagnostic(diagnostic);
                 }
-                if (firstArgument.Expression is IdentifierNameSyntax identifier)
-                {
-                  // Report diagnostic to suggest using nameof
-                  var propertyName = identifier.Identifier.ValueText;
-                  var diagnostic = Diagnostic.Create(shouldUseNameofRule, firstArgument.GetLocation(), propertyName);
-                  context.ReportDiagnostic(diagnostic);
-                }
               }
             }
           }

@@ -52,7 +52,19 @@ namespace Csla.Serialization.Mobile
     /// <param name="type">Original type.</param>
     public static string GetAssemblyQualifiedName(Type type)
     {
-      var result = type.AssemblyQualifiedName;
+      return GetSerializationName(type, true);
+    }
+
+    /// <summary>
+    /// Gets the assembly qualified type name with any use
+    /// of common assemblies translated to
+    /// a short code.
+    /// </summary>
+    /// <param name="type">Original type.</param>
+    /// <param name="useStrongName">Use strong name as type name</param>
+    public static string GetSerializationName(Type type, bool useStrongName)
+    {
+      var result = useStrongName ? type.AssemblyQualifiedName : type.FullName + ", " + type.Assembly.GetName().Name;
       result = result.Replace(CoreLibAssembly, CORELIB);
       result = result.Replace(CslaLibAssembly, CSLALIB);
       return result;

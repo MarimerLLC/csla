@@ -18,6 +18,11 @@ public class MobileFormatterOptions
   /// Gets the list of custom serializers.
   /// </summary>
   public List<ITypeMap> CustomSerializers { get; } = [];
+  
+  /// <summary>
+  /// Gets a value indicating whether to use strong name checks during serialization/deserialization process.
+  /// </summary>
+  public bool UseStrongNamesCheck { get; internal set; } = true;
 
   /// <summary>
   /// Sets type of the writer that is used to write data to 
@@ -36,6 +41,24 @@ public class MobileFormatterOptions
   public MobileFormatterOptions MobileReader<T>() where T : ICslaReader
   {
     CslaReaderWriterFactory.ReaderType = typeof(T);
+    return this;
+  }
+
+  /// <summary>
+  /// Enable strong name type checking during serialization/deserilization process.
+  /// </summary>
+  public MobileFormatterOptions EnableStrongNamesCheck()
+  {
+    UseStrongNamesCheck = true;
+    return this;
+  }
+
+  /// <summary>
+  /// Enable strong name type checking during serialization/deserilization process.
+  /// </summary>
+  public MobileFormatterOptions DisableStrongNamesCheck()
+  {
+    UseStrongNamesCheck = false;
     return this;
   }
 }

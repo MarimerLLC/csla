@@ -42,7 +42,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config"></param>
     /// <param name="options"></param>
-    public static DataPortalOptions ClientSideDataPortal(this DataPortalOptions config, Action<DataPortalClientOptions> options)
+    public static DataPortalOptions AddClientSideDataPortal(this DataPortalOptions config, Action<DataPortalClientOptions> options)
     {
       options?.Invoke(config.DataPortalClientOptions);
       return config;

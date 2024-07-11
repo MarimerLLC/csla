@@ -6,9 +6,6 @@
 // <summary>Class that can be used for testing serialization behaviour for classes implementing IMobileObject</summary>
 //-----------------------------------------------------------------------
 using Csla.Serialization.Mobile;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Csla.Generators.CSharp.TestObjects
 {
@@ -20,7 +17,7 @@ namespace Csla.Generators.CSharp.TestObjects
   public class EmailAddress : IMobileObject
   {
 
-    public string Email { get; set; }
+    public string Email { get; set; } = string.Empty;
 
     public void GetChildren(SerializationInfo info, MobileFormatter formatter)
     {

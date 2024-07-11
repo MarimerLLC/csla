@@ -78,7 +78,10 @@ namespace Csla.Web.Mvc
 
     private static ApplicationContext GetApplication(IHtmlHelper htmlHelper)
     {
-      return (ApplicationContext)htmlHelper.ViewContext.HttpContext.Items["Csla.ApplicationContext"];
+      var applicationContext = (ApplicationContext?)htmlHelper.ViewContext.HttpContext.Items["Csla.ApplicationContext"];
+      if (applicationContext is null)
+        throw new InvalidOperationException($"{nameof(ApplicationContext)} == null");
+      return applicationContext;
     }
 
     /// <summary>

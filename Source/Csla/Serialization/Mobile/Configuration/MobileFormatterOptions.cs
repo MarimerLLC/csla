@@ -22,7 +22,7 @@ public class MobileFormatterOptions
   /// <summary>
   /// Gets a value indicating whether to use strong name checks during serialization/deserialization process.
   /// </summary>
-  public bool UseStrongNamesCheck { get; internal set; } = true;
+  public bool UseStrongNamesCheck { get; set; } = true;
 
   /// <summary>
   /// Sets type of the writer that is used to write data to 

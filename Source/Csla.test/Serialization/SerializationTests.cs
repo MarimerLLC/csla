@@ -378,7 +378,7 @@ namespace Csla.Test.Serialization
     public void TestSerializationRoundtripWithoutStrongNameCheck()
     {
       // Do not use global _testDIContext in the test, since I need to change default mobile formatter options.
-      var testDIContext = TestDIContextFactory.CreateContext(options => options.SerializationOptions.UseMobileFormatter(formatterOptions => formatterOptions.DisableStrongNamesCheck()));
+      var testDIContext = TestDIContextFactory.CreateContext(options => options.SerializationOptions.UseMobileFormatter(formatterOptions => formatterOptions.StrongNamesCheck(false)));
       IDataPortal<BinaryReaderWriterTestClass> dataPortal = testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
 
       var test = BinaryReaderWriterTestClass.NewBinaryReaderWriterTestClass(dataPortal);

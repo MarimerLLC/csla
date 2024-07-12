@@ -45,20 +45,12 @@ public class MobileFormatterOptions
   }
 
   /// <summary>
-  /// Enable strong name type checking during serialization/deserilization process.
+  /// Set strong name type checking settings during serialization/deserilization process.
   /// </summary>
-  public MobileFormatterOptions EnableStrongNamesCheck()
+  /// <param name="check">If true check for strong names during serialization/deserilization process.</param>
+  public MobileFormatterOptions StrongNamesCheck(bool check)
   {
-    UseStrongNamesCheck = true;
-    return this;
-  }
-
-  /// <summary>
-  /// Enable strong name type checking during serialization/deserilization process.
-  /// </summary>
-  public MobileFormatterOptions DisableStrongNamesCheck()
-  {
-    UseStrongNamesCheck = false;
+    UseStrongNamesCheck = check;
     return this;
   }
 }

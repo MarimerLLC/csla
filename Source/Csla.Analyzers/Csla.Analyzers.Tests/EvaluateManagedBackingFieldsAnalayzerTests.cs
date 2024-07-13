@@ -72,6 +72,55 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenClassHasManagedBackingFieldNotStatic()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public readonly PropertyInfo<string> DataProperty =
+            RegisterProperty<string>(_ => _.Data);
+          public string Data
+          {
+            get;
+            set;
+          }
+          public readonly PropertyInfo<string> DataProperty2 =
+            RegisterProperty<string>(_ => _.Data2);
+          public string Data2
+          {
+            get => GetProperty(DataProperty2);
+            set;
+          }
+          public readonly PropertyInfo<string> DataProperty3 =
+            RegisterProperty<string>(_ => _.Data3);
+          public string Data3
+          {
+            get;
+            set => SetProperty(DataProperty3, value);
+          }
+          public readonly PropertyInfo<string> DataProperty4 =
+            RegisterProperty<string>(_ => _.Data4);
+          public string Data4
+          {
+            get => GetProperty(DataProperty4);
+            set => SetProperty(DataProperty4, value);
+          }
+          public readonly PropertyInfo<string> ExpressionDataProperty =
+            RegisterProperty<string>(_ => _.ExpressionData);
+          public string ExpressionData => GetProperty(ExpressionDataProperty);
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, [
+          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
+          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
+          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields
+        ]);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenClassHasManagedBackingFieldUsedProperty()
     {
       var code =

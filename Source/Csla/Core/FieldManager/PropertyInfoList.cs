@@ -26,6 +26,7 @@ namespace Csla.Core.FieldManager
     /// contains the items in 'list'.
     /// </summary>
     /// <param name="list">Source list.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
     public PropertyInfoList(IList<IPropertyInfo> list)
       : base(list)
     { }

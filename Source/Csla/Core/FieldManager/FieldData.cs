@@ -22,13 +22,16 @@ namespace Csla.Core.FieldManager
     [NonSerialized]
     [NotUndoable]
     private readonly bool _isChild = typeof(T).IsAssignableFrom(typeof(IMobileObject));
-    private T _data;
+    private T? _data;
     private bool _isDirty;
 
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
+    [Obsolete($"This ctor is only for internal usage to support {nameof(MobileFormatter)}. Use an overload instead.", error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public FieldData() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// Creates a new instance of the object.
@@ -36,9 +39,10 @@ namespace Csla.Core.FieldManager
     /// <param name="name">
     /// Name of the field.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
     public FieldData(string name)
     {
-      Name = name;
+      Name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
     /// <summary>
@@ -49,7 +53,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets or sets the value of the field.
     /// </summary>
-    public virtual T Value
+    public virtual T? Value
     {
       get
       {
@@ -62,7 +66,7 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    object IFieldData.Value
+    object? IFieldData.Value
     {
       get
       {
@@ -202,7 +206,7 @@ namespace Csla.Core.FieldManager
       get { return IsBusy; }
     }
 
-    T IFieldData<T>.Value { get => Value; set => Value = value; }
+    T? IFieldData<T>.Value { get => Value; set => Value = value; }
 
     string IFieldData.Name => Name;
 
@@ -214,22 +218,22 @@ namespace Csla.Core.FieldManager
 
     [NotUndoable]
     [NonSerialized]
-    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+    private EventHandler<ErrorEventArgs>? _unhandledAsyncException;
 
     /// <summary>
     /// Event indicating that an exception occurred on
     /// a background thread.
     /// </summary>
-    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    public event EventHandler<ErrorEventArgs>? UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
-    event EventHandler<ErrorEventArgs> INotifyUnhandledAsyncException.UnhandledAsyncException
+    event EventHandler<ErrorEventArgs>? INotifyUnhandledAsyncException.UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
     void IFieldData.MarkClean()
@@ -252,7 +256,7 @@ namespace Csla.Core.FieldManager
       if (_isChild)
       {
         info.AddValue("_name", Name);
-        SerializationInfo childInfo = formatter.SerializeObject((IMobileObject)_data);
+        SerializationInfo childInfo = formatter.SerializeObject((IMobileObject)_data!);
         info.AddChild(Name, childInfo.ReferenceId, _isDirty);
       }
     }

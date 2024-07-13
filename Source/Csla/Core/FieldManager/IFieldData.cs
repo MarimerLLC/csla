@@ -24,7 +24,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     /// <value>The value of the field.</value>
     /// <returns>The value of the field.</returns>
-    object Value { get; set; }
+    object? Value { get; set; }
     /// <summary>
     /// Marks the field as unchanged.
     /// </summary>

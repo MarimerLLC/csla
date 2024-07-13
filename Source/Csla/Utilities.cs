@@ -150,7 +150,7 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
-    public static object CoerceValue(Type desiredType, Type valueType, object oldValue, object value)
+    public static object? CoerceValue(Type desiredType, Type valueType, object? oldValue, object? value)
     {
       if (desiredType.IsAssignableFrom(valueType))
       {

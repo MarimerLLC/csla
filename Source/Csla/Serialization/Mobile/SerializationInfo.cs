@@ -33,7 +33,7 @@ namespace Csla.Serialization.Mobile
       /// Field value.
       /// </summary>
       [DataMember]
-      public object Value { get; set; }
+      public object? Value { get; set; }
 
       /// <summary>
       /// If non-null, indicates that the value is a integer value representing the
@@ -234,7 +234,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="value">
     /// Value of the field.
     /// </param>
-    public void AddValue(string name, object value)
+    public void AddValue(string name, object? value)
     {
       AddValue(name, value, false);
     }
@@ -251,7 +251,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="isDirty">
     /// Flag indicating whether the value is dirty.
     /// </param>
-    public void AddValue(string name, object value, bool isDirty)
+    public void AddValue(string name, object? value, bool isDirty)
     {
       _values.Add(name, new FieldData { Value = value, IsDirty = isDirty });
     }

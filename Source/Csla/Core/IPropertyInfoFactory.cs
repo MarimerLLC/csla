@@ -22,6 +22,7 @@ namespace Csla.Core
     /// declaration.
     /// </param>
     /// <param name="name">Name of the property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
     PropertyInfo<T> Create<T>(Type containingType, string name);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
@@ -34,6 +35,7 @@ namespace Csla.Core
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
     PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
@@ -48,6 +50,7 @@ namespace Csla.Core
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
     PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
@@ -63,7 +66,8 @@ namespace Csla.Core
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T? defaultValue);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -80,6 +84,7 @@ namespace Csla.Core
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T? defaultValue, RelationshipTypes relationship);
   }
 }

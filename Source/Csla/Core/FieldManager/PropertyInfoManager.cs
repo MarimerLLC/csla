@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
@@ -21,9 +23,9 @@ namespace Csla.Core.FieldManager
   /// </summary>
   internal class PropertyComparer : Comparer<IPropertyInfo>
   {
-    public override int Compare(IPropertyInfo x, IPropertyInfo y)
+    public override int Compare(IPropertyInfo? x, IPropertyInfo? y)
     {
-      return StringComparer.InvariantCulture.Compare(x.Name, y.Name);
+      return StringComparer.InvariantCulture.Compare(x?.Name, y?.Name);
     }
   }
 
@@ -35,11 +37,12 @@ namespace Csla.Core.FieldManager
     private static readonly object _cacheLock = new object();
 
 #if NET8_0_OR_GREATER
-    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> _propertyInfoCache;
+    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>>? _propertyInfoCache;
 
+    [MemberNotNull(nameof(_propertyInfoCache))]
     private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> PropertyInfoCache
 #else
-    private static ConcurrentDictionary<Type, PropertyInfoList> _propertyInfoCache;
+    private static ConcurrentDictionary<Type, PropertyInfoList>? _propertyInfoCache;
 
     private static ConcurrentDictionary<Type, PropertyInfoList> PropertyInfoCache
 #endif
@@ -174,7 +177,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     /// <param name="objectType">The business object type.</param>
     /// <param name="propertyName">The name of the property.</param>
-    public static IPropertyInfo GetRegisteredProperty(Type objectType, string propertyName)
+    public static IPropertyInfo? GetRegisteredProperty(Type objectType, string propertyName)
     {
       return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);
     }

@@ -20,11 +20,11 @@ namespace Csla.Core
     /// <summary>
     /// The type name of the object that caused this issue
     /// </summary>
-    public string TypeName;
+    public string? TypeName;
     /// <summary>
     /// The parent's type name of the object that caused this issue or null
     /// </summary>
-    public string ParentTypeName;
+    public string? ParentTypeName;
     /// <summary>
     /// Object EditLevel
     /// </summary>
@@ -42,7 +42,7 @@ namespace Csla.Core
     /// <param name="parentTypeName">The parent's type name of the object that caused this issue or null</param>
     /// <param name="currentEditLevel">Object EditLevel</param>
     /// <param name="expectedEditLevel">Expected object EditLevel</param>
-    public UndoException(string message, string typeName, string parentTypeName, int currentEditLevel, int expectedEditLevel)
+    public UndoException(string message, string typeName, string? parentTypeName, int currentEditLevel, int expectedEditLevel)
       : base(message)
     {
       TypeName = typeName;

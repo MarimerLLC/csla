@@ -175,3 +175,4 @@ Supporting nullable types means that some APIs have changed to support nullable 
 
 * The `User` and `Principal` properties of `ApplicationContext` no longer return null
 * `Csla.Configuration.ConfigurationManager.AppSettings` and `.ConnectionStrings` are no longer settable
+* `Csla.Core.LoadManager.AsyncLoadException.Property`property set removed. It can now only be set by the constructor

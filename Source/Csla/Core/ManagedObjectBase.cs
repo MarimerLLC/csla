@@ -30,7 +30,9 @@ namespace Csla.Core
     /// Gets the current ApplicationContext.
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    
+    /// <inheritdoc />
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     #region Field Manager
 

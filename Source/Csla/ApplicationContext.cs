@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using Csla.Server;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {
@@ -60,6 +61,9 @@ namespace Csla
     /// is used, otherwise the current Thread.CurrentPrincipal
     /// value is used.
     /// </remarks>
+#if NET8_0_OR_GREATER
+    [AllowNull]
+#endif
     public IPrincipal User
     {
       get { return ContextManager.GetUser(); }

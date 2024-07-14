@@ -18,29 +18,14 @@ namespace Csla.Reflection
   public class LateBoundObject : Core.IUseApplicationContext
   {
     private ApplicationContext _applicationContext;
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     /// <summary>
     /// Object instance managed by LateBoundObject.
     /// </summary>
     public object Instance { get; }
-
-    /// <summary>
-    /// Creates an instance of the specified
-    /// type and contains it within a new
-    /// LateBoundObject.
-    /// </summary>
-    /// <param name="objectType">
-    /// Type of object to create.
-    /// </param>
-    /// <remarks>
-    /// The specified type must implement a
-    /// default constructor.
-    /// </remarks>
-    public LateBoundObject(Type objectType)
-    {
-      Instance = _applicationContext.CreateInstanceDI(objectType);
-    }
 
     /// <summary>
     /// Contains the provided object within

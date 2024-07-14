@@ -30,6 +30,7 @@ namespace Csla.Core
     [NotUndoable]
     private ApplicationContext _applicationContext;
 
+    /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
@@ -40,7 +41,7 @@ namespace Csla.Core
       get => _applicationContext;
       set
       {
-        _applicationContext = value;
+        _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         OnApplicationContextSet();
       }
     }

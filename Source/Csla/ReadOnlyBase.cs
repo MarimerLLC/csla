@@ -79,12 +79,14 @@ namespace Csla
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
     protected ApplicationContext ApplicationContext { get; set; }
+
+    /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set
       {
-        ApplicationContext = value;
+        ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         Initialize();
         InitializeBusinessRules();
       }
@@ -252,14 +254,13 @@ namespace Csla
       return result;
     }
 
-    /// <summary>
-    /// Returns true if the user is allowed to read the
-    /// specified property.
-    /// </summary>
-    /// <param name="propertyName">Name of the property to read.</param>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public bool CanReadProperty(string propertyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return CanReadProperty(propertyName, false);
     }
 

@@ -20,6 +20,7 @@ namespace Csla.Core
     /// wants to be removed from the collection.
     /// </summary>
     /// <param name="child">The child object to remove.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
     void RemoveChild(IEditableBusinessObject child);
     /// <summary>
     /// Override this method to be notified when a child object's
@@ -27,6 +28,7 @@ namespace Csla.Core
     /// completed.
     /// </summary>
     /// <param name="child">The child object that was edited.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
     void ApplyEditChild(IEditableBusinessObject child);
     /// <summary>
     /// Provide access to the parent reference for use
@@ -35,7 +37,7 @@ namespace Csla.Core
     /// <remarks>
     /// This value will be Nothing for root objects and DynamicLists.
     /// </remarks>
-    IParent Parent { get; }
+    IParent? Parent { get; }
     /// <summary>
     /// Gets and consumes the next available unique identity value 
     /// for an object instance in the object graph. Implemented by

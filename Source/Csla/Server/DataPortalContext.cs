@@ -76,7 +76,9 @@ namespace Csla.Server
     }
 
     private ApplicationContext _applicationContext;
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+
+    /// <inheritdoc />
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     /// <summary>
     /// Creates a new DataPortalContext object.

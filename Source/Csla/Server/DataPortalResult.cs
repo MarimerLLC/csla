@@ -17,7 +17,9 @@ namespace Csla.Server
   public class DataPortalResult : EventArgs, Core.IUseApplicationContext
   {
     internal ApplicationContext ApplicationContext { get; set; }
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     /// <summary>
     /// The business object being returned from

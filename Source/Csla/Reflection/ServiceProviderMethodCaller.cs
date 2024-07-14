@@ -33,8 +33,10 @@ namespace Csla.Reflection
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache = [];
 #endif
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
     private ApplicationContext _applicationContext;
+
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     /// <summary>
     /// Find a method based on data portal criteria

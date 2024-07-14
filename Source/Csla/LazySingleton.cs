@@ -11,8 +11,10 @@
     private T _value;
     private readonly Func<T> _delegate;
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
     private ApplicationContext _applicationContext;
+
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.

@@ -13,17 +13,17 @@ namespace Csla.Core
     bool HasManagedProperties { get; }
     bool FieldExists(IPropertyInfo property);
     List<IPropertyInfo> GetManagedProperties();
-    object GetProperty(IPropertyInfo propertyInfo);
-    object LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
-    object LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory);
-    object ReadProperty(IPropertyInfo propertyInfo);
-    P ReadProperty<P>(PropertyInfo<P> propertyInfo);
-    P LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
-    P LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory);
-    void SetProperty(IPropertyInfo propertyInfo, object newValue);
-    void LoadProperty(IPropertyInfo propertyInfo, object newValue);
-    bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue);
-    void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue);
+    object? GetProperty(IPropertyInfo propertyInfo);
+    object? LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
+    object? LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory);
+    object? ReadProperty(IPropertyInfo propertyInfo);
+    P? ReadProperty<P>(PropertyInfo<P> propertyInfo);
+    P? LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
+    P? LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory);
+    void SetProperty(IPropertyInfo propertyInfo, object? newValue);
+    void LoadProperty(IPropertyInfo propertyInfo, object? newValue);
+    bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue);
+    void LoadProperty<P>(PropertyInfo<P> propertyInfo, P? newValue);
     List<object> GetChildren();
   }
 }

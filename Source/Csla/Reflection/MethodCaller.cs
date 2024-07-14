@@ -446,7 +446,9 @@ namespace Csla.Reflection
     /// <param name="obj">Target object.</param>
     /// <param name="property">Property to invoke.</param>
     /// <param name="value">New value for property.</param>
-    public static void CallPropertySetter(object obj, string property, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/> or <see cref="string.Empty"/>.</exception>
+    public static void CallPropertySetter(object obj, string property, object? value)
     {
       if (obj == null)
         throw new ArgumentNullException(nameof(obj));
@@ -456,6 +458,9 @@ namespace Csla.Reflection
       if (ApplicationContext.UseReflectionFallback)
       {
         var propertyInfo = obj.GetType().GetProperty(property);
+        if (propertyInfo is null)
+          throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, property, "Property not found."));
+        
         propertyInfo.SetValue(obj, value);
       }
       else

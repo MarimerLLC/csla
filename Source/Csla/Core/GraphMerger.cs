@@ -21,6 +21,7 @@ namespace Csla.Core
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// 
     public GraphMerger(ApplicationContext applicationContext)
       : base(applicationContext) { }
 
@@ -29,14 +30,20 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void MergeGraph(IEditableBusinessObject target, IEditableBusinessObject source)
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       if (target is IManageProperties imp)
       {
-        FieldManager.FieldDataManager targetFieldManager = null;
+        FieldManager.FieldDataManager? targetFieldManager = null;
         if (target is IUseFieldManager iufm)
           targetFieldManager = iufm.FieldManager;
-        FieldManager.FieldDataManager sourceFieldManager = null;
+        FieldManager.FieldDataManager? sourceFieldManager = null;
         if (source is IUseFieldManager iufms)
           sourceFieldManager = iufms.FieldManager;
 
@@ -46,7 +53,7 @@ namespace Csla.Core
           var sourceFieldExists = true;
           if (sourceFieldManager != null && (item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
             sourceFieldExists = sourceFieldManager.FieldExists(item);
-          object sourceValue = null;
+          object? sourceValue = null;
           if (sourceFieldExists)
             sourceValue = ReadProperty(source, item);
           if (sourceValue is IEditableBusinessObject sourceChild)
@@ -112,7 +119,7 @@ namespace Csla.Core
       }
     }
 
-    private static void CopyField(object source, object target, string fieldName)
+    private static void CopyField(object? source, object? target, string fieldName)
     {
       if (source == null) return;
       if (target == null) return;
@@ -137,12 +144,13 @@ namespace Csla.Core
       var listType = target.GetType();
       var childType = Utilities.GetChildItemType(listType);
       var genericTypeParams = new Type[] { listType, childType };
-      System.Reflection.MethodInfo methodReference;
+      System.Reflection.MethodInfo? methodReference;
       if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
         methodReference = GetType().GetMethod("MergeBusinessBindingListGraph");
       else
         methodReference = GetType().GetMethod("MergeBusinessListGraph");
-      var gr = methodReference.MakeGenericMethod(genericTypeParams);
+
+      var gr = methodReference!.MakeGenericMethod(genericTypeParams);
       gr.Invoke(this, [target, source]);
     }
 
@@ -151,10 +159,16 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void MergeBusinessListGraph<T, C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       var deleted = new List<C>();
       foreach (var item in target)
       {
@@ -181,10 +195,16 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void MergeBusinessBindingListGraph<T, C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       var deleted = new List<C>();
       foreach (var item in target)
       {
@@ -207,19 +227,26 @@ namespace Csla.Core
     }
 
     #region Async Methods
+
     /// <summary>
     /// Merges state from source graph into target graph.
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public async Task MergeGraphAsync(IEditableBusinessObject target, IEditableBusinessObject source)
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       if (target is IManageProperties imp)
       {
-        FieldManager.FieldDataManager targetFieldManager = null;
+        FieldManager.FieldDataManager? targetFieldManager = null;
         if (target is IUseFieldManager iufm)
           targetFieldManager = iufm.FieldManager;
-        FieldManager.FieldDataManager sourceFieldManager = null;
+        FieldManager.FieldDataManager? sourceFieldManager = null;
         if (source is IUseFieldManager iufms)
           sourceFieldManager = iufms.FieldManager;
 
@@ -229,7 +256,7 @@ namespace Csla.Core
           var sourceFieldExists = true;
           if (sourceFieldManager != null && (item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
             sourceFieldExists = sourceFieldManager.FieldExists(item);
-          object sourceValue = null;
+          object? sourceValue = null;
           if (sourceFieldExists)
             sourceValue = ReadProperty(source, item);
           if (sourceValue is IEditableBusinessObject sourceChild)
@@ -294,6 +321,7 @@ namespace Csla.Core
         await CheckRulesAsync(target);
       }
     }
+
     /// <summary>
     /// Merges state from source graph into target graph.
     /// </summary>
@@ -306,10 +334,10 @@ namespace Csla.Core
       var methodReference = _methodCache.GetOrAdd(cacheKey, ((Type ListType, Type ChildType, bool IsExtendedBindingList) key) =>
       {
         var methodName = key.IsExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
-        return GetType().GetMethod(methodName).MakeGenericMethod(key.ListType, key.ChildType);
+        return GetType().GetMethod(methodName)!.MakeGenericMethod(key.ListType, key.ChildType);
       });
 
-      var task = (Task)methodReference.Invoke(this, [target, source]);
+      var task = (Task)methodReference.Invoke(this, [target, source])!;
       await task;
 
       static (Type ListType, Type ChildType, bool IsExtendedBindingList) GetCacheKey(IEditableCollection target)
@@ -325,10 +353,16 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public async Task MergeBusinessListGraphAsync<T, C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       var deleted = new List<C>();
       foreach (var item in target)
       {
@@ -355,10 +389,16 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public async Task MergeBusinessBindingListGraphAsync<T, C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       var deleted = new List<C>();
       foreach (var item in target)
       {

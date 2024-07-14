@@ -8,6 +8,8 @@
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -46,7 +48,7 @@ namespace Csla
     /// Default value for the property.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, T? defaultValue)
+    public PropertyInfo(string name, T defaultValue)
       : this(name, null, null, defaultValue, RelationshipTypes.None)
     { }
 
@@ -91,7 +93,7 @@ namespace Csla
     /// Default value for the property.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type containingType, T? defaultValue)
+    public PropertyInfo(string name, string? friendlyName, Type containingType, T defaultValue)
         : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None)
     { }
 
@@ -208,6 +210,7 @@ namespace Csla
       get { return DefaultValue; }
     }
 
+    /// <inheritdoc />
     Core.FieldManager.IFieldData Core.IPropertyInfo.NewFieldData(string name)
     {
       return NewFieldData(name);
@@ -221,8 +224,12 @@ namespace Csla
     /// <param name="name">
     /// Property name.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or consists only of white spaces.</exception>
     protected virtual Core.FieldManager.IFieldData NewFieldData(string name)
     {
+      if (string.IsNullOrEmpty(name))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(name));
+
       return new Core.FieldManager.FieldData<T>(name);
     }
 

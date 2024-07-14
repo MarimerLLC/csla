@@ -28,33 +28,35 @@ namespace Csla.Core
     { }
 
     [NonSerialized]
-    private PropertyChangedEventHandler _nonSerializableChangedHandlers;
-    private PropertyChangedEventHandler _serializableChangedHandlers;
+    private PropertyChangedEventHandler? _nonSerializableChangedHandlers;
+    private PropertyChangedEventHandler? _serializableChangedHandlers;
 
     /// <summary>
     /// Implements a serialization-safe PropertyChanged event.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", 
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event PropertyChangedEventHandler PropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged
     {
       add
       {
+        if (value is null)
+          return;
+
         if (ShouldHandlerSerialize(value))
-          _serializableChangedHandlers = (PropertyChangedEventHandler)
-            Delegate.Combine(_serializableChangedHandlers, value);
+          _serializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Combine(_serializableChangedHandlers, value);
         else
-          _nonSerializableChangedHandlers = (PropertyChangedEventHandler)
-            Delegate.Combine(_nonSerializableChangedHandlers, value);
+          _nonSerializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Combine(_nonSerializableChangedHandlers, value);
       }
       remove
       {
-          if (ShouldHandlerSerialize(value))
-          _serializableChangedHandlers = (PropertyChangedEventHandler)
-            Delegate.Remove(_serializableChangedHandlers, value);
+        if (value is null)
+          return;
+
+        if (ShouldHandlerSerialize(value))
+          _serializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Remove(_serializableChangedHandlers, value);
         else
-          _nonSerializableChangedHandlers = (PropertyChangedEventHandler)
-            Delegate.Remove(_nonSerializableChangedHandlers, value);
+          _nonSerializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Remove(_nonSerializableChangedHandlers, value);
       }
     }
 
@@ -65,8 +67,7 @@ namespace Csla.Core
     /// <param name="value">the event handler to review</param>
     protected virtual bool ShouldHandlerSerialize(PropertyChangedEventHandler value)
     {
-      return value.Method.IsPublic &&
-             value.Method.DeclaringType != null;
+      return value.Method.IsPublic && value.Method.DeclaringType != null;
     }
 
     /// <summary>
@@ -82,10 +83,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnPropertyChanged(string propertyName)
     {
-      _nonSerializableChangedHandlers?.Invoke(this,
-        new PropertyChangedEventArgs(propertyName));
-      _serializableChangedHandlers?.Invoke(this,
-        new PropertyChangedEventArgs(propertyName));
+      _nonSerializableChangedHandlers?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      _serializableChangedHandlers?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
         /// <summary>
@@ -153,33 +152,35 @@ namespace Csla.Core
     }
 
     [NonSerialized]
-    private PropertyChangingEventHandler _nonSerializableChangingHandlers;
-    private PropertyChangingEventHandler _serializableChangingHandlers;
+    private PropertyChangingEventHandler? _nonSerializableChangingHandlers;
+    private PropertyChangingEventHandler? _serializableChangingHandlers;
 
     /// <summary>
     /// Implements a serialization-safe PropertyChanging event.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event PropertyChangingEventHandler PropertyChanging
+    public event PropertyChangingEventHandler? PropertyChanging
     {
       add
       {
-          if (ShouldHandlerSerialize(value))
-          _serializableChangingHandlers = (PropertyChangingEventHandler)
-            Delegate.Combine(_serializableChangingHandlers, value);
+        if (value is null)
+          return;
+
+        if (ShouldHandlerSerialize(value))
+          _serializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Combine(_serializableChangingHandlers, value);
         else
-          _nonSerializableChangingHandlers = (PropertyChangingEventHandler)
-            Delegate.Combine(_nonSerializableChangingHandlers, value);
+          _nonSerializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Combine(_nonSerializableChangingHandlers, value);
       }
       remove
       {
-          if (ShouldHandlerSerialize(value))
-          _serializableChangingHandlers = (PropertyChangingEventHandler)
-            Delegate.Remove(_serializableChangingHandlers, value);
+        if (value is null)
+          return;
+
+        if (ShouldHandlerSerialize(value))
+          _serializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Remove(_serializableChangingHandlers, value);
         else
-          _nonSerializableChangingHandlers = (PropertyChangingEventHandler)
-            Delegate.Remove(_nonSerializableChangingHandlers, value);
+          _nonSerializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Remove(_nonSerializableChangingHandlers, value);
       }
     }
 
@@ -254,8 +255,7 @@ namespace Csla.Core
     /// <param name="value">the event handler to review</param>
     protected virtual bool ShouldHandlerSerialize(PropertyChangingEventHandler value)
     {
-      return value.Method.IsPublic &&
-             value.Method.DeclaringType != null;
+      return value.Method.IsPublic && value.Method.DeclaringType != null;
     }
   }
 }

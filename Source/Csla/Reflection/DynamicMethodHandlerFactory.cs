@@ -34,13 +34,13 @@ namespace Csla.Reflection
   /// </summary>
   /// <param name="target">Target object.</param>
   /// <returns></returns>
-  public delegate object DynamicMemberGetDelegate(object target);
+  public delegate object? DynamicMemberGetDelegate(object target);
   /// <summary>
   /// Delegate for setting a value.
   /// </summary>
   /// <param name="target">Target object.</param>
   /// <param name="arg">Argument value.</param>
-  public delegate void DynamicMemberSetDelegate(object target, object arg);
+  public delegate void DynamicMemberSetDelegate(object target, object? arg);
 
   internal static class DynamicMethodHandlerFactory
   {

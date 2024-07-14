@@ -35,6 +35,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets a new field data container for the property.
     /// </summary>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or consists only of white spaces.</exception>
     FieldManager.IFieldData NewFieldData(string name);
     /// <summary>
     /// Gets the relationship between the declaring object

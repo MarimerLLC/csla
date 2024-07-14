@@ -256,9 +256,13 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
-    public static D CoerceValue<D>(Type valueType, object oldValue, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="valueType"/> is <see langword="null"/>.</exception>
+    public static D? CoerceValue<D>(Type valueType, object? oldValue, object? value)
     {
-      return (D)(CoerceValue(typeof(D), valueType, oldValue, value));
+      if (valueType is null)
+        throw new ArgumentNullException(nameof(valueType));
+
+      return (D?)(CoerceValue(typeof(D), valueType, oldValue, value));
     }
 
     #endregion

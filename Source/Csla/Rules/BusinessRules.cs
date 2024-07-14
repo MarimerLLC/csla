@@ -41,8 +41,10 @@ namespace Csla.Rules
     [NonSerialized]
     private object SyncRoot = new();
 
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
     private ApplicationContext _applicationContext;
+
+    /// <inheritdoc />
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;

@@ -23,13 +23,17 @@ namespace Csla.Core
     /// <param name="contextManagerList"></param>
     /// <param name="localContextManager"></param>
     /// <param name="serviceProvider"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="contextManagerList"/>, <paramref name="localContextManager"/> or <paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public ApplicationContextAccessor(
       IEnumerable<IContextManager> contextManagerList, 
       IContextManagerLocal localContextManager, 
       IServiceProvider serviceProvider)
     {
-      ServiceProvider = serviceProvider;
-      LocalContextManager = localContextManager;
+      if (contextManagerList is null)
+        throw new ArgumentNullException(nameof(contextManagerList));
+
+      ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      LocalContextManager = localContextManager ?? throw new ArgumentNullException(nameof(localContextManager));
 
       foreach (var context in contextManagerList)
       {
@@ -46,8 +50,8 @@ namespace Csla.Core
     }
 
     internal IServiceProvider ServiceProvider { get; }
-    private IContextManager ContextManager { get; set; }
-    private IContextManager LocalContextManager { get; set; }
+    private IContextManager ContextManager { get; }
+    private IContextManager LocalContextManager { get; }
 
     /// <summary>
     /// Gets a reference to the correct current application

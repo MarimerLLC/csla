@@ -62,7 +62,7 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
-    event EventHandler<SavedEventArgs> Saved;
+    event EventHandler<SavedEventArgs>? Saved;
   }
 }
 

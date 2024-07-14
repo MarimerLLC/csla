@@ -17,9 +17,10 @@ namespace Csla
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="name">Name of the method.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
     public MethodInfo(string name)
     {
-      Name = name;
+      Name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
     /// <summary>

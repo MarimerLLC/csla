@@ -38,8 +38,10 @@ namespace Csla.Data
     private string _connectionString;
     private string _label;
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
     private ApplicationContext _applicationContext;
+    
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     /// <summary>
     /// Gets the ObjectContextManager object for the 

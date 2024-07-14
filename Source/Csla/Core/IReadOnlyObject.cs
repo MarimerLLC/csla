@@ -18,6 +18,7 @@ namespace Csla.Core
     /// calling property.
     /// </summary>
     /// <param name="propertyName">Name of the property to read.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     bool CanReadProperty(string propertyName);
   }
 }

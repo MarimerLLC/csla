@@ -38,6 +38,7 @@ namespace Csla.Core.FieldManager
     private IFieldData?[] _fieldData;
 
     private ApplicationContext _applicationContext;
+    /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(value)); }
 
     /// <summary>
@@ -318,7 +319,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    internal void SetFieldData<P>(IPropertyInfo prop, P value)
+    internal void SetFieldData<P>(IPropertyInfo prop, P? value)
     {
       var field = GetOrCreateFieldData(prop);
       if (field is IFieldData<P> fd)
@@ -364,7 +365,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    internal IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
+    internal IFieldData LoadFieldData<P>(IPropertyInfo prop, P? value)
     {
       var field = GetOrCreateFieldData(prop);
       if (field is IFieldData<P> fd)

@@ -36,7 +36,7 @@ namespace Csla.Core
     /// Friendly display name for the property.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
-    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -51,7 +51,7 @@ namespace Csla.Core
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
-    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, RelationshipTypes relationship);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -67,7 +67,7 @@ namespace Csla.Core
     /// Default value for the property.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
-    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T? defaultValue);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, T? defaultValue);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -85,6 +85,6 @@ namespace Csla.Core
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
-    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T? defaultValue, RelationshipTypes relationship);
+    PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, T? defaultValue, RelationshipTypes relationship);
   }
 }

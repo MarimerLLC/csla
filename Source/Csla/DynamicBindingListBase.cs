@@ -56,12 +56,14 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
+    
+    /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set
       {
-        ApplicationContext = value;
+        ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         InitializeIdentity();
         Initialize();
         AllowNew = true;

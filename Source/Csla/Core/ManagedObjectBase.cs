@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using Csla.Core.FieldManager;
@@ -29,14 +30,14 @@ namespace Csla.Core
     /// <summary>
     /// Gets the current ApplicationContext.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; private set; }
-    
+    protected ApplicationContext ApplicationContext { get; private set; } = default!;
+
     /// <inheritdoc />
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext!; set => ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     #region Field Manager
 
-    private FieldDataManager _fieldManager;
+    private FieldDataManager? _fieldManager;
     /// <summary>
     /// Gets a reference to the field mananger
     /// for this object.
@@ -45,8 +46,9 @@ namespace Csla.Core
     {
       get
       {
-        if (_fieldManager == null)
+        if (_fieldManager == null)          
           _fieldManager = new FieldDataManager(ApplicationContext, GetType());
+        
         return _fieldManager;
       }
     }
@@ -73,8 +75,14 @@ namespace Csla.Core
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(Type objectType, PropertyInfo<P> info)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       return PropertyInfoManager.RegisterProperty<P>(objectType, info);
     }
 
@@ -87,8 +95,12 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <returns>The provided IPropertyInfo object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name));
@@ -102,8 +114,12 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, P? defaultValue)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, reflectedPropertyInfo.Name, defaultValue));
@@ -118,8 +134,12 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
@@ -134,8 +154,12 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P? defaultValue)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
       return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
@@ -158,8 +182,12 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P? ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
     }
 
@@ -171,16 +199,20 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P? ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
-      P result = default(P);
-      IFieldData data = FieldManager.GetFieldData(propertyInfo);
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      P? result = default(P);
+      IFieldData? data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
         if (data is IFieldData<P> fd)
           result = fd.Value;
         else
-          result = (P)data.Value;
+          result = (P?)data.Value;
       }
       else
       {
@@ -195,14 +227,18 @@ namespace Csla.Core
     /// </summary>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected virtual object ReadProperty(IPropertyInfo propertyInfo)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected virtual object? ReadProperty(IPropertyInfo propertyInfo)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
         return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
       }
 
-      object result = null;
+      object? result = null;
       var info = FieldManager.GetFieldData(propertyInfo);
       if (info != null)
       {
@@ -235,11 +271,16 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    /// <exception cref="PropertyLoadException"></exception>
+    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F? newValue)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       try
       {
-        P oldValue = default(P);
+        P? oldValue = default(P);
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -251,7 +292,7 @@ namespace Csla.Core
           if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
-            oldValue = (P)fieldData.Value;
+            oldValue = (P?)fieldData.Value;
         }
         LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
       }
@@ -279,11 +320,16 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    /// <exception cref="PropertyLoadException"></exception>
+    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       try
       {
-        P oldValue = default(P);
+        P? oldValue = default(P);
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -295,7 +341,7 @@ namespace Csla.Core
           if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
-            oldValue = (P)fieldData.Value;
+            oldValue = (P?)fieldData.Value;
         }
         LoadPropertyValue<P>(propertyInfo, oldValue, newValue);
       }
@@ -305,11 +351,11 @@ namespace Csla.Core
       }
     }
 
-    private bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    private bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
       try
       {
-        P oldValue = default(P);
+        P? oldValue = default(P);
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -321,10 +367,10 @@ namespace Csla.Core
           if (fieldData is IFieldData<P> fd)
             oldValue = fd.Value;
           else
-            oldValue = (P)fieldData.Value;
+            oldValue = (P?)fieldData.Value;
         }
         LoadPropertyValue<P>(propertyInfo, oldValue, newValue);
-        return !oldValue.Equals(newValue);
+        return !ValueComparer.AreEqual(oldValue, newValue);
       }
       catch (Exception ex)
       {
@@ -332,15 +378,9 @@ namespace Csla.Core
       }
     }
 
-    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue)
+    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P? oldValue, P? newValue)
     {
-      bool valuesDiffer;
-      if (oldValue == null)
-        valuesDiffer = newValue != null;
-      else
-        valuesDiffer = !oldValue.Equals(newValue);
-
-      if (valuesDiffer)
+      if (!ValueComparer.AreEqual(oldValue, newValue))
         FieldManager.LoadFieldData<P>(propertyInfo, newValue);
     }
 
@@ -359,12 +399,16 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected virtual void LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected virtual void LoadProperty(IPropertyInfo propertyInfo, object? newValue)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       var t = GetType();
-      var method = t.GetRuntimeMethods().FirstOrDefault(c => c.Name == "LoadProperty" && c.IsGenericMethod);
+      var method = t.GetRuntimeMethods().First(c => c.Name == "LoadProperty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
-      var p = new object[] { propertyInfo, newValue };
+      var p = new object?[] { propertyInfo, newValue };
       gm.Invoke(this, p);
     }
 
@@ -374,8 +418,12 @@ namespace Csla.Core
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <returns>[true] if changed, else [false] </returns>
-    protected virtual bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected virtual bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
         LoadProperty(propertyInfo, newValue);
@@ -383,10 +431,10 @@ namespace Csla.Core
       }
       var t = GetType();
       var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).FirstOrDefault(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod);
+      var method = t.GetMethods(flags).First(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
-      var p = new object[] { propertyInfo, newValue };
-      return (bool)gm.Invoke(this, p);
+      var p = new object?[] { propertyInfo, newValue };
+      return (bool)gm.Invoke(this, p)!;
     }
 
     #endregion
@@ -395,20 +443,24 @@ namespace Csla.Core
 
     [NonSerialized]
     [NotUndoable]
-    private PropertyChangedEventHandler _propertyChanged;
+    private PropertyChangedEventHandler? _propertyChanged;
 
-    event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
+    event PropertyChangedEventHandler? INotifyPropertyChanged.PropertyChanged
     {
-      add { _propertyChanged = (PropertyChangedEventHandler)Delegate.Combine(_propertyChanged, value); }
-      remove { _propertyChanged = (PropertyChangedEventHandler)Delegate.Remove(_propertyChanged, value); }
+      add { _propertyChanged = (PropertyChangedEventHandler?)Delegate.Combine(_propertyChanged, value); }
+      remove { _propertyChanged = (PropertyChangedEventHandler?)Delegate.Remove(_propertyChanged, value); }
     }
 
     /// <summary>
     /// Raises the PropertyChanged event.
     /// </summary>
     /// <param name="propertyName">Name of the changed property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected void OnPropertyChanged(string propertyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       _propertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
@@ -416,8 +468,12 @@ namespace Csla.Core
     /// Raises the PropertyChanged event.
     /// </summary>
     /// <param name="propertyInfo">The property info object for the changed property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected void OnPropertyChanged(IPropertyInfo propertyInfo)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       OnPropertyChanged(propertyInfo.Name);
     }
 
@@ -463,18 +519,55 @@ namespace Csla.Core
 
     bool IManageProperties.FieldExists(IPropertyInfo property) => FieldManager.FieldExists(property);
     List<IPropertyInfo> IManageProperties.GetManagedProperties() => FieldManager.GetRegisteredProperties();
-    object IManageProperties.GetProperty(IPropertyInfo propertyInfo) => throw new NotImplementedException();
-    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
-    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
-    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo) => ReadProperty(propertyInfo);
-    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) => ReadProperty(propertyInfo);
-    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
-    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
-    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue) => throw new NotImplementedException();
-    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue) => LoadProperty(propertyInfo, newValue);
-    bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue) => throw new NotImplementedException();
-    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue) => LoadProperty(propertyInfo, newValue);
+
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
+    object? IManageProperties.GetProperty(IPropertyInfo propertyInfo) => throw new NotImplementedException();
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
+    object? IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
+    object? IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
+    object? IManageProperties.ReadProperty(IPropertyInfo propertyInfo) => ReadProperty(propertyInfo);
+    P? IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) where P: default => ReadProperty(propertyInfo);
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
+    P? IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) where P: default => throw new NotImplementedException();
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
+    P? IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) where P: default => throw new NotImplementedException();
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object? newValue) => throw new NotImplementedException();
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object? newValue) => LoadProperty(propertyInfo, newValue);
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
+    bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue) => throw new NotImplementedException();
+    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default => LoadProperty(propertyInfo, newValue);
     List<object> IManageProperties.GetChildren() => FieldManager.GetChildren();
     bool IManageProperties.HasManagedProperties => true;
+  }
+
+  internal static class ValueComparer
+  {
+    internal static bool AreEqual(object? value1, object? value2)
+    {
+      bool valuesDiffer;
+      
+      if (value1 == null)
+        valuesDiffer = value2 != null;
+      else
+        valuesDiffer = !value1.Equals(value2);
+
+      return valuesDiffer;
+    }
   }
 }

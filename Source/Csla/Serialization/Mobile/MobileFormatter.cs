@@ -38,7 +38,7 @@ namespace Csla.Serialization.Mobile
     /// Root object of the object graph
     /// to serialize.
     /// </param>
-    public void Serialize(Stream serializationStream, object graph)
+    public void Serialize(Stream serializationStream, object? graph)
     {
       ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter(applicationContext);
       writer.Write(serializationStream, SerializeToDTO(graph));
@@ -108,7 +108,7 @@ namespace Csla.Serialization.Mobile
     /// Serializes an object into a SerializationInfo object.
     /// </summary>
     /// <param name="obj">Object to be serialized.</param>
-    public SerializationInfo SerializeObject(object obj)
+    public SerializationInfo SerializeObject(object? obj)
     {
       var options = GetOptions();
       SerializationInfo info;
@@ -200,7 +200,7 @@ namespace Csla.Serialization.Mobile
     /// Stream containing the serialized XML
     /// data.
     /// </param>
-    public object Deserialize(Stream serializationStream)
+    public object? Deserialize(Stream? serializationStream)
     {
       if (serializationStream == null)
         return null;

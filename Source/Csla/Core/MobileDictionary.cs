@@ -17,7 +17,7 @@ namespace Csla.Core
   /// <typeparam name="K">Key value: any primitive or IMobileObject type.</typeparam>
   /// <typeparam name="V">Value: any primitive or IMobileObject type.</typeparam>
   [Serializable]
-  public class MobileDictionary<K, V> : Dictionary<K, V>, IMobileObject
+  public class MobileDictionary<K, V> : Dictionary<K, V>, IMobileObject where K: notnull
   {
     private bool _keyIsMobile;
     private bool _valueIsMobile;
@@ -62,6 +62,7 @@ namespace Csla.Core
     /// are copied to the new dictionary.
     /// </summary>
     /// <param name="dict">Source dictionary.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="dict"/> is <see langword="null"/>.</exception>
     public MobileDictionary(Dictionary<K, V> dict)
       : base(dict)
     {
@@ -74,8 +75,12 @@ namespace Csla.Core
     /// value.
     /// </summary>
     /// <param name="key">Key value</param>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool Contains(K key)
     {
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
       return ContainsKey(key);
     }
 

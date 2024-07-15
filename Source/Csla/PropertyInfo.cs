@@ -228,7 +228,7 @@ namespace Csla
     protected virtual Core.FieldManager.IFieldData NewFieldData(string name)
     {
       if (string.IsNullOrEmpty(name))
-        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(name));
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(name)));
 
       return new Core.FieldManager.FieldData<T>(name);
     }

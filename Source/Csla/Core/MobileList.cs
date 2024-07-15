@@ -33,6 +33,7 @@ namespace Csla.Core
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="collection">Data to add to list.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     public MobileList(IEnumerable<T> collection) : base(collection) { }
 
     #region IMobileObject Members

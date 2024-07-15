@@ -173,8 +173,10 @@ CSLA 9 supports the use of nullable reference types in your code. This means tha
 
 Supporting nullable types means that some APIs have changed to support nullable types.
 
+* Many methods now throw an `ArgumentNullException` instead of a `NullReferenceException`. That means typically the methods didn't work so far with `null` anyway
 * The `User` and `Principal` properties of `ApplicationContext` no longer return null
 * `Csla.Configuration.ConfigurationManager.AppSettings` and `.ConnectionStrings` are no longer settable
 * `Csla.Core.LoadManager.AsyncLoadException.Property` property set removed. It can now only be set by the constructor
 * `Csla.Core.AddedNewEventArgs<T>` default constructor removed
 * `Csla.Reflection.LateBoundObject(Type objectType)` constructor removed (hasn't worked so far anyway)
+* `Csla.Core.UndoException` constructors now throw `ArgumentNullException` on necessary parameters and all public fields changed to readonly properties

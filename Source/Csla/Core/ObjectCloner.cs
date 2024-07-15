@@ -16,21 +16,23 @@ namespace Csla.Core
   /// </summary>
   public class ObjectCloner
   {
-    private ApplicationContext _applicationContext;
+    private readonly ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ObjectCloner(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
     /// Gets an instance of ObjectCloner.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static ObjectCloner GetInstance(ApplicationContext applicationContext)
     {
       return new ObjectCloner(applicationContext);
@@ -46,11 +48,10 @@ namespace Csla.Core
     /// specified in ApplicationContext.</para>
     /// <para>The default is to use the MobileFormatter.</para>
     /// </remarks>
-    public object Clone(object obj)
+    public object? Clone(object? obj)
     {
       using var buffer = new MemoryStream();
-      ISerializationFormatter formatter =
-        _applicationContext.GetRequiredService<ISerializationFormatter>();
+      ISerializationFormatter formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
       formatter.Serialize(buffer, obj);
       buffer.Position = 0;
       return formatter.Deserialize(buffer);

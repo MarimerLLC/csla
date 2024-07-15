@@ -120,7 +120,7 @@ namespace Csla.Core
     protected override object AddNewCore()
     {
       if (!IsReadOnly)
-        return base.AddNewCore();
+        return base.AddNewCore()!;
       else
         throw new NotSupportedException(Resources.InsertInvalidException);
     }

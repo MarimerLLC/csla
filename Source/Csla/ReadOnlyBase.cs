@@ -1245,11 +1245,11 @@ namespace Csla
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F? newValue)
     {
       try
       {
-        P oldValue = default(P);
+        P? oldValue = default(P);
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -1258,18 +1258,12 @@ namespace Csla
         }
         else
         {
-          oldValue = (P)fieldData.Value;
+          oldValue = (P?)fieldData.Value;
         }
 
-        if (oldValue == null)
-        {
-          if (newValue != null)
-            FieldManager.LoadFieldData(propertyInfo, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
-        }
-        else if (!(oldValue.Equals(newValue)))
-        {
+        if (!ValueComparer.AreEqual(oldValue, newValue))
           FieldManager.LoadFieldData(propertyInfo, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
-        }
+
       }
       catch (Exception ex)
       {
@@ -1309,7 +1303,7 @@ namespace Csla
     {
       try
       {
-        P oldValue = default(P);
+        P? oldValue = default(P);
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -1318,18 +1312,12 @@ namespace Csla
         }
         else
         {
-          oldValue = (P)fieldData.Value;
+          oldValue = (P?)fieldData.Value;
         }
 
-        if (oldValue == null)
-        {
-          if (newValue != null)
-            FieldManager.LoadFieldData(propertyInfo, newValue);
-        }
-        else if (!(oldValue.Equals(newValue)))
-        {
+        if (!ValueComparer.AreEqual(oldValue, newValue))
           FieldManager.LoadFieldData(propertyInfo, newValue);
-        }
+        
       }
       catch (Exception ex)
       {

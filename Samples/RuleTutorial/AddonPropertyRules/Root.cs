@@ -11,6 +11,7 @@
 using System;
 using AddonPropertyRules.Rules;
 using Csla;
+using Range = AddonPropertyRules.Rules.Range;
 
 namespace AddonPropertyRules
 {

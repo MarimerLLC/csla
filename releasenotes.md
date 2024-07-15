@@ -17,6 +17,9 @@ Primary changes in this release include:
 * Enhancements to business rules
 * Enahncements to MobileFormatter, including support for custom serializers
 * Data portal default configuration now works on Android
+* Rework RabbitMQ data portal channel to support dependency injection
+* Updates and improvements to several analyzers
+* Code base now uses nullable reference types
 * Over a dozen bug fixes
 
 And _massive_ amounts of overall code modernization and cleanup thanks to @SimonCropp and others

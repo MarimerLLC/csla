@@ -2,6 +2,7 @@
 end_of_line = crlf
 indent_style = space
 indent_size = 2
+dotnet_diagnostic.CA1416.severity = error
 
 [*.cs]
 csharp_new_line_before_open_brace = all

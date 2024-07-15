@@ -28,7 +28,7 @@ namespace cslalighttest.BusyStatus
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
       _noCloneOnUpdateDIContext = TestDIContextFactory.CreateContext(opt => opt.
-        DataPortal(dpo => dpo.ClientSideDataPortal(o => o.
+        DataPortal(dpo => dpo.AddClientSideDataPortal(o => o.
           AutoCloneOnUpdate = false)));
     }
 

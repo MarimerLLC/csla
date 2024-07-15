@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.Security.Claims;
+using Csla.Configuration;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Test.ValidationRules;
@@ -370,6 +371,91 @@ namespace Csla.Test.Serialization
       Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
       Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
       Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
+    }
+
+
+    [TestMethod]
+    public void TestSerializationRoundtripWithoutStrongNameCheck()
+    {
+      // Do not use global _testDIContext in the test, since I need to change default mobile formatter options.
+      var testDIContext = TestDIContextFactory.CreateContext(options => options.SerializationOptions.UseMobileFormatter(formatterOptions => formatterOptions.DisableStrongNamesCheck()));
+      IDataPortal<BinaryReaderWriterTestClass> dataPortal = testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
+
+      var test = BinaryReaderWriterTestClass.NewBinaryReaderWriterTestClass(dataPortal);
+      BinaryReaderWriterTestClass result;
+      test.Setup();
+      ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
+
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
+      var serialized = formatter.SerializeToDTO(test);
+      CslaBinaryWriter writer = new CslaBinaryWriter(applicationContext);
+      byte[] data;
+      using (var stream = new MemoryStream())
+      {
+        writer.Write(stream, serialized);
+        data = stream.ToArray();
+      }
+
+      CslaBinaryReader reader = new CslaBinaryReader(applicationContext);
+      using (var stream = new MemoryStream(data))
+      {
+        var deserialized = reader.Read(stream);
+        result = (BinaryReaderWriterTestClass)formatter.DeserializeFromDTO(deserialized);
+      }
+      Assert.AreEqual(test.BoolTest, result.BoolTest);
+      Assert.AreEqual(test.ByteArrayTest.Length, result.ByteArrayTest.Length);
+      for (int i = 0; i < test.ByteArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
+      }
+
+      Assert.AreEqual(test.ByteTest, result.ByteTest);
+      Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
+      for (int i = 0; i < test.CharArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.CharArrayTest[i], result.CharArrayTest[i]);
+      }
+
+      Assert.AreEqual(test.CharTest, result.CharTest);
+      Assert.AreEqual(test.DateTimeOffsetTest, result.DateTimeOffsetTest);
+      Assert.AreEqual(test.DateTimeTest, result.DateTimeTest);
+      Assert.AreEqual(test.DecimalTest, result.DecimalTest);
+      Assert.AreEqual(test.DoubleTest, result.DoubleTest);
+      Assert.AreEqual(test.EnumTest, result.EnumTest);
+      Assert.AreEqual(test.GuidTest, result.GuidTest);
+      Assert.AreEqual(test.Int16Test, result.Int16Test);
+      Assert.AreEqual(test.Int32Test, result.Int32Test);
+      Assert.AreEqual(test.Int64Test, result.Int64Test);
+      Assert.AreEqual(test.SByteTest, result.SByteTest);
+      Assert.AreEqual(test.SingleTest, result.SingleTest);
+      Assert.AreEqual(test.StringTest, result.StringTest);
+      Assert.AreEqual(test.TimeSpanTest, result.TimeSpanTest);
+      Assert.AreEqual(test.UInt16Test, result.UInt16Test);
+      Assert.AreEqual(test.UInt32Test, result.UInt32Test);
+      Assert.AreEqual(test.UInt64Test, result.UInt64Test);
+
+      Assert.AreEqual(test.EmptySmartDateTest, result.EmptySmartDateTest);
+      Assert.AreEqual(test.EmptySmartDateTest.FormatString, result.EmptySmartDateTest.FormatString);
+      Assert.AreEqual(test.EmptySmartDateTest.EmptyIsMin, result.EmptySmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.EmptySmartDateTest.IsEmpty, result.EmptySmartDateTest.IsEmpty);
+      Assert.AreEqual(test.EmptySmartDateTest.Date, result.EmptySmartDateTest.Date);
+
+      Assert.AreEqual(test.FilledSmartDateTest, result.FilledSmartDateTest);
+      Assert.AreEqual(test.FilledSmartDateTest.FormatString, result.FilledSmartDateTest.FormatString);
+      Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
+      Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
+    }
+
+    [TestMethod]
+    public void TestSerializationNames()
+    {
+      Assert.AreEqual("System.Int32, /n", AssemblyNameTranslator.GetSerializationName(typeof(int), false));
+      Assert.AreEqual("System.Int32, /n", AssemblyNameTranslator.GetSerializationName(typeof(int), true));
+      Assert.AreEqual("Csla.ApplicationContext, /c", AssemblyNameTranslator.GetSerializationName(typeof(ApplicationContext), false));
+      Assert.AreEqual("Csla.ApplicationContext, /c", AssemblyNameTranslator.GetSerializationName(typeof(ApplicationContext), true));
+      Assert.AreEqual("Csla.Test.Serialization.BinaryReaderWriterTestClass, Csla.Tests", AssemblyNameTranslator.GetSerializationName(typeof(BinaryReaderWriterTestClass), false));
+      Assert.AreEqual("Csla.Test.Serialization.BinaryReaderWriterTestClass, Csla.Tests, Version=4.5.30.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30", AssemblyNameTranslator.GetSerializationName(typeof(BinaryReaderWriterTestClass), true));
     }
 
     // TODO: fix test

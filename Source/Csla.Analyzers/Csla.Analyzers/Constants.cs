@@ -25,12 +25,15 @@
       public const string ObjectAuthorizationRulesAttributeMissing = "CSLA0020";
       public const string ObjectAuthorizationRulesPublic = "CSLA0021";
       public const string ObjectAuthorizationRulesStatic = "CSLA0022";
+      public const string EvaluateManagedBackingFieldsNameof = "CSLA0023";
+
     }
 
     public static class Categories
     {
       public const string Design = "Design";
       public const string Usage = "Usage";
+      public const string Refactoring = "Refactoring";
     }
 
     public static class Namespaces

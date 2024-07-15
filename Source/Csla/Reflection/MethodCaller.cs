@@ -297,7 +297,7 @@ namespace Csla.Reflection
 
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
     {
-      var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
+      var key = new MethodCacheKey(objectType.FullName!, propertyName, GetParameterTypes(null));
 
 #if NET8_0_OR_GREATER
       var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
@@ -411,20 +411,26 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="obj">Target object.</param>
     /// <param name="property">Property to invoke.</param>
-    public static object CallPropertyGetter(object obj, string property)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><paramref name="property"/> not found on type of <paramref name="obj"/>.</exception>
+    public static object? CallPropertyGetter(object obj, string property)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(property))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(property)), nameof(property));
+
       if (ApplicationContext.UseReflectionFallback)
       {
         var propertyInfo = obj.GetType().GetProperty(property);
+        if (propertyInfo == null)
+          throw new InvalidOperationException($"Propertys {property} not found on {obj.GetType().FullName}.");
+
         return propertyInfo.GetValue(obj);
       }
       else
       {
-        if (obj == null)
-          throw new ArgumentNullException(nameof(obj));
-        if (string.IsNullOrEmpty(property))
-          throw new ArgumentException("Argument is null or empty.", nameof(property));
-
         var mh = GetCachedProperty(obj.GetType(), property);
         if (mh.DynamicMemberGet == null)
         {
@@ -977,12 +983,12 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameter values.
     /// </param>
-    public static Type[] GetParameterTypes(object[] parameters)
+    public static Type[] GetParameterTypes(object[]? parameters)
     {
       return GetParameterTypes(true, parameters);
     }
 
-    private static Type[] GetParameterTypes(bool hasParameters, object[] parameters)
+    private static Type[] GetParameterTypes(bool hasParameters, object[]? parameters)
     {
       if (!hasParameters)
         return [];

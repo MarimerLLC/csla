@@ -34,7 +34,7 @@ namespace Csla.Data
   public class ObjectContextManager<C> : IDisposable, Core.IUseApplicationContext
     where C : ObjectContext
   {
-    private static object _lock = new object();
+    private static readonly object _lock = new object();
     private string _connectionString;
     private string _label;
 
@@ -50,6 +50,7 @@ namespace Csla.Data
     /// <param name="database">
     /// Database name as shown in the config file.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="database"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public ObjectContextManager<C> GetManager(string database)
     {
       return GetManager(database, true);
@@ -63,6 +64,8 @@ namespace Csla.Data
     /// Database name as shown in the config file.
     /// </param>
     /// <param name="label">Label for this context.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="label"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="database"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public ObjectContextManager<C> GetManager(string database, string label)
     {
       return GetManager(database, true, label);
@@ -82,6 +85,7 @@ namespace Csla.Data
     /// used as a connection string.
     /// </param>
     /// <returns>ContextManager object for the name.</returns>
+    /// <exception cref="ArgumentException"><paramref name="database"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public ObjectContextManager<C> GetManager(string database, bool isDatabaseName)
     {
       return GetManager(database, isDatabaseName, "default");
@@ -102,8 +106,15 @@ namespace Csla.Data
     /// </param>
     /// <param name="label">Label for this context.</param>
     /// <returns>ContextManager object for the name.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="label"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="database"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public ObjectContextManager<C> GetManager(string database, bool isDatabaseName, string label)
     {
+      if (string.IsNullOrWhiteSpace(database))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(database)), nameof(database));
+      if (label is null)
+        throw new ArgumentNullException(nameof(label));
+
       if (isDatabaseName)
       {
         var connection = ConfigurationManager.ConnectionStrings[database];
@@ -112,13 +123,13 @@ namespace Csla.Data
         var conn = ConfigurationManager.ConnectionStrings[database].ConnectionString;
         if (string.IsNullOrEmpty(conn))
           throw new System.Configuration.ConfigurationErrorsException(String.Format(Resources.DatabaseNameNotFound, database));
-        database = conn;
+        database = conn!;
       }
 
       lock (_lock)
       {
         var contextLabel = GetContextName(database, label);
-        ObjectContextManager<C> mgr = null;
+        ObjectContextManager<C> mgr;
         if (_applicationContext.LocalContext.Contains(contextLabel))
         {
           mgr = (ObjectContextManager<C>)(_applicationContext.LocalContext[contextLabel]);
@@ -139,7 +150,7 @@ namespace Csla.Data
       _label = label;
       _connectionString = connectionString;
 
-      ObjectContext = (C)(_applicationContext.CreateInstanceDI(typeof(C), connectionString));
+      ObjectContext = (C)_applicationContext.CreateInstanceDI(typeof(C), connectionString);
       ObjectContext.Connection.Open();
     }
 

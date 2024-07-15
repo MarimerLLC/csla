@@ -180,3 +180,4 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `Csla.Core.AddedNewEventArgs<T>` default constructor removed
 * `Csla.Reflection.LateBoundObject(Type objectType)` constructor removed (hasn't worked so far anyway)
 * `Csla.Core.UndoException` constructors now throw `ArgumentNullException` on necessary parameters and all public fields changed to readonly properties
+* `Csla.Data.ObjectAdapter.Fill(DataTable dt, object source)` throws an `ArgumentNullException` for source instead of `ArgumentException`.

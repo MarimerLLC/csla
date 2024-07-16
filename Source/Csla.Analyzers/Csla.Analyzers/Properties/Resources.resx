@@ -171,10 +171,10 @@
   <data name="DoesOperationHaveAttribute_Message" xml:space="preserve">
     <value>Operations should have the appropriate operation attribute</value>
   </data>
-  <data name="DoesOperationHaveAttributeAnalyzerAddAttribute_AddAttributeAndUsingDescription" xml:space="preserve">
+  <data name="Shared_AddAttributeAndUsingDescription" xml:space="preserve">
     <value>Add attribute and using statement</value>
   </data>
-  <data name="DoesOperationHaveAttributeAnalyzerAddAttribute_AddAttributeDescription" xml:space="preserve">
+  <data name="Shared_AddAttributeDescription" xml:space="preserve">
     <value>Add attribute</value>
   </data>
   <data name="EvaluateManagedBackingFields_Title" xml:space="preserve">
@@ -185,5 +185,98 @@
   </data>
   <data name="EvaluateManagedBackingFields_FixManagedBackingFieldDescription" xml:space="preserve">
     <value>Fix managed backing field declaration</value>
+  </data>
+  <data name="EvaluateOperationAttributeUsage_Title" xml:space="preserve">
+    <value>Find Operation Attributes In Incorrect Places</value>
+  </data>
+  <data name="EvaluateOperationAttributeUsage_Message" xml:space="preserve">
+    <value>Operation attributes should only be used on methods within sterotypes or ObjectFactory and should not be static</value>
+  </data>
+  <data name="OnlyUseCslaPropertyMethodsInGetSetRule_Title" xml:space="preserve">
+    <value>Evaluate Properties for Simplicity</value>
+  </data>
+  <data name="OnlyUseCslaPropertyMethodsInGetSetRule_Message" xml:space="preserve">
+    <value>Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypes_Title" xml:space="preserve">
+    <value>Find Operations With Incorrect Return Types</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypes_Message" xml:space="preserve">
+    <value>The return type from an operation should be either void or Task</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToTaskDescription" xml:space="preserve">
+    <value>Change return type to Task</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToVoidDescription" xml:space="preserve">
+    <value>Change return type to void</value>
+  </data>
+  <data name="FindOperationsWithNonSerializableArguments_Title" xml:space="preserve">
+    <value>Find Operation Arguments That Are Not Serializable</value>
+  </data>
+  <data name="FindOperationsWithNonSerializableArguments_Message" xml:space="preserve">
+    <value>Operation argument types should be serializable</value>
+  </data>
+  <data name="FindRefAndOutParametersInOperations_Title" xml:space="preserve">
+    <value>Find Ref or Out Parameters in Operations</value>
+  </data>
+  <data name="FindRefAndOutParametersInOperations_Message" xml:space="preserve">
+    <value>Operations should not have ref or out parameters</value>
+  </data>
+  <data name="FindSaveAssignmentIssue_Title" xml:space="preserve">
+    <value>Find Save() Calls That Ignore the Result</value>
+  </data>
+  <data name="FindSaveAssignmentIssue_Message" xml:space="preserve">
+    <value>Do not ignore the result of Save()</value>
+  </data>
+  <data name="FindSaveAsyncAssignmentIssue_Title" xml:space="preserve">
+    <value>Find SaveAsync() Calls That Ignore the Result</value>
+  </data>
+  <data name="FindSaveAsyncAssignmentIssue_Message" xml:space="preserve">
+    <value>Do not ignore the result of SaveAsync()</value>
+  </data>
+  <data name="FindSaveAssignmentIssue_AddAssignmentDescription" xml:space="preserve">
+    <value>Add assignment</value>
+  </data>
+  <data name="IsCompleteCalledInAsynchronousBusinessRule_Title" xml:space="preserve">
+    <value>Find Calls to Complete() in Asynchronous Business Rules</value>
+  </data>
+  <data name="IsCompleteCalledInAsynchronousBusinessRule_Message" xml:space="preserve">
+    <value>Complete() should not be called in an asynchronous business rule</value>
+  </data>
+  <data name="IsCompleteCalledInAsynchronousBusinessRule_RemoveCompleteCalls" xml:space="preserve">
+    <value>Remove Complete() calls</value>
+  </data>
+  <data name="IsOperationMethodPublic_Title" xml:space="preserve">
+    <value>Find CSLA Operations That are Public</value>
+  </data>
+  <data name="IsOperationMethodPublic_Message" xml:space="preserve">
+    <value>CSLA operations should not be public</value>
+  </data>
+  <data name="IsOperationMethodPublic_InternalDescription" xml:space="preserve">
+    <value>Make CSLA operation internal</value>
+  </data>
+  <data name="IsOperationMethodPublic_ProtectedDescription" xml:space="preserve">
+    <value>Make CSLA operation protected</value>
+  </data>
+  <data name="IsOperationMethodPublic_PrivateDescription" xml:space="preserve">
+    <value>Make CSLA operation private</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_AttributeMissingTitle" xml:space="preserve">
+    <value>Find Authorization Rules Configuration That Do Not Have an Operation Attribute</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_AttributeMissingMessage" xml:space="preserve">
+    <value>Authorization rules should use the appropriate operation attribute</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesPublicTitle" xml:space="preserve">
+    <value>Find Authorization Rules Configuration That Is Not Public</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesPublicMessage" xml:space="preserve">
+    <value>Authorization rules should be declared as public methods</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesStaticTitle" xml:space="preserve">
+    <value>Find Authorization Rules Configuration That Is Not Static</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesStaticMessage" xml:space="preserve">
+    <value>Authorization rules should be declared as static methods</value>
   </data>
 </root>

@@ -14,9 +14,9 @@ namespace Csla.Analyzers.Tests
       Assert.AreEqual(2, diagnostics.Length);
 
       var diagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
-      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find CSLA Operations That are Public", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("CSLA operations should not be public", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Design, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
@@ -27,9 +27,9 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.HelpLinkUri));
 
       var diagnosticForInterface = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface);
-      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Title, diagnosticForInterface.Title.ToString(),
+      Assert.AreEqual("Find CSLA Operations That are Public", diagnosticForInterface.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(IsOperationMethodPublicAnalyzerConstants.Message, diagnosticForInterface.MessageFormat.ToString(),
+      Assert.AreEqual("CSLA operations should not be public", diagnosticForInterface.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Design, diagnosticForInterface.Category,
         nameof(DiagnosticDescriptor.Category));

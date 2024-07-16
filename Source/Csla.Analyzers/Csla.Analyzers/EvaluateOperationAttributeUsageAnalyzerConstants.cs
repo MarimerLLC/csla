@@ -1,9 +1,12 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
   public static class EvaluateOperationAttributeUsageAnalyzerConstants
   {
-    public const string Title = "Find Operation Attributes In Incorrect Places";
-    public const string IdentifierText = "EvaluateOperationAttributeUsage";
-    public const string Message = "Operation attributes should only be used on methods within sterotypes or ObjectFactory and should not be static";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.EvaluateOperationAttributeUsage_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.EvaluateOperationAttributeUsage_Message), Resources.ResourceManager, typeof(Resources));
   }
 }

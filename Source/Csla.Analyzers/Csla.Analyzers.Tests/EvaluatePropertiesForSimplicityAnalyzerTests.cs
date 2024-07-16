@@ -14,9 +14,9 @@ namespace Csla.Analyzers.Tests
       Assert.AreEqual(1, diagnostics.Length);
 
       var ctorHasParametersDiagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule);
-      Assert.AreEqual(OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title, ctorHasParametersDiagnostic.Title.ToString(),
+      Assert.AreEqual("Evaluate Properties for Simplicity", ctorHasParametersDiagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, ctorHasParametersDiagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else", ctorHasParametersDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, ctorHasParametersDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

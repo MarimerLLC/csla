@@ -189,24 +189,6 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add attribute and using statement.
-        /// </summary>
-        internal static string DoesOperationHaveAttributeAnalyzerAddAttribute_AddAttributeAndUsingDescription {
-            get {
-                return ResourceManager.GetString("DoesOperationHaveAttributeAnalyzerAddAttribute_AddAttributeAndUsingDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add attribute.
-        /// </summary>
-        internal static string DoesOperationHaveAttributeAnalyzerAddAttribute_AddAttributeDescription {
-            get {
-                return ResourceManager.GetString("DoesOperationHaveAttributeAnalyzerAddAttribute_AddAttributeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Fix managed backing field declaration.
         /// </summary>
         internal static string EvaluateManagedBackingFields_FixManagedBackingFieldDescription {
@@ -234,6 +216,24 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operation attributes should only be used on methods within sterotypes or ObjectFactory and should not be static.
+        /// </summary>
+        internal static string EvaluateOperationAttributeUsage_Message {
+            get {
+                return ResourceManager.GetString("EvaluateOperationAttributeUsage_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Operation Attributes In Incorrect Places.
+        /// </summary>
+        internal static string EvaluateOperationAttributeUsage_Title {
+            get {
+                return ResourceManager.GetString("EvaluateOperationAttributeUsage_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CSLA business objects should not be created outside of a ObjectFactory instance.
         /// </summary>
         internal static string FindBusinessObjectCreationConstants_Message {
@@ -252,6 +252,269 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change return type to Task.
+        /// </summary>
+        internal static string FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToTaskDescription {
+            get {
+                return ResourceManager.GetString("FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToTas" +
+                        "kDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change return type to void.
+        /// </summary>
+        internal static string FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToVoidDescription {
+            get {
+                return ResourceManager.GetString("FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToVoi" +
+                        "dDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The return type from an operation should be either void or Task.
+        /// </summary>
+        internal static string FindOperationsWithIncorrectReturnTypes_Message {
+            get {
+                return ResourceManager.GetString("FindOperationsWithIncorrectReturnTypes_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Operations With Incorrect Return Types.
+        /// </summary>
+        internal static string FindOperationsWithIncorrectReturnTypes_Title {
+            get {
+                return ResourceManager.GetString("FindOperationsWithIncorrectReturnTypes_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation argument types should be serializable.
+        /// </summary>
+        internal static string FindOperationsWithNonSerializableArguments_Message {
+            get {
+                return ResourceManager.GetString("FindOperationsWithNonSerializableArguments_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Operation Arguments That Are Not Serializable.
+        /// </summary>
+        internal static string FindOperationsWithNonSerializableArguments_Title {
+            get {
+                return ResourceManager.GetString("FindOperationsWithNonSerializableArguments_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operations should not have ref or out parameters.
+        /// </summary>
+        internal static string FindRefAndOutParametersInOperations_Message {
+            get {
+                return ResourceManager.GetString("FindRefAndOutParametersInOperations_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Ref or Out Parameters in Operations.
+        /// </summary>
+        internal static string FindRefAndOutParametersInOperations_Title {
+            get {
+                return ResourceManager.GetString("FindRefAndOutParametersInOperations_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add assignment.
+        /// </summary>
+        internal static string FindSaveAssignmentIssue_AddAssignmentDescription {
+            get {
+                return ResourceManager.GetString("FindSaveAssignmentIssue_AddAssignmentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not ignore the result of Save().
+        /// </summary>
+        internal static string FindSaveAssignmentIssue_Message {
+            get {
+                return ResourceManager.GetString("FindSaveAssignmentIssue_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Save() Calls That Ignore the Result.
+        /// </summary>
+        internal static string FindSaveAssignmentIssue_Title {
+            get {
+                return ResourceManager.GetString("FindSaveAssignmentIssue_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not ignore the result of SaveAsync().
+        /// </summary>
+        internal static string FindSaveAsyncAssignmentIssue_Message {
+            get {
+                return ResourceManager.GetString("FindSaveAsyncAssignmentIssue_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find SaveAsync() Calls That Ignore the Result.
+        /// </summary>
+        internal static string FindSaveAsyncAssignmentIssue_Title {
+            get {
+                return ResourceManager.GetString("FindSaveAsyncAssignmentIssue_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complete() should not be called in an asynchronous business rule.
+        /// </summary>
+        internal static string IsCompleteCalledInAsynchronousBusinessRule_Message {
+            get {
+                return ResourceManager.GetString("IsCompleteCalledInAsynchronousBusinessRule_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove Complete() calls.
+        /// </summary>
+        internal static string IsCompleteCalledInAsynchronousBusinessRule_RemoveCompleteCalls {
+            get {
+                return ResourceManager.GetString("IsCompleteCalledInAsynchronousBusinessRule_RemoveCompleteCalls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Calls to Complete() in Asynchronous Business Rules.
+        /// </summary>
+        internal static string IsCompleteCalledInAsynchronousBusinessRule_Title {
+            get {
+                return ResourceManager.GetString("IsCompleteCalledInAsynchronousBusinessRule_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make CSLA operation internal.
+        /// </summary>
+        internal static string IsOperationMethodPublic_InternalDescription {
+            get {
+                return ResourceManager.GetString("IsOperationMethodPublic_InternalDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CSLA operations should not be public.
+        /// </summary>
+        internal static string IsOperationMethodPublic_Message {
+            get {
+                return ResourceManager.GetString("IsOperationMethodPublic_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make CSLA operation private.
+        /// </summary>
+        internal static string IsOperationMethodPublic_PrivateDescription {
+            get {
+                return ResourceManager.GetString("IsOperationMethodPublic_PrivateDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make CSLA operation protected.
+        /// </summary>
+        internal static string IsOperationMethodPublic_ProtectedDescription {
+            get {
+                return ResourceManager.GetString("IsOperationMethodPublic_ProtectedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find CSLA Operations That are Public.
+        /// </summary>
+        internal static string IsOperationMethodPublic_Title {
+            get {
+                return ResourceManager.GetString("IsOperationMethodPublic_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization rules should use the appropriate operation attribute.
+        /// </summary>
+        internal static string ObjectAuthorizationRulesAttribute_AttributeMissingMessage {
+            get {
+                return ResourceManager.GetString("ObjectAuthorizationRulesAttribute_AttributeMissingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Authorization Rules Configuration That Do Not Have an Operation Attribute.
+        /// </summary>
+        internal static string ObjectAuthorizationRulesAttribute_AttributeMissingTitle {
+            get {
+                return ResourceManager.GetString("ObjectAuthorizationRulesAttribute_AttributeMissingTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization rules should be declared as public methods.
+        /// </summary>
+        internal static string ObjectAuthorizationRulesAttribute_RulesPublicMessage {
+            get {
+                return ResourceManager.GetString("ObjectAuthorizationRulesAttribute_RulesPublicMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Authorization Rules Configuration That Is Not Public.
+        /// </summary>
+        internal static string ObjectAuthorizationRulesAttribute_RulesPublicTitle {
+            get {
+                return ResourceManager.GetString("ObjectAuthorizationRulesAttribute_RulesPublicTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization rules should be declared as static methods.
+        /// </summary>
+        internal static string ObjectAuthorizationRulesAttribute_RulesStaticMessage {
+            get {
+                return ResourceManager.GetString("ObjectAuthorizationRulesAttribute_RulesStaticMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Find Authorization Rules Configuration That Is Not Static.
+        /// </summary>
+        internal static string ObjectAuthorizationRulesAttribute_RulesStaticTitle {
+            get {
+                return ResourceManager.GetString("ObjectAuthorizationRulesAttribute_RulesStaticTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else.
+        /// </summary>
+        internal static string OnlyUseCslaPropertyMethodsInGetSetRule_Message {
+            get {
+                return ResourceManager.GetString("OnlyUseCslaPropertyMethodsInGetSetRule_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Evaluate Properties for Simplicity.
+        /// </summary>
+        internal static string OnlyUseCslaPropertyMethodsInGetSetRule_Title {
+            get {
+                return ResourceManager.GetString("OnlyUseCslaPropertyMethodsInGetSetRule_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CSLA business objects must have a public constructor with no arguments.
         /// </summary>
         internal static string PublicNoArgumentConstructorIsMissing_Message {
@@ -266,6 +529,24 @@ namespace Csla.Analyzers.Properties {
         internal static string PublicNoArgumentConstructorIsMissing_Title {
             get {
                 return ResourceManager.GetString("PublicNoArgumentConstructorIsMissing_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add attribute and using statement.
+        /// </summary>
+        internal static string Shared_AddAttributeAndUsingDescription {
+            get {
+                return ResourceManager.GetString("Shared_AddAttributeAndUsingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add attribute.
+        /// </summary>
+        internal static string Shared_AddAttributeDescription {
+            get {
+                return ResourceManager.GetString("Shared_AddAttributeDescription", resourceCulture);
             }
         }
     }

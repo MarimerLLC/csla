@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(FindRefAndOutParametersInOperationsAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Ref or Out Parameters in Operations", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(FindRefAndOutParametersInOperationsAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Operations should not have ref or out parameters", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

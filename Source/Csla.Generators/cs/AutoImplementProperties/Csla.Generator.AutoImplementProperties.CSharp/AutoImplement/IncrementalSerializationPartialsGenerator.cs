@@ -7,9 +7,16 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
 {
+  /// <summary>
+  /// Generates partial classes for incremental serialization based on the presence of the <see cref="Csla.Serialization.AutoImplementPropertiesAttribute"/> attribute.
+  /// </summary>
   [Generator]
   public class IncrementalSerializationPartialsGenerator : IIncrementalGenerator
   {
+    /// <summary>
+    /// Initializes the incremental serialization partials generator.
+    /// </summary>
+    /// <param name="context">The initialization context.</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
       // Register a syntax receiver to collect information during the initial parsing phase
@@ -43,7 +50,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
 
           // Add the generated source to the output
           spc.AddSource($"{generationResults.FullyQualifiedName}.g.cs",
-            SourceText.From(generationResults.GeneratedSource, Encoding.UTF8));
+              SourceText.From(generationResults.GeneratedSource, Encoding.UTF8));
         }
       });
     }

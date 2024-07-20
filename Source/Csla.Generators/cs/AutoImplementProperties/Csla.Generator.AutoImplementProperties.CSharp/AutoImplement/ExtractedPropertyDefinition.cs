@@ -44,6 +44,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
     /// Gets or sets a value indicating whether this property has a setter.
     /// </summary>
     public bool Setter { get; set; }
+
+    /// <summary>
+    /// The modifiers for this property
+    /// </summary>
+    public string[] Modifiers { get; internal set; }
   }
 
 }

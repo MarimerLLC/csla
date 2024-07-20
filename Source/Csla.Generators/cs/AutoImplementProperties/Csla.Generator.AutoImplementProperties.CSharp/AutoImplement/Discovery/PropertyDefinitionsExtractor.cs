@@ -101,33 +101,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
       return false;
     }
 
-    /// <summary>
-    /// Determine if a property has both a getter and a setter
-    /// </summary>
-    /// <param name="context">The definition extraction context for this extraction</param>
-    /// <param name="propertyDeclaration">The declaration of the property being tested</param>
-    /// <returns>Boolean true if the property has both a getter and setter (of any scope), else false</returns>
-    private static bool HasGetterAndSetter(DefinitionExtractionContext context, PropertyDeclarationSyntax propertyDeclaration)
-    {
-      bool hasGetter = false;
-      bool hasSetter = false;
 
-      if (propertyDeclaration.AccessorList is null) return false;
-
-      foreach (AccessorDeclarationSyntax accessorDeclaration in propertyDeclaration.AccessorList.Accessors)
-      {
-        if (accessorDeclaration.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.GetAccessorDeclaration)
-        {
-          hasGetter = true;
-        }
-        if (accessorDeclaration.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.SetAccessorDeclaration)
-        {
-          hasSetter = true;
-        }
-      }
-
-      return hasGetter && hasSetter;
-    }
 
     #endregion
 

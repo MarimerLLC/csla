@@ -62,7 +62,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
     /// <summary>
     /// Determine if a type declaration represents a type that is auto serializable
     /// </summary>
-    /// <param name="typeSymbol">The declaration representing the type to be tested</param>
+    /// <param name="typeDeclarationSyntax">The declaration representing the type to be tested</param>
     /// <returns>Boolean true if the type is decorated with the AutoSerializable attribute, otherwise false</returns>
     public bool IsTypeAutoSerializable(TypeDeclarationSyntax typeDeclarationSyntax)
     {
@@ -75,7 +75,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
     /// <summary>
     /// Determine if a type declaration represents a type that is auto serializable
     /// </summary>
-    /// <param name="typeSymbol">The declaration representing the type to be tested</param>
+    /// <param name="typeSyntax">The declaration representing the type to be tested</param>
     /// <returns>Boolean true if the type is decorated with the AutoSerializable attribute, otherwise false</returns>
     public bool IsTypeAutoSerializable(TypeSyntax typeSyntax)
     {
@@ -89,7 +89,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
     /// <summary>
     /// Determine if a type declaration represents a type that implements the IMobileObject interface
     /// </summary>
-    /// <param name="typeSymbol">The declaration representing the type to be tested</param>
+    /// <param name="typeSyntax">The declaration representing the type to be tested</param>
     /// <remarks>Determines if the type either implements the interface directly or via inheritance</remarks>
     /// <returns>Boolean true if the type implements the IMobileObject interface, otherwise false</returns>
     public bool DoesTypeImplementIMobileObject(TypeSyntax typeSyntax)

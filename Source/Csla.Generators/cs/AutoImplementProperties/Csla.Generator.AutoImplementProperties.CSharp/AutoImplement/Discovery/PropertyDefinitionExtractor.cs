@@ -6,6 +6,7 @@
 // <summary>Extract the definition of a single property of a type for source generation</summary>
 //-----------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discovery
@@ -32,8 +33,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
       propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
       propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
       propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, propertyDeclaration);
-      //add getter and setter
-      // add attributes
+      propertyDefinition.Getter = HasGetter(propertyDeclaration);
+      propertyDefinition.Setter = HasSetter(propertyDeclaration);
+      propertyDefinition.Modifiers = GetPropertyModifiers(propertyDeclaration);
+      propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration));
+
+      //add attributes
       return propertyDefinition;
     }
 
@@ -53,7 +58,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
     /// Extract the name of the property for which we are building information
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the property for which we are extracting information</returns>
     private static string GetPropertyName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
@@ -64,13 +69,76 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
     /// Extract the type name of the property for which we are building information
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The type name of the property for which we are extracting information</returns>
     private static string GetPropertyTypeName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
       return propertyDeclaration.Type.ToString();
     }
 
+    /// <summary>
+    /// Determines whether the property has a getter.
+    /// </summary>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the property declaration.</param>
+    /// <returns><c>true</c> if the property has a getter; otherwise, <c>false</c>.</returns>
+    private static bool HasGetter(PropertyDeclarationSyntax propertyDeclaration)
+    {
+      return propertyDeclaration.AccessorList?.Accessors.Any(a => a.Kind() == SyntaxKind.GetAccessorDeclaration) ?? false;
+    }
+
+    /// <summary>
+    /// Determines whether the property has a setter.
+    /// </summary>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the property declaration.</param>
+    /// <returns><c>true</c> if the property has a setter; otherwise, <c>false</c>.</returns>
+    private static bool HasSetter(PropertyDeclarationSyntax propertyDeclaration)
+    {
+      return propertyDeclaration.AccessorList?.Accessors.Any(a => a.Kind() == SyntaxKind.SetAccessorDeclaration) ?? false;
+    }
+
+    /// <summary>
+    /// Get the property modifiers as a string array.
+    /// </summary>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the property declaration.</param>
+    /// <returns>An array of strings representing the property modifiers.</returns>
+    private static string[] GetPropertyModifiers(PropertyDeclarationSyntax propertyDeclaration)
+    {
+      var modifiers = propertyDeclaration.Modifiers.Select(m => m.ToString()).ToArray();
+      return modifiers;
+    }
+
+    private static List<ExtractedAttributeDefinition> GetPropertyAttributes(PropertyDeclarationSyntax propertyDeclaration)
+    {
+      List<ExtractedAttributeDefinition> attributes = new List<ExtractedAttributeDefinition>();
+
+      foreach (var attributeList in propertyDeclaration.AttributeLists)
+      {
+        foreach (var attribute in attributeList.Attributes)
+        {
+          ExtractedAttributeDefinition attributeDefinition = new ExtractedAttributeDefinition();
+          attributeDefinition.AttributeName = attribute.Name.ToString();
+
+          // Add constructor arguments
+          foreach (var argument in attribute.ArgumentList.Arguments)
+          {
+            attributeDefinition.ConstructorArguments.Add(argument.Expression.ToString());
+          }
+
+          // Add named properties
+          foreach (var argument in attribute.ArgumentList.Arguments)
+          {
+            if (argument.NameEquals != null)
+            {
+              attributeDefinition.NamedProperties.Add(argument.NameEquals.Name.ToString(), argument.Expression.ToString());
+            }
+          }
+
+          attributes.Add(attributeDefinition);
+        }
+      }
+
+      return attributes;
+    }
     #endregion
 
   }

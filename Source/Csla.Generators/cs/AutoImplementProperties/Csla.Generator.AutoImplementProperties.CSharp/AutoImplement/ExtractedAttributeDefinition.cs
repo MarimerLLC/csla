@@ -1,3 +1,6 @@
+/// <summary>
+/// class for extracted attribute definition
+/// </summary>
 public class ExtractedAttributeDefinition
 {
   /// <summary>

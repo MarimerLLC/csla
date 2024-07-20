@@ -6,10 +6,11 @@
 // <summary>Extract the definition of a single property of a type for source generation</summary>
 //-----------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discovery
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 {
 
   /// <summary>
@@ -30,15 +31,16 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
       ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
 
       propertyDefinition.PropertyName = GetPropertyName(extractionContext, propertyDeclaration);
-      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
-      propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
-      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, propertyDeclaration);
       propertyDefinition.Getter = HasGetter(propertyDeclaration);
       propertyDefinition.Setter = HasSetter(propertyDeclaration);
       propertyDefinition.Modifiers = GetPropertyModifiers(propertyDeclaration);
       propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration));
+      propertyDefinition.Partial = IsPartial(propertyDeclaration);
 
-      //add attributes
+      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
+      propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
+      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, propertyDeclaration);
+
       return propertyDefinition;
     }
 
@@ -51,7 +53,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
     /// <returns><c>true</c> if the field type is nullable; otherwise, <c>false</c>.</returns>
     private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
-      return propertyDeclaration.Type is NullableTypeSyntax nullableType;
+      return propertyDeclaration.Type is NullableTypeSyntax;
     }
 
     /// <summary>
@@ -109,7 +111,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
 
     private static List<ExtractedAttributeDefinition> GetPropertyAttributes(PropertyDeclarationSyntax propertyDeclaration)
     {
-      List<ExtractedAttributeDefinition> attributes = new List<ExtractedAttributeDefinition>();
+      List<ExtractedAttributeDefinition> attributes = [];
 
       foreach (var attributeList in propertyDeclaration.AttributeLists)
       {
@@ -139,6 +141,16 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
 
       return attributes;
     }
+    /// <summary>
+    /// Determines whether the property is partial.
+    /// </summary>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the property declaration.</param>
+    /// <returns><c>true</c> if the property is partial; otherwise, <c>false</c>.</returns>
+    private static bool IsPartial(PropertyDeclarationSyntax propertyDeclaration)
+    {
+      return propertyDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
+    }
+
     #endregion
 
   }

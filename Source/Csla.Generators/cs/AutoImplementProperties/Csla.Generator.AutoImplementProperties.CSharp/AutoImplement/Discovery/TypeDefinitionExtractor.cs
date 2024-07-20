@@ -5,11 +5,11 @@
 // </copyright>
 // <summary>Extract the definition of a type for source generation</summary>
 //-----------------------------------------------------------------------
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Text;
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discovery
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 {
 
   /// <summary>
@@ -34,18 +34,43 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
       definition.TypeKind = GetTypeKind(extractionContext, targetTypeDeclaration);
       definition.Namespace = GetNamespace(extractionContext, targetTypeDeclaration);
       definition.Scope = GetScopeDefinition(extractionContext, targetTypeDeclaration);
+      definition.BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration);
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
       {
         definition.Properties.Add(propertyDefinition);
       }
 
-
       fullyQualifiedNameBuilder.Append(definition.TypeName);
       definition.FullyQualifiedName = fullyQualifiedNameBuilder.ToString();
 
       return definition;
     }
+
+    #region Private Helper Methods
+
+    // ... existing helper methods ...
+
+    /// <summary>
+    /// Extract the name of the base class of the type for which we will be generating code
+    /// </summary>
+    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
+    /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
+    /// <returns>The name of the base class of the type for which generation is being performed</returns>
+    private static string GetBaseClassTypeName(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    {
+      var targetTypeSymbol = extractionContext.SemanticModel.GetDeclaredSymbol(targetTypeDeclaration) as INamedTypeSymbol;
+      var baseTypeSymbol = targetTypeSymbol?.BaseType;
+
+      if (baseTypeSymbol != null)
+      {
+        return baseTypeSymbol.Name;
+      }
+
+      return null;
+    }
+
+    #endregion
 
     #region Private Helper Methods
 

@@ -6,7 +6,7 @@
 // <summary>The definition of a type, extracted from the syntax tree provided by Roslyn</summary>
 //-----------------------------------------------------------------------
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
 
   /// <summary>
@@ -43,8 +43,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
     /// <summary>
     /// The properties to be included in serialization
     /// </summary>
-    public IList<ExtractedPropertyDefinition> Properties { get; private set; } = new List<ExtractedPropertyDefinition>();
-
+    public IList<ExtractedPropertyDefinition> Properties { get; private set; } = [];
+    /// <summary>
+    /// The name of the base class for the type
+    /// </summary>
+    public string BaseClassTypeName { get; internal set; }
   }
 
 }

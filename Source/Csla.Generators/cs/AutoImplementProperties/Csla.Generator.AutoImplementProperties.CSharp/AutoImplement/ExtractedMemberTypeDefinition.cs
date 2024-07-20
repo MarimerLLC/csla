@@ -6,7 +6,7 @@
 // <summary>The definition of a member's type, extracted from the syntax tree provided by Roslyn</summary>
 //-----------------------------------------------------------------------
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
 
   /// <summary>

@@ -8,7 +8,7 @@
 
 using System.CodeDom.Compiler;
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
 
   /// <summary>
@@ -40,10 +40,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
       AppendTypeDefinition(textWriter, typeDefinition);
       AppendBlockStart(textWriter);
 
-      AppendGetChildrenMethod(textWriter, typeDefinition);
-      AppendGetStateMethod(textWriter, typeDefinition);
-      AppendSetChildrenMethod(textWriter, typeDefinition);
-      AppendSetStateMethod(textWriter, typeDefinition);
+      AppendProperties(textWriter, typeDefinition);
 
       AppendBlockEnd(textWriter);
 
@@ -105,7 +102,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
     /// <returns>A hashset of all of the namespaces required for generation</returns>
     private HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
     {
-      HashSet<string> requiredNamespaces = ["System", "Csla.Serialization.Mobile"];
+      HashSet<string> requiredNamespaces = ["System"];
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
@@ -130,7 +127,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
       textWriter.Write(typeDefinition.TypeKind);
       textWriter.Write(" ");
       textWriter.Write(typeDefinition.TypeName);
-      textWriter.Write(" : IMobileObject");
       textWriter.WriteLine();
     }
 
@@ -139,17 +135,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
     /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendGetChildrenMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+    private void AppendProperties(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
     {
-      textWriter.WriteLine("void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)");
-      AppendBlockStart(textWriter);
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
-        AppendSerializeChildFragment(textWriter, propertyDefinition);
+        AppendSerializeChildFragment(textWriter, propertyDefinition, typeDefinition);
       }
-
-      AppendBlockEnd(textWriter);
       textWriter.WriteLine();
     }
 
@@ -157,138 +149,75 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
     /// Append the code fragment necessary to serialize an individual child member
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-    /// <param name="memberDefinition">The definition of the member we are writing for</param>
-    private void AppendSerializeChildFragment(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)
+    /// <param name="propertyDefinition">The definition of the member we are writing for</param>
+    /// <param name="typeDefinition"></param>
+    private void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, ExtractedTypeDefinition typeDefinition)
     {
-      var mobileObject = "IMobileObject" + memberDefinition.MemberName;
-      textWriter.Write("if(");
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine($" is IMobileObject {mobileObject})");
-      AppendBlockStart(textWriter);
-      textWriter.WriteLine($"var childInfo = formatter.SerializeObject({mobileObject});");
-      textWriter.Write("info.AddChild(nameof(");
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine("), childInfo.ReferenceId, true);");
-      AppendBlockEnd(textWriter);
-    }
+      var getter = GetGetterMethod(typeDefinition);
+      var setter = GetSetterMethod(typeDefinition);
+      if (string.IsNullOrEmpty(getter) || string.IsNullOrEmpty(setter))
+        return;
 
-    /// <summary>
-    /// Append the definition of the SetChildren method required to fulfil the IMobileObject interface
-    /// </summary>
-    /// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
-    /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendSetChildrenMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
-    {
-      textWriter.WriteLine("void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)");
-      AppendBlockStart(textWriter);
+      textWriter.WriteLine($"public static readonly PropertyInfo<{propertyDefinition.TypeDefinition.TypeName}> {propertyDefinition.PropertyName}Property = RegisterProperty<{propertyDefinition.TypeDefinition.TypeName}>(nameof({propertyDefinition.PropertyName}));");
 
-      foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
+      foreach (ExtractedAttributeDefinition attributeDefinition in propertyDefinition.AttributeDefinitions)
       {
-        AppendDeserializeChildFragment(textWriter, propertyDefinition);
+        var constructorArguments = string.Join(", ", attributeDefinition.ConstructorArguments);
+        var namedProperties = string.Join(", ", attributeDefinition.NamedProperties.Select(kv => $"{kv.Key}={kv.Value}"));
+        textWriter.WriteLine($"[{attributeDefinition.AttributeName}({constructorArguments}, {namedProperties})]");
+      }
+
+      textWriter.WriteLine($"public {propertyDefinition.TypeDefinition.TypeName} {propertyDefinition.PropertyName}");
+      AppendBlockStart(textWriter);
+      if (propertyDefinition.Getter)
+      {
+        textWriter.WriteLine($"get => {getter}({propertyDefinition.PropertyName}Property);");
+      }
+
+      if (propertyDefinition.Setter)
+      {
+        textWriter.WriteLine($"set => {setter}({propertyDefinition.PropertyName}Property, value);");
+      }
+      else
+      {
+        textWriter.WriteLine($"private set => {setter}({propertyDefinition.PropertyName}Property, value);");
       }
 
       AppendBlockEnd(textWriter);
-      textWriter.WriteLine();
     }
 
-    /// <summary>
-    /// Append the code fragment necessary to deserialize an individual child member
-    /// </summary>
-    /// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-    /// <param name="memberDefinition">The definition of the member we are writing for</param>
-    private void AppendDeserializeChildFragment(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)
+    private string GetGetterMethod(ExtractedTypeDefinition typeDefinition)
     {
-      textWriter.Write("if (info.Children.ContainsKey(nameof(");
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine(")))");
-      AppendBlockStart(textWriter);
-
-      textWriter.Write("childData = info.Children[nameof(");
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine(")];");
-      textWriter.WriteLine();
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.Write(" = formatter.GetObject(childData.ReferenceId) as ");
-      textWriter.Write(memberDefinition.TypeDefinition.TypeName.Replace("?", ""));
-      if (!memberDefinition.TypeDefinition.Nullable && nullable)
+      if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
       {
-        textWriter.Write(" ?? ");
-        textWriter.Write(memberDefinition.MemberName);
-
+        return "GetProperty";
       }
-      textWriter.WriteLine(";");
-
-      AppendBlockEnd(textWriter);
-    }
-
-    /// <summary>
-    /// Append the definition of the GetState method required to fulfil the IMobileObject interface
-    /// </summary>
-    /// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
-    /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendGetStateMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
-    {
-      textWriter.WriteLine("void IMobileObject.GetState(SerializationInfo info)");
-      AppendBlockStart(textWriter);
-
-
-      foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
+      if (typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase"))
       {
-        AppendGetMemberStateFragment(textWriter, propertyDefinition);
+        return "GetProperty";
       }
-
-      AppendBlockEnd(textWriter);
-      textWriter.WriteLine();
-    }
-
-    /// <summary>
-    /// Append the code fragment necessary to get the state of an individual member
-    /// </summary>
-    /// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-    /// <param name="memberDefinition">The definition of the member we are writing for</param>
-    private void AppendGetMemberStateFragment(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)
-    {
-      textWriter.Write("info.AddValue(nameof(");
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.Write("), ");
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine(");");
-    }
-
-    /// <summary>
-    /// Append the definition of the SetState method required to fulfil the IMobileObject interface
-    /// </summary>
-    /// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
-    /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendSetStateMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
-    {
-      textWriter.WriteLine("void IMobileObject.SetState(SerializationInfo info)");
-      AppendBlockStart(textWriter);
-
-      foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
+      if (typeDefinition.BaseClassTypeName.Contains("CommandBase"))
       {
-        AppendSetMemberStateMethod(textWriter, propertyDefinition);
+        return "ReadProperty";
       }
-
-      AppendBlockEnd(textWriter);
-      textWriter.WriteLine();
+      return string.Empty;
     }
-
-    /// <summary>
-    /// Append the code fragment necessary to set the state of an individual member
-    /// </summary>
-    /// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
-    /// <param name="memberDefinition">The definition of the member we are writing for</param>
-    private void AppendSetMemberStateMethod(IndentedTextWriter textWriter, IMemberDefinition memberDefinition)
+    private string GetSetterMethod(ExtractedTypeDefinition typeDefinition)
     {
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.Write(" = info.GetValue<");
-      textWriter.Write(memberDefinition.TypeDefinition.TypeName);
-      textWriter.Write(">(nameof(");
-      textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine("));");
+      if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
+      {
+        return "SetProperty";
+      }
+      if (typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase"))
+      {
+        return "LoadProperty";
+      }
+      if (typeDefinition.BaseClassTypeName.Contains("CommandBase"))
+      {
+        return "LoadProperty";
+      }
+      return string.Empty;
     }
-
     #endregion
 
   }

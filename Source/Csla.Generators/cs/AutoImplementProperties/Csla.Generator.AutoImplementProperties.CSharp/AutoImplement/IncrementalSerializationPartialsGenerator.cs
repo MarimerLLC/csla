@@ -1,11 +1,11 @@
 using System.Text;
-using Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discovery;
+using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
   /// <summary>
   /// Generates partial classes for incremental serialization based on the presence of the <see cref="Csla.Serialization.AutoImplementPropertiesAttribute"/> attribute.

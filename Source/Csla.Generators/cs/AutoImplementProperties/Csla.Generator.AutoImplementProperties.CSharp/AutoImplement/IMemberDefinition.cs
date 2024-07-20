@@ -6,7 +6,7 @@
 // <summary>The contract which a member definition must fulfil</summary>
 //-----------------------------------------------------------------------
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
 
   /// <summary>

@@ -6,7 +6,7 @@
 // <summary>The results of source generation</summary>
 //-----------------------------------------------------------------------
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
 
   /// <summary>

@@ -6,7 +6,7 @@
 // <summary>The definition of a property, extracted from the syntax tree provided by Roslyn</summary>
 //-----------------------------------------------------------------------
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
 
   /// <summary>
@@ -33,7 +33,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
     /// <summary>
     /// The attribute definitions for this property
     /// </summary>
-    public List<ExtractedAttributeDefinition> AttributeDefinitions { get; } = new List<ExtractedAttributeDefinition>();
+    public List<ExtractedAttributeDefinition> AttributeDefinitions { get; } = [];
 
     /// <summary>
     /// Gets or sets a value indicating whether this property has a getter.
@@ -49,6 +49,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization
     /// The modifiers for this property
     /// </summary>
     public string[] Modifiers { get; internal set; }
+    /// <summary>
+    /// Gets or sets a value indicating whether this property is partial.
+    /// </summary>
+    public bool Partial { get; internal set; }
   }
 
 }

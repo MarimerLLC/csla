@@ -8,7 +8,7 @@
 
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discovery
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 {
 
   /// <summary>
@@ -72,36 +72,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoSerialization.Discov
 
       // Get public or internal properties that are not specifically opted out with the [AutoNonSerialized] attribute
       serializableProperties = targetTypeDeclaration.Members.Where(
-        m => m is PropertyDeclarationSyntax propertyDeclaration &&
-        HasOneOfScopes(extractionContext, propertyDeclaration, "partial"))
+        m => m is PropertyDeclarationSyntax propertyDeclaration)
         .Cast<PropertyDeclarationSyntax>()
         .ToList();
 
       return serializableProperties;
     }
-
-
-    /// <summary>
-    /// Determine if a property has one of the scopes requested by a caller
-    /// </summary>
-    /// <param name="context">The definition extraction context for this extraction</param>
-    /// <param name="propertyDeclaration">The declaration of the property being tested</param>
-    /// <param name="scopes">The list of scopes in which the caller is interested</param>
-    /// <returns>Boolean true if the property has one of the scopes requested by the caller, else false</returns>
-    private static bool HasOneOfScopes(DefinitionExtractionContext context, PropertyDeclarationSyntax propertyDeclaration, params string[] scopes)
-    {
-      foreach (string scope in scopes)
-      {
-        if (propertyDeclaration.Modifiers.Any(m => m.ValueText.Equals(scope, StringComparison.InvariantCultureIgnoreCase)))
-        {
-          return true;
-        }
-      }
-
-      return false;
-    }
-
-
 
     #endregion
 

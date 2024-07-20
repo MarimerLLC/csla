@@ -15,7 +15,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
   /// </summary>
   /// <remarks>The class is decorated with the AutoSerializable attribute so that it is picked up by our source generator</remarks>
   [AutoImplementProperties]
-  public partial class NestingPOCO : ReadOnlyBase<NestingPOCO>
+  public partial class ReadOnlyPOCO : ReadOnlyBase<ReadOnlyPOCO>
   {
 
     public partial string Name { get; private set; }

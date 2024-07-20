@@ -36,7 +36,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       foreach (PropertyDeclarationSyntax propertyDeclaration in serializableProperties)
       {
         propertyDefinition = PropertyDefinitionExtractor.ExtractPropertyDefinition(extractionContext, propertyDeclaration);
-        if (extractionContext.FilterPartialProperties && propertyDefinition.Partial)
+        if ((extractionContext.FilterPartialProperties && propertyDefinition.Partial) || !extractionContext.FilterPartialProperties)
         {
           propertyDefinitions.Add(propertyDefinition);
         }

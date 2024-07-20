@@ -18,6 +18,61 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
   /// </summary>
   internal static class TypeDefinitionExtractor
   {
+    public static ExtractedTypeDefinition ExtractTypeDefinitionForInterfaces(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax typeDeclarationSyntax)
+    {
+      var extractedTypeDefinition = ExtractTypeDefinition(extractionContext, typeDeclarationSyntax);
+
+      // Assuming you have the typeDeclarationSyntax of the class
+      if (typeDeclarationSyntax.AttributeLists.Count > 0)
+      {
+        // Find the AutoImplementPropertiesInterfaceAttribute attribute
+        var attribute = typeDeclarationSyntax.AttributeLists
+            .SelectMany(al => al.Attributes)
+            .FirstOrDefault(a => a.Name.ToString().StartsWith("AutoImplementPropertiesInterface"));
+
+        if (attribute != null)
+        {
+          var genericName = attribute.Name as GenericNameSyntax;
+          // Get the generic argument of the attribute
+          var genericArgument = genericName?.TypeArgumentList?.Arguments.FirstOrDefault();
+
+
+          // Get the type symbol of the generic argument
+          var semanticModel = extractionContext.SemanticModel;
+          var typeSymbol = semanticModel.GetTypeInfo(genericArgument).Type;
+
+          // Check if the type symbol is an interface
+          if (typeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.TypeKind == TypeKind.Interface)
+          {
+            // Get the InterfaceDeclarationSyntax of the generic parameter
+            var interfaceDeclarationSyntax = namedTypeSymbol.DeclaringSyntaxReferences
+                .Select(r => r.GetSyntax())
+                .OfType<InterfaceDeclarationSyntax>()
+                .FirstOrDefault();
+
+            if (interfaceDeclarationSyntax != null)
+            {
+              foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, interfaceDeclarationSyntax))
+              {
+                if (!propertyDefinition.Modifiers.Any())
+                {
+                  propertyDefinition.Modifiers = extractedTypeDefinition.DefaultPropertyModifiers;
+                }
+                if (!propertyDefinition.Setter)
+                {
+                  propertyDefinition.SetterModifiers = ["private"];
+                  propertyDefinition.Setter = true;
+                }
+                extractedTypeDefinition.Properties.Add(propertyDefinition);
+              }
+            }
+          }
+
+        }
+      }
+      return extractedTypeDefinition;
+    }
+
 
     /// <summary>
     /// Extract the data that will be needed for source generation from the syntax tree provided
@@ -35,6 +90,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       definition.Namespace = GetNamespace(targetTypeDeclaration);
       definition.Scope = GetScopeDefinition(targetTypeDeclaration);
       definition.BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration);
+      definition.DefaultPropertyModifiers = ["public"];
+      definition.DefaultPropertySetterModifiers = [];
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
       {

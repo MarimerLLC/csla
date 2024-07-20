@@ -28,13 +28,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
               {
                 if (ctx.TargetNode is TypeDeclarationSyntax typeDeclarationSyntax)
                 {
-                  return TypeDefinitionExtractor.ExtractTypeDefinition(new DefinitionExtractionContext(ctx.SemanticModel, true, false), typeDeclarationSyntax);
+                  return TypeDefinitionExtractor.ExtractTypeDefinitionForInterfaces(new DefinitionExtractionContext(ctx.SemanticModel, true, false), typeDeclarationSyntax);
                 }
                 return null;
               })
           .Where(static m => m is not null);
 
-      var compilation = context.CompilationProvider.Select((c, _) => new { ((CSharpCompilation)c).LanguageVersion, Nullable = c.Options.NullableContextOptions.AnnotationsEnabled() });
+      var compilation = context.CompilationProvider.Select((c, _) => c.Options.NullableContextOptions.AnnotationsEnabled());
       // Combine the collected syntax nodes with the semantic model
       var compilationAndClasses = compilation.Combine(classDeclarations.Collect());
 
@@ -42,7 +42,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
         var (nullable, classes) = source;
-        SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable.Nullable);
+        SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable);
         foreach (var typeDefinition in classes)
         {
           // Build the text for the generated type using the builder

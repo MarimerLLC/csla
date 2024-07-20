@@ -48,6 +48,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// The name of the base class for the type
     /// </summary>
     public string BaseClassTypeName { get; internal set; }
+
+    /// <summary>
+    /// The modifiers for this property
+    /// </summary>
+    public string[] DefaultPropertyModifiers { get; internal set; }
+
+
+    /// <summary>
+    /// The modifiers for the setter of this property
+    /// </summary>
+    public string[] DefaultPropertySetterModifiers { get; internal set; }
   }
 
 }

@@ -145,7 +145,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       {
         AppendSerializeChildFragment(textWriter, propertyDefinition, typeDefinition);
       }
-      textWriter.WriteLine();
     }
 
     /// <summary>

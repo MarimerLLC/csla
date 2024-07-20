@@ -49,10 +49,16 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// The modifiers for this property
     /// </summary>
     public string[] Modifiers { get; internal set; }
+
     /// <summary>
     /// Gets or sets a value indicating whether this property is partial.
     /// </summary>
     public bool Partial { get; internal set; }
+
+    /// <summary>
+    /// The modifiers for the setter of this property
+    /// </summary>
+    public string[] SetterModifiers { get; internal set; }
   }
 
 }

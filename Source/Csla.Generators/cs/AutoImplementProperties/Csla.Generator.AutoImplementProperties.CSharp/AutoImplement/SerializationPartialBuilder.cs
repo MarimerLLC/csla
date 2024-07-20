@@ -102,7 +102,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <returns>A hashset of all of the namespaces required for generation</returns>
     private HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
     {
-      HashSet<string> requiredNamespaces = ["System"];
+      HashSet<string> requiredNamespaces = ["System", "Csla"];
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
@@ -121,6 +121,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <param name="typeDefinition">The definition of the type for which we are generating</param>
     private void AppendTypeDefinition(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
     {
+      textWriter.WriteLine($"namespace {typeDefinition.Namespace};");
+      textWriter.WriteLine();
+
       textWriter.WriteLine("[Serializable]");
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");
@@ -163,11 +166,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       foreach (ExtractedAttributeDefinition attributeDefinition in propertyDefinition.AttributeDefinitions)
       {
         var constructorArguments = string.Join(", ", attributeDefinition.ConstructorArguments);
+        var separator = attributeDefinition.ConstructorArguments.Any() ? "," : "";
         var namedProperties = string.Join(", ", attributeDefinition.NamedProperties.Select(kv => $"{kv.Key}={kv.Value}"));
-        textWriter.WriteLine($"[{attributeDefinition.AttributeName}({constructorArguments}, {namedProperties})]");
+        textWriter.WriteLine($"[{attributeDefinition.AttributeName}({constructorArguments}{separator} {namedProperties})]");
       }
 
-      textWriter.WriteLine($"public {propertyDefinition.TypeDefinition.TypeName} {propertyDefinition.PropertyName}");
+      textWriter.WriteLine($"{string.Join(" ", propertyDefinition.Modifiers)} {propertyDefinition.TypeDefinition.TypeName} {propertyDefinition.PropertyName}");
       AppendBlockStart(textWriter);
       if (propertyDefinition.Getter)
       {
@@ -176,11 +180,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
       if (propertyDefinition.Setter)
       {
-        textWriter.WriteLine($"set => {setter}({propertyDefinition.PropertyName}Property, value);");
-      }
-      else
-      {
-        textWriter.WriteLine($"private set => {setter}({propertyDefinition.PropertyName}Property, value);");
+        var setterseparator = propertyDefinition.SetterModifiers.Any() ? " " : "";
+        textWriter.WriteLine($"{string.Join(" ", propertyDefinition.SetterModifiers)}{setterseparator}set => {setter}({propertyDefinition.PropertyName}Property, value);");
       }
 
       AppendBlockEnd(textWriter);

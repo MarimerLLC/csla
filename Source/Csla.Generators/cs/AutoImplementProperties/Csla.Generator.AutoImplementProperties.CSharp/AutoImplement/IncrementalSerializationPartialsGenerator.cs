@@ -28,7 +28,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
               {
                 if (ctx.TargetNode is TypeDeclarationSyntax typeDeclarationSyntax)
                 {
-                  return TypeDefinitionExtractor.ExtractTypeDefinition(new DefinitionExtractionContext(ctx.SemanticModel), typeDeclarationSyntax);
+                  return TypeDefinitionExtractor.ExtractTypeDefinition(new DefinitionExtractionContext(ctx.SemanticModel, false, true), typeDeclarationSyntax);
                 }
                 return null;
               })

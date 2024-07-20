@@ -14,9 +14,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
   /// <summary>
   /// Helper for definition extraction, used to optimise symbol recognition
   /// </summary>
-  internal class DefinitionExtractionContext(SemanticModel _semanticModel)
+  internal class DefinitionExtractionContext(SemanticModel _semanticModel, bool _addAttributes, bool _filterPartialProperties)
   {
     public SemanticModel SemanticModel => _semanticModel;
+
+    public bool AddAttributes => _addAttributes;
+
+    public bool FilterPartialProperties => _filterPartialProperties;
 
     /// <summary>
     /// Get the namespace of the type represented by a type declaration

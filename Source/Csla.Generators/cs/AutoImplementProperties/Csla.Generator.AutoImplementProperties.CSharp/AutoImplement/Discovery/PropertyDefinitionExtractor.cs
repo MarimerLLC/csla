@@ -33,8 +33,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       propertyDefinition.PropertyName = GetPropertyName(extractionContext, propertyDeclaration);
       propertyDefinition.Getter = HasGetter(propertyDeclaration);
       propertyDefinition.Setter = HasSetter(propertyDeclaration);
+      propertyDefinition.SetterModifiers = GetSetterModifiers(propertyDeclaration);
       propertyDefinition.Modifiers = GetPropertyModifiers(propertyDeclaration);
-      propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration));
+      propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration, extractionContext));
       propertyDefinition.Partial = IsPartial(propertyDeclaration);
 
       propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
@@ -109,21 +110,24 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       return modifiers;
     }
 
-    private static List<ExtractedAttributeDefinition> GetPropertyAttributes(PropertyDeclarationSyntax propertyDeclaration)
+    private static List<ExtractedAttributeDefinition> GetPropertyAttributes(PropertyDeclarationSyntax propertyDeclaration, DefinitionExtractionContext extractionContext)
     {
       List<ExtractedAttributeDefinition> attributes = [];
-
+      if (!extractionContext.AddAttributes)
+      {
+        return attributes;
+      }
       foreach (var attributeList in propertyDeclaration.AttributeLists)
       {
         foreach (var attribute in attributeList.Attributes)
         {
           ExtractedAttributeDefinition attributeDefinition = new ExtractedAttributeDefinition();
           attributeDefinition.AttributeName = attribute.Name.ToString();
-
-          // Add constructor arguments
-          foreach (var argument in attribute.ArgumentList.Arguments)
+          var namespaceSymbol = extractionContext.SemanticModel.GetSymbolInfo(attribute.Name).Symbol?.ContainingNamespace;
+          if (namespaceSymbol != null)
           {
-            attributeDefinition.ConstructorArguments.Add(argument.Expression.ToString());
+            var namespaceName = namespaceSymbol.ToDisplayString();
+            attributeDefinition.AttributeName = $"{namespaceName}.{attributeDefinition.AttributeName}";
           }
 
           // Add named properties
@@ -132,6 +136,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
             if (argument.NameEquals != null)
             {
               attributeDefinition.NamedProperties.Add(argument.NameEquals.Name.ToString(), argument.Expression.ToString());
+            }
+            else
+            {
+              attributeDefinition.ConstructorArguments.Add(argument.Expression.ToString());
             }
           }
 
@@ -149,6 +157,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private static bool IsPartial(PropertyDeclarationSyntax propertyDeclaration)
     {
       return propertyDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
+    }
+
+    /// <summary>
+    /// Get the setter modifiers for a property declaration.
+    /// </summary>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the property declaration.</param>
+    /// <returns>An array of strings representing the setter modifiers.</returns>
+    private static string[] GetSetterModifiers(PropertyDeclarationSyntax propertyDeclaration)
+    {
+      var setterModifiers = propertyDeclaration.AccessorList?.Accessors
+          .Where(a => a.Kind() == SyntaxKind.SetAccessorDeclaration)
+          .SelectMany(a => a.Modifiers)
+          .Select(m => m.ToString())
+          .ToArray();
+
+      return setterModifiers;
     }
 
     #endregion

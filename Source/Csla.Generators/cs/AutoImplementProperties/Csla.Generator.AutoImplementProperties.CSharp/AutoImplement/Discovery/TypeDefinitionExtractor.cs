@@ -30,10 +30,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       ExtractedTypeDefinition definition = new ExtractedTypeDefinition();
       StringBuilder fullyQualifiedNameBuilder = new StringBuilder();
 
-      definition.TypeName = GetTypeName(extractionContext, targetTypeDeclaration);
-      definition.TypeKind = GetTypeKind(extractionContext, targetTypeDeclaration);
-      definition.Namespace = GetNamespace(extractionContext, targetTypeDeclaration);
-      definition.Scope = GetScopeDefinition(extractionContext, targetTypeDeclaration);
+      definition.TypeName = GetTypeName(targetTypeDeclaration);
+      definition.TypeKind = GetTypeKind(targetTypeDeclaration);
+      definition.Namespace = GetNamespace(targetTypeDeclaration);
+      definition.Scope = GetScopeDefinition(targetTypeDeclaration);
       definition.BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration);
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
@@ -77,10 +77,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Extract the namespace of the type for which we will be generating code
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The namespace of the type for which generation is being performed</returns>
-    private static string GetNamespace(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetNamespace(TypeDeclarationSyntax targetTypeDeclaration)
     {
       string namespaceName = string.Empty;
       NamespaceDeclarationSyntax namespaceDeclaration;
@@ -105,10 +104,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Extract the scope of the type for which we will be generating code
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The scope of the type for which generation is being performed</returns>
-    private static string GetScopeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetScopeDefinition(TypeDeclarationSyntax targetTypeDeclaration)
     {
       StringBuilder scopeNameBuilder = new StringBuilder();
 
@@ -158,10 +156,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Extract the name of the type for which we will be generating code
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the type for which generation is being performed</returns>
-    private static string GetTypeName(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetTypeName(TypeDeclarationSyntax targetTypeDeclaration)
     {
       return targetTypeDeclaration.Identifier.ToString();
     }
@@ -169,10 +166,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Extract the textual definition of the kind that this type represents
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The kind of the type for which generation is being performed</returns>
-    private static string GetTypeKind(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetTypeKind(TypeDeclarationSyntax targetTypeDeclaration)
     {
       return targetTypeDeclaration.Keyword.ToString();
     }

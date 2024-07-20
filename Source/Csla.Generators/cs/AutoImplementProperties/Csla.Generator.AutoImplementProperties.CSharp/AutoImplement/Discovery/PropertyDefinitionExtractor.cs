@@ -28,19 +28,20 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedPropertyDefinition ExtractPropertyDefinition(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
-      ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
-
-      propertyDefinition.PropertyName = GetPropertyName(extractionContext, propertyDeclaration);
-      propertyDefinition.Getter = HasGetter(propertyDeclaration);
-      propertyDefinition.Setter = HasSetter(propertyDeclaration);
-      propertyDefinition.SetterModifiers = GetSetterModifiers(propertyDeclaration);
-      propertyDefinition.Modifiers = GetPropertyModifiers(propertyDeclaration);
+      ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition
+      {
+        PropertyName = GetPropertyName(propertyDeclaration),
+        Getter = HasGetter(propertyDeclaration),
+        Setter = HasSetter(propertyDeclaration),
+        SetterModifiers = GetSetterModifiers(propertyDeclaration),
+        Modifiers = GetPropertyModifiers(propertyDeclaration),
+        Partial = IsPartial(propertyDeclaration)
+      };
       propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration, extractionContext));
-      propertyDefinition.Partial = IsPartial(propertyDeclaration);
 
-      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
+      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(propertyDeclaration);
       propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
-      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, propertyDeclaration);
+      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(propertyDeclaration);
 
       return propertyDefinition;
     }
@@ -49,10 +50,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Determines whether the field type is nullable.
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed.</param>
     /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the field declaration.</param>
     /// <returns><c>true</c> if the field type is nullable; otherwise, <c>false</c>.</returns>
-    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
+    private static bool GetFieldTypeNullable(PropertyDeclarationSyntax propertyDeclaration)
     {
       return propertyDeclaration.Type is NullableTypeSyntax;
     }
@@ -60,10 +60,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Extract the name of the property for which we are building information
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the property for which we are extracting information</returns>
-    private static string GetPropertyName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
+    private static string GetPropertyName(PropertyDeclarationSyntax propertyDeclaration)
     {
       return propertyDeclaration.Identifier.ValueText;
     }
@@ -71,10 +70,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Extract the type name of the property for which we are building information
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The type name of the property for which we are extracting information</returns>
-    private static string GetPropertyTypeName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
+    private static string GetPropertyTypeName(PropertyDeclarationSyntax propertyDeclaration)
     {
       return propertyDeclaration.Type.ToString();
     }
@@ -121,8 +119,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       {
         foreach (var attribute in attributeList.Attributes)
         {
-          ExtractedAttributeDefinition attributeDefinition = new ExtractedAttributeDefinition();
-          attributeDefinition.AttributeName = attribute.Name.ToString();
+          ExtractedAttributeDefinition attributeDefinition = new ExtractedAttributeDefinition
+          {
+            AttributeName = attribute.Name.ToString()
+          };
           var namespaceSymbol = extractionContext.SemanticModel.GetSymbolInfo(attribute.Name).Symbol?.ContainingNamespace;
           if (namespaceSymbol != null)
           {

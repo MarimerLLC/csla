@@ -14,9 +14,9 @@ namespace Csla.Analyzers.Tests
       Assert.AreEqual(2, diagnostics.Length);
 
       var ctorHasParametersDiagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.ConstructorHasParameters);
-      Assert.AreEqual(ConstructorHasParametersConstants.Title, ctorHasParametersDiagnostic.Title.ToString(),
+      Assert.AreEqual("Find CSLA Business Objects That Have Constructors With Parameters", ctorHasParametersDiagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(ConstructorHasParametersConstants.Message, ctorHasParametersDiagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("CSLA business objects should not have public constructors with parameters", ctorHasParametersDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, ctorHasParametersDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
@@ -27,9 +27,9 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.HelpLinkUri));
 
       var publicNoArgsCtorDiagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing);
-      Assert.AreEqual(PublicNoArgumentConstructorIsMissingConstants.Title, publicNoArgsCtorDiagnostic.Title.ToString(),
+      Assert.AreEqual("Find CSLA Business Objects That do not Have Public No-Arugment Constructors", publicNoArgsCtorDiagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(PublicNoArgumentConstructorIsMissingConstants.Message, publicNoArgsCtorDiagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("CSLA business objects must have a public constructor with no arguments", publicNoArgsCtorDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, publicNoArgsCtorDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

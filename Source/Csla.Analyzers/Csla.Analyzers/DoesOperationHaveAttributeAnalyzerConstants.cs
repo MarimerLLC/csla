@@ -1,16 +1,19 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
   public static class DoesOperationHaveAttributeAnalyzerConstants
   {
-    public const string Title = "Find Operations That Do Not Have an Operation Attribute";
-    public const string IdentifierText = "DoesOperationHaveAttribute";
-    public const string Message = "Operations should have the appropriate operation attribute";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.DoesOperationHaveAttribute_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.DoesOperationHaveAttribute_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   public static class DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants
   {
-    public const string AddAttributeAndUsingDescription = "Add attribute and using statement";
-    public const string AddAttributeDescription = "Add attribute";
+    public static string AddAttributeAndUsingDescription => Resources.Shared_AddAttributeAndUsingDescription;
+    public static string AddAttributeDescription => Resources.Shared_AddAttributeDescription;
     public const string CslaNamespace = "Csla";
   }
 }

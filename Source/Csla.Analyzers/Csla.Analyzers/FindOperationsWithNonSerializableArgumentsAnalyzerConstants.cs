@@ -1,9 +1,12 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
   public static class FindOperationsWithNonSerializableArgumentsConstants
   {
-    public const string Title = "Find Operation Arguments That Are Not Serializable";
-    public const string IdentifierText = "FindOperationsWithNonSerializableArguments";
-    public const string Message = "Operation argument types should be serializable";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.FindOperationsWithNonSerializableArguments_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindOperationsWithNonSerializableArguments_Message), Resources.ResourceManager, typeof(Resources));
   }
 }

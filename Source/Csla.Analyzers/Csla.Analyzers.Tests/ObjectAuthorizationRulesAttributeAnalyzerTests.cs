@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var attributeMissingDiagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesAttributeMissing, attributeMissingDiagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(ObjectAuthorizationRulesAttributeAnalyzerConstants.AttributeMissingTitle, attributeMissingDiagnostic.Title.ToString(),
+      Assert.AreEqual("Find Authorization Rules Configuration That Do Not Have an Operation Attribute", attributeMissingDiagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(ObjectAuthorizationRulesAttributeAnalyzerConstants.AttributeMissingMessage, attributeMissingDiagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Authorization rules should use the appropriate operation attribute", attributeMissingDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, attributeMissingDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
@@ -31,9 +31,9 @@ namespace Csla.Analyzers.Tests
       var rulesConfigurationPublicDiagnostic = diagnostics[1];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesPublic, rulesConfigurationPublicDiagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesPublicTitle, rulesConfigurationPublicDiagnostic.Title.ToString(),
+      Assert.AreEqual("Find Authorization Rules Configuration That Is Not Public", rulesConfigurationPublicDiagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesPublicMessage, rulesConfigurationPublicDiagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Authorization rules should be declared as public methods", rulesConfigurationPublicDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, rulesConfigurationPublicDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
@@ -46,9 +46,9 @@ namespace Csla.Analyzers.Tests
       var rulesConfigurationStaticDiagnostic = diagnostics[2];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesStatic, rulesConfigurationStaticDiagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesStaticTitle, rulesConfigurationStaticDiagnostic.Title.ToString(),
+      Assert.AreEqual("Find Authorization Rules Configuration That Is Not Static", rulesConfigurationStaticDiagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesStaticMessage, rulesConfigurationStaticDiagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Authorization rules should be declared as static methods", rulesConfigurationStaticDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, rulesConfigurationStaticDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

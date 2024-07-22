@@ -1,26 +1,24 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
   public static class FindSaveAssignmentIssueAnalyzerConstants
   {
-    public const string Title = "Find Save() Calls That Ignore the Result";
-    public const string IdentifierText = "FindSaveAssignmentIssue";
-    public const string Message = "Do not ignore the result of Save()";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.FindSaveAssignmentIssue_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindSaveAssignmentIssue_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   public static class FindSaveAsyncAssignmentIssueAnalyzerConstants
   {
-    public const string Title = "Find SaveAsync() Calls That Ignore the Result";
-    public const string IdentifierText = "FindSaveAsyncAssignmentIssue";
-    public const string Message = "Do not ignore the result of SaveAsync()";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.FindSaveAsyncAssignmentIssue_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindSaveAsyncAssignmentIssue_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   public static class FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants
   {
-    public const string AddAssignmentDescription = "Add assignment";
-  }
-
-  public static class FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants
-  {
-    public const string AddAssignmentDescription = "Add assignment";
+    public static string AddAssignmentDescription => Resources.FindSaveAssignmentIssue_AddAssignmentDescription;
   }
 }

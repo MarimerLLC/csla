@@ -1,30 +1,33 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
   public static class PublicNoArgumentConstructorIsMissingConstants
   {
     public const string HasNonPublicNoArgumentConstructor = "HasNonPublicNoArgumentConstructor";
-    public const string Title = "Find CSLA Business Objects That do not Have Public No-Arugment Constructors";
-    public const string IdentifierText = "PublicNoArgumentConstructorIsMissing";
-    public const string Message = "CSLA business objects must have a public constructor with no arguments";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.PublicNoArgumentConstructorIsMissing_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.PublicNoArgumentConstructorIsMissing_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   public static class ConstructorHasParametersConstants
   {
-    public const string Title = "Find CSLA Business Objects That Have Constructors With Parameters";
-    public const string IdentifierText = "ConstructorHasParameters";
-    public const string Message = "CSLA business objects should not have public constructors with parameters";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.ConstructorHasParameters_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.ConstructorHasParameters_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   public static class FindBusinessObjectCreationConstants
   {
-    public const string Title = "Find CSLA Business Objects That Are Created Outside of a ObjectFactory";
-    public const string IdentifierText = "BusinessObjectCreated";
-    public const string Message = "CSLA business objects should not be created outside of a ObjectFactory instance";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.FindBusinessObjectCreationConstants_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindBusinessObjectCreationConstants_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   public static class CheckConstructorsAnalyzerPublicConstructorCodeFixConstants
   {
-    public const string AddPublicConstructorDescription = "Add public constructor with no arguments";
-    public const string UpdateNonPublicConstructorToPublicDescription = "Update non-public constructor to public";
+    public static string AddPublicConstructorDescription => Resources.CheckConstructorsAnalyzerPublicConstructor_AddPublicConstructorDescription;
+    public static string UpdateNonPublicConstructorToPublicDescription => Resources.CheckConstructorsAnalyzerPublicConstructor_UpdateNonPublicConstructorToPublicDescription;
   }
 }

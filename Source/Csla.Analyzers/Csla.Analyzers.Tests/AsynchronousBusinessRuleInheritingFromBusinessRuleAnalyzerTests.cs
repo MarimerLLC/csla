@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Asynchronous Business Rules That Do Not Derive From BusinessRuleAsync", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Asynchronous business rules should derive from BusinessRuleAsync", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

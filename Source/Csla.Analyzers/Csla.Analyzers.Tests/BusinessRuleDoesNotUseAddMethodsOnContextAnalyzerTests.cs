@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.BusinessRuleContextUsage, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(BusinessRuleDoesNotUseAddMethodsOnContextAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Business Rules That Do Not Use Add() Methods on the Context", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(BusinessRuleDoesNotUseAddMethodsOnContextAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Business rules should use at least one Add() method on the context", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

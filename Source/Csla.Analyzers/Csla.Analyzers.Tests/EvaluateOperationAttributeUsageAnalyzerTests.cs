@@ -14,9 +14,9 @@ namespace Csla.Analyzers.Tests
       Assert.AreEqual(1, diagnostics.Length);
 
       var diagnostic = diagnostics.Single(_ => _.Id == Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect);
-      Assert.AreEqual(EvaluateOperationAttributeUsageAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Operation Attributes In Incorrect Places", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(EvaluateOperationAttributeUsageAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Operation attributes should only be used on methods within sterotypes or ObjectFactory and should not be static", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

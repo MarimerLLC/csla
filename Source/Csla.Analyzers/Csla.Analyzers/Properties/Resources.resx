@@ -1,0 +1,282 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Title" xml:space="preserve">
+    <value>Find Asynchronous Business Rules That Do Not Derive From BusinessRuleAsync</value>
+  </data>
+  <data name="AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Message" xml:space="preserve">
+    <value>Asynchronous business rules should derive from BusinessRuleAsync</value>
+  </data>
+  <data name="AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_UpdateToAsyncEquivalentsDescription" xml:space="preserve">
+    <value>Update base type to asynchronous equivalents</value>
+  </data>
+  <data name="BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer_Title" xml:space="preserve">
+    <value>Find Business Rules That Do Not Use Add() Methods on the Context</value>
+  </data>
+  <data name="BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer_Message" xml:space="preserve">
+    <value>Business rules should use at least one Add() method on the context</value>
+  </data>
+  <data name="PublicNoArgumentConstructorIsMissing_Title" xml:space="preserve">
+    <value>Find CSLA Business Objects That do not Have Public No-Arugment Constructors</value>
+  </data>
+  <data name="PublicNoArgumentConstructorIsMissing_Message" xml:space="preserve">
+    <value>CSLA business objects must have a public constructor with no arguments</value>
+  </data>
+  <data name="ConstructorHasParameters_Title" xml:space="preserve">
+    <value>Find CSLA Business Objects That Have Constructors With Parameters</value>
+  </data>
+  <data name="ConstructorHasParameters_Message" xml:space="preserve">
+    <value>CSLA business objects should not have public constructors with parameters</value>
+  </data>
+  <data name="FindBusinessObjectCreationConstants_Title" xml:space="preserve">
+    <value>Find CSLA Business Objects That Are Created Outside of a ObjectFactory</value>
+  </data>
+  <data name="FindBusinessObjectCreationConstants_Message" xml:space="preserve">
+    <value>CSLA business objects should not be created outside of a ObjectFactory instance</value>
+  </data>
+  <data name="CheckConstructorsAnalyzerPublicConstructor_AddPublicConstructorDescription" xml:space="preserve">
+    <value>Add public constructor with no arguments</value>
+  </data>
+  <data name="CheckConstructorsAnalyzerPublicConstructor_UpdateNonPublicConstructorToPublicDescription" xml:space="preserve">
+    <value>Update non-public constructor to public</value>
+  </data>
+  <data name="DoesChildOperationHaveRunLocal_Title" xml:space="preserve">
+    <value>Find Child Operations That Have [RunLocal]</value>
+  </data>
+  <data name="DoesChildOperationHaveRunLocal_Message" xml:space="preserve">
+    <value>Child operations should not have [RunLocal]</value>
+  </data>
+  <data name="DoesChildOperationHaveRunLocalRemoveAttribute_RemoveRunLocalDescription" xml:space="preserve">
+    <value>Remove [RunLocal]</value>
+  </data>
+  <data name="DoesOperationHaveAttribute_Title" xml:space="preserve">
+    <value>Find Operations That Do Not Have an Operation Attribute</value>
+  </data>
+  <data name="DoesOperationHaveAttribute_Message" xml:space="preserve">
+    <value>Operations should have the appropriate operation attribute</value>
+  </data>
+  <data name="Shared_AddAttributeAndUsingDescription" xml:space="preserve">
+    <value>Add attribute and using statement</value>
+  </data>
+  <data name="Shared_AddAttributeDescription" xml:space="preserve">
+    <value>Add attribute</value>
+  </data>
+  <data name="EvaluateManagedBackingFields_Title" xml:space="preserve">
+    <value>Evaluate Managed Backing Fields</value>
+  </data>
+  <data name="EvaluateManagedBackingFields_Message" xml:space="preserve">
+    <value>Managed backing fields must be public, static and read-only</value>
+  </data>
+  <data name="EvaluateManagedBackingFields_FixManagedBackingFieldDescription" xml:space="preserve">
+    <value>Fix managed backing field declaration</value>
+  </data>
+  <data name="EvaluateOperationAttributeUsage_Title" xml:space="preserve">
+    <value>Find Operation Attributes In Incorrect Places</value>
+  </data>
+  <data name="EvaluateOperationAttributeUsage_Message" xml:space="preserve">
+    <value>Operation attributes should only be used on methods within sterotypes or ObjectFactory and should not be static</value>
+  </data>
+  <data name="OnlyUseCslaPropertyMethodsInGetSetRule_Title" xml:space="preserve">
+    <value>Evaluate Properties for Simplicity</value>
+  </data>
+  <data name="OnlyUseCslaPropertyMethodsInGetSetRule_Message" xml:space="preserve">
+    <value>Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypes_Title" xml:space="preserve">
+    <value>Find Operations With Incorrect Return Types</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypes_Message" xml:space="preserve">
+    <value>The return type from an operation should be either void or Task</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToTaskDescription" xml:space="preserve">
+    <value>Change return type to Task</value>
+  </data>
+  <data name="FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToVoidDescription" xml:space="preserve">
+    <value>Change return type to void</value>
+  </data>
+  <data name="FindOperationsWithNonSerializableArguments_Title" xml:space="preserve">
+    <value>Find Operation Arguments That Are Not Serializable</value>
+  </data>
+  <data name="FindOperationsWithNonSerializableArguments_Message" xml:space="preserve">
+    <value>Operation argument types should be serializable</value>
+  </data>
+  <data name="FindRefAndOutParametersInOperations_Title" xml:space="preserve">
+    <value>Find Ref or Out Parameters in Operations</value>
+  </data>
+  <data name="FindRefAndOutParametersInOperations_Message" xml:space="preserve">
+    <value>Operations should not have ref or out parameters</value>
+  </data>
+  <data name="FindSaveAssignmentIssue_Title" xml:space="preserve">
+    <value>Find Save() Calls That Ignore the Result</value>
+  </data>
+  <data name="FindSaveAssignmentIssue_Message" xml:space="preserve">
+    <value>Do not ignore the result of Save()</value>
+  </data>
+  <data name="FindSaveAsyncAssignmentIssue_Title" xml:space="preserve">
+    <value>Find SaveAsync() Calls That Ignore the Result</value>
+  </data>
+  <data name="FindSaveAsyncAssignmentIssue_Message" xml:space="preserve">
+    <value>Do not ignore the result of SaveAsync()</value>
+  </data>
+  <data name="FindSaveAssignmentIssue_AddAssignmentDescription" xml:space="preserve">
+    <value>Add assignment</value>
+  </data>
+  <data name="IsCompleteCalledInAsynchronousBusinessRule_Title" xml:space="preserve">
+    <value>Find Calls to Complete() in Asynchronous Business Rules</value>
+  </data>
+  <data name="IsCompleteCalledInAsynchronousBusinessRule_Message" xml:space="preserve">
+    <value>Complete() should not be called in an asynchronous business rule</value>
+  </data>
+  <data name="IsCompleteCalledInAsynchronousBusinessRule_RemoveCompleteCalls" xml:space="preserve">
+    <value>Remove Complete() calls</value>
+  </data>
+  <data name="IsOperationMethodPublic_Title" xml:space="preserve">
+    <value>Find CSLA Operations That are Public</value>
+  </data>
+  <data name="IsOperationMethodPublic_Message" xml:space="preserve">
+    <value>CSLA operations should not be public</value>
+  </data>
+  <data name="IsOperationMethodPublic_InternalDescription" xml:space="preserve">
+    <value>Make CSLA operation internal</value>
+  </data>
+  <data name="IsOperationMethodPublic_ProtectedDescription" xml:space="preserve">
+    <value>Make CSLA operation protected</value>
+  </data>
+  <data name="IsOperationMethodPublic_PrivateDescription" xml:space="preserve">
+    <value>Make CSLA operation private</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_AttributeMissingTitle" xml:space="preserve">
+    <value>Find Authorization Rules Configuration That Do Not Have an Operation Attribute</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_AttributeMissingMessage" xml:space="preserve">
+    <value>Authorization rules should use the appropriate operation attribute</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesPublicTitle" xml:space="preserve">
+    <value>Find Authorization Rules Configuration That Is Not Public</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesPublicMessage" xml:space="preserve">
+    <value>Authorization rules should be declared as public methods</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesStaticTitle" xml:space="preserve">
+    <value>Find Authorization Rules Configuration That Is Not Static</value>
+  </data>
+  <data name="ObjectAuthorizationRulesAttribute_RulesStaticMessage" xml:space="preserve">
+    <value>Authorization rules should be declared as static methods</value>
+  </data>
+</root>

@@ -110,6 +110,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="obj">Object to be serialized.</param>
     public SerializationInfo SerializeObject(object obj)
     {
+      var options = GetOptions();
       SerializationInfo info;
       if (obj == null)
       {
@@ -118,7 +119,7 @@ namespace Csla.Serialization.Mobile
         info = new SerializationInfo(_serializationReferences.Count + 1);
         _serializationReferences.Add(nullPlaceholder, info);
 
-        info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(typeof(NullPlaceholder));
+        info.TypeName = AssemblyNameTranslator.GetSerializationName(typeof(NullPlaceholder), options.UseStrongNamesCheck);
       }
       else if (!_serializationReferences.TryGetValue(obj, out info))
       {
@@ -127,13 +128,12 @@ namespace Csla.Serialization.Mobile
           info = new SerializationInfo(_serializationReferences.Count + 1);
           _serializationReferences.Add(mobile, info);
 
-          info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
+          info.TypeName = AssemblyNameTranslator.GetSerializationName(obj.GetType(), options.UseStrongNamesCheck);
           mobile.GetChildren(info, this);
           mobile.GetState(info);
         }
         else
         {
-          var options = GetOptions();
           var serializerType = options.CustomSerializers.FirstOrDefault(
             s => s.CanSerialize(obj.GetType()))?.SerializerType ??
             throw new InvalidOperationException(string.Format(Resources.MustImplementIMobileObject, obj.GetType().Name));
@@ -141,7 +141,7 @@ namespace Csla.Serialization.Mobile
           var serializer = (IMobileSerializer)applicationContext.CreateInstanceDI(serializerType);
           info = new SerializationInfo(_serializationReferences.Count + 1);
           _serializationReferences.Add(obj, info);
-          info.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(obj.GetType());
+          info.TypeName = AssemblyNameTranslator.GetSerializationName(obj.GetType(), options.UseStrongNamesCheck);
           try
           {
             serializer.Serialize(obj, info);

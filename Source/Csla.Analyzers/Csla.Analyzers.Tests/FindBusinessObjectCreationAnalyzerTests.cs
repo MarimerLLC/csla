@@ -17,9 +17,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.FindBusinessObjectCreation, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(FindBusinessObjectCreationConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find CSLA Business Objects That Are Created Outside of a ObjectFactory", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(FindBusinessObjectCreationConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("CSLA business objects should not be created outside of a ObjectFactory instance", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

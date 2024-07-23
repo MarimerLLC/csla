@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(DoesChildOperationHaveRunLocalAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Child Operations That Have [RunLocal]", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(DoesChildOperationHaveRunLocalAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Child operations should not have [RunLocal]", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

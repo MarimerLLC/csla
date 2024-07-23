@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(DoesOperationHaveAttributeAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Operations That Do Not Have an Operation Attribute", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(DoesOperationHaveAttributeAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Operations should have the appropriate operation attribute", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

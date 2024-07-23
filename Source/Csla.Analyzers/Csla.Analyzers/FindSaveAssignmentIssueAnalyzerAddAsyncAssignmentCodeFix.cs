@@ -51,9 +51,9 @@ namespace Csla.Analyzers
 
         context.RegisterCodeFix(
           CodeAction.Create(
-            FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription,
+            FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants.AddAssignmentDescription,
             _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-            FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription), diagnostic);
+            FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants.AddAssignmentDescription), diagnostic);
       }
     }
   }

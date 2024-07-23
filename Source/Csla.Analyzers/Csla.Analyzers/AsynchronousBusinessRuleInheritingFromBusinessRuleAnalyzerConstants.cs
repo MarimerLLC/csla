@@ -1,13 +1,17 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
   public static class AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants
   {
-    public const string Title = "Find Asynchronous Business Rules That Do Not Derive From BusinessRuleAsync";
-    public const string Message = "Asynchronous business rules should derive from BusinessRuleAsync";
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Title), Resources.ResourceManager, typeof(Resources));
+
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   public static class AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFixConstants
   {
-    public const string UpdateToAsyncEquivalentsDescription = "Update base type to asynchronous equivalents";
+    public static string UpdateToAsyncEquivalentsDescription => Resources.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_UpdateToAsyncEquivalentsDescription;
   }
 }

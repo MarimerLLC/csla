@@ -2,7 +2,7 @@
 
 namespace Csla.Generator.AutoImplementProperties.TestObjects
 {
-  [AutoImplementProperties]
+  [CslaImplementProperties]
   public partial class CommandPOCO : CommandBase<CommandPOCO>
   {
     public partial string CommandName { get; set; }

@@ -14,7 +14,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
   /// A class including a private nested class for which automatic serialization code is to be generated
   /// </summary>
   /// <remarks>The class is decorated with the AutoSerializable attribute so that it is picked up by our source generator</remarks>
-  [AutoImplementProperties]
+  [CslaImplementProperties]
   public partial class ReadOnlyPOCO : ReadOnlyBase<ReadOnlyPOCO>
   {
 

@@ -10,7 +10,7 @@ using Csla.Serialization;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
 {
-  [AutoImplementProperties]
+  [CslaImplementProperties]
   public partial class AddressPOCO : BusinessBase<AddressPOCO>
   {
     [Display(Name = "Address Line 1")]
@@ -23,6 +23,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
     public partial string County { get; set; }
 
     public partial string Postcode { get; set; }
+
+    [CslaIgnoreProperty]
+    public partial string IgnoredProperty { get; set; }
 
   }
 }

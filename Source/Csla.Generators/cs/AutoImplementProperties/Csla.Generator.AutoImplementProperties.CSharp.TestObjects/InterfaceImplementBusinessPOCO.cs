@@ -3,7 +3,7 @@ using Csla.Serialization;
 
 namespace Csla.Generator.AutoImplementProperties.TestObjects
 {
-  [AutoImplementPropertiesInterface<IInterfaceImplementBusinessPOCO>]
+  [CslaImplementPropertiesInterface<IInterfaceImplementBusinessPOCO>]
   public partial class InterfaceImplementBusinessPOCO : BusinessBase<InterfaceImplementBusinessPOCO>
   {
     private interface IInterfaceImplementBusinessPOCO

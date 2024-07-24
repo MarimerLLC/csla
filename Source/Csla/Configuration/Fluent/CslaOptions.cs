@@ -32,22 +32,6 @@ namespace Csla.Configuration
     public IServiceCollection Services { get; }
 
     /// <summary>
-    /// Sets the type for the IContextManager to 
-    /// be used by ApplicationContext.
-    /// </summary>
-    public CslaOptions UseContextManager<T>() where T : IContextManager
-    {
-      ContextManagerType = typeof(T);
-      return this;
-    }
-
-    /// <summary>
-    /// Gets the type for the IContextManager 
-    /// used by ApplicationContext.
-    /// </summary>
-    public Type ContextManagerType { get; private set; }
-
-    /// <summary>
     /// Sets a value indicating whether CSLA
     /// should fallback to using reflection instead of
     /// System.Linq.Expressions (true, default).

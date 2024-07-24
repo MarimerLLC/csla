@@ -9,6 +9,7 @@
 using Csla.Configuration;
 using Csla.Core;
 using Csla.TestHelpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,10 +34,22 @@ namespace Csla.Test.AppContext
     }
 
     [TestMethod]
+    public void UseDefaultApplicationContext()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      var serviceProvider = services.BuildServiceProvider();
+
+      var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+      Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(ApplicationContextManagerAsyncLocal));
+    }
+
+    [TestMethod]
     public void UseCustomApplicationContext()
     {
       var services = new ServiceCollection();
-      services.AddCsla(o => o.UseContextManager<ApplicationContextManagerTls>());
+      services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, ApplicationContextManagerTls>();
       var serviceProvider = services.BuildServiceProvider();
 
       var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();

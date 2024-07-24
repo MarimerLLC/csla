@@ -6,8 +6,11 @@
 // <summary>Context Manager configuration tests</summary>
 //-----------------------------------------------------------------------
 
+using System.Security.Claims;
 using Csla.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,6 +22,19 @@ namespace Csla.Blazor.Test.AppContext;
 [TestClass]
 public class ContextManagerTests
 {
+  [TestMethod]
+  public void UseApplicationContextManagerAspNetCore()
+  {
+    var services = new ServiceCollection();
+    services.AddTransient<IHttpContextAccessor, HttpContextAccessorFake>();
+    services.AddCsla(o => o
+      .AddAspNetCore());
+    var serviceProvider = services.BuildServiceProvider();
+
+    var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+    Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.AspNetCore.ApplicationContextManagerHttpContext));
+  }
+
   [TestMethod]
   public void UseApplicationContextManagerInMemory()
   {
@@ -64,4 +80,31 @@ public class AuthenticationStateProviderFake : AuthenticationStateProvider
   {
     throw new System.NotImplementedException();
   }
+}
+
+public class HttpContextAccessorFake : Microsoft.AspNetCore.Http.IHttpContextAccessor
+{
+  public Microsoft.AspNetCore.Http.HttpContext HttpContext { get; set; } = new HttpContextFake();
+}
+
+public class HttpContextFake : Microsoft.AspNetCore.Http.HttpContext
+{
+  public override IFeatureCollection Features => throw new NotImplementedException();
+
+  public override HttpRequest Request => throw new NotImplementedException();
+
+  public override HttpResponse Response => throw new NotImplementedException();
+
+  public override ConnectionInfo Connection => throw new NotImplementedException();
+
+  public override WebSocketManager WebSockets => throw new NotImplementedException();
+
+  public override ClaimsPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
+  public override IServiceProvider RequestServices { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override CancellationToken RequestAborted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+  public override void Abort() => throw new NotImplementedException();
 }

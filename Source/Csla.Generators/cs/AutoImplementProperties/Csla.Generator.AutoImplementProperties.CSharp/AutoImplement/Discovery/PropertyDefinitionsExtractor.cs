@@ -6,6 +6,7 @@
 // <summary>Extract the definitions of all properties of a type for source generation</summary>
 //-----------------------------------------------------------------------
 
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
@@ -32,7 +33,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       ExtractedPropertyDefinition propertyDefinition;
       IReadOnlyList<PropertyDeclarationSyntax> serializableProperties;
 
-      serializableProperties = GetSerializablePropertyDeclarations(targetTypeDeclaration);
+      serializableProperties = GetSerializablePropertyDeclarations(extractionContext, targetTypeDeclaration);
       foreach (PropertyDeclarationSyntax propertyDeclaration in serializableProperties)
       {
         propertyDefinition = PropertyDefinitionExtractor.ExtractPropertyDefinition(extractionContext, propertyDeclaration);
@@ -50,14 +51,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Get the property declarations for all properties which are to be serialized
     /// </summary>
+    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
     /// <returns>A readonly list of property declarations to be included in serialization</returns>
-    private static IReadOnlyList<PropertyDeclarationSyntax> GetSerializablePropertyDeclarations(TypeDeclarationSyntax targetTypeDeclaration)
+    private static IReadOnlyList<PropertyDeclarationSyntax> GetSerializablePropertyDeclarations(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       List<PropertyDeclarationSyntax> serializableProperties;
 
       // Get public or internal properties that are not specifically opted out with the [AutoNonSerialized] attribute
-      serializableProperties = GetPublicNonExcludedProperties(targetTypeDeclaration);
+      serializableProperties = GetPublicNonExcludedProperties(extractionContext, targetTypeDeclaration);
 
       return serializableProperties;
     }
@@ -65,15 +67,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <summary>
     /// Get the property declarations for all public properties which are not explicitly excluded from serialization
     /// </summary>
+    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
     /// <returns>A readonly list of property declarations to be included in serialization</returns>
-    private static List<PropertyDeclarationSyntax> GetPublicNonExcludedProperties(TypeDeclarationSyntax targetTypeDeclaration)
+    private static List<PropertyDeclarationSyntax> GetPublicNonExcludedProperties(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       List<PropertyDeclarationSyntax> serializableProperties;
 
       // Get public or internal properties that are not specifically opted out with the [AutoNonSerialized] attribute
       serializableProperties = targetTypeDeclaration.Members.Where(
-        m => m is PropertyDeclarationSyntax propertyDeclaration)
+        m => m is PropertyDeclarationSyntax propertyDeclaration &&
+        !extractionContext.IsPropertyDecoratedWithIgnoreProperty(propertyDeclaration))
         .Cast<PropertyDeclarationSyntax>()
         .ToList();
 

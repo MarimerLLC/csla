@@ -10,14 +10,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 {
-
   /// <summary>
   /// Helper for definition extraction, used to optimise symbol recognition
   /// </summary>
   internal class DefinitionExtractionContext(SemanticModel _semanticModel, bool _addAttributes, bool _filterPartialProperties)
   {
     public SemanticModel SemanticModel => _semanticModel;
+    private const string _serializationNamespace = "Csla.Serialization";
 
+    private const string _ignorePropertyAttributeName = "CslaIgnorePropertyAttribute";
     public bool AddAttributes => _addAttributes;
 
     public bool FilterPartialProperties => _filterPartialProperties;
@@ -83,6 +84,59 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
       // Recurse down remaining namespace sections until it is complete
       return IsMatchingNamespaceSymbol(namespaceSymbol.ContainingNamespace, remainingNamespace);
+    }
+
+    /// <summary>
+    /// Determine if a property declaration is marked as excluded from serialization
+    /// </summary>
+    /// <param name="propertyDeclaration">The declaration of the property being inspected</param>
+    /// <returns>Boolean true if the property is decorated with the AutoNonSerialized attribute, otherwise false</returns>
+    public bool IsPropertyDecoratedWithIgnoreProperty(PropertyDeclarationSyntax propertyDeclaration)
+    {
+      return IsPropertyDecoratedWith(propertyDeclaration, _ignorePropertyAttributeName, _serializationNamespace);
+    }
+
+    /// <summary>
+    /// Determine if two symbols represent the same attribute
+    /// </summary>
+    /// <param name="appliedAttributeSymbol">The attribute applied to the type we are testing</param>
+    /// <param name="desiredTypeName">The name of the attribute whose presence we are testing for</param>
+    /// <param name="desiredTypeNamespace">The namespace of the attribute whose presence we are testing for</param>
+    /// <returns>Boolean true if the symbol seems to represent the desired type by name and namespace</returns>
+    private bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, string desiredTypeName, string desiredTypeNamespace)
+    {
+      INamespaceSymbol namespaceSymbol;
+
+      // Match on the type name
+      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
+
+      // Match on the namespace of the type
+      namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
+      if (namespaceSymbol is null) return false;
+      return IsMatchingNamespaceSymbol(namespaceSymbol, desiredTypeNamespace);
+    }
+
+
+    /// <summary>
+    /// Determine if a property declaration syntax is decorated with an attribute of interest
+    /// </summary>
+    /// <param name="propertyDeclaration">The syntax node representing the property being investigated</param>
+    /// <param name="desiredAttributeTypeName">The name of the type of attribute of interest</param>
+    /// <param name="desiredAttributeTypeNamespace">The namespace of the type of attribute of interest</param>
+    /// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
+    private bool IsPropertyDecoratedWith(PropertyDeclarationSyntax propertyDeclaration, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
+    {
+      INamedTypeSymbol appliedAttributeSymbol;
+
+      foreach (AttributeSyntax attributeSyntax in propertyDeclaration.AttributeLists.SelectMany(al => al.Attributes))
+      {
+        appliedAttributeSymbol = _semanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
+        if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     #endregion

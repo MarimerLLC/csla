@@ -12,7 +12,5 @@ namespace Csla.Serialization
   /// Indicate that a type should be auto serialized
   /// </summary>
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
-  public class AutoImplementPropertiesInterfaceAttribute<T> : Attribute where T : class
-  {
-  }
+  public class CslaImplementPropertiesAttribute : Attribute;
 }

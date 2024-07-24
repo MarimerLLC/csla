@@ -124,7 +124,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       textWriter.WriteLine($"namespace {typeDefinition.Namespace};");
       textWriter.WriteLine();
 
-      textWriter.WriteLine("[Serializable]");
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");
       textWriter.Write(typeDefinition.TypeKind);

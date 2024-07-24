@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
   /// <summary>
-  /// Generates partial classes for incremental serialization based on the presence of the <see cref="Csla.Serialization.AutoImplementPropertiesAttribute"/> attribute.
+  /// Generates partial classes for incremental serialization based on the presence of the <see cref="Csla.Serialization.CslaImplementPropertiesAttribute"/> attribute.
   /// </summary>
   [Generator]
   public class IncrementalAutoImplementPropertiesPartialsGenerator : IIncrementalGenerator
@@ -21,7 +21,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     {
       // Register a syntax receiver to collect information during the initial parsing phase
       var classDeclarations = context.SyntaxProvider.ForAttributeWithMetadataName(
-              "Csla.Serialization.AutoImplementPropertiesAttribute",
+              "Csla.Serialization.CslaImplementPropertiesAttribute",
 
               predicate: static (s, _) => (s is ClassDeclarationSyntax || s is StructDeclarationSyntax) && s is TypeDeclarationSyntax type && type.Modifiers.Any(SyntaxKind.PartialKeyword),
               transform: static (ctx, _) =>

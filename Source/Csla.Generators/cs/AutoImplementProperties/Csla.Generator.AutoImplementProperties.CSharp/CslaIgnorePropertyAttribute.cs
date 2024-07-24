@@ -11,6 +11,6 @@ namespace Csla.Serialization
   /// <summary>
   /// Indicate that a type should be auto serialized
   /// </summary>
-  [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
-  public class AutoImplementPropertiesAttribute : Attribute;
+  [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+  public class CslaIgnorePropertyAttribute : Attribute;
 }

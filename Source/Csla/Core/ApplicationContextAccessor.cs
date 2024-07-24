@@ -41,7 +41,7 @@ namespace Csla.Core
       }
       if (ContextManager is null)
       {
-        ContextManager = new ApplicationContextManagerAsyncLocal();
+        throw new InvalidOperationException("ContextManager == null");
       }
     }
 

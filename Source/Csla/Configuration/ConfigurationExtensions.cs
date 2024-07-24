@@ -34,8 +34,8 @@ namespace Csla.Configuration
     public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions> options)
     {
       // ApplicationContext defaults
+      services.AddScoped<Core.IContextManagerLocal, Core.ApplicationContextManagerAsyncLocal>();
       services.AddScoped<Core.ApplicationContextAccessor>();
-      services.AddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));
       services.AddScoped<ApplicationContext>();
 
       // Custom configuration
@@ -54,7 +54,7 @@ namespace Csla.Configuration
       cslaOptions.AddRequiredDataPortalServices(services);
 
       // Default to using LocalProxy and local data portal
-      var proxyInit = services.Any(i => i.ServiceType.Equals(typeof(IDataPortalProxy)));
+      var proxyInit = services.Count(i => i.ServiceType.Equals(typeof(IDataPortalProxy))) > 0;
       if (!proxyInit)
       {
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
@@ -66,5 +66,37 @@ namespace Csla.Configuration
 
       return services;
     }
+
+    /// <summary>
+    /// Add CSLA .NET services for use by console applications.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <returns></returns>
+    public static CslaOptions AddConsoleApp(this CslaOptions options)
+    {
+      return AddConsoleApp(options, null);
+    }
+
+    /// <summary>
+    /// Add CSLA .NET services for use by console applications.
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="config"></param>
+    /// <returns></returns>
+    public static CslaOptions AddConsoleApp(this CslaOptions options, Action<ConsoleOptions> config)
+    {
+      var consoleOptions = new ConsoleOptions();
+      config?.Invoke(consoleOptions);
+
+      var services = options.Services;
+      services.AddScoped(_ => consoleOptions);
+      services.AddScoped<Core.IContextManager, Core.ApplicationContextManagerAsyncLocal>();
+      return options;
+    }
+
+    /// <summary>
+    /// Options for console applications.
+    /// </summary>
+    public class ConsoleOptions;
   }
 }

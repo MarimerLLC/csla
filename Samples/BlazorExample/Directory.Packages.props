@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CslaVersion>9.0.0-R24051102</CslaVersion>
+    <CslaVersion>9.0.0-alpha-g27c299cae5</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Csla" Version="$(CslaVersion)" />
@@ -9,7 +9,7 @@
     <PackageVersion Include="Csla.Blazor" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.Blazor.WebAssembly" Version="$(CslaVersion)" />
 
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
 
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />

@@ -11,11 +11,10 @@
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Title>CSLA .NET Blazor WebAssembly</Title>
     <PackageTags>CSLA;Blazor;aspnetcore;WebAssembly;wasm</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <DefineConstants>TRACE;BLAZOR</DefineConstants>
   </PropertyGroup>
 

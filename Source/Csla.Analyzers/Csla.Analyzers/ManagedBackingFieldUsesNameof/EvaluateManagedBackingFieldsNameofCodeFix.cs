@@ -9,16 +9,28 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
 {
+  /// <summary>
+  /// 
+  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class EvaluateManagedBackingFieldsNameofCodeFix
     : CodeFixProvider
   {
+    /// <summary>
+    /// 
+    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFieldsNameof);
 
 
+    /// <summary>
+    /// 
+    /// </summary>
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);

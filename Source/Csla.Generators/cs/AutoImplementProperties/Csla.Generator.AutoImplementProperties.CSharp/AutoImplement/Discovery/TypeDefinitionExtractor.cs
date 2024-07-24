@@ -28,7 +28,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         // Find the AutoImplementPropertiesInterfaceAttribute attribute
         var attribute = typeDeclarationSyntax.AttributeLists
             .SelectMany(al => al.Attributes)
-            .FirstOrDefault(a => a.Name.ToString().StartsWith("AutoImplementPropertiesInterface"));
+            .FirstOrDefault(a => a.Name.ToString().StartsWith(DefinitionExtractionContext.CslaImplementPropertiesAttribute));
 
         if (attribute != null)
         {

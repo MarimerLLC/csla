@@ -21,7 +21,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     {
       // Register a syntax receiver to collect information during the initial parsing phase
       var classDeclarations = context.SyntaxProvider.ForAttributeWithMetadataName(
-              "Csla.Serialization.CslaImplementPropertiesInterfaceAttribute`1",
+              DefinitionExtractionContext.CslaImplementPropertiesInterfaceAttributeFullName,
 
               predicate: static (s, _) => (s is ClassDeclarationSyntax || s is StructDeclarationSyntax) && s is TypeDeclarationSyntax type && type.Modifiers.Any(SyntaxKind.PartialKeyword),
               transform: static (ctx, _) =>

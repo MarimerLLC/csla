@@ -19,6 +19,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private const string _serializationNamespace = "Csla.Serialization";
 
     private const string _ignorePropertyAttributeName = "CslaIgnorePropertyAttribute";
+    public const string CslaImplementPropertiesAttribute = "CslaImplementPropertiesInterface";
+    public const string CslaImplementPropertiesAttributeFullName = "Csla.Serialization.CslaImplementPropertiesAttribute";
+    public const string CslaImplementPropertiesInterfaceAttributeFullName = "Csla.Serialization.CslaImplementPropertiesInterfaceAttribute`1";
     public bool AddAttributes => _addAttributes;
 
     public bool FilterPartialProperties => _filterPartialProperties;

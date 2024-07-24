@@ -74,9 +74,10 @@ namespace Csla.TestHelpers
       var services = new ServiceCollection();
 
       // Add Csla
-      services.TryAddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
+      //services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
       services.TryAddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
       services.AddCsla(customCslaOptions);
+      services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
 
       serviceProvider = services.BuildServiceProvider();
 

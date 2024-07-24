@@ -21,6 +21,7 @@ namespace Csla.Test.Serialization
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -39,6 +40,7 @@ namespace Csla.Test.Serialization
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 

@@ -35,6 +35,7 @@ public static class HttpTestServerFactory {
           )
         )
       );
+    clientServices.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
     clientServices.AddSingleton(testServer.CreateClient());
     var clientServiceProvider = clientServices.BuildServiceProvider();
 

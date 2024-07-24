@@ -34,18 +34,21 @@ namespace Csla.Test.AppContext
     }
 
     [TestMethod]
-    public void UseDefaultApplicationContext()
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void UseDefaultApplicationContextManager()
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      var mgrs = services.Where(s => s.ServiceType == typeof(IContextManager));
+      Assert.AreEqual(0, mgrs.Count(), "No context manager should be registered");
+
       var serviceProvider = services.BuildServiceProvider();
 
       var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
-      Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(ApplicationContextManagerAsyncLocal));
     }
 
     [TestMethod]
-    public void UseCustomApplicationContext()
+    public void UseCustomApplicationContextManager()
     {
       var services = new ServiceCollection();
       services.AddCsla();

@@ -36,7 +36,7 @@ namespace GraphMergerTest.BusinessTests
     {
       var services = new ServiceCollection();
 
-      services.TryAddScoped<IContextManager, ApplicationContextManager>();
+      services.AddScoped<IContextManager, ApplicationContextManager>();
       services.TryAddSingleton<IDashboard, Dashboard>();
 
       if (!useDalEf)

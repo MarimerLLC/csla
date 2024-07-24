@@ -17,6 +17,7 @@ namespace Csla.Test.DataPortal
       IServiceCollection serviceCollection = new ServiceCollection();
       serviceCollection.AddScoped<DisposableClass>();
       serviceCollection.AddCsla(o => o.DataPortal(dp => dp.AddClientSideDataPortal((dpo => dpo.UseLocalProxy(lpo => lpo.UseLocalScope = false)))));
+      serviceCollection.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
 
       var services = serviceCollection.BuildServiceProvider();
       IDataPortal<ClassA> dataPortal = services.GetRequiredService<IDataPortal<ClassA>>();
@@ -36,6 +37,7 @@ namespace Csla.Test.DataPortal
       IServiceCollection serviceCollection = new ServiceCollection();
       serviceCollection.AddScoped<DisposableClass>();
       serviceCollection.AddCsla();
+      serviceCollection.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
 
       var services = serviceCollection.BuildServiceProvider();
       IDataPortal<ClassA> dataPortal = services.GetRequiredService<IDataPortal<ClassA>>();

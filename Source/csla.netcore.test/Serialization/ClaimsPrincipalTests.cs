@@ -24,8 +24,8 @@ namespace Csla.Test.Serialization
     {
       IServiceProvider serviceProvider;
       var services = new ServiceCollection();
-      services.TryAddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
-      services.TryAddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
+      services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
+      services.AddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
       services.AddCsla();
 
       serviceProvider = services.BuildServiceProvider();

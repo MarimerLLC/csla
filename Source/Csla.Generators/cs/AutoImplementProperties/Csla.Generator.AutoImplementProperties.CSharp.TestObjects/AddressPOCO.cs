@@ -28,4 +28,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
     public partial string IgnoredProperty { get; set; }
 
   }
+
+  public partial class AddressPOCO
+  {
+    public partial string IgnoredProperty { get => ""; set { } }
+
+  }
 }

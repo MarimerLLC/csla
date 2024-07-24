@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla", "..\..\..\..\Csla\Cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.TestHelpers", "..\..\..\..\Csla.TestHelpers\Csla.TestHelpers.csproj", "{C1D35948-6B45-4473-A5F4-636E53830902}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore", "..\..\..\..\Csla.AspNetCore\Csla.AspNetCore.csproj", "{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,11 +37,18 @@ Global
 		{C1D35948-6B45-4473-A5F4-636E53830902}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1D35948-6B45-4473-A5F4-636E53830902}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1D35948-6B45-4473-A5F4-636E53830902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {714640F8-F08F-4FBB-9409-7E5BBE78062E}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\..\..\..\Csla.Web.Mvc.Shared\Csla.Web.Mvc.Shared.projitems*{7d2a24b0-ce70-47b3-ba35-c4f1d6fd16fd}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

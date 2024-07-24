@@ -9,15 +9,27 @@ using Csla.Analyzers.Extensions;
 
 namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class DoesChildOperationHaveRunLocalRemoveAttributeCodeFix
     : CodeFixProvider
   {
+    /// <summary>
+    /// 
+    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);

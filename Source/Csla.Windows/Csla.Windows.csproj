@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
@@ -14,6 +14,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Windows Forms</Title>
     <PackageTags>CSLA;WinForms;Windows Forms</PackageTags>
+    <PackageId>Csla.Windows.Forms</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

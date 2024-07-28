@@ -12,12 +12,12 @@ internal static class DiagnosticsTester<T> where T : IIncrementalGenerator, new(
       => Verify(portalExtensionClass, "", expectedDiagnosticId);
 
   public static void Verify(string portalExtensionClass, string cslaClass, string expectedDiagnosticId)
-      => Verify(portalExtensionClass, cslaClass, null, diagnostics => diagnostics.Should().OnlyContain(d => d.Id == expectedDiagnosticId), d => { });
+      => Verify(portalExtensionClass, cslaClass, TestAnalyzerConfigOptionsProvider.Empty, diagnostics => diagnostics.Should().OnlyContain(d => d.Id == expectedDiagnosticId), d => { });
 
   public static void Verify(string validExtensionClass, string cslaClass, string expectedDiagnosticId, AnalyzerConfigOptionsProvider globalCompilerOptions)
       => Verify(validExtensionClass, cslaClass, globalCompilerOptions, diagnostics => diagnostics.Should().OnlyContain(d => d.Id == expectedDiagnosticId), d => { });
 
-  public static void Verify(string portalExtensionClass, string cslaClass, AnalyzerConfigOptionsProvider? globalConfigOptionsProvider, Action<IEnumerable<Diagnostic>> sourceGenReportedDiagnostics, Action<IEnumerable<Diagnostic>> compilerReportedDiagnostics, NullableContextOptions nullableContextOptions = NullableContextOptions.Enable)
+  public static void Verify(string portalExtensionClass, string cslaClass, AnalyzerConfigOptionsProvider globalConfigOptionsProvider, Action<IEnumerable<Diagnostic>> sourceGenReportedDiagnostics, Action<IEnumerable<Diagnostic>> compilerReportedDiagnostics, NullableContextOptions nullableContextOptions = NullableContextOptions.Enable)
   {
     var syntaxTrees = new List<SyntaxTree>() {
             CSharpSyntaxTree.ParseText(portalExtensionClass), // ExtensionClassTree

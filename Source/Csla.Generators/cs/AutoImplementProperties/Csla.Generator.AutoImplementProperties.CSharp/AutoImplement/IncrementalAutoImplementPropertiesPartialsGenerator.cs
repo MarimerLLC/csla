@@ -32,11 +32,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
                 }
                 return null;
               })
-          .Where(static m => m is not null);
+          .Where(static m => m is not null).WithTrackingName(TrackingNames.ExtractClasses);
 
-      var compilation = context.CompilationProvider.Select((c, _) => new { ((CSharpCompilation)c).LanguageVersion, Nullable = c.Options.NullableContextOptions.AnnotationsEnabled() });
+      var compilation = context.CompilationProvider.Select((c, _) => new { ((CSharpCompilation)c).LanguageVersion, Nullable = c.Options.NullableContextOptions.AnnotationsEnabled() }).WithTrackingName(TrackingNames.SelectCompilation);
       // Combine the collected syntax nodes with the semantic model
-      var compilationAndClasses = compilation.Combine(classDeclarations.Collect());
+      var compilationAndClasses = compilation.Combine(classDeclarations.Collect()).WithTrackingName(TrackingNames.Combine);
 
       // Set up the generation phase
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>

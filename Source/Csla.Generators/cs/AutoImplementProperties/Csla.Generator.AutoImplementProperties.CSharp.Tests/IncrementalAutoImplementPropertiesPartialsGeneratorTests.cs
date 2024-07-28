@@ -1,4 +1,5 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
+using Csla.Serialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -21,17 +22,10 @@ namespace Csla.Generator.Tests
     public async Task TestSourceGeneration()
     {
       var inputSource = """
-        using Csla.Serialization;
-
-        namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
+        namespace Test
         {
-
-          /// <summary>
-          /// A class including a private nested class for which automatic serialization code is to be generated
-          /// </summary>
-          /// <remarks>The class is decorated with the AutoSerializable attribute so that it is picked up by our source generator</remarks>
-          [CslaImplementProperties]
-          public partial class ReadOnlyPOCO : ReadOnlyBase<ReadOnlyPOCO>
+          [Csla.Serialization.CslaImplementProperties]
+          public partial class ReadOnlyPOCO : Csla.ReadOnlyBase<ReadOnlyPOCO>
           {
 
             public partial string Name { get; private set; }
@@ -95,11 +89,18 @@ namespace Csla.Generator.Tests
     {
       // Parse the provided string into a C# syntax tree
       SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(source);
-
+      var references = AppDomain.CurrentDomain.GetAssemblies()
+    .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
+    .Select(a => MetadataReference.CreateFromFile(a.Location))
+    .Concat([
+            MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(CslaIgnorePropertyAttribute).Assembly.Location)
+    ]);
       // Create a Roslyn compilation for the syntax tree.
       CSharpCompilation compilation = CSharpCompilation.Create(
           assemblyName: "Tests",
           syntaxTrees: new[] { syntaxTree },
+          references: references,
           options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, nullableContextOptions: NullableContextOptions.Enable));
 
 
@@ -107,7 +108,7 @@ namespace Csla.Generator.Tests
       var generator = new T();
 
       // The GeneratorDriver is used to run our generator against a compilation
-      GeneratorDriver driver = CSharpGeneratorDriver.Create([generator.AsSourceGenerator()], driverOptions: new GeneratorDriverOptions(default, trackIncrementalGeneratorSteps: true));
+      GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 
       // Run the source generator!
       driver = driver.RunGenerators(compilation);

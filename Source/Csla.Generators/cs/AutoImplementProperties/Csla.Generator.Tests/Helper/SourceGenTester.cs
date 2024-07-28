@@ -38,17 +38,12 @@ internal static class SourceGenTester<T> where T : IIncrementalGenerator, new()
     return configureVerify(
         Verifier.Verify(CreateResultFromRun(driver, generatorFilesToIgnore))
             .UseDirectory(relativeSnapshotPath)
-            .ScrubLinesContaining(StringComparison.Ordinal, ".GeneratedCode(\"Ossendorf.Csla.Dataportal")
-    //.AutoVerify()
     );
   }
 
   private static RunResultWithIgnoreList CreateResultFromRun(GeneratorDriver driver, IEnumerable<string> generatorFilesToIgnore)
   {
-    var filesToIgnore = new HashSet<string>(generatorFilesToIgnore) {
-            "DataPortalExtensionsAttribute.g.cs",
-            "GeneratorTests.DataPortalExtensions_CodeGenIndicationAttributes.g.cs"
-        };
+    var filesToIgnore = new HashSet<string>(generatorFilesToIgnore) { };
 
     var result = driver.GetRunResult();
     return new RunResultWithIgnoreList

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.TestHelpers", "..\..\.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.AspNetCore", "..\..\..\..\Csla.AspNetCore\Csla.AspNetCore.csproj", "{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Generator.AutoImplementProperties.CSharp.Tests", "..\Csla.Generator.AutoImplementProperties.CSharp.Tests\Csla.Generator.AutoImplementProperties.CSharp.Tests.csproj", "{45ED9991-434C-4EEC-8FE4-A696C24834BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CslaGenerator.Tests", "..\Csla.Generator.Tests\CslaGenerator.Tests.csproj", "{C97213E0-264F-4D1D-A3FA-D36F673F2EBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +43,10 @@ Global
 		{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D2A24B0-CE70-47B3-BA35-C4F1D6FD16FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45ED9991-434C-4EEC-8FE4-A696C24834BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45ED9991-434C-4EEC-8FE4-A696C24834BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45ED9991-434C-4EEC-8FE4-A696C24834BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45ED9991-434C-4EEC-8FE4-A696C24834BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C97213E0-264F-4D1D-A3FA-D36F673F2EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C97213E0-264F-4D1D-A3FA-D36F673F2EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C97213E0-264F-4D1D-A3FA-D36F673F2EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C97213E0-264F-4D1D-A3FA-D36F673F2EBD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -42,10 +42,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
         var (nullable, classes) = source;
-        if (nullable.LanguageVersion != LanguageVersion.Preview)
-        {
-          return;
-        }
         SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable.Nullable);
         foreach (var typeDefinition in classes)
         {

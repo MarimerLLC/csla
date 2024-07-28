@@ -7,6 +7,9 @@ using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer
     : DiagnosticAnalyzer
@@ -20,9 +23,16 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.BusinessRuleContextUsage, nameof(BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer)));
 
+    /// <summary>
+    /// 
+    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(usesAddMethodsOnContextRule);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
     public override void Initialize(AnalysisContext context)
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);

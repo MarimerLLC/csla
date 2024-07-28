@@ -10,16 +10,28 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class IsCompleteCalledInAsynchronousBusinessRuleRemoveCallCodeFix
     : CodeFixProvider
   {
+    /// <summary>
+    /// 
+    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds =>
       ImmutableArray.Create(Constants.AnalyzerIdentifiers.CompleteInExecuteAsync);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);

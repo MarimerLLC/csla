@@ -10,7 +10,7 @@ namespace Csla.Blazor
   /// </summary>
   public class CslaValidator : ComponentBase
   {
-    
+
     /// <summary>
     /// Gets or sets the current edit context for the component
     /// </summary>

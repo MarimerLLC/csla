@@ -5,8 +5,8 @@
 // </copyright>
 // <summary>Provides a sorted view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
-using System.ComponentModel;
 using System.Collections;
+using System.ComponentModel;
 using Csla.Properties;
 
 namespace Csla

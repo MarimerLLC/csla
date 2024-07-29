@@ -23,9 +23,9 @@ namespace Csla.Test.ValidationRules
     private static PropertyInfo<ChildList> ChildListProperty = RegisterProperty<ChildList>(c => c.ChildList, "Child list", null, RelationshipTypes.LazyLoad);
     public ChildList ChildList
     {
-      get 
+      get
       {
-        return LazyGetProperty(ChildListProperty, () => GetDataPortal<ChildList>().Create()); 
+        return LazyGetProperty(ChildListProperty, () => GetDataPortal<ChildList>().Create());
       }
     }
 

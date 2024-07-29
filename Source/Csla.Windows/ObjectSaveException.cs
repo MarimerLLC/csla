@@ -14,7 +14,7 @@ namespace Csla.Windows
   /// Exception indicating a failure during an object
   /// save operation.
   /// </summary>
-  public class ObjectSaveException : Exception 
+  public class ObjectSaveException : Exception
   {
     /// <summary>
     /// Creates an instance of the object.

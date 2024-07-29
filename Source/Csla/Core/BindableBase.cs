@@ -16,9 +16,9 @@ namespace Csla.Core
   /// serialization-safe manner.
   /// </summary>
   [Serializable]
-  public abstract class BindableBase : 
-    MobileObject, 
-    INotifyPropertyChanged, 
+  public abstract class BindableBase :
+    MobileObject,
+    INotifyPropertyChanged,
     INotifyPropertyChanging
   {
     /// <summary>
@@ -34,7 +34,7 @@ namespace Csla.Core
     /// <summary>
     /// Implements a serialization-safe PropertyChanged event.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
     public event PropertyChangedEventHandler PropertyChanged
     {
@@ -49,7 +49,7 @@ namespace Csla.Core
       }
       remove
       {
-          if (ShouldHandlerSerialize(value))
+        if (ShouldHandlerSerialize(value))
           _serializableChangedHandlers = (PropertyChangedEventHandler)
             Delegate.Remove(_serializableChangedHandlers, value);
         else
@@ -88,7 +88,7 @@ namespace Csla.Core
         new PropertyChangedEventArgs(propertyName));
     }
 
-        /// <summary>
+    /// <summary>
     /// Call this method to raise the PropertyChanged event
     /// for a MetaData (IsXYZ) property
     /// </summary>
@@ -141,7 +141,7 @@ namespace Csla.Core
     /// Call this method to raise the PropertyChanged event
     /// for all object properties.
     /// </summary>
-   /// <remarks>
+    /// <remarks>
     /// This method is automatically called by MarkDirty. It
     /// actually raises PropertyChanged for an empty string,
     /// which tells data binding to refresh all properties.
@@ -165,7 +165,7 @@ namespace Csla.Core
     {
       add
       {
-          if (ShouldHandlerSerialize(value))
+        if (ShouldHandlerSerialize(value))
           _serializableChangingHandlers = (PropertyChangingEventHandler)
             Delegate.Combine(_serializableChangingHandlers, value);
         else
@@ -174,7 +174,7 @@ namespace Csla.Core
       }
       remove
       {
-          if (ShouldHandlerSerialize(value))
+        if (ShouldHandlerSerialize(value))
           _serializableChangingHandlers = (PropertyChangingEventHandler)
             Delegate.Remove(_serializableChangingHandlers, value);
         else

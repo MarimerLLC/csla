@@ -59,7 +59,7 @@ namespace Csla.Test.LazySingleton
 
     #region Private Helper Methods
 
-    private LazySingleton<T> CreateLazySingleton<T>() where T:class
+    private LazySingleton<T> CreateLazySingleton<T>() where T : class
     {
       return new LazySingleton<T>();
     }

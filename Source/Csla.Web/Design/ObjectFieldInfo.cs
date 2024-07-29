@@ -6,8 +6,8 @@
 // <summary>Contains schema information for a single</summary>
 //-----------------------------------------------------------------------
 
-using System.Web.UI.Design;
 using System.ComponentModel;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {

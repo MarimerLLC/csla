@@ -27,7 +27,7 @@ namespace Csla
     /// prior to a set or load will result in 
     /// an exception.
     /// </summary>
-    LazyLoad=0x2,
+    LazyLoad = 0x2,
     /// <summary>
     /// Property is stored in a private field. Attemting 
     /// to read or write the property in FieldManager 
@@ -35,6 +35,6 @@ namespace Csla
     /// NonGeneric ReadProperty/LoadProperty will call
     /// property get/set methods. 
     /// </summary>
-    PrivateField=0x4,
+    PrivateField = 0x4,
   }
 }

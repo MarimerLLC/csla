@@ -1,6 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Csla.TestHelpers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using UnitDriven;
-using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
 {

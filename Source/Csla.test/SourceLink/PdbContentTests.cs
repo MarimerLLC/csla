@@ -5,7 +5,7 @@ using UnitDriven;
 namespace Csla.Test.SourceLink
 {
   [TestClass]
-  public class PdbContentTests :TestBase
+  public class PdbContentTests : TestBase
   {
     private bool BufferContainsData(byte[] buffer, byte[] data)
     {

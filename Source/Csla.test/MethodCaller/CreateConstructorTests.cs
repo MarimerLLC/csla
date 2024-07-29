@@ -6,8 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 

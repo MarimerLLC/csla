@@ -18,12 +18,12 @@ namespace Csla.Windows
   /// data binding to CSLA .NET business objects.
   /// </summary>
   [ToolboxItem(true)]
-  [ProvideProperty("ActionType", typeof (ToolStripButton))]
-  [ProvideProperty("PostSaveAction", typeof (ToolStripButton))]
-  [ProvideProperty("RebindAfterSave", typeof (ToolStripButton))]
-  [ProvideProperty("DisableWhenClean", typeof (ToolStripButton))]
-  [ProvideProperty("DisableWhenUseless", typeof (ToolStripButton))]
-  [ProvideProperty("CommandName", typeof (ToolStripButton))]
+  [ProvideProperty("ActionType", typeof(ToolStripButton))]
+  [ProvideProperty("PostSaveAction", typeof(ToolStripButton))]
+  [ProvideProperty("RebindAfterSave", typeof(ToolStripButton))]
+  [ProvideProperty("DisableWhenClean", typeof(ToolStripButton))]
+  [ProvideProperty("DisableWhenUseless", typeof(ToolStripButton))]
+  [ProvideProperty("CommandName", typeof(ToolStripButton))]
   public class CslaActionExtenderToolStrip : Component, IExtenderProvider
   {
     #region Constructors
@@ -67,7 +67,7 @@ namespace Csla.Windows
     /// </summary>
     [Category("Data")]
     [Description("Gets or sets the data source to which this button is bound for action purposes.")]
-    [AttributeProvider(typeof (IListSource))]
+    [AttributeProvider(typeof(IListSource))]
     public object DataSource
     {
       get { return _dataSource; }
@@ -564,7 +564,7 @@ namespace Csla.Windows
     /// <param name="e">Arguments.</param>
     protected void OnClick(object sender, EventArgs e)
     {
-      ToolStripButton ctl = (ToolStripButton) sender;
+      ToolStripButton ctl = (ToolStripButton)sender;
       CslaActionExtenderProperties props = _sources[ctl];
       if (props.ActionType != CslaFormAction.None)
       {
@@ -673,7 +673,7 @@ namespace Csla.Windows
                   }
 
                   break;
-                //case CslaFormAction.Validate
+                  //case CslaFormAction.Validate
 
               } // switch (props.ActionType)
 

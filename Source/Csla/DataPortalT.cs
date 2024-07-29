@@ -651,7 +651,7 @@ namespace Csla
     /// <returns>The resulting command object.</returns>
     public T Execute(params object[] criteria)
     {
-        return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
+      return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
     }
 
     /// <summary>

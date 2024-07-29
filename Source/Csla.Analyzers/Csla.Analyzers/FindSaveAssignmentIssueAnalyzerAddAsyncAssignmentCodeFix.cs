@@ -1,11 +1,11 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CodeActions;
 using Csla.Analyzers.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Analyzers
 {
@@ -41,7 +41,7 @@ namespace Csla.Analyzers
 
       var awaitExpressionNode = invocationNode.FindParent<AwaitExpressionSyntax>();
 
-      if(awaitExpressionNode != null)
+      if (awaitExpressionNode != null)
       {
         var awaitKeyword = awaitExpressionNode.AwaitKeyword;
         var leadingTrivia = awaitKeyword.HasLeadingTrivia ?

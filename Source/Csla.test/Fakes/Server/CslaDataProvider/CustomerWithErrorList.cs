@@ -24,13 +24,13 @@ namespace cslalighttest.CslaDataProvider
         Add(CustomerWithError.GetCustomerWithError(i));
       }
     }
-    
+
     [Create]
     protected void DataPortal_Create()
     {
 
     }
-        
+
     [Update]
     protected void DataPortal_Update()
     {

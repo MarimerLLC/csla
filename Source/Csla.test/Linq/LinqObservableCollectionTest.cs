@@ -52,8 +52,8 @@ namespace Csla.Test.Linq
 
       var source = dataPortal.Create();
       var synced = source.ToSyncList(from r in source
-                  where r.Id > 100
-                  select r);
+                                     where r.Id > 100
+                                     select r);
       Assert.AreEqual(3, synced.Count);
     }
 
@@ -77,8 +77,8 @@ namespace Csla.Test.Linq
 
       var source = dataPortal.Create();
       var synced = (from r in source
-                     where r.Id > 100
-                     select r).ToSyncList(source);
+                    where r.Id > 100
+                    select r).ToSyncList(source);
       Assert.AreEqual(3, synced.Count);
     }
 

@@ -72,7 +72,7 @@ namespace Csla.Test.BypassPropertyChecks
       {
         using (BypassPropertyChecks)
         {
-          
+
         }
         // must still be in bypass property checks
         Id = id;

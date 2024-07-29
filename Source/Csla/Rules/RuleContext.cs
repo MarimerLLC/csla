@@ -208,13 +208,13 @@ namespace Csla.Rules
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       _completeHandler = completeHandler;
-      _outputPropertyValues = 
+      _outputPropertyValues =
         (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
-      _dirtyProperties = 
+      _dirtyProperties =
         (LazySingleton<List<IPropertyInfo>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<List<IPropertyInfo>>));
     }
 
-    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, RuleContextModes executeContext) 
+    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, RuleContextModes executeContext)
       : this(applicationContext, completeHandler)
     {
       ExecuteContext = executeContext;
@@ -442,7 +442,7 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    public  T GetInputValue<T>(PropertyInfo<T> propertyInfo)
+    public T GetInputValue<T>(PropertyInfo<T> propertyInfo)
     {
       return (T)InputPropertyValues[propertyInfo];
     }
@@ -503,7 +503,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a data portal factory instance
     /// </summary>
-    public IDataPortalFactory DataPortalFactory => 
+    public IDataPortalFactory DataPortalFactory =>
       (IDataPortalFactory)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortalFactory));
   }
 }

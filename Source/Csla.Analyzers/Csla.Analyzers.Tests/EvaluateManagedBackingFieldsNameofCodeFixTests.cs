@@ -1,13 +1,13 @@
-﻿using Csla.Analyzers.ManagedBackingFieldUsesNameof;
+﻿using System.Collections.Immutable;
+using System.Linq;
+using System.Threading.Tasks;
+using Csla.Analyzers.ManagedBackingFieldUsesNameof;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Csla.Analyzers.Tests
 {

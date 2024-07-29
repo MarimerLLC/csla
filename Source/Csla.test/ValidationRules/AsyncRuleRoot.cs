@@ -107,9 +107,10 @@ namespace Csla.Test.ValidationRules
     }
 
     [Create]
-    private void Create(string asyncAwaitValue) 
+    private void Create(string asyncAwaitValue)
     {
-      using (BypassPropertyChecks) {
+      using (BypassPropertyChecks)
+      {
         AsyncAwait = asyncAwaitValue;
       }
     }

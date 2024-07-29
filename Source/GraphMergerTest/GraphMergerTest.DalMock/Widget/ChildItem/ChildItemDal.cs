@@ -23,9 +23,9 @@ namespace GraphMergerTest.DalMock
     public void Delete(Guid widgetId, Guid childItemId)
     {
       var data = (from x in MockDb.ChildItems
-        where x.WidgetId == widgetId
-              && x.ChildItemId == childItemId
-        select x).FirstOrDefault();
+                  where x.WidgetId == widgetId
+                        && x.ChildItemId == childItemId
+                  select x).FirstOrDefault();
 
       if (data != null)
         MockDb.ChildItems.Remove(data);
@@ -34,12 +34,12 @@ namespace GraphMergerTest.DalMock
     public List<ChildItemDto> FetchList(Guid widgetId)
     {
       var list = (from x in MockDb.ChildItems
-        where x.WidgetId == widgetId
-        select new ChildItemDto
-        {
-          WidgetId = x.WidgetId,
-          ChildItemId = x.ChildItemId,
-        }).ToList();
+                  where x.WidgetId == widgetId
+                  select new ChildItemDto
+                  {
+                    WidgetId = x.WidgetId,
+                    ChildItemId = x.ChildItemId,
+                  }).ToList();
 
       return list;
     }

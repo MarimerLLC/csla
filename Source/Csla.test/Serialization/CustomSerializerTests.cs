@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 
 using Csla.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
 using Csla.Serialization.Mobile.CustomSerializers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Serialization
 {
@@ -116,7 +116,7 @@ namespace Csla.Test.Serialization
   {
     string Name { get; set; }
   }
-  
+
   public class NonSerializableType : INonSerializableType
   {
     public string Name { get; set; }

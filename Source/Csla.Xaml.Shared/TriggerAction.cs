@@ -7,9 +7,9 @@
 // <summary>Control used to invoke a method on the DataContext</summary>
 //-----------------------------------------------------------------------
 #define DEBUG
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
-using System.ComponentModel;
 using System.Windows.Data;
 
 namespace Csla.Xaml
@@ -143,7 +143,7 @@ namespace Csla.Xaml
       }
     }
 
-#region Properties
+    #region Properties
 
     /// <summary>
     /// Gets or sets the target UI control.
@@ -244,9 +244,9 @@ namespace Csla.Xaml
       set { SetValue(RebindParameterDynamicallyProperty, value); }
     }
 
-#endregion
+    #endregion
 
-#region GetMethodParameter
+    #region GetMethodParameter
 
     private object GetMethodParameter()
     {
@@ -280,7 +280,7 @@ namespace Csla.Xaml
       return result;
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

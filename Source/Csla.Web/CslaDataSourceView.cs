@@ -72,7 +72,7 @@ namespace Csla.Web
     /// </summary>
     /// <param name="arguments">Arguments object.</param>
     /// <returns>The data returned from the select.</returns>
-    protected override IEnumerable 
+    protected override IEnumerable
       ExecuteSelect(DataSourceSelectArguments arguments)
     {
       // get the object from the page
@@ -147,7 +147,7 @@ namespace Csla.Web
       IDictionary values)
     {
       // tell the page to insert the object
-      InsertObjectArgs args = 
+      InsertObjectArgs args =
         new InsertObjectArgs(values);
       _owner.OnInsertObject(args);
       return args.RowsAffected;
@@ -185,7 +185,7 @@ namespace Csla.Web
     /// <returns>The number of rows affected.</returns>
     protected override int ExecuteDelete(IDictionary keys, IDictionary oldValues)
     {
-      
+
       // tell the page to delete the object
       DeleteObjectArgs args = new DeleteObjectArgs(keys, oldValues);
       _owner.OnDeleteObject(args);
@@ -242,7 +242,7 @@ namespace Csla.Web
     /// </summary>
     public override bool CanPage
     {
-      get 
+      get
       {
         return TypeSupportsPaging;
       }
@@ -264,7 +264,7 @@ namespace Csla.Web
     /// </summary>
     public override bool CanSort
     {
-      get 
+      get
       {
         return TypeSupportsSorting;
       }

@@ -1,8 +1,8 @@
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using static Csla.Analyzers.Extensions.IMethodSymbolExtensions;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
@@ -23,7 +23,7 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.IsOperationMethodPublic, nameof(IsOperationMethodPublicAnalyzer)));
 
-    private static readonly DiagnosticDescriptor makeNonPublicForInterfaceRule = 
+    private static readonly DiagnosticDescriptor makeNonPublicForInterfaceRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, IsOperationMethodPublicAnalyzerConstants.Title,
         IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
@@ -34,7 +34,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(makeNonPublicRule, makeNonPublicForInterfaceRule);
 
     /// <summary>
@@ -56,7 +56,7 @@ namespace Csla.Analyzers
       if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation() &&
         methodSymbol.DeclaredAccessibility == Accessibility.Public)
       {
-        if(typeSymbol.TypeKind == TypeKind.Interface)
+        if (typeSymbol.TypeKind == TypeKind.Interface)
         {
           context.ReportDiagnostic(Diagnostic.Create(
             makeNonPublicForInterfaceRule, methodNode.Identifier.GetLocation()));

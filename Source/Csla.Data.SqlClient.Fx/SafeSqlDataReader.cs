@@ -33,7 +33,7 @@ namespace Csla.Data.SqlClient
     /// </summary>
     /// <param name="dataReader">The source DataReader object containing the data.</param>
     public SafeSqlDataReader(IDataReader dataReader)
-      :base(dataReader)
+      : base(dataReader)
     {
       SqlDataReader = DataReader as SqlDataReader;
     }

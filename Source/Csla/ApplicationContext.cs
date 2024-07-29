@@ -6,12 +6,12 @@
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
 
+using System.ComponentModel;
+using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Core;
-using System.Security.Claims;
-using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel;
 using Csla.Server;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla
 {

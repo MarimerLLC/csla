@@ -9,8 +9,8 @@
 namespace Csla.Test.PropertyGetSet
 {
   [Serializable]
-  public class EditableGetSetBase<T> : EditableGetSetTopBase<T> 
-    where T: EditableGetSetBase<T>
+  public class EditableGetSetBase<T> : EditableGetSetTopBase<T>
+    where T : EditableGetSetBase<T>
   {
     private static int _dummy;
 

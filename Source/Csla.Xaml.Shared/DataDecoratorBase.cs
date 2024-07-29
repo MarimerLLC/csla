@@ -7,12 +7,12 @@
 // <summary>Base class for creating WPF panel</summary>
 //-----------------------------------------------------------------------
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace Csla.Xaml
 {
@@ -101,7 +101,7 @@ namespace Csla.Xaml
       }
     }
 
-#region Hook/unhook events
+    #region Hook/unhook events
 
     private void UnHookDataContextEvents(object oldValue)
     {
@@ -195,9 +195,9 @@ namespace Csla.Xaml
         newContext.CollectionChanged += DataObject_CollectionChanged;
     }
 
-#endregion
+    #endregion
 
-#region Handle events
+    #region Handle events
 
     private void DataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
@@ -219,9 +219,9 @@ namespace Csla.Xaml
       DataObservableCollectionChanged(e);
     }
 
-#endregion
+    #endregion
 
-#region Virtual methods
+    #region Virtual methods
 
     /// <summary>
     /// This method is called when a property
@@ -264,9 +264,9 @@ namespace Csla.Xaml
       // may be overridden by subclass
     }
 
-#endregion
+    #endregion
 
-#region FindingBindings
+    #region FindingBindings
 
     /// <summary>
     /// Scans all child controls of this panel
@@ -317,7 +317,7 @@ namespace Csla.Xaml
     {
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

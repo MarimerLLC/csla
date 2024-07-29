@@ -30,6 +30,6 @@ namespace Csla.Core
     /// The total number of rows of available
     /// data.
     /// </summary>
-    int TotalRowCount { get;}
+    int TotalRowCount { get; }
   }
 }

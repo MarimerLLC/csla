@@ -152,7 +152,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public async Task IsBusinessRuleForTypeThatIsABusinessRule()
     {
-      var code = 
+      var code =
         """
         using Csla.Rules;
 
@@ -183,7 +183,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public async Task IsObjectFactoryForObjectFactoryType()
     {
-      var code = 
+      var code =
         """
         using Csla.Server;
 
@@ -252,7 +252,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [TestMethod]
     public async Task IsBusinessBaseWhenSymbolIsNotABusinessBase()
     {
-      var code = 
+      var code =
         """
         using Csla;
 

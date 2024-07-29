@@ -6,12 +6,9 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Configuration;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using Csla.Configuration;
-
-
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ChildChanged
@@ -34,7 +31,7 @@ namespace Csla.Test.ChildChanged
     public void SingleRoot()
     {
       IDataPortal<SingleRoot> dataPortal = _testDIContext.CreateDataPortal<SingleRoot>();
-      
+
       bool pc = false;
       bool cc = false;
 
@@ -210,7 +207,7 @@ namespace Csla.Test.ChildChanged
     {
       var listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
       var singleRootPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
-      
+
       int lc = 0;
       int rcc = 0;
       int cc = 0;
@@ -250,7 +247,7 @@ namespace Csla.Test.ChildChanged
       IDataPortal<ListContainerList> listContainerDataPortal = _testDIContext.CreateDataPortal<ListContainerList>();
       var listDataPortal = _testDIContext.CreateChildDataPortal<ContainsList>();
       var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
-      
+
       bool rcc = false;
       bool ccc = false;
       bool cc = false;

@@ -17,7 +17,7 @@ namespace Csla.Test.Serialization
     {
       if (value.Method.DeclaringType != null && value.Method.DeclaringType.Name == @"Action`2")
       {
-          return false;
+        return false;
       }
       return base.ShouldHandlerSerialize(value);
     }

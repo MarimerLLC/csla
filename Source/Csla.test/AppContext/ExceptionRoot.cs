@@ -77,7 +77,7 @@ namespace Csla.Test.AppContext
     }
 
     [Update]
-  	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       TestResults.AddOrOverwrite("Root", "Updated");
       TestResults.AddOrOverwrite("create", "create");

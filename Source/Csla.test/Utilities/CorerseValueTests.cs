@@ -6,8 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using UnitDriven;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitDriven;
 
 namespace Csla.Test.Utilities
 {

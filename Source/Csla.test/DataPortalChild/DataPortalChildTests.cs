@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortalChild
       Assert.IsTrue(root.Child.IsNew, "Child should be new");
       Assert.IsTrue(root.Child.IsDirty, "Child should be dirty");
       Assert.AreEqual("Created", root.Child.Status, "Child status incorrect after create");
-      
+
       root = root.Save();
 
       Assert.IsFalse(root.IsDirty, "Root should not be dirty");
@@ -165,7 +165,7 @@ namespace Csla.Test.DataPortalChild
       Assert.IsFalse(root.ChildList.IsDirty, "Child list should not be dirty");
       Assert.AreEqual("Fetched", root.ChildList.Status, "Child list status incorrect after fetch");
 
-      
+
 
       list.Add(NewChild());
 

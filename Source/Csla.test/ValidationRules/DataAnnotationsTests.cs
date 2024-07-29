@@ -54,14 +54,14 @@ namespace Csla.Test.ValidationRules
 
       [Required]
       [DIBasedTest]
-      public string TestProperty 
-      { 
-        get { return GetProperty(TestPropertyProperty); } 
+      public string TestProperty
+      {
+        get { return GetProperty(TestPropertyProperty); }
         set { SetProperty(TestPropertyProperty, value); }
       }
 
       [Create]
-      private void Create() 
+      private void Create()
       {
         using (BypassPropertyChecks)
         {

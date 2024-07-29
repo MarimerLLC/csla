@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
-using System.Reflection;
 using System.Globalization;
+using System.Reflection;
 using Csla.Properties;
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
@@ -22,23 +22,23 @@ namespace Csla.Reflection
   /// </summary>
   public static class MethodCaller
   {
-    private const BindingFlags allLevelFlags 
-      = BindingFlags.FlattenHierarchy 
-      | BindingFlags.Instance 
-      | BindingFlags.Public 
+    private const BindingFlags allLevelFlags
+      = BindingFlags.FlattenHierarchy
+      | BindingFlags.Instance
+      | BindingFlags.Public
       | BindingFlags.NonPublic
       ;
 
-    private const BindingFlags oneLevelFlags 
-      = BindingFlags.DeclaredOnly 
-      | BindingFlags.Instance 
-      | BindingFlags.Public 
+    private const BindingFlags oneLevelFlags
+      = BindingFlags.DeclaredOnly
+      | BindingFlags.Instance
+      | BindingFlags.Public
       | BindingFlags.NonPublic
       ;
 
-    private const BindingFlags ctorFlags 
-      = BindingFlags.Instance 
-      | BindingFlags.Public 
+    private const BindingFlags ctorFlags
+      = BindingFlags.Instance
+      | BindingFlags.Public
       | BindingFlags.NonPublic
       ;
 
@@ -192,7 +192,7 @@ namespace Csla.Reflection
 
     private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
 
-    private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
+    private static DynamicCtorDelegate GetCachedConstructor(Type objectType)
     {
       if (objectType == null)
         throw new ArgumentNullException(nameof(objectType));
@@ -284,7 +284,7 @@ namespace Csla.Reflection
       return GetType(typeName, true, false);
     }
 
-#endregion
+    #endregion
 
     private const BindingFlags propertyFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy;
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -475,7 +475,7 @@ namespace Csla.Reflection
     }
 
 
-#region Call Method
+    #region Call Method
 
     /// <summary>
     /// Uses reflection to dynamically invoke a method
@@ -729,9 +729,9 @@ namespace Csla.Reflection
     {
       return (object[])(Array.CreateInstance(arrayType.GetElementType(), count));
     }
-#endregion
+    #endregion
 
-#region Get/Find Method
+    #region Get/Find Method
 
     /// <summary>
     /// Uses reflection to locate a matching method
@@ -864,7 +864,7 @@ namespace Csla.Reflection
         currentType = currentType.BaseType;
       } while (currentType != null);
 
-      
+
       return result;
     }
 
@@ -954,7 +954,7 @@ namespace Csla.Reflection
       return result;
     }
 
-#endregion
+    #endregion
 
     /// <summary>
     /// Returns an array of Type objects corresponding

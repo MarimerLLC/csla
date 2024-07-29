@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using System.Web.UI.Design;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Data;
-using System.ComponentModel;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {
@@ -97,7 +97,7 @@ namespace Csla.Web.Design
       get
       {
         return new ObjectSchema(
-          _owner, 
+          _owner,
           _owner.DataSourceControl.TypeName).GetViews()[0];
       }
     }

@@ -19,9 +19,9 @@ namespace Csla.Test
     public static string DataDirectory { get; }
 
     public static string EntityConnectionWithMissingDBConnectionStringName = "DataPortalTestDatabaseEntitiesWithInvalidDBValue";
-    public static string EntityConnectionWithMissingDB {get;} 
-    public static string DataPortalTestDatabaseEntities { get; } 
-    public static string DataPortalTestDatabaseWithInvalidDBValue { get; } 
+    public static string EntityConnectionWithMissingDB { get; }
+    public static string DataPortalTestDatabaseEntities { get; }
+    public static string DataPortalTestDatabaseWithInvalidDBValue { get; }
 
     public static string DataPortalTestDatabase { get; }
     public static string TestLinqToSqlContextDataContext { get; }

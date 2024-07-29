@@ -7,9 +7,9 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
-using Csla.Serialization.Mobile;
-using Csla.Properties;
 using System.Diagnostics;
+using Csla.Properties;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {

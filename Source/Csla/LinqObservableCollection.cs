@@ -30,7 +30,7 @@ namespace Csla
 
     private System.Collections.ObjectModel.ObservableCollection<T> _baseCollection;
     private bool _suppressEvents = false;
-        /// <summary>
+    /// <summary>
     /// Creates a new instance of the observable
     /// view.
     /// </summary>
@@ -237,12 +237,12 @@ namespace Csla
     /// </summary>
     public bool IsReadOnly
     {
-      get 
+      get
       {
         if (_baseCollection is ICollection<T> obj)
           return obj.IsReadOnly;
         else
-          return false; 
+          return false;
       }
     }
 

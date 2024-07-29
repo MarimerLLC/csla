@@ -86,7 +86,7 @@ namespace Csla.Windows
         status.ApplyAuthorization = value;
       else
         _sources.Add(
-          source, 
+          source,
           new ControlStatus { ApplyAuthorization = value, CanRead = true });
     }
 

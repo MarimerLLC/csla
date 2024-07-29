@@ -38,7 +38,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void LookupRuleDefaultCanXYZValues()
     {
-      
+
       var rule = new LookupCustomer(RuleBaseClassesRoot.CustomerIdProperty, RuleBaseClassesRoot.NameProperty);
       Assert.IsTrue(rule.IsAsync);
       Assert.IsFalse(rule.CanRunOnServer);
@@ -76,7 +76,7 @@ namespace Csla.Test.ValidationRules
 
     // TODO: fix test
     [Ignore]
-    [TestMethod]    
+    [TestMethod]
     public void LessThanSetsErrorOnBothFields()
     {
       IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();

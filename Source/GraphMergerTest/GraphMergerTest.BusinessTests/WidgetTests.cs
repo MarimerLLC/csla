@@ -32,7 +32,7 @@ namespace GraphMergerTest.BusinessTests
 
       instance = await WidgetFactory.GetAsync(instance.Id);
 
-      instance.ChildItems.AddNew(new[] {Guid.NewGuid()});
+      instance.ChildItems.AddNew(new[] { Guid.NewGuid() });
 
       var allChildItemIds = instance.ChildItems.Select(d => d.ChildItemId).ToList();
 

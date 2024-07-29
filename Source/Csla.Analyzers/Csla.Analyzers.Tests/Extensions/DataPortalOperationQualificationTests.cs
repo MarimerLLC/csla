@@ -31,7 +31,7 @@ namespace Csla.Analyzers.Tests.Extensions
     }
 
     [TestMethod]
-    public void CompareWhenBothFlagsAreFalse() => 
+    public void CompareWhenBothFlagsAreFalse() =>
       Assert.IsFalse(new DataPortalOperationQualification());
 
     [TestMethod]

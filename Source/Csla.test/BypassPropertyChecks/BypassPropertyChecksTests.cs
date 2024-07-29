@@ -6,10 +6,10 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using UnitDriven;
 using System.Security.Claims;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitDriven;
 
 namespace Csla.Test.BypassPropertyChecks
 {
@@ -256,7 +256,7 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId4(1);
-       context.Assert.AreEqual(true, testObj.IsDirty);
+      context.Assert.AreEqual(true, testObj.IsDirty);
       context.Assert.AreEqual(1, testObj.ReadId4ByPass());
       context.Assert.AreEqual(true, propertyChangedFired);
       context.Assert.Success();
@@ -270,7 +270,7 @@ namespace Csla.Test.BypassPropertyChecks
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
-      
+
       UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();

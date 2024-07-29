@@ -8,11 +8,11 @@ namespace GraphMergerTest.DalMock
     public WidgetDto Fetch(Guid id)
     {
       return (from w in MockDb.Widgets
-        where w.Id == id
-        select new WidgetDto
-        {
-          Id = w.Id,
-        }).Single();
+              where w.Id == id
+              select new WidgetDto
+              {
+                Id = w.Id,
+              }).Single();
     }
 
     public void Insert(WidgetDto dto)
@@ -27,8 +27,8 @@ namespace GraphMergerTest.DalMock
     public void Update(WidgetDto dto)
     {
       var data = (from w in MockDb.Widgets
-        where w.Id == dto.Id
-        select w).First();
+                  where w.Id == dto.Id
+                  select w).First();
 
       SetData(data, dto);
     }

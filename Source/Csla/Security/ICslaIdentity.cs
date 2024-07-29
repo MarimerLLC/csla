@@ -15,7 +15,7 @@ namespace Csla.Security
   /// a .NET identity object for use with ICslaPrincipal.
   /// </summary>
   public interface ICslaIdentity
-    : IReadOnlyBase, IIdentity, ICheckRoles 
+    : IReadOnlyBase, IIdentity, ICheckRoles
   {
     /// <summary>
     /// Gets the list of roles for this user.

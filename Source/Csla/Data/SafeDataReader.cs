@@ -856,7 +856,7 @@ namespace Csla.Data
       }
     }
 
-#region IDisposable Support
+    #region IDisposable Support
 
     private bool _disposedValue; // To detect redundant calls
 
@@ -898,7 +898,7 @@ namespace Csla.Data
       Dispose(false);
     }
 
-#endregion
+    #endregion
 
   }
 }

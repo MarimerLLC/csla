@@ -6,11 +6,11 @@
 // <summary>Gets and puts the current user session data</summary>
 //-----------------------------------------------------------------------
 
-using Microsoft.AspNetCore.Mvc;
-using Csla.State;
-using Csla.Security;
 using Csla.Blazor.State.Messages;
+using Csla.Security;
 using Csla.Serialization;
+using Csla.State;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Csla.AspNetCore.Blazor.State
 {

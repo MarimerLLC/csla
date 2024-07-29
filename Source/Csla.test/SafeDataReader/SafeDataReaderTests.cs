@@ -6,9 +6,9 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Globalization;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #if DEBUG

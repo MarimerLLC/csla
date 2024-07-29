@@ -74,10 +74,10 @@ namespace Csla.Server
     private TransactionOptions GetTransactionOptions()
     {
       var option = new TransactionOptions
-                     {
-                       IsolationLevel = GetIsolationLevel(_transactionalAttribute.TransactionIsolationLevel),
-                       Timeout = TimeSpan.FromSeconds(_transactionalAttribute.TimeoutInSeconds)
-                     };
+      {
+        IsolationLevel = GetIsolationLevel(_transactionalAttribute.TransactionIsolationLevel),
+        Timeout = TimeSpan.FromSeconds(_transactionalAttribute.TimeoutInSeconds)
+      };
       return option;
     }
 

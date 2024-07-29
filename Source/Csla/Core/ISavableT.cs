@@ -13,7 +13,7 @@ namespace Csla.Core
   /// Specifies that the object can save
   /// itself.
   /// </summary>
-  public interface ISavable<T> where T:class
+  public interface ISavable<T> where T : class
   {
 #if !(ANDROID || IOS)
     /// <summary>

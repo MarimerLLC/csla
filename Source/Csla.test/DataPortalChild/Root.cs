@@ -21,9 +21,9 @@ namespace Csla.Test.DataPortalChild
     private static PropertyInfo<Child> ChildProperty = RegisterProperty<Child>(typeof(Root), new PropertyInfo<Child>("Child"));
     public Child Child
     {
-      get 
+      get
       {
-        return GetProperty(ChildProperty); 
+        return GetProperty(ChildProperty);
       }
     }
 

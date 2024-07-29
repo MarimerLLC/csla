@@ -73,7 +73,7 @@ namespace Csla.Data
       object target, bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
+      List<string> ignore = [.. ignoreList];
       foreach (string propertyName in source.Keys)
       {
         if (!ignore.Contains(propertyName))
@@ -132,7 +132,7 @@ namespace Csla.Data
       bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
+      List<string> ignore = [.. ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
         if (!ignore.Contains(propertyName))
@@ -215,24 +215,24 @@ namespace Csla.Data
       bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
+      List<string> ignore = [.. ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
-          if (!ignore.Contains(propertyName))
+        if (!ignore.Contains(propertyName))
+        {
+          try
           {
-              try
-              {
-                  object value = MethodCaller.CallPropertyGetter(source, propertyName);
-                  SetPropertyValue(target, propertyName, value);
-              }
-              catch (Exception ex)
-              {
-                  if (!suppressExceptions)
-                      throw new ArgumentException(
-                          String.Format("{0} ({1})",
-                                        Resources.PropertyCopyFailed, propertyName), ex);
-              }
+            object value = MethodCaller.CallPropertyGetter(source, propertyName);
+            SetPropertyValue(target, propertyName, value);
           }
+          catch (Exception ex)
+          {
+            if (!suppressExceptions)
+              throw new ArgumentException(
+                  String.Format("{0} ({1})",
+                                Resources.PropertyCopyFailed, propertyName), ex);
+          }
+        }
       }
     }
 
@@ -285,14 +285,14 @@ namespace Csla.Data
       }
     }
 
-      private static IList<string> GetPropertyNames(Type sourceType)
-      {
-        List<string> result = [];
-        PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
-        foreach (PropertyDescriptor item in props)
-            if (item.IsBrowsable)
-                result.Add(item.Name);
-        return result;
+    private static IList<string> GetPropertyNames(Type sourceType)
+    {
+      List<string> result = [];
+      PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
+      foreach (PropertyDescriptor item in props)
+        if (item.IsBrowsable)
+          result.Add(item.Name);
+      return result;
     }
     #endregion
 
@@ -323,9 +323,9 @@ namespace Csla.Data
         validTarget.LoadProperty(p, source[nameMapper(p.Name)]);
     }
 
-#endregion
+    #endregion
 
-#region  Load to IDictionary
+    #region  Load to IDictionary
 
     /// <summary>
     /// Copies values from the source into the
@@ -352,9 +352,9 @@ namespace Csla.Data
         target[nameMapper(p.Name)] = validSource.ReadProperty(p);
     }
 
-#endregion
+    #endregion
 
-#region SetValue
+    #region SetValue
 
     /// <summary>
     /// Sets an object's property with the specified value,
@@ -366,8 +366,8 @@ namespace Csla.Data
     public static void SetPropertyValue(
       object target, string propertyName, object value)
     {
-        DynamicMemberHandle handle = MethodCaller.GetCachedProperty(target.GetType(), propertyName);
-        SetValueWithCoercion(target, handle, value);   
+      DynamicMemberHandle handle = MethodCaller.GetCachedProperty(target.GetType(), propertyName);
+      SetValueWithCoercion(target, handle, value);
     }
 
     private static void SetValueWithCoercion(object target, DynamicMemberHandle handle, object value)
@@ -406,8 +406,8 @@ namespace Csla.Data
     public static void SetFieldValue(
       object target, string fieldName, object value)
     {
-        DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
-        SetValueWithCoercion(target, handle, value);
+      DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
+      SetValueWithCoercion(target, handle, value);
     }
 
     /// <summary>
@@ -423,6 +423,6 @@ namespace Csla.Data
       return handle.DynamicMemberGet.Invoke(target);
     }
 
-#endregion
+    #endregion
   }
 }

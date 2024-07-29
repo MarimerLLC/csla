@@ -6,11 +6,11 @@
 // </copyright>
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
+using System.Security.Claims;
+using System.Security.Principal;
 using Csla.Core;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
-using System.Security.Principal;
 
 namespace Csla.AspNetCore.Blazor
 {

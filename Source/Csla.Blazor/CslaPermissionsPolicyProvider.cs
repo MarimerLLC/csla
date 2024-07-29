@@ -28,7 +28,7 @@ namespace Csla.Blazor
       {
         throw new ArgumentNullException(nameof(options));
       }
-      
+
       _options = options.Value;
     }
 

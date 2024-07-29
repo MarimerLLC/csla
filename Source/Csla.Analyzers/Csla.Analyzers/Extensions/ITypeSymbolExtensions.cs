@@ -72,13 +72,13 @@ namespace Csla.Analyzers.Extensions
 
     internal static bool IsSerializableByMobileFormatter(this ITypeSymbol @this, Compilation compilation)
     {
-      if(@this.TypeKind == TypeKind.Enum)
+      if (@this.TypeKind == TypeKind.Enum)
       {
         return true;
       }
       else
       {
-        foreach(var serializableType in SerializableTypesByMobileFormatter)
+        foreach (var serializableType in SerializableTypesByMobileFormatter)
         {
           var type = compilation.GetTypeByMetadataName(serializableType.FullName);
 

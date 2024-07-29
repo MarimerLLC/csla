@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
 namespace Csla.Analyzers
@@ -41,12 +41,12 @@ namespace Csla.Analyzers
     {
       var propertyNode = (PropertyDeclarationSyntax)context.Node;
 
-      if(!propertyNode.ContainsDiagnostics)
+      if (!propertyNode.ContainsDiagnostics)
       {
         var propertySymbol = context.SemanticModel.GetDeclaredSymbol(propertyNode);
         var classSymbol = propertySymbol.ContainingType;
 
-        var fields = GetFieldDeclarations(propertyNode,context.SemanticModel);
+        var fields = GetFieldDeclarations(propertyNode, context.SemanticModel);
 
         if (propertySymbol != null && classSymbol != null &&
           classSymbol.IsStereotype() && !propertySymbol.IsAbstract &&
@@ -221,7 +221,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public static IEnumerable<FieldDeclarationSyntax> GetFieldDeclarations(PropertyDeclarationSyntax propertyDeclaration,SemanticModel semanticModel)
+    public static IEnumerable<FieldDeclarationSyntax> GetFieldDeclarations(PropertyDeclarationSyntax propertyDeclaration, SemanticModel semanticModel)
     {
       var classDeclaration = propertyDeclaration.FirstAncestorOrSelf<ClassDeclarationSyntax>();
       var propertyType = semanticModel.GetTypeInfo(propertyDeclaration.Type).Type;
@@ -237,10 +237,10 @@ namespace Csla.Analyzers
 
       // Filter for static fields
       return fieldDeclarations
-          .Where(field => FilterField(field,propertyDeclaration, propertyType,semanticModel));
+          .Where(field => FilterField(field, propertyDeclaration, propertyType, semanticModel));
     }
 
-    private static bool FilterField(FieldDeclarationSyntax fieldDeclaration, PropertyDeclarationSyntax propertyDeclaration, ITypeSymbol propertyType,SemanticModel semanticModel)
+    private static bool FilterField(FieldDeclarationSyntax fieldDeclaration, PropertyDeclarationSyntax propertyDeclaration, ITypeSymbol propertyType, SemanticModel semanticModel)
     {
       var fieldType = semanticModel.GetTypeInfo(fieldDeclaration.Declaration.Type).Type;
       if (fieldType != null && fieldType.OriginalDefinition.ToString() == "Csla.PropertyInfo<T>")
@@ -250,18 +250,18 @@ namespace Csla.Analyzers
         {
           var initializer = fieldDeclaration.Declaration.Variables
             .Select(a => a.Initializer.Value)
-            .OfType<InvocationExpressionSyntax>().Select(w=>w.ArgumentList.Arguments.FirstOrDefault()?.Expression);
+            .OfType<InvocationExpressionSyntax>().Select(w => w.ArgumentList.Arguments.FirstOrDefault()?.Expression);
           var lambda = initializer
             .OfType<SimpleLambdaExpressionSyntax>()
             .Select(s => s.Body)
             .OfType<MemberAccessExpressionSyntax>()
-            .Any(a=>a.Name.Identifier.ValueText == propertyDeclaration.Identifier.ValueText);
+            .Any(a => a.Name.Identifier.ValueText == propertyDeclaration.Identifier.ValueText);
 
           var name = initializer
             .OfType<InvocationExpressionSyntax>()
-            .Select(s=>s.ArgumentList.Arguments.FirstOrDefault()?.Expression)
+            .Select(s => s.ArgumentList.Arguments.FirstOrDefault()?.Expression)
             .OfType<IdentifierNameSyntax>()
-            .Any(a=>a.Identifier.ValueText == propertyDeclaration.Identifier.ValueText);
+            .Any(a => a.Identifier.ValueText == propertyDeclaration.Identifier.ValueText);
           return name || lambda;
         }
       }

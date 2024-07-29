@@ -21,7 +21,7 @@ namespace Csla.Core.LoadManager
 
     public AsyncLoader(
       IPropertyInfo property,
-      Delegate factory, 
+      Delegate factory,
       params object[] parameters)
     {
       Property = property;
@@ -34,7 +34,7 @@ namespace Csla.Core.LoadManager
       var parameters = new List<object>();
       if (_parameters.Any())
         parameters.Add(_parameters.First());
-  
+
       var myCallback = new EventHandler<DataPortalResult<T>>((_, result) => callback(this, result));
       parameters.Add(myCallback);
       _factory.DynamicInvoke(parameters.ToArray());

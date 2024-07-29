@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Invokes a method on a target object when a </summary>
 //-----------------------------------------------------------------------
-using System.Windows;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Csla.Xaml
 {
@@ -18,7 +18,7 @@ namespace Csla.Xaml
   /// </summary>
   public class InvokeMethod : FrameworkElement
   {
-#region Attached properties
+    #region Attached properties
 
     /// <summary>
     /// Object containing the method to be invoked.
@@ -170,7 +170,7 @@ namespace Csla.Xaml
       return result;
     }
 
-#endregion
+    #endregion
 
     private UIElement _element;
 

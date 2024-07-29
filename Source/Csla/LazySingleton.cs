@@ -55,7 +55,7 @@
           {
             if (!IsValueCreated) // recheck for initialized after lock is taken
             {
-               _value = _delegate.Invoke();
+              _value = _delegate.Invoke();
               IsValueCreated = true;   // mark as initialized
             }
           }

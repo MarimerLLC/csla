@@ -30,7 +30,7 @@ namespace cslalighttest.CslaDataProvider
     {
 
     }
-        
+
     [Update]
     protected void DataPortal_Update()
     {

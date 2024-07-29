@@ -34,7 +34,7 @@ namespace Csla.Threading
     private DoWorkEventHandler _myDoWork;
     private RunWorkerCompletedEventHandler _myWorkerCompleted;
     private ProgressChangedEventHandler _myWorkerProgressChanged;
-    
+
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
     /// </summary>
@@ -162,7 +162,7 @@ namespace Csla.Threading
       }
     }
 
-#region Worker Async Request
+    #region Worker Async Request
 
     private class WorkerAsyncRequest : ContextParams
     {
@@ -188,9 +188,9 @@ namespace Csla.Threading
       }
     }
 
-#endregion
+    #endregion
 
-#region RunWorkerAsync
+    #region RunWorkerAsync
 
     /// <summary>
     /// Starts execution of a background operation.
@@ -219,9 +219,9 @@ namespace Csla.Threading
     }
 
 
-#endregion
+    #endregion
 
-#region Private methods
+    #region Private methods
 
     /// <summary>
     /// Run the internal DoWork
@@ -314,6 +314,6 @@ namespace Csla.Threading
       _myWorker.ReportProgress(percentProgress, userState);
     }
 
-#endregion
+    #endregion
   }
 }

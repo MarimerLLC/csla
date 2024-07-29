@@ -1,5 +1,5 @@
-﻿using Csla.Core;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using Csla.Core;
 
 namespace Csla
 {

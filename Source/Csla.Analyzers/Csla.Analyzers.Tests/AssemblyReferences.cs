@@ -33,12 +33,12 @@ namespace Csla.Analyzers.Tests
         references.Add(reference);
       }
 
-      foreach(var assembly in assemblies)
+      foreach (var assembly in assemblies)
       {
         var referencedAssemblies = new HashSet<Assembly>();
         LoadDependencies(referencedAssemblies, assembly);
 
-        foreach(var referencedAssembly in referencedAssemblies.Transform())
+        foreach (var referencedAssembly in referencedAssemblies.Transform())
         {
           references.Add(referencedAssembly);
         }
@@ -84,7 +84,7 @@ namespace Csla.Analyzers.Tests
            LoadDependencies(assemblies, assembly);
          }
 
-         return [..assemblies.Transform()];
+         return [.. assemblies.Transform()];
        });
   }
 }

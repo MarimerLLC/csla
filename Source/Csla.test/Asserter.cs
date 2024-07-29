@@ -66,8 +66,8 @@ namespace UnitDriven
       return p();
     }
 
-    public void Success() 
-    { 
+    public void Success()
+    {
     }
 
   }

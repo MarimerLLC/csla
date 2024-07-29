@@ -23,7 +23,8 @@ namespace Csla.Test.Authorization
     private static TestDIContext _testDIContext;
 
     [ClassInitialize]
-    public static void ClassInitialize(TestContext context) {
+    public static void ClassInitialize(TestContext context)
+    {
       _ = context;
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
@@ -37,7 +38,8 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
-    public void WhenReadOnlyBaseHasAuthorizationRuleChecksDisabledThePropertiesShouldBeReadableEvenThoughIDontHaveTheNeededRule() {
+    public void WhenReadOnlyBaseHasAuthorizationRuleChecksDisabledThePropertiesShouldBeReadableEvenThoughIDontHaveTheNeededRule()
+    {
       var person = ReadOnlyPerson.GetReadOnlyPerson();
       ((IUseApplicationContext)person).ApplicationContext = _testDIContext.CreateTestApplicationContext();
 
@@ -69,7 +71,7 @@ namespace Csla.Test.Authorization
     //[ExpectedException(typeof(Csla.Security.SecurityException))]
     //public void TestDenyInstanceAndShared()
     //{
-      
+
     //  TestResults.Reinitialise();
     //  Csla.ApplicationContext.User = GetPrincipal("Admin");
     //  ReadOnlyPerson person = ReadOnlyPerson.GetReadOnlyPerson();

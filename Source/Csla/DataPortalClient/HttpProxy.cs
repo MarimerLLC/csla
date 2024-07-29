@@ -70,14 +70,14 @@ namespace Csla.Channels.Http
       if (_httpClient == null)
       {
         var handler = GetHttpClientHandler() ?? CreateDefaultHandler();
-        
+
         _httpClient = new HttpClient(handler);
         if (Timeout > 0)
         {
           _httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
         }
       }
-      
+
       return _httpClient;
 
       HttpClientHandler CreateDefaultHandler()
@@ -92,7 +92,7 @@ namespace Csla.Channels.Http
 #endif
         if (!Options.UseTextSerialization)
         {
-            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+          handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         }
 
         return handler;

@@ -20,7 +20,7 @@ namespace Csla.Test.PropertyGetSet
     {
       // Id
       BusinessRules.AddRule(new Rules.CommonRules.Required(_idProperty));
-      
+
       // MemberBackedId
       BusinessRules.AddRule(new Rules.CommonRules.Required(_memberBackedIdProperty));
 
@@ -37,7 +37,7 @@ namespace Csla.Test.PropertyGetSet
     public String MemberBackedId
     {
       get { return GetProperty(_memberBackedIdProperty, _memberBackedId); }
-      set { SetProperty(_memberBackedIdProperty, ref _memberBackedId, value ); }
+      set { SetProperty(_memberBackedIdProperty, ref _memberBackedId, value); }
     }
 
     public static readonly PropertyInfo<String> _memberBackedIdWithNoRelationshipTypesProperty = RegisterProperty<String>(p => p.MemberBackedIdWithNoRelationshipTypes, string.Empty);

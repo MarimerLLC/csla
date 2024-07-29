@@ -5,11 +5,11 @@
 // </copyright>
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using Csla.Core;
 using Csla.Runtime;
 using Microsoft.AspNetCore.Http;
-using System.Diagnostics.CodeAnalysis;
-using System.Security.Claims;
 
 namespace Csla.AspNetCore
 {

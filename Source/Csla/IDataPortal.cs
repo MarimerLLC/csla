@@ -8,10 +8,10 @@
 
 namespace Csla
 {
-    /// <summary>
-    /// Interface defining the members of the data portal type.
-    /// </summary>
-    public interface IDataPortal
+  /// <summary>
+  /// Interface defining the members of the data portal type.
+  /// </summary>
+  public interface IDataPortal
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to

@@ -39,7 +39,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasNamingConventionAndAttribute()
     {
-      var code = 
+      var code =
         """
         using Csla;
 
@@ -55,7 +55,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasAttribute()
     {
-      var code = 
+      var code =
         """
         using Csla;
 
@@ -71,7 +71,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndOperationHasNamingConvention()
     {
-      var code = 
+      var code =
         """
         using Csla;
 

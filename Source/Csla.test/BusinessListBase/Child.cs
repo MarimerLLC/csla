@@ -22,13 +22,13 @@ namespace Csla.Test.BusinessListBase
 
 
     private static PropertyInfo<string> AsyncRuleTextProperty = RegisterProperty<string>(nameof(AsyncRuleText));
-    public string AsyncRuleText 
+    public string AsyncRuleText
     {
       get { return GetProperty(AsyncRuleTextProperty); }
-      set { SetProperty<string>(AsyncRuleTextProperty, value);}
+      set { SetProperty<string>(AsyncRuleTextProperty, value); }
     }
 
-    protected override void AddBusinessRules() 
+    protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
 
@@ -36,7 +36,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [CreateChild]
-    private void CreateChild() 
+    private void CreateChild()
     { }
 
     [InsertChild]
@@ -52,14 +52,14 @@ namespace Csla.Test.BusinessListBase
     { }
 
 
-    private sealed class OneSecondAsyncRule : BusinessRuleAsync 
+    private sealed class OneSecondAsyncRule : BusinessRuleAsync
     {
       public OneSecondAsyncRule(Core.IPropertyInfo primaryProperty) : base(primaryProperty)
       {
         InputProperties.Add(primaryProperty);
       }
 
-      protected override async Task ExecuteAsync(IRuleContext context) 
+      protected override async Task ExecuteAsync(IRuleContext context)
       {
         await Task.Delay(TimeSpan.FromSeconds(1));
       }

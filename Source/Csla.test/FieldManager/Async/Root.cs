@@ -21,9 +21,9 @@ namespace Csla.Test.FieldManager.Async
     private static PropertyInfo<Child> ChildProperty = RegisterProperty<Child>(typeof(Root), new PropertyInfo<Child>("Child"));
     public Child Child
     {
-      get 
+      get
       {
-        return GetProperty<Child>(ChildProperty); 
+        return GetProperty<Child>(ChildProperty);
       }
     }
 
@@ -42,7 +42,7 @@ namespace Csla.Test.FieldManager.Async
     }
 
     [Create]
-    protected async Task CreateAsync([Inject] IChildDataPortal<Child> childDataPortal, [Inject]IChildDataPortal<ChildList> childListDataPortal)
+    protected async Task CreateAsync([Inject] IChildDataPortal<Child> childDataPortal, [Inject] IChildDataPortal<ChildList> childListDataPortal)
     {
       LoadProperty(ChildProperty, await Child.NewChildAsync(childDataPortal));
       LoadProperty(ChildListProperty, await ChildList.GetListAsync(childListDataPortal));

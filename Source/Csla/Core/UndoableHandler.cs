@@ -17,17 +17,17 @@ using Csla.Reflection;
 
 namespace Csla.Core
 {
-    internal static class UndoableHandler
-    {
+  internal static class UndoableHandler
+  {
 #if NET8_0_OR_GREATER
         private static readonly Dictionary<Type, Tuple<string, List<DynamicMemberHandle>>> _undoableFieldCache = [];
 #else
-        private static readonly Dictionary<Type, List<DynamicMemberHandle>> _undoableFieldCache = [];
+    private static readonly Dictionary<Type, List<DynamicMemberHandle>> _undoableFieldCache = [];
 #endif
 
-        public static List<DynamicMemberHandle> GetCachedFieldHandlers(Type type)
-        {
-            List<DynamicMemberHandle> handlers;
+    public static List<DynamicMemberHandle> GetCachedFieldHandlers(Type type)
+    {
+      List<DynamicMemberHandle> handlers;
 
 #if NET8_0_OR_GREATER
             var found = _undoableFieldCache.TryGetValue(type, out var handlersInfo);
@@ -56,55 +56,55 @@ namespace Csla.Core
                 }
             }
 #else
-            if (!_undoableFieldCache.TryGetValue(type, out handlers))
-            {
-                var newHandlers = BuildHandlers(type);
+      if (!_undoableFieldCache.TryGetValue(type, out handlers))
+      {
+        var newHandlers = BuildHandlers(type);
 
-                lock (_undoableFieldCache)  //ready to add, lock
-                {
-                    if(!_undoableFieldCache.TryGetValue(type, out handlers))
-                    {
-                        _undoableFieldCache.Add(type, newHandlers);
+        lock (_undoableFieldCache)  //ready to add, lock
+        {
+          if (!_undoableFieldCache.TryGetValue(type, out handlers))
+          {
+            _undoableFieldCache.Add(type, newHandlers);
 
-                        handlers = newHandlers;
-                    }
-                }
-            }
+            handlers = newHandlers;
+          }
+        }
+      }
 #endif
 
-            return handlers;
-        }
+      return handlers;
+    }
 
-        private static List<DynamicMemberHandle> BuildHandlers(Type type)
+    private static List<DynamicMemberHandle> BuildHandlers(Type type)
+    {
+      var handlers = new List<DynamicMemberHandle>();
+      // get the list of fields in this type
+      var fields = type.GetFields(
+          BindingFlags.NonPublic |
+          BindingFlags.Instance |
+          BindingFlags.Public);
+
+      foreach (FieldInfo field in fields)
+      {
+        // make sure we process only our variables
+        if (field.DeclaringType == type)
         {
-            var handlers = new List<DynamicMemberHandle>();
-            // get the list of fields in this type
-            var fields = type.GetFields(
-                BindingFlags.NonPublic |
-                BindingFlags.Instance |
-                BindingFlags.Public);
-
-            foreach (FieldInfo field in fields)
-            {
-                // make sure we process only our variables
-                if (field.DeclaringType == type)
-                {
-                    // see if this field is marked as not undoable 
-                    if (!NotUndoableField(field))
-                    {
-                        // the field is undoable, so it needs to be processed.
-                        handlers.Add(new DynamicMemberHandle(field));
-                    }
-                }
-            }
-            return handlers;
+          // see if this field is marked as not undoable 
+          if (!NotUndoableField(field))
+          {
+            // the field is undoable, so it needs to be processed.
+            handlers.Add(new DynamicMemberHandle(field));
+          }
         }
+      }
+      return handlers;
+    }
 
-        private static bool NotUndoableField(FieldInfo field)
-        {
-            // see if this field is marked as not undoable or IsInitOnly (ie: readonly property)
-            return field.IsInitOnly || Attribute.IsDefined(field, typeof(NotUndoableAttribute));
-        }
+    private static bool NotUndoableField(FieldInfo field)
+    {
+      // see if this field is marked as not undoable or IsInitOnly (ie: readonly property)
+      return field.IsInitOnly || Attribute.IsDefined(field, typeof(NotUndoableAttribute));
+    }
 #if NET8_0_OR_GREATER
 
         private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
@@ -113,7 +113,7 @@ namespace Csla.Core
               AssemblyLoadContextManager.RemoveFromCache(_undoableFieldCache, context);
         }
 #endif
-    }
+  }
 }
 
 #endif

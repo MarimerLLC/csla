@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.Security.Principal;
-using Csla.Core;
 using Csla.Configuration;
+using Csla.Core;
 using Csla.Serialization;
 
 namespace Csla.Server

@@ -25,7 +25,7 @@ namespace Csla.Rules.CommonRules
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="primaryProperty">Primary property.</param>
-    protected CommonBusinessRule(Core.IPropertyInfo primaryProperty)  : base(primaryProperty)
+    protected CommonBusinessRule(Core.IPropertyInfo primaryProperty) : base(primaryProperty)
     {
       Severity = RuleSeverity.Error;
     }
@@ -128,7 +128,7 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="primaryProperty">Property to which the rule applies.</param>
     /// <param name="messageDelegate">The localizable message.</param>
-    public Required(Core.IPropertyInfo primaryProperty, Func<string> messageDelegate )
+    public Required(Core.IPropertyInfo primaryProperty, Func<string> messageDelegate)
       : this(primaryProperty)
     {
       MessageDelegate = messageDelegate;
@@ -211,7 +211,7 @@ namespace Csla.Rules.CommonRules
     /// <value></value>
     protected override string GetMessage()
     {
-        return HasMessageDelegate ? MessageText : Properties.Resources.StringMaxLengthRule;
+      return HasMessageDelegate ? MessageText : Properties.Resources.StringMaxLengthRule;
     }
 
     /// <summary>
@@ -321,8 +321,8 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="primaryProperty">Property to which the rule applies.</param>
     /// <param name="min">Min value.</param>
-    public MinValue(Core.IPropertyInfo primaryProperty, T min) 
-      : base(primaryProperty) 
+    public MinValue(Core.IPropertyInfo primaryProperty, T min)
+      : base(primaryProperty)
     {
       Min = min;
       RuleUri.AddQueryParameter("min", min.ToString());
@@ -335,7 +335,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="primaryProperty">Property to which the rule applies.</param>
     /// <param name="min">Min value.</param>
     /// <param name="message">The message.</param>
-    public MinValue(Core.IPropertyInfo primaryProperty, T min,  string message)
+    public MinValue(Core.IPropertyInfo primaryProperty, T min, string message)
       : this(primaryProperty, min)
     {
       MessageText = message;
@@ -458,7 +458,7 @@ namespace Csla.Rules.CommonRules
     {
       var value = context.InputPropertyValues[PrimaryProperty] != null
                       ? (T)context.InputPropertyValues[PrimaryProperty]
-                      : PrimaryProperty.DefaultValue != null 
+                      : PrimaryProperty.DefaultValue != null
                         ? (T)PrimaryProperty.DefaultValue
                         : default(T);
 
@@ -690,7 +690,7 @@ namespace Csla.Rules.CommonRules
     {
       Initialize(rule);
     }
-    
+
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>

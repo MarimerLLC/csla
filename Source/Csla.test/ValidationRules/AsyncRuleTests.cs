@@ -6,11 +6,11 @@
 // <summary>This only works on Silverlight because when run through NUnit it is not running</summary>
 //-----------------------------------------------------------------------
 
-using UnitDriven;
 using Csla.TestHelpers;
-using FluentAssertions.Execution;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitDriven;
 
 namespace Csla.Test.ValidationRules
 {
@@ -177,7 +177,7 @@ namespace Csla.Test.ValidationRules
       await har.WaitForIdle();
 
       var affectedProperties = await har.CheckRulesForPropertyAsyncAwait();
-      using (new AssertionScope()) 
+      using (new AssertionScope())
       {
         har.AsyncAwait.Should().Be("abc");
         affectedProperties.Should().ContainSingle().Which.Should().Be(nameof(AsyncRuleRoot.AsyncAwait));

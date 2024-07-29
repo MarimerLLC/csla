@@ -100,7 +100,7 @@ namespace Csla.Test.Basic
     }
 
     [Update]
-  	protected void DataPortal_Update()
+    protected void DataPortal_Update()
     {
       //we would update here
       TestResults.Add("Root", "Updated");

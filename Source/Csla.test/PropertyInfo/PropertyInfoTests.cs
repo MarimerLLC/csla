@@ -33,7 +33,7 @@ namespace Csla.Test.PropertyInfo
     {
       Assert.AreEqual(PropertyInfoRoot._nameProperty.Name, PropertyInfoRoot._nameProperty.FriendlyName);
     }
-    
+
     [TestMethod]
     public void TestNameDataAnnotations()
     {
@@ -73,7 +73,7 @@ namespace Csla.Test.PropertyInfo
     [TestMethod]
     public void TestContainingType()
     {
-      Assert.IsTrue(ReferenceEquals(typeof(PropertyInfoRoot).GetProperty(nameof(PropertyInfoRoot.ContainingType)), PropertyInfoRoot.ContainingTypeProperty.GetPropertyInfo()));      
+      Assert.IsTrue(ReferenceEquals(typeof(PropertyInfoRoot).GetProperty(nameof(PropertyInfoRoot.ContainingType)), PropertyInfoRoot.ContainingTypeProperty.GetPropertyInfo()));
       Assert.IsTrue(ReferenceEquals(null, PropertyInfoRoot.ContainingTypeNullProperty.GetPropertyInfo()));
     }
   }

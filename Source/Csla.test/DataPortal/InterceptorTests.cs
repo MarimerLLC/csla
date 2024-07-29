@@ -15,7 +15,7 @@ namespace Csla.Test.DataPortal
     {
       _testDIContext = TestDIContextFactory.CreateContext(
         options => options
-        .DataPortal(dpo => dpo.AddServerSideDataPortal(config => 
+        .DataPortal(dpo => dpo.AddServerSideDataPortal(config =>
         {
           config.AddInterceptorProvider<TestInterceptor>();
           config.RegisterActivator<TestActivator>();

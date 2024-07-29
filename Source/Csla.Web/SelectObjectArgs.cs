@@ -10,9 +10,9 @@ using System.ComponentModel;
 
 namespace Csla.Web
 {
-/// <summary>
-/// Argument object used in the SelectObject event.
-/// </summary>
+  /// <summary>
+  /// Argument object used in the SelectObject event.
+  /// </summary>
   [Serializable]
   public class SelectObjectArgs : EventArgs
   {

@@ -87,7 +87,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndDoesNotHaveObjectAuthorizationRules()
     {
-      var code = 
+      var code =
         """
         using Csla;
 

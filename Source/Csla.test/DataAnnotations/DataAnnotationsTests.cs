@@ -6,11 +6,11 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Rules;
-using UnitDriven;
 using System.ComponentModel.DataAnnotations;
+using Csla.Rules;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitDriven;
 
 namespace Csla.Test.DataAnnotations
 {
@@ -187,22 +187,22 @@ namespace Csla.Test.DataAnnotations
   [Serializable]
   public partial class MultipleMeta : BusinessBase<MultipleMeta>
   {
-      public static PropertyInfo<decimal> AmountProperty = RegisterProperty<decimal>(p => p.Amount);
+    public static PropertyInfo<decimal> AmountProperty = RegisterProperty<decimal>(p => p.Amount);
 
-      [Required(ErrorMessage="Please enter an amount")]
-      public decimal Amount
-      {
-          get { return GetProperty(AmountProperty); }
-          set { SetProperty(AmountProperty, value); }
-      }
+    [Required(ErrorMessage = "Please enter an amount")]
+    public decimal Amount
+    {
+      get { return GetProperty(AmountProperty); }
+      set { SetProperty(AmountProperty, value); }
+    }
 
 
-      public static readonly PropertyInfo<int> QuantityProperty = RegisterProperty<int>(c => c.Quantity);
-      public int Quantity
-      { 
-        get { return GetProperty(QuantityProperty); }
-        set { SetProperty(QuantityProperty, value); }
-      }
+    public static readonly PropertyInfo<int> QuantityProperty = RegisterProperty<int>(c => c.Quantity);
+    public int Quantity
+    {
+      get { return GetProperty(QuantityProperty); }
+      set { SetProperty(QuantityProperty, value); }
+    }
 
     [Fetch]
     private void Fetch()
@@ -212,13 +212,13 @@ namespace Csla.Test.DataAnnotations
 
   public class MultipleMetaDataClass
   {
-      [Required(ErrorMessage = "Amount is required")]
-      [Range(typeof(decimal), "1", "100", ErrorMessage = "Please enter a value between 1 and 100")]
-      public Decimal Amount { get; set; }
+    [Required(ErrorMessage = "Amount is required")]
+    [Range(typeof(decimal), "1", "100", ErrorMessage = "Please enter a value between 1 and 100")]
+    public Decimal Amount { get; set; }
 
-      [Required(ErrorMessage = "Quantity is required")]
-      [Range(1, 100, ErrorMessage = "Please enter a value between 1 and 100")]
-      public Int32 Quantity { get; set; }
+    [Required(ErrorMessage = "Quantity is required")]
+    [Range(1, 100, ErrorMessage = "Please enter a value between 1 and 100")]
+    public Int32 Quantity { get; set; }
 
   }
 

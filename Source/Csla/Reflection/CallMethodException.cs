@@ -32,7 +32,7 @@ namespace Csla.Reflection
     {
       get
       {
-        return string.Format("{0}{1}{2}", 
+        return string.Format("{0}{1}{2}",
           _innerStackTrace, Environment.NewLine, base.StackTrace);
       }
     }

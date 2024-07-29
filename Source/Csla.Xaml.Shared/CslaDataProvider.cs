@@ -9,11 +9,11 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Data;
 using System.Reflection;
+using System.Windows.Data;
 using Csla.Core;
-using Csla.Reflection;
 using Csla.Properties;
+using Csla.Reflection;
 
 namespace Csla.Xaml
 {
@@ -57,7 +57,7 @@ namespace Csla.Xaml
       BeginQuery();
     }
 
-#region Properties
+    #region Properties
 
     private Type _objectType = null;
     private bool _manageLifetime;
@@ -78,12 +78,12 @@ namespace Csla.Xaml
     /// </summary>
     public Type ObjectType
     {
-      get 
-      { 
-        return _objectType; 
+      get
+      {
+        return _objectType;
       }
-      set 
-      { 
+      set
+      {
         _objectType = value;
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectType"));
       }
@@ -179,7 +179,7 @@ namespace Csla.Xaml
     public object ObjectInstance
     {
       get { return Data; }
-      set 
+      set
       {
         OnQueryFinished(value, null, null, null);
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
@@ -210,9 +210,9 @@ namespace Csla.Xaml
       ObjectInstance = tmp;
     }
 
-#endregion
+    #endregion
 
-#region Query
+    #region Query
 
     private bool _firstRun = true;
     private bool _init = false;
@@ -393,7 +393,7 @@ namespace Csla.Xaml
         // get factory method info
         BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
         System.Reflection.MethodInfo factory = request.ObjectType.GetMethod(
-          request.FactoryMethod, flags, null, 
+          request.FactoryMethod, flags, null,
           MethodCaller.GetParameterTypes(parameters), null);
 
         if (factory == null)
@@ -463,7 +463,7 @@ namespace Csla.Xaml
     }
 
 
-#region QueryRequest Class
+    #region QueryRequest Class
 
     private class QueryRequest
     {
@@ -475,7 +475,7 @@ namespace Csla.Xaml
         set { _objectType = value; }
       }
 
-      public Func<object[], Task<object>> Factory {  get; set; }
+      public Func<object[], Task<object>> Factory { get; set; }
 
       private string _factoryMethod;
 
@@ -490,8 +490,11 @@ namespace Csla.Xaml
       public ObservableCollection<object> FactoryParameters
       {
         get { return _factoryParameters; }
-        set { _factoryParameters = 
-          new ObservableCollection<object>([..value]); }
+        set
+        {
+          _factoryParameters =
+          new ObservableCollection<object>([.. value]);
+        }
       }
       private bool _manageLifetime;
 
@@ -503,11 +506,11 @@ namespace Csla.Xaml
 
     }
 
-#endregion
+    #endregion
 
-#endregion
+    #endregion
 
-#region Cancel/Update/New/Remove  
+    #region Cancel/Update/New/Remove  
 
     /// <summary>
     /// Cancels changes to the business object, returning
@@ -636,7 +639,7 @@ namespace Csla.Xaml
         list.Remove(item);
     }
 
-#endregion
+    #endregion
 
   }
 }

@@ -17,7 +17,7 @@ namespace Csla.Test.Authorization
     private bool _authorizationCheckDisabled;
     protected override bool IsCanReadPropertyAuthorizationCheckDisabled => _authorizationCheckDisabled;
 
-    private ReadOnlyPerson() 
+    private ReadOnlyPerson()
     {
       LoadProperty(FirstNameProperty, "John");
       LoadProperty(LastNameProperty, "Doe");
@@ -37,7 +37,7 @@ namespace Csla.Test.Authorization
       }
     }
 
-   
+
     private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(new PropertyInfo<string>("LastName"));
 
     public string LastName

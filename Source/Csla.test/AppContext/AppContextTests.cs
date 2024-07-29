@@ -176,7 +176,7 @@ namespace Csla.Test.AppContext
     public void FailCreateContext()
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
-      
+
       ExceptionRoot root;
       try
       {
@@ -201,7 +201,7 @@ namespace Csla.Test.AppContext
     public void FailFetchContext()
     {
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
-      
+
       ExceptionRoot root = null;
       try
       {
@@ -230,9 +230,9 @@ namespace Csla.Test.AppContext
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(opts => opts.
         DataPortal(cfg => cfg.
           AddServerSideDataPortal(dpc => dpc.
-            DataPortalReturnObjectOnException =true)));
+            DataPortalReturnObjectOnException = true)));
       IDataPortal<ExceptionRoot> dataPortal = testDIContext.CreateDataPortal<ExceptionRoot>();
-      
+
       try
       {
         ExceptionRoot root;

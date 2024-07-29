@@ -35,7 +35,7 @@ namespace Csla.Server
     public object Create(Type objectType)
     {
       try
-      { 
+      {
         return DoCreateAsync(objectType).Result;
       }
       catch (AggregateException ex)
@@ -54,7 +54,7 @@ namespace Csla.Server
     public object Create(Type objectType, params object[] parameters)
     {
       try
-      { 
+      {
         return DoCreateAsync(objectType, parameters).Result;
       }
       catch (AggregateException ex)
@@ -68,7 +68,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> CreateAsync<T>()
     {
-      return (T) await DoCreateAsync(typeof(T)).ConfigureAwait(false);
+      return (T)await DoCreateAsync(typeof(T)).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -240,7 +240,7 @@ namespace Csla.Server
     public void Update(object obj, params object[] parameters)
     {
       try
-      { 
+      {
         DoUpdateAsync(obj, false, parameters).Wait();
       }
       catch (AggregateException ex)

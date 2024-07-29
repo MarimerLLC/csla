@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization.Mobile;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.TestHelpers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.SmartDate
 {
@@ -480,7 +480,7 @@ namespace Csla.Test.SmartDate
   [Serializable]
   public class SDtest : BusinessBase<SDtest>
   {
-    public static PropertyInfo<Csla.SmartDate> TextDateProperty = 
+    public static PropertyInfo<Csla.SmartDate> TextDateProperty =
       RegisterProperty<Csla.SmartDate>(c => c.TextDate, null, new Csla.SmartDate { FormatString = "g" });
     public string TextDate
     {

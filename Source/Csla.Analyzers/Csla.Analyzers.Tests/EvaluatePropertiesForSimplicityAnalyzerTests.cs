@@ -212,7 +212,7 @@ namespace Csla.Analyzers.Tests
         """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(
         code,
-        [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
+        [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
     }
 
     [TestMethod]

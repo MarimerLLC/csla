@@ -323,7 +323,7 @@ namespace Csla.Test.ValidationRules
       InputProperties.Add(primaryProperty);
       AffectedProperties.Add(affectedProperty);
 
-      CanRunAsAffectedProperty = false; 
+      CanRunAsAffectedProperty = false;
     }
 
     protected override void Execute(IRuleContext context)

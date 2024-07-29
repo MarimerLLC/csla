@@ -24,8 +24,8 @@ namespace Csla.Core
     /// <param name="localContextManager"></param>
     /// <param name="serviceProvider"></param>
     public ApplicationContextAccessor(
-      IEnumerable<IContextManager> contextManagerList, 
-      IContextManagerLocal localContextManager, 
+      IEnumerable<IContextManager> contextManagerList,
+      IContextManagerLocal localContextManager,
       IServiceProvider serviceProvider)
     {
       ServiceProvider = serviceProvider;

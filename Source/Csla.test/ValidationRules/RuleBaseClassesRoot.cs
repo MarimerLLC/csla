@@ -244,7 +244,7 @@ namespace Csla.Test.ValidationRules
       CanRunOnServer = false;
       CanRunInCheckRules = false;
       CanRunAsAffectedProperty = false;
-      IsAsync = true; 
+      IsAsync = true;
     }
 
     protected override async Task ExecuteAsync(IRuleContext context)

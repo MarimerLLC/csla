@@ -84,11 +84,11 @@ namespace Csla.Core.FieldManager
         }
       }).Item2;
 #else
-      var list = cache.GetOrAdd(objectType, type => 
+      var list = cache.GetOrAdd(objectType, type =>
       {
-        lock (_cacheLock) 
+        lock (_cacheLock)
         {
-          if (cache.TryGetValue(type, out var alreadyCachedInstance)) 
+          if (cache.TryGetValue(type, out var alreadyCachedInstance))
           {
             return alreadyCachedInstance;
           }

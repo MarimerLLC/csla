@@ -96,7 +96,7 @@ namespace Csla.Test.ObjectFactory
 
   public class RootFactoryC : Csla.Server.ObjectFactory
   {
-    public RootFactoryC(ApplicationContext applicationContext) 
+    public RootFactoryC(ApplicationContext applicationContext)
       : base(applicationContext) { }
 
     public object Create(int test)
@@ -132,7 +132,7 @@ namespace Csla.Test.ObjectFactory
       MarkOld(obj);
       return obj;
     }
-    
+
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {
@@ -156,7 +156,7 @@ namespace Csla.Test.ObjectFactory
 
   public class RootFactory3 : Csla.Server.ObjectFactory
   {
-    public RootFactory3(ApplicationContext applicationContext) 
+    public RootFactory3(ApplicationContext applicationContext)
       : base(applicationContext) { }
 
     public object Fetch()
@@ -181,7 +181,7 @@ namespace Csla.Test.ObjectFactory
       obj.MarkAsNew();
       return obj;
     }
-    
+
     [Transactional(TransactionalTypes.TransactionScope, TransactionIsolationLevel.ReadCommitted, 100)]
     public object Update(Root obj)
     {

@@ -66,6 +66,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets the value of the TextSeparator
     /// </summary>
-    string TextSeparator { get;}
+    string TextSeparator { get; }
   }
 }

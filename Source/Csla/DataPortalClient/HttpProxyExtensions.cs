@@ -6,8 +6,8 @@
 // <summary>Implement extension methods data portal channel</summary>
 //-----------------------------------------------------------------------
 
-using Csla.DataPortalClient;
 using Csla.Channels.Http;
+using Csla.DataPortalClient;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -27,7 +27,7 @@ namespace Csla.Configuration
       var proxyOptions = new HttpProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy>(
-        sp => 
+        sp =>
         {
           var applicationContext = sp.GetRequiredService<ApplicationContext>();
           var dataPortalOptions = sp.GetRequiredService<DataPortalOptions>();

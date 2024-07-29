@@ -1,10 +1,10 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
 
 namespace Csla.Analyzers
@@ -50,7 +50,7 @@ namespace Csla.Analyzers
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
 
-      if(methodSymbol.IsAsync)
+      if (methodSymbol.IsAsync)
       {
         var newRoot = root.ReplaceNode(methodNode.ReturnType,
           SyntaxFactory.IdentifierName(typeof(Task).Name));
@@ -70,7 +70,7 @@ namespace Csla.Analyzers
       }
       else
       {
-        var newRoot = root.ReplaceNode(methodNode.ReturnType, 
+        var newRoot = root.ReplaceNode(methodNode.ReturnType,
           SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword)));
         context.RegisterCodeFix(
           CodeAction.Create(

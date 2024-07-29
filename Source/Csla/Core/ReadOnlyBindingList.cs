@@ -20,7 +20,7 @@ namespace Csla.Core
   /// from the list. Use the IsReadOnly property
   /// to unlock the list for loading/unloading data.
   /// </remarks>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
+  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming",
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
   public abstract class ReadOnlyBindingList<C> :
@@ -176,7 +176,7 @@ namespace Csla.Core
         throw new NotSupportedException(Resources.ChangeInvalidException);
     }
 
-#region ITrackStatus
+    #region ITrackStatus
 
     /// <summary>
     /// Gets a value indicating whether this object or its
@@ -199,9 +199,9 @@ namespace Csla.Core
       }
     }
 
-#endregion
+    #endregion
 
-#region MobileFormatter
+    #region MobileFormatter
 
     /// <summary>
     /// Override this method to insert your field values
@@ -248,6 +248,6 @@ namespace Csla.Core
       IsReadOnly = old;
     }
 
-#endregion
+    #endregion
   }
 }

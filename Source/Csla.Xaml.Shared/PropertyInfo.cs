@@ -465,12 +465,12 @@ namespace Csla.Xaml
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         if (p != null)
         {
-         source = GetRealSource(
-          MethodCaller.GetPropertyValue(source, p),
-          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+          source = GetRealSource(
+           MethodCaller.GetPropertyValue(source, p),
+           bindingPath.Substring(bindingPath.IndexOf('.') + 1));
         }
       }
-        
+
       return source;
     }
 

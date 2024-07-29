@@ -53,7 +53,7 @@ namespace Csla.Test
     /// <returns>The value recorded against the operation, or an empty string if no result is found</returns>
     public static string GetResult(string key)
     {
-      if (!TestResultsInternal.Value.TryGetValue(key, out var result)) 
+      if (!TestResultsInternal.Value.TryGetValue(key, out var result))
         return string.Empty;
 
       return result;

@@ -166,9 +166,9 @@ namespace Csla.Serialization.Mobile
     private Dictionary<object, SerializationInfo> _serializationReferences =
       new(new ReferenceComparer<object>());
 
-#endregion
+    #endregion
 
-#region Deserialize
+    #region Deserialize
 
     private Dictionary<int, object> _deserializationReferences = [];
 
@@ -317,9 +317,9 @@ namespace Csla.Serialization.Mobile
       return _deserializationReferences[referenceId];
     }
 
-#endregion
+    #endregion
 
-#region Helpers
+    #region Helpers
 
     /// <summary>
     /// Serializes the object into a byte array.
@@ -397,7 +397,7 @@ namespace Csla.Serialization.Mobile
 
       return DeserializeAsDTO(data);
     }
-#endregion
+    #endregion
 
   }
 }

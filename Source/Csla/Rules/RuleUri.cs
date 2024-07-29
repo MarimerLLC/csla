@@ -45,7 +45,7 @@ namespace Csla.Rules
     /// <param name="property">Property to which rule applies.</param>
     public RuleUri(IBusinessRuleBase rule, Core.IPropertyInfo property)
       : this(GetTypeName(rule), ((property == null) ? "(object)" : property.Name))
-      //: this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
+    //: this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
     { }
 
     /// <summary>
@@ -124,7 +124,7 @@ namespace Csla.Rules
     /// </summary>
     public string RuleTypeName
     {
-      get 
+      get
       {
         string name = _uri.Host;
         if (_uri.Parts().Length > 1)
@@ -193,16 +193,16 @@ namespace Csla.Rules
       else // generic type
       {
         var sb = new StringBuilder();
-        if (!string.IsNullOrEmpty(type.Namespace)) 
+        if (!string.IsNullOrEmpty(type.Namespace))
           sb.Append(type.Namespace + ".");
         var typeName = type.Name;
         sb.Append(typeName.Replace("`1", ""));
         foreach (var t in type.GetGenericArguments())
         {
           sb.Append("-");
-          if (t.IsGenericType) 
+          if (t.IsGenericType)
             sb.Append(GetTypeName(t));
-          else 
+          else
             sb.Append(t.FullName);
           sb.Append("-");
         }

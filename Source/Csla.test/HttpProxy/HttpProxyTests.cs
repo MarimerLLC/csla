@@ -78,7 +78,7 @@ public class HttpProxyTests
 
   private class TestHttpProxy : Csla.Channels.Http.HttpProxy
   {
-    public TestHttpProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options, DataPortalOptions dataPortalOptions) 
+    public TestHttpProxy(ApplicationContext applicationContext, HttpClient httpClient, HttpProxyOptions options, DataPortalOptions dataPortalOptions)
       : base(applicationContext, httpClient, options, dataPortalOptions)
     {
     }

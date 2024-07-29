@@ -1,11 +1,11 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CodeActions;
 using Csla.Analyzers.Extensions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Analyzers
 {
@@ -51,7 +51,7 @@ namespace Csla.Analyzers
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
 
-      foreach(var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
+      foreach (var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
       {
         newRoot = newRoot.RemoveNode(attribute.ApplicationSyntaxReference.GetSyntax(), SyntaxRemoveOptions.KeepNoTrivia);
       }
@@ -66,7 +66,7 @@ namespace Csla.Analyzers
         }
       }
 
-      foreach(var attributeListToRemove in attributeListsToRemove)
+      foreach (var attributeListToRemove in attributeListsToRemove)
       {
         newRoot = newRoot.RemoveNode(attributeListToRemove, SyntaxRemoveOptions.KeepEndOfLine);
       }

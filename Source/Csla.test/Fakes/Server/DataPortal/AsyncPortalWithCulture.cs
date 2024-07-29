@@ -22,7 +22,7 @@ namespace Csla.Testing.Business.DataPortal
         LoadProperty(CurrentUICultureProperty, value);
       }
     }
-    public static PropertyInfo<string> CurrentUICultureProperty = 
+    public static PropertyInfo<string> CurrentUICultureProperty =
       RegisterProperty<string>(new PropertyInfo<string>("CurrentUICulture"));
 
     public string CurrentCulture

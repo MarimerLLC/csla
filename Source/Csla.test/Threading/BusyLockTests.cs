@@ -5,8 +5,8 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
-using Csla.Threading;
 using Csla.Core;
+using Csla.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Threading
@@ -46,7 +46,7 @@ namespace Csla.Test.Threading
       BusyBO busy = new BusyBO();
       busy.MarkBusy(true);
       System.ComponentModel.BackgroundWorker worker = new System.ComponentModel.BackgroundWorker();
-      worker.DoWork += (_, _) => 
+      worker.DoWork += (_, _) =>
       {
         Thread.Sleep(10);
         busy.MarkBusy(false);

@@ -10,7 +10,7 @@ namespace Csla.Test.GraphMerge
       ChildList = new FooList();
     }
 
-    public static readonly PropertyInfo<string> NameProperty = 
+    public static readonly PropertyInfo<string> NameProperty =
       RegisterProperty<string>(c => c.Name);
     public string Name
     {

@@ -7,13 +7,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Test.Hosting;
 
 [TestClass]
-public class KestrelOrIISHostingTests {
+public class KestrelOrIISHostingTests
+{
 
   private static TestServer _server;
   private static ServiceProvider _clientSideServiceProvider;
 
   [ClassInitialize]
-  public static void Initialize(TestContext context) {
+  public static void Initialize(TestContext context)
+  {
     _ = context;
 
     var (server, clientServiceProvider) = HttpTestServerFactory.CreateHttpTestServerAndClientServiceProvider();
@@ -22,13 +24,15 @@ public class KestrelOrIISHostingTests {
   }
 
   [ClassCleanup]
-  public static async Task Cleanup() {
+  public static async Task Cleanup()
+  {
     await _clientSideServiceProvider.DisposeAsync();
     _server.Dispose();
   }
 
   [TestMethod]
-  public async Task WhenAllowSynchronousIOIsNotAllowedTheRequestShouldWorkAsExpected() {
+  public async Task WhenAllowSynchronousIOIsNotAllowedTheRequestShouldWorkAsExpected()
+  {
 
     _server.AllowSynchronousIO = false;
 

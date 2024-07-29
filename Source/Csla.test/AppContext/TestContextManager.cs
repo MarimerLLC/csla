@@ -55,7 +55,7 @@ namespace Csla.Test.AppContext
     {
       if (_myContext[_clientContextName] == null)
         SetClientContext(new ContextDictionary(), executionLocation);
-      return (IContextDictionary) _myContext[_clientContextName];
+      return (IContextDictionary)_myContext[_clientContextName];
     }
 
     public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)

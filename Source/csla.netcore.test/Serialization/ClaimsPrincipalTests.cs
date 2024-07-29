@@ -7,12 +7,12 @@
 //-----------------------------------------------------------------------
 
 using System.Security.Claims;
+using Csla.Configuration;
+using Csla.Serialization.Mobile;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.Configuration;
-using Csla.Serialization.Mobile;
 
 namespace Csla.Test.Serialization
 {

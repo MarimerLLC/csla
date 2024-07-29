@@ -365,7 +365,7 @@ namespace Csla.Test.Basic
     public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
     {
       TestResults.Reinitialise();
-      
+
       bool changed = false;
       var obj = new RootList();
       obj.ListChanged += (_, _) =>
@@ -402,7 +402,7 @@ namespace Csla.Test.Basic
     public async Task ChildEditLevelDeleteClone()
     {
       TestResults.Reinitialise();
-      
+
       var list = await CreateRootListInstanceAsync();
       list.BeginEdit();
       list.AddNew();

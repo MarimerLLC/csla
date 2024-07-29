@@ -39,7 +39,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleButDoesNotOverrideExecute()
     {
-      var code = 
+      var code =
         """
         using Csla.Rules;
 

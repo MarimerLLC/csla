@@ -98,7 +98,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext 
+    public ApplicationContext ApplicationContext
     {
       get
       {

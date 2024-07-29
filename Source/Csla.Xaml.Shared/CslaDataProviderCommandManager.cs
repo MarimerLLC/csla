@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Implements support for RoutedCommands that can</summary>
 //-----------------------------------------------------------------------
-using System.Windows.Input;
 using System.ComponentModel;
+using System.Windows.Input;
 using Csla.Core;
 
 namespace Csla.Xaml
@@ -33,10 +33,10 @@ namespace Csla.Xaml
     static CslaDataProviderCommandManager()
     {
       CommandBinding binding;
-      
+
       binding = new CommandBinding(ApplicationCommands.Save, SaveCommand, CanExecuteSave);
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
-      
+
       binding = new CommandBinding(ApplicationCommands.Undo, UndoCommand, CanExecuteUndo);
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
 

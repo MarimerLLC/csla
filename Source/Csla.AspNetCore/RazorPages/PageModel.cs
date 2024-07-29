@@ -6,11 +6,11 @@
 // <summary>Custom PageModel for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
+using Csla.Rules;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Csla.Rules;
-using Csla.Core;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.AspNetCore.RazorPages
 {
@@ -50,7 +50,7 @@ namespace Csla.AspNetCore.RazorPages
         if (ModelState.IsValid)
         {
           ThrowIfItemIsNull();
-          Item = (T) await Item.SaveAsync(forceUpdate);
+          Item = (T)await Item.SaveAsync(forceUpdate);
           return true;
         }
       }

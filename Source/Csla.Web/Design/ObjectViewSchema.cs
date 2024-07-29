@@ -7,9 +7,9 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using System.Web.UI.Design;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {

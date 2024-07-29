@@ -32,7 +32,7 @@ namespace cslalighttest.CslaDataProvider
       return returnValue;
     }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "Customer Id", 0);
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Customer Id", 0);
     public int Id
     {
       get
@@ -45,7 +45,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name, "Customer Name", "");
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name, "Customer Name", "");
     public string Name
     {
       get
@@ -58,7 +58,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c=>c.Method, "Method", "");
+    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c => c.Method, "Method", "");
     public string Method
     {
       get
@@ -72,7 +72,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    private static PropertyInfo<SmartDate> DateCreatedProperty = RegisterProperty<SmartDate>(c=>c.DateCreated, "Date Created On");
+    private static PropertyInfo<SmartDate> DateCreatedProperty = RegisterProperty<SmartDate>(c => c.DateCreated, "Date Created On");
     public string DateCreated
     {
       get
@@ -90,7 +90,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(c=>c.ThrowException, "ThrowException", false);
+    private static PropertyInfo<bool> ThrowExceptionProperty = RegisterProperty<bool>(c => c.ThrowException, "ThrowException", false);
     public bool ThrowException
     {
       get
@@ -103,7 +103,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNullProperty = RegisterProperty<DateTimeOffset>(c=>c.DateTimeOffsetNull, "DateTimeOffsetNull");
+    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNullProperty = RegisterProperty<DateTimeOffset>(c => c.DateTimeOffsetNull, "DateTimeOffsetNull");
     public DateTimeOffset DateTimeOffsetNull
     {
       get
@@ -116,7 +116,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNotNullProperty = RegisterProperty<DateTimeOffset>(c=>c.DateTimeOffsetNotNull, "DateTimeOffsetNotNull", DateTimeOffset.Now);
+    private static PropertyInfo<DateTimeOffset> DateTimeOffsetNotNullProperty = RegisterProperty<DateTimeOffset>(c => c.DateTimeOffsetNotNull, "DateTimeOffsetNotNull", DateTimeOffset.Now);
     public DateTimeOffset DateTimeOffsetNotNull
     {
       get
@@ -129,7 +129,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<DateTimeOffset?> DateTimeOffsetNullableProperty = RegisterProperty<DateTimeOffset?>(c=>c.DateTimeOffsetNullable, "DateTimeOffsetNullable");
+    private static PropertyInfo<DateTimeOffset?> DateTimeOffsetNullableProperty = RegisterProperty<DateTimeOffset?>(c => c.DateTimeOffsetNullable, "DateTimeOffsetNullable");
     public DateTimeOffset? DateTimeOffsetNullable
     {
       get
@@ -142,7 +142,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<CustomeType> TypeProperty = RegisterProperty(c=>c.Type, "Customer Type", CustomeType.Active);
+    private static PropertyInfo<CustomeType> TypeProperty = RegisterProperty(c => c.Type, "Customer Type", CustomeType.Active);
     public CustomeType Type
     {
       get
@@ -156,7 +156,7 @@ namespace cslalighttest.CslaDataProvider
     }
 
 
-    private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(c=>c.Contacts, "Contacts List");
+    private static PropertyInfo<CustomerContactList> ContactsProperty = RegisterProperty<CustomerContactList>(c => c.Contacts, "Contacts List");
     public CustomerContactList Contacts
     {
       get

@@ -10,7 +10,7 @@ using System.Configuration;
 using System.Reflection;
 
 
-namespace  Csla.Testing.Business.DataPortal
+namespace Csla.Testing.Business.DataPortal
 {
   [Serializable]
   public class SetAppSettingValueCmd : CommandBase<SetAppSettingValueCmd>

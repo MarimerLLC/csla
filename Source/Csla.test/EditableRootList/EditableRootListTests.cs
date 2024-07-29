@@ -67,7 +67,7 @@ namespace Csla.Test.EditableRootList
       _isListSaved = false;
 
       ERlist list = dataPortal.Create();
-      
+
       list.Add(itemDataPortal.Fetch("test"));
       ERitem item = list[0];
       item.Saved += item_Saved;
@@ -92,7 +92,7 @@ namespace Csla.Test.EditableRootList
 
     void List_Saved(object sender, Core.SavedEventArgs e)
     {
-      _isListSaved = (e.Error==null && e.NewObject != null);
+      _isListSaved = (e.Error == null && e.NewObject != null);
     }
 
     [TestMethod]
@@ -106,7 +106,7 @@ namespace Csla.Test.EditableRootList
       list.Saved += List_Saved;
       ERitem item = list.AddNew();
       Assert.AreEqual(1, list.Count, "Incorrect count after add");
-      
+
       // simulate grid edit
       System.ComponentModel.IEditableObject obj = item;
       obj.BeginEdit();

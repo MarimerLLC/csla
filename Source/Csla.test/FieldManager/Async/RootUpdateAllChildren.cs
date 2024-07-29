@@ -13,9 +13,9 @@
     private static PropertyInfo<Child> ChildProperty = RegisterProperty<Child>(typeof(RootUpdateAllChildren), new PropertyInfo<Child>("Child"));
     public Child Child
     {
-      get 
+      get
       {
-        return GetProperty<Child>(ChildProperty); 
+        return GetProperty<Child>(ChildProperty);
       }
     }
 
@@ -34,7 +34,7 @@
     }
 
     [Create]
-    private async Task CreateAsync([Inject]IChildDataPortal<Child> childDataPortal, [Inject]IChildDataPortal<ChildList> childListDataPortal)
+    private async Task CreateAsync([Inject] IChildDataPortal<Child> childDataPortal, [Inject] IChildDataPortal<ChildList> childListDataPortal)
     {
       LoadProperty(ChildProperty, await Child.NewChildAsync(childDataPortal));
       LoadProperty(ChildListProperty, await ChildList.GetListAsync(childListDataPortal));

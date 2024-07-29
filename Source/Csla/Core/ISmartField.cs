@@ -29,5 +29,5 @@ namespace Csla.Core
     /// field's value is empty.
     /// </summary>
     bool IsEmpty { get; }
-    }
+  }
 }

@@ -61,7 +61,7 @@ public class HttpProxyOptionsExtensionsTests
     };
 
     options.Should().BeEquivalentTo(expectedOptions);
-    
+
     static HttpClient httpClientFactory(IServiceProvider sp) => new();
   }
 }

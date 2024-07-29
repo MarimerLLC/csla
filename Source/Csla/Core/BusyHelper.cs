@@ -13,7 +13,7 @@ namespace Csla.Core
   /// <summary>
   /// Helper class for busy related functionality spread across different business type implementations.
   /// </summary>
-  public static class BusyHelper 
+  public static class BusyHelper
   {
     internal static async Task WaitForIdleAsTimeout(Func<Task> operation, Type source, string methodName, TimeSpan timeout)
     {

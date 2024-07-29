@@ -6,8 +6,8 @@
 // <summary>Default context manager for the user property</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Principal;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Csla.Core
 {

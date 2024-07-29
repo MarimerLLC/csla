@@ -10,7 +10,7 @@ namespace Csla.Test.LogicalExecutionLocation
 {
   [Serializable]
 #pragma warning disable CS0436 // Type conflicts with imported type
-  public class LocationBusinessBase: BusinessBase<LocationBusinessBase>
+  public class LocationBusinessBase : BusinessBase<LocationBusinessBase>
 #pragma warning restore CS0436 // Type conflicts with imported type
   {
 
@@ -60,7 +60,7 @@ namespace Csla.Test.LogicalExecutionLocation
     }
 
     [Fetch]
-    protected void Fetch([Inject]IDataPortal<LocationBusinessBase> dataPortal)
+    protected void Fetch([Inject] IDataPortal<LocationBusinessBase> dataPortal)
     {
       SetProperty(DataProperty, ApplicationContext.LogicalExecutionLocation.ToString());
 #pragma warning disable CS0436 // Type conflicts with imported type

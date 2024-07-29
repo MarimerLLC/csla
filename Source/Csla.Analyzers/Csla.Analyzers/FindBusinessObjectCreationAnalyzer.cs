@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
 
@@ -45,16 +45,16 @@ namespace Csla.Analyzers
       var constructorSymbol = context.SemanticModel.GetSymbolInfo(constructorNode).Symbol as IMethodSymbol;
       var containingSymbol = constructorSymbol?.ContainingType;
 
-      if(containingSymbol.IsStereotype())
+      if (containingSymbol.IsStereotype())
       {
         context.CancellationToken.ThrowIfCancellationRequested();
         var callerClassNode = constructorNode.FindParent<ClassDeclarationSyntax>();
 
-        if(callerClassNode != null)
+        if (callerClassNode != null)
         {
           var callerClassSymbol = context.SemanticModel.GetDeclaredSymbol(callerClassNode) as ITypeSymbol;
 
-          if(!callerClassSymbol.IsObjectFactory())
+          if (!callerClassSymbol.IsObjectFactory())
           {
             context.ReportDiagnostic(Diagnostic.Create(objectCreatedRule, constructorNode.GetLocation()));
           }

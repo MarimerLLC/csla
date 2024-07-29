@@ -48,7 +48,7 @@ namespace Csla.Server
       else
       {
         return DataPortalSelector.Create(objectType, criteria, context, isSync);
-      }      
+      }
     }
 
     /// <summary>

@@ -30,9 +30,9 @@ namespace Csla.Test.ChildChanged
     private static PropertyInfo<SingleRoot> ChildProperty = RegisterProperty(new PropertyInfo<SingleRoot>("Child"));
     public SingleRoot Child
     {
-      get 
+      get
       {
-        return GetProperty(ChildProperty); 
+        return GetProperty(ChildProperty);
       }
     }
 

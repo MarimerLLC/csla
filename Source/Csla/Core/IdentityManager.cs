@@ -27,8 +27,8 @@ namespace Csla.Core
     public int GetNextIdentity(int? current = null)
     {
       int result;
-      if (current == null) 
-      { 
+      if (current == null)
+      {
         result = _nextIdentity;
       }
       else if (current == -1)

@@ -114,15 +114,15 @@ namespace Csla.Server
 
     public async Task WaitForIdle()
     {
-      if (_target is not null) 
+      if (_target is not null)
       {
         await _target.WaitForIdle(_waitForIdleTimeout).ConfigureAwait(false);
       }
-      else if(Instance is INotifyBusy notifyBusy) 
+      else if (Instance is INotifyBusy notifyBusy)
       {
         await BusyHelper.WaitForIdle(notifyBusy, _waitForIdleTimeout).ConfigureAwait(false);
       }
-      else 
+      else
       {
         CallMethodIfImplemented(nameof(IDataPortalTarget.WaitForIdle), _waitForIdleTimeout);
       }

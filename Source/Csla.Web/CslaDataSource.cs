@@ -6,9 +6,9 @@
 // <summary>A Web Forms data binding control designed to support</summary>
 //-----------------------------------------------------------------------
 
-using System.Web.UI;
 using System.ComponentModel;
 using System.Reflection;
+using System.Web.UI;
 using Csla.Properties;
 
 namespace Csla.Web
@@ -119,7 +119,7 @@ namespace Csla.Web
       set { ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting = value; }
     }
 
-    private static Dictionary<string,Type> _typeCache = [];
+    private static Dictionary<string, Type> _typeCache = [];
 
     /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the

@@ -18,7 +18,7 @@ public class MobileFormatterOptions
   /// Gets the list of custom serializers.
   /// </summary>
   public List<ITypeMap> CustomSerializers { get; } = [];
-  
+
   /// <summary>
   /// Gets a value indicating whether to use strong name checks during serialization/deserialization process.
   /// </summary>

@@ -6,10 +6,10 @@
 // <summary>Base type from which Criteria classes can be</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Core;
 using System.Linq.Expressions;
-using Csla.Reflection;
 using System.Reflection;
+using Csla.Core;
+using Csla.Reflection;
 
 namespace Csla
 {

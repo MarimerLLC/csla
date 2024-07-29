@@ -61,7 +61,7 @@ namespace Csla.Test.GraphMergeAsync
     {
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
-      
+
       var obj = dataPortal.Create();
       obj.Name = "1";
       obj.MockUpdated();
@@ -251,7 +251,7 @@ namespace Csla.Test.GraphMergeAsync
     }
 
     [TestMethod]
-    
+
     public async Task MergeList()
     {
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();

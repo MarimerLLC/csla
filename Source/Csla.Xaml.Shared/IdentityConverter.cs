@@ -17,7 +17,7 @@ namespace Csla.Xaml
   /// </summary>
   public class IdentityConverter : IValueConverter
   {
-#region IValueConverter Members
+    #region IValueConverter Members
 
     /// <summary>
     /// Returns the unchanged value.
@@ -47,7 +47,7 @@ namespace Csla.Xaml
       return value;
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

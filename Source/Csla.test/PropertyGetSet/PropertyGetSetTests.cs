@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using Csla.Configuration;
 using Csla.Serialization.Mobile;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
-using Csla.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.PropertyGetSet
@@ -99,7 +99,7 @@ namespace Csla.Test.PropertyGetSet
       IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
-      root.PropertyChanging += root_PropertyChanging; 
+      root.PropertyChanging += root_PropertyChanging;
       root.PropertyChanged += root_PropertyChanged;
       Assert.AreEqual("n/a", root.F03, "Default value should have been set");
       Assert.AreEqual("", root.FieldBackedString, "String should default to string.Empty");
@@ -269,7 +269,7 @@ namespace Csla.Test.PropertyGetSet
       root.F04 = new DateTime(1998, 12, 21).ToShortDateString();
       Assert.AreEqual(new DateTime(1998, 12, 21).ToShortDateString(), root.F04, "Field SmartDate should have been set");
 
-      root.M04 = new DateTime(1998,12,21).ToShortDateString();
+      root.M04 = new DateTime(1998, 12, 21).ToShortDateString();
       Assert.AreEqual(new DateTime(1998, 12, 21).ToShortDateString(), root.M04, "SmartDate should have been set");
 
       Assert.IsTrue(root.IsDirty, "Root should be dirty");
@@ -285,7 +285,7 @@ namespace Csla.Test.PropertyGetSet
       root.PropertyChanging += root_PropertyChanging;
 
       root.PropertyChanged += root_PropertyChanged;
-      
+
       EditableGetSet child = root.ManagedChild;
       Assert.IsNotNull(child, "Child should not be null");
 
@@ -597,9 +597,9 @@ namespace Csla.Test.PropertyGetSet
     }
 
 #if !WINDOWS_PHONE
-// BUG: This method throws an exception during Type Initialization which causes Visual Studio
-// to crash if the debugger is attached to the emulator at the time this is run.
-// https://connect.microsoft.com/VisualStudio/feedback/details/606930/consistent-visual-studio-crash-on-typeinitializationexception-in-wp7-emulator
+    // BUG: This method throws an exception during Type Initialization which causes Visual Studio
+    // to crash if the debugger is attached to the emulator at the time this is run.
+    // https://connect.microsoft.com/VisualStudio/feedback/details/606930/consistent-visual-studio-crash-on-typeinitializationexception-in-wp7-emulator
     [TestMethod]
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
@@ -683,7 +683,7 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.ChildChanged += (_, _) => { changed++; };
-      root.ManagedChild.ChildChanged += (_, _) => { throw new InvalidOperationException();};
+      root.ManagedChild.ChildChanged += (_, _) => { throw new InvalidOperationException(); };
       root.ManagedChild.FieldBackedString = "changed";
 
       Assert.AreEqual(1, changed);
@@ -694,7 +694,7 @@ namespace Csla.Test.PropertyGetSet
     {
       IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
       IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
-      
+
       int rootChanged = 0;
       int listChanged = 0;
 
@@ -766,7 +766,7 @@ namespace Csla.Test.PropertyGetSet
       root.CancelEdit();
 
       int changed = 0;
-      root.ChildChanged += (_, _) => { changed++;};
+      root.ChildChanged += (_, _) => { changed++; };
       child.FieldBackedString = "changed";
 
       Assert.AreEqual(1, changed);

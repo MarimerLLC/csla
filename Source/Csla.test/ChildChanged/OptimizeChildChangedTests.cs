@@ -1,10 +1,10 @@
-﻿using Csla.Configuration;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using Csla.Configuration;
 using Csla.Core;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.ComponentModel;
-using System.Diagnostics;
 
 namespace Csla.Test.ChildChanged
 {
@@ -399,11 +399,11 @@ namespace Csla.Test.ChildChanged
 
     private void CheckMidDepth(List<EventDetail> list, int depth)
     {
-      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO &&  ev.Depth == depth && ev.Event == enumEvent.OnChildChanged && ev.PropertyName == "Name"));
-      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO &&  ev.Depth == depth && ev.Event == enumEvent.PropertyChanged && ev.PropertyName == "IsDirty"));
-      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO &&  ev.Depth == depth && ev.Event == enumEvent.PropertyChanged && ev.PropertyName == "IsValid"));
-      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO &&  ev.Depth == depth && ev.Event == enumEvent.PropertyChanged && ev.PropertyName == "IsSavable"));
-      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO &&  ev.Depth == depth && ev.Event == enumEvent.ChildChanged && ev.PropertyName == "Name"));
+      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO && ev.Depth == depth && ev.Event == enumEvent.OnChildChanged && ev.PropertyName == "Name"));
+      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO && ev.Depth == depth && ev.Event == enumEvent.PropertyChanged && ev.PropertyName == "IsDirty"));
+      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO && ev.Depth == depth && ev.Event == enumEvent.PropertyChanged && ev.PropertyName == "IsValid"));
+      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO && ev.Depth == depth && ev.Event == enumEvent.PropertyChanged && ev.PropertyName == "IsSavable"));
+      Assert.AreEqual(1, list.RemoveAll(ev => ev.BO == enumBO.SimpleBO && ev.Depth == depth && ev.Event == enumEvent.ChildChanged && ev.PropertyName == "Name"));
     }
 
     private void CheckMidDepthList(List<EventDetail> list, int depth)

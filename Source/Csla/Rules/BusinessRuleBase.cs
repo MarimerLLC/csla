@@ -152,7 +152,7 @@ namespace Csla.Rules
     /// <param name="argument"></param>
     protected void CanWriteProperty(string argument)
     {
-      if (PropertiesLocked) 
+      if (PropertiesLocked)
         throw new ArgumentException($"{Resources.PropertySetNotAllowed} ({argument})", argument);
     }
 

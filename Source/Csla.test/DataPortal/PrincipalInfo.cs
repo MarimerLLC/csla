@@ -11,10 +11,10 @@
       private set { LoadProperty(IsAuthenticatedProperty, value); }
     }
 
-    public string Name 
-    { 
+    public string Name
+    {
       get { return GetProperty(NameProperty); }
-      private set { LoadProperty(NameProperty, value); } 
+      private set { LoadProperty(NameProperty, value); }
     }
 
     [Fetch]

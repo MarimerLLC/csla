@@ -201,7 +201,7 @@ namespace Csla.Reflection
                 matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = score + item.Score });
             }
           }
-          if (matches.Count == 0 && 
+          if (matches.Count == 0 &&
              (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute)
              || typeOfOperation == typeof(UpdateChildAttribute)))
           {

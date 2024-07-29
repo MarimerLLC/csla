@@ -57,7 +57,7 @@ namespace Csla.Core.LoadManager
       // start async loading 
       loader.Load(LoaderComplete);
     }
-    
+
     void LoaderComplete(IAsyncLoader loader, IDataPortalResult e)
     {
       // remove from loading list 
@@ -67,7 +67,7 @@ namespace Csla.Core.LoadManager
       }
 
       // no error then load new property value and notify property changed
-      if (e.Error == null) 
+      if (e.Error == null)
       {
         _target.LoadProperty(loader.Property, e.Object);
         _onPropertyChanged(loader.Property);
@@ -77,8 +77,8 @@ namespace Csla.Core.LoadManager
       OnPropertyBusy(loader.Property.Name, false);
 
       // if error raise OnUnhandledAsyncException event
-      if (e.Error != null) 
-        OnUnhandledAsyncException(this, new AsyncLoadException(loader.Property,string.Format(Resources.AsyncLoadException, loader.Property.FriendlyName), e.Error));
+      if (e.Error != null)
+        OnUnhandledAsyncException(this, new AsyncLoadException(loader.Property, string.Format(Resources.AsyncLoadException, loader.Property.FriendlyName), e.Error));
     }
 
     #region INotifyPropertyBusy Members

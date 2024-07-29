@@ -203,7 +203,7 @@ namespace Csla.Blazor
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    public System.Reflection.PropertyInfo GetPropertyInfo() 
+    public System.Reflection.PropertyInfo GetPropertyInfo()
       => Model.GetType().GetProperty(PropertyName);
   }
 }

@@ -18,7 +18,7 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Title));
       Assert.AreEqual("Do not ignore the result of Save()", saveDiagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
-      Assert.AreEqual(Constants.Categories.Usage, saveDiagnostic.Category, 
+      Assert.AreEqual(Constants.Categories.Usage, saveDiagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Error, saveDiagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));

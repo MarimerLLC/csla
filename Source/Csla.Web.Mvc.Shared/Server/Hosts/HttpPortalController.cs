@@ -23,7 +23,7 @@ namespace Csla.Server.Hosts
   /// Exposes server-side DataPortal functionality
   /// through HTTP request/response.
   /// </summary>
-#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER
 
   public class HttpPortalController : Controller
   {
@@ -292,14 +292,16 @@ namespace Csla.Server.Hosts
       return result;
     }
 
-    private async Task<object> DeserializeRequestBody(Stream requestBody, ISerializationFormatter serializer) {
+    private async Task<object> DeserializeRequestBody(Stream requestBody, ISerializationFormatter serializer)
+    {
       using var requestBodyBuffer = new MemoryStream();
       await requestBody.CopyToAsync(requestBodyBuffer).ConfigureAwait(false);
       requestBodyBuffer.Seek(0, SeekOrigin.Begin);
       return serializer.Deserialize(requestBodyBuffer);
     }
 
-    private async Task SerializeToResponse(DataPortalResponse portalResult, Stream responseStream, ISerializationFormatter serializer) {
+    private async Task SerializeToResponse(DataPortalResponse portalResult, Stream responseStream, ISerializationFormatter serializer)
+    {
       using var responseBodyBuffer = new MemoryStream();
       serializer.Serialize(responseBodyBuffer, portalResult);
       responseBodyBuffer.Seek(0, SeekOrigin.Begin);

@@ -265,7 +265,7 @@ namespace Csla.Core
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
                   Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
                 else
-                 LoadProperty(target, item, sourceList);
+                  LoadProperty(target, item, sourceList);
               }
             }
             else

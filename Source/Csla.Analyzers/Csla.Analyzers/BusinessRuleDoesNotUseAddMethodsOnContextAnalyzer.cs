@@ -1,9 +1,9 @@
-﻿using Csla.Analyzers.Extensions;
+﻿using System.Collections.Immutable;
+using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
@@ -49,7 +49,7 @@ namespace Csla.Analyzers
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
         var typeSymbol = methodSymbol.ContainingType;
 
-        if (typeSymbol.IsBusinessRule() && 
+        if (typeSymbol.IsBusinessRule() &&
           (methodSymbol.Name == "Execute" || methodSymbol.Name == "ExecuteAsync") &&
           methodSymbol.Parameters.Length > 0)
         {

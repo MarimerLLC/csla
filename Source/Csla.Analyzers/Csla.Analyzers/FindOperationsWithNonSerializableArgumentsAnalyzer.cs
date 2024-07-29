@@ -1,9 +1,9 @@
-﻿using Csla.Analyzers.Extensions;
+﻿using System.Collections.Immutable;
+using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
@@ -25,7 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(shouldUseSerializableTypesRule);
 
     /// <summary>
@@ -46,13 +46,13 @@ namespace Csla.Analyzers
 
       if (typeSymbol.IsStereotype() && methodSymbol.IsRootDataPortalOperation())
       {
-        foreach(var argument in methodSymbol.Parameters)
+        foreach (var argument in methodSymbol.Parameters)
         {
           var argumentType = argument.Type;
 
           if (!argumentType.IsMobileObject() && !argumentType.IsSpecialTypeSerializable() &&
               !argumentType.IsSerializableByMobileFormatter(context.Compilation) &&
-              !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) && 
+              !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) &&
               argumentType is not { ContainingNamespace.Name: "System", Name: "Nullable" } &&
               argumentType is INamedTypeSymbol namedArgument)
           {

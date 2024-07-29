@@ -65,7 +65,7 @@ namespace Csla.Test.DataPortal
     public DisposableClass DisposableClass { get; set; }
 
     [Fetch]
-    private void Fetch([Inject]DisposableClass disposable, [Inject] IDataPortal<ClassB> classBDataPortal)
+    private void Fetch([Inject] DisposableClass disposable, [Inject] IDataPortal<ClassB> classBDataPortal)
     {
       DisposableClass = disposable;
 
@@ -89,7 +89,7 @@ namespace Csla.Test.DataPortal
     public Guid Id { get; set; }
 
     [Fetch]
-    private void Fetch([Inject]DisposableClass disposable)
+    private void Fetch([Inject] DisposableClass disposable)
     {
       DisposableClass = disposable;
 

@@ -151,9 +151,9 @@ namespace Csla.Test.PropertyGetSet
       typeof(EditableGetSet), new PropertyInfo<EditableGetSet>("ManagedChild", RelationshipTypes.LazyLoad));
     public EditableGetSet ManagedChild
     {
-      get 
-      { 
-        return LazyGetProperty(ManagedChildProperty, () => GetDataPortal<EditableGetSet>().Create()); 
+      get
+      {
+        return LazyGetProperty(ManagedChildProperty, () => GetDataPortal<EditableGetSet>().Create());
       }
     }
 
@@ -167,7 +167,7 @@ namespace Csla.Test.PropertyGetSet
       }
     }
 
-    private static PropertyInfo<ChildList> LazyChildProperty = 
+    private static PropertyInfo<ChildList> LazyChildProperty =
       RegisterProperty(new PropertyInfo<ChildList>("LazyChild", "Child list", null, RelationshipTypes.LazyLoad));
     public ChildList LazyChild
     {
@@ -255,7 +255,7 @@ namespace Csla.Test.PropertyGetSet
 
     protected override void OnGetState(SerializationInfo info, Core.StateMode mode)
     {
-      if(_fieldBackedString!=null)
+      if (_fieldBackedString != null)
         info.AddValue("_fieldBackedString", _fieldBackedString);
       if (_f02 != 0)
         info.AddValue("_f02", _f02);
@@ -275,9 +275,9 @@ namespace Csla.Test.PropertyGetSet
         _fieldBackedString = info.GetValue<string>("_fieldBackedString");
       if (info.Values.ContainsKey("_f02"))
         _f02 = info.GetValue<int>("_f02");
-      if(info.Values.ContainsKey("_f03"))
+      if (info.Values.ContainsKey("_f03"))
         _f03 = info.GetValue<string>("_f03");
-      if(info.Values.ContainsKey("_f04"))
+      if (info.Values.ContainsKey("_f04"))
         _F04 = info.GetValue<Csla.SmartDate>("_f04");
       if (info.Values.ContainsKey("_f05"))
         _f05 = info.GetValue<bool>("_f05");
@@ -294,7 +294,7 @@ namespace Csla.Test.PropertyGetSet
     /// </summary>
     /// <typeparam name="T">The type which is to be accessed</typeparam>
     /// <returns>An instance of IDataPortal for use in data access</returns>
-    private IDataPortal<T> GetDataPortal<T>() where T:class
+    private IDataPortal<T> GetDataPortal<T>() where T : class
     {
       return ApplicationContext.GetRequiredService<IDataPortal<T>>();
     }

@@ -9,9 +9,9 @@
 using System.ComponentModel;
 using Csla.Core;
 using Csla.Rules;
-using UnitDriven;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitDriven;
 
 namespace Csla.Test.ValidationRules
 {
@@ -446,17 +446,17 @@ namespace Csla.Test.ValidationRules
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var ctx = new RuleContext(applicationContext, null, rule, root,
-        new Dictionary<IPropertyInfo, object> { 
+        new Dictionary<IPropertyInfo, object> {
           { TwoPropertyRules.Value1Property, "a" },
-          { TwoPropertyRules.Value2Property, "b" } 
+          { TwoPropertyRules.Value2Property, "b" }
         });
       ((IBusinessRule)rule).Execute(ctx);
       context.Assert.AreEqual(0, ctx.Results.Count);
 
       ctx = new RuleContext(applicationContext, null, rule, root,
-        new Dictionary<IPropertyInfo, object> { 
+        new Dictionary<IPropertyInfo, object> {
           { TwoPropertyRules.Value1Property, "" },
-          { TwoPropertyRules.Value2Property, "a" } 
+          { TwoPropertyRules.Value2Property, "a" }
         });
       ((IBusinessRule)rule).Execute(ctx);
       context.Assert.AreEqual(1, ctx.Results.Count);
@@ -484,7 +484,7 @@ namespace Csla.Test.ValidationRules
 
           context.Assert.AreEqual("PrimaryProperty does not exist.", broken);
           var value = root.Value1;  // intializes field
-          
+
           root.CheckRules();
           broken = rootEI[HasLazyField.Value1Property.Name];
           context.Assert.AreEqual("PrimaryProperty has value.", broken);
@@ -816,7 +816,7 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(Value1Property, value); }
     }
 
-    public DirtyAfterOutValueChangesProperty() 
+    public DirtyAfterOutValueChangesProperty()
     { }
 
     protected override void AddBusinessRules()
@@ -835,7 +835,7 @@ namespace Csla.Test.ValidationRules
 
       protected override void Execute(IRuleContext context)
       {
-        var value = (string) context.InputPropertyValues[PrimaryProperty];
+        var value = (string)context.InputPropertyValues[PrimaryProperty];
         context.AddOutValue(PrimaryProperty, value.ToUpperInvariant());
       }
     }

@@ -29,7 +29,7 @@ namespace Csla.Xaml
     /// </summary>
     public FrameworkElement TriggerSource { get; set; }
 #endif
-      /// <summary>
+    /// <summary>
     /// The MethodParameter value provided by
     /// the designer.
     /// </summary>

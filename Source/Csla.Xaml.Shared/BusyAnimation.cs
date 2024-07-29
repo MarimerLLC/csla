@@ -6,11 +6,11 @@
 // </copyright>
 // <summary>Displays a busy animation.</summary>
 //-----------------------------------------------------------------------
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.ComponentModel;
 
 namespace Csla.Xaml
 {
@@ -36,13 +36,13 @@ namespace Csla.Xaml
   [TemplateVisualState(Name = "state8", GroupName = "CommonStates")]
   public class BusyAnimation : Control
   {
-#region Constants
+    #region Constants
 
     private const int NUM_STATES = 8;
 
-#endregion
+    #endregion
 
-#region Member fields and properties
+    #region Member fields and properties
 
     private DispatcherTimer _timer;
     private int _state = -1;
@@ -56,7 +56,7 @@ namespace Csla.Xaml
       typeof(BusyAnimation),
       new PropertyMetadata(
         TimeSpan.FromMilliseconds(100),
-        (o, e) => 
+        (o, e) =>
         {
           var busyAnimation = (BusyAnimation)o;
           busyAnimation.StepInterval = (TimeSpan)e.NewValue;
@@ -115,9 +115,9 @@ namespace Csla.Xaml
       GoToState(true);
     }
 
-#endregion
+    #endregion
 
-#region Constructor
+    #region Constructor
 
     /// <summary>
     /// Creates an instance of the control.
@@ -134,9 +134,9 @@ namespace Csla.Xaml
       LayoutUpdated += BusyAnimation_LayoutUpdated;
     }
 
-#endregion
+    #endregion
 
-#region Timer
+    #region Timer
 
     private void StartTimer()
     {
@@ -168,9 +168,9 @@ namespace Csla.Xaml
       GoToState(true);
     }
 
-#endregion
+    #endregion
 
-#region State
+    #region State
 
     private void GoToState(bool useTransitions)
     {
@@ -184,9 +184,9 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
 
-#region Parts
+    #region Parts
 
     void BusyAnimation_LayoutUpdated(object sender, EventArgs e)
     {
@@ -224,9 +224,9 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
 
-#region Helpers
+    #region Helpers
 
     private DependencyObject FindChild(DependencyObject parent, string name)
     {
@@ -247,7 +247,7 @@ namespace Csla.Xaml
       return found;
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

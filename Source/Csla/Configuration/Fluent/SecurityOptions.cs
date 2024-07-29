@@ -15,7 +15,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the max size of the PrincipalCache cache.
     /// </summary>
-    public int PrincipalCacheMaxCacheSize {  get; set; }
+    public int PrincipalCacheMaxCacheSize { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether we 

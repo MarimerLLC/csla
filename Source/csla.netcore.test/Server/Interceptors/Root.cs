@@ -14,7 +14,7 @@ namespace Csla.Test.Server.Interceptors
   public class Root : BusinessBase<Root>
   {
     public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
-    
+
     [Required]
     public string Data
     {

@@ -273,7 +273,7 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void AddValue(string name, object value, bool isDirty, string enumTypeName)
     {
-      _values.Add(name, new FieldData { Value = value, IsDirty = isDirty, EnumTypeName = enumTypeName});
+      _values.Add(name, new FieldData { Value = value, IsDirty = isDirty, EnumTypeName = enumTypeName });
     }
 
     /// <summary>

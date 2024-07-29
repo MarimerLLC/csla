@@ -8,12 +8,13 @@
 
 using Csla.Rules;
 
-namespace Csla.Test.Authorization 
+namespace Csla.Test.Authorization
 {
   [Serializable]
   public class PermissionRootWithCriteria : BusinessBase<PermissionRootWithCriteria>
   {
-    public static void AddObjectAuthorizationRules() {
+    public static void AddObjectAuthorizationRules()
+    {
       BusinessRules.AddRule(
         typeof(PermissionRootWithCriteria),
         new AuthRuleExpectsCriteria(AuthorizationActions.CreateObject));

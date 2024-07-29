@@ -6,9 +6,9 @@
 // <summary>This is needed because in Silverlight the tests cannot be run in separate AppDomains</summary>
 //-----------------------------------------------------------------------
 
-using UnitDriven;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitDriven;
 
 namespace Csla.Test.ValidationRules
 {
@@ -53,7 +53,7 @@ namespace Csla.Test.ValidationRules
     public void StringRequired()
     {
       IDataPortal<HasPerTypeRules> dataPortal = _testDIContext.CreateDataPortal<HasPerTypeRules>();
-      
+
       UnitTestContext context = GetContext();
       TestResults.Reinitialise();
       TestResults.Add("Shared", "0");
@@ -111,7 +111,7 @@ namespace Csla.Test.ValidationRules
 
       var d = root.GetDefaultRules();
       context.Assert.AreEqual(1, d.Length);
-      
+
       root.Name = "abc";
       context.Assert.IsTrue(root.IsValid, "valid with name");
       root.Name = "123456";

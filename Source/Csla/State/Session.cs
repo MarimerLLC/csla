@@ -38,7 +38,7 @@ namespace Csla.State
     /// Raise PropertyChanged event.
     /// </summary>
     /// <param name="propertyName"></param>
-    protected virtual void OnPropertyChanged(string propertyName) 
+    protected virtual void OnPropertyChanged(string propertyName)
       => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
   }
 }

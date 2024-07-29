@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
 namespace Csla.Analyzers
@@ -26,7 +26,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(mustBePublicStaticAndReadonlyRule);
 
     /// <summary>
@@ -93,8 +93,8 @@ namespace Csla.Analyzers
       }
     }
 
-    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, 
-      IFieldSymbol fieldSymbol, IPropertySymbol classProperty, 
+    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context,
+      IFieldSymbol fieldSymbol, IPropertySymbol classProperty,
       Func<PropertyDeclarationSyntax, SyntaxNode> propertyBody)
     {
       var root = context.Node.SyntaxTree.GetRoot();

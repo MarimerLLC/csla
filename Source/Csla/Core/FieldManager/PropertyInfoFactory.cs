@@ -30,7 +30,7 @@ namespace Csla.Core.FieldManager
       get
       {
         if (_factory == null)
-            _factory = (IPropertyInfoFactory)Activator.CreateInstance(FactoryType);
+          _factory = (IPropertyInfoFactory)Activator.CreateInstance(FactoryType);
         return _factory;
       }
     }

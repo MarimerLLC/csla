@@ -25,7 +25,7 @@ namespace cslalighttest.CslaDataProvider
       return returnValue;
     }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "CustomerWithError Id", 0);
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "CustomerWithError Id", 0);
     public int Id
     {
       get
@@ -38,7 +38,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c=>c.Name, "CustomerWithError Name", "");
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name, "CustomerWithError Name", "");
     public string Name
     {
       get
@@ -51,7 +51,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c=>c.Method, "Method", "");
+    private static PropertyInfo<string> MethodProperty = RegisterProperty<string>(c => c.Method, "Method", "");
     public string Method
     {
       get

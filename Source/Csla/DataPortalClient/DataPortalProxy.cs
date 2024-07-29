@@ -6,11 +6,11 @@
 // <summary>Abstract data portal proxy with common data portal proxy behaviour. Implements IDataPortalProxy</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Serialization.Mobile;
+using Csla.Configuration;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
 using Csla.Server;
 using Csla.Server.Hosts.DataPortalChannel;
-using Csla.Configuration;
 
 namespace Csla.DataPortalClient
 {

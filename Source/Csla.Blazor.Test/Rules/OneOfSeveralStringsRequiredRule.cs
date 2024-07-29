@@ -77,7 +77,7 @@ namespace Csla.Blazor.Test.Rules
       {
         // Rule not satisfied, so report it as such
         foreach (Csla.Core.IPropertyInfo propertyInfo in InputProperties)
-        { 
+        {
           var message = string.Format(GetMessage(), propertyInfo.FriendlyName);
           context.Results.Add(new RuleResult(RuleName, propertyInfo, message, 1) { Severity = Severity });
         }

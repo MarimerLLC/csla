@@ -19,10 +19,10 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
-    public TransactionIsolationLevel DefaultTransactionIsolationLevel 
+    public TransactionIsolationLevel DefaultTransactionIsolationLevel
     {
       get => defaultTransactionIsolationLevel;
-      set => defaultTransactionIsolationLevel = value; 
+      set => defaultTransactionIsolationLevel = value;
     }
 
     /// <summary>
@@ -38,7 +38,8 @@ namespace Csla.Configuration
     /// Sets the default transaction async flow option
     /// used to create new TransactionScope objects.
     /// </summary>
-    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption {
+    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
+    {
       get => defaultTransactionScopeAsyncFlowOption;
       set => defaultTransactionScopeAsyncFlowOption = value;
     }

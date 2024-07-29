@@ -98,7 +98,7 @@ namespace Csla.Test.ValidationRules
       var root = dataPortal.Create();
       root.CascadeOnDirtyProperties = true;
       root.CheckRules();
-      Assert.AreEqual(0, root.ValueAc); 
+      Assert.AreEqual(0, root.ValueAc);
       Assert.AreEqual(0, root.ValueAg);
       Assert.AreEqual(0, root.ValueAe);
       Assert.AreEqual(0, root.ValueAf);
@@ -110,7 +110,7 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual(10, root.ValueAf);
 
       root.ValueAb = 20;
-      Assert.AreEqual(30, root.ValueAc); 
+      Assert.AreEqual(30, root.ValueAc);
       Assert.AreEqual(30, root.ValueAe);
       Assert.AreEqual(30, root.ValueAf);
       Assert.AreEqual(30, root.ValueAg);
@@ -123,7 +123,7 @@ namespace Csla.Test.ValidationRules
 
     // TODO: fix test
     [Ignore]
-    [TestMethod]    
+    [TestMethod]
     public void BusinessRules_MustCheckBothSums_WhenCascadeOnDirtyPropertiesIsTrue()
     {
       // check that the sum of Ba and Bb is always 100 (and error message on both properties)
@@ -152,7 +152,7 @@ namespace Csla.Test.ValidationRules
 
     // TODO: fix test
     [Ignore]
-    [TestMethod]    
+    [TestMethod]
     public void BusinessRules_MustRecalculateSumAfterCaclulateFraction_WhenCascadeOnDirtyPropertiesIsTrue()
     {
       // calculate sum of Ca, Cb, Cc and Cd to Ce

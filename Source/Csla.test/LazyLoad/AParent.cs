@@ -18,11 +18,11 @@ namespace Csla.Test.LazyLoad
       set { SetProperty(IdProperty, value); }
     }
 
-    private static PropertyInfo<AChildList> ChildListProperty = 
+    private static PropertyInfo<AChildList> ChildListProperty =
       RegisterProperty<AChildList>(c => c.ChildList, "Child list", null, RelationshipTypes.LazyLoad);
     public AChildList ChildList
     {
-      get 
+      get
       {
         return LazyGetProperty(ChildListProperty, FetchChildList);
       }

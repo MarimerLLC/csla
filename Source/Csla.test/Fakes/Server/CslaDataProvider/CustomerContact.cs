@@ -16,7 +16,7 @@ namespace cslalighttest.CslaDataProvider
   {
     private CustomerContact() { }
 
-    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c=>c.Id, "Contact Id", 0);
+    private static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id, "Contact Id", 0);
     public int Id
     {
       get
@@ -29,7 +29,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<int> CustomerIdProperty = RegisterProperty<int>(c=>c.CustomerId, "Customer Id", 0);
+    private static PropertyInfo<int> CustomerIdProperty = RegisterProperty<int>(c => c.CustomerId, "Customer Id", 0);
     public int CustomerId
     {
       get
@@ -42,7 +42,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string>FirstNameProperty = RegisterProperty<string>(c=>c.FirstName, "Contact's First Name", "");
+    private static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName, "Contact's First Name", "");
     public string FirstName
     {
       get
@@ -55,7 +55,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c=>c.LastName, "Contact's Last Name", "");
+    private static PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName, "Contact's Last Name", "");
     public string LastName
     {
       get
@@ -68,7 +68,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<SmartDate> BirthdayProperty = RegisterProperty<SmartDate>(c=>c.Birthday, "Contact's Birthday");
+    private static PropertyInfo<SmartDate> BirthdayProperty = RegisterProperty<SmartDate>(c => c.Birthday, "Contact's Birthday");
     public string Birthday
     {
       get
@@ -85,7 +85,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
-    private static PropertyInfo<string> ParentNameProperty = RegisterProperty<string>(c=>c.ParentName, "Parent Name", "");
+    private static PropertyInfo<string> ParentNameProperty = RegisterProperty<string>(c => c.ParentName, "Parent Name", "");
     public string ParentName
     {
       get
@@ -124,7 +124,7 @@ namespace cslalighttest.CslaDataProvider
       TestResults.Add("CustomerContactUpdate", "Updated  Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
       CustomerContactList parent = Parent as CustomerContactList;
       Customer grandParent = parent.MyParent;
-      LoadProperty(ParentNameProperty,grandParent.Name);
+      LoadProperty(ParentNameProperty, grandParent.Name);
     }
 
     private void Child_Fetch(int customerId, int id, string firstName, string lastName, DateTime birthday)

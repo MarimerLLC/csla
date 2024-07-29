@@ -49,7 +49,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    
+
     public void ChildAddNewCore()
     {
       bool childChanged = false;
@@ -94,7 +94,7 @@ namespace Csla.Test.BusinessListBase
       obj.ApplyEdit();
 
       Assert.IsTrue(obj.IsDirty);
-      
+
       obj = obj.Save();
       Assert.IsFalse(obj.IsDirty);
     }
@@ -200,7 +200,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    public async Task WaitForIdle_WhenAChildIsBusyTheListWillBeNonBusyWhenAllChildsAreNotBusyAnymore() 
+    public async Task WaitForIdle_WhenAChildIsBusyTheListWillBeNonBusyWhenAllChildsAreNotBusyAnymore()
     {
       var obj = CreateRootList();
       var child1 = obj.AddNew();
@@ -213,7 +213,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    public async Task WaitForIdle_WhenMultipleChildsAreBusyItShouldOnlyBeIdlingWhenAllChildsAreNotBusyAnymore() 
+    public async Task WaitForIdle_WhenMultipleChildsAreBusyItShouldOnlyBeIdlingWhenAllChildsAreNotBusyAnymore()
     {
       var obj = CreateRootList();
       var child1 = obj.AddNew();
@@ -227,7 +227,7 @@ namespace Csla.Test.BusinessListBase
 
       await obj.WaitForIdle(TimeSpan.FromSeconds(2));
 
-      using (new AssertionScope()) 
+      using (new AssertionScope())
       {
         child2.IsBusy.Should().BeFalse();
         child1.IsBusy.Should().BeFalse();

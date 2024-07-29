@@ -691,7 +691,7 @@ namespace Csla.Test.Serialization
       get => ReadProperty(TimeOnlyProperty);
       set => LoadProperty(TimeOnlyProperty, value);
     }
-    
+
     [Create]
     private void Create()
     { }

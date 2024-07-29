@@ -33,7 +33,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenConstructorIsNotOnBusinessObject()
     {
-      var code = 
+      var code =
         """
         public class A { }
         

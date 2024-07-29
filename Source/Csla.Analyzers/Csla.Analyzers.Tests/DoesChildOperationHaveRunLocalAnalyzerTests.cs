@@ -39,7 +39,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndRootOperationHasRunLocal()
     {
-      var code = 
+      var code =
         """
         using Csla;
 
@@ -56,7 +56,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndChildOperationDoesNotHaveRunLocal()
     {
-      var code = 
+      var code =
         """
         using Csla;
 
@@ -72,7 +72,7 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenClassIsMobileObjectAndChildOperationHasRunLocal()
     {
-      var code = 
+      var code =
         """
         using Csla;
 

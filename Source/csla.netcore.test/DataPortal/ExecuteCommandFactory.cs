@@ -15,8 +15,8 @@ namespace Csla.Test.DataPortal
     { }
 
     [Create]
-    public ExecuteCommandViaFactory Create() 
-    { 
+    public ExecuteCommandViaFactory Create()
+    {
       var cmd = ApplicationContext.CreateInstanceDI<ExecuteCommandViaFactory>();
       MarkNew(cmd);
       return cmd;

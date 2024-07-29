@@ -56,7 +56,7 @@ namespace Csla.Configuration
     {
       AuthorizerProviderType = typeof(T);
       return this;
-    } 
+    }
 
     /// <summary>
     /// Gets a list of the IInterceptDataPortal instances
@@ -69,7 +69,7 @@ namespace Csla.Configuration
     /// Adds the type of an IInterceptDataPortal that will
     /// be executed by the server-side data portal.
     /// </summary>
-    public DataPortalServerOptions AddInterceptorProvider<T>() where T: IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<T>() where T : IInterceptDataPortal
     {
       InterceptorProviders.Add(typeof(T));
       return this;
@@ -105,7 +105,7 @@ namespace Csla.Configuration
     /// Sets the type of the ExceptionInspector.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterExceptionInspector<T>() where T: IDataPortalExceptionInspector
+    public DataPortalServerOptions RegisterExceptionInspector<T>() where T : IDataPortalExceptionInspector
     {
       ExceptionInspectorType = typeof(T);
       return this;
@@ -120,7 +120,7 @@ namespace Csla.Configuration
     /// Sets the type of the Activator.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterActivator<T>() where T: IDataPortalActivator
+    public DataPortalServerOptions RegisterActivator<T>() where T : IDataPortalActivator
     {
       ActivatorType = typeof(T);
       return this;
@@ -141,7 +141,7 @@ namespace Csla.Configuration
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterObjectFactoryLoader<T>() where T: IObjectFactoryLoader
+    public DataPortalServerOptions RegisterObjectFactoryLoader<T>() where T : IObjectFactoryLoader
     {
       ObjectFactoryLoaderType = typeof(T);
       return this;

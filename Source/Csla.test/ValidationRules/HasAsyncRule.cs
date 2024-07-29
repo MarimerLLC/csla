@@ -6,8 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Rules;
 using System.ComponentModel;
+using Csla.Rules;
 
 namespace Csla.Test.ValidationRules
 {

@@ -9,8 +9,8 @@
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
-using Csla.Serialization.Mobile;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -35,8 +35,8 @@ namespace Csla.Core
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    protected ApplicationContext ApplicationContext 
-    { 
+    protected ApplicationContext ApplicationContext
+    {
       get => _applicationContext;
       set
       {
@@ -272,7 +272,7 @@ namespace Csla.Core
               {
                 // make sure the variable has a value
                 // this is a child object, cascade the call.
-                ((IUndoableObject) value)?.UndoChanges(EditLevel, BindingEdit);
+                ((IUndoableObject)value)?.UndoChanges(EditLevel, BindingEdit);
               }
             }
             else if (value is IMobileObject && state[fieldName] != null)
@@ -349,7 +349,7 @@ namespace Csla.Core
               object value = h.DynamicMemberGet(this);
               // make sure the variable has a value
               // it is a child object so cascade the call
-              ((IUndoableObject) value)?.AcceptChanges(EditLevel, BindingEdit);
+              ((IUndoableObject)value)?.AcceptChanges(EditLevel, BindingEdit);
             }
           }
 

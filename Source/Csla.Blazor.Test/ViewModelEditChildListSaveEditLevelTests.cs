@@ -1,13 +1,13 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.Blazor.Test.Fakes;
-using Microsoft.AspNetCore.Components.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using Csla.TestHelpers;
 using System.Threading.Tasks;
+using Csla.Blazor.Test.Fakes;
 using Csla.Core;
+using Csla.TestHelpers;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Blazor.Test
 {

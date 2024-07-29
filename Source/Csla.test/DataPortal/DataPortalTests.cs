@@ -6,14 +6,14 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Test.DataBinding;
 using System.Data.SqlClient;
-using Csla.TestHelpers;
-using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
-using FluentAssertions;
-using Csla.Rules;
 using Csla.Core;
+using Csla.Rules;
+using Csla.Test.DataBinding;
+using Csla.TestHelpers;
+using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -361,36 +361,36 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  public class ObjectStillBusyAfterCreate : BusinessBase<ObjectStillBusyAfterCreate> 
+  public class ObjectStillBusyAfterCreate : BusinessBase<ObjectStillBusyAfterCreate>
   {
     public static PropertyInfo<string> RuleTriggerProperty = RegisterProperty<string>(nameof(RuleTrigger));
-    public string RuleTrigger 
-    { 
-      get => ReadProperty(RuleTriggerProperty); 
+    public string RuleTrigger
+    {
+      get => ReadProperty(RuleTriggerProperty);
       set => SetProperty(RuleTriggerProperty, value);
     }
 
     [Create]
-    protected void Create() 
+    protected void Create()
     {
       RuleTrigger = Guid.NewGuid().ToString();
     }
 
-    protected override void AddBusinessRules() 
+    protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
 
       BusinessRules.AddRule(new TwoSecondAsyncRule(RuleTriggerProperty));
     }
 
-    private sealed class TwoSecondAsyncRule : BusinessRuleAsync 
+    private sealed class TwoSecondAsyncRule : BusinessRuleAsync
     {
-      public TwoSecondAsyncRule(IPropertyInfo primaryProperty) : base(primaryProperty) 
+      public TwoSecondAsyncRule(IPropertyInfo primaryProperty) : base(primaryProperty)
       {
       }
 
       /// <inheritdoc />
-      protected override async Task ExecuteAsync(IRuleContext context) 
+      protected override async Task ExecuteAsync(IRuleContext context)
       {
         await Task.Delay(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
       }

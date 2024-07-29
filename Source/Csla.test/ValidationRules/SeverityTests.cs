@@ -37,7 +37,7 @@ namespace Csla.Test.ValidationRules
       root.Validate();
 
       Assert.AreEqual(3, root.BrokenRulesCollection.Count, "3 rules should be broken (total)");
-      
+
       Assert.IsFalse(root.IsValid, "Object should not be valid");
 
       Assert.AreEqual(1, root.BrokenRulesCollection.ErrorCount, "Only one rule should be broken");

@@ -53,7 +53,7 @@ namespace Csla.Configuration
         throw new TypeLoadException(managerTypeName);
       var contextManagerType = typeof(IContextManager);
       var managers = config.Services.Where(i => i.ServiceType.Equals(contextManagerType)).ToList();
-      foreach ( var manager in managers )
+      foreach (var manager in managers)
         config.Services.Remove(manager);
       config.Services.AddScoped(typeof(IContextManager), managerType);
 

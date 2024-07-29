@@ -154,19 +154,19 @@ namespace Csla.Xaml
         MessageBox.Show(
           output,
           DialogTitle,
-          MessageBoxButton.OK, 
+          MessageBoxButton.OK,
           DialogIcon);
       }
     }
 
-#region IErrorDialog Members
+    #region IErrorDialog Members
 
     void IErrorDialog.Register(object source)
     {
       AttachSource(source);
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

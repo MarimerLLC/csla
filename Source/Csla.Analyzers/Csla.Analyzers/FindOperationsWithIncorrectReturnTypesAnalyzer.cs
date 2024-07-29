@@ -1,9 +1,9 @@
-﻿using Csla.Analyzers.Extensions;
+﻿using System.Collections.Immutable;
+using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
@@ -47,7 +47,7 @@ namespace Csla.Analyzers
       if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation())
       {
         var taskType = context.Compilation.GetTypeByMetadataName(typeof(Task).FullName);
-        if(!(methodSymbol.ReturnsVoid || SymbolEqualityComparer.Default.Equals(methodSymbol.ReturnType, taskType)))
+        if (!(methodSymbol.ReturnsVoid || SymbolEqualityComparer.Default.Equals(methodSymbol.ReturnType, taskType)))
         {
           context.ReportDiagnostic(Diagnostic.Create(
             shouldOnlyReturnVoidOrTaskRule, methodSymbol.Locations[0]));

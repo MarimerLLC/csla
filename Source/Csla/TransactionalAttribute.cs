@@ -44,7 +44,7 @@ namespace Csla
     /// transactional context.
     /// </summary>
     public TransactionalAttribute()
-      :this(TransactionalTypes.TransactionScope)
+      : this(TransactionalTypes.TransactionScope)
     {
     }
 
@@ -94,7 +94,8 @@ namespace Csla
     /// the transaction.
     /// </param>
     public TransactionalAttribute(TransactionalTypes transactionType, TransactionIsolationLevel transactionIsolationLevel, TransactionScopeAsyncFlowOption asyncFlowOption)
-      : this(transactionType, transactionIsolationLevel, Configuration.DataOptions.GetDefaultTransactionTimeoutInSeconds(), asyncFlowOption) {
+      : this(transactionType, transactionIsolationLevel, Configuration.DataOptions.GetDefaultTransactionTimeoutInSeconds(), asyncFlowOption)
+    {
     }
 
     /// <summary>
@@ -136,7 +137,8 @@ namespace Csla
     /// Specifies the async flow option used to initialize
     /// the transaction.
     /// </param>
-    public TransactionalAttribute(TransactionalTypes transactionType, TransactionIsolationLevel transactionIsolationLevel, int timeoutInSeconds, TransactionScopeAsyncFlowOption asyncFlowOption) {
+    public TransactionalAttribute(TransactionalTypes transactionType, TransactionIsolationLevel transactionIsolationLevel, int timeoutInSeconds, TransactionScopeAsyncFlowOption asyncFlowOption)
+    {
       TransactionType = transactionType;
       TransactionIsolationLevel = transactionIsolationLevel;
       TimeoutInSeconds = timeoutInSeconds;

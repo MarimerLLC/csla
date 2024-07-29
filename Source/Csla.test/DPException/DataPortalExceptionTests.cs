@@ -145,16 +145,17 @@ namespace Csla.Test.DPException
     }
 
     [TestMethod]
-    public void CheckBusinessErrorInfoIsNullWhennErrorInfoIsNull() {
+    public void CheckBusinessErrorInfoIsNullWhennErrorInfoIsNull()
+    {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
 
-      try 
+      try
       {
         DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
 
         Assert.Fail("The previous operation should have thrown an Exception and not executed successfully.");
-      } 
-      catch (DataPortalException ex) 
+      }
+      catch (DataPortalException ex)
       {
         Assert.IsNull(ex.ErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.ErrorInfo)} should have been null but is not.");
         Assert.IsNull(ex.BusinessErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.BusinessErrorInfo)} should have been null but is not.");

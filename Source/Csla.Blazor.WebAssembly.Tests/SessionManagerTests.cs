@@ -6,15 +6,15 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.Blazor.WebAssembly.State;
-using Csla.State;
-using Csla.Blazor.WebAssembly.Configuration;
 using System.Net;
-using Csla.Serialization.Mobile;
 using System.Security.Claims;
-using Microsoft.Extensions.DependencyInjection;
+using Csla.Blazor.WebAssembly.Configuration;
+using Csla.Blazor.WebAssembly.State;
 using Csla.Configuration;
+using Csla.Serialization.Mobile;
+using Csla.State;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.State;
 
@@ -56,7 +56,7 @@ public class SessionManagerTests
   }
   private static HttpClient GetHttpClient(SessionMessage session, ApplicationContext _applicationContext)
   {
-    var handlerMock = new TestHttpMessageHandler(session,_applicationContext);
+    var handlerMock = new TestHttpMessageHandler(session, _applicationContext);
     // use real http client with mocked handler here
     var httpClient = new HttpClient(handlerMock)
     {
@@ -140,7 +140,7 @@ public class SessionManagerTests
 
 
   [TestMethod]
-  public async Task  RetrieveCachedSessionSession()
+  public async Task RetrieveCachedSessionSession()
   {
     await _sessionManager.RetrieveSession(TimeSpan.FromHours(1));
 

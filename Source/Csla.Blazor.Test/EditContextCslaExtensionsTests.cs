@@ -1,7 +1,7 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Blazor.Test.Fakes;
-using Microsoft.AspNetCore.Components.Forms;
 using Csla.TestHelpers;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Blazor.Test
 {
@@ -15,7 +15,7 @@ namespace Csla.Blazor.Test
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
-    
+
     [TestMethod]
     public void ValidateModel_EmptyLastName_OneValidationMessage()
     {

@@ -485,7 +485,7 @@ namespace Csla.Blazor
         return result;
       }
 
-      result = new PropertyInfo(model, propertyName,textSeparator);
+      result = new PropertyInfo(model, propertyName, textSeparator);
       _propertyInfoCache.Add(keyName, result);
       return result;
     }

@@ -88,7 +88,7 @@ namespace Csla.Server.Interceptors.ServerSide
         if (parameter is IUseFieldManager fieldHolder)
         {
           var properties = fieldHolder.FieldManager.GetRegisteredProperties();
-          foreach (var property in properties.Where(r=>r.IsChild && fieldHolder.FieldManager.FieldExists(r)))
+          foreach (var property in properties.Where(r => r.IsChild && fieldHolder.FieldManager.FieldExists(r)))
           {
             await RevalidateObjectAsync(fieldHolder.FieldManager.GetFieldData(property).Value);
           }

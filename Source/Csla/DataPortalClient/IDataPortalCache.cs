@@ -29,9 +29,9 @@ namespace Csla.DataPortalClient
     /// or return a result by invoking the data portal delegate.
     /// </remarks>
     Task<Server.DataPortalResult> GetDataPortalResultAsync(
-      Type objectType, 
-      object criteria, 
-      DataPortalOperations operation, 
+      Type objectType,
+      object criteria,
+      DataPortalOperations operation,
       Func<Task<Server.DataPortalResult>> portal);
   }
 }

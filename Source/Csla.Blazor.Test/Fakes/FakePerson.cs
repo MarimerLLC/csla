@@ -113,7 +113,8 @@ namespace Csla.Blazor.Test.Fakes
     [Insert]
     private void Insert()
     {
-      if (FirstName == FirstNameFailOnInsertValue) {
+      if (FirstName == FirstNameFailOnInsertValue)
+      {
         throw new Exception("Insert failed");
       }
 

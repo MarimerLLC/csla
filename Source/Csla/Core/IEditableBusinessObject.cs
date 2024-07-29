@@ -28,7 +28,7 @@ namespace Csla.Core
     /// break your code. This property is for use
     /// by the parent collection only!
     /// </remarks>
-    int EditLevelAdded { get; set;}
+    int EditLevelAdded { get; set; }
     /// <summary>
     /// Called by a parent object to mark the child
     /// for deferred deletion.

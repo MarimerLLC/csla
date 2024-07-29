@@ -14,7 +14,7 @@ namespace UnitDriven
     public Asserter Assert { get; private set; } = new Asserter();
 
     public void Complete()
-    { 
+    {
     }
 
     public void Dispose() { }

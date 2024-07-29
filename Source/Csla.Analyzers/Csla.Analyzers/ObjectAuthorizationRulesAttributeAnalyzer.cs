@@ -1,9 +1,9 @@
-﻿using Csla.Analyzers.Extensions;
+﻿using System.Collections.Immutable;
+using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
@@ -62,7 +62,7 @@ namespace Csla.Analyzers
       {
         var qualification = methodSymbol.IsAddObjectAuthorizationRulesOperation();
 
-        if(qualification.ByNamingConvention && !qualification.ByAttribute)
+        if (qualification.ByNamingConvention && !qualification.ByAttribute)
         {
           context.ReportDiagnostic(Diagnostic.Create(
             missingAttributeRule, methodSymbol.Locations[0]));

@@ -29,8 +29,8 @@ namespace Csla.Test.ValidationRules
 
     protected override void AddBusinessRules()
     {
-      BusinessRules.AddRule(new RuleBroken(Test1Property) { DisplayIndex = 2});
-      BusinessRules.AddRule(new RuleBroken(Test2Property) { DisplayIndex = 1});
+      BusinessRules.AddRule(new RuleBroken(Test1Property) { DisplayIndex = 2 });
+      BusinessRules.AddRule(new RuleBroken(Test2Property) { DisplayIndex = 1 });
     }
 
     public void Validate()

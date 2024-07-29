@@ -12,7 +12,7 @@ namespace Csla.Testing.Business.ReadOnlyTest
   public partial class ReadOnlyPerson : ReadOnlyBase<ReadOnlyPerson>
   {
     public const string DataPortalUrl = "http://localhost:4832/WcfPortal.svc";
-    
+
     //public ReadOnlyPerson() { }
 
     public static readonly PropertyInfo<Guid> IdProperty = RegisterProperty<Guid>(typeof(ReadOnlyPerson), new PropertyInfo<Guid>("Id"));

@@ -45,7 +45,7 @@ namespace Csla.Analyzers.Extensions
       }
       else
       {
-        var byNamingConvention = 
+        var byNamingConvention =
           @this.Name == CslaMemberConstants.Operations.DataPortalCreate ||
           @this.Name == CslaMemberConstants.Operations.DataPortalFetch ||
           @this.Name == CslaMemberConstants.Operations.DataPortalInsert ||

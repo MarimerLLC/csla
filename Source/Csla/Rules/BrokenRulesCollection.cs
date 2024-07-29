@@ -59,19 +59,19 @@ namespace Csla.Rules
         var propertyName = property == null ? null : property.Name;
         for (int i = 0, n = Count; i < n; i++)
         {
-            var x = this[i];
-            if (x.OriginProperty == propertyName)
-            {
-                RemoveAt(i);
-                i--;
-                n--;
-            }
+          var x = this[i];
+          if (x.OriginProperty == propertyName)
+          {
+            RemoveAt(i);
+            i--;
+            n--;
+          }
         }
 
         IsReadOnly = true;
       }
     }
-    
+
     internal void SetBrokenRules(List<RuleResult> results, string originPropertyName, int priority)
     {
       lock (_syncRoot)
@@ -80,7 +80,7 @@ namespace Csla.Rules
 
         ISet<string> rulesDone = new HashSet<string>();
 
-        for(int i = 0, n = results.Count; i < n; i++)
+        for (int i = 0, n = results.Count; i < n; i++)
         {
           var result = results[i];
           var resultRuleName = result.RuleName;
@@ -92,12 +92,12 @@ namespace Csla.Rules
             ClearRules(resultRuleName, originPropertyName);
           }
 
-          if(result.Success)
+          if (result.Success)
             continue;
 
           var resultDescription = result.Description;
 
-          if(string.IsNullOrEmpty(resultDescription))
+          if (string.IsNullOrEmpty(resultDescription))
             throw new ArgumentException(string.Format(Resources.RuleMessageRequired,
                                                       resultRuleName));
 
@@ -128,11 +128,11 @@ namespace Csla.Rules
     /// </summary>
     private void ClearRules(string ruleName, string originProperty)
     {
-      for(int i = 0, n = Count; i < n; i++)
+      for (int i = 0, n = Count; i < n; i++)
       {
         var x = this[i];
 
-        if(x.RuleName == ruleName && x.OriginProperty == originProperty)
+        if (x.RuleName == ruleName && x.OriginProperty == originProperty)
         {
           RemoveAt(i);
           i--;
@@ -157,20 +157,20 @@ namespace Csla.Rules
 
     private void CountOne(RuleSeverity severity, int one)
     {
-        switch (severity)
-        {
-            case RuleSeverity.Error:
-                ErrorCount += one;
-                break;
-            case RuleSeverity.Warning:
-                WarningCount += one;
-                break;
-            case RuleSeverity.Information:
-                InformationCount += one;
-                break;
-            default:
-                throw new Exception("unhandled severity=" + severity);
-        }
+      switch (severity)
+      {
+        case RuleSeverity.Error:
+          ErrorCount += one;
+          break;
+        case RuleSeverity.Warning:
+          WarningCount += one;
+          break;
+        case RuleSeverity.Information:
+          InformationCount += one;
+          break;
+        default:
+          throw new Exception("unhandled severity=" + severity);
+      }
     }
 
     /// <summary>

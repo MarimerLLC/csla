@@ -1,8 +1,8 @@
-﻿using Csla.Core;
+﻿using System.ComponentModel;
+using Csla.Core;
 using Csla.Rules;
 using Csla.Security;
 using Csla.Serialization.Mobile;
-using System.ComponentModel;
 
 namespace Csla
 {

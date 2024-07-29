@@ -37,7 +37,7 @@ public class RabbitMqPortalOptions
   /// <exception cref="UriFormatException">Host</exception>
   /// <exception cref="UriFormatException">Port</exception>
   /// <exception cref="UriFormatException">QueueName</exception>
-  public Uri DataPortalUri 
+  public Uri DataPortalUri
   {
     get => _dataPortalUri;
     set

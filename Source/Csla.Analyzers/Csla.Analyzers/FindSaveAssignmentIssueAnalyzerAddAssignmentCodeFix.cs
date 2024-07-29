@@ -1,10 +1,10 @@
 ﻿using System.Collections.Immutable;
 using System.Composition;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CodeActions;
+using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Analyzers
 {
@@ -40,7 +40,7 @@ namespace Csla.Analyzers
 
       var invocationIdentifier = ((invocationNode.Expression as MemberAccessExpressionSyntax)
         .Expression as IdentifierNameSyntax).Identifier;
-      var leadingTrivia = invocationIdentifier.HasLeadingTrivia ? 
+      var leadingTrivia = invocationIdentifier.HasLeadingTrivia ?
         invocationIdentifier.LeadingTrivia : new SyntaxTriviaList();
 
       var newInvocationIdentifier = invocationIdentifier.WithLeadingTrivia(new SyntaxTriviaList());

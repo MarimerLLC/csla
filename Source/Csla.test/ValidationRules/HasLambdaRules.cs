@@ -36,16 +36,17 @@ namespace Csla.Test.ValidationRules
     }
 
     public string[] GetRuleDescriptions()
-    {return BusinessRules.GetRuleDescriptions();
+    {
+      return BusinessRules.GetRuleDescriptions();
     }
 
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule<HasLambdaRules>(SsnProperty, o => !string.IsNullOrEmpty(o.Ssn), "must have value 1");
-      BusinessRules.AddRule<HasLambdaRules>(SsnProperty, o => o.Ssn != null  && o.Ssn.Length > 15, "cannot be longer than 15 chars");
+      BusinessRules.AddRule<HasLambdaRules>(SsnProperty, o => o.Ssn != null && o.Ssn.Length > 15, "cannot be longer than 15 chars");
 
-      BusinessRules.AddRule<HasLambdaRules>(SsnProperty, o => !string.IsNullOrEmpty(o.Ssn2), () =>  "must have value 1");
-      BusinessRules.AddRule<HasLambdaRules>(SsnProperty, o => !string.IsNullOrEmpty(o.Ssn2), () =>  "must have value 2");
+      BusinessRules.AddRule<HasLambdaRules>(SsnProperty, o => !string.IsNullOrEmpty(o.Ssn2), () => "must have value 1");
+      BusinessRules.AddRule<HasLambdaRules>(SsnProperty, o => !string.IsNullOrEmpty(o.Ssn2), () => "must have value 2");
     }
   }
 }

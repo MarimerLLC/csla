@@ -206,7 +206,7 @@ namespace Csla.Test.SortedBindingList
     public void SimulateDataBindingAdd()
     {
       IDataPortal<MyChildren> dataPortal = _testDIContext.CreateDataPortal<MyChildren>();
-      
+
       var source = dataPortal.Create();
       source.BeginEdit();
       var sorted = new SortedBindingList<MyChild>(source);

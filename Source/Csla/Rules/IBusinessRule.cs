@@ -17,7 +17,7 @@ namespace Csla.Rules
     /// <summary>
     /// Default value, rule can run in any context
     /// </summary>
-    Default=0,
+    Default = 0,
     /// <summary>
     /// Deny rule from running in CheckRules 
     /// </summary>

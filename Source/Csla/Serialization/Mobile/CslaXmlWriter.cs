@@ -16,7 +16,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write</param>
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
-      using var xmlWriter = XmlWriter.Create(serializationStream, new XmlWriterSettings {CloseOutput = false});
+      using var xmlWriter = XmlWriter.Create(serializationStream, new XmlWriterSettings { CloseOutput = false });
       var dataContractSerializer = CslaReaderWriterFactory.GetDataContractSerializer();
       dataContractSerializer.WriteObject(xmlWriter, objectData);
       xmlWriter.Flush();

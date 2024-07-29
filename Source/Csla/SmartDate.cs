@@ -36,7 +36,7 @@ namespace Csla
     [NotUndoable]
     private static Func<string, DateTime?> _customParser;
 
-#region EmptyValue enum
+    #region EmptyValue enum
 
     /// <summary>
     /// Indicates the empty value of a
@@ -56,9 +56,9 @@ namespace Csla
       MaxDate
     }
 
-#endregion
+    #endregion
 
-#region Constructors
+    #region Constructors
 
     static SmartDate()
     {
@@ -329,9 +329,9 @@ namespace Csla
         Date = DateTime.MaxValue;
     }
 
-#endregion
+    #endregion
 
-#region Text Support
+    #region Text Support
 
     /// <summary>
     /// Sets the global default format string used by all new
@@ -396,9 +396,9 @@ namespace Csla
       set { Date = StringToDate(value, _emptyValue); }
     }
 
-#endregion
+    #endregion
 
-#region Date Support
+    #region Date Support
 
     /// <summary>
     /// Gets or sets the date value.
@@ -440,9 +440,9 @@ namespace Csla
         return new DateTime?(Date);
     }
 
-#endregion
+    #endregion
 
-#region System.Object overrides
+    #region System.Object overrides
 
     /// <summary>
     /// Returns a text representation of the date value.
@@ -496,9 +496,9 @@ namespace Csla
       return Date.GetHashCode();
     }
 
-#endregion
+    #endregion
 
-#region DBValue
+    #region DBValue
 
     /// <summary>
     /// Gets a database-friendly version of the date value.
@@ -528,9 +528,9 @@ namespace Csla
       }
     }
 
-#endregion
+    #endregion
 
-#region Empty Dates
+    #region Empty Dates
 
     /// <summary>
     /// Gets a value indicating whether this object contains an empty date.
@@ -560,9 +560,9 @@ namespace Csla
       get { return (_emptyValue == EmptyValue.MinDate); }
     }
 
-#endregion
+    #endregion
 
-#region Conversion Functions
+    #region Conversion Functions
 
     /// <summary>
     /// Gets or sets the custom parser.
@@ -661,7 +661,7 @@ namespace Csla
       return StringToDate(value, true);
     }
 
-        /// <summary>
+    /// <summary>
     /// Converts a text date representation into a Date value.
     /// </summary>
     /// <remarks>
@@ -699,7 +699,7 @@ namespace Csla
 
     private static bool TryStringToDate(string value, EmptyValue emptyValue, ref DateTime result)
     {
-      
+
       DateTime tmp;
 
       // call custom parser if set...
@@ -721,7 +721,7 @@ namespace Csla
         result = tmp;
         return true;
       }
-      
+
       string ldate = value.Trim().ToLower();
       if (ldate == Resources.SmartDateT ||
           ldate == Resources.SmartDateToday ||
@@ -814,9 +814,9 @@ namespace Csla
       return string.Format("{0:" + formatString + "}", value);
     }
 
-#endregion
+    #endregion
 
-#region Manipulation Functions
+    #region Manipulation Functions
 
     /// <summary>
     /// Compares one SmartDate to another.
@@ -946,9 +946,9 @@ namespace Csla
         return Date.Subtract(value);
     }
 
-#endregion
+    #endregion
 
-#region Operators
+    #region Operators
 
     /// <summary>
     /// Equality operator
@@ -1232,9 +1232,9 @@ namespace Csla
       return obj1.CompareTo(obj2) <= 0;
     }
 
-#endregion
+    #endregion
 
-#region  IConvertible
+    #region  IConvertible
 
     TypeCode IConvertible.GetTypeCode()
     {
@@ -1326,18 +1326,18 @@ namespace Csla
       return ((IConvertible)_date).ToUInt64(provider);
     }
 
-#endregion
+    #endregion
 
-#region IFormattable Members
+    #region IFormattable Members
 
     string IFormattable.ToString(string format, IFormatProvider formatProvider)
     {
       return ToString(format);
     }
 
-#endregion
+    #endregion
 
-#region IMobileObject Members
+    #region IMobileObject Members
 
     void IMobileObject.GetState(SerializationInfo info)
     {
@@ -1367,6 +1367,6 @@ namespace Csla
       //
     }
 
-#endregion
+    #endregion
   }
 }

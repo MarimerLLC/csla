@@ -6,8 +6,8 @@
 // <summary>Provides a filtered view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using System.Collections;
+using System.ComponentModel;
 using Csla.Properties;
 
 namespace Csla
@@ -24,7 +24,7 @@ namespace Csla
 
     #region ListItem class
 
-    private class ListItem 
+    private class ListItem
     {
       public object Key { get; }
 
@@ -54,7 +54,7 @@ namespace Csla
       private int _index;
 
       public FilteredEnumerator(
-        IList<T> list, 
+        IList<T> list,
         List<ListItem> filterIndex)
       {
         _list = list;
@@ -421,12 +421,12 @@ namespace Csla
     /// </summary>
     public ListSortDirection SortDirection
     {
-      get 
+      get
       {
         if (SupportsSorting)
           return _bindingList.SortDirection;
         else
-          return ListSortDirection.Ascending; 
+          return ListSortDirection.Ascending;
       }
     }
 
@@ -435,12 +435,12 @@ namespace Csla
     /// </summary>
     public PropertyDescriptor SortProperty
     {
-      get 
+      get
       {
         if (SupportsSorting)
           return _bindingList.SortProperty;
         else
-          return null; 
+          return null;
       }
     }
 
@@ -472,12 +472,12 @@ namespace Csla
     /// </summary>
     public bool SupportsSorting
     {
-      get 
+      get
       {
         if (_supportsBinding)
           return _bindingList.SupportsSorting;
         else
-          return false; 
+          return false;
       }
     }
 
@@ -509,12 +509,12 @@ namespace Csla
     /// </summary>
     public int Count
     {
-      get 
+      get
       {
         if (IsFiltered)
           return _filterIndex.Count;
         else
-          return SourceList.Count; 
+          return SourceList.Count;
       }
     }
 
@@ -995,6 +995,6 @@ namespace Csla
     }
 
     #endregion
-  
+
   }
 }

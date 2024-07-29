@@ -5,6 +5,6 @@ namespace Csla.Test.Serialization
     public void Do()
     {
       Console.WriteLine("Property Changed");
-    }  
+    }
   }
 }

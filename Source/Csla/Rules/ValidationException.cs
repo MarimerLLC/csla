@@ -40,8 +40,8 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
     /// <param name="innerException">Inner exception object.</param>
-   public ValidationException(string message, Exception innerException)
-      : base(message, innerException)
+    public ValidationException(string message, Exception innerException)
+       : base(message, innerException)
     {
 
     }

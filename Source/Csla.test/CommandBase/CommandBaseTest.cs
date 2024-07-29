@@ -1,6 +1,6 @@
 ﻿using Csla.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.TestHelpers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.CommandBase
 {
@@ -23,7 +23,7 @@ namespace Csla.Test.CommandBase
     public TestContext TestContext { get; set; }
 
     [ClassInitialize]
-    public static void ClassInitialize(TestContext testContext) 
+    public static void ClassInitialize(TestContext testContext)
     {
       _ = testContext;
     }

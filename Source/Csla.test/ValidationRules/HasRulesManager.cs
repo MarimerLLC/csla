@@ -6,8 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Serialization.Mobile;
 using Csla.Core;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Test.ValidationRules
 {

@@ -71,8 +71,8 @@ namespace Csla.Test.BasicModern
         Assert.AreEqual(original.Id, copy.Id);
         Assert.AreEqual(original.IsDirty, copy.IsDirty);
         Assert.AreEqual(original.IsSelfDirty, copy.IsSelfDirty);
-        
-        for(var i = 0; i < original.Children.Count; i++)
+
+        for (var i = 0; i < original.Children.Count; i++)
         {
           Assert.IsFalse(ReferenceEquals(original.Children[i], copy.Children[i]));
           Assert.AreEqual(original.Children[i].Name, copy.Children[i].Name);

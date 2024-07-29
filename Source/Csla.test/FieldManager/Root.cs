@@ -21,9 +21,9 @@ namespace Csla.Test.FieldManager
     private static PropertyInfo<Child> ChildProperty = RegisterProperty<Child>(typeof(Root), new PropertyInfo<Child>("Child"));
     public Child Child
     {
-      get 
+      get
       {
-        return GetProperty<Child>(ChildProperty); 
+        return GetProperty<Child>(ChildProperty);
       }
     }
 
@@ -42,7 +42,7 @@ namespace Csla.Test.FieldManager
     }
 
     [Create]
-    protected void Create([Inject] IChildDataPortal<Child> childDataPortal, [Inject]IChildDataPortal<ChildList> childListDataPortal)
+    protected void Create([Inject] IChildDataPortal<Child> childDataPortal, [Inject] IChildDataPortal<ChildList> childListDataPortal)
     {
       LoadProperty(ChildProperty, Child.NewChild(childDataPortal));
       LoadProperty(ChildListProperty, ChildList.GetList(childListDataPortal));

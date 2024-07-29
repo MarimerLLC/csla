@@ -5,23 +5,28 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.TestHelpers.Http;
-public static class HttpTestServerFactory {
+public static class HttpTestServerFactory
+{
 
-  public static TestServer CreateHttpTestServer() {
+  public static TestServer CreateHttpTestServer()
+  {
     return new TestServer(new WebHostBuilder()
-      .ConfigureServices((IServiceCollection services) => {
+      .ConfigureServices((IServiceCollection services) =>
+      {
         services.AddControllers();
         services.AddHttpContextAccessor();
         services.AddCsla(o => o.AddAspNetCore());
       })
-      .Configure(app => {
+      .Configure(app =>
+      {
         app.UseRouting();
         app.UseEndpoints(endpoints => endpoints.MapControllers());
       })
     );
   }
 
-  public static (TestServer Server, ServiceProvider ClientServiceProvider) CreateHttpTestServerAndClientServiceProvider() {
+  public static (TestServer Server, ServiceProvider ClientServiceProvider) CreateHttpTestServerAndClientServiceProvider()
+  {
     var testServer = CreateHttpTestServer();
 
     string controllerName = nameof(TestDataPortalController).Replace("Controller", "");

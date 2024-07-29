@@ -131,7 +131,7 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  public class EditableChild2: EditableChild1
+  public class EditableChild2 : EditableChild1
   {
     private EditableChild2()
     {

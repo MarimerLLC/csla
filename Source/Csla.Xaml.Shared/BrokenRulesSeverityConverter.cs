@@ -6,11 +6,11 @@
 // </copyright>
 // <summary>Converts validation severity values into corresponding</summary>
 //-----------------------------------------------------------------------
-using Csla.Rules;
-using System.Windows.Resources;
-using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
+using System.Windows.Resources;
+using Csla.Rules;
 
 namespace Csla.Xaml
 {
@@ -37,7 +37,7 @@ namespace Csla.Xaml
       bmp.BeginInit();
       bmp.StreamSource = sr.Stream;
       bmp.EndInit();
-      
+
       return bmp;
     }
 

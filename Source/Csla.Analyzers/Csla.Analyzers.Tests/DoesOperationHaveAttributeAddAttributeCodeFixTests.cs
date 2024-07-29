@@ -1,9 +1,9 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Immutable;
 
 namespace Csla.Analyzers.Tests
 {
@@ -23,7 +23,7 @@ namespace Csla.Analyzers.Tests
 
     [DataRow(CslaMemberConstants.Operations.DataPortalCreate,
         CslaMemberConstants.OperationAttributes.Create, true,
-        "Add attribute", 
+        "Add attribute",
       DisplayName = "VerifyGetFixesWhenOperationIsDataPortalCreateAndHasUsing")]
     [DataRow(CslaMemberConstants.Operations.DataPortalCreate,
         CslaMemberConstants.OperationAttributes.Create, false,
@@ -160,7 +160,7 @@ namespace Csla.Analyzers.Tests
         {
           Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<AttributeSyntax>().Any(_ => _.Name.ToString() == attributeName));
 
-          if(includeUsingCsla)
+          if (includeUsingCsla)
           {
             Assert.IsTrue(newRoot.DescendantNodes(_ => true).OfType<UsingDirectiveSyntax>().Any(
               _ => _.Name.GetText().ToString() == "Csla"));

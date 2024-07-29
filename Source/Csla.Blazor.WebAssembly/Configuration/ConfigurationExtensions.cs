@@ -5,13 +5,13 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using Csla.State;
 using Csla.Blazor;
+using Csla.Blazor.WebAssembly.Configuration;
+using Csla.State;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Csla.Blazor.WebAssembly.Configuration;
 
 namespace Csla.Configuration
 {

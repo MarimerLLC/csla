@@ -6,10 +6,10 @@
 // <summary>Contains utility methods used by the</summary>
 //-----------------------------------------------------------------------
 
-using System.Reflection;
-using Csla.Reflection;
 using System.ComponentModel;
+using System.Reflection;
 using Csla.Properties;
+using Csla.Reflection;
 
 namespace Csla
 {
@@ -172,17 +172,17 @@ namespace Csla
 
       if (desiredType.IsEnum)
       {
-        if (value is byte? && ((byte?) value).HasValue)
-          return Enum.Parse(desiredType, ((byte?) value).Value.ToString());
-        if (value is short? && ((short?) value).HasValue)
-          return Enum.Parse(desiredType, ((short?) value).Value.ToString());
-        if (value is int? && ((int?) value).HasValue)
-          return Enum.Parse(desiredType, ((int?) value).Value.ToString());
-        if (value is long? && ((long?) value).HasValue)
-          return Enum.Parse(desiredType, ((long?) value).Value.ToString());
+        if (value is byte? && ((byte?)value).HasValue)
+          return Enum.Parse(desiredType, ((byte?)value).Value.ToString());
+        if (value is short? && ((short?)value).HasValue)
+          return Enum.Parse(desiredType, ((short?)value).Value.ToString());
+        if (value is int? && ((int?)value).HasValue)
+          return Enum.Parse(desiredType, ((int?)value).Value.ToString());
+        if (value is long? && ((long?)value).HasValue)
+          return Enum.Parse(desiredType, ((long?)value).Value.ToString());
       }
 
-      if (desiredType.IsEnum && 
+      if (desiredType.IsEnum &&
         (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
         return Enum.Parse(desiredType, value.ToString());
 

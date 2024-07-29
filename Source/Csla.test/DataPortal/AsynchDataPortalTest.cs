@@ -6,15 +6,15 @@
 // <summary>Create is an exception , if BO does not have DP_Create() overload</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Test.Basic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Globalization;
-using UnitDriven;
-using Csla.Testing.Business.DataPortal;
-using Single = Csla.Test.DataPortalTest.Single;
+using Csla.Test.Basic;
 using Csla.Test.DataPortalTest;
 using Csla.TestHelpers;
+using Csla.Testing.Business.DataPortal;
 using cslalighttest.CslaDataProvider;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UnitDriven;
+using Single = Csla.Test.DataPortalTest.Single;
 
 namespace Csla.Test.DataPortal
 {
@@ -103,7 +103,7 @@ namespace Csla.Test.DataPortal
       new Action(async () =>
       {
         IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
-        
+
         try
         {
           var result = await dataPortal.CreateAsync(9999);
@@ -156,7 +156,7 @@ namespace Csla.Test.DataPortal
     public async Task FetchAsync_WithCriteria()
     {
       IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
-      
+
       var result = await dataPortal.FetchAsync(123);
       Assert.IsNotNull(result);
       Assert.AreEqual(123, result.Id);
@@ -327,7 +327,7 @@ namespace Csla.Test.DataPortal
     public async Task BeginFetch_sends_cultureinfo_to_dataportal()
     {
       IDataPortal<AsyncPortalWithCulture> dataPortal = _testDIContext.CreateDataPortal<AsyncPortalWithCulture>();
-      
+
       string expectedCulture = Thread.CurrentThread.CurrentCulture.Name;
       string expectedUICulture = Thread.CurrentThread.CurrentUICulture.Name;
 

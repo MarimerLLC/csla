@@ -1,8 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Immutable;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using System.Collections.Immutable;
 using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
 namespace Csla.Analyzers
@@ -14,14 +14,14 @@ namespace Csla.Analyzers
   public sealed class CheckConstructorsAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule = 
+    private static readonly DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
         PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Error, true, 
+        DiagnosticSeverity.Error, true,
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, nameof(CheckConstructorsAnalyzer)));
-    private static readonly DiagnosticDescriptor constructorHasParametersRule = 
+    private static readonly DiagnosticDescriptor constructorHasParametersRule =
       new DiagnosticDescriptor(
         Constants.AnalyzerIdentifiers.ConstructorHasParameters, ConstructorHasParametersConstants.Title,
         ConstructorHasParametersConstants.Message, Constants.Categories.Usage,
@@ -67,7 +67,7 @@ namespace Csla.Analyzers
               {
                 hasPublicNoArgumentConstructor = true;
               }
-              else if(classSymbol.IsEditableStereotype())
+              else if (classSymbol.IsEditableStereotype())
               {
                 foreach (var location in constructor.Locations)
                 {

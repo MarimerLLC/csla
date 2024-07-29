@@ -6,13 +6,13 @@
 // <summary>Interface defining an authorization context</summary>
 //-----------------------------------------------------------------------
 
-namespace Csla.Rules 
+namespace Csla.Rules
 {
   /// <summary>
   /// Implemented by objects which provide context information to an authorization
   /// rule when it is invoked.
   /// </summary>
-  public interface IAuthorizationContext 
+  public interface IAuthorizationContext
   {
     /// <summary>
     /// Gets the rule object.

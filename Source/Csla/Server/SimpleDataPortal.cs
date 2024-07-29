@@ -106,7 +106,7 @@ namespace Csla.Server
       {
         return await Execute(objectType, criteria, context, isSync);
       }
-      
+
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
@@ -305,7 +305,7 @@ namespace Csla.Server
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult {  ApplicationContext = _applicationContext };
+        return new DataPortalResult { ApplicationContext = _applicationContext };
       }
       catch (Exception ex)
       {

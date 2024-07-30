@@ -1,16 +1,40 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public static class FindOperationsWithIncorrectReturnTypesAnalyzerConstants
   {
-    public const string Title = "Find Operations With Incorrect Return Types";
-    public const string IdentifierText = "FindOperationsWithIncorrectReturnTypes";
-    public const string Message = "The return type from an operation should be either void or Task";
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.FindOperationsWithIncorrectReturnTypes_Title), Resources.ResourceManager, typeof(Resources));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindOperationsWithIncorrectReturnTypes_Message), Resources.ResourceManager, typeof(Resources));
   }
 
+  /// <summary>
+  /// 
+  /// </summary>
   public static class FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFixConstants
   {
-    public const string ChangeReturnTypeToTaskDescription = "Change return type to Task";
-    public const string ChangeReturnTypeToVoidDescription = "Change return type to void";
+    /// <summary>
+    /// 
+    /// </summary>
+    public static string ChangeReturnTypeToTaskDescription => Resources.FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToTaskDescription;
+    /// <summary>
+    /// 
+    /// </summary>
+    public static string ChangeReturnTypeToVoidDescription => Resources.FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToVoidDescription;
+    /// <summary>
+    /// 
+    /// </summary>
     public static readonly string SystemThreadingTasksNamespace = typeof(Task).Namespace;
   }
 }

@@ -1,14 +1,32 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public static class DoesChildOperationHaveRunLocalAnalyzerConstants
   {
-    public const string Title = "Find Child Operations That Have [RunLocal]";
-    public const string IdentifierText = "DoesChildOperationHaveRunLocal";
-    public const string Message = "Child operations should not have [RunLocal]";
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.DoesChildOperationHaveRunLocal_Title), Resources.ResourceManager, typeof(Resources));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.DoesChildOperationHaveRunLocal_Message), Resources.ResourceManager, typeof(Resources));
   }
 
+  /// <summary>
+  /// 
+  /// </summary>
   public static class DoesChildOperationHaveRunLocalRemoveAttributeCodeFixConstants
   {
-    public const string RemoveRunLocalDescription = "Remove [RunLocal]";
+    /// <summary>
+    /// 
+    /// </summary>
+    public static string RemoveRunLocalDescription => Resources.DoesChildOperationHaveRunLocalRemoveAttribute_RemoveRunLocalDescription;
   }
 }

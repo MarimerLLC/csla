@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.CompleteInExecuteAsync, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(IsCompleteCalledInAsynchronousBusinessRuleConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Calls to Complete() in Asynchronous Business Rules", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(IsCompleteCalledInAsynchronousBusinessRuleConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("Complete() should not be called in an asynchronous business rule", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

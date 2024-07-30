@@ -1,14 +1,31 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public static class EvaluateManagedBackingFieldsAnalayzerConstants
   {
-    public const string Title = "Evaluate Managed Backing Fields";
-    public const string IdentifierText = "ManagedBackingFieldMustBePublicStaticAndReadOnlyRule";
-    public const string Message = "Managed backing fields must be public, static and read-only";
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.EvaluateManagedBackingFields_Title), Resources.ResourceManager, typeof(Resources));
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.EvaluateManagedBackingFields_Message), Resources.ResourceManager, typeof(Resources));
   }
 
+  /// <summary>
+  /// 
+  /// </summary>
   public static class EvaluateManagedBackingFieldsCodeFixConstants
   {
-    public const string FixManagedBackingFieldDescription = "Fix managed backing field declaration";
+    /// <summary>
+    /// 
+    /// </summary>
+    public static string FixManagedBackingFieldDescription => Resources.EvaluateManagedBackingFields_FixManagedBackingFieldDescription;
   }
 }

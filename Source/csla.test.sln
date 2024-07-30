@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.package.props = Directory.package.props
 		readme.md = readme.md
 		..\releasenotes.md = ..\releasenotes.md
+		version.json = version.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Csla", "Csla", "{01AA1A57-727E-4665-93FF-6E8BDD316ADE}"

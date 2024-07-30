@@ -1,8 +1,21 @@
-﻿namespace Csla.Analyzers
+﻿using Csla.Analyzers.Properties;
+using Microsoft.CodeAnalysis;
+
+namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public static class FindRefAndOutParametersInOperationsAnalyzerConstants
   {
-    public const string Title = "Find Ref or Out Parameters in Operations";
-    public const string Message = "Operations should not have ref or out parameters";
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.FindRefAndOutParametersInOperations_Title), Resources.ResourceManager, typeof(Resources));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindRefAndOutParametersInOperations_Message), Resources.ResourceManager, typeof(Resources));
   }
 }

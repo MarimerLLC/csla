@@ -9,15 +9,27 @@ using Csla.Analyzers.Extensions;
 
 namespace Csla.Analyzers
 {
+  /// <summary>
+  /// 
+  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFix
     : CodeFixProvider
   {
+    /// <summary>
+    /// 
+    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue);
 
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -51,9 +63,9 @@ namespace Csla.Analyzers
 
         context.RegisterCodeFix(
           CodeAction.Create(
-            FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription,
+            FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants.AddAssignmentDescription,
             _ => Task.FromResult(context.Document.WithSyntaxRoot(newRoot)),
-            FindSaveAssignmentIssueAnalyzerAddAsyncAssignmentCodeFixConstants.AddAssignmentDescription), diagnostic);
+            FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants.AddAssignmentDescription), diagnostic);
       }
     }
   }

@@ -16,9 +16,9 @@ namespace Csla.Analyzers.Tests
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes, diagnostic.Id,
         nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual(FindOperationsWithIncorrectReturnTypesAnalyzerConstants.Title, diagnostic.Title.ToString(),
+      Assert.AreEqual("Find Operations With Incorrect Return Types", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual(FindOperationsWithIncorrectReturnTypesAnalyzerConstants.Message, diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("The return type from an operation should be either void or Task", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Design, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));

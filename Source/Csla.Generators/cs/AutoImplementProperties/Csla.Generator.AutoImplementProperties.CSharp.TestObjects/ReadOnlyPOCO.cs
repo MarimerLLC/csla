@@ -3,21 +3,24 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Class that can be used for testing serialization behaviour related to nested classes</summary>
+// <summary>Class that can be used for testing auto implementation of properties</summary>
 //-----------------------------------------------------------------------
 using Csla.Serialization;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
 {
 
+
   /// <summary>
-  /// A class including a private nested class for which automatic serialization code is to be generated
+  /// Class that can be used for testing auto implementation of properties
   /// </summary>
-  /// <remarks>The class is decorated with the AutoSerializable attribute so that it is picked up by our source generator</remarks>
   [CslaImplementProperties]
   public partial class ReadOnlyPOCO : ReadOnlyBase<ReadOnlyPOCO>
   {
 
+    /// <summary>
+    /// Gets the name.
+    /// </summary>
     public partial string Name { get; private set; }
 
   }

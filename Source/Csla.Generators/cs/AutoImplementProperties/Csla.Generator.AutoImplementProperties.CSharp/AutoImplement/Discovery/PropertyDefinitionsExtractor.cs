@@ -16,8 +16,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
   /// Extract the definition of all properties for a type for which source generation is required
   /// This is used to detach the builder from the Roslyn infrastructure, to enable testing
   /// </summary>
-  /// <remarks>Only the properties to be included in serialization are extracted; those manually excluded
-  /// from serialization through use of the [AutoNonSerialized] attribute are not returned</remarks>
+  /// <remarks>Only the properties to be included in auto implementation are extracted; those manually excluded
+  /// from auto implementation through use of the [CslaIgnorePropertyAttribute] attribute are not returned</remarks>
   internal static class PropertyDefinitionsExtractor
   {
 
@@ -49,11 +49,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     #region Private Helper Methods
 
     /// <summary>
-    /// Get the property declarations for all properties which are to be serialized
+    /// Get the property declarations for all properties which are to be auto implementat
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
-    /// <returns>A readonly list of property declarations to be included in serialization</returns>
+    /// <returns>A readonly list of property declarations to be included in auto implementation</returns>
     private static IReadOnlyList<PropertyDeclarationSyntax> GetSerializablePropertyDeclarations(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       List<PropertyDeclarationSyntax> serializableProperties;
@@ -65,11 +65,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     }
 
     /// <summary>
-    /// Get the property declarations for all public properties which are not explicitly excluded from serialization
+    /// Get the property declarations for all public properties which are not explicitly excluded from auto implementation
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
-    /// <returns>A readonly list of property declarations to be included in serialization</returns>
+    /// <returns>A readonly list of property declarations to be included in auto implementation</returns>
     private static List<PropertyDeclarationSyntax> GetPublicNonExcludedProperties(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       List<PropertyDeclarationSyntax> serializableProperties;

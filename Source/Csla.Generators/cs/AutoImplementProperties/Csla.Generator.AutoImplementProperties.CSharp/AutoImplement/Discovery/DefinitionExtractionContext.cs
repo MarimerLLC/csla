@@ -90,10 +90,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     }
 
     /// <summary>
-    /// Determine if a property declaration is marked as excluded from serialization
+    /// Determine if a property declaration is marked as excluded from auto implementation
     /// </summary>
     /// <param name="propertyDeclaration">The declaration of the property being inspected</param>
-    /// <returns>Boolean true if the property is decorated with the AutoNonSerialized attribute, otherwise false</returns>
+    /// <returns>Boolean true if the property is decorated with the CslaIgnorePropertyAttribute attribute, otherwise false</returns>
     public bool IsPropertyDecoratedWithIgnoreProperty(PropertyDeclarationSyntax propertyDeclaration)
     {
       return IsPropertyDecoratedWith(propertyDeclaration, _ignorePropertyAttributeName, _serializationNamespace);

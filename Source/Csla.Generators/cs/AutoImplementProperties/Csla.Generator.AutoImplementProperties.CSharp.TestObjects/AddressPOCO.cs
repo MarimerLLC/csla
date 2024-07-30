@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Class that can be used for testing serialization behaviour</summary>
+// <summary>Class that can be used for testing auto implementation of properties</summary>
 //-----------------------------------------------------------------------
 using System.ComponentModel.DataAnnotations;
 using Csla.Serialization;

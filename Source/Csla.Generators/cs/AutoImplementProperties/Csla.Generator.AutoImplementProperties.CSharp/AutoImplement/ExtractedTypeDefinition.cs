@@ -33,7 +33,7 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public string FullyQualifiedName { get; set; }
 
   /// <summary>
-  /// The properties to be included in serialization
+  /// The properties to be included in auto implementation
   /// </summary>
   public IList<ExtractedPropertyDefinition> Properties { get; private set; } = new List<ExtractedPropertyDefinition>();
 

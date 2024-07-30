@@ -8,13 +8,13 @@ using Microsoft.CodeAnalysis.Text;
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
   /// <summary>
-  /// Generates partial classes for incremental serialization based on the presence of the <see cref="Csla.Serialization.CslaImplementPropertiesAttribute"/> attribute.
+  /// Generates partial classes for incremental properties implementation based on the presence of the <see cref="Csla.Serialization.CslaImplementPropertiesAttribute"/> attribute.
   /// </summary>
   [Generator]
   public class IncrementalAutoImplementPropertiesPartialsGenerator : IIncrementalGenerator
   {
     /// <summary>
-    /// Initializes the incremental serialization partials generator.
+    /// Initializes the incremental generator for properties implementation based on partial properties generator.
     /// </summary>
     /// <param name="context">The initialization context.</param>
     public void Initialize(IncrementalGeneratorInitializationContext context)

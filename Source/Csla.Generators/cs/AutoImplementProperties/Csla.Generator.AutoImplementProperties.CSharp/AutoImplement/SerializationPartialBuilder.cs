@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Builds the text of a partial type to implement the IMobileObject interface</summary>
+// <summary>Builds the text of a partial type to implement properties</summary>
 //-----------------------------------------------------------------------
 
 using System.CodeDom.Compiler;
@@ -12,19 +12,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
 
   /// <summary>
-  /// Builds the text of a partial type to implement the IMobileObject interface
-  /// so that the target type automatically offers mobile serialization
+  /// Builds the text of a partial type to implement the properties
   /// </summary>
   internal class SerializationPartialBuilder(bool nullable)
   {
 
 
     /// <summary>
-    /// Build the text of a partial type that implements the IMobileObject
-    /// interface so that the target type automatically offers mobile serialization
+    /// Build the text of a partial type that implements the properties of the target type
     /// </summary>
-    /// <param name="typeDefinition">The definition of the type for which serialization is required</param>
-    /// <returns>Generated code to fulfil the required serialization</returns>
+    /// <param name="typeDefinition">The definition of the type for which is required</param>
+    /// <returns>Generated code to fulfil the required auto implementation of the properties</returns>
     internal GenerationResults BuildPartialTypeDefinition(ExtractedTypeDefinition typeDefinition)
     {
       using var stringWriter = new StringWriter();

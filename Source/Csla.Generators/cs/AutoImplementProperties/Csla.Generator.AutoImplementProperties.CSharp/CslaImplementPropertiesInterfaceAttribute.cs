@@ -6,7 +6,7 @@
 // <summary>Indicate that a type should auto implement properties</summary>
 //-----------------------------------------------------------------------
 
-namespace Csla.Serialization
+namespace Csla
 {
   /// <summary>
   /// Indicate that a type should be auto serialized

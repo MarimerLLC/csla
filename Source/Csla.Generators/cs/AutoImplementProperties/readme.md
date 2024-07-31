@@ -11,47 +11,75 @@ This guide provides a step-by-step approach to using the source generator in the
 ## Step 1: Define Your POCO Class
 
 Start by defining your Plain Old CLR Object (POCO) class. In this example, we use `AddressPOCO.cs`:
+if you are in C# 13 then you can use the following code:
 
 ```csharp
-using Csla.Serialization;
+using System.ComponentModel.DataAnnotations;
 
-namespace Csla.Generators.CSharp.TestObjects
+namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
 {
+  [CslaImplementProperties]
+  public partial class AddressPOCO : BusinessBase<AddressPOCO>
+  {
+    [Display(Name = "Address Line 1")]
+    public partial string? AddressLine1 { get; private set; }
+    public partial string AddressLine2 { get; set; }
+    public partial string Town { get; set; }
+    public partial string County { get; set; }
+    public partial string Postcode { get; set; }
+    [CslaIgnoreProperty]
+    public partial string IgnoredProperty { get; set; }
+  }
 
-  [AutoSerializable]
   public partial class AddressPOCO
   {
-
-    public string? AddressLine1 { get; set; }
-
-    public string AddressLine2 { get; set; } = string.Empty;
-
-    public string Town { get; set; } = string.Empty;
-
-    public string County { get; set; } = string.Empty;
-
-    public string Postcode { get; set; } = string.Empty;
-
+    public partial string IgnoredProperty { get => ""; set { } }
   }
 }
 ```
 
-## Understanding [AutoSerializable]
+if you are in a previous version then you use the following code:
+
+```csharp
+using System.ComponentModel.DataAnnotations;
+
+namespace Csla.Generator.AutoImplementProperties.TestObjects
+{
+  [CslaImplementPropertiesInterface<IInterfaceImplementBusinessPOCO>]
+  public partial class InterfaceImplementBusinessPOCO : BusinessBase<InterfaceImplementBusinessPOCO>
+  {
+    private interface IInterfaceImplementBusinessPOCO
+    {
+      int Id { get; }
+      [Display(Name = "Interface Name")]
+      string Name { get; set; }
+      string? Description { get; set; }
+      string? Code { get; }
+
+      [CslaIgnoreProperty]
+      string IgnoredProperty { get; set; }
+    }
+  }
+}
+
+```
+
+## Understanding [CslaImplementProperties]
 
 - **Source Generators:** Introduced in .NET 5, source generators allow for compile-time code generation based on the existing codebase. They are a powerful tool for reducing boilerplate code and automating repetitive coding tasks.
-- **[AutoSerializable] Attribute:** This custom attribute is used to mark a class for automatic serialization code generation. When the source generator sees this attribute, it generates the necessary serialization and deserialization methods for the class, tailored to its properties.
+- **[CslaImplementProperties] Attribute:** This custom attribute is used to mark a class for automatic implementation of properties code generation. When the source generator sees this attribute, it generates the necessary implementation for the class, tailored to its properties.
 
 ## How It Works with AddressPOCO
-1.	**Marking the Class:** By adding [AutoSerializable] above the AddressPOCO class definition, you indicate that this class should have serialization code automatically generated.
-2.	**Compilation:** During compilation, the source generator scans the project's code for classes marked with [AutoSerializable].
-3.	**Code Generation:** For each class found, the generator produces additional source files that implement serialization and deserialization logic specific to that class. This might include methods for converting the class to and from a serialized format, handling nullability, and more.
-4.	**Integration:** The generated code is compiled as part of your project, making it available for use at runtime without additional steps. This means AddressPOCO can be serialized and deserialized without manually implementing any serialization methods.
+1.	**Marking the Class:** By adding [CslaImplementProperties] above the AddressPOCO class definition, you indicate that this class should have the partial properties code automatically generated.
+2.	**Compilation:** During compilation, the source generator scans the project's code for classes marked with [CslaImplementProperties].
+3.	**Code Generation:** For each class found, the generator produces additional source files that implement partial properties logic specific to that class.
+4.	**Integration:** The generated code is compiled as part of your project, making it available for use at runtime without additional steps. This means AddressPOCO can be used without implementation of the properties.
 ## Benefits
--	Reduced Boilerplate: Automatically generating serialization code reduces the need for repetitive, error-prone boilerplate code.
--	Consistency: Ensures consistent serialization behavior across different parts of the application.
--	Efficiency: Improves development efficiency by automating a common requirement (serialization).
+-	Reduced Boilerplate: Automatically generating properties code reduces the need for repetitive, error-prone boilerplate code.
+-	Consistency: Ensures consistent properties behavior across different parts of the application.
+-	Efficiency: Improves development efficiency by automating a common requirement (property implementation).
 
-## Source code generated from the example
+## Source code generated from the example in C# 13
 
 AddressPOCO class might look like this:
 
@@ -59,39 +87,83 @@ AddressPOCO class might look like this:
 //<auto-generated/>
 #nullable enable
 using System;
-using Csla.Serialization.Mobile;
+using Csla;
 
-namespace Csla.Generators.CSharp.TestObjects
+namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects;
+
+public partial class AddressPOCO
 {
-	[Serializable]
-	public partial class AddressPOCO : IMobileObject
+	public static readonly PropertyInfo<string?> AddressLine1Property = RegisterProperty<string?>(nameof(AddressLine1));
+	public partial string? AddressLine1
 	{
-		void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
-		{
-		}
-		
-		void IMobileObject.GetState(SerializationInfo info)
-		{
-			info.AddValue(nameof(AddressLine1), AddressLine1);
-			info.AddValue(nameof(AddressLine2), AddressLine2);
-			info.AddValue(nameof(Town), Town);
-			info.AddValue(nameof(County), County);
-			info.AddValue(nameof(Postcode), Postcode);
-		}
-		
-		void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
-		{
-		}
-		
-		void IMobileObject.SetState(SerializationInfo info)
-		{
-			AddressLine1 = info.GetValue<string?>(nameof(AddressLine1));
-			AddressLine2 = info.GetValue<string>(nameof(AddressLine2));
-			Town = info.GetValue<string>(nameof(Town));
-			County = info.GetValue<string>(nameof(County));
-			Postcode = info.GetValue<string>(nameof(Postcode));
-		}
-		
+		get => GetProperty(AddressLine1Property);
+		private set => SetProperty(AddressLine1Property, value);
+	}
+	public static readonly PropertyInfo<string> AddressLine2Property = RegisterProperty<string>(nameof(AddressLine2));
+	public partial string AddressLine2
+	{
+		get => GetProperty(AddressLine2Property);
+		set => SetProperty(AddressLine2Property, value);
+	}
+	public static readonly PropertyInfo<string> TownProperty = RegisterProperty<string>(nameof(Town));
+	public partial string Town
+	{
+		get => GetProperty(TownProperty);
+		set => SetProperty(TownProperty, value);
+	}
+	public static readonly PropertyInfo<string> CountyProperty = RegisterProperty<string>(nameof(County));
+	public partial string County
+	{
+		get => GetProperty(CountyProperty);
+		set => SetProperty(CountyProperty, value);
+	}
+	public static readonly PropertyInfo<string> PostcodeProperty = RegisterProperty<string>(nameof(Postcode));
+	public partial string Postcode
+	{
+		get => GetProperty(PostcodeProperty);
+		set => SetProperty(PostcodeProperty, value);
 	}
 }
+```
+
+## Source code generated from the example in previous versions
+
+```csharp
+//<auto-generated/>
+#nullable enable
+using System;
+using Csla;
+
+namespace Csla.Generator.AutoImplementProperties.TestObjects;
+
+public partial class InterfaceImplementBusinessPOCO
+{
+	public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+	public int Id
+	{
+		get => GetProperty(IdProperty);
+		private set => SetProperty(IdProperty, value);
+	}
+	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+	[System.ComponentModel.DataAnnotations.Display( Name="Interface Name")]
+	public string Name
+	{
+		get => GetProperty(NameProperty);
+		set => SetProperty(NameProperty, value);
+	}
+	public static readonly PropertyInfo<string?> DescriptionProperty = RegisterProperty<string?>(nameof(Description));
+	public string? Description
+	{
+		get => GetProperty(DescriptionProperty);
+		set => SetProperty(DescriptionProperty, value);
+	}
+	public static readonly PropertyInfo<string?> CodeProperty = RegisterProperty<string?>(nameof(Code));
+	public string? Code
+	{
+		get => GetProperty(CodeProperty);
+		private set => SetProperty(CodeProperty, value);
+	}
+}
+
+
 ```

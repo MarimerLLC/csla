@@ -1,6 +1,4 @@
-﻿using Csla.Serialization;
-
-namespace Csla.Generator.AutoImplementProperties.TestObjects
+﻿namespace Csla.Generator.AutoImplementProperties.TestObjects
 {
   [CslaImplementProperties]
   public partial class CommandPOCO : CommandBase<CommandPOCO>

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Csla.Serialization;
 
 namespace Csla.Generator.AutoImplementProperties.TestObjects
 {

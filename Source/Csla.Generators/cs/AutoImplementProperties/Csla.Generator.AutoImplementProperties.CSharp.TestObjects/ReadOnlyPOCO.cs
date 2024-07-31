@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Class that can be used for testing auto implementation of properties</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization;
-
 namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
 {
 

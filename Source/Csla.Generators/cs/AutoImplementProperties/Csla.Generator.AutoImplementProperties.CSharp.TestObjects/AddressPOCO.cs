@@ -6,7 +6,6 @@
 // <summary>Class that can be used for testing auto implementation of properties</summary>
 //-----------------------------------------------------------------------
 using System.ComponentModel.DataAnnotations;
-using Csla.Serialization;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.TestObjects
 {

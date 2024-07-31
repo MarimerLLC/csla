@@ -16,12 +16,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
   internal class DefinitionExtractionContext(SemanticModel _semanticModel, bool _addAttributes, bool _filterPartialProperties)
   {
     public SemanticModel SemanticModel => _semanticModel;
-    private const string _serializationNamespace = "Csla.Serialization";
+    private const string _cslaNamespace = "Csla";
 
     private const string _ignorePropertyAttributeName = "CslaIgnorePropertyAttribute";
     public const string CslaImplementPropertiesAttribute = "CslaImplementPropertiesInterface";
-    public const string CslaImplementPropertiesAttributeFullName = "Csla.Serialization.CslaImplementPropertiesAttribute";
-    public const string CslaImplementPropertiesInterfaceAttributeFullName = "Csla.Serialization.CslaImplementPropertiesInterfaceAttribute`1";
+    public const string CslaImplementPropertiesAttributeFullName = "Csla.CslaImplementPropertiesAttribute";
+    public const string CslaImplementPropertiesInterfaceAttributeFullName = "Csla.CslaImplementPropertiesInterfaceAttribute`1";
     public bool AddAttributes => _addAttributes;
 
     public bool FilterPartialProperties => _filterPartialProperties;
@@ -96,7 +96,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>Boolean true if the property is decorated with the CslaIgnorePropertyAttribute attribute, otherwise false</returns>
     public bool IsPropertyDecoratedWithIgnoreProperty(PropertyDeclarationSyntax propertyDeclaration)
     {
-      return IsPropertyDecoratedWith(propertyDeclaration, _ignorePropertyAttributeName, _serializationNamespace);
+      return IsPropertyDecoratedWith(propertyDeclaration, _ignorePropertyAttributeName, _cslaNamespace);
     }
 
     /// <summary>

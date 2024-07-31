@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------
+// <copyright file="IncrementalAutoImplementInterfacePartialsGenerator.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Source generator for interface implementation</summary>
+//-----------------------------------------------------------------------
 using System.Text;
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery;
 using Microsoft.CodeAnalysis;

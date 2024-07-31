@@ -1,4 +1,11 @@
-﻿namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
+﻿//-----------------------------------------------------------------------
+// <copyright file="TrackingNames.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>TRack for validation of cached incremental generators</summary>
+//-----------------------------------------------------------------------
+namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
   /// <summary>
   /// 

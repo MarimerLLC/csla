@@ -58,6 +58,9 @@ namespace Csla.Channels.RabbitMq
     /// </summary>
     private ProxyListener? QueueListener { get; set; }
 
+    /// <inheritdoc />
+    public override string DataPortalUrl { get; }
+
     /// <summary>
     /// Method responsible for creating the Connection,
     /// Channel, ReplyQueue, and DataPortalQueueName values

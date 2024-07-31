@@ -48,7 +48,7 @@ namespace Csla.Serialization.Mobile
     /// Converts an object graph into a byte stream.
     /// </summary>
     /// <param name="graph">Object graph to be serialized.</param>
-    byte[] ISerializationFormatter.Serialize(object graph)
+    byte[] ISerializationFormatter.Serialize(object? graph)
     {
       using var buffer = new MemoryStream();
       Serialize(buffer, graph);
@@ -63,7 +63,7 @@ namespace Csla.Serialization.Mobile
     /// Root object of the object graph
     /// to serialize.
     /// </param>
-    public List<SerializationInfo> SerializeAsDTO(object graph)
+    public List<SerializationInfo> SerializeAsDTO(object? graph)
     {
       _serializationReferences.Clear();
 
@@ -342,7 +342,7 @@ namespace Csla.Serialization.Mobile
     /// The object to be serialized, which must implement
     /// IMobileObject.
     /// </param>
-    public List<SerializationInfo> SerializeToDTO(object obj)
+    public List<SerializationInfo> SerializeToDTO(object? obj)
     {
       return SerializeAsDTO(obj);
     }

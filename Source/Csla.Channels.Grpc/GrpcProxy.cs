@@ -46,6 +46,9 @@ namespace Csla.Channels.Grpc
     private static GrpcChannel? _defaultChannel;
     private string? VersionRoutingTag { get; set; }
 
+    /// <inheritdoc />
+    public override string DataPortalUrl { get; }
+
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
     /// </summary>

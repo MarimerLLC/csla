@@ -18,12 +18,12 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Serialized object data.
     /// </summary>
-    public static readonly PropertyInfo<byte[]> ObjectDataProperty = RegisterProperty<byte[]>(c => c.ObjectData);
+    public static readonly PropertyInfo<byte[]?> ObjectDataProperty = RegisterProperty<byte[]?>(nameof(ObjectData));
 
     /// <summary>
     /// Serialized object data.
     /// </summary>
-    public byte[] ObjectData
+    public byte[]? ObjectData
     {
       get { return GetProperty(ObjectDataProperty); }
       set { LoadProperty(ObjectDataProperty, value); }

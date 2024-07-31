@@ -50,7 +50,9 @@ namespace Csla.Channels.Http
 
     private string VersionRoutingTag { get; set; }
 
-#nullable enable
+    /// <inheritdoc />
+    public override string DataPortalUrl { get; }
+
     /// <summary>
     /// Gets an HttpClientHandler for use
     /// in initializing the HttpClient instance.
@@ -59,7 +61,6 @@ namespace Csla.Channels.Http
     {
       return null;
     }
-#nullable disable
 
     /// <summary>
     /// Gets an HttpClient object for use in
@@ -119,7 +120,7 @@ namespace Csla.Channels.Http
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialized response from server</returns>
-    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync)
     {
       return isSync
         ? CallViaWebClient(serialized, operation, routingToken)
@@ -144,7 +145,7 @@ namespace Csla.Channels.Http
     protected virtual void SetWebClientHeaders(WebClient client)
     { }
 
-    private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
+    private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string? routingToken)
     {
       var client = GetHttpClient();
       using var httpRequest = new HttpRequestMessage(
@@ -184,7 +185,7 @@ namespace Csla.Channels.Http
       return serialized;
     }
 
-    private byte[] CallViaWebClient(byte[] serialized, string operation, string routingToken)
+    private byte[] CallViaWebClient(byte[] serialized, string operation, string? routingToken)
     {
 #if NET8_0_OR_GREATER
       if (OperatingSystem.IsBrowser())
@@ -244,7 +245,7 @@ namespace Csla.Channels.Http
       }
     }
 
-    private string CreateOperationTag(string operation, string versionToken, string routingToken)
+    private string CreateOperationTag(string operation, string versionToken, string? routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
         return $"{operation}/{routingToken}-{versionToken}";
@@ -263,10 +264,14 @@ namespace Csla.Channels.Http
 
       protected override WebRequest GetWebRequest(Uri address)
       {
-        var req = base.GetWebRequest(address) as HttpWebRequest;
-        if (Timeout > 0)
-          req.Timeout = Timeout;
-        return req;
+        var request = base.GetWebRequest(address);
+        if (request is HttpWebRequest webRequest)
+        {
+          if (Timeout > 0)
+            webRequest.Timeout = Timeout;
+        }
+
+        return request;
       }
     }
 #pragma warning restore SYSLIB0014

@@ -37,7 +37,7 @@ namespace Csla.Channels.Http
     /// Gets an HttpClientHandler for use
     /// in initializing the HttpClient instance.
     /// </summary>
-    protected override HttpClientHandler GetHttpClientHandler()
+    protected override HttpClientHandler? GetHttpClientHandler()
     {
       var result = new HttpClientHandler();
       if (!Options.UseTextSerialization)

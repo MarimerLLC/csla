@@ -25,18 +25,32 @@ namespace Csla.Server
     /// The business object being returned from
     /// the server.
     /// </summary>
-    public object ReturnObject { get; private set; }
+    public object? ReturnObject { get; private set; }
 
     /// <summary>
     /// Error that occurred during the DataPotal call.
     /// This will be null if no errors occurred.
     /// </summary>
-    public Exception Error { get; private set; }
+    public Exception? Error { get; private set; }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [Obsolete("CSLA.Net internal use only", error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. Not usable by user code
     public DataPortalResult()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    {
+    }
+
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    /// of the result.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    public DataPortalResult(ApplicationContext applicationContext) : this(applicationContext, null, null)
     {
     }
 
@@ -46,10 +60,11 @@ namespace Csla.Server
     /// <param name="applicationContext"></param>
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>
-    public DataPortalResult(ApplicationContext applicationContext, object returnObject)
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="returnObject"/> is <see langword="null"/>.</exception>
+    public DataPortalResult(ApplicationContext applicationContext, object returnObject) : this(applicationContext, returnObject, null)
     {
-      ApplicationContext = applicationContext;
-      ReturnObject = returnObject;
+      if (returnObject is null)
+        throw new ArgumentNullException(nameof(returnObject));
     }
 
     /// <summary>
@@ -62,9 +77,10 @@ namespace Csla.Server
     /// Error that occurred during the DataPotal call.
     /// This will be null if no errors occurred.
     /// </param>
-    public DataPortalResult(ApplicationContext applicationContext, object returnObject, Exception ex)
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    public DataPortalResult(ApplicationContext applicationContext, object? returnObject, Exception? ex)
     {
-      ApplicationContext = applicationContext;
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       ReturnObject = returnObject;
       Error = ex;
     }

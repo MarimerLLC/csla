@@ -24,15 +24,16 @@ namespace Csla.DataPortalClient
     /// 
     /// </summary>
     /// <param name="applicationContext"></param>
-    public DataPortalProxy(ApplicationContext applicationContext)
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    protected DataPortalProxy(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Gets a value indicating whether the data portal
@@ -50,25 +51,21 @@ namespace Csla.DataPortalClient
     /// Gets the URL address for the data portal server
     /// used by this proxy instance.
     /// </summary>
-    public string DataPortalUrl { get; protected set; }
+    public abstract string DataPortalUrl { get; }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to create a
-    /// new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async virtual Task<DataPortalResult> Create(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
         var request = GetBaseCriteriaRequest();
-        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
         if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -85,14 +82,10 @@ namespace Csla.DataPortalClient
           var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -111,23 +104,19 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to load an
-    /// existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async virtual Task<DataPortalResult> Fetch(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
         var request = GetBaseCriteriaRequest();
-        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
         if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -146,14 +135,10 @@ namespace Csla.DataPortalClient
           var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -172,17 +157,14 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to update a
-    /// business object.
-    /// </summary>
-    /// <param name="obj">The business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async virtual Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
@@ -201,14 +183,10 @@ namespace Csla.DataPortalClient
           var newobj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, newobj, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -227,23 +205,19 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to delete a
-    /// business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async virtual Task<DataPortalResult> Delete(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
         var request = GetBaseCriteriaRequest();
-        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
         if (criteria is not IMobileObject)
         {
           criteria = new PrimitiveCriteria(criteria);
@@ -261,14 +235,10 @@ namespace Csla.DataPortalClient
         {
           result = new DataPortalResult(ApplicationContext, null, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -326,11 +296,11 @@ namespace Csla.DataPortalClient
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialized response from server</returns>
-    protected abstract Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync);
+    protected abstract Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync);
 
-    private string GetRoutingToken(Type objectType)
+    private string? GetRoutingToken(Type objectType)
     {
-      string result = null;
+      string? result = null;
       var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);
       if (list.Length > 0)
         result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;

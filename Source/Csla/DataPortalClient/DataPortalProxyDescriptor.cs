@@ -9,10 +9,10 @@
     /// <summary>
     /// Assembly qualified type name of the proxy
     /// </summary>
-    public string ProxyTypeName { get; set; }
+    public string ProxyTypeName { get; set; } = string.Empty;
     /// <summary>
     /// Server endpoint URL to be called by the proxy
     /// </summary>
-    public string DataPortalUrl { get; set; }
+    public string DataPortalUrl { get; set; } = string.Empty;
   }
 }

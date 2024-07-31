@@ -41,6 +41,6 @@ namespace Csla.Serialization
     /// Converts an object graph into a byte stream.
     /// </summary>
     /// <param name="graph">Object graph to be serialized.</param>
-    byte[] Serialize(object graph);
+    byte[] Serialize(object? graph);
   }
 }

@@ -305,7 +305,7 @@ namespace Csla.Server
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult {  ApplicationContext = _applicationContext };
+        return new DataPortalResult(_applicationContext);
       }
       catch (Exception ex)
       {

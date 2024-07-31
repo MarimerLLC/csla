@@ -25,16 +25,16 @@ namespace Csla.DataPortalClient
     /// New instance of the criteria
     /// </summary>
     /// <param name="value">Criteria value</param>
-    public PrimitiveCriteria(object value)
+    public PrimitiveCriteria(object? value)
     {
       _value = value;
     }
 
-    private object _value;
+    private object? _value;
     /// <summary>
     /// Criteria value
     /// </summary>
-    public object Value
+    public object? Value
     {
       get { return _value; }
       private set { _value = value; }
@@ -80,7 +80,7 @@ namespace Csla.DataPortalClient
     /// </param>
     public void SetState(SerializationInfo info)
     {
-      _value = info.GetValue<object>("_value");
+      _value = info.GetValue<object?>("_value");
     }
 
     /// <summary>

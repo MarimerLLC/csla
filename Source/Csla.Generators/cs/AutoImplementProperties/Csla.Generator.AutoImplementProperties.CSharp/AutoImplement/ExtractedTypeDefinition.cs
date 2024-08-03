@@ -1,7 +1,5 @@
 ﻿using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
 
-using Csla.Generator.AutoImplementProperties.CSharp.Internals;
-
 /// <summary>
 /// The definition of a type, extracted from the syntax tree provided by Roslyn
 /// </summary>
@@ -96,6 +94,6 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public override int GetHashCode()
   {
     // Calculate and return the hash code based on the properties, fields, or any other relevant data
-    return HashCode.Combine(Namespace + Scope + TypeName, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
+    return System.HashCode.Combine(Namespace + Scope + TypeName, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
   }
 }

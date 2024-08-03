@@ -6,7 +6,6 @@
 // <summary>The definition of a property, extracted from the syntax tree provided by Roslyn</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Generator.AutoImplementProperties.CSharp.Internals;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {

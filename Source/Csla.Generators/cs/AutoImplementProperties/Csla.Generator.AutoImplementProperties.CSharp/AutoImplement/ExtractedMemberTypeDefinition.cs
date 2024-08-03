@@ -1,6 +1,4 @@
-﻿using Csla.Generator.AutoImplementProperties.CSharp.Internals;
-
-namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
+﻿namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
   /// <summary>
   /// The definition of a member's type, extracted from the syntax tree provided by Roslyn

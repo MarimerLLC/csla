@@ -40,10 +40,11 @@ namespace Csla.Configuration
       options?.Invoke(blazorOptions);
 
       config.Services.AddScoped(_ => blazorOptions);
+      config.Services.AddScoped(typeof(Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
       config.Services.TryAddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
+
       config.Services.TryAddScoped<IAuthorizationPolicyProvider, CslaPermissionsPolicyProvider>();
       config.Services.TryAddScoped<IAuthorizationHandler, CslaPermissionsHandler>();
-      config.Services.TryAddScoped(typeof(Core.IContextManager), typeof(Csla.Blazor.WebAssembly.ApplicationContextManager));
       config.Services.TryAddScoped(typeof(AuthenticationStateProvider), typeof(Blazor.Authentication.CslaAuthenticationStateProvider));
 
       // use Blazor state management

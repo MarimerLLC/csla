@@ -222,6 +222,7 @@ namespace Csla.Test.ChildChanged
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
 
       var result = Fetch();
 
@@ -242,6 +243,7 @@ namespace Csla.Test.ChildChanged
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var result = Fetch();
 
       result.Child.Name = "Keith";
@@ -262,6 +264,7 @@ namespace Csla.Test.ChildChanged
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var result = Fetch();
 
       result.Child.Child.Name = "Keith";
@@ -283,6 +286,7 @@ namespace Csla.Test.ChildChanged
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var result = Fetch();
 
       _SequenceID = 0;
@@ -308,6 +312,7 @@ namespace Csla.Test.ChildChanged
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var result = Fetch();
 
       result.ChildList[0].Name = "Keith";
@@ -328,6 +333,7 @@ namespace Csla.Test.ChildChanged
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var result = Fetch();
 
       result.ChildList[0].ChildList[0].Name = "Keith";
@@ -350,6 +356,7 @@ namespace Csla.Test.ChildChanged
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var result = Fetch();
 
       _SequenceID = 0;

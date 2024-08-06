@@ -28,6 +28,7 @@ namespace Csla.Test.PropertyGetSet
     {
       var services = new ServiceCollection();
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var serviceProvider = services.BuildServiceProvider();
       _testDIContext = new TestDIContext(serviceProvider);
     }

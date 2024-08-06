@@ -30,6 +30,7 @@ namespace Csla.Test.Server.Scope
       // set up DI
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       services.AddScoped<GuidProvider>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();

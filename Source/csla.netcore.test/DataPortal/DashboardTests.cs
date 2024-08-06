@@ -31,6 +31,7 @@ namespace csla.netcore.test.DataPortal
       // Initialise DI, and add Csla using default settings
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       serviceProvider = services.BuildServiceProvider();
 
       IDashboard dashboard = serviceProvider.GetRequiredService<IDashboard>();

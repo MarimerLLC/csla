@@ -234,7 +234,11 @@ namespace Csla.Reflection
         string[] splitName = typeName.Split(',');
         if (splitName.Length > 2)
         {
-          var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(AppContext.BaseDirectory + splitName[1].Trim() + ".dll");
+          var path = AppContext.BaseDirectory + splitName[1].Trim() + ".dll";
+          if (path.Contains("..") || path.Contains(':'))
+            throw new TypeLoadException(path);
+
+          var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
           return asm.GetType(splitName[0].Trim());
         }
         else

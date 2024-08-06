@@ -2,6 +2,26 @@
 
 [CSLA 5](https://github.com/MarimerLLC/csla/tree/v5.x) includes major enhancements, and brings support for .NET Core 3.1, .NET 5, and WebAssembly (Blazor, Uno, etc.).
 
+# CSLA .NET version 5.5.4 release
+
+Bug fixes over the 5.5.3 release.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/compare/v5.5.3...v5.5.4)
+
+## Contributors
+
+* [@MaceySoftware](https://github.com/MaceySoftware)
+
+# CSLA .NET version 5.5.3 release
+
+Bug fixes over the 5.5.2 release.
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/compare/v5.5.2...v5.5.3)
+
 # CSLA .NET version 5.5.2 release
 
 Bug fixes over the 5.5.1 release.

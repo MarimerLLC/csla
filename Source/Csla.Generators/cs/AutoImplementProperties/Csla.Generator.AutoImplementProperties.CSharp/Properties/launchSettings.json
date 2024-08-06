@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Profile 1": {
+      "commandName": "DebugRoslynComponent",
+      "targetProject": "..\\Csla.Generator.AutoImplementProperties.CSharp.TestObjects\\Csla.Generator.AutoImplementProperties.TestObjects.csproj"
+    }
+  }
+}

@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\..\Directory.Package.props" />
+  <Import Project="..\..\..\..\Directory.Package.props" />
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -15,14 +15,14 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
-    <BaseOutputPath>..\..\..\..\Bin</BaseOutputPath>
+    <BaseOutputPath>..\..\..\..\..\Bin</BaseOutputPath>
 
     <AssemblyName>Csla.Generator.AutoSerialization.CSharp</AssemblyName>
     <RootNamespace>Csla.Generator.AutoSerialization.CSharp</RootNamespace>
     <PackageId>Csla.Generator.AutoSerialization.CSharp</PackageId>
     <Description>CSLA .NET Generator AutoSerialization for CSharp</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Generators </Title>
     <PackageTags>CSLA;Roslyn;Generator</PackageTags>

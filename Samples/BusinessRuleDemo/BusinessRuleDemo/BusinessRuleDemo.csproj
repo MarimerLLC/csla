@@ -40,8 +40,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Csla, Version=8.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
-      <HintPath>..\packages\Csla.8.0.0-R24021201\lib\net48\Csla.dll</HintPath>
+    <Reference Include="Csla, Version=8.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30">
+      <HintPath>..\packages\Csla.8.0.0\lib\net48\Csla.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Csla.Windows, Version=8.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30, processorArchitecture=MSIL">
       <HintPath>..\packages\Csla.Windows.Forms.8.0.0-R24021201\lib\net462\Csla.Windows.dll</HintPath>

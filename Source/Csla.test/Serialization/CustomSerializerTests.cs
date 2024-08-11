@@ -27,6 +27,7 @@ namespace Csla.Test.Serialization
             .CustomSerializers.Add(
             new TypeMap<NonSerializableType, NonSerializableTypeSerializer>(NonSerializableTypeSerializer.CanSerialize))
             )));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
       var options = applicationContext.GetRequiredService<CslaOptions>();
@@ -48,6 +49,7 @@ namespace Csla.Test.Serialization
             .CustomSerializers.Add(
             new TypeMap<INonSerializableType, NonSerializableTypeSerializer>((t) => t.IsAssignableTo(typeof(INonSerializableType))))
             )));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -64,6 +66,7 @@ namespace Csla.Test.Serialization
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -81,6 +84,7 @@ namespace Csla.Test.Serialization
         .Serialization(o => o
           .UseMobileFormatter(o => o
             .CustomSerializers.Add(new TypeMap<NonSerializableType, BadSerializer>(BadSerializer.CanSerialize)))));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 
@@ -97,6 +101,7 @@ namespace Csla.Test.Serialization
         .Serialization(o => o
           .UseMobileFormatter(o => o
             .CustomSerializers.Add(new TypeMap<object, PocoSerializer<SerializablePoco>>(PocoSerializer<SerializablePoco>.CanSerialize)))));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();
 

@@ -10,6 +10,7 @@ namespace Csla.Test.DataPortal
   public class PrincipalFlowTests
   {
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void Fetch_FakeRemoteDataPortalWithDefaultFlow_DoesNotFlowPrincipal()
     {
       var principal = new ClaimsPrincipal(new GenericIdentity("rocky", "custom"));

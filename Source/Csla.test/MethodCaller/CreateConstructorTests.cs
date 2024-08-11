@@ -21,6 +21,7 @@ namespace Csla.Test.MethodCaller
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetService<ApplicationContext>();
       var t1 = applicationContext.CreateInstance(typeof(TestClass));
@@ -32,6 +33,7 @@ namespace Csla.Test.MethodCaller
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetService<ApplicationContext>();
       var instance = (NonPublic2)applicationContext.CreateInstanceDI(typeof(NonPublic2));
@@ -44,6 +46,7 @@ namespace Csla.Test.MethodCaller
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetService<ApplicationContext>();
       var obj = applicationContext.CreateInstanceDI(typeof(TestStruct));

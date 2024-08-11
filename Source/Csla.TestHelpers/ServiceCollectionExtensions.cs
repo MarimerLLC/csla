@@ -30,8 +30,8 @@ namespace Microsoft.Extensions.DependencyInjection
       services.TryAddTransient<IHostEnvironment, TestHostEnvironment>();
       services.AddLogging();
       services.AddCsla();
-      services.TryAddSingleton<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerStatic>();
-      services.TryAddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
+      services.AddSingleton<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerStatic>();
+      services.AddSingleton<Csla.Server.Dashboard.IDashboard, Csla.Server.Dashboard.Dashboard>();
 
       return services;
     }

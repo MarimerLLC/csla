@@ -1,7 +1,6 @@
 using Csla.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Server.Circuits;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using ProjectTracker.Blazor;
 using ProjectTracker.Blazor.Components;
 using ProjectTracker.Configuration;
@@ -31,22 +30,10 @@ builder.Services.AddHttpContextAccessor();
 // Add CSLA
 builder.Services.AddCsla(o => o
   .AddAspNetCore()
-  .AddServerSideBlazor(ssb => ssb.UseInMemoryApplicationContextManager = false));
+  .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
 
 builder.Services.AddDalMock();
 //builder.Services.AddDalEfCore();
-
-// Required by CSLA data portal controller. If using Kestrel:
-builder.Services.Configure<KestrelServerOptions>(options =>
-{
-  options.AllowSynchronousIO = true;
-});
-
-// Required by CSLA data portal controller. If using IIS:
-builder.Services.Configure<IISServerOptions>(options =>
-{
-  options.AllowSynchronousIO = true;
-});
 
 var app = builder.Build();
 

@@ -9,6 +9,7 @@
 using Csla.Configuration;
 using Csla.Core;
 using Csla.TestHelpers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,10 +34,25 @@ namespace Csla.Test.AppContext
     }
 
     [TestMethod]
-    public void UseCustomApplicationContext()
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void UseDefaultApplicationContextManager()
     {
       var services = new ServiceCollection();
-      services.AddCsla(o => o.UseContextManager<ApplicationContextManagerTls>());
+      services.AddCsla();
+      var mgrs = services.Where(s => s.ServiceType == typeof(IContextManager));
+      Assert.AreEqual(0, mgrs.Count(), "No context manager should be registered");
+
+      var serviceProvider = services.BuildServiceProvider();
+
+      var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+    }
+
+    [TestMethod]
+    public void UseCustomApplicationContextManager()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla();
+      services.AddScoped<Csla.Core.IContextManager, ApplicationContextManagerTls>();
       var serviceProvider = services.BuildServiceProvider();
 
       var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();

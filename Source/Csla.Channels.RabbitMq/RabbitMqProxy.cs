@@ -33,8 +33,14 @@ namespace Csla.Channels.RabbitMq
         throw new ArgumentNullException(nameof(options));
 
       DataPortalUrl = options.DataPortalUrl;
-      Timeout = (int)options.Timeout.TotalSeconds;
+      _timeout = (int)options.Timeout.TotalSeconds;
     }
+
+    private readonly int _timeout;
+    /// <summary>
+    /// Gets or sets the timeout value in seconds for the RabbitMQ request.
+    /// </summary>
+    public override int Timeout => _timeout;
 
     /// <summary>
     /// Gets or sets the connection to the RabbitMQ service.

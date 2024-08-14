@@ -6,11 +6,11 @@
 // <summary>Abstract data portal proxy with common data portal proxy behaviour. Implements IDataPortalProxy</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Serialization.Mobile;
+using Csla.Configuration;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
 using Csla.Server;
 using Csla.Server.Hosts.DataPortalChannel;
-using Csla.Configuration;
 
 namespace Csla.DataPortalClient
 {
@@ -44,7 +44,7 @@ namespace Csla.DataPortalClient
     /// Gets or sets the Client timeout
     /// in milliseconds (0 uses default timeout).
     /// </summary>
-    public virtual int Timeout { get; set; }
+    public virtual int Timeout { get; }
 
     /// <summary>
     /// Gets the URL address for the data portal server

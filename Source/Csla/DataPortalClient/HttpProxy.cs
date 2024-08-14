@@ -48,6 +48,10 @@ namespace Csla.Channels.Http
     /// </summary>
     protected HttpProxyOptions Options { get; set; }
 
+    /// <summary>
+    /// Gets or sets the timeout value in milliseconds for the HTTP request.
+    /// </summary>
+    public override int Timeout => Options.Timeout;
     private string VersionRoutingTag { get; set; }
 
 #nullable enable
@@ -70,14 +74,14 @@ namespace Csla.Channels.Http
       if (_httpClient == null)
       {
         var handler = GetHttpClientHandler() ?? CreateDefaultHandler();
-        
+
         _httpClient = new HttpClient(handler);
         if (Timeout > 0)
         {
           _httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
         }
       }
-      
+
       return _httpClient;
 
       HttpClientHandler CreateDefaultHandler()
@@ -92,7 +96,7 @@ namespace Csla.Channels.Http
 #endif
         if (!Options.UseTextSerialization)
         {
-            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+          handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         }
 
         return handler;
@@ -108,7 +112,7 @@ namespace Csla.Channels.Http
 #endif
     protected virtual WebClient GetWebClient()
     {
-      return new DefaultWebClient(Timeout);
+      return new DefaultWebClient(Timeout, Options.ReadWriteTimeout);
     }
 
     /// <summary>
@@ -255,17 +259,21 @@ namespace Csla.Channels.Http
 #if NET8_0_OR_GREATER
     [UnsupportedOSPlatform("browser")]
 #endif
-    private class DefaultWebClient : WebClient
+    private class DefaultWebClient(int timeout, int readWriteTimeout) : WebClient
     {
-      private int Timeout { get; set; }
-
-      public DefaultWebClient(int timeout) => Timeout = timeout;
 
       protected override WebRequest GetWebRequest(Uri address)
       {
         var req = base.GetWebRequest(address) as HttpWebRequest;
-        if (Timeout > 0)
-          req.Timeout = Timeout;
+        if (readWriteTimeout > 0)
+        {
+          req.ReadWriteTimeout = readWriteTimeout;
+        }
+
+        if (timeout > 0)
+        {
+          req.Timeout = timeout;
+        }
         return req;
       }
     }

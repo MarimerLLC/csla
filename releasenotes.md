@@ -2,6 +2,21 @@
 
 CSLA 6 is a major new version of CSLA .NET, fully supporting (and requiring) dependency injection and other features of modern .NET.
 
+## CSLA .NET version 6.2.3 release
+
+CSLA .NET version 6.2.3 fixes security issue.
+
+* Addresses [CVE-2024-28698](https://github.com/advisories/GHSA-9xhh-3m78-gvgj) via [#4133](https://github.com/MarimerLLC/csla/issues/4133)
+
+### Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/compare/v6.2.2...v6.2.3)
+
+### Contributors
+
+@MaceySoftware
+@rockfordlhotka
+
 ## CSLA .NET version 6.2.2 release
 
 CSLA .NET version 6.2.2 fixes a bug in `HttpProxy`, and replaces the 6.2.1 release that had incorrect nuget packaging.

@@ -73,16 +73,15 @@ namespace Csla.Channels.Http
     {
       protected override WebRequest GetWebRequest(Uri address)
       {
-        var webRequest = base.GetWebRequest(address) as HttpWebRequest;
+        var webRequest = base.GetWebRequest(address)!;
 
         if (webRequest is HttpWebRequest httpWebRequest)
         {
           httpWebRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-        }
-
-        if (readWriteTimeout.Milliseconds > 0)
-        {
-          webRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+          if (readWriteTimeout.Milliseconds > 0)
+          {
+            httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+          }
         }
 
         if (timeout.Milliseconds > 0)

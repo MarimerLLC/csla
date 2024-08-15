@@ -23,7 +23,7 @@ namespace Csla.Channels.RabbitMq
     /// Creates an instance of the object, initializing
     /// it to use the supplied URL.
     /// </summary>
-    /// <param name="applicationContext"></param>
+    /// <param name="applicationContext">The application context.</param>
     /// <param name="options">Proxy options</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     public RabbitMqProxy(ApplicationContext applicationContext, RabbitMqProxyOptions options)
@@ -33,14 +33,8 @@ namespace Csla.Channels.RabbitMq
         throw new ArgumentNullException(nameof(options));
 
       DataPortalUrl = options.DataPortalUrl;
-      _timeout = options.Timeout;
+      Options = options;
     }
-
-    private readonly TimeSpan _timeout;
-    /// <summary>
-    /// Gets or sets the timeout value in seconds for the RabbitMQ request.
-    /// </summary>
-    protected override TimeSpan Timeout => _timeout;
 
     /// <summary>
     /// Gets or sets the connection to the RabbitMQ service.
@@ -65,12 +59,17 @@ namespace Csla.Channels.RabbitMq
     private ProxyListener? QueueListener { get; set; }
 
     /// <summary>
+    /// Gets the proxy options.
+    /// </summary>
+    public RabbitMqProxyOptions Options { get; }
+
+    /// <summary>
     /// Method responsible for creating the Connection,
     /// Channel, ReplyQueue, and DataPortalQueueName values
     /// used for bi-directional communication.
     /// </summary>
 #if NET8_0_OR_GREATER
-    [MemberNotNull(nameof(Connection), nameof(Channel), nameof(QueueListener))]
+      [MemberNotNull(nameof(Connection), nameof(Channel), nameof(QueueListener))]
 #endif
     protected virtual void InitializeRabbitMQ()
     {
@@ -229,7 +228,7 @@ namespace Csla.Channels.RabbitMq
 
       SendMessage(QueueListener!.ReplyQueue!.QueueName, correlationId, operation, serialized);
 
-      var timeout = Task.Delay(Timeout);
+      var timeout = Task.Delay(Options.Timeout);
       if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
         throw new TimeoutException();
 

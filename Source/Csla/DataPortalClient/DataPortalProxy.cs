@@ -40,11 +40,6 @@ namespace Csla.DataPortalClient
     /// </summary>
     public virtual bool IsServerRemote => true;
 
-    /// <summary>
-    /// Gets or sets the Client timeout
-    /// (0 uses default timeout).
-    /// </summary>
-    protected virtual TimeSpan Timeout { get; }
 
     /// <summary>
     /// Gets the URL address for the data portal server

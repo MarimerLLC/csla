@@ -48,10 +48,6 @@ namespace Csla.Channels.Http
     /// </summary>
     protected HttpProxyOptions Options { get; set; }
 
-    /// <summary>
-    /// Gets or sets the timeout value for the HTTP request.
-    /// </summary>
-    protected override TimeSpan Timeout => Options.Timeout;
     private string VersionRoutingTag { get; set; }
 
 #nullable enable
@@ -76,9 +72,9 @@ namespace Csla.Channels.Http
         var handler = GetHttpClientHandler() ?? CreateDefaultHandler();
 
         _httpClient = new HttpClient(handler);
-        if (Timeout.Milliseconds > 0)
+        if (Options.Timeout.Milliseconds > 0)
         {
-          _httpClient.Timeout = Timeout;
+          _httpClient.Timeout = Options.Timeout;
         }
       }
 
@@ -264,12 +260,14 @@ namespace Csla.Channels.Http
 
       protected override WebRequest GetWebRequest(Uri address)
       {
-        var req = base.GetWebRequest(address) as HttpWebRequest;
-        if (readWriteTimeout.Milliseconds > 0)
+        var req = base.GetWebRequest(address)!;
+        if (req is HttpWebRequest httpWebRequest)
         {
-          req.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+          if (readWriteTimeout.Milliseconds > 0)
+          {
+            httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+          }
         }
-
         if (timeout.Milliseconds > 0)
         {
           req.Timeout = timeout.Milliseconds;

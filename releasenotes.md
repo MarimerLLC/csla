@@ -6,6 +6,8 @@
 
 Bug fixes over the 5.5.3 release.
 
+* Addresses [CVE-2024-28698](https://github.com/advisories/GHSA-9xhh-3m78-gvgj) via [#4133](https://github.com/MarimerLLC/csla/issues/4133)
+
 ## Change List
 
 [Changes in this release](https://github.com/MarimerLLC/csla/compare/v5.5.3...v5.5.4)

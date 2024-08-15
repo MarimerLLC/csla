@@ -72,7 +72,7 @@ function UpdateNuSpecRepository( $nuSpecFilePath )
 {
     # Get Git info
     $commit = git rev-parse HEAD
-    $origin = git config --get remote.origin.url
+    $origin = git config --get remote.marimer.url
 
     Write-Host "Dynamically setting NuSpec repository:" -ForegroundColor Yellow
     Write-Host "      origin: $origin" -ForegroundColor Yellow

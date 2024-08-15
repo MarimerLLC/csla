@@ -83,7 +83,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
       requiredNamespaces = GetRequiredNamespaces(typeDefinition);
 
-      foreach (string requiredNamespace in requiredNamespaces)
+      foreach (string requiredNamespace in requiredNamespaces.Where(s => !string.IsNullOrWhiteSpace(s)))
       {
         textWriter.Write("using ");
         textWriter.Write(requiredNamespace);

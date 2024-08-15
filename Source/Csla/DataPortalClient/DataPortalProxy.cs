@@ -42,9 +42,9 @@ namespace Csla.DataPortalClient
 
     /// <summary>
     /// Gets or sets the Client timeout
-    /// in milliseconds (0 uses default timeout).
+    /// (0 uses default timeout).
     /// </summary>
-    public virtual int Timeout { get; }
+    protected virtual TimeSpan Timeout { get; }
 
     /// <summary>
     /// Gets the URL address for the data portal server

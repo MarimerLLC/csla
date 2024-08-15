@@ -37,14 +37,14 @@ namespace Csla.Channels.Http
     public Func<IServiceProvider, HttpClient> HttpClientFactory { get; set; } = DefaultHttpFactory;
 
     /// <summary>
-    /// Gets or sets the timeout value in milliseconds for the HTTP request.
+    /// Gets or sets the timeout value for the HTTP request.
     /// </summary>
-    public int Timeout { get; set; }
+    public TimeSpan Timeout { get; set; }
 
     /// <summary>
-    /// Gets or sets the read-write timeout value in milliseconds for the HTTP request.
+    /// Gets or sets the read-write timeout value for the HTTP request.
     /// </summary>
-    public int ReadWriteTimeout { get; set; }
+    public TimeSpan ReadWriteTimeout { get; set; }
 
     /// <summary>
     /// Default <see cref="HttpClientFactory"/> implementation.

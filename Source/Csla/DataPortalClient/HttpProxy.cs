@@ -49,9 +49,9 @@ namespace Csla.Channels.Http
     protected HttpProxyOptions Options { get; set; }
 
     /// <summary>
-    /// Gets or sets the timeout value in milliseconds for the HTTP request.
+    /// Gets or sets the timeout value for the HTTP request.
     /// </summary>
-    public override int Timeout => Options.Timeout;
+    protected override TimeSpan Timeout => Options.Timeout;
     private string VersionRoutingTag { get; set; }
 
 #nullable enable
@@ -76,9 +76,9 @@ namespace Csla.Channels.Http
         var handler = GetHttpClientHandler() ?? CreateDefaultHandler();
 
         _httpClient = new HttpClient(handler);
-        if (Timeout > 0)
+        if (Timeout.Milliseconds > 0)
         {
-          _httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
+          _httpClient.Timeout = Timeout;
         }
       }
 
@@ -112,7 +112,7 @@ namespace Csla.Channels.Http
 #endif
     protected virtual WebClient GetWebClient()
     {
-      return new DefaultWebClient(Timeout, Options.ReadWriteTimeout);
+      return new DefaultWebClient(Options.Timeout, Options.ReadWriteTimeout);
     }
 
     /// <summary>
@@ -259,20 +259,20 @@ namespace Csla.Channels.Http
 #if NET8_0_OR_GREATER
     [UnsupportedOSPlatform("browser")]
 #endif
-    private class DefaultWebClient(int timeout, int readWriteTimeout) : WebClient
+    private class DefaultWebClient(TimeSpan timeout, TimeSpan readWriteTimeout) : WebClient
     {
 
       protected override WebRequest GetWebRequest(Uri address)
       {
         var req = base.GetWebRequest(address) as HttpWebRequest;
-        if (readWriteTimeout > 0)
+        if (readWriteTimeout.Milliseconds > 0)
         {
-          req.ReadWriteTimeout = readWriteTimeout;
+          req.ReadWriteTimeout = readWriteTimeout.Milliseconds;
         }
 
-        if (timeout > 0)
+        if (timeout.Milliseconds > 0)
         {
-          req.Timeout = timeout;
+          req.Timeout = timeout.Milliseconds;
         }
         return req;
       }

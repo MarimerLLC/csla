@@ -33,14 +33,14 @@ namespace Csla.Channels.RabbitMq
         throw new ArgumentNullException(nameof(options));
 
       DataPortalUrl = options.DataPortalUrl;
-      _timeout = (int)options.Timeout.TotalSeconds;
+      _timeout = options.Timeout;
     }
 
-    private readonly int _timeout;
+    private readonly TimeSpan _timeout;
     /// <summary>
     /// Gets or sets the timeout value in seconds for the RabbitMQ request.
     /// </summary>
-    public override int Timeout => _timeout;
+    protected override TimeSpan Timeout => _timeout;
 
     /// <summary>
     /// Gets or sets the connection to the RabbitMQ service.
@@ -229,7 +229,7 @@ namespace Csla.Channels.RabbitMq
 
       SendMessage(QueueListener!.ReplyQueue!.QueueName, correlationId, operation, serialized);
 
-      var timeout = Task.Delay(Timeout * 1000);
+      var timeout = Task.Delay(Timeout);
       if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
         throw new TimeoutException();
 

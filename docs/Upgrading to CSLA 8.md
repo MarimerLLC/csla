@@ -62,7 +62,7 @@ builder.Services.Configure<IISServerOptions>(options =>
 });
 ```
 
-CSLA 8 supports a new state management subsyste for Blazor 8. This subsystem is designed to streamline the process of using the new InteractiveAuto render mode, and other new render modes, in Blazor 8. It helps ensure that `LocalContext`, `ClientContext`, and the current user identity are all available to you on server-static pages, server-interactive pages, and WebAssembly-interactive pages. As a result, you can also use the InteractiveAuto render mode, because that mode uses those other render modes on your behalf.
+CSLA 8 supports a new state management subsystem for Blazor 8. This subsystem is designed to streamline the process of using the new InteractiveAuto render mode, and other new render modes, in Blazor 8. It helps ensure that `LocalContext`, `ClientContext`, and the current user identity are all available to you on server-static pages, server-interactive pages, and WebAssembly-interactive pages. As a result, you can also use the InteractiveAuto render mode, because that mode uses those other render modes on your behalf.
 
 You must do some configuration if your Blazor 8 app includes server-side and client-side page render modes. If your app is server-side only, the new subsystem is automatically used.
 

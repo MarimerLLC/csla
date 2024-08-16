@@ -78,13 +78,13 @@ namespace Csla.Channels.Http
         if (webRequest is HttpWebRequest httpWebRequest)
         {
           httpWebRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-          if (readWriteTimeout.Milliseconds > 0)
+          if (readWriteTimeout > TimeSpan.Zero)
           {
             httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
           }
         }
 
-        if (timeout.Milliseconds > 0)
+        if (timeout > TimeSpan.Zero)
         {
           webRequest.Timeout = timeout.Milliseconds;
         }

@@ -61,7 +61,7 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Gets the proxy options.
     /// </summary>
-    public RabbitMqProxyOptions Options { get; }
+    private RabbitMqProxyOptions Options { get; }
 
     /// <summary>
     /// Method responsible for creating the Connection,
@@ -69,7 +69,7 @@ namespace Csla.Channels.RabbitMq
     /// used for bi-directional communication.
     /// </summary>
 #if NET8_0_OR_GREATER
-      [MemberNotNull(nameof(Connection), nameof(Channel), nameof(QueueListener))]
+    [MemberNotNull(nameof(Connection), nameof(Channel), nameof(QueueListener))]
 #endif
     protected virtual void InitializeRabbitMQ()
     {

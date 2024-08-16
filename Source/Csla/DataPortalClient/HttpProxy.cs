@@ -72,7 +72,7 @@ namespace Csla.Channels.Http
         var handler = GetHttpClientHandler() ?? CreateDefaultHandler();
 
         _httpClient = new HttpClient(handler);
-        if (Options.Timeout.Milliseconds > 0)
+        if (Options.Timeout > TimeSpan.Zero)
         {
           _httpClient.Timeout = Options.Timeout;
         }
@@ -263,12 +263,12 @@ namespace Csla.Channels.Http
         var req = base.GetWebRequest(address)!;
         if (req is HttpWebRequest httpWebRequest)
         {
-          if (readWriteTimeout.Milliseconds > 0)
+          if (readWriteTimeout > TimeSpan.Zero)
           {
             httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
           }
         }
-        if (timeout.Milliseconds > 0)
+        if (timeout > TimeSpan.Zero)
         {
           req.Timeout = timeout.Milliseconds;
         }

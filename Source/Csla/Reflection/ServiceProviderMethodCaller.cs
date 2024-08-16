@@ -126,6 +126,7 @@ namespace Csla.Reflection
         var level = 0;
         while (tt != null)
         {
+          ///TODO:Luiz preciso controlar as regras do github https://github.com/MarimerLLC/csla/issues/4090#issuecomment-2289401286
           var ttList = tt.GetMethods(_bindingAttr).Where(m => m.GetCustomAttributes<T>().Any());
           candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           tt = tt.BaseType;
@@ -201,7 +202,7 @@ namespace Csla.Reflection
                 matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = score + item.Score });
             }
           }
-          if (matches.Count == 0 && 
+          if (matches.Count == 0 &&
              (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute)
              || typeOfOperation == typeof(UpdateChildAttribute)))
           {

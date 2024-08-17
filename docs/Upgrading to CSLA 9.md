@@ -174,3 +174,66 @@ CSLA 9 supports the use of nullable reference types in your code. This means tha
 Supporting nullable types means that some APIs have changed to support nullable types.
 
 * The `User` and `Principal` properties of `ApplicationContext` no longer return null
+
+#### Using Timeout in `HttpProxy` and `HttpCompressionProxy`
+
+##### Overview
+
+The `HttpProxy` and `HttpCompressionProxy` classes now support configuring timeouts through the `HttpProxyOptions` class. This allows for more flexible and centralized configuration of HTTP request timeouts.
+
+##### Configuration
+
+To configure the timeout for `HttpProxy` and `HttpCompressionProxy`, you need to set the `Timeout` and `ReadWriteTimeout` properties in the `HttpProxyOptions` class.
+
+##### Example
+
+Below is an example of how to configure and use the timeout settings in `HttpProxy` and `HttpCompressionProxy`.
+
+###### Step 1: Configure `HttpProxyOptions`
+
+```csharp
+using Csla.Channels.Http; 
+using Microsoft.Extensions.DependencyInjection; 
+using System; using System.Net.Http;
+public class Startup {
+  public void ConfigureServices(IServiceCollection services) 
+  {
+    services.AddSingleton(); 
+    services.AddSingleton(new HttpProxyOptions { Timeout = TimeSpan.FromSeconds(30), ReadWriteTimeout = TimeSpan.FromSeconds(30) }); 
+    }
+  }
+}
+
+```
+
+###### Step 2: Use `HttpProxy` or `HttpCompressionProxy`
+
+```csharp
+using Csla.Channels.Http;
+using System.Net.Http;
+public class MyService 
+{
+    private readonly HttpProxy _httpProxy; private readonly HttpCompressionProxy _httpCompressionProxy;
+    public MyService(HttpProxy httpProxy, HttpCompressionProxy httpCompressionProxy)
+    {
+        _httpProxy = httpProxy;
+        _httpCompressionProxy = httpCompressionProxy;
+    }
+
+    public async Task UseHttpProxyAsync(byte[] data, string operation, string routingToken)
+    {
+        var result = await _httpProxy.CallDataPortalServer(data, operation, routingToken, false);
+        // Handle result
+    }
+
+    public async Task UseHttpCompressionProxyAsync(byte[] data, string operation, string routingToken)
+    {
+        var result = await _httpCompressionProxy.CallDataPortalServer(data, operation, routingToken, false);
+        // Handle result
+    }
+}
+```
+
+##### Summary
+
+By configuring the `HttpProxyOptions` class, you can easily set the timeout values for `HttpProxy` and `HttpCompressionProxy`. This approach centralizes the configuration and makes it easier to manage timeout settings across your application.

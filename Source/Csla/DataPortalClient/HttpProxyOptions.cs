@@ -37,7 +37,7 @@ namespace Csla.Channels.Http
     public Func<IServiceProvider, HttpClient> HttpClientFactory { get; set; } = DefaultHttpFactory;
 
     /// <summary>
-    /// Gets or sets the timeout value for the HTTP request (only sync calls).
+    /// Gets or sets the timeout value for the HTTP request.
     /// </summary>
     public TimeSpan Timeout { get; set; }
 

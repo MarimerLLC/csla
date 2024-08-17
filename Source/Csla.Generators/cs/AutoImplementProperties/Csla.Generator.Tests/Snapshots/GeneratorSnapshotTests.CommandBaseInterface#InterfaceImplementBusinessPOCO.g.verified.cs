@@ -3,6 +3,7 @@
 #nullable enable
 using System;
 using Csla;
+using System.ComponentModel.DataAnnotations;
 
 namespace Csla.Generator.AutoImplementProperties.TestObjects;
 

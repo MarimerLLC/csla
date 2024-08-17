@@ -9,6 +9,11 @@ public class ExtractedAttributeDefinition : IEquatable<ExtractedAttributeDefinit
   public string AttributeName { get; set; }
 
   /// <summary>
+  /// The namespace of the attribute.
+  /// </summary>
+  public string AttributeNamespace { get; set; }
+
+  /// <summary>
   /// A list of arguments passed to the attribute's constructor.
   /// </summary>
   public List<object> ConstructorArguments { get; set; } = new List<object>();
@@ -28,7 +33,7 @@ public class ExtractedAttributeDefinition : IEquatable<ExtractedAttributeDefinit
       return false;
     if (ReferenceEquals(this, other))
       return true;
-    return AttributeName == other.AttributeName &&
+    return AttributeName == other.AttributeName && AttributeNamespace == other.AttributeNamespace &&
            ConstructorArguments.SequenceEqual(other.ConstructorArguments) &&
            NamedProperties.SequenceEqual(other.NamedProperties);
   }
@@ -56,6 +61,7 @@ public class ExtractedAttributeDefinition : IEquatable<ExtractedAttributeDefinit
     unchecked
     {
       int hashCode = AttributeName != null ? AttributeName.GetHashCode() : 0;
+      hashCode = (hashCode * 397) ^ (AttributeNamespace != null ? AttributeNamespace.GetHashCode() : 0);
       hashCode = (hashCode * 397) ^ (ConstructorArguments != null ? ConstructorArguments.GetHashCode() : 0);
       hashCode = (hashCode * 397) ^ (NamedProperties != null ? NamedProperties.GetHashCode() : 0);
       return hashCode;

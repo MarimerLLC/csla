@@ -72,25 +72,21 @@ namespace Csla.Runtime
     /// <typeparam name="TKey">Key of cached item from dictionary.</typeparam>
     /// <typeparam name="TValue">Value of cached item from dictionary.</typeparam>
     /// <exception cref="ArgumentNullException">Throws if cached items dictionary was not provided.</exception>
-    public static void RemoveFromCache<TKey, TValue>(
-      IDictionary<TKey, Tuple<string, TValue>> dictionary,
-      AssemblyLoadContext context,
-      bool usingConcurrentDictionary = false)
+    public static void RemoveFromCache<TKey, TValue>(IDictionary<TKey, Tuple<string, TValue>?> dictionary, AssemblyLoadContext? context, bool usingConcurrentDictionary = false) where TKey: notnull
     {
       if (dictionary == null)
-      {
         throw new ArgumentNullException("IDictionary<T, Tuple<string, TC>>");
-      }
 
       if (context == null)
-      {
         return;
-      }
 
       var obsoleteCacheKeys = new List<TKey>();
 
       foreach (var (cacheKey, cacheInstance) in dictionary)
       {
+        if (cacheInstance is null)
+          continue;
+        
         if (cacheInstance.Item1 == context.Name)
         {
           obsoleteCacheKeys.Add(cacheKey);

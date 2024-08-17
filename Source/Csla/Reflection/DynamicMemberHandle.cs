@@ -6,36 +6,44 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
+using System.Globalization;
 using System.Reflection;
 
 namespace Csla.Reflection
 {
   internal class DynamicMemberHandle
   {
-    public string MemberName { get; private set; }
-    public Type MemberType { get; private set; }
-    public DynamicMemberGetDelegate DynamicMemberGet { get; private set; }
-    public DynamicMemberSetDelegate DynamicMemberSet { get; private set; }
+    public string MemberName { get; }
+    public Type MemberType { get; }
+    public DynamicMemberGetDelegate DynamicMemberGet { get; }
+    public DynamicMemberSetDelegate DynamicMemberSet { get; }
 
-    //public string MemberFullName
-    //{
-    //  get { return MemberType + "." + MemberName; }
-    //}
-
+    /// <summary>
+    /// Initializes a new instance of <see cref="DynamicMemberHandle"/>-object.
+    /// </summary>
+    /// <param name="memberName">The member name.</param>
+    /// <param name="memberType">Type of the member</param>
+    /// <param name="dynamicMemberGet">Delegate to invoke the get of the member dynamically.</param>
+    /// <param name="dynamicMemberSet">Delegate to invoke the set of the member dynamically.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="memberType"/>, <paramref name="dynamicMemberGet"/> or <paramref name="dynamicMemberSet"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="memberName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public DynamicMemberHandle(string memberName, Type memberType, DynamicMemberGetDelegate dynamicMemberGet, DynamicMemberSetDelegate dynamicMemberSet)
     {
+      if (string.IsNullOrWhiteSpace(memberName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(memberName)), nameof(memberName));
+
       MemberName = memberName;
-      MemberType = memberType;
-      DynamicMemberGet = dynamicMemberGet;
-      DynamicMemberSet = dynamicMemberSet;
+      MemberType = memberType ?? throw new ArgumentNullException(nameof(memberType));
+      DynamicMemberGet = dynamicMemberGet ?? throw new ArgumentNullException(nameof(dynamicMemberGet));
+      DynamicMemberSet = dynamicMemberSet ?? throw new ArgumentNullException(nameof(dynamicMemberSet));
     }
 
     public DynamicMemberHandle(PropertyInfo info) :
       this(
             info.Name,
             info.PropertyType,
-            DynamicMethodHandlerFactory.CreatePropertyGetter(info),
-            DynamicMethodHandlerFactory.CreatePropertySetter(info))
+            DynamicMethodHandlerFactory.CreatePropertyGetter(info) ?? throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a getter.", info.Name, info.DeclaringType)),
+            DynamicMethodHandlerFactory.CreatePropertySetter(info) ?? throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a setter.", info.Name, info.DeclaringType)))
     { }
     public DynamicMemberHandle(FieldInfo info) :
       this(

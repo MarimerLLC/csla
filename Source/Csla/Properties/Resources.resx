@@ -505,4 +505,7 @@
   <data name="TransactionScopeTransactionNotSupportedException" xml:space="preserve">
     <value>Transactions with TransactionTypes.TransactionScope are not supported in the browser platform</value>
   </data>
+  <data name="MemberInfoDeclaringTypeMustBeNotNull" xml:space="preserve">
+    <value>The declaring type of {0} must not be null.</value>
+  </data>
 </root>

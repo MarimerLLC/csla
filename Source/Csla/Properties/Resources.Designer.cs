@@ -565,6 +565,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The declaring type of {0} must not be null..
+        /// </summary>
+        public static string MemberInfoDeclaringTypeMustBeNotNull {
+            get {
+                return ResourceManager.GetString("MemberInfoDeclaringTypeMustBeNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member not found on object ({0}).
         /// </summary>
         public static string MemberNotFoundException {

@@ -16,7 +16,7 @@ namespace Csla.Server
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false)]
   public class ObjectFactoryAttribute : Attribute
   {
-    internal static ObjectFactoryAttribute GetObjectFactoryAttribute(Type objectType)
+    internal static ObjectFactoryAttribute? GetObjectFactoryAttribute(Type objectType)
     {
       var result = objectType.GetCustomAttributes(typeof(ObjectFactoryAttribute), true);
       if (result != null && result.Length > 0)

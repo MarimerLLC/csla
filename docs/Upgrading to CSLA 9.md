@@ -192,17 +192,15 @@ Below is an example of how to configure and use the timeout settings in `HttpPro
 ###### Step 1: Configure `HttpProxyOptions`
 
 ```csharp
-using Csla.Channels.Http; 
-using Microsoft.Extensions.DependencyInjection; 
-using System; using System.Net.Http;
-public class Startup {
-  public void ConfigureServices(IServiceCollection services) 
-  {
-    services.AddSingleton(); 
-    services.AddSingleton(new HttpProxyOptions { Timeout = TimeSpan.FromSeconds(30), ReadWriteTimeout = TimeSpan.FromSeconds(30) }); 
-    }
-  }
-}
+services.AddCsla(
+    o => o.DataPortal(
+        o2 => o2.AddClientSideDataPortal(
+            cso => cso.UseHttpProxy(
+                hpo => hpo.WithTimeout(TimeSpan.FromSeconds(30)).WithReadWriteTimeout(TimeSpan.FromSeconds(30))
+            )
+        )
+    )
+);
 
 ```
 

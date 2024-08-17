@@ -189,7 +189,7 @@ To configure the timeout for `HttpProxy` and `HttpCompressionProxy`, you need to
 
 Below is an example of how to configure and use the timeout settings in `HttpProxy` and `HttpCompressionProxy`.
 
-###### Step 1: Configure `HttpProxyOptions`
+###### Configure `HttpProxyOptions`
 
 ```csharp
 services.AddCsla(
@@ -204,33 +204,6 @@ services.AddCsla(
 
 ```
 
-###### Step 2: Use `HttpProxy` or `HttpCompressionProxy`
-
-```csharp
-using Csla.Channels.Http;
-using System.Net.Http;
-public class MyService 
-{
-    private readonly HttpProxy _httpProxy; private readonly HttpCompressionProxy _httpCompressionProxy;
-    public MyService(HttpProxy httpProxy, HttpCompressionProxy httpCompressionProxy)
-    {
-        _httpProxy = httpProxy;
-        _httpCompressionProxy = httpCompressionProxy;
-    }
-
-    public async Task UseHttpProxyAsync(byte[] data, string operation, string routingToken)
-    {
-        var result = await _httpProxy.CallDataPortalServer(data, operation, routingToken, false);
-        // Handle result
-    }
-
-    public async Task UseHttpCompressionProxyAsync(byte[] data, string operation, string routingToken)
-    {
-        var result = await _httpCompressionProxy.CallDataPortalServer(data, operation, routingToken, false);
-        // Handle result
-    }
-}
-```
 
 ##### Summary
 

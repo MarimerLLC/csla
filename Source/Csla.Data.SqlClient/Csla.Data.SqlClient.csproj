@@ -9,6 +9,7 @@
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET Microsoft.Data.SqlClient</Title>
     <PackageTags>CSLA;SqlClient;Sql Server</PackageTags>
   </PropertyGroup>

@@ -126,7 +126,11 @@ namespace Csla.Reflection
         var level = 0;
         while (tt != null)
         {
-          var ttList = tt.GetMethods(_bindingAttr).Where(m => m.GetCustomAttributes<T>().Any());
+          var ttList = tt.GetMethods(_bindingAttr).Where(m => m.GetCustomAttributes<T>(true).Any());
+          if (level < 0)
+          {
+            ttList = ttList.Where(m => !m.IsPrivate);
+          }
           candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           tt = tt.BaseType;
           level--;
@@ -201,7 +205,7 @@ namespace Csla.Reflection
                 matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = score + item.Score });
             }
           }
-          if (matches.Count == 0 && 
+          if (matches.Count == 0 &&
              (typeOfOperation == typeof(DeleteSelfAttribute) || typeOfOperation == typeof(DeleteSelfChildAttribute)
              || typeOfOperation == typeof(UpdateChildAttribute)))
           {

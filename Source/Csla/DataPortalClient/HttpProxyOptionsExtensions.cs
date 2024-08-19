@@ -82,5 +82,38 @@ namespace Csla.Channels.Http
       source.HttpClientFactory = factory;
       return source;
     }
+
+    /// <summary>
+    /// Configures the <see cref="HttpProxyOptions.Timeout"/>.
+    /// </summary>
+    /// <param name="source">The options object.</param>
+    /// <param name="timeout">The timeout value to set.</param>
+    /// <returns>The options object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    public static HttpProxyOptions WithTimeout(this HttpProxyOptions source, TimeSpan timeout)
+    {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
+      source.Timeout = timeout;
+      return source;
+    }
+
+    /// <summary>
+    /// Configures the <see cref="HttpProxyOptions.ReadWriteTimeout"/>.
+    /// </summary>
+    /// <param name="source">The options object.</param>
+    /// <param name="readwriteTimeout">The read-write timeout value to set.</param>
+    /// <returns>The options object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    public static HttpProxyOptions WithReadWriteTimeout(this HttpProxyOptions source, TimeSpan readwriteTimeout)
+    {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
+      source.ReadWriteTimeout = readwriteTimeout;
+      return source;
+    }
+
   }
 }

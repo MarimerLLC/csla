@@ -61,7 +61,37 @@ public class HttpProxyOptionsExtensionsTests
     };
 
     options.Should().BeEquivalentTo(expectedOptions);
-    
+
     static HttpClient httpClientFactory(IServiceProvider sp) => new();
+  }
+
+  [TestMethod]
+  public void WithTimeout_ShouldSetTheTimeoutAsExpected()
+  {
+    var options = new HttpProxyOptions();
+    var timeout = TimeSpan.FromSeconds(30);
+    options.WithTimeout(timeout);
+
+    var expectedOptions = new HttpProxyOptions
+    {
+      Timeout = timeout
+    };
+
+    options.Should().BeEquivalentTo(expectedOptions);
+  }
+
+  [TestMethod]
+  public void WithReadWriteTimeout_ShouldSetTheReadWriteTimeoutAsExpected()
+  {
+    var options = new HttpProxyOptions();
+    var readWriteTimeout = TimeSpan.FromSeconds(60);
+    options.WithReadWriteTimeout(readWriteTimeout);
+
+    var expectedOptions = new HttpProxyOptions
+    {
+      ReadWriteTimeout = readWriteTimeout
+    };
+
+    options.Should().BeEquivalentTo(expectedOptions);
   }
 }

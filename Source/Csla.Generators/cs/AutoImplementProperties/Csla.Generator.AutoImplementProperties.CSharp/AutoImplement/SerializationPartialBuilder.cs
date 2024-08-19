@@ -83,7 +83,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
       requiredNamespaces = GetRequiredNamespaces(typeDefinition);
 
-      foreach (string requiredNamespace in requiredNamespaces)
+      foreach (string requiredNamespace in requiredNamespaces.Where(s => !string.IsNullOrWhiteSpace(s)))
       {
         textWriter.Write("using ");
         textWriter.Write(requiredNamespace);
@@ -105,6 +105,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
         requiredNamespaces.Add(propertyDefinition.TypeDefinition.TypeNamespace);
+        foreach (var item in propertyDefinition.AttributeDefinitions)
+        {
+          requiredNamespaces.Add(item.AttributeNamespace);
+        }
       }
 
       requiredNamespaces.Remove(typeDefinition.Namespace);
@@ -162,7 +166,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       foreach (ExtractedAttributeDefinition attributeDefinition in propertyDefinition.AttributeDefinitions)
       {
         var constructorArguments = string.Join(", ", attributeDefinition.ConstructorArguments);
-        var separator = attributeDefinition.ConstructorArguments.Any() ? "," : "";
+        var separator = attributeDefinition.ConstructorArguments.Any() && attributeDefinition.NamedProperties.Any() ? "," : "";
         var namedProperties = string.Join(", ", attributeDefinition.NamedProperties.Select(kv => $"{kv.Key}={kv.Value}"));
         textWriter.WriteLine($"[{attributeDefinition.AttributeName}({constructorArguments}{separator} {namedProperties})]");
       }

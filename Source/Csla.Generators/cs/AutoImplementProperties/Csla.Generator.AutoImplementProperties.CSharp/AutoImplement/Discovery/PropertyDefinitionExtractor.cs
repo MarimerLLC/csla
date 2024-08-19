@@ -128,10 +128,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
           {
             var namespaceName = namespaceSymbol.ToDisplayString();
             attributeDefinition.AttributeName = $"{namespaceName}.{attributeDefinition.AttributeName}";
-          }
 
+            attributeDefinition.AttributeNamespace = namespaceName;
+          }
           // Add named properties
-          foreach (var argument in attribute.ArgumentList.Arguments)
+          foreach (var argument in attribute.ArgumentList?.Arguments ?? [])
           {
             if (argument.NameEquals != null)
             {

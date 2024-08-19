@@ -62,14 +62,14 @@ namespace Csla.Channels.Http
     /// </summary>
     protected override WebClient GetWebClient()
     {
-      var client = new CompressionWebClient(Timeout);
+      var client = new CompressionWebClient(Options.Timeout, Options.ReadWriteTimeout);
       client.Headers.Set("Accept", "*/*");
       client.Headers.Set("Accept-Encoding", "gzip,deflate,*");
       return client;
     }
 
 #pragma warning disable SYSLIB0014
-    private class CompressionWebClient(int timeout) : WebClient
+    private class CompressionWebClient(TimeSpan timeout, TimeSpan readWriteTimeout) : WebClient
     {
       protected override WebRequest GetWebRequest(Uri address)
       {
@@ -78,11 +78,15 @@ namespace Csla.Channels.Http
         if (webRequest is HttpWebRequest httpWebRequest)
         {
           httpWebRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+          if (readWriteTimeout > TimeSpan.Zero)
+          {
+            httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+          }
         }
 
-        if (timeout > 0)
+        if (timeout > TimeSpan.Zero)
         {
-          webRequest.Timeout = timeout;
+          webRequest.Timeout = timeout.Milliseconds;
         }
 
         return webRequest;

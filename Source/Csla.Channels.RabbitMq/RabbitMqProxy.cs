@@ -23,7 +23,7 @@ namespace Csla.Channels.RabbitMq
     /// Creates an instance of the object, initializing
     /// it to use the supplied URL.
     /// </summary>
-    /// <param name="applicationContext"></param>
+    /// <param name="applicationContext">The application context.</param>
     /// <param name="options">Proxy options</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
     public RabbitMqProxy(ApplicationContext applicationContext, RabbitMqProxyOptions options)
@@ -33,7 +33,7 @@ namespace Csla.Channels.RabbitMq
         throw new ArgumentNullException(nameof(options));
 
       DataPortalUrl = options.DataPortalUrl;
-      Timeout = (int)options.Timeout.TotalSeconds;
+      Options = options;
     }
 
     /// <summary>
@@ -60,6 +60,11 @@ namespace Csla.Channels.RabbitMq
 
     /// <inheritdoc />
     public override string DataPortalUrl { get; }
+
+    /// <summary>
+    /// Gets the proxy options.
+    /// </summary>
+    private RabbitMqProxyOptions Options { get; }
 
     /// <summary>
     /// Method responsible for creating the Connection,
@@ -226,7 +231,7 @@ namespace Csla.Channels.RabbitMq
 
       SendMessage(QueueListener!.ReplyQueue!.QueueName, correlationId, operation, serialized);
 
-      var timeout = Task.Delay(Timeout * 1000);
+      var timeout = Task.Delay(Options.Timeout);
       if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
         throw new TimeoutException();
 

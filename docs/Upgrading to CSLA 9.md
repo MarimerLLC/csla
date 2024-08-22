@@ -165,11 +165,44 @@ public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);
 
 The RabbitMQ data portal channel has been updated to work with dependency injection. You can explore the `RabbitMqExample` project in the `Samples` folder for an example of how to use the RabbitMQ data portal channel.
 
-## Nullable Reference Types
+## Using Timeout in `HttpProxy` and `HttpCompressionProxy`
+
+### Overview
+
+The `HttpProxy` and `HttpCompressionProxy` classes now support configuring timeouts through the `HttpProxyOptions` class. This allows for more flexible and centralized configuration of HTTP request timeouts.
+
+### Configuration
+
+To configure the timeout for `HttpProxy` and `HttpCompressionProxy`, you need to set the `Timeout` and `ReadWriteTimeout` properties in the `HttpProxyOptions` class.
+
+### Example
+
+Below is an example of how to configure and use the timeout settings in `HttpProxy` and `HttpCompressionProxy`.
+
+### Configure `HttpProxyOptions`
+
+```csharp
+services.AddCsla(
+    o => o.DataPortal(
+        o2 => o2.AddClientSideDataPortal(
+            cso => cso.UseHttpProxy(
+                hpo => hpo.WithTimeout(TimeSpan.FromSeconds(30)).WithReadWriteTimeout(TimeSpan.FromSeconds(30))
+            )
+        )
+    )
+);
+
+```
+
+### Summary
+
+By configuring the `HttpProxyOptions` class, you can easily set the timeout values for `HttpProxy` and `HttpCompressionProxy`. This approach centralizes the configuration and makes it easier to manage timeout settings across your application.
+
+# Nullable Reference Types
 
 CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values or returns `null`.
 
-### API Changes
+## API Changes
 
 Supporting nullable types means that some APIs have changed to support nullable types.
 

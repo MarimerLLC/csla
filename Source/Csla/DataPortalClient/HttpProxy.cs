@@ -71,14 +71,14 @@ namespace Csla.Channels.Http
       if (_httpClient == null)
       {
         var handler = GetHttpClientHandler() ?? CreateDefaultHandler();
-        
+
         _httpClient = new HttpClient(handler);
-        if (Timeout > 0)
+        if (Options.Timeout > TimeSpan.Zero)
         {
-          _httpClient.Timeout = TimeSpan.FromMilliseconds(Timeout);
+          _httpClient.Timeout = Options.Timeout;
         }
       }
-      
+
       return _httpClient;
 
       HttpClientHandler CreateDefaultHandler()
@@ -93,7 +93,7 @@ namespace Csla.Channels.Http
 #endif
         if (!Options.UseTextSerialization)
         {
-            handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+          handler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
         }
 
         return handler;
@@ -109,7 +109,7 @@ namespace Csla.Channels.Http
 #endif
     protected virtual WebClient GetWebClient()
     {
-      return new DefaultWebClient(Timeout);
+      return new DefaultWebClient(Options.Timeout, Options.ReadWriteTimeout);
     }
 
     /// <summary>
@@ -256,22 +256,24 @@ namespace Csla.Channels.Http
 #if NET8_0_OR_GREATER
     [UnsupportedOSPlatform("browser")]
 #endif
-    private class DefaultWebClient : WebClient
+    private class DefaultWebClient(TimeSpan timeout, TimeSpan readWriteTimeout) : WebClient
     {
-      private int Timeout { get; set; }
-
-      public DefaultWebClient(int timeout) => Timeout = timeout;
 
       protected override WebRequest GetWebRequest(Uri address)
       {
-        var request = base.GetWebRequest(address);
-        if (request is HttpWebRequest webRequest)
+        var req = base.GetWebRequest(address)!;
+        if (req is HttpWebRequest httpWebRequest)
         {
-          if (Timeout > 0)
-            webRequest.Timeout = Timeout;
+          if (readWriteTimeout > TimeSpan.Zero)
+          {
+            httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+          }
         }
-
-        return request;
+        if (timeout > TimeSpan.Zero)
+        {
+          req.Timeout = timeout.Milliseconds;
+        }
+        return req;
       }
     }
 #pragma warning restore SYSLIB0014

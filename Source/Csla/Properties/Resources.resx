@@ -508,4 +508,7 @@
   <data name="MemberInfoDeclaringTypeMustBeNotNull" xml:space="preserve">
     <value>The declaring type of {0} must not be null.</value>
   </data>
+  <data name="NullValueInCompareToRule" xml:space="preserve">
+    <value>The provided rule value is null (property: {0}) and can not be used for comparison in the {1} rule.</value>
+  </data>
 </root>

@@ -167,7 +167,7 @@ The RabbitMQ data portal channel has been updated to work with dependency inject
 
 ## Nullable Reference Types
 
-CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values.
+CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values or returns `null`.
 
 ### API Changes
 
@@ -185,3 +185,6 @@ Supporting nullable types means that some APIs have changed to support nullable 
   * Now has a constructor requiring a `MethodInfo` parameter
   * Property `MethodInfo` property set removed and replaced by the constructor
 * `Csla.Reflection.DynamicMemberHandle` does not accept any `null` parameters now. That includes having no get/set for a property/field.
+* `Csla.Rules.BrokenRule` can not be instantiated by user code. It wasn't useable before because all property setters were internal.
+* `Csla.Rules.BrokenRulesCollection` does not accept any null, empty or white space values for methods which accepts a string for a property name.
+* `Csla.Rules.IRuleContext.Add*Result(...)` methods now throw an `ArgumentException` when the provided `string description` is `IsNullOrWhiteSpace`.

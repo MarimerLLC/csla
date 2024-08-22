@@ -754,6 +754,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The provided rule value is null (property: {0}) and can not be used for comparison in the {1} rule..
+        /// </summary>
+        public static string NullValueInCompareToRule {
+            get {
+                return ResourceManager.GetString("NullValueInCompareToRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can not set property if data object is not null.
         /// </summary>
         public static string ObjectNotNull {

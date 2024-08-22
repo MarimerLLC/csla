@@ -20,19 +20,19 @@ namespace Csla.Rules
   public class BusinessRuleManager
   {
 #if NET8_0_OR_GREATER
-    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>> _perTypeRules =
+    private static readonly Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>>();
 #else
-    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>> _perTypeRules =
+    private static readonly Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>>();
 #endif
 
-    internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)
+    internal static BusinessRuleManager GetRulesForType(Type type, string? ruleSet)
     {
       if (ruleSet == ApplicationContext.DefaultRuleSet)
         ruleSet = null;
 
-      var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
+      var key = new RuleSetKey(type, ruleSet);
 
 #if NET8_0_OR_GREATER
       var rulesInfo = _perTypeRules.Value
@@ -69,10 +69,16 @@ namespace Csla.Rules
 
     private class RuleSetKey
     {
-      public Type Type { get; set; }
-      public string RuleSet { get; set; }
+      public Type Type { get; }
+      public string? RuleSet { get; }
 
-      public override bool Equals(object obj)
+      public RuleSetKey(Type type, string? ruleSet)
+      {
+        Type = type ?? throw new ArgumentNullException(nameof(type));
+        RuleSet = ruleSet;
+      }
+
+      public override bool Equals(object? obj)
       {
         if (!(obj is RuleSetKey other))
           return false;
@@ -89,7 +95,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the list of rule objects for the business type.
     /// </summary>
-    public List<IBusinessRuleBase> Rules { get; private set; }
+    public List<IBusinessRuleBase> Rules { get; }
 
     /// <summary>
     /// Gets or sets a value indicating whether the rules have been
@@ -99,14 +105,14 @@ namespace Csla.Rules
 
     private BusinessRuleManager()
     {
-      Rules = new List<IBusinessRuleBase>();
+      Rules = [];
     }
 
 #if NET8_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_perTypeRules)
-        AssemblyLoadContextManager.RemoveFromCache(_perTypeRules.Value, context, true);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>?>)_perTypeRules.Value, context, true);
     }
 #endif
   }

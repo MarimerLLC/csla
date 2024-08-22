@@ -29,12 +29,12 @@ namespace Csla.Rules
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();
 #endif
 
-    internal static AuthorizationRuleManager GetRulesForType(ApplicationContext applicationContext, Type type, string ruleSet)
+    internal static AuthorizationRuleManager GetRulesForType(ApplicationContext? applicationContext, Type type, string? ruleSet)
     {
       if (ruleSet == ApplicationContext.DefaultRuleSet)
         ruleSet = null;
 
-      var key = new RuleSetKey { Type = type, RuleSet = ruleSet };
+      var key = new RuleSetKey(type, ruleSet);
 
 #if NET8_0_OR_GREATER
       var rulesInfo = _perTypeRules.Value
@@ -55,7 +55,7 @@ namespace Csla.Rules
 
     private bool InitializingPerType { get; set; }
 
-    private static void InitializePerTypeRules(ApplicationContext applicationContext, AuthorizationRuleManager mgr, Type type)
+    private static void InitializePerTypeRules(ApplicationContext? applicationContext, AuthorizationRuleManager mgr, Type type)
     {
       if (!mgr.InitializedPerType)
         lock (mgr)
@@ -73,7 +73,7 @@ namespace Csla.Rules
               mgr.InitializingPerType = true;
 
               // invoke method to add auth roles
-              System.Reflection.MethodInfo method = FindObjectAuthorizationRulesMethod(type);
+              System.Reflection.MethodInfo? method = FindObjectAuthorizationRulesMethod(type);
               if (method != null)
               {
                 if (method.GetParameters().Length == 0)
@@ -81,8 +81,7 @@ namespace Csla.Rules
                 else if (applicationContext != null)
                   method.Invoke(null, [new AddObjectAuthorizationRulesContext(applicationContext)]);
                 else
-                  throw new InvalidOperationException(
-                    $"{nameof(InitializePerTypeRules)} {nameof(applicationContext)} == null");
+                  throw new InvalidOperationException($"{nameof(InitializePerTypeRules)} {nameof(applicationContext)} == null");
               }
               mgr.InitializedPerType = true;
             }
@@ -99,7 +98,7 @@ namespace Csla.Rules
           }
     }
 
-    private static System.Reflection.MethodInfo FindObjectAuthorizationRulesMethod(Type type)
+    private static System.Reflection.MethodInfo? FindObjectAuthorizationRulesMethod(Type type)
     {
       var method = type.GetMethods().FirstOrDefault(
         m => m.IsStatic &&
@@ -139,10 +138,16 @@ namespace Csla.Rules
 
     private class RuleSetKey
     {
-      public Type Type { get; set; }
-      public string RuleSet { get; set; }
+      public Type Type { get; }
+      public string? RuleSet { get; }
 
-      public override bool Equals(object obj)
+      public RuleSetKey(Type type, string? ruleSet)
+      {
+        Type = type ?? throw new ArgumentNullException(nameof(type));
+        RuleSet = ruleSet;
+      }
+
+      public override bool Equals(object? obj)
       {
         if (obj is not RuleSetKey other)
           return false;
@@ -181,7 +186,7 @@ namespace Csla.Rules
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_perTypeRules)
-        AssemblyLoadContextManager.RemoveFromCache(_perTypeRules.Value, context, true);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>?>)_perTypeRules.Value, context, true);
     }
 #endif
   }

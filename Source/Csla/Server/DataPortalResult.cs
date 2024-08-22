@@ -6,6 +6,8 @@
 // <summary>Returns data from the server-side DataPortal to the </summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization.Mobile;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -36,19 +38,17 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    [Obsolete("CSLA.Net internal use only", error: true)]
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. Not usable by user code
     public DataPortalResult()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     {
     }
 
-
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
-    /// of the result.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public DataPortalResult(ApplicationContext applicationContext) : this(applicationContext, null, null)
     {

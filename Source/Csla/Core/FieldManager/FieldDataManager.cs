@@ -44,7 +44,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    [Obsolete($"This ctor is only for internal usage to support {nameof(MobileFormatter)}. Use an overload instead.", error: true)]
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public FieldDataManager() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.

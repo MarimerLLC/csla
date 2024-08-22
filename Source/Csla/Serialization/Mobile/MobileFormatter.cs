@@ -25,6 +25,8 @@ namespace Csla.Serialization.Mobile
 #endif
   public sealed class MobileFormatter(ApplicationContext applicationContext) : ISerializationFormatter
   {
+    internal const string DefaultCtorObsoleteMessage = $"This ctor is only for internal usage to support {nameof(MobileFormatter)}. User another overload if available.";
+
     #region Serialize
 
     /// <summary>

@@ -48,13 +48,7 @@ namespace Csla.Configuration
         managerTypeName = "Csla.AspNetCore.Blazor.ApplicationContextManagerInMemory,Csla.AspNetCore";
       else
         managerTypeName = "Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore";
-      var managerType = Type.GetType(managerTypeName);
-      if (managerType is null)
-        throw new TypeLoadException(managerTypeName);
-      var contextManagerType = typeof(Core.IContextManager);
-      var managers = config.Services.Where(i => i.ServiceType.Equals(contextManagerType)).ToList();
-      foreach ( var manager in managers )
-        config.Services.Remove(manager);
+      var managerType = Type.GetType(managerTypeName) ?? throw new TypeLoadException(managerTypeName);
       config.Services.AddScoped(typeof(IContextManager), managerType);
 
       if (blazorOptions.UseInMemoryApplicationContextManager)

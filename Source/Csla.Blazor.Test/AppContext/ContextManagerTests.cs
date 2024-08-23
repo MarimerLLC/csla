@@ -6,8 +6,11 @@
 // <summary>Context Manager configuration tests</summary>
 //-----------------------------------------------------------------------
 
+using System.Security.Claims;
 using Csla.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -53,7 +56,42 @@ public class ContextManagerTests
 
     var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
     Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor));
+  }
 
+  [TestMethod]
+  public void UseAsyncLocalApplicationContextManager()
+  {
+    var services = new ServiceCollection();
+    services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
+    services.AddHttpContextAccessor();
+    services.AddCsla(o => o
+      .AddAspNetCore()
+      .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
+    var serviceProvider = services.BuildServiceProvider();
+
+    var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();
+    activeState.CircuitExists = false;
+
+    var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+    Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.Core.ApplicationContextManagerAsyncLocal));
+  }
+
+  [TestMethod]
+  public void UseAspNetCoreApplicationContextManager()
+  {
+    var services = new ServiceCollection();
+    services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
+    services.AddScoped<IHttpContextAccessor, HttpContextAccessorFake>();
+    services.AddCsla(o => o
+      .AddAspNetCore()
+      .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
+    var serviceProvider = services.BuildServiceProvider();
+
+    var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();
+    activeState.CircuitExists = false;
+
+    var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+    Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.AspNetCore.ApplicationContextManagerHttpContext));
   }
 }
 
@@ -64,4 +102,31 @@ public class AuthenticationStateProviderFake : AuthenticationStateProvider
   {
     throw new System.NotImplementedException();
   }
+}
+
+public class HttpContextAccessorFake : IHttpContextAccessor
+{
+  public HttpContext HttpContext { get; set; } = new HttpContextFake();
+}
+
+public class HttpContextFake : HttpContext
+{
+  public override IFeatureCollection Features => throw new NotImplementedException();
+
+  public override HttpRequest Request => throw new NotImplementedException();
+
+  public override HttpResponse Response => throw new NotImplementedException();
+
+  public override ConnectionInfo Connection => throw new NotImplementedException();
+
+  public override WebSocketManager WebSockets => throw new NotImplementedException();
+
+  public override ClaimsPrincipal User { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override IDictionary<object, object> Items { get; set; } = new Dictionary<object, object>();
+  public override IServiceProvider RequestServices { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override CancellationToken RequestAborted { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override string TraceIdentifier { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+  public override ISession Session { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+  public override void Abort() => throw new NotImplementedException();
 }

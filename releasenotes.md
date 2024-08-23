@@ -2,6 +2,18 @@
 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
+## CSLA .NET version 8.2.6 release
+
+Fixes issues with the way `IContextManager` is resolved in Blazor apps in #4089 and #4182.
+
+### Change List
+
+* https://github.com/MarimerLLC/csla/compare/v8.2.5...v8.2.6
+
+### Contributors
+
+* @rockfordlhotka
+
 ## CSLA .NET version 8.2.5 release
 
 * [#4075](https://github.com/MarimerLLC/csla/issues/4075) Fix configuration issue with Blazor DI services

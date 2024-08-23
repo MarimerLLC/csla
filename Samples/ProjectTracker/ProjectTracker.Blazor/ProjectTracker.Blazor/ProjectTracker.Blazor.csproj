@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,8 +13,8 @@
     <ProjectReference Include="..\..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
     <ProjectReference Include="..\ProjectTracker.Blazor.Client\ProjectTracker.Blazor.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
-    <PackageReference Include="Csla.AspNetCore" Version="8.2.5" />
-    <PackageReference Include="Csla.Blazor" Version="8.2.5" />
+    <PackageReference Include="Csla.AspNetCore" Version="8.2.6" />
+    <PackageReference Include="Csla.Blazor" Version="8.2.6" />
   </ItemGroup>
 
   <ItemGroup>

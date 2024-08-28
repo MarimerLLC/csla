@@ -2,10 +2,10 @@ name: main
 
 on:
   push:
-    branches: [ main, v7.x, v8.x ]
+    branches: [ main, v7.x, v8.x, v9.x ]
     paths: ['Source/**', '.github/workflows/**']
   pull_request:
-    branches: [ main, v7.x, v8.x ]
+    branches: [ main, v7.x, v8.x, v9.x ]
     paths: ['Source/**', '.github/workflows/**']
 
 jobs:
@@ -22,7 +22,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0'
+        dotnet-version: '9.0'
         include-prerelease: True
 
     - name: Build

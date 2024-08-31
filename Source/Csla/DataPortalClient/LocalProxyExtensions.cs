@@ -33,9 +33,7 @@ namespace Csla.Configuration
     /// <param name="options">Data portal proxy options</param>
     public static DataPortalClientOptions UseLocalProxy(this DataPortalClientOptions config, Action<LocalProxyOptions> options)
     {
-      var existingOptions = config.Services.FirstOrDefault(i => i.ServiceType.Equals(typeof(IDataPortalProxy)));
-      if (existingOptions?.ImplementationInstance is not LocalProxyOptions proxyOptions)
-        proxyOptions = new LocalProxyOptions();
+      var proxyOptions = new LocalProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy, LocalProxy>();
       config.Services.AddTransient(_ => proxyOptions);

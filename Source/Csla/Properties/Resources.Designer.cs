@@ -367,6 +367,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type &apos;{0}&apos; could not be deserialized because the serialized data could not be used for deserialization of that type..
+        /// </summary>
+        public static string DeserializationFailedDueToWrongData {
+            get {
+                return ResourceManager.GetString("DeserializationFailedDueToWrongData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit level mismatch in {0}.
         /// </summary>
         public static string EditLevelMismatchException {
@@ -1146,6 +1155,15 @@ namespace Csla.Properties {
         public static string TransactionScopeTransactionNotSupportedException {
             get {
                 return ResourceManager.GetString("TransactionScopeTransactionNotSupportedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The AssemblyQualifiedName of type &apos;{0}&apos; is null..
+        /// </summary>
+        public static string TypeAssemblyQualifiedNameIsNull {
+            get {
+                return ResourceManager.GetString("TypeAssemblyQualifiedNameIsNull", resourceCulture);
             }
         }
         

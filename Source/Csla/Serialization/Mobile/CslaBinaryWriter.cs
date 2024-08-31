@@ -9,15 +9,16 @@ namespace Csla.Serialization.Mobile
   public class CslaBinaryWriter : ICslaWriter
   {
     private readonly Dictionary<string, int> keywordsDictionary;
-    private ApplicationContext _applicationContext;
+    private readonly ApplicationContext _applicationContext;
 
     /// <summary>
     /// Create new instance of CslaBinaryWriter class
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaBinaryWriter(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       keywordsDictionary = new Dictionary<string, int>();
     }
 
@@ -27,8 +28,14 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="serializationStream">Stream to write the data into</param>
     /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write to stream</param>
+    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> or <paramref name="objectData"/> is <see langword="null"/>.</exception>
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
+      if (serializationStream is null)
+        throw new ArgumentNullException(nameof(serializationStream));
+      if (objectData is null)
+        throw new ArgumentNullException(nameof(objectData));
+
       keywordsDictionary.Clear();
       using var writer = new CslaNonClosingBinaryWriter(serializationStream);
       writer.Write(objectData.Count);
@@ -88,7 +95,7 @@ namespace Csla.Serialization.Mobile
       return returnValue;
     }
 
-    private void Write(object target, BinaryWriter writer)
+    private void Write(object? target, BinaryWriter writer)
     {
       if (target == null)
       {

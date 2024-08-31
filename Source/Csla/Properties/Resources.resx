@@ -511,4 +511,10 @@
   <data name="NullValueInCompareToRule" xml:space="preserve">
     <value>The provided rule value is null (property: {0}) and can not be used for comparison in the {1} rule.</value>
   </data>
+  <data name="DeserializationFailedDueToWrongData" xml:space="preserve">
+    <value>The type '{0}' could not be deserialized because the serialized data could not be used for deserialization of that type.</value>
+  </data>
+  <data name="TypeAssemblyQualifiedNameIsNull" xml:space="preserve">
+    <value>The AssemblyQualifiedName of type '{0}' is null.</value>
+  </data>
 </root>

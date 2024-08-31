@@ -10,6 +10,7 @@ using System.Security.Claims;
 
 namespace Csla.Serialization.Mobile.CustomSerializers;
 
+
 #if NET8_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.
@@ -22,6 +23,9 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public object Deserialize(SerializationInfo info)
   {
+    if (info is null)
+      throw new ArgumentNullException(nameof(info));
+
     var state = info.GetValue<byte[]>("s");
     using var buffer = new MemoryStream(state);
     using var reader = new BinaryReader(buffer);
@@ -34,10 +38,11 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   {
     if (obj is null)
       throw new ArgumentNullException(nameof(obj));
-    if (!CanSerialize(obj.GetType()))
-      throw new ArgumentException($"{obj.GetType()} != ClaimsPrincipal", nameof(obj));
+    if (info is null)
+      throw new ArgumentNullException(nameof(info));
+    if (obj is not ClaimsPrincipal principal)
+      throw new ArgumentException($"{obj.GetType()} != {nameof(ClaimsPrincipal)}", nameof(obj));
 
-    var principal = (ClaimsPrincipal)obj;
     using var buffer = new MemoryStream();
     using var writer = new BinaryWriter(buffer);
     principal.WriteTo(writer);
@@ -46,6 +51,7 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
 }
 #else
 using System.Text.Json;
+using Csla.Properties;
 
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.
@@ -58,8 +64,14 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public object Deserialize(SerializationInfo info)
   {
+    if (info is null)
+      throw new ArgumentNullException(nameof(info));
+
     var json = info.GetValue<string>("s");
     var dto = JsonSerializer.Deserialize<PrincipalDto>(json);
+    if (dto is null)
+      throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(ClaimsPrincipal)));
+
     var identities = new List<ClaimsIdentity>();
     foreach (var i in dto.Identities)
     {
@@ -77,8 +89,12 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public void Serialize(object obj, SerializationInfo info)
   {
+    if (obj is null)
+      throw new ArgumentNullException(nameof(obj));
+    if (info is null)
+      throw new ArgumentNullException(nameof(info));
     if (obj is not ClaimsPrincipal principal)
-      throw new ArgumentException("obj.GetType() != ClaimsPrincipal", nameof(obj));
+      throw new ArgumentException($"{obj.GetType()} != {nameof(ClaimsPrincipal)}", nameof(obj));
 
     var dto = new PrincipalDto();
     foreach (var i in principal.Identities)
@@ -105,16 +121,16 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
 
   private class IdentityDto
   {
-    public string AuthenticationType { get; set; }
-    public string Label { get; set; }
-    public List<ClaimDto> Claims { get; set; }
+    public string? AuthenticationType { get; set; }
+    public string? Label { get; set; }
+    public List<ClaimDto>? Claims { get; set; }
   }
 
   private class ClaimDto
   {
-    public string Type { get; set; }
-    public string Value { get; set; }
-    public string ValueType { get; set; }
+    public string Type { get; set; } = string.Empty;
+    public string Value { get; set; } = string.Empty;
+    public string? ValueType { get; set; }
   }
 }
 #endif

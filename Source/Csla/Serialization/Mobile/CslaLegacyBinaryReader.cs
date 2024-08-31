@@ -24,8 +24,12 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="serializationStream">Stream to read the data from</param>
     /// <returns>List of SerializationInfo objects</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> is <see langword="null"/>.</exception>
     public List<SerializationInfo> Read(Stream serializationStream)
     {
+      if (serializationStream is null)
+        throw new ArgumentNullException(nameof(serializationStream));
+
       var returnValue = new List<SerializationInfo>();
       keywordsDictionary.Clear();
       using var reader = new BinaryReader(serializationStream);
@@ -64,7 +68,7 @@ namespace Csla.Serialization.Mobile
       return returnValue;
     }
 
-    private object ReadObject(BinaryReader reader)
+    private object? ReadObject(BinaryReader reader)
     {
       var knownType = (CslaKnownTypes)reader.ReadByte();
       switch (knownType)

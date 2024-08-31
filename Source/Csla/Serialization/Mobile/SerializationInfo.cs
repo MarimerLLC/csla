@@ -41,7 +41,7 @@ namespace Csla.Serialization.Mobile
       /// to the enum type.
       /// </summary>
       [DataMember]
-      public string EnumTypeName { get; set; }
+      public string? EnumTypeName { get; set; }
 
       /// <summary>
       /// Indicates whether the field is dirty.
@@ -271,7 +271,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="enumTypeName">
     /// Name of the enumeration
     /// </param>
-    public void AddValue(string name, object value, bool isDirty, string enumTypeName)
+    public void AddValue(string name, object? value, bool isDirty, string? enumTypeName)
     {
       _values.Add(name, new FieldData { Value = value, IsDirty = isDirty, EnumTypeName = enumTypeName});
     }
@@ -285,12 +285,12 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    public T GetValue<T>(string name)
+    public T? GetValue<T>(string name)
     {
       try
       {
         var value = _values[name].Value;
-        return (value != null ? Utilities.CoerceValue<T>(value.GetType(), null, value) : (T)value);
+        return (value != null ? Utilities.CoerceValue<T?>(value.GetType(), null, value) : (T?)value);
       }
       catch (Exception ex)
       {

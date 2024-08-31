@@ -30,7 +30,7 @@ namespace Csla.Reflection
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 #if NET8_0_OR_GREATER
-    private static readonly ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>?> _methodCache = [];
+    private static readonly ConcurrentDictionary<string, Tuple<string?, ServiceProviderMethodInfo>?> _methodCache = [];
 #else
     private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo?> _methodCache = [];
 #endif

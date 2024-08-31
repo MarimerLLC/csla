@@ -20,7 +20,7 @@ namespace Csla.Core
   internal static class UndoableHandler
   {
 #if NET8_0_OR_GREATER
-    private static readonly Dictionary<Type, Tuple<string, List<DynamicMemberHandle>>> _undoableFieldCache = [];
+    private static readonly Dictionary<Type, Tuple<string?, List<DynamicMemberHandle>>> _undoableFieldCache = [];
 #else
     private static readonly Dictionary<Type, List<DynamicMemberHandle>> _undoableFieldCache = [];
 #endif
@@ -102,7 +102,7 @@ namespace Csla.Core
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_undoableFieldCache)
-        AssemblyLoadContextManager.RemoveFromCache(_undoableFieldCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_undoableFieldCache, context);
     }
 #endif
   }

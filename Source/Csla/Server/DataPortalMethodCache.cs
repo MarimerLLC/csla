@@ -17,7 +17,7 @@ namespace Csla.Server
   internal static class DataPortalMethodCache
   {
 #if NET8_0_OR_GREATER
-    private static Dictionary<MethodCacheKey, Tuple<string, DataPortalMethodInfo>> _cache = [];
+    private static Dictionary<MethodCacheKey, Tuple<string?, DataPortalMethodInfo>> _cache = [];
 #else
     private static Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache = [];
 #endif
@@ -87,7 +87,7 @@ namespace Csla.Server
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_cache)
-        AssemblyLoadContextManager.RemoveFromCache(_cache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_cache, context);
     }
 #endif
   }

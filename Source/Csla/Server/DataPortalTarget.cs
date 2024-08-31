@@ -21,13 +21,12 @@ namespace Csla.Server
   internal class DataPortalTarget : LateBoundObject
   {
 #if NET8_0_OR_GREATER
-    private static readonly ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>> _methodNameList =
-      new ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>>();
+    private static readonly ConcurrentDictionary<Type, Tuple<string?, DataPortalMethodNames>> _methodNameList = new();
 #else
     private static readonly ConcurrentDictionary<Type, DataPortalMethodNames> _methodNameList = new();
 #endif
 
-    private readonly IDataPortalTarget _target;
+    private readonly IDataPortalTarget? _target;
     private readonly TimeSpan _waitForIdleTimeout;
     private readonly DataPortalMethodNames _methodNames;
 
@@ -280,7 +279,7 @@ namespace Csla.Server
 
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
-      AssemblyLoadContextManager.RemoveFromCache(_methodNameList, context, true);
+      AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_methodNameList, context, true);
     }
 #endif
   }

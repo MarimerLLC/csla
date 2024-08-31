@@ -118,7 +118,7 @@ namespace Csla.Core.FieldManager
     #region ConsolidatedPropertyList
 
 #if NET8_0_OR_GREATER
-    private static readonly Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new();
+    private static readonly Dictionary<Type, Tuple<string?, List<IPropertyInfo>>> _consolidatedLists = new();
 #else
     private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
 #endif
@@ -791,7 +791,7 @@ namespace Csla.Core.FieldManager
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       string type = (string)info.Values["_businessObjectType"].Value!;
-      Type businessObjecType = Reflection.MethodCaller.GetType(type);
+      Type businessObjecType = Reflection.MethodCaller.GetType(type)!;
       SetPropertyList(businessObjecType);
 
       if (mode == StateMode.Serialization)
@@ -892,7 +892,7 @@ namespace Csla.Core.FieldManager
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_consolidatedLists)
-        AssemblyLoadContextManager.RemoveFromCache(_consolidatedLists, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, Type>?>)_consolidatedLists, context);
     }
 #endif
   }

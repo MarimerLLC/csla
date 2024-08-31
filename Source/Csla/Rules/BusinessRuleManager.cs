@@ -20,8 +20,7 @@ namespace Csla.Rules
   public class BusinessRuleManager
   {
 #if NET8_0_OR_GREATER
-    private static readonly Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>> _perTypeRules =
-      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>>>();
+    private static readonly Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string?, BusinessRuleManager>>> _perTypeRules = new();
 #else
     private static readonly Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, BusinessRuleManager>>();
@@ -112,7 +111,7 @@ namespace Csla.Rules
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_perTypeRules)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<RuleSetKey, Tuple<string, BusinessRuleManager>?>)_perTypeRules.Value, context, true);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<RuleSetKey, Tuple<string?, BusinessRuleManager>?>)_perTypeRules.Value, context, true);
     }
 #endif
   }

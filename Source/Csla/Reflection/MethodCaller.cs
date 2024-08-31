@@ -10,6 +10,8 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
 using Csla.Properties;
+using System.Diagnostics.CodeAnalysis;
+
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 using Csla.Runtime;
@@ -56,7 +58,7 @@ namespace Csla.Reflection
     #region Dynamic Method Cache
 
 #if NET8_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache = [];
+    private static readonly Dictionary<MethodCacheKey, Tuple<string?, DynamicMethodHandle>> _methodCache = [];
 #else
     private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = [];
 #endif
@@ -300,7 +302,7 @@ namespace Csla.Reflection
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
 #if NET8_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache = [];
+    private static readonly Dictionary<MethodCacheKey, Tuple<string?, DynamicMemberHandle>> _memberCache = [];
 #else
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
 #endif
@@ -1578,13 +1580,13 @@ namespace Csla.Reflection
     private static void OnMethodAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_methodCache)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string, DynamicMemberHandle>?>)_methodCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_methodCache, context);
     }
 
     private static void OnMemberAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_memberCache)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string,DynamicMemberHandle>?>)_memberCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_memberCache, context);
     }
 #endif
   }

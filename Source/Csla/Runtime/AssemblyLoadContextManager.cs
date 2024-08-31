@@ -28,28 +28,13 @@ namespace Csla.Runtime
     /// <typeparam name="TValue">Type of caching item.</typeparam>
     /// <returns>Tuple structure where "Item1" is name of active "AssemblyLoadContext" and "Item2" - caching item.</returns>
     /// <exception cref="ArgumentNullException">Throws if nor object type, nor caching item, not unload action was provided.</exception>
-    public static Tuple<string, TValue> CreateCacheInstance<TValue>(
-      Type objectType,
-      TValue cachingItem,
-      Action<AssemblyLoadContext> unloadAction,
-      bool excludeNonCollectible = false)
+    public static Tuple<string?, TValue> CreateCacheInstance<TValue>(Type objectType, TValue cachingItem, Action<AssemblyLoadContext> unloadAction, bool excludeNonCollectible = false)
     {
-      if (objectType == null)
-      {
-        throw new ArgumentNullException(nameof(objectType));
-      }
+      ArgumentNullException.ThrowIfNull(objectType);
+      ArgumentNullException.ThrowIfNull(cachingItem);
+      ArgumentNullException.ThrowIfNull(unloadAction);
 
-      if (cachingItem == null)
-      {
-        throw new ArgumentNullException(nameof(cachingItem));
-      }
-
-      if (unloadAction == null)
-      {
-        throw new ArgumentNullException(nameof(Action<AssemblyLoadContext>));
-      }
-
-      string assemblyLoadContextName = null;
+      string? assemblyLoadContextName = null;
 
       if ((!excludeNonCollectible || objectType.Assembly.IsCollectible)
           && AssemblyLoadContext.CurrentContextualReflectionContext != null
@@ -60,7 +45,7 @@ namespace Csla.Runtime
         AssemblyLoadContext.CurrentContextualReflectionContext.Unloading += unloadAction;
       }
 
-      return new Tuple<string, TValue>(assemblyLoadContextName, cachingItem);
+      return new Tuple<string?, TValue>(assemblyLoadContextName, cachingItem);
     }
 
     /// <summary>
@@ -72,10 +57,9 @@ namespace Csla.Runtime
     /// <typeparam name="TKey">Key of cached item from dictionary.</typeparam>
     /// <typeparam name="TValue">Value of cached item from dictionary.</typeparam>
     /// <exception cref="ArgumentNullException">Throws if cached items dictionary was not provided.</exception>
-    public static void RemoveFromCache<TKey, TValue>(IDictionary<TKey, Tuple<string, TValue>?> dictionary, AssemblyLoadContext? context, bool usingConcurrentDictionary = false) where TKey: notnull
+    public static void RemoveFromCache<TKey, TValue>(IDictionary<TKey, Tuple<string?, TValue>?> dictionary, AssemblyLoadContext? context, bool usingConcurrentDictionary = false) where TKey: notnull
     {
-      if (dictionary == null)
-        throw new ArgumentNullException("IDictionary<T, Tuple<string, TC>>");
+      ArgumentNullException.ThrowIfNull(dictionary);
 
       if (context == null)
         return;
@@ -96,7 +80,7 @@ namespace Csla.Runtime
       foreach (var cacheKey in obsoleteCacheKeys)
       {
         _ = usingConcurrentDictionary
-          ? ((ConcurrentDictionary<TKey, Tuple<string, TValue>>)dictionary).TryRemove(cacheKey, out _)
+          ? ((ConcurrentDictionary<TKey, Tuple<string?, TValue>>)dictionary).TryRemove(cacheKey, out _)
           : dictionary.Remove(cacheKey);
       }
     }

@@ -8,6 +8,8 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using Csla.Reflection;
+
 
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
@@ -37,10 +39,10 @@ namespace Csla.Core.FieldManager
     private static readonly object _cacheLock = new object();
 
 #if NET8_0_OR_GREATER
-    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>>? _propertyInfoCache;
+    private static ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>>? _propertyInfoCache;
 
     [MemberNotNull(nameof(_propertyInfoCache))]
-    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> PropertyInfoCache
+    private static ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>> PropertyInfoCache
 #else
     private static ConcurrentDictionary<Type, PropertyInfoList>? _propertyInfoCache;
 
@@ -55,7 +57,7 @@ namespace Csla.Core.FieldManager
           {
 #if NET8_0_OR_GREATER
             if (_propertyInfoCache == null)
-              _propertyInfoCache = new ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>>();
+              _propertyInfoCache = new ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>>();
 #else
             if (_propertyInfoCache == null)
               _propertyInfoCache = new ConcurrentDictionary<Type, PropertyInfoList>();
@@ -190,7 +192,7 @@ namespace Csla.Core.FieldManager
       var cache = PropertyInfoCache;
 
       lock (cache)
-        AssemblyLoadContextManager.RemoveFromCache(cache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)cache, context);
     }
 #endif
   }

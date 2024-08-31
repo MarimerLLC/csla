@@ -22,8 +22,7 @@ namespace Csla.Rules
   public class AuthorizationRuleManager
   {
 #if NET8_0_OR_GREATER
-    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>> _perTypeRules =
-      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>>();
+    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string?, AuthorizationRuleManager>>> _perTypeRules = new();
 #else
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();
@@ -186,7 +185,7 @@ namespace Csla.Rules
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_perTypeRules)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>?>)_perTypeRules.Value, context, true);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<RuleSetKey, Tuple<string?, AuthorizationRuleManager>?>)_perTypeRules.Value, context, true);
     }
 #endif
   }

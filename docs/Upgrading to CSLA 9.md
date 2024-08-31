@@ -221,3 +221,4 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `Csla.Rules.BrokenRule` can not be instantiated by user code. It wasn't useable before because all property setters were internal.
 * `Csla.Rules.BrokenRulesCollection` does not accept any null, empty or white space values for methods which accepts a string for a property name.
 * `Csla.Rules.IRuleContext.Add*Result(...)` methods now throw an `ArgumentException` when the provided `string description` is `IsNullOrWhiteSpace`.
+* `Csla.Security.IAuthorizeReadWrite` all methods `ArgumentNullException` are now documented.

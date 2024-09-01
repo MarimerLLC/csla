@@ -23,8 +23,9 @@ namespace Csla
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
-    public PropertyInfo(string name)
-      : this(name, null, null, DataBindingFriendlyDefault(), RelationshipTypes.None)
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo(string name, bool? isSerializable = null)
+      : this(name, null, null, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
 
     /// <summary>
@@ -32,8 +33,9 @@ namespace Csla
     /// </summary>
     /// <param name="name">Name of the property.</param>
     /// <param name="relationship">Relationship with referenced object.</param>
-    public PropertyInfo(string name, RelationshipTypes relationship)
-      : this(name, null, null, DataBindingFriendlyDefault(), relationship)
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo(string name, RelationshipTypes relationship, bool? isSerializable = null)
+      : this(name, null, null, DataBindingFriendlyDefault(), relationship, isSerializable)
     { }
 
     /// <summary>
@@ -43,8 +45,9 @@ namespace Csla
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    public PropertyInfo(string name, T defaultValue)
-      : this(name, null, null, defaultValue, RelationshipTypes.None)
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo(string name, T defaultValue, bool? isSerializable = null)
+      : this(name, null, null, defaultValue, RelationshipTypes.None, isSerializable)
     { }
 
     /// <summary>
@@ -54,8 +57,9 @@ namespace Csla
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
-    public PropertyInfo(string name, string friendlyName)
-        : this(name, friendlyName, null, DataBindingFriendlyDefault(), RelationshipTypes.None)
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo(string name, string friendlyName, bool? isSerializable = null)
+        : this(name, friendlyName, null, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
 
     /// <summary>
@@ -68,8 +72,9 @@ namespace Csla
     /// <param name="containingType">
     /// Factory to provide display name from attributes.
     /// </param>
-    public PropertyInfo(string name, string friendlyName, Type containingType)
-        : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), RelationshipTypes.None)
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo(string name, string friendlyName, Type containingType, bool? isSerializable = null)
+        : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
 
     /// <summary>
@@ -85,8 +90,9 @@ namespace Csla
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue)
-        : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None)
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue, bool? isSerializable = null)
+        : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, isSerializable)
     { }
 
     /// <summary>
@@ -100,8 +106,10 @@ namespace Csla
     /// Factory to provide display name from attributes.
     /// </param>
     /// <param name="relationship">Relationship with referenced object.</param>
-    public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship) 
-      : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), relationship)
+    /// <param name="isSerializable">If property is serializable</param>
+
+    public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship, bool? isSerializable = null)
+      : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), relationship, isSerializable)
     { }
 
     /// <summary>
@@ -119,7 +127,8 @@ namespace Csla
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue, RelationshipTypes relationship)
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue, RelationshipTypes relationship, bool? isSerializable)
     {
       Name = name;
       _friendlyName = friendlyName;
@@ -128,6 +137,7 @@ namespace Csla
         _propertyInfo = containingType.GetProperty(Name);
 
       DefaultValue = defaultValue;
+      _isSerializable = isSerializable;
     }
 
     /// <summary>
@@ -181,6 +191,34 @@ namespace Csla
           }
         }
         return result;
+      }
+    }
+
+    private readonly bool? _isSerializable;
+    /// <summary>
+    /// Gets the friendly display name
+    /// for the property.
+    /// </summary>
+    /// <remarks>
+    /// If no friendly name was provided, the
+    /// property name itself is returned as a
+    /// result.
+    /// </remarks>
+    public virtual bool IsSerializable
+    {
+      get
+      {
+
+        if (_isSerializable.HasValue)
+        {
+          return _isSerializable.Value;
+        }
+        else if (_propertyInfo != null)
+        {
+          var display = _propertyInfo.GetCustomAttributes(typeof(Csla.NonSerializedAttribute), true).OfType<NonSerializedAttribute>().Any();
+          return !display;
+        }
+        return true;
       }
     }
 

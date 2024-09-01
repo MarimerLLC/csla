@@ -81,5 +81,78 @@ namespace Csla.Core
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship);
+
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="isSerializable">If property is serializable</param>
+    PropertyInfo<T> Create<T>(Type containingType, string name, bool isSerializable);
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="isSerializable">If property is serializable</param>
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, bool isSerializable);
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="relationship">Relationship with
+    /// referenced object.</param>
+    /// <param name="isSerializable">If property is serializable</param>
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship, bool isSerializable);
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="defaultValue">
+    /// Default value for the property.
+    /// </param>
+    /// <param name="isSerializable">If property is serializable</param>
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, bool isSerializable);
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="defaultValue">
+    /// Default value for the property.
+    /// </param>
+    /// <param name="relationship">Relationship with
+    /// referenced object.</param>
+    /// <param name="isSerializable">If property is serializable</param>
+    PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship, bool isSerializable);
   }
 }

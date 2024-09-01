@@ -93,7 +93,7 @@ namespace Csla
       }
     }
 
-    private readonly object _syncContext = new();
+    private readonly Lock _syncContext = new();
 
     /// <summary>
     /// Returns the application-specific context data provided

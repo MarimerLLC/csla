@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Product>CSLA .NET Analyzers</Product>
     <Description>Custom analyzers for CSLA .NET.</Description>

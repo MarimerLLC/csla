@@ -19,9 +19,10 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
 
     private readonly SemanticModel _semanticModel;
     private const string _serializationNamespace = "Csla.Serialization";
+    private const string _cslaNamespace = "Csla";
     private const string _autoSerializableAttributeName = "AutoSerializableAttribute";
     private const string _autoSerializedAttributeName = "AutoSerializedAttribute";
-    private const string _autoNonSerializedAttributeName = "AutoNonSerializedAttribute";
+    private const string _autoNonSerializedAttributeName = "NonSerializedAttribute";
     private const string _iMobileObjectInterfaceNamespace = "Csla.Serialization.Mobile";
     private const string _iMobileObjectInterfaceName = "IMobileObject";
 
@@ -127,7 +128,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the property is decorated with the AutoNonSerialized attribute, otherwise false</returns>
     public bool IsPropertyDecoratedWithAutoNonSerialized(PropertyDeclarationSyntax propertyDeclaration)
     {
-      return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeName, _serializationNamespace);
+      return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeName, _cslaNamespace);
     }
 
     /// <summary>
@@ -147,7 +148,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the field is decorated with the AutoNonSerialized attribute, otherwise false</returns>
     public bool IsFieldDecoratedWithAutoNonSerialized(FieldDeclarationSyntax fieldDeclaration)
     {
-      return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeName, _serializationNamespace);
+      return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeName, _cslaNamespace);
     }
 
     #region Private Helper Methods

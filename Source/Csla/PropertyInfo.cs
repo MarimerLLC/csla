@@ -253,7 +253,7 @@ namespace Csla
     /// </param>
     protected virtual Core.FieldManager.IFieldData NewFieldData(string name)
     {
-      return new Core.FieldManager.FieldData<T>(name);
+      return new Core.FieldManager.FieldData<T>(name, IsSerializable);
     }
 
 

@@ -445,9 +445,13 @@ namespace Csla.Test.Basic
       var obj = await CreateRootInstanceAsync(new Root.Criteria(""));
       obj.Data = "SerializedData";
       obj.NotSerializableData = "NonSerialized";
+      obj.BeginEdit();
       var clone = obj.Clone();
       Assert.AreNotEqual("NonSerialized", clone.NotSerializableData);
       Assert.AreEqual("", clone.NotSerializableData);
+      Assert.AreEqual("SerializedData", clone.Data);
+      clone.CancelEdit();
+      Assert.AreEqual("NonSerialized", clone.NotSerializableData);
       Assert.AreEqual("SerializedData", clone.Data);
     }
 

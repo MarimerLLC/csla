@@ -109,7 +109,7 @@ namespace Csla.Channels.RabbitMq
     }
 
     private volatile bool IsListening;
-    private readonly object ListeningLock = new();
+    private readonly Lock ListeningLock = new();
 
     public void StartListening()
     {

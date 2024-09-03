@@ -3664,7 +3664,7 @@ namespace Csla.Core
     protected internal class BypassPropertyChecksObject : IDisposable
     {
       private BusinessBase _businessObject;
-      private static object _lock = new object();
+      private static Lock _lock = new();
 
       internal BypassPropertyChecksObject(BusinessBase businessObject)
       {

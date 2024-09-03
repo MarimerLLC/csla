@@ -18,6 +18,14 @@ namespace Csla.Test.Basic
       set { SetProperty(DataProperty, value); }
     }
 
+    public static PropertyInfo<string> NotSerializableDataProperty = RegisterProperty<string>(c => c.NotSerializableData);
+    [NonSerialized]
+    public string NotSerializableData
+    {
+      get { return GetProperty(NotSerializableDataProperty); }
+      set { SetProperty(NotSerializableDataProperty, value); }
+    }
+
     public static PropertyInfo<int> CreatedDomainProperty = RegisterProperty<int>(c => c.CreatedDomain);
     public int CreatedDomain
     {

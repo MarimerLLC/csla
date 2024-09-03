@@ -23,7 +23,7 @@ namespace Csla.Core.FieldManager
     /// <param name="name">Name of the property.</param>
     public PropertyInfo<T> Create<T>(Type containingType, string name)
     {
-      return new PropertyInfo<T>(name, null, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None);
+      return new PropertyInfo<T>(name, null, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, null);
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName)
     {
-      return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None);
+      return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, null);
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ namespace Csla.Core.FieldManager
     /// referenced object.</param>
     public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship)
     {
-      return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), relationship);
+      return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), relationship, null);
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ namespace Csla.Core.FieldManager
     /// </param>
     public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue)
     {
-      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, RelationshipTypes.None);
+      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, null);
     }
 
     /// <summary>
@@ -97,7 +97,99 @@ namespace Csla.Core.FieldManager
     /// referenced object.</param>
     public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
     {
-      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship);
+      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship, null);
+    }
+
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo<T> Create<T>(Type containingType, string name, bool isSerializable)
+    {
+      return new PropertyInfo<T>(name, null, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable);
+    }
+
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, bool isSerializable)
+    {
+      return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable);
+    }
+
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="relationship">Relationship with
+    /// referenced object.</param>
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship, bool isSerializable)
+    {
+      return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), relationship, isSerializable);
+    }
+
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="defaultValue">
+    /// Default value for the property.
+    /// </param>
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, bool isSerializable)
+    {
+      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, isSerializable);
+    }
+
+    /// <summary>
+    /// Creates a new instance of PropertyInfo.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="defaultValue">
+    /// Default value for the property.
+    /// </param>
+    /// <param name="relationship">Relationship with
+    /// referenced object.</param>
+    /// <param name="isSerializable">If property is serializable</param>
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship, bool isSerializable)
+    {
+      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship, isSerializable);
     }
   }
 }

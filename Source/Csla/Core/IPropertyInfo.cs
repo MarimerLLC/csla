@@ -53,6 +53,11 @@ namespace Csla.Core
     /// </summary>
     bool IsChild { get; }
     /// <summary>
+    /// Gets a value indicating whether this property
+    /// references a serializable property.
+    /// </summary>
+    bool IsSerializable { get; }
+    /// <summary>
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>

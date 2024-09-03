@@ -28,7 +28,10 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
-    public FieldData() { }
+    public FieldData()
+    {
+      IsSerializable = true;
+    }
 
     /// <summary>
     /// Creates a new instance of the object.
@@ -36,9 +39,11 @@ namespace Csla.Core.FieldManager
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    public FieldData(string name)
+    /// <param name="isSerializable">If property is serializable</param>
+    public FieldData(string name, bool isSerializable)
     {
       Name = name;
+      IsSerializable = isSerializable;
     }
 
     /// <summary>
@@ -76,6 +81,11 @@ namespace Csla.Core.FieldManager
           Value = (T)value;
       }
     }
+    /// <summary>
+    /// Gets a value indicating whether this field
+    /// references a serializable property.
+    /// </summary>
+    public bool IsSerializable { get; private set; }
 
     bool ITrackStatus.IsDeleted
     {

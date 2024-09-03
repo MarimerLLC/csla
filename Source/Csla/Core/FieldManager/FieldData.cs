@@ -85,7 +85,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether this field
     /// references a serializable property.
     /// </summary>
-    public bool IsSerializable { get; set; }
+    public bool IsSerializable { get; private set; }
 
     bool ITrackStatus.IsDeleted
     {

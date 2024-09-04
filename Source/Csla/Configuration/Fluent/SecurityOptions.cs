@@ -13,11 +13,6 @@ namespace Csla.Configuration
   public class SecurityOptions
   {
     /// <summary>
-    /// Sets the max size of the PrincipalCache cache.
-    /// </summary>
-    public int PrincipalCacheMaxCacheSize {  get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether we 
     /// are to flow User Principal to the server
     /// </summary>

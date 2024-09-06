@@ -365,7 +365,7 @@ namespace Csla.Test.Basic
     public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
     {
       TestResults.Reinitialise();
-      
+
       bool changed = false;
       var obj = new RootList();
       obj.ListChanged += (_, _) =>
@@ -402,7 +402,7 @@ namespace Csla.Test.Basic
     public async Task ChildEditLevelDeleteClone()
     {
       TestResults.Reinitialise();
-      
+
       var list = await CreateRootListInstanceAsync();
       list.BeginEdit();
       list.AddNew();
@@ -435,6 +435,24 @@ namespace Csla.Test.Basic
       Assert.AreEqual("1", clone.Data);
       clone.CancelEdit();
       Assert.AreEqual("", clone.Data);
+    }
+
+    [TestMethod]
+    public async Task CloneNonserializedTest()
+    {
+      TestResults.Reinitialise();
+
+      var obj = await CreateRootInstanceAsync(new Root.Criteria(""));
+      obj.Data = "SerializedData";
+      obj.NotSerializableData = "NonSerialized";
+      obj.BeginEdit();
+      var clone = obj.Clone();
+      Assert.AreNotEqual("NonSerialized", clone.NotSerializableData);
+      Assert.AreEqual("", clone.NotSerializableData);
+      Assert.AreEqual("SerializedData", clone.Data);
+      clone.CancelEdit();
+      Assert.AreEqual("NonSerialized", clone.NotSerializableData);
+      Assert.AreEqual("SerializedData", clone.Data);
     }
 
     [TestCleanup]

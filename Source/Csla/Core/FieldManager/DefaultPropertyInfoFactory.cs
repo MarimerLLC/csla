@@ -20,6 +20,30 @@ namespace Csla.Core.FieldManager
     }
 
     /// <inheritdoc />
+    public PropertyInfo<T> Create<T>(Type containingType, string name, bool isSerializable)
+    {
+      return Create<T>(containingType, name, null, isSerializable);
+    }
+
+    /// <inheritdoc />
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, bool isSerializable)
+    {
+      return Create<T>(containingType, name, friendlyName, RelationshipTypes.None, isSerializable);
+    }
+
+    /// <inheritdoc />
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, RelationshipTypes relationship, bool isSerializable)
+    {
+      return Create<T>(containingType, name, friendlyName, PropertyInfo<T>.DataBindingFriendlyDefault(), relationship, isSerializable);
+    }
+
+    /// <inheritdoc />
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, T? defaultValue, bool isSerializable)
+    {
+      return Create<T>(containingType, name, friendlyName, defaultValue, RelationshipTypes.None, isSerializable);
+    }
+
+    /// <inheritdoc />
     public PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName)
     {
       return Create<T>(containingType, name, friendlyName, RelationshipTypes.None);
@@ -40,12 +64,23 @@ namespace Csla.Core.FieldManager
     /// <inheritdoc />
     public PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, T? defaultValue, RelationshipTypes relationship)
     {
+      return Create<T>(containingType, name, friendlyName, defaultValue, relationship, null);
+    }
+
+    /// <inheritdoc />
+    public PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, T? defaultValue, RelationshipTypes relationship, bool isSerializable)
+    {
+      return Create<T>(containingType, name, friendlyName, defaultValue, relationship, (bool?)isSerializable);
+    }
+
+    private PropertyInfo<T> Create<T>(Type containingType, string name, string ?friendlyName, T? defaultValue, RelationshipTypes relationship, bool? isSerializable)
+    {
       if (containingType is null)
         throw new ArgumentNullException(nameof(containingType));
       if (name is null)
         throw new ArgumentNullException(nameof(name));
 
-      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship);
+      return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship, isSerializable);
     }
   }
 }

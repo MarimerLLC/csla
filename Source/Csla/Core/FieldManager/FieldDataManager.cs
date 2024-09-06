@@ -89,7 +89,7 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public List<IPropertyInfo> GetRegisteredProperties()
     {
-      return [.._propertyList];
+      return [.. _propertyList];
     }
 
     /// <summary>
@@ -455,9 +455,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-#endregion
+    #endregion
 
-#region  IsValid/IsDirty/IsBusy
+    #region  IsValid/IsDirty/IsBusy
 
     /// <summary>
     /// Returns a value indicating whether all
@@ -502,9 +502,9 @@ namespace Csla.Core.FieldManager
       return false;
     }
 
-#endregion
+    #endregion
 
-#region  IUndoableObject
+    #region  IUndoableObject
 
     private readonly Stack<byte[]> _stateStack = new();
 
@@ -521,7 +521,7 @@ namespace Csla.Core.FieldManager
       if (EditLevel + 1 > parentEditLevel)
         throw new UndoException(
           string.Format(
-            Resources.EditLevelMismatchException, "CopyState"), GetType().Name, 
+            Resources.EditLevelMismatchException, "CopyState"), GetType().Name,
             _parent?.GetType().Name, EditLevel, parentEditLevel - 1);
 
       IFieldData[] state = new IFieldData[_propertyList.Count];
@@ -536,7 +536,7 @@ namespace Csla.Core.FieldManager
             // cascade call to child
             child.CopyState(parentEditLevel, parentBindingEdit);
             // indicate that there was a value here
-            state[index] = new FieldData<bool>(item.Name);
+            state[index] = new FieldData<bool>(item.Name, true);
           }
           else
           {
@@ -560,7 +560,7 @@ namespace Csla.Core.FieldManager
       {
         if (EditLevel - 1 != parentEditLevel)
           throw new UndoException(
-            string.Format(Resources.EditLevelMismatchException, "UndoChanges"), 
+            string.Format(Resources.EditLevelMismatchException, "UndoChanges"),
             GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
         IFieldData[]? state = null;
@@ -604,7 +604,7 @@ namespace Csla.Core.FieldManager
     {
       if (EditLevel - 1 != parentEditLevel)
         throw new UndoException(
-          string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), 
+          string.Format(Resources.EditLevelMismatchException, "AcceptChanges"),
           GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
       if (EditLevel > 0)
@@ -623,9 +623,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-#endregion
+    #endregion
 
-#region  Child Objects 
+    #region  Child Objects 
 
     /// <summary>
     /// Returns a list of all child objects
@@ -747,7 +747,7 @@ namespace Csla.Core.FieldManager
 
       foreach (IFieldData? data in _fieldData)
       {
-        if (data != null)
+        if (data != null && (data.IsSerializable || mode != StateMode.Serialization))
         {
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
@@ -831,7 +831,7 @@ namespace Csla.Core.FieldManager
           {
             if (!info.Values.ContainsKey("child_" + property.Name) || !info.GetValue<bool>("child_" + property.Name))
               _fieldData[property.Index] = null;
-            
+
             // We don't want to reset children during an undo.
             else if (!typeof(IMobileObject).IsAssignableFrom(data.Value?.GetType()))
               data.Value = property.DefaultValue;
@@ -861,7 +861,7 @@ namespace Csla.Core.FieldManager
       base.OnSetChildren(info, formatter);
     }
 
-#endregion
+    #endregion
 
     /// <summary>
     /// Forces initialization of the static fields declared

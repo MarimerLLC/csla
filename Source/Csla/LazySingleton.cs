@@ -7,7 +7,7 @@
   public sealed class LazySingleton<T> : Core.IUseApplicationContext
     where T : class
   {
-    private readonly object _syncRoot = new object();
+    private readonly Lock _syncRoot = new();
     private T _value;
     private readonly Func<T> _delegate;
 

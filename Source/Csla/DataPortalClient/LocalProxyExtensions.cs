@@ -38,9 +38,7 @@ namespace Csla.Configuration
       if (config is null)
         throw new ArgumentNullException(nameof(config));
 
-      var existingOptions = config.Services.FirstOrDefault(i => i.ServiceType.Equals(typeof(IDataPortalProxy)));
-      if (existingOptions?.ImplementationInstance is not LocalProxyOptions proxyOptions)
-        proxyOptions = new LocalProxyOptions();
+      var proxyOptions = new LocalProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy, LocalProxy>();
       config.Services.AddTransient(_ => proxyOptions);

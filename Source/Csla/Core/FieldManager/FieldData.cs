@@ -30,7 +30,10 @@ namespace Csla.Core.FieldManager
     /// </summary>
     [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
-    public FieldData() { }
+    public FieldData() 
+    {
+      IsSerializable = true;
+    }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
@@ -39,10 +42,12 @@ namespace Csla.Core.FieldManager
     /// <param name="name">
     /// Name of the field.
     /// </param>
+    /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public FieldData(string name)
+    public FieldData(string name, bool isSerializable)
     {
       Name = name ?? throw new ArgumentNullException(nameof(name));
+      IsSerializable = isSerializable;
     }
 
     /// <summary>
@@ -80,6 +85,11 @@ namespace Csla.Core.FieldManager
           Value = (T)value;
       }
     }
+    /// <summary>
+    /// Gets a value indicating whether this field
+    /// references a serializable property.
+    /// </summary>
+    public bool IsSerializable { get; private set; }
 
     bool ITrackStatus.IsDeleted
     {

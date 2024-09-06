@@ -20,6 +20,11 @@ namespace Csla.Core.FieldManager
     /// </summary>
     string Name { get; }
     /// <summary>
+    /// Gets a value indicating whether this field
+    /// references a serializable property.
+    /// </summary>
+    bool IsSerializable { get; }
+    /// <summary>
     /// Gets or sets the field value.
     /// </summary>
     /// <value>The value of the field.</value>

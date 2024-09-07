@@ -222,3 +222,5 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `Csla.Rules.BrokenRulesCollection` does not accept any null, empty or white space values for methods which accepts a string for a property name.
 * `Csla.Rules.IRuleContext.Add*Result(...)` methods now throw an `ArgumentException` when the provided `string description` is `IsNullOrWhiteSpace`.
 * `Csla.Security.IAuthorizeReadWrite` all methods `ArgumentNullException` are now documented.
+* `Csla.Web.Mvc.CslaModelBinder` now needs an `ApplicationContext` in it's constructor.
+* `AddAspNetCore()` configuration method now adds the necessary services to support resolving `CslaModelBinder` from the DI container

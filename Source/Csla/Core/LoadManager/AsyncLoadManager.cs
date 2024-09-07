@@ -23,7 +23,7 @@ namespace Csla.Core.LoadManager
 
     }
 
-    private Lock _syncRoot = new();
+    private Lock _syncRoot = LockFactory.Create();
     private readonly ObservableCollection<IAsyncLoader> _loading = [];
 
     public bool IsLoading

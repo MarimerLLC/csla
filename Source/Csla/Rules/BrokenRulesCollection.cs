@@ -23,7 +23,7 @@ namespace Csla.Rules
   [Serializable]
   public class BrokenRulesCollection : Core.ReadOnlyObservableBindingList<BrokenRule>
   {
-    private Lock _syncRoot = new();
+    private Lock _syncRoot = LockFactory.Create();
 
 
     /// <summary>

@@ -196,13 +196,11 @@ namespace Csla
 
     private bool? _isSerializable;
     /// <summary>
-    /// Gets the friendly display name
-    /// for the property.
+    /// Gets or sets a value indicating whether this property is serializable.
     /// </summary>
     /// <remarks>
-    /// If no friendly name was provided, the
-    /// property name itself is returned as a
-    /// result.
+    /// If the property is marked with the <see cref="Csla.NonSerializedAttribute"/>,
+    /// it is considered not serializable. Otherwise, it is considered serializable.
     /// </remarks>
     public virtual bool IsSerializable
     {

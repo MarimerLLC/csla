@@ -21,8 +21,9 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public CslaModelBinder()
-      : base(null) { }
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    public CslaModelBinder(ApplicationContext applicationContext)
+      : base(applicationContext) { }
 
     /// <summary>
     /// Bind the form data to a new instance of an IBusinessBase object.
@@ -30,7 +31,6 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-      ApplicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
       if (bindingContext == null)
       {
         throw new ArgumentNullException(nameof(bindingContext));

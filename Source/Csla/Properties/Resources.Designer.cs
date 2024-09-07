@@ -799,6 +799,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The object to be updated could not be deserialized. The send data are null..
+        /// </summary>
+        public static string ObjectToBeUpdatedCouldNotBeDeserialized {
+            get {
+                return ResourceManager.GetString("ObjectToBeUpdatedCouldNotBeDeserialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Object type or assembly could not be loaded ({0}).
         /// </summary>
         public static string ObjectTypeCouldNotBeLoaded {
@@ -1137,6 +1146,15 @@ namespace Csla.Properties {
         public static string SyncrootNotSupportedException {
             get {
                 return ResourceManager.GetString("SyncrootNotSupportedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value of property {0} in path {1} is null. It&apos;s not possible to generate a tag helper message..
+        /// </summary>
+        public static string TagHelperPropertyInPathHasNullValue {
+            get {
+                return ResourceManager.GetString("TagHelperPropertyInPathHasNullValue", resourceCulture);
             }
         }
         

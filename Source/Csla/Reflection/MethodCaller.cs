@@ -291,9 +291,9 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="typeName">Type name including assembly name.</param>
     /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static Type? GetType(string typeName)
+    public static Type GetType(string typeName)
     {
-      return GetType(typeName, true, false);
+      return GetType(typeName, true, false)!;
     }
 
 #endregion

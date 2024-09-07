@@ -8,6 +8,7 @@
 
 using System.Security.Principal;
 using Csla.Core;
+using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
@@ -176,7 +177,7 @@ namespace Csla.Channels.Grpc
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
           true,
@@ -224,7 +225,7 @@ namespace Csla.Channels.Grpc
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
           true,
@@ -265,7 +266,7 @@ namespace Csla.Channels.Grpc
       {
         request = ConvertRequest(request);
         // unpack object
-        object? obj = GetCriteria(_applicationContext, request.ObjectData);
+        object obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
 
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
@@ -315,7 +316,7 @@ namespace Csla.Channels.Grpc
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
           true,

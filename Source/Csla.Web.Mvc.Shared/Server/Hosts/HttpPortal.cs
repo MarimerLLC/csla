@@ -10,6 +10,7 @@ using Csla.Core;
 using System.Security.Principal;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
+using Csla.Properties;
 
 namespace Csla.Server.Hosts
 {
@@ -37,9 +38,7 @@ namespace Csla.Server.Hosts
     /// Create and initialize an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
     public async Task<DataPortalResponse> Create(CriteriaRequest request)
-#pragma warning restore 1998
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
@@ -53,7 +52,7 @@ namespace Csla.Server.Hosts
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
           true,
@@ -83,9 +82,7 @@ namespace Csla.Server.Hosts
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
     public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
-#pragma warning restore 1998
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
@@ -99,7 +96,7 @@ namespace Csla.Server.Hosts
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
           true,
@@ -129,16 +126,14 @@ namespace Csla.Server.Hosts
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
     public async Task<DataPortalResponse> Update(UpdateRequest request)
-#pragma warning restore 1998
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         request = ConvertRequest(request);
         // unpack object
-        object? obj = GetCriteria(_applicationContext, request.ObjectData);
+        object obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
 
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
@@ -170,9 +165,7 @@ namespace Csla.Server.Hosts
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
     public async Task<DataPortalResponse> Delete(CriteriaRequest request)
-#pragma warning restore 1998
     {
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
@@ -186,7 +179,7 @@ namespace Csla.Server.Hosts
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
           true,

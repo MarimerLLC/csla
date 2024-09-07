@@ -517,4 +517,10 @@
   <data name="TypeAssemblyQualifiedNameIsNull" xml:space="preserve">
     <value>The AssemblyQualifiedName of type '{0}' is null.</value>
   </data>
+  <data name="TagHelperPropertyInPathHasNullValue" xml:space="preserve">
+    <value>Value of property {0} in path {1} is null. It's not possible to generate a tag helper message.</value>
+  </data>
+  <data name="ObjectToBeUpdatedCouldNotBeDeserialized" xml:space="preserve">
+    <value>The object to be updated could not be deserialized. The send data are null.</value>
+  </data>
 </root>

@@ -137,7 +137,7 @@ namespace Csla.AspNetCore.Blazor
     /// Not supported in Blazor.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal principal) => throw new NotSupportedException(nameof(SetUser));
+    public virtual void SetUser(IPrincipal? principal) => throw new NotSupportedException(nameof(SetUser));
 
     /// <summary>
     /// Gets the local context.

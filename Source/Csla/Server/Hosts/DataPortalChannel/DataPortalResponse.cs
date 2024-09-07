@@ -18,12 +18,12 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Server-side exception data if an exception occurred on the server.
     /// </summary>
-    public static readonly PropertyInfo<DataPortalErrorInfo> ErrorDataProperty = RegisterProperty<DataPortalErrorInfo>(c => c.ErrorData);
+    public static readonly PropertyInfo<DataPortalErrorInfo?> ErrorDataProperty = RegisterProperty<DataPortalErrorInfo?>(nameof(ErrorData));
 
     /// <summary>
     /// Server-side exception data if an exception occurred on the server.
     /// </summary>
-    public DataPortalErrorInfo ErrorData
+    public DataPortalErrorInfo? ErrorData
     {
       get { return GetProperty(ErrorDataProperty); }
       set { LoadProperty(ErrorDataProperty, value); }

@@ -121,7 +121,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="criteria">Criteria object describing business object.</param>
     /// <param name="context">DataPortalContext object passed to the server.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Create(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
       if (isSync)
         throw new NotSupportedException("isSync == true");
@@ -147,7 +147,7 @@ namespace Csla.Channels.RabbitMq
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Fetch(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
       if (isSync)
         throw new NotSupportedException("isSync == true");
@@ -198,7 +198,7 @@ namespace Csla.Channels.RabbitMq
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Delete(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
       if (isSync)
         throw new NotSupportedException("isSync == true");
@@ -223,7 +223,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialized response from server</returns>
-    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync)
     {
       var correlationId = Guid.NewGuid().ToString();
       var resetEvent = new Threading.AsyncManualResetEvent();

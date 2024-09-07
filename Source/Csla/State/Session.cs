@@ -16,7 +16,7 @@ namespace Csla.State
   /// serializable via MobileFormatter.
   /// </summary>
   [Serializable]
-  public class Session : MobileDictionary<string, object>, INotifyPropertyChanged
+  public class Session : MobileDictionary<string, object?>, INotifyPropertyChanged
   {
     /// <summary>
     /// Gets or sets a value indicating the last
@@ -32,7 +32,7 @@ namespace Csla.State
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     /// Raise PropertyChanged event.

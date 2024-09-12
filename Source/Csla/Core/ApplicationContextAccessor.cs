@@ -35,11 +35,12 @@ namespace Csla.Core
       ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
       LocalContextManager = localContextManager ?? throw new ArgumentNullException(nameof(localContextManager));
 
-      foreach (var context in contextManagerList)
+      var managers = contextManagerList.ToList();
+      for (int i = managers.Count - 1; i >= 0; i--)
       {
-        if (context.IsValid)
+        if (managers[i].IsValid)
         {
-          ContextManager = context;
+          ContextManager = managers[i];
           break;
         }
       }

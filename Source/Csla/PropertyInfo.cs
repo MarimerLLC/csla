@@ -202,29 +202,27 @@ namespace Csla
       }
     }
 
-    private readonly bool? _isSerializable;
+    private bool? _isSerializable;
     /// <summary>
-    /// Gets the friendly display name
-    /// for the property.
+    /// Gets or sets a value indicating whether this property is serializable.
     /// </summary>
     /// <remarks>
-    /// If no friendly name was provided, the
-    /// property name itself is returned as a
-    /// result.
+    /// If the property is marked with the <see cref="Csla.NonSerializedAttribute"/>,
+    /// it is considered not serializable. Otherwise, it is considered serializable.
     /// </remarks>
     public virtual bool IsSerializable
     {
       get
       {
-
         if (_isSerializable.HasValue)
         {
           return _isSerializable.Value;
         }
         else if (_propertyInfo != null)
         {
-          var display = _propertyInfo.GetCustomAttributes(typeof(NonSerializedAttribute), true).OfType<NonSerializedAttribute>().Any();
-          return !display;
+          var nonSerialized = _propertyInfo.GetCustomAttributes(typeof(Csla.NonSerializedAttribute), true).OfType<NonSerializedAttribute>().Any();
+          _isSerializable = !nonSerialized;
+          return !nonSerialized;
         }
         return true;
       }

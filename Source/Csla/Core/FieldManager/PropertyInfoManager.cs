@@ -36,7 +36,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   public static class PropertyInfoManager
   {
-    private static readonly Lock _cacheLock = new();
+    private static readonly Lock _cacheLock = LockFactory.Create();
 
 #if NET8_0_OR_GREATER
     private static ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>>? _propertyInfoCache;

@@ -42,7 +42,7 @@ namespace Csla.Rules
     }
 
     [NonSerialized]
-    private Lock SyncRoot = new();
+    private Lock SyncRoot = LockFactory.Create();
 
     private ApplicationContext _applicationContext;
 
@@ -1306,7 +1306,7 @@ namespace Csla.Rules
     [System.Runtime.Serialization.OnDeserialized]
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
-      SyncRoot = new();
+      SyncRoot = LockFactory.Create();
     }
 
     #endregion

@@ -97,7 +97,7 @@ namespace Csla
       }
     }
 
-    private readonly Lock _syncContext = new();
+    private readonly Lock _syncContext = LockFactory.Create();
 
     /// <summary>
     /// Returns the application-specific context data provided

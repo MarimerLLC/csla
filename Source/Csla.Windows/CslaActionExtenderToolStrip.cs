@@ -68,6 +68,7 @@ namespace Csla.Windows
     [Category("Data")]
     [Description("Gets or sets the data source to which this button is bound for action purposes.")]
     [AttributeProvider(typeof (IListSource))]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     public object DataSource
     {
       get { return _dataSource; }

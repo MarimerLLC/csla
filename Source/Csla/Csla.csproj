@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
@@ -92,7 +92,7 @@
     <PackageReference Include="System.Text.Json" Version="8.0.4" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="Backport.System.Threading.Lock" Version="2.0.0" />
+    <PackageReference Include="Backport.System.Threading.Lock" Version="2.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

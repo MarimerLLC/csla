@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0" PrivateAssets="all" />
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="Backport.System.Threading.Lock" Version="2.0.0" />
+    <PackageReference Include="Backport.System.Threading.Lock" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>

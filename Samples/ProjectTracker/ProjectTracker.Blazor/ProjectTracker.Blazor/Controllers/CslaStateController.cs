@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Csla;
 using Csla.State;
+using Csla.Blazor.State.Messages;
 
 namespace ProjectTracker.Blazor.Controllers
 {
@@ -12,7 +13,21 @@ namespace ProjectTracker.Blazor.Controllers
   /// <param name="sessionManager"></param>
   [ApiController]
   [Route("[controller]")]
-  public class CslaStateController(ApplicationContext applicationContext, ISessionManager sessionManager) :
-      Csla.AspNetCore.Blazor.State.StateController(applicationContext, sessionManager)
-  {  }
+  public class CslaStateController : Csla.AspNetCore.Blazor.State.StateController
+  {
+    public CslaStateController(ApplicationContext applicationContext, ISessionManager sessionManager) :
+      base(applicationContext, sessionManager)
+    {
+      ApplicationContext = applicationContext;
+    }
+
+    private ApplicationContext ApplicationContext { get; set; }
+
+    public override StateResult Get(long lastTouched)
+    {
+      var user = ApplicationContext.User;
+      var result = base.Get(lastTouched);
+      return result;
+    }
+  }
 }

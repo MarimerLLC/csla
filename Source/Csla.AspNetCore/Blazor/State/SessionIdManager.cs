@@ -39,13 +39,13 @@ namespace Csla.Blazor.State
       if (httpContext == null)
         throw new InvalidOperationException("HttpContext == null");
 
-      if (httpContext.Request.Cookies.ContainsKey(sessionIdName))
+      if (httpContext.Request.Cookies.TryGetValue(sessionIdName, out var requestItem))
       {
-        result = httpContext.Request.Cookies[sessionIdName];
+        result = requestItem;
       }
-      else if (httpContext.Items.TryGetValue(sessionIdName, out var item))
+      else if (httpContext.Items.TryGetValue(sessionIdName, out var itemsItem))
       {
-        result = item as string;
+        result = itemsItem as string;
       }
       else
       {

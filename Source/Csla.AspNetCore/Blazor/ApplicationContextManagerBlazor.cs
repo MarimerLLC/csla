@@ -112,7 +112,7 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     public bool IsValid
     {
-      get { return HttpContext is not null || ActiveCircuitState.CircuitExists; }
+      get { return ActiveCircuitState.CircuitExists; }
     }
 
     /// <summary>

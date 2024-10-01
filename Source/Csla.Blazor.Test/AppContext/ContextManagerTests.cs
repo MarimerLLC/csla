@@ -70,10 +70,28 @@ public class ContextManagerTests
     var serviceProvider = services.BuildServiceProvider();
 
     var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();
-    activeState.CircuitExists = false;
+    activeState.CircuitExists = true;
 
     var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
     Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor));
+  }
+
+  [TestMethod]
+  public void UseAspNetCoreOverBlazorApplicationContextManager()
+  {
+    var services = new ServiceCollection();
+    services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
+    services.AddScoped<IHttpContextAccessor, HttpContextAccessorFake>();
+    services.AddCsla(o => o
+      .AddAspNetCore()
+      .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
+    var serviceProvider = services.BuildServiceProvider();
+
+    var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();
+    activeState.CircuitExists = false;
+
+    var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+    Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.AspNetCore.ApplicationContextManagerHttpContext));
   }
 
   [TestMethod]

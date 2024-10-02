@@ -41,7 +41,7 @@ public class ContextManagerTests
   }
 
   [TestMethod]
-  public void UseApplicationContextManagerBlazor()
+  public void NoHttpContextAndCircuitExist_UseBlazor()
   {
     var services = new ServiceCollection();
     services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
@@ -59,7 +59,7 @@ public class ContextManagerTests
   }
 
   [TestMethod]
-  public void UseBlazorApplicationContextManager()
+  public void HttpContextAndCircuitExist_UseBlazor()
   {
     var services = new ServiceCollection();
     services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
@@ -77,7 +77,7 @@ public class ContextManagerTests
   }
 
   [TestMethod]
-  public void UseAspNetCoreOverBlazorApplicationContextManager()
+  public void HttpContextAndNoCircuit_UseHttpContext()
   {
     var services = new ServiceCollection();
     services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
@@ -85,23 +85,6 @@ public class ContextManagerTests
     services.AddCsla(o => o
       .AddAspNetCore()
       .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
-    var serviceProvider = services.BuildServiceProvider();
-
-    var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();
-    activeState.CircuitExists = false;
-
-    var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
-    Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.AspNetCore.ApplicationContextManagerHttpContext));
-  }
-
-  [TestMethod]
-  public void UseAspNetCoreApplicationContextManager()
-  {
-    var services = new ServiceCollection();
-    services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
-    services.AddScoped<IHttpContextAccessor, HttpContextAccessorFake>();
-    services.AddCsla(o => o
-      .AddAspNetCore());
     var serviceProvider = services.BuildServiceProvider();
 
     var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();

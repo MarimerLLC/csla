@@ -116,7 +116,11 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     public bool IsValid
     {
-      get { return ActiveCircuitState.CircuitExists; }
+      get
+      {
+        var result = ActiveCircuitState.CircuitExists;
+        return result;
+      }
     }
 
     /// <summary>
@@ -137,19 +141,33 @@ namespace Csla.AspNetCore.Blazor
     /// Not supported in Blazor.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal principal) { /* noop */ } // => throw new NotSupportedException(nameof(SetUser));
+    public virtual void SetUser(IPrincipal principal)
+    {
+      ArgumentNullException.ThrowIfNull(principal);
+      if (HttpContext != null)
+      {
+        HttpContext.User = (ClaimsPrincipal)principal;
+      }
+      else
+      {
+        throw new NotSupportedException(nameof(SetUser));
+      }
+    }
+
+    private const string _localContextName = "Csla.LocalContext";
+    private const string _clientContextName = "Csla.ClientContext";
 
     /// <summary>
     /// Gets the local context.
     /// </summary>
     /// <exception cref="InvalidOperationException"><see cref="ApplicationContext"/> is <see langword="null"/>.</exception>
-    public IContextDictionary GetLocalContext()
+    public IContextDictionary? GetLocalContext()
     {
       ThrowIfApplicationContextIsNull();
-      IContextDictionary localContext;
+      IContextDictionary? localContext;
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
-      session.TryGetValue("localContext", out var result);
+      session.TryGetValue(_localContextName, out var result);
       if (result is IContextDictionary context)
       {
         localContext = context;
@@ -172,7 +190,7 @@ namespace Csla.AspNetCore.Blazor
       ThrowIfApplicationContextIsNull();
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
-      session["localContext"] = localContext;
+      session[_localContextName] = localContext;
     }
 
     /// <summary>
@@ -186,7 +204,7 @@ namespace Csla.AspNetCore.Blazor
       IContextDictionary clientContext;
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
-      session.TryGetValue("clientContext", out var result);
+      session.TryGetValue(_clientContextName, out var result);
       if (result is IContextDictionary context)
       {
         clientContext = context;
@@ -202,7 +220,7 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Sets the client context.
     /// </summary>
-    /// <param name="clientContext">Client context.</param>
+    /// <param name="clientContext"></param>
     /// <param name="executionLocation"></param>
     /// <exception cref="InvalidOperationException"><see cref="ApplicationContext"/> is <see langword="null"/>.</exception>
     public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
@@ -210,7 +228,7 @@ namespace Csla.AspNetCore.Blazor
       ThrowIfApplicationContextIsNull();
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
-      session["clientContext"] = clientContext;
+      session[_clientContextName] = clientContext;
     }
 
     /// <summary>

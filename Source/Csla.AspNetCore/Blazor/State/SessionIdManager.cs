@@ -50,8 +50,9 @@ namespace Csla.Blazor.State
       else
       {
         result = Guid.NewGuid().ToString();
-        httpContext.Response.Cookies.Append(sessionIdName, result);
         httpContext.Items[sessionIdName] = result;
+        if (!httpContext.Response.HasStarted)
+          httpContext.Response.Cookies.Append(sessionIdName, result);
       }
 
       return result ?? throw new InvalidOperationException(Csla.Properties.Resources.SessionIdManagerIdMustBeNotNull);

@@ -11,6 +11,8 @@ using Csla.State;
 using Csla.Security;
 using Csla.Blazor.State.Messages;
 using Csla.Serialization;
+using System.Runtime.Serialization;
+using Csla.Properties;
 
 namespace Csla.AspNetCore.Blazor.State
 {
@@ -73,7 +75,11 @@ namespace Csla.AspNetCore.Blazor.State
       {
         Position = 0
       };
-      var session = (Session)formatter.Deserialize(buffer);
+      if (formatter.Deserialize(buffer) is not Session session)
+      {
+        throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, nameof(Session)));
+      }
+
       sessionManager.UpdateSession(session);
     }
   }

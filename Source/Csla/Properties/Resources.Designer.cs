@@ -1006,6 +1006,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The server side portal could not deserialize the incoming request stream..
+        /// </summary>
+        public static string ServerSideDataPortalRequestDeserializationFailed {
+            get {
+                return ResourceManager.GetString("ServerSideDataPortalRequestDeserializationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The session id must be not null..
         /// </summary>
         public static string SessionIdManagerIdMustBeNotNull {

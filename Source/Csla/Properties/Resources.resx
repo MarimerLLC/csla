@@ -526,4 +526,7 @@
   <data name="UnexpectedSerializationInfoObjectData" xml:space="preserve">
     <value>Object data retrieved through MobileFormatter isn't a known type by SerializationInfo. The retrieved type was '{0}'.</value>
   </data>
+  <data name="ServerSideDataPortalRequestDeserializationFailed" xml:space="preserve">
+    <value>The server side portal could not deserialize the incoming request stream.</value>
+  </data>
 </root>

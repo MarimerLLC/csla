@@ -36,13 +36,12 @@ namespace Csla.Serialization
     /// <param name="serializationStream">
     /// Stream that will contain the the serialized data.</param>
     /// <param name="graph">Object graph to be serialized.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> or <paramref name="graph"/> is <see langword="null"/>.</exception>
-    void Serialize(Stream serializationStream, object graph);
+    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> is <see langword="null"/>.</exception>
+    void Serialize(Stream serializationStream, object? graph);
     /// <summary>
     /// Converts an object graph into a byte stream.
     /// </summary>
     /// <param name="graph">Object graph to be serialized.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="graph"/> is <see langword="null"/>.</exception>
-    byte[] Serialize(object graph);
+    byte[] Serialize(object? graph);
   }
 }

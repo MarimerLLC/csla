@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -112,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BusinessPrincipalException" xml:space="preserve">
-    <value>Principal må vaere av typen BusinessPrincipal, ikke </value>
+  <data name="ClearInvalidException" xml:space="preserve">
+    <value>Clear (blanking) er en ugyldig operasjon</value>
+  </data>
+  <data name="InsertInvalidException" xml:space="preserve">
+    <value>Insert (legg inn) er en ugyldig operasjon</value>
+  </data>
+  <data name="RemoveInvalidException" xml:space="preserve">
+    <value>Remove (fjern) er en ugyldig operasjon</value>
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Endring av et element er en ugyldig operasjon</value>
@@ -121,76 +132,8 @@
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Child (barne) objektet kan ikke markeres for sletting direkte - benytt Parent Collection (foreldrelisten)</value>
   </data>
-  <data name="ClearInvalidException" xml:space="preserve">
-    <value>Clear (blanking) er en ugyldig operasjon</value>
-  </data>
-  <data name="CreateNotSupportedException" xml:space="preserve">
-    <value>Ugyldig operasjon - Create (opprett) er ikke tillatt</value>
-  </data>
-  <data name="DeleteNotSupportedException" xml:space="preserve">
-    <value>Ugyildig operasjon - Delete (slett) er ikke tillatt</value>
-  </data>
-  <data name="EditLevelMismatchException" xml:space="preserve">
-    <value>Redigeringsnivået stemmer ikke i {0}</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="ErrorReadingValueException" xml:space="preserve">
-    <value>Feil ved lesing av verdi:</value>
-  </data>
-  <data name="ExecuteNotSupportedException" xml:space="preserve">
-    <value>Ulovlig operasjon - utføringen er ikke tillatt</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="Failed" xml:space="preserve">
-    <value>Feilet</value>
-  </data>
-  <data name="FailedOnServer" xml:space="preserve">
-    <value>Feilet på serveren</value>
-  </data>
-  <data name="FetchNotSupportedException" xml:space="preserve">
-    <value>Ugyldig operasjon - Fetch (hent) er ikke tillatt</value>
-  </data>
-  <data name="InsertInvalidException" xml:space="preserve">
-    <value>Insert (legg inn) er en ugyldig operasjon</value>
-  </data>
-  <data name="InsertNotSupportedException" xml:space="preserve">
-    <value>Ugyldig operasjon - insert er ikke tillatt</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="MaxValueRule" xml:space="preserve">
-    <value>{0} kan ikke være større enn {1}</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="MethodCallFailed" xml:space="preserve">
-    <value>Metodekallet feilet</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="MethodExecuteNotAllowed" xml:space="preserve">
-    <value>Metodeutføringen er ikke tillatt</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="MethodNotImplemented" xml:space="preserve">
-    <value>ikke implementert</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="MinValueRule" xml:space="preserve">
-    <value>{0} kan ikke være mindre enn {1}</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="NoApplyEditChildException" xml:space="preserve">
-    <value>ApplyEdit er ugyldig på et Child (barne) objekt</value>
-  </data>
-  <data name="NoBeginEditChildException" xml:space="preserve">
-    <value>BeginEdit er ugyldig på et Child (barne) objekt</value>
-  </data>
-  <data name="NoCancelEditChildException" xml:space="preserve">
-    <value>CancelEdit er ugyldig på et Child (barne) objekt</value>
-  </data>
   <data name="NoDeleteRootException" xml:space="preserve">
     <value>Ugyldig for Root (rot) objekter - benytt Delete (slett) istedet</value>
-  </data>
-  <data name="NoPrincipalAllowedException" xml:space="preserve">
-    <value>Ingen Principal objekter skal sendes til DataPortalen Windows Integrated Security benyttes</value>
   </data>
   <data name="NoSaveChildException" xml:space="preserve">
     <value>Et Child (barne) objekt kan ikke lagres direkte</value>
@@ -201,19 +144,83 @@
   <data name="NoSaveInvalidException" xml:space="preserve">
     <value>Objektet er ugyldig og kan ikke lagres</value>
   </data>
-  <data name="NoSuchFactoryMethod" xml:space="preserve">
-    <value>Fabrikkmetoden finnes ikke:{0}</value>
-    <comment>New for 3.0</comment>
+  <data name="CreateNotSupportedException" xml:space="preserve">
+    <value>Ugyldig operasjon - Create (opprett) er ikke tillatt</value>
+  </data>
+  <data name="FetchNotSupportedException" xml:space="preserve">
+    <value>Ugyldig operasjon - Fetch (hent) er ikke tillatt</value>
+  </data>
+  <data name="UpdateNotSupportedException" xml:space="preserve">
+    <value>Ugyldig operasjon - Update (oppdater) er ikke tillatt</value>
+  </data>
+  <data name="DeleteNotSupportedException" xml:space="preserve">
+    <value>Ugyildig operasjon - Delete (slett) er ikke tillatt</value>
+  </data>
+  <data name="NoBeginEditChildException" xml:space="preserve">
+    <value>BeginEdit er ugyldig på et Child (barne) objekt</value>
+  </data>
+  <data name="NoCancelEditChildException" xml:space="preserve">
+    <value>CancelEdit er ugyldig på et Child (barne) objekt</value>
+  </data>
+  <data name="NoApplyEditChildException" xml:space="preserve">
+    <value>ApplyEdit er ugyldig på et Child (barne) objekt</value>
   </data>
   <data name="NoSuchValueExistsException" xml:space="preserve">
     <value>En slik verdi eksisterer ikke:</value>
   </data>
-  <data name="NothingNotValid" xml:space="preserve">
-    <value>Argumentet kan ikke være null</value>
+  <data name="ErrorReadingValueException" xml:space="preserve">
+    <value>Feil ved lesing av verdi:</value>
+  </data>
+  <data name="StringToDateException" xml:space="preserve">
+    <value>String-verdien kan ikke konverteres til  Date (en dato)</value>
+  </data>
+  <data name="ValueNotSmartDateException" xml:space="preserve">
+    <value>Verdien er ikke en SmartDate</value>
+  </data>
+  <data name="NoPrincipalAllowedException" xml:space="preserve">
+    <value>Ingen Principal objekter skal sendes til DataPortalen Windows Integrated Security benyttes</value>
+  </data>
+  <data name="BusinessPrincipalException" xml:space="preserve">
+    <value>Principal må vaere av typen BusinessPrincipal, ikke </value>
+  </data>
+  <data name="SmartDateT" xml:space="preserve">
+    <value>t</value>
+  </data>
+  <data name="SmartDateToday" xml:space="preserve">
+    <value>today (idag)</value>
+  </data>
+  <data name="SmartDateY" xml:space="preserve">
+    <value>y (år)</value>
+  </data>
+  <data name="SmartDateYesterday" xml:space="preserve">
+    <value>yesterday (igår)</value>
+  </data>
+  <data name="SmartDateTom" xml:space="preserve">
+    <value>tom</value>
+  </data>
+  <data name="SmartDateTomorrow" xml:space="preserve">
+    <value>tomorrow (imorgen)</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Feilet</value>
+  </data>
+  <data name="FailedOnServer" xml:space="preserve">
+    <value>Feilet på serveren</value>
+  </data>
+  <data name="MethodCallFailed" xml:space="preserve">
+    <value>Metodekallet feilet</value>
     <comment>New for 3.0</comment>
   </data>
-  <data name="PropertyCopyFailed" xml:space="preserve">
-    <value>Kopering av Property feilet</value>
+  <data name="MethodNotImplemented" xml:space="preserve">
+    <value>ikke implementert</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="ExecuteNotSupportedException" xml:space="preserve">
+    <value>Ulovlig operasjon - utføringen er ikke tillatt</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="InsertNotSupportedException" xml:space="preserve">
+    <value>Ugyldig operasjon - insert er ikke tillatt</value>
     <comment>New for 3.0</comment>
   </data>
   <data name="PropertyGetNotAllowed" xml:space="preserve">
@@ -224,54 +231,56 @@
     <value>Set-metoden for Property er ikke tillat</value>
     <comment>New for 3.0</comment>
   </data>
-  <data name="RegExMatchRule" xml:space="preserve">
-    <value>{0} matcher ikke et vanlig uttrykk</value>
+  <data name="NothingNotValid" xml:space="preserve">
+    <value>Argumentet kan ikke være null</value>
     <comment>New for 3.0</comment>
   </data>
-  <data name="RemoveInvalidException" xml:space="preserve">
-    <value>Remove (fjern) er en ugyldig operasjon</value>
+  <data name="PropertyCopyFailed" xml:space="preserve">
+    <value>Kopering av Property feilet</value>
+    <comment>New for 3.0</comment>
   </data>
-  <data name="SmartDateT" xml:space="preserve">
-    <value>t</value>
+  <data name="MaxValueRule" xml:space="preserve">
+    <value>{0} kan ikke være større enn {1}</value>
+    <comment>New for 3.0</comment>
   </data>
-  <data name="SmartDateToday" xml:space="preserve">
-    <value>today (idag)</value>
-  </data>
-  <data name="SmartDateTom" xml:space="preserve">
-    <value>tom</value>
-  </data>
-  <data name="SmartDateTomorrow" xml:space="preserve">
-    <value>tomorrow (imorgen)</value>
-  </data>
-  <data name="SmartDateY" xml:space="preserve">
-    <value>y (år)</value>
-  </data>
-  <data name="SmartDateYesterday" xml:space="preserve">
-    <value>yesterday (igår)</value>
+  <data name="MinValueRule" xml:space="preserve">
+    <value>{0} kan ikke være mindre enn {1}</value>
+    <comment>New for 3.0</comment>
   </data>
   <data name="StringMaxLengthRule" xml:space="preserve">
     <value>{0} kan ikke overgå {1} tegn</value>
-    <comment>New for 3.0</comment>
-  </data>
-  <data name="StringMinLengthRule" xml:space="preserve">
-    <value>{0} kan ikke være færre enn {1} tegn</value>
     <comment>New for 3.0</comment>
   </data>
   <data name="StringRequiredRule" xml:space="preserve">
     <value>{0} påkrevd</value>
     <comment>New for 3.0</comment>
   </data>
-  <data name="StringToDateException" xml:space="preserve">
-    <value>String-verdien kan ikke konverteres til  Date (en dato)</value>
+  <data name="RegExMatchRule" xml:space="preserve">
+    <value>{0} matcher ikke et vanlig uttrykk</value>
+    <comment>New for 3.0</comment>
   </data>
   <data name="TypeLoadException" xml:space="preserve">
     <value>Feilet i lastingen av type '{0}'</value>
     <comment>New for 3.0</comment>
   </data>
-  <data name="UpdateNotSupportedException" xml:space="preserve">
-    <value>Ugyldig operasjon - Update (oppdater) er ikke tillatt</value>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>Fabrikkmetoden finnes ikke:{0}</value>
+    <comment>New for 3.0</comment>
   </data>
-  <data name="ValueNotSmartDateException" xml:space="preserve">
-    <value>Verdien er ikke en SmartDate</value>
+  <data name="StringMinLengthRule" xml:space="preserve">
+    <value>{0} kan ikke være færre enn {1} tegn</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Redigeringsnivået stemmer ikke i {0}</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Metodeutføringen er ikke tillatt</value>
+    <comment>New for 3.0</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

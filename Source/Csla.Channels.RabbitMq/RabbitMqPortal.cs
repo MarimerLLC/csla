@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 using System.Security.Principal;
 using Csla.Core;
 using Csla.Properties;
@@ -90,7 +91,7 @@ namespace Csla.Channels.RabbitMq
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
-        var request = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(requestData);
+        var request = Deserialize<object>(requestData);
         result = await CallPortal(ea.BasicProperties.Type, request);
       }
       catch (Exception ex)
@@ -158,11 +159,11 @@ namespace Csla.Channels.RabbitMq
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext,  Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await _dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -202,11 +203,11 @@ namespace Csla.Channels.RabbitMq
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await _dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -240,11 +241,11 @@ namespace Csla.Channels.RabbitMq
         object obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
 
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await _dataPortalServer.Update(obj, context, true);
 
@@ -285,11 +286,11 @@ namespace Csla.Channels.RabbitMq
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await _dataPortalServer.Delete(objectType, criteria, context, true);
 
@@ -354,6 +355,17 @@ namespace Csla.Channels.RabbitMq
     }
 
     #endregion Conversion methods
+
+    private T Deserialize<T>(byte[] data) 
+    {
+      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
+      if (deserializedData is not T castedData)
+      {
+        throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T).FullName));
+      }
+
+      return castedData;
+    }
 
     /// <summary>
     /// Dispose this object.

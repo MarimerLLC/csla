@@ -6,6 +6,7 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 
+using System.Runtime.Serialization;
 using System.Security.Principal;
 using Csla.Core;
 using Csla.Properties;
@@ -114,7 +115,7 @@ namespace Csla.Channels.Grpc
       DataPortalErrorInfo? errorData = null;
       try
       {
-        var request = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(requestData.ToByteArray());
+        var request = Deserialize<object>(requestData.ToByteArray());
         result = await CallPortal(operation, request);
       }
       catch (Exception ex)
@@ -179,11 +180,11 @@ namespace Csla.Channels.Grpc
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -227,11 +228,11 @@ namespace Csla.Channels.Grpc
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -269,11 +270,11 @@ namespace Csla.Channels.Grpc
         object obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
 
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Update(obj, context, true);
 
@@ -318,11 +319,11 @@ namespace Csla.Channels.Grpc
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
@@ -387,5 +388,16 @@ namespace Csla.Channels.Grpc
     }
 
     #endregion Extention Method for Requests
+
+    private T Deserialize<T>(byte[] data)
+    {
+      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
+      if (deserializedData is not T castedData)
+      {
+        throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T).FullName));
+      }
+
+      return castedData;
+    }
   }
 }

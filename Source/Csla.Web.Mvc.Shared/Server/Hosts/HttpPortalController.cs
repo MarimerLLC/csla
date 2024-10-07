@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Csla.Properties;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
 
@@ -227,7 +228,7 @@ namespace Csla.Server.Hosts
       DataPortalErrorInfo? errorData = null;
       try
       {
-        var request = serializer.Deserialize(requestBuffer);
+        var request = await DeserializeRequestBody(requestBuffer, serializer);
         result = await CallPortal(operation, request);
       }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -250,6 +251,21 @@ namespace Csla.Server.Hosts
       await writer.WriteAsync(Convert.ToBase64String(responseBuffer.ToArray()));
     }
 
+    private async Task<object> DeserializeRequestBody(Stream requestBody, ISerializationFormatter serializer)
+    {
+      using var requestBodyBuffer = new MemoryStream();
+      await requestBody.CopyToAsync(requestBodyBuffer).ConfigureAwait(false);
+      requestBodyBuffer.Seek(0, SeekOrigin.Begin);
+      return serializer.Deserialize(requestBodyBuffer) ?? throw new System.Runtime.Serialization.SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
+    }
+
+    private async Task SerializeToResponse(DataPortalResponse portalResult, Stream responseStream, ISerializationFormatter serializer)
+    {
+      using var responseBodyBuffer = new MemoryStream();
+      serializer.Serialize(responseBodyBuffer, portalResult);
+      responseBodyBuffer.Seek(0, SeekOrigin.Begin);
+      await responseBodyBuffer.CopyToAsync(responseStream).ConfigureAwait(false);
+    }
 #else
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
     {
@@ -261,7 +277,7 @@ namespace Csla.Server.Hosts
         {
           Position = 0
         };
-        var request = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(buffer.ToArray());
+        var request = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(buffer.ToArray()) ?? throw new System.Runtime.Serialization.SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
         result = await CallPortal(operation, request);
       }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -290,20 +306,6 @@ namespace Csla.Server.Hosts
         _ => throw new InvalidOperationException(operation),
       };
       return result;
-    }
-
-    private async Task<object> DeserializeRequestBody(Stream requestBody, ISerializationFormatter serializer) {
-      using var requestBodyBuffer = new MemoryStream();
-      await requestBody.CopyToAsync(requestBodyBuffer).ConfigureAwait(false);
-      requestBodyBuffer.Seek(0, SeekOrigin.Begin);
-      return serializer.Deserialize(requestBodyBuffer);
-    }
-
-    private async Task SerializeToResponse(DataPortalResponse portalResult, Stream responseStream, ISerializationFormatter serializer) {
-      using var responseBodyBuffer = new MemoryStream();
-      serializer.Serialize(responseBodyBuffer, portalResult);
-      responseBodyBuffer.Seek(0, SeekOrigin.Begin);
-      await responseBodyBuffer.CopyToAsync(responseStream).ConfigureAwait(false);
     }
   }
 }

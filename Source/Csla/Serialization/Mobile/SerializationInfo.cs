@@ -6,7 +6,9 @@
 // <summary>Object containing the serialization</summary>
 //-----------------------------------------------------------------------
 
+using System.Globalization;
 using System.Runtime.Serialization;
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile
 {
@@ -208,9 +210,19 @@ namespace Csla.Serialization.Mobile
       set { _values = value; }
     }
 
-    internal SerializationInfo(int referenceId)
+    /// <summary>
+    /// Initializes a new instance of <see cref="SerializationInfo"/>-object.
+    /// </summary>
+    /// <param name="referenceId">The reference number for this object.</param>
+    /// <param name="typeName">Assembly-qualified type name of the object being serialized.</param>
+    /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public SerializationInfo(int referenceId, string typeName)
     {
+      if (string.IsNullOrWhiteSpace(typeName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
+
       ReferenceId = referenceId;
+      TypeName = typeName;
     }
 
     /// <summary>
@@ -223,7 +235,7 @@ namespace Csla.Serialization.Mobile
     /// object being serialized.
     /// </summary>
     [DataMember]
-    public string TypeName { get; set; }
+    public string TypeName { get; private set; }
 
     /// <summary>
     /// Adds a value to the serialization stream.
@@ -334,7 +346,10 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public SerializationInfo() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// Method called by MobileFormatter when an object
@@ -388,7 +403,7 @@ namespace Csla.Serialization.Mobile
     public void SetState(SerializationInfo info)
     {
       ReferenceId = info.GetValue<int>("SerializationInfo.ReferenceId");
-      TypeName = info.GetValue<string>("SerializationInfo.TypeName");
+      TypeName = info.GetValue<string>("SerializationInfo.TypeName") ?? throw new InvalidOperationException();
     }
 
     /// <summary>
@@ -407,14 +422,18 @@ namespace Csla.Serialization.Mobile
       foreach (string key in info.Children.Keys)
       {
         int referenceId = info.Children[key].ReferenceId;
-        object serialized = formatter.GetObject(referenceId);
+        var serialized = formatter.GetObject(referenceId);
         if (serialized is ChildData data)
         {
           _children.Add(key, data);
         }
+        else if(serialized is FieldData fieldData)
+        {
+          _values.Add(key, fieldData);
+        }
         else
         {
-          _values.Add(key, (FieldData)serialized);
+          throw new MobileFormatterException(string.Format(Resources.UnexpectedSerializationInfoObjectData, serialized?.GetType().ToString() ?? "<null>"));
         }
       }
     }

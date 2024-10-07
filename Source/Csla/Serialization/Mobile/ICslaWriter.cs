@@ -12,6 +12,7 @@
     /// </summary>
     /// <param name="serializationStream">Stream to write the data into</param>
     /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write</param>
+    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> or <paramref name="objectData"/> is <see langword="null"/>.</exception>
     void Write(Stream serializationStream, List<SerializationInfo> objectData);
   }
 }

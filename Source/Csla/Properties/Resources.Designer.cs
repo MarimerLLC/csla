@@ -1213,6 +1213,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Object data retrieved through MobileFormatter isn&apos;t a known type by SerializationInfo. The retrieved type was &apos;{0}&apos;..
+        /// </summary>
+        public static string UnexpectedSerializationInfoObjectData {
+            get {
+                return ResourceManager.GetString("UnexpectedSerializationInfoObjectData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
         /// </summary>
         public static string UpdateMethodNameNotSpecified {

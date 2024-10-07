@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.Xml;
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile
 {
@@ -18,7 +19,7 @@ namespace Csla.Serialization.Mobile
     {
       using var xmlReader = XmlReader.Create(serializationStream);
       var dataContractSerializer = CslaReaderWriterFactory.GetDataContractSerializer();
-      return (List<SerializationInfo>)dataContractSerializer.ReadObject(xmlReader);
+      return (List<SerializationInfo>)(dataContractSerializer.ReadObject(xmlReader) ?? throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, nameof(List<SerializationInfo>))));
     }
   }
 }

@@ -22,13 +22,7 @@ namespace Csla.Serialization.Mobile
       keywordsDictionary = new Dictionary<int, string>();
     }
 
-    /// <summary>
-    /// Read a data from a stream, typically <see cref="MemoryStream"/>, and convert it into 
-    /// a list of <see cref="SerializationInfo"/> objects
-    /// </summary>
-    /// <param name="serializationStream">Stream to read the data from</param>
-    /// <returns>List of <see cref="SerializationInfo"/> objects</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> is <see langword="null"/>.</exception>
+    /// <inheritdoc />
     public List<SerializationInfo> Read(Stream serializationStream)
     {
       if (serializationStream is null)
@@ -41,11 +35,7 @@ namespace Csla.Serialization.Mobile
       var totalCount = reader.ReadInt32();
       for (var counter = 0; counter < totalCount; counter++)
       {
-        var info = new SerializationInfo
-        {
-          ReferenceId = reader.ReadInt32(),
-          TypeName = ReadString(reader)
-        };
+        var info = new SerializationInfo(referenceId: reader.ReadInt32(), typeName: ReadString(reader));
 
         var childCount = reader.ReadInt32();
         string systemName;

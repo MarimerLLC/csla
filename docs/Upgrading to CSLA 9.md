@@ -224,3 +224,6 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `Csla.Security.IAuthorizeReadWrite` all methods `ArgumentNullException` are now documented.
 * `Csla.Web.Mvc.CslaModelBinder` now needs an `ApplicationContext` in it's constructor.
 * `AddAspNetCore()` configuration method now adds the necessary services to support resolving `CslaModelBinder` from the DI container
+* `Csla.Serialization.Mobile.SerializationInfo`
+  * Now has a constructor requiring `int referenceId` and `string typeName`
+  * Property `ReferenceId` and `TypeName` property set removed and replaced by the constructor

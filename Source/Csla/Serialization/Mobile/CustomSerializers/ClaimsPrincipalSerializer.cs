@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Security.Claims;
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile.CustomSerializers;
 
@@ -26,7 +27,7 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
     if (info is null)
       throw new ArgumentNullException(nameof(info));
 
-    var state = info.GetValue<byte[]>("s");
+    var state = info.GetValue<byte[]>("s") ?? throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(ClaimsPrincipal)));
     using var buffer = new MemoryStream(state);
     using var reader = new BinaryReader(buffer);
     var mobile = new ClaimsPrincipal(reader);
@@ -51,7 +52,6 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
 }
 #else
 using System.Text.Json;
-using Csla.Properties;
 
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.
@@ -67,7 +67,7 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
     if (info is null)
       throw new ArgumentNullException(nameof(info));
 
-    var json = info.GetValue<string>("s");
+    var json = info.GetValue<string>("s") ?? throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(ClaimsPrincipal)));
     var dto = JsonSerializer.Deserialize<PrincipalDto>(json);
     if (dto is null)
       throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(ClaimsPrincipal)));

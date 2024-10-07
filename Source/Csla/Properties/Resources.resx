@@ -523,4 +523,7 @@
   <data name="ObjectToBeUpdatedCouldNotBeDeserialized" xml:space="preserve">
     <value>The object to be updated could not be deserialized. The send data are null.</value>
   </data>
+  <data name="UnexpectedSerializationInfoObjectData" xml:space="preserve">
+    <value>Object data retrieved through MobileFormatter isn't a known type by SerializationInfo. The retrieved type was '{0}'.</value>
+  </data>
 </root>

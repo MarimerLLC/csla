@@ -22,13 +22,7 @@ namespace Csla.Serialization.Mobile
       keywordsDictionary = new Dictionary<string, int>();
     }
 
-    /// <summary>
-    /// Write a list of <see cref="SerializationInfo"/> objects into stream,
-    /// typically <see cref="MemoryStream"/>.
-    /// </summary>
-    /// <param name="serializationStream">Stream to write the data into</param>
-    /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write to stream</param>
-    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> or <paramref name="objectData"/> is <see langword="null"/>.</exception>
+    /// <inheritdoc />
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
       if (serializationStream is null)

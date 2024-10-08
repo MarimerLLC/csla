@@ -12,7 +12,7 @@ namespace ProjectTracker.Blazor.Controllers
   /// <param name="sessionManager"></param>
   [ApiController]
   [Route("[controller]")]
-  public class CslaStateController(ApplicationContext applicationContext, ISessionManager sessionManager) :
-      Csla.AspNetCore.Blazor.State.StateController(applicationContext, sessionManager)
+  public class CslaStateController(ApplicationContext applicationContext, ISessionManager sessionManager) : 
+    Csla.AspNetCore.Blazor.State.StateController(applicationContext, sessionManager)
   {  }
 }

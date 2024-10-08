@@ -41,7 +41,7 @@ public class ContextManagerTests
   }
 
   [TestMethod]
-  public void UseApplicationContextManagerBlazor()
+  public void NoHttpContextAndCircuitExist_UseBlazor()
   {
     var services = new ServiceCollection();
     services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
@@ -59,7 +59,7 @@ public class ContextManagerTests
   }
 
   [TestMethod]
-  public void UseBlazorApplicationContextManager()
+  public void HttpContextAndCircuitExist_UseBlazor()
   {
     var services = new ServiceCollection();
     services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
@@ -70,20 +70,21 @@ public class ContextManagerTests
     var serviceProvider = services.BuildServiceProvider();
 
     var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();
-    activeState.CircuitExists = false;
+    activeState.CircuitExists = true;
 
     var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
     Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor));
   }
 
   [TestMethod]
-  public void UseAspNetCoreApplicationContextManager()
+  public void HttpContextAndNoCircuit_UseHttpContext()
   {
     var services = new ServiceCollection();
     services.AddScoped<AuthenticationStateProvider, AuthenticationStateProviderFake>();
     services.AddScoped<IHttpContextAccessor, HttpContextAccessorFake>();
     services.AddCsla(o => o
-      .AddAspNetCore());
+      .AddAspNetCore()
+      .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
     var serviceProvider = services.BuildServiceProvider();
 
     var activeState = serviceProvider.GetRequiredService<AspNetCore.Blazor.ActiveCircuitState>();

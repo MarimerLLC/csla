@@ -34,31 +34,34 @@ namespace Csla.Channels.Local
       Options = options;
     }
 
-    private void InitializeContext()
+    private void InitializeContext(out Server.IDataPortalServer _portal, out IServiceScope _logicalServerScope, out ApplicationContext _logicalServerApplicationContext)
     {
-      var currentServiceProvider = OriginalApplicationContext.CurrentServiceProvider;
+      var logicalServerServiceProvider = OriginalApplicationContext.CurrentServiceProvider;
 
       if (Options.UseLocalScope
-        && OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
-        && OriginalApplicationContext.IsAStatefulContextManager)
+          && OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
+          && OriginalApplicationContext.IsAStatefulContextManager)
       {
         // create new DI scope and provider
-        _scope = OriginalApplicationContext.CurrentServiceProvider.CreateScope();
-        currentServiceProvider = _scope.ServiceProvider;
+        _logicalServerScope = OriginalApplicationContext.CurrentServiceProvider.CreateScope();
+        logicalServerServiceProvider = _logicalServerScope.ServiceProvider;
 
         // set runtime info to reflect that we're in a logical server-side
         // data portal operation, so this "runtime" is stateless and
         // we can't count on HttpContext
-        var runtimeInfo = currentServiceProvider.GetRequiredService<IRuntimeInfo>();
-        runtimeInfo.LocalProxyNewScopeExists = true;
+        var serverRuntimeInfo = logicalServerServiceProvider.GetRequiredService<IRuntimeInfo>();
+        serverRuntimeInfo.LocalProxyNewScopeExists = true;
+      }
+      else
+      {
+        _logicalServerScope = null;
       }
 
-      CurrentApplicationContext = currentServiceProvider.GetRequiredService<ApplicationContext>();
-      _portal = currentServiceProvider.GetRequiredService<Server.IDataPortalServer>();
+      _logicalServerApplicationContext = logicalServerServiceProvider.GetRequiredService<ApplicationContext>();
+      _portal = logicalServerServiceProvider.GetRequiredService<Server.IDataPortalServer>();
     }
 
     private ApplicationContext OriginalApplicationContext { get; set; }
-    private ApplicationContext CurrentApplicationContext { get; set; }
     private readonly LocalProxyOptions Options;
 
     private IServiceScope _scope;
@@ -75,24 +78,24 @@ namespace Csla.Channels.Local
         SetApplicationContext(useApplicationContext, applicationContext);
     }
 
-    private void SetApplicationContext(IUseApplicationContext useApplicationContext, ApplicationContext applicationContext)
+    private void SetApplicationContext(IUseApplicationContext obj, ApplicationContext applicationContext)
     {
       // if there's no isolated scope, there's no reason to 
       // change the object graph's ApplicationContext
       if (!Options.UseLocalScope)
         return;
 
-      if (useApplicationContext != null && !ReferenceEquals(useApplicationContext.ApplicationContext, applicationContext))
+      if (obj != null && !ReferenceEquals(obj.ApplicationContext, applicationContext))
       {
-        useApplicationContext.ApplicationContext = applicationContext;
+        obj.ApplicationContext = applicationContext;
 
-        if (useApplicationContext is IUseFieldManager useFieldManager)
+        if (obj is IUseFieldManager useFieldManager)
           SetApplicationContext(useFieldManager.FieldManager, applicationContext);
 
-        if (useApplicationContext is IUseBusinessRules useBusinessRules)
+        if (obj is IUseBusinessRules useBusinessRules)
           SetApplicationContext(useBusinessRules.BusinessRules, applicationContext);
 
-        if (useApplicationContext is IManageProperties target)
+        if (obj is IManageProperties target)
         {
           foreach (var managedProperty in target.GetManagedProperties())
           {
@@ -124,11 +127,11 @@ namespace Csla.Channels.Local
           }
         }
 
-        if (useApplicationContext is IContainsDeletedList containsDeletedList)
+        if (obj is IContainsDeletedList containsDeletedList)
           foreach (var item in containsDeletedList.DeletedList)
             SetApplicationContext(item, applicationContext);
 
-        if (useApplicationContext is IEnumerable list)
+        if (obj is IEnumerable list)
           foreach (var item in list)
             SetApplicationContext(item, applicationContext);
       }
@@ -140,19 +143,27 @@ namespace Csla.Channels.Local
     /// context manager, thus resetting the entire resulting
     /// object graph to use the original context manager.
     /// </summary>
-    private void ResetApplicationContext()
+    private void ResetApplicationContext(ApplicationContext LogicalServerApplicationContext)
     {
       if (Options.UseLocalScope)
-        CurrentApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
+      {
+        if (LogicalServerApplicationContext is not null
+            && LogicalServerApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
+        {
+          RestoringClientSideApplicationContext(LogicalServerApplicationContext, OriginalApplicationContext);
+        }
+
+        LogicalServerApplicationContext.ApplicationContextAccessor = OriginalApplicationContext.ApplicationContextAccessor;
+      }
     }
 
-    private async Task DisposeScope()
+    private async Task DisposeScope(IServiceScope _logicalServerScope)
     {
-      if (_scope is IAsyncDisposable asyncDisposable)
+      if (_logicalServerScope is IAsyncDisposable asyncDisposable)
         await asyncDisposable.DisposeAsync();
-      _scope?.Dispose();
-      _scope = null;
+      _logicalServerScope?.Dispose();
     }
+
 
     /// <summary>
     /// Called by <see cref="DataPortal" /> to create a
@@ -167,11 +178,12 @@ namespace Csla.Channels.Local
     public async Task<DataPortalResult> Create(
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      IServiceScope _logicalServerScope = null;
       DataPortalResult result;
       try
       {
-        InitializeContext();
-        SetApplicationContext(criteria, CurrentApplicationContext);
+        InitializeContext(out var _portal, out _logicalServerScope, out var _logicalServerApplicationContext);
+        SetApplicationContext(criteria, _logicalServerApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
           result = await _portal.Create(objectType, criteria, context, isSync);
@@ -179,19 +191,22 @@ namespace Csla.Channels.Local
         else
         {
           if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-            result = await Task.Run(() => this._portal.Create(objectType, criteria, context, isSync));
+            result = await Task.Run(() => _portal.Create(objectType, criteria, context, isSync));
           else
-            result = await await Task.Factory.StartNew(() => this._portal.Create(objectType, criteria, context, isSync),
+            result = await await Task.Factory.StartNew(() => _portal.Create(objectType, criteria, context, isSync),
               CancellationToken.None,
               TaskCreationOptions.None,
               TaskScheduler.FromCurrentSynchronizationContext());
         }
-        ResetApplicationContext();
+        ResetApplicationContext(_logicalServerApplicationContext);
       }
       finally
       {
-        await DisposeScope();
+        await DisposeScope(_logicalServerScope);
       }
+
+      var operation = DataPortalOperations.Create;
+
       return result;
     }
 
@@ -207,11 +222,12 @@ namespace Csla.Channels.Local
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      IServiceScope _logicalServerScope = null;
       DataPortalResult result;
       try
       {
-        InitializeContext();
-        SetApplicationContext(criteria, CurrentApplicationContext);
+        InitializeContext(out var _portal, out _logicalServerScope, out var _logicalServerApplicationContext);
+        SetApplicationContext(criteria, _logicalServerApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
           result = await _portal.Fetch(objectType, criteria, context, isSync);
@@ -219,19 +235,22 @@ namespace Csla.Channels.Local
         else
         {
           if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-            result = await Task.Run(() => this._portal.Fetch(objectType, criteria, context, isSync));
+            result = await Task.Run(() => _portal.Fetch(objectType, criteria, context, isSync));
           else
-            result = await await Task.Factory.StartNew(() => this._portal.Fetch(objectType, criteria, context, isSync),
+            result = await await Task.Factory.StartNew(() => _portal.Fetch(objectType, criteria, context, isSync),
               CancellationToken.None,
               TaskCreationOptions.None,
               TaskScheduler.FromCurrentSynchronizationContext());
         }
-        ResetApplicationContext();
+        ResetApplicationContext(_logicalServerApplicationContext);
       }
       finally
       {
-        await DisposeScope();
+        await DisposeScope(_logicalServerScope);
       }
+
+      var operation = DataPortalOperations.Fetch;
+
       return result;
     }
 
@@ -246,11 +265,12 @@ namespace Csla.Channels.Local
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      IServiceScope _logicalServerScope = null;
       DataPortalResult result;
       try
       {
-        InitializeContext();
-        SetApplicationContext(obj, CurrentApplicationContext);
+        InitializeContext(out var _portal, out _logicalServerScope, out var _logicalServerApplicationContext);
+        SetApplicationContext(obj, _logicalServerApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
           result = await _portal.Update(obj, context, isSync);
@@ -258,19 +278,22 @@ namespace Csla.Channels.Local
         else
         {
           if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-            result = await Task.Run(() => this._portal.Update(obj, context, isSync));
+            result = await Task.Run(() => _portal.Update(obj, context, isSync));
           else
-            result = await await Task.Factory.StartNew(() => this._portal.Update(obj, context, isSync),
+            result = await await Task.Factory.StartNew(() => _portal.Update(obj, context, isSync),
               CancellationToken.None,
               TaskCreationOptions.None,
               TaskScheduler.FromCurrentSynchronizationContext());
         }
-        ResetApplicationContext();
+        ResetApplicationContext(_logicalServerApplicationContext);
       }
       finally
       {
-        await DisposeScope();
+        await DisposeScope(_logicalServerScope);
       }
+
+      var operation = DataPortalOperations.Update;
+
       return result;
     }
 
@@ -286,11 +309,12 @@ namespace Csla.Channels.Local
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      IServiceScope _logicalServerScope = null;
       DataPortalResult result;
       try
       {
-        InitializeContext();
-        SetApplicationContext(criteria, CurrentApplicationContext);
+        InitializeContext(out var _portal, out _logicalServerScope, out var _logicalServerApplicationContext);
+        SetApplicationContext(criteria, _logicalServerApplicationContext);
         if (isSync || OriginalApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
         {
           result = await _portal.Delete(objectType, criteria, context, isSync);
@@ -298,19 +322,22 @@ namespace Csla.Channels.Local
         else
         {
           if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
-            result = await Task.Run(() => this._portal.Delete(objectType, criteria, context, isSync));
+            result = await Task.Run(() => _portal.Delete(objectType, criteria, context, isSync));
           else
-            result = await await Task.Factory.StartNew(() => this._portal.Delete(objectType, criteria, context, isSync),
+            result = await await Task.Factory.StartNew(() => _portal.Delete(objectType, criteria, context, isSync),
               CancellationToken.None,
               TaskCreationOptions.None,
               TaskScheduler.FromCurrentSynchronizationContext());
         }
-        ResetApplicationContext();
+        ResetApplicationContext(_logicalServerApplicationContext);
       }
       finally
       {
-        await DisposeScope();
+        await DisposeScope(_logicalServerScope);
       }
+
+      var operation = DataPortalOperations.Delete;
+
       return result;
     }
 
@@ -322,6 +349,17 @@ namespace Csla.Channels.Local
     public bool IsServerRemote
     {
       get { return false; }
+    }
+
+    /// <summary>
+    /// Method called once when execution returns to <see cref="ApplicationContext.LogicalExecutionLocations.Client"/> after a call to 
+    /// the dataportal.  Only called when <see cref="LocalProxyOptions.UseLocalScope"/> is true.
+    /// </summary>
+    /// <param name="serverScopedApplicationContext">Context created in a new scope for use during logical server side operations</param>
+    /// <param name="clientSideApplicationContext">Original context from the client side</param>
+    protected virtual void RestoringClientSideApplicationContext(ApplicationContext serverScopedApplicationContext, ApplicationContext clientSideApplicationContext)
+    {
+
     }
   }
 }

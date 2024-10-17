@@ -36,6 +36,10 @@ namespace Csla.Blazor.WebAssembly.State
     /// </summary>
     public Session GetCachedSession()
     {
+      if (!_options.SyncContextWithServer && _session == null)
+      {
+        _session = GetSession();
+      }
       return _session;
     }
 

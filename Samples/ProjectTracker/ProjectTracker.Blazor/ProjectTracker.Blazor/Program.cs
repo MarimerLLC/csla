@@ -1,7 +1,6 @@
 using Csla.Configuration;
+using Marimer.Blazor.RenderMode;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Components.Server.Circuits;
-using ProjectTracker.Blazor;
 using ProjectTracker.Blazor.Components;
 using ProjectTracker.Configuration;
 
@@ -20,9 +19,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddCascadingAuthenticationState();
 
 // Add render mode detection services
-builder.Services.AddTransient<RenderModeProvider>();
-builder.Services.AddScoped<ActiveCircuitState>();
-builder.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
+builder.Services.AddRenderModeDetection();
 
 // CSLA requires AddHttpContextAccessor
 builder.Services.AddHttpContextAccessor();

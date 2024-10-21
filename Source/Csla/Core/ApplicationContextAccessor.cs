@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Provides access to the correct current application</summary>
 //-----------------------------------------------------------------------
+#nullable enable
 
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,14 +41,10 @@ namespace Csla.Core
           break;
         }
       }
-      if (ContextManager is null)
-      {
-        throw new InvalidOperationException("ContextManager == null");
-      }
     }
 
     internal IServiceProvider ServiceProvider { get; }
-    private IContextManager ContextManager { get; set; }
+    private IContextManager? ContextManager { get; set; }
     private IContextManager LocalContextManager { get; set; }
 
     /// <summary>
@@ -57,7 +54,7 @@ namespace Csla.Core
     public IContextManager GetContextManager()
     {
       var runtimeInfo = ServiceProvider.GetRequiredService<IRuntimeInfo>();
-      if (!runtimeInfo.LocalProxyNewScopeExists)
+      if (ContextManager != null && !runtimeInfo.LocalProxyNewScopeExists)
         return ContextManager;
       else
         return LocalContextManager;

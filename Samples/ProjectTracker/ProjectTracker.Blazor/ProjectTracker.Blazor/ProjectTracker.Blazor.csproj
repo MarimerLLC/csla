@@ -7,18 +7,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Identity\**" />
+    <Content Remove="Identity\**" />
+    <EmbeddedResource Remove="Identity\**" />
+    <None Remove="Identity\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary\ProjectTracker.BusinessLibrary.csproj" />
     <ProjectReference Include="..\..\ProjectTracker.DalEfCore\ProjectTracker.DalEfCore.csproj" />
     <ProjectReference Include="..\..\ProjectTracker.DalMock\ProjectTracker.DalMock.csproj" />
     <ProjectReference Include="..\..\ProjectTracker.Dal\ProjectTracker.Dal.csproj" />
     <ProjectReference Include="..\ProjectTracker.Blazor.Client\ProjectTracker.Blazor.Client.csproj" />
+    <PackageReference Include="Marimer.Blazor.RenderMode" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
     <PackageReference Include="Csla.AspNetCore" />
     <PackageReference Include="Csla.Blazor" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Identity\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

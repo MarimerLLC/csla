@@ -114,14 +114,7 @@ namespace Csla.AspNetCore.Blazor
     /// context manager is valid for use in
     /// the current environment.
     /// </summary>
-    public bool IsValid
-    {
-      get
-      {
-        var result = ActiveCircuitState.CircuitExists;
-        return result;
-      }
-    }
+    public bool IsValid => ActiveCircuitState.CircuitExists;
 
     /// <summary>
     /// Gets a value indicating whether the context manager

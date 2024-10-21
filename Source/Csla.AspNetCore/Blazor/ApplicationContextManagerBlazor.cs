@@ -139,11 +139,14 @@ namespace Csla.AspNetCore.Blazor
       ArgumentNullException.ThrowIfNull(principal);
       if (HttpContext != null)
       {
-        HttpContext.User = (ClaimsPrincipal)principal;
+        if (principal is ClaimsPrincipal claimsPrincipal)
+          HttpContext.User = claimsPrincipal;
+        else
+          throw new NotSupportedException($"{nameof(SetUser)}: {nameof(principal)}.GetType() != {nameof(ClaimsPrincipal)}");
       }
       else
       {
-        throw new NotSupportedException(nameof(SetUser));
+        throw new NotSupportedException($"{nameof(SetUser)}: {nameof(HttpContext)} == null");
       }
     }
 

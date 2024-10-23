@@ -38,7 +38,13 @@ namespace Csla.State
     /// Raise PropertyChanged event.
     /// </summary>
     /// <param name="propertyName"></param>
-    protected virtual void OnPropertyChanged(string propertyName) 
-      => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
   }
 }

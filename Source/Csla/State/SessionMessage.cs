@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Security.Claims;
+using Csla.Serialization.Mobile;
 
 namespace Csla.State;
 
@@ -25,20 +26,38 @@ public class SessionMessage : CommandBase<SessionMessage>
   /// </summary>
   public Session Session
   {
-    get => ReadProperty(SessionProperty);
-    set => LoadProperty(SessionProperty, value);
+    get => ReadProperty(SessionProperty)!;
+    set => LoadProperty(SessionProperty, value ?? throw new ArgumentNullException(nameof(Session)));
   }
 
   /// <summary>
   /// User principal data
   /// </summary>
-  public static readonly PropertyInfo<ClaimsPrincipal> PrincipalProperty = RegisterProperty<ClaimsPrincipal>(nameof(Principal));
+  public static readonly PropertyInfo<ClaimsPrincipal?> PrincipalProperty = RegisterProperty<ClaimsPrincipal?>(nameof(Principal));
   /// <summary>
   /// User principal data
   /// </summary>
-  public ClaimsPrincipal Principal
+  public ClaimsPrincipal? Principal
   {
     get => ReadProperty(PrincipalProperty);
     set => LoadProperty(PrincipalProperty, value);
+  }
+
+  /// <summary>
+  /// Initializes a new instance of <see cref="SessionMessage"/>.
+  /// </summary>
+  /// <param name="session"></param>
+  /// <exception cref="ArgumentNullException"><paramref name="session"/> is <see langword="null"/>.</exception>
+  public SessionMessage(Session session)
+  {
+    Session = session ?? throw new ArgumentNullException(nameof(session));
+  }
+
+  /// <summary>
+  /// Initializes a new instance of <see cref="SessionMessage"/>.
+  /// </summary>
+  [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+  public SessionMessage()
+  {
   }
 }

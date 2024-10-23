@@ -47,8 +47,7 @@ namespace Csla.AspNetCore.Blazor.State
       }
       else
       {
-        var message = (SessionMessage)applicationContext.CreateInstanceDI(typeof(SessionMessage));
-        message.Session = session;
+        var message = applicationContext.CreateInstanceDI< SessionMessage>(session);
         if (FlowUserIdentityToWebAssembly)
         {
           message.Principal = applicationContext.Principal;

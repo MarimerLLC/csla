@@ -34,7 +34,6 @@ namespace Csla.Test.AppContext
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void UseDefaultApplicationContextManager()
     {
       var services = new ServiceCollection();
@@ -45,6 +44,7 @@ namespace Csla.Test.AppContext
       var serviceProvider = services.BuildServiceProvider();
 
       var applicationContext = serviceProvider.GetRequiredService<ApplicationContext>();
+      Assert.IsInstanceOfType(applicationContext.ContextManager, typeof(ApplicationContextManagerAsyncLocal));
     }
 
     [TestMethod]

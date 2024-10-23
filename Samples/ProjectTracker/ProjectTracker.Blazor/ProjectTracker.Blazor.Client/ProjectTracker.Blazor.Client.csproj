@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary\ProjectTracker.BusinessLibrary.csproj" />
+    <PackageReference Include="Marimer.Blazor.RenderMode.WebAssembly" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <PackageReference Include="Csla.Blazor" />
     <PackageReference Include="Csla.Blazor.WebAssembly" />

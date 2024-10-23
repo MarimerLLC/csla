@@ -16,6 +16,7 @@ using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
 
 namespace Csla.Core.FieldManager
 {
@@ -769,9 +770,10 @@ namespace Csla.Core.FieldManager
     {
       foreach (IFieldData? data in _fieldData)
       {
-        if (data?.Value is IMobileObject mobile)
+        var serializable = formatter.IsTypeSerializable(data?.Value?.GetType());
+        if (serializable)
         {
-          SerializationInfo childInfo = formatter.SerializeObject(mobile);
+          SerializationInfo childInfo = formatter.SerializeObject(data?.Value);
           info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
         }
       }

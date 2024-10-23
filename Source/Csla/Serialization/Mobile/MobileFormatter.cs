@@ -6,6 +6,7 @@
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
 
+using System.ComponentModel.DataAnnotations;
 using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
@@ -385,7 +386,19 @@ namespace Csla.Serialization.Mobile
 
       return DeserializeAsDTO(data);
     }
-#endregion
+    #endregion
 
+    /// <summary>
+    /// Determines whether the specified type can be serialized as a child.
+    /// </summary>
+    /// <param name="type">The type to check.</param>
+    /// <returns></returns>
+    public bool IsTypeSerializable(Type type)
+    {
+      if (typeof(IMobileObject).IsAssignableFrom(type))
+        return true;
+      var options = GetOptions();
+      return options.CustomSerializers.Any(s => s.CanSerialize(type));
+    }
   }
 }

@@ -15,16 +15,18 @@ namespace Csla.Server
     /// </summary>
     public interface IDataPortalExceptionInspector
     {
-        /// <summary>
-        /// Inspects the exception that occurred during DataPortal call
-        /// If you want to transform to/return another Exception to the client
-        /// you must throw the new Exception in this method.
-        /// </summary>
-        /// <param name="objectType">Type of the object.</param>
-        /// <param name="businessObject">The business object , if available.</param>
-        /// <param name="criteria">The criteria.</param>
-        /// <param name="methodName">Name of the method.</param>
-        /// <param name="ex">The exception.</param>
-        void InspectException(Type objectType, object businessObject, object criteria, string methodName, Exception ex);
+    /// <summary>
+    /// Inspects the exception that occurred during DataPortal call
+    /// If you want to transform to/return another Exception to the client
+    /// you must throw the new Exception in this method.
+    /// </summary>
+    /// <param name="objectType">Type of the object.</param>
+    /// <param name="businessObject">The business object , if available.</param>
+    /// <param name="criteria">The criteria.</param>
+    /// <param name="methodName">Name of the method.</param>
+    /// <param name="ex">The exception.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="ex"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    void InspectException(Type objectType, object? businessObject, object? criteria, string methodName, Exception ex);
     }
 }

@@ -48,14 +48,35 @@ namespace Csla.Reflection
     /// <param name="target">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-    public ServiceProviderMethodInfo? FindDataPortalMethod<T>(object target, object?[]? criteria)
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
       if (target == null)
         throw new ArgumentNullException(nameof(target));
 
       var targetType = target.GetType();
-      return FindDataPortalMethod<T>(targetType, criteria);
+      return FindDataPortalMethod<T>(targetType, criteria, true)!;
+    }
+
+    /// <summary>
+    /// Find a method based on data portal criteria
+    /// and providing any remaining parameters with
+    /// values from an IServiceProvider
+    /// </summary>
+    /// <typeparam name="T">Type of attribute to look for</typeparam>
+    /// <param name="targetType">Type of domain object</param>
+    /// <param name="criteria">Data portal criteria values</param>
+    /// <param name="dataPortalMethod">The maybe found method.</param>
+    /// <returns><see langword="true"/> if a method with the provided attribute was found. Otherwise <see langword="false"/>.</returns>
+    public bool TryFindDataPortalMethod<T>(Type targetType, object?[]? criteria,
+#if NET8_0_OR_GREATER
+      [NotNullWhen(true)]
+#endif
+      out ServiceProviderMethodInfo? dataPortalMethod)
+      where T : DataPortalOperationAttribute
+    {
+      dataPortalMethod = FindDataPortalMethod<T>(targetType, criteria, false);
+      return dataPortalMethod != null;
     }
 
     /// <summary>
@@ -68,7 +89,7 @@ namespace Csla.Reflection
     /// <param name="throwOnError">Throw exceptions on error</param>
     /// <returns>The <see cref="ServiceProviderMethodInfo"/> of the data portal method if found. Does not return <see langword="null"/> if <paramref name="throwOnError"/> is <see langword="true"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
-    public ServiceProviderMethodInfo? FindDataPortalMethod<T>(Type targetType, object?[]? criteria, bool throwOnError = true)
+    private ServiceProviderMethodInfo? FindDataPortalMethod<T>(Type targetType, object?[]? criteria, bool throwOnError)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)

@@ -39,8 +39,12 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Object on which to operate.</param>
     /// <param name="value">New value for IsReadOnly.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void SetIsReadOnly(object obj, bool value)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IReadOnlyBindingList list)
         list.IsReadOnly = value;
     }
@@ -52,8 +56,12 @@ namespace Csla.Server
     /// <param name="obj">
     /// Object on which to call the method.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void CheckRules(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IDataPortalTarget target)
         target.CheckRules();
       else
@@ -67,8 +75,12 @@ namespace Csla.Server
     /// <param name="obj">
     /// Object on which to call the method.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected async Task CheckRulesAsync(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IDataPortalTarget target)
         await target.CheckRulesAsync().ConfigureAwait(false);
       else
@@ -80,8 +92,12 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Object on which to call the method.</param>
     /// <returns>void</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected async Task WaitForIdle(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
       await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds).ToCancellationToken()).ConfigureAwait(false);
     }
@@ -92,8 +108,12 @@ namespace Csla.Server
     /// <param name="obj">Object on which to call the method.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>void</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected async Task WaitForIdle(object obj, CancellationToken ct)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IDataPortalTarget target)
       {
         await target.WaitForIdle(ct).ConfigureAwait(false);
@@ -115,8 +135,12 @@ namespace Csla.Server
     /// <param name="obj">
     /// Object on which to call the method.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void MarkOld(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IDataPortalTarget target)
         target.MarkOld();
       else
@@ -130,8 +154,12 @@ namespace Csla.Server
     /// <param name="obj">
     /// Object on which to call the method.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void MarkNew(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IDataPortalTarget target)
         target.MarkNew();
       else
@@ -145,8 +173,12 @@ namespace Csla.Server
     /// <param name="obj">
     /// Object on which to call the method.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void MarkAsChild(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IDataPortalTarget target)
         target.MarkAsChild();
       else
@@ -172,8 +204,14 @@ namespace Csla.Server
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P? newValue)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if (obj is IManageProperties target)
         target.LoadProperty<P>(propertyInfo, newValue);
       else
@@ -218,8 +256,14 @@ namespace Csla.Server
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>
-    protected P ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P? ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
       else
@@ -234,8 +278,14 @@ namespace Csla.Server
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>
-    protected object ReadProperty(object obj, IPropertyInfo propertyInfo)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected object? ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
       else
@@ -257,8 +307,12 @@ namespace Csla.Server
     /// bypassing of normal authorization checks during
     /// property setting.
     /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="businessObject"/> is <see langword="null"/>.</exception>
     protected IDisposable BypassPropertyChecks(Csla.Core.BusinessBase businessObject)
     {
+      if (businessObject is null)
+        throw new ArgumentNullException(nameof(businessObject));
+
       return businessObject.BypassPropertyChecks;
     }
 
@@ -268,8 +322,14 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Business object.</param>
     /// <param name="property">Property info object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="property"/> is <see langword="null"/>.</exception>
     protected bool FieldExists(object obj, Csla.Core.IPropertyInfo property)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
       if (obj is IManageProperties target)
         return target.FieldExists(property);
       else
@@ -280,10 +340,14 @@ namespace Csla.Server
     /// Gets the list of deleted items from 
     /// an editable collection.
     /// </summary>
-    /// <typeparam name="C">Type of child objects in the colletion.</typeparam>
+    /// <typeparam name="C">Type of child objects in the collection.</typeparam>
     /// <param name="obj">Editable collection object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected Csla.Core.MobileList<C> GetDeletedList<C>(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       if (obj is IEditableCollection target)
         return (Csla.Core.MobileList<C>)target.GetDeletedList();
       else

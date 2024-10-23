@@ -10,6 +10,7 @@ using System.Security.Principal;
 using Csla.Core;
 using Csla.Configuration;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Server
 {
@@ -23,13 +24,13 @@ namespace Csla.Server
     [NonSerialized]
     private TransactionalTypes _transactionalType;
     [NonSerialized]
-    private ObjectFactoryAttribute _factoryInfo;
+    private ObjectFactoryAttribute? _factoryInfo;
 
     /// <summary>
     /// The current principal object
     /// if CSLA security is being used.
     /// </summary>
-    public IPrincipal Principal { get; private set; }
+    public IPrincipal? Principal { get; private set; }
 
     /// <summary>
     /// Returns true if the 
@@ -50,7 +51,7 @@ namespace Csla.Server
     /// </summary>
     public string ClientUICulture { get; private set; }
 
-    internal IContextDictionary ClientContext { get; private set; }
+    internal IContextDictionary? ClientContext { get; private set; }
 
     /// <summary>
     /// Gets the current transactional type. Only valid
@@ -69,7 +70,7 @@ namespace Csla.Server
     /// data portal methods after the attribute
     /// value has been determined.
     /// </summary>
-    public ObjectFactoryAttribute FactoryInfo
+    public ObjectFactoryAttribute? FactoryInfo
     {
       get { return _factoryInfo; }
       internal set { _factoryInfo = value; }
@@ -85,9 +86,10 @@ namespace Csla.Server
     /// </summary>
     /// <param name="applicationContext">ApplicationContext instance.</param>
     /// <param name="isRemotePortal">Indicates whether the DataPortal is remote.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public DataPortalContext(ApplicationContext applicationContext, bool isRemotePortal)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       Principal = GetPrincipal(applicationContext, isRemotePortal);
       IsRemotePortal = isRemotePortal;
       ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
@@ -104,23 +106,27 @@ namespace Csla.Server
     /// <param name="clientContext">Client context.</param>
     /// <param name="clientCulture">Client culture.</param>
     /// <param name="clientUICulture">Client UI culture.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="principal"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="clientContext"/> is <see langword="null"/>.</exception>
     public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, IContextDictionary clientContext)
     {
-      _applicationContext = applicationContext;
-      Principal = principal;
-      ClientContext = clientContext;
-      ClientCulture = clientCulture;
-      ClientUICulture = clientUICulture;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      Principal = principal ?? throw new ArgumentNullException(nameof(principal));
+      ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
+      ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));
+      ClientUICulture = clientUICulture ?? throw new ArgumentNullException(nameof(clientUICulture));
       IsRemotePortal = isRemotePortal;
     }
 
     /// <summary>
     /// Default constructor for use by SerializationFormatterFactory.GetFormatter().
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public DataPortalContext()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     { }
 
-    private IPrincipal GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
+    private IPrincipal? GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
     {
       var securityOptions = applicationContext.GetRequiredService<SecurityOptions>();
       if (isRemotePortal && !securityOptions.FlowSecurityPrincipalFromClient)
@@ -150,10 +156,10 @@ namespace Csla.Server
 
     void Serialization.Mobile.IMobileObject.SetState(Serialization.Mobile.SerializationInfo info)
     {
-      Principal = (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(info.GetValue<byte[]>("principal"));
-      ClientContext = (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(info.GetValue<byte[]>("clientContext"));
-      ClientCulture = info.GetValue<string>("clientCulture");
-      ClientUICulture = info.GetValue<string>("clientUICulture");
+      Principal = (IPrincipal?)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(info.GetValue<byte[]>("principal")!);
+      ClientContext = (IContextDictionary?)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(info.GetValue<byte[]>("clientContext")!);
+      ClientCulture = info.GetValue<string>("clientCulture")!;
+      ClientUICulture = info.GetValue<string>("clientUICulture")!;
       IsRemotePortal = info.GetValue<bool>("isRemotePortal");
     }
 

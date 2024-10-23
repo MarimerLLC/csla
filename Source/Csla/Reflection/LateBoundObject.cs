@@ -212,7 +212,7 @@ namespace Csla.Reflection
         throw new ArgumentNullException(nameof(parameters));
       ThrowInvalidOperationExceptionWhenApplicationContextIsNull();
 
-      var method = ServiceProviderMethodCaller.FindDataPortalMethod<T>(Instance, parameters)!;
+      var method = ServiceProviderMethodCaller.FindDataPortalMethod<T>(Instance, parameters);
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext!, isSync, method.MethodInfo);
@@ -228,6 +228,9 @@ namespace Csla.Reflection
       }
     }
 
+#if NET8_0_OR_GREATER
+    [MemberNotNull(nameof(_applicationContext))]
+#endif
     private void ThrowInvalidOperationExceptionWhenApplicationContextIsNull()
     {
       if (_applicationContext is null)

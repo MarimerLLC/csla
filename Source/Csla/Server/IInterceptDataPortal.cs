@@ -15,6 +15,7 @@
     /// authorization.
     /// </summary>
     /// <param name="e"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     Task InitializeAsync(InterceptArgs e);
     /// <summary>
     /// Invoked at the end of each server-side
@@ -22,6 +23,7 @@
     /// and exception scenarios.
     /// </summary>
     /// <param name="e"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     void Complete(InterceptArgs e);
   }
 
@@ -34,34 +36,34 @@
     /// <summary>
     /// Gets or sets the business object type.
     /// </summary>
-    public Type ObjectType { get; set; }
+    public Type ObjectType { get; }
     /// <summary>
     /// Gets or sets the criteria or business
-    /// object paramter provided to the
+    /// object parameter provided to the
     /// data portal from the client.
     /// </summary>
-    public object Parameter { get; set; }
+    public object? Parameter { get; }
     /// <summary>
     /// Gets or sets the business object
     /// resulting from the data portal
     /// operation.
     /// </summary>
-    public DataPortalResult Result { get; set; }
+    public DataPortalResult? Result { get; }
     /// <summary>
     /// Gets or sets the exception that occurred
     /// during data portal processing.
     /// </summary>
-    public Exception Exception { get; set; }
+    public Exception? Exception { get; }
     /// <summary>
     /// Gets or sets the data portal operation
     /// being performed.
     /// </summary>
-    public DataPortalOperations Operation { get; set; }
+    public DataPortalOperations Operation { get; }
     /// <summary>
     /// Gets or sets a value indicating whether
     /// the data portal was invoked synchronously.
     /// </summary>
-    public bool IsSync { get; set; }
+    public bool IsSync { get; }
 
     /// <summary>
     /// Gets or sets a value containing the elapsed
@@ -69,5 +71,49 @@
     /// of operation).
     /// </summary>
     public TimeSpan Runtime { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="InterceptArgs"/>-object.
+    /// </summary>
+    /// <param name="objectType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="result"></param>
+    /// <param name="operation"></param>
+    /// <param name="isSync"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="result"/> is <see langword="null"/>.</exception>
+    public InterceptArgs(Type objectType, object? parameter, DataPortalResult result, DataPortalOperations operation, bool isSync) : this(objectType, parameter, operation, isSync)
+    {
+      Result = result ?? throw new ArgumentNullException(nameof(result));
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="InterceptArgs"/>-object.
+    /// </summary>
+    /// <param name="objectType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="exception"></param>
+    /// <param name="operation"></param>
+    /// <param name="isSync"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="exception"/> is <see langword="null"/>.</exception>
+    public InterceptArgs(Type objectType, object? parameter, Exception exception, DataPortalOperations operation, bool isSync) : this(objectType, parameter, operation, isSync)
+    {
+      Exception = exception ?? throw new ArgumentNullException(nameof(exception));
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="InterceptArgs"/>-object.
+    /// </summary>
+    /// <param name="objectType"></param>
+    /// <param name="parameter"></param>
+    /// <param name="operation"></param>
+    /// <param name="isSync"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    public InterceptArgs(Type objectType, object? parameter, DataPortalOperations operation, bool isSync)
+    {
+      ObjectType = objectType ?? throw new ArgumentNullException(nameof(objectType));
+      Parameter = parameter;
+      Operation = operation;
+      IsSync = isSync;
+    }
   }
 }

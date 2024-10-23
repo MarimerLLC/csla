@@ -32,7 +32,7 @@ namespace Csla.Server
     /// Factory class must have a parameterless 
     /// default constructor.
     /// </remarks>
-    public string FactoryTypeName { get; private set; }
+    public string FactoryTypeName { get; }
     /// <summary>
     /// Name of the method to call for a create operation.
     /// </summary>
@@ -40,7 +40,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string CreateMethodName { get; private set; }
+    public string CreateMethodName { get; }
     /// <summary>
     /// Name of the method to call for a fetch operation.
     /// </summary>
@@ -48,7 +48,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string FetchMethodName { get; private set; }
+    public string FetchMethodName { get; }
     /// <summary>
     /// Name of the method to call for a update operation.
     /// </summary>
@@ -56,7 +56,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string UpdateMethodName { get; private set; }
+    public string UpdateMethodName { get; }
     /// <summary>
     /// Name of the method to call for a delete operation.
     /// </summary>
@@ -64,7 +64,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string DeleteMethodName { get; private set; }
+    public string DeleteMethodName { get; }
     /// <summary>
     /// Name of the method to call for a Execute operation.
     /// </summary>
@@ -72,7 +72,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string ExecuteMethodName { get; private set; }
+    public string ExecuteMethodName { get; }
 
     /// <summary>
     /// Creates an instance of the attribute.
@@ -84,14 +84,23 @@ namespace Csla.Server
     /// The method names default to Create, Fetch,
     /// Update and Delete.
     /// </remarks>
-    public ObjectFactoryAttribute(string factoryType)
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType) : this(factoryType, "Fetch")
     {
-      FactoryTypeName = factoryType;
-      CreateMethodName = "Create";
-      FetchMethodName = "Fetch";
-      UpdateMethodName = "Update";
-      DeleteMethodName = "Delete";
-      ExecuteMethodName = "Execute";
+    }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// Assembly qualified type name of the factory object.
+    /// </param>
+    /// <param name="fetchMethod">
+    /// Name of the method to call for a fetch operation.
+    /// </param>
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/> or <paramref name="fetchMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string fetchMethod) : this(factoryType, "Create", fetchMethod)
+    {
     }
 
     /// <summary>
@@ -105,35 +114,10 @@ namespace Csla.Server
     /// <param name="fetchMethod">
     /// Name of the method to call for a fetch operation.
     /// </param>
-    public ObjectFactoryAttribute(string factoryType, string createMethod, string fetchMethod)
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/>, <paramref name="createMethod"/> or <paramref name="fetchMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string createMethod, string fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
     {
-      FactoryTypeName = factoryType;
-      CreateMethodName = createMethod;
-      FetchMethodName = fetchMethod;
-      UpdateMethodName = "Update";
-      DeleteMethodName = "Delete";
-      ExecuteMethodName = "Execute";
     }
-
-    /// <summary>
-    /// Creates an instance of the attribute.
-    /// </summary>
-    /// <param name="factoryType">
-    /// Assembly qualified type name of the factory object.
-    /// </param>
-    /// <param name="fetchMethod">
-    /// Name of the method to call for a fetch operation.
-    /// </param>
-    public ObjectFactoryAttribute(string factoryType, string fetchMethod)
-    {
-      FactoryTypeName = factoryType;
-      FetchMethodName = fetchMethod;
-      CreateMethodName = "Create";
-      UpdateMethodName = "Update";
-      DeleteMethodName = "Delete";
-      ExecuteMethodName = "Execute";
-    }
-
 
     /// <summary>
     /// Creates an instance of the attribute.
@@ -150,15 +134,9 @@ namespace Csla.Server
     /// Name of the method to call for a update operation.</param>
     /// <param name="deleteMethod">
     /// Name of the method to call for a delete operation.</param>
-    public ObjectFactoryAttribute(
-      string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/>, <paramref name="createMethod"/>, <paramref name="fetchMethod"/>, <paramref name="updateMethod"/> or <paramref name="deleteMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
     {
-      FactoryTypeName = factoryType;
-      CreateMethodName = createMethod;
-      FetchMethodName = fetchMethod;
-      UpdateMethodName = updateMethod;
-      DeleteMethodName = deleteMethod;
-      ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -182,9 +160,22 @@ namespace Csla.Server
     /// <param name="executeMethod">
     /// Name of the method to call for a Execute operation.
     /// </param>
-    public ObjectFactoryAttribute(
-      string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/>, <paramref name="createMethod"/>, <paramref name="fetchMethod"/>, <paramref name="updateMethod"/>, <paramref name="deleteMethod"/> or <paramref name="executeMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
     {
+      if (string.IsNullOrEmpty(factoryType))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(factoryType)), nameof(factoryType));
+      if (string.IsNullOrEmpty(createMethod))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(createMethod)), nameof(createMethod));
+      if (string.IsNullOrEmpty(fetchMethod))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(fetchMethod)), nameof(fetchMethod));
+      if (string.IsNullOrEmpty(updateMethod))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(updateMethod)), nameof(updateMethod));
+      if (string.IsNullOrEmpty(deleteMethod))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(deleteMethod)), nameof(deleteMethod));
+      if (string.IsNullOrEmpty(executeMethod))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(executeMethod)), nameof(executeMethod));
+
       FactoryTypeName = factoryType;
       CreateMethodName = createMethod;
       FetchMethodName = fetchMethod;
@@ -199,9 +190,11 @@ namespace Csla.Server
     /// <param name="factoryType">
     /// The type of factory class or interface.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType)
-      : this(GetAssemblyQualifiedName(factoryType))
-    { }
+      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))))
+    {
+    }
 
     /// <summary>
     /// Creates an instance of the attribute.
@@ -212,8 +205,9 @@ namespace Csla.Server
     /// <param name="fetchMethod">
     /// Name of the method to call for a fetch operation.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string fetchMethod)
-      : this(GetAssemblyQualifiedName(factoryType), fetchMethod)
+      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), fetchMethod)
     { }
 
     /// <summary>
@@ -228,8 +222,9 @@ namespace Csla.Server
     /// <param name="fetchMethod">
     /// Name of the method to call for a fetch operation.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod)
-      : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod)
+      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod)
     { }
 
     /// <summary>
@@ -250,8 +245,9 @@ namespace Csla.Server
     /// <param name="deleteMethod">
     /// Name of the method to call for a delete operation.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
-      : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod, updateMethod, deleteMethod)
+      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod, updateMethod, deleteMethod)
     { }
 
     /// <summary>
@@ -275,8 +271,9 @@ namespace Csla.Server
     /// <param name="executeMethod">
     /// Name of the method to call for a Execute operation.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
-      : this(GetAssemblyQualifiedName(factoryType), createMethod, fetchMethod, updateMethod, deleteMethod, executeMethod)
+      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod, updateMethod, deleteMethod, executeMethod)
     { }
 
     /// <summary>
@@ -287,7 +284,7 @@ namespace Csla.Server
     {
       if (type.IsGenericType)
       {
-        return type.AssemblyQualifiedName;
+        return type.AssemblyQualifiedName ?? string.Empty;
       }
       else
       {

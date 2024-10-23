@@ -18,31 +18,30 @@ namespace Csla.Server
   /// Creates an instance of the type.
   /// </remarks>
   /// <param name="serviceProvider"></param>
+  /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
   public class DefaultDataPortalActivator(IServiceProvider serviceProvider) : IDataPortalActivator
   {
     /// <summary>
     /// Gets a reference to the current DI service provider.
     /// </summary>
-    protected IServiceProvider ServiceProvider { get; } = serviceProvider;
+    protected IServiceProvider ServiceProvider { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
-    /// <summary>
-    /// Gets a new instance of the requested type.
-    /// </summary>
-    /// <param name="requestedType">Requested type (class or interface).</param>
-    /// <param name="parameters">Param array for the constructor</param>
-    /// <returns>Instance of requested type</returns>
+    /// <inheritdoc />
     public virtual object CreateInstance(Type requestedType, params object[] parameters)
     {
-      object result;
+      if (requestedType is null)
+        throw new ArgumentNullException(nameof(requestedType));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var realType = ResolveType(requestedType);
-      if (ServiceProvider != null)
-        result = ActivatorUtilities.CreateInstance(ServiceProvider, realType, parameters);
-      else
-        result = Activator.CreateInstance(realType, parameters);
+      object result = ActivatorUtilities.CreateInstance(ServiceProvider, realType, parameters);
+      
       if (result is IUseApplicationContext tmp)
       {
         tmp.ApplicationContext = ServiceProvider.GetRequiredService<ApplicationContext>();
       }
+
       InitializeInstance(result);
       return result;
     }

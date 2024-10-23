@@ -6,6 +6,8 @@
 // <summary>Response message for returning</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization.Mobile;
+
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>
@@ -37,10 +39,29 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Serialized business object data returned from the server (deserialize with MobileFormatter).
     /// </summary>
+    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] ObjectData
     {
       get { return GetProperty(ObjectDataProperty); }
-      set { LoadProperty(ObjectDataProperty, value); }
+      set { LoadProperty(ObjectDataProperty, value ?? throw new ArgumentNullException(nameof(ObjectData))); }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="DataPortalResponse"/>-object.
+    /// </summary>
+    /// <param name="objectData"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectData"/> is <see langword="null"/>.</exception>
+    public DataPortalResponse(byte[] objectData)
+    {
+      ObjectData = objectData ?? throw new ArgumentNullException(nameof(objectData));
+    }
+
+    /// <summary>
+    /// Initializes an empty instance for <see cref="MobileFormatter"/>.
+    /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+    public DataPortalResponse()
+    {
     }
   }
 }

@@ -16,6 +16,11 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalSelector : IDataPortalServer
   {
+    private readonly ApplicationContext _applicationContext;
+    private SimpleDataPortal SimpleDataPortal { get; }
+    private FactoryDataPortal FactoryDataPortal { get; }
+    private Configuration.DataPortalOptions DataPortalOptions { get; }
+
     /// <summary>
     /// 
     /// </summary>
@@ -23,28 +28,16 @@ namespace Csla.Server
     /// <param name="simpleDataPortal"></param>
     /// <param name="factoryDataPortal"></param>
     /// <param name="dataPortalOptions"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="simpleDataPortal"/>, <paramref name="factoryDataPortal"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortalSelector(ApplicationContext applicationContext, SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal, Configuration.DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext;
-      SimpleDataPortal = simpleDataPortal;
-      FactoryDataPortal = factoryDataPortal;
-      DataPortalOptions = dataPortalOptions;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      SimpleDataPortal = simpleDataPortal ?? throw new ArgumentNullException(nameof(simpleDataPortal));
+      FactoryDataPortal = factoryDataPortal ?? throw new ArgumentNullException(nameof(factoryDataPortal));
+      DataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
 
-    private ApplicationContext _applicationContext;
-    private SimpleDataPortal SimpleDataPortal { get; set; }
-    private FactoryDataPortal FactoryDataPortal { get; set; }
-    private Configuration.DataPortalOptions DataPortalOptions { get; set; }
-
-    /// <summary>
-    /// Create a new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
@@ -71,15 +64,7 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Get an existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
@@ -111,14 +96,7 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Update a business object.
-    /// </summary>
-    /// <param name="obj">Business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       try
@@ -145,15 +123,7 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Delete a business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try

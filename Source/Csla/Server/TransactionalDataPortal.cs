@@ -32,10 +32,11 @@ namespace Csla.Server
     /// <param name="transactionalAttribute">
     /// The transactional attribute that defines transaction options to be used with transactions.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> or <paramref name="transactionalAttribute"/> is <see langword="null"/>.</exception>
     public TransactionalDataPortal(DataPortalBroker dataPortalBroker, TransactionalAttribute transactionalAttribute)
     {
-      _portal = dataPortalBroker;
-      _transactionalAttribute = transactionalAttribute;
+      _portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
+      _transactionalAttribute = transactionalAttribute ?? throw new ArgumentNullException(nameof(transactionalAttribute));
     }
 
     /// <summary>
@@ -57,8 +58,8 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
-    public async Task<DataPortalResult> Create(
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
+    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
@@ -101,7 +102,7 @@ namespace Csla.Server
     }
 
     /// <summary>
-    /// Called by the client-side DataProtal to retrieve an object.
+    /// Called by the client-side DataPortal to retrieve an object.
     /// </summary>
     /// <remarks>
     /// This method delegates to 
@@ -116,8 +117,16 @@ namespace Csla.Server
     /// <param name="context">Object containing context data from client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
       tr.Complete();
@@ -139,8 +148,14 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A reference to the newly updated object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Update(obj, context, isSync).ConfigureAwait(false);
       tr.Complete();
@@ -162,8 +177,16 @@ namespace Csla.Server
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
       tr.Complete();

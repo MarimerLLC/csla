@@ -6,6 +6,8 @@
 // <summary>Request message for updating</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization.Mobile;
+
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>
@@ -37,10 +39,11 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Serialized data for the principal object.
     /// </summary>
+    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] Principal
     {
       get { return GetProperty(PrincipalProperty); }
-      set { LoadProperty(PrincipalProperty, value); }
+      set { LoadProperty(PrincipalProperty, value ?? throw new ArgumentNullException(nameof(Principal))); }
     }
 
     /// <summary>
@@ -51,10 +54,11 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Serialized data for the client context object.
     /// </summary>
+    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] ClientContext
     {
       get { return GetProperty(ClientContextProperty); }
-      set { LoadProperty(ClientContextProperty, value); }
+      set { LoadProperty(ClientContextProperty, value ?? throw new ArgumentNullException(nameof(ClientContext))); }
     }
 
     /// <summary>
@@ -67,10 +71,11 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// Serialized client culture.
     /// </summary>
     /// <value>The client culture.</value>
+    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientCulture
     {
       get { return GetProperty(ClientCultureProperty); }
-      set { LoadProperty(ClientCultureProperty, value); }
+      set { LoadProperty(ClientCultureProperty, value ?? throw new ArgumentNullException(nameof(ClientCulture))); }
     }
 
     /// <summary>
@@ -83,10 +88,36 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// Serialized client UI culture.
     /// </summary>
     /// <value>The client UI culture.</value>
+    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientUICulture
     {
       get { return GetProperty(ClientUICultureProperty); }
-      set { LoadProperty(ClientUICultureProperty, value); }
+      set { LoadProperty(ClientUICultureProperty, value ?? throw new ArgumentNullException(nameof(ClientUICulture))); }
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="UpdateRequest"/>-object.
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="clientContext"></param>
+    /// <param name="clientCulture"></param>
+    /// <param name="clientUICulture"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/> or <paramref name="clientUICulture"/> is <see langword="null"/>.</exception>
+    public UpdateRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture)
+    {
+      Principal = principal ?? throw new ArgumentNullException(nameof(principal));
+      ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
+      ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));
+      ClientUICulture = clientUICulture ?? throw new ArgumentNullException(nameof(clientUICulture));
+      ObjectData = null;
+    }
+
+    /// <summary>
+    /// Initializes an empty instance for <see cref="MobileFormatter"/>.
+    /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+    public UpdateRequest()
+    {
     }
   }
 }

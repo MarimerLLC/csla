@@ -18,9 +18,10 @@ namespace Csla.Server
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ChildDataPortal(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
@@ -32,16 +33,15 @@ namespace Csla.Server
     /// Create a new business object.
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public object Create(Type objectType)
     {
-      try
-      { 
-        return DoCreateAsync(objectType).Result;
-      }
-      catch (AggregateException ex)
-      {
-        throw ex.InnerException;
-      }
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+
+      return ExecuteWithAggregateExceptionHandling(
+        () => DoCreateAsync(objectType).Result
+      );
     }
 
     /// <summary>
@@ -51,16 +51,17 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public object Create(Type objectType, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public object Create(Type objectType, params object?[] parameters)
     {
-      try
-      { 
-        return DoCreateAsync(objectType, parameters).Result;
-      }
-      catch (AggregateException ex)
-      {
-        throw ex.InnerException;
-      }
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
+      return ExecuteWithAggregateExceptionHandling(
+        () => DoCreateAsync(objectType, parameters).Result
+      );
     }
 
     /// <summary>
@@ -77,14 +78,17 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public async Task<T> CreateAsync<T>(params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public async Task<T> CreateAsync<T>(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
       return (T)await DoCreateAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoCreateAsync(Type objectType, params object[] parameters)
+    private async Task<object> DoCreateAsync(Type objectType, params object?[] parameters)
     {
-      DataPortalTarget obj = null;
+      DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
       try
       {
@@ -108,14 +112,13 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        object outval = null;
+        object? outval = null;
         if (obj != null) outval = obj.Instance;
-        throw new Csla.DataPortalException(
-          "ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, outval);
+        throw new Csla.DataPortalException("ChildDataPortal.Create " + Properties.Resources.FailedOnServer, ex, outval);
       }
       finally
       {
-        object reference = null;
+        object? reference = null;
         if (obj != null)
           reference = obj.Instance;
         //ApplicationContext.DataPortalActivator.FinalizeInstance(reference);
@@ -126,16 +129,15 @@ namespace Csla.Server
     /// Get an existing business object.
     /// </summary>
     /// <param name="objectType">Type of business object to retrieve.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public object Fetch(Type objectType)
     {
-      try
-      {
-        return DoFetchAsync(objectType, null).Result;
-      }
-      catch (AggregateException ex)
-      {
-        throw ex.InnerException;
-      }
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+
+      return ExecuteWithAggregateExceptionHandling(
+  () => DoFetchAsync(objectType).Result
+      );
     }
 
     /// <summary>
@@ -145,16 +147,17 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public object Fetch(Type objectType, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public object Fetch(Type objectType, params object?[] parameters)
     {
-      try
-      {
-        return DoFetchAsync(objectType, parameters).Result;
-      }
-      catch (AggregateException ex)
-      {
-        throw ex.InnerException;
-      }
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
+      return ExecuteWithAggregateExceptionHandling(
+  () => DoFetchAsync(objectType, parameters).Result
+      );
     }
 
     /// <summary>
@@ -171,14 +174,18 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public async Task<T> FetchAsync<T>(params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public async Task<T> FetchAsync<T>(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       return (T)await DoFetchAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoFetchAsync(Type objectType, params object[] parameters)
+    private async Task<object> DoFetchAsync(Type objectType, params object?[] parameters)
     {
-      DataPortalTarget obj = null;
+      DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
       try
       {
@@ -203,10 +210,9 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        object outval = null;
+        object? outval = null;
         if (obj != null) outval = obj.Instance;
-        throw new Csla.DataPortalException(
-          "ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, outval);
+        throw new Csla.DataPortalException("ChildDataPortal.Fetch " + Properties.Resources.FailedOnServer, ex, outval);
       }
       //finally
       //{
@@ -218,16 +224,14 @@ namespace Csla.Server
     /// Update a business object.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public void Update(object obj)
+    public void Update(object? obj)
     {
-      try
-      {
-        DoUpdateAsync(obj, false, null).Wait();
-      }
-      catch (AggregateException ex)
-      {
-        throw ex.InnerException;
-      }
+      _ = ExecuteWithAggregateExceptionHandling(() =>
+        {
+          DoUpdateAsync(obj, false).Wait();
+          return default!;
+        }
+      );
     }
 
     /// <summary>
@@ -237,25 +241,26 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public void Update(object obj, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public void Update(object? obj, params object?[] parameters)
     {
-      try
-      { 
-        DoUpdateAsync(obj, false, parameters).Wait();
-      }
-      catch (AggregateException ex)
-      {
-        throw ex.InnerException;
-      }
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+      _ = ExecuteWithAggregateExceptionHandling(() =>
+        {
+          DoUpdateAsync(obj, false, parameters).Wait();
+          return default!;
+        }
+      );
     }
 
     /// <summary>
     /// Update a business object.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public Task UpdateAsync(object obj)
+    public Task UpdateAsync(object? obj)
     {
-      return DoUpdateAsync(obj, false, null);
+      return DoUpdateAsync(obj, false);
     }
 
     /// <summary>
@@ -265,8 +270,12 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public Task UpdateAsync(object obj, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public Task UpdateAsync(object? obj, params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       return DoUpdateAsync(obj, false, parameters);
     }
 
@@ -274,9 +283,9 @@ namespace Csla.Server
     /// Update a business object. Include objects which are not dirty.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public void UpdateAll(object obj)
+    public void UpdateAll(object? obj)
     {
-      DoUpdateAsync(obj, true, null).Wait();
+      DoUpdateAsync(obj, true).Wait();
     }
 
     /// <summary>
@@ -286,8 +295,12 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public void UpdateAll(object obj, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public void UpdateAll(object? obj, params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       DoUpdateAsync(obj, true, parameters).Wait();
     }
 
@@ -295,9 +308,9 @@ namespace Csla.Server
     /// Update a business object. Include objects which are not dirty.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public Task UpdateAllAsync(object obj)
+    public Task UpdateAllAsync(object? obj)
     {
-      return DoUpdateAsync(obj, true, null);
+      return DoUpdateAsync(obj, true);
     }
 
     /// <summary>
@@ -307,12 +320,16 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    public Task UpdateAllAsync(object obj, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
+    public Task UpdateAllAsync(object? obj, params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       return DoUpdateAsync(obj, true, parameters);
     }
 
-    private async Task DoUpdateAsync(object obj, bool bypassIsDirtyTest, params object[] parameters)
+    private async Task DoUpdateAsync(object? obj, bool bypassIsDirtyTest, params object?[] parameters)
     {
       if (obj == null)
         return;
@@ -330,30 +347,48 @@ namespace Csla.Server
 
       try
       {
-        lb.Child_OnDataPortalInvoke(
-          new DataPortalEventArgs(null, objectType, obj, operation));
+        lb.Child_OnDataPortalInvoke(new DataPortalEventArgs(null, objectType, obj, operation));
         await lb.UpdateChildAsync(parameters).ConfigureAwait(false);
-        lb.Child_OnDataPortalInvokeComplete(
-            new DataPortalEventArgs(null, objectType, obj, operation));
+        lb.Child_OnDataPortalInvokeComplete(new DataPortalEventArgs(null, objectType, obj, operation));
       }
       catch (Exception ex)
       {
         try
         {
-          lb?.Child_OnDataPortalException(
-            new DataPortalEventArgs(null, objectType, obj, operation), ex);
+          lb.Child_OnDataPortalException(new DataPortalEventArgs(null, objectType, obj, operation), ex);
         }
         catch
         {
           // ignore exceptions from the exception handler
         }
-        throw new Csla.DataPortalException(
-          "ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
+        throw new Csla.DataPortalException("ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
       }
       //finally
       //{
       //  ApplicationContext.DataPortalActivator.FinalizeInstance(lb.Instance);
       //}
+    }
+
+    private object ExecuteWithAggregateExceptionHandling(Func<object> operation)
+    {
+      try
+      {
+        return operation();
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerException is not null)
+        {
+          throw ex.InnerException;
+        }
+
+        if (ex.InnerExceptions.Count > 0)
+        {
+          throw ex.InnerExceptions[0];
+        }
+
+        throw new Exception(ex.Message) { Source = ex.Source };
+      }
     }
   }
 }

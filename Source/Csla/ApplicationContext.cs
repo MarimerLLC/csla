@@ -124,7 +124,7 @@ namespace Csla
       {
         lock (_syncContext)
         {
-          IContextDictionary ctx = ContextManager.GetClientContext(ExecutionLocation);
+          IContextDictionary? ctx = ContextManager.GetClientContext(ExecutionLocation);
           if (ctx == null)
           {
             ctx = new ContextDictionary();
@@ -135,7 +135,7 @@ namespace Csla
       }
     }
 
-    internal void SetContext(IContextDictionary clientContext)
+    internal void SetContext(IContextDictionary? clientContext)
     {
       lock (_syncContext)
         ContextManager.SetClientContext(clientContext, ExecutionLocation);
@@ -449,5 +449,6 @@ namespace Csla
       return CreateInstance(gt);
     }
 
+    internal void SetUnauthenticatedUser() => ContextManager.SetUser(null);
   }
 }

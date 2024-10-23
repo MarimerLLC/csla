@@ -6,6 +6,8 @@
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -18,12 +20,13 @@ namespace Csla.Server
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="serviceProvider">Current ServiceProvider</param>
+    /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public ChildDataPortalFactory(IServiceProvider serviceProvider)
     {
-      ServiceProvider = serviceProvider;
+      ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
-    private IServiceProvider ServiceProvider { get; set; }
+    private IServiceProvider ServiceProvider { get; }
 
     /// <summary>
     /// Get a client-side data portal instance.
@@ -31,7 +34,7 @@ namespace Csla.Server
     /// <typeparam name="T">Root business object type</typeparam>
     public IChildDataPortal<T> GetPortal<T>()
     {
-      return (IChildDataPortal<T>)ServiceProvider.GetService(typeof(IChildDataPortal<T>));
+      return ServiceProvider.GetRequiredService<IChildDataPortal<T>>();
     }
   }
 }

@@ -40,7 +40,7 @@ namespace Csla.Server.Dashboard
     /// </summary>
     public int RecentActivityCount { get; set; } = 100;
 
-    private void ProcessCompleteQueue(object state)
+    private void ProcessCompleteQueue(object? state)
     {
       if (_completeQueue.IsEmpty)
         return;
@@ -48,7 +48,7 @@ namespace Csla.Server.Dashboard
       _timerComplete.Change(Timeout.Infinite, Timeout.Infinite);
       try
       {
-        while (_completeQueue.TryDequeue(out InterceptArgs result))
+        while (_completeQueue.TryDequeue(out InterceptArgs? result))
         {
           if (result.Exception != null)
             Interlocked.Add(ref _failedCalls, 1);
@@ -66,7 +66,7 @@ namespace Csla.Server.Dashboard
       }
     }
 
-    private void ProcessInitializeQueue(object state)
+    private void ProcessInitializeQueue(object? state)
     {
       if (_initializeQueue.IsEmpty)
         return;
@@ -132,14 +132,22 @@ namespace Csla.Server.Dashboard
       return _recentActivity.ToList();
     }
 
+    /// <inheritdoc />
     void IDashboard.InitializeCall(InterceptArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       LastCall = DateTimeOffset.Now;
       _initializeQueue.Enqueue(e);
     }
 
+    /// <inheritdoc />
     void IDashboard.CompleteCall(InterceptArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       _completeQueue.Enqueue(e);
     }
 

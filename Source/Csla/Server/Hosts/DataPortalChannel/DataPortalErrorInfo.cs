@@ -6,6 +6,8 @@
 // <summary>Message containing details about any</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization.Mobile;
+
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>
@@ -107,16 +109,20 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext">Current ApplicationContext</param>
-    /// <param name="ex">
-    /// The Exception to encapusulate.
-    /// </param>
+    /// <param name="ex">The Exception to encapsulate.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="ex"/> is <see langword="null"/>.</exception>
     public DataPortalErrorInfo(ApplicationContext applicationContext, Exception ex)
     {
+      if (applicationContext is null)
+        throw new ArgumentNullException(nameof(applicationContext));
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
+
       ApplicationContext = applicationContext;
-      ExceptionTypeName = ex.GetType().FullName;
+      ExceptionTypeName = ex.GetType().FullName!;
       Message = ex.Message;
-      StackTrace = ex.StackTrace;
-      Source = ex.Source;
+      StackTrace = ex.StackTrace ?? string.Empty;
+      Source = ex.Source ?? string.Empty;
       if (ex.InnerException != null)
         InnerError = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex.InnerException);
     }
@@ -124,6 +130,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Creates an empty instance of the type.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
     public DataPortalErrorInfo()
     { }
   }

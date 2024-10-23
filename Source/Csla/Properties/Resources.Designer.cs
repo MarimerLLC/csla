@@ -691,6 +691,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No business object instance was provided for authorization action {0} of type {1}..
+        /// </summary>
+        public static string NoInstanceProvidedForAuthorizationCheck {
+            get {
+                return ResourceManager.GetString("NoInstanceProvidedForAuthorizationCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No principal object should be passed to DataPortal when using Windows integrated security.
         /// </summary>
         public static string NoPrincipalAllowedException {

@@ -37,7 +37,7 @@ namespace Csla.Serialization.Mobile
     }
 
     /// <inheritdoc />
-    byte[] ISerializationFormatter.Serialize(object graph)
+    byte[] ISerializationFormatter.Serialize(object? graph)
     {
       using var buffer = new MemoryStream();
       Serialize(buffer, graph);

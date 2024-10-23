@@ -3,9 +3,10 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>This class provides a hoook for developers to add custom error handling in the DataPortal. </summary>
+// <summary>This class provides a hook for developers to add custom error handling in the DataPortal. </summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -24,9 +25,10 @@ namespace Csla.Server
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="exceptionInspector"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="exceptionInspector"/> is <see langword="null"/>.</exception>
     public DataPortalExceptionHandler(IDataPortalExceptionInspector exceptionInspector)
     {
-      ExceptionInspector = exceptionInspector;
+      ExceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
     }
 
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
@@ -38,21 +40,30 @@ namespace Csla.Server
     /// <param name="criteria">The criteria.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="ex">The exception.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="ex"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public Exception InspectException(Type objectType, object criteria, string methodName, Exception ex)
     {
-      Exception handledException;
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (string.IsNullOrWhiteSpace(methodName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(methodName)), nameof(methodName));
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
       if (ex is CallMethodException)
       {
-        if (CallExceptionInspector(objectType, null, criteria, methodName, ex.InnerException, out handledException))
+        if (CallExceptionInspector(objectType, null, criteria, methodName, ex.InnerException!, out var handledException))
         {
-          ex = new CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException);
+          return new CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException!);
         }
       }
       else
       {
-        if (CallExceptionInspector(objectType, null, criteria, methodName, ex, out handledException))
+        if (CallExceptionInspector(objectType, null, criteria, methodName, ex, out var handledException))
         {
-          ex = handledException;
+          return handledException!;
         }
       }
 
@@ -67,23 +78,24 @@ namespace Csla.Server
     /// <param name="criteria">The criteria.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="ex">The exception.</param>
-    public Exception InspectException(Type objectType, object businessObject, object criteria, string methodName, Exception ex)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="ex"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Exception InspectException(Type objectType, object? businessObject, object? criteria, string methodName, Exception ex)
     {
       // The exception as parameter is always a CallMethodException containing the business exception as Inner exception 
-      Exception handledException;
       if (ex is CallMethodException)
       {
-        if (CallExceptionInspector(objectType, businessObject, criteria, methodName, ex.InnerException, out handledException))
+        if (CallExceptionInspector(objectType, businessObject, criteria, methodName, ex.InnerException!, out var handledException))
         {
           // developer should only transform and if rethrows a new we will wrap as new CallMethodException
-          ex = new CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException);
+          return new CallMethodException(methodName + " " + Resources.MethodCallFailed, handledException!);
         }
       }
       else
       {
-        if (CallExceptionInspector(objectType, null, criteria, methodName, ex, out handledException))
+        if (CallExceptionInspector(objectType, null, criteria, methodName, ex, out var handledException))
         {
-          ex = handledException;
+          return handledException!;
         }
       }
       return ex;
@@ -101,7 +113,12 @@ namespace Csla.Server
     /// <returns>
     /// true if new exception was thrown else false
     /// </returns>
-    private bool CallExceptionInspector(Type objectType, object businessObject, object criteria, string methodName, Exception exception, out Exception handledException)
+    private bool CallExceptionInspector(Type objectType, object? businessObject, object? criteria, string methodName, Exception exception,
+#if NET8_0_OR_GREATER
+      [NotNullWhen(true)]
+#endif
+      out Exception? handledException
+    )
     {
       handledException = null;
       try

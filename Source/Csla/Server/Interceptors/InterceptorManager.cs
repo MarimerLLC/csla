@@ -6,10 +6,11 @@
 // <summary>Cascades DataPortal interception requests to registered interceptors</summary>
 //-----------------------------------------------------------------------
 
+
 namespace Csla.Server
 {
   /// <summary>
-  /// Manage dataportal interception using DI-registered implementations
+  /// Manage data portal interception using DI-registered implementations
   /// </summary>
   public class InterceptorManager
   {
@@ -19,29 +20,33 @@ namespace Csla.Server
     /// Creation of the manager, including all interceptors registered with the DI container
     /// </summary>
     /// <param name="interceptors">The IEnumerable of interceptors provided by DI</param>
+    /// <exception cref="ArgumentNullException"><paramref name="interceptors"/> is <see langword="null"/>.</exception>
     public InterceptorManager(IEnumerable<IInterceptDataPortal> interceptors)
     {
+      if (interceptors is null)
+        throw new ArgumentNullException(nameof(interceptors));
+
       _interceptors = new List<IInterceptDataPortal>(interceptors);
     }
 
-    /// <summary>
-    /// Cascade the initial interception request prior to the main DataPortal operation
-    /// </summary>
-    /// <param name="e">The interception arguments provided by the consumer</param>
+    /// <inheritdoc />
     public async Task InitializeAsync(InterceptArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       foreach (IInterceptDataPortal interceptor in _interceptors)
       {
         await interceptor.InitializeAsync(e);
       }
     }
 
-    /// <summary>
-    /// Cascade the final interception request after the main DataPortal operation has completed
-    /// </summary>
-    /// <param name="e">The interception arguments provided by the consumer</param>
+    /// <inheritdoc />
     public void Complete(InterceptArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       // Iterate backwards through interceptors, so that they appear to wrap one another, decorator-style
       for (int interceptorIndex = _interceptors.Count - 1; interceptorIndex > -1; interceptorIndex--)
       {

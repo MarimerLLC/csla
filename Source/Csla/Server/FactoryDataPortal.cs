@@ -18,6 +18,11 @@ namespace Csla.Server
   /// </summary>
   public class FactoryDataPortal : IDataPortalServer
   {
+    private readonly ApplicationContext _applicationContext;
+    private IObjectFactoryLoader FactoryLoader { get; }
+    private IDataPortalExceptionInspector ExceptionInspector { get; }
+    private DataPortalOptions DataPortalOptions { get; }
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -25,18 +30,14 @@ namespace Csla.Server
     /// <param name="factoryLoader"></param>
     /// <param name="inspector"></param>
     /// <param name="dataPortalOptions"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="factoryLoader"/>, <paramref name="inspector"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector, DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext;
-      FactoryLoader = factoryLoader;
-      ExceptionInspector = inspector;
-      DataPortalOptions = dataPortalOptions;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      FactoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
+      ExceptionInspector = inspector ?? throw new ArgumentNullException(nameof(inspector));
+      DataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
-
-    private ApplicationContext _applicationContext;
-    private IObjectFactoryLoader FactoryLoader { get; set; }
-    private IDataPortalExceptionInspector ExceptionInspector { get; set; }
-    private DataPortalOptions DataPortalOptions { get; set; }
 
     #region Method invokes
 
@@ -46,7 +47,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, null, operation);
 
       Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
-      object result;
+      object? result;
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName);
@@ -66,7 +67,7 @@ namespace Csla.Server
           factory, "InvokeError", new DataPortalEventArgs(context, objectType, null, operation, ex));
         throw;
       }
-      return new DataPortalResult(_applicationContext, result);
+      return new DataPortalResult(_applicationContext, result, null);
     }
 
     private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context, bool isSync)
@@ -75,7 +76,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, e, operation);
 
       Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
-      object result;
+      object? result;
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName, e);
@@ -94,24 +95,25 @@ namespace Csla.Server
         Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeError", new DataPortalEventArgs(context, objectType, e, operation, ex));
         throw;
       }
-      return new DataPortalResult(_applicationContext, result);
+      return new DataPortalResult(_applicationContext, result, null);
     }
 
     #endregion
 
     #region IDataPortalServer Members
 
-    /// <summary>
-    /// Create a new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+      if (context.FactoryInfo is null)
+        throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
+
       try
       {
         DataPortalResult result;
@@ -130,20 +132,21 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Get an existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+      if (context.FactoryInfo is null)
+        throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
+
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
-        return await Execute(objectType, criteria, context, isSync);
+        return await Execute(objectType, criteria, context, isSync, context.FactoryInfo);
       }
 
       try
@@ -164,36 +167,37 @@ namespace Csla.Server
       }
     }
 
-    private async Task<DataPortalResult> Execute(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> Execute(Type objectType, object criteria, DataPortalContext context, bool isSync, ObjectFactoryAttribute factoryInfo)
     {
       try
       {
         DataPortalResult result;
         if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Execute, context.FactoryInfo.ExecuteMethodName, objectType, context, isSync).ConfigureAwait(false);
+          result = await InvokeMethod(factoryInfo.FactoryTypeName, DataPortalOperations.Execute, factoryInfo.ExecuteMethodName, objectType, context, isSync).ConfigureAwait(false);
         else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Execute, context.FactoryInfo.ExecuteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
+          result = await InvokeMethod(factoryInfo.FactoryTypeName, DataPortalOperations.Execute, factoryInfo.ExecuteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)
       {
         throw DataPortal.NewDataPortalException(
-          _applicationContext, context.FactoryInfo.ExecuteMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.ExecuteMethodName, ex),
+          _applicationContext, factoryInfo.ExecuteMethodName + " " + Resources.FailedOnServer,
+          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, factoryInfo.ExecuteMethodName, ex),
           null, DataPortalOptions);
       }
     }
 
-    /// <summary>
-    /// Update a business object.
-    /// </summary>
-    /// <param name="obj">Business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+      if (context.FactoryInfo is null)
+        throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
+
+
       string methodName = string.Empty;
       try
       {
@@ -216,17 +220,18 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Delete a business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+      if (context.FactoryInfo is null)
+        throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
+
       try
       {
         DataPortalResult result;

@@ -227,3 +227,10 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `Csla.Serialization.Mobile.SerializationInfo`
   * Now has a constructor requiring `int referenceId` and `string typeName`
   * Property `ReferenceId` and `TypeName` property set removed and replaced by the constructor
+* `Csla.Server.InterceptArgs`
+  * Now as two new constructors requiring necessary parameters
+  * Property set for required parameters removed
+* `Csla.Server.EmptyCriteria`
+  * Public constructor removed (now private). Instead use `Csla.Server.EmptyCriteria.Instance`.
+* `Csla.Server.ObjectFactory`
+  * Protected methods now guard against `null` objects

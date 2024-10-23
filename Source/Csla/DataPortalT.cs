@@ -6,10 +6,12 @@
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
+using Csla.Reflection;
 
 namespace Csla
 {
@@ -90,7 +92,7 @@ namespace Csla
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = _applicationContext.CreateInstanceDI< ServiceProviderMethodCaller>();
         return serviceProviderMethodCaller;
       }
     }
@@ -102,19 +104,12 @@ namespace Csla
       try
       {
         if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(
-            Resources.UserNotAuthorizedException,
-            "create",
-            objectType.Name));
-        Reflection.ServiceProviderMethodInfo method;
-        if (criteria is Server.EmptyCriteria)
-          method = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null, false);
-        else
-          method = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "create", objectType.Name));
+
+        _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<CreateAttribute>(objectType, criteria, out var method);
         var proxy = GetDataPortalProxy(method);
 
-        dpContext =
-          new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+        dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -201,20 +196,17 @@ namespace Csla
 
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
-      Reflection.ServiceProviderMethodInfo method = null;
+      Reflection.ServiceProviderMethodInfo? method = null;
       try
       {
         if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(
-            Resources.UserNotAuthorizedException,
-            "get",
-            objectType.Name));
-        method = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "get", objectType.Name));
+
+        _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<FetchAttribute>(objectType, criteria, out method);
 
         var proxy = GetDataPortalProxy(method);
 
-        dpContext =
-          new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+        dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
 
         try
         {
@@ -244,45 +236,39 @@ namespace Csla
 
     private async Task<object> DoExecuteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
-      Server.DataPortalResult result = null;
-      Server.DataPortalContext dpContext = null;
-      Reflection.ServiceProviderMethodInfo method = null;
+      Server.DataPortalResult? result = null;
+      Server.DataPortalContext? dpContext = null;
+      Reflection.ServiceProviderMethodInfo? method = null;
+
+      if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+        throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+          "execute",
+          objectType.Name));
+
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<ExecuteAttribute>(objectType, criteria, out method);
+      var proxy = GetDataPortalProxy(method);
+
+      dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-            "execute",
-            objectType.Name));
-        method = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
-
-        var proxy = GetDataPortalProxy(method);
-
-        dpContext =
-          new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-
-        try
-        {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute,
-            async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
-        }
-        catch (AggregateException ex)
-        {
-          if (ex.InnerExceptions.Count > 0)
-          {
-            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleDataPortalException("Execute", dpe);
-          }
-          throw new DataPortalException($"DataPortal.Execute {Resources.Failed}", ex, null);
-        }
-        catch (Server.DataPortalException ex)
-        {
-          HandleDataPortalException("Execute", ex);
-        }
+        result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute,
+          async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
       }
-      catch
+      catch (AggregateException ex)
       {
-        throw;
+        if (ex.InnerExceptions.Count > 0)
+        {
+          if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
+            HandleDataPortalException("Execute", dpe);
+        }
+        throw new DataPortalException($"DataPortal.Execute {Resources.Failed}", ex, null);
       }
+      catch (Server.DataPortalException ex)
+      {
+        HandleDataPortalException("Execute", ex);
+      }
+
       return result.ReturnObject;
     }
 
@@ -347,7 +333,7 @@ namespace Csla
         var factoryInfo = Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
-          Server.DataPortalMethodInfo method = null;
+          Server.DataPortalMethodInfo? method = null;
           var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
           var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
 
@@ -405,13 +391,13 @@ namespace Csla
                 method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
             }
           }
-          if (method == null)
-            method = new Server.DataPortalMethodInfo();
-          proxy = GetDataPortalProxy(method.RunLocal);
+          
+          var runLocal = method?.RunLocal ?? false;
+          proxy = GetDataPortalProxy(runLocal);
         }
         else
         {
-          Reflection.ServiceProviderMethodInfo method;
+          Reflection.ServiceProviderMethodInfo? method;
           var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
           if (obj is Core.ICommandObject)
           {
@@ -420,7 +406,7 @@ namespace Csla
               throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
-            method = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, criteria, false);
+            _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<ExecuteAttribute>(objectType, criteria, out method);
           }
           else
           {
@@ -432,7 +418,7 @@ namespace Csla
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "delete",
                     objectType.Name));
-                method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria, false);
+                _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria, out method);
               }
               else if (bbase.IsNew)
               {
@@ -440,7 +426,7 @@ namespace Csla
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "create",
                     objectType.Name));
-                method = ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, criteria, false);
+                _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<InsertAttribute>(objectType, criteria, out method);
               }
               else
               {
@@ -448,12 +434,12 @@ namespace Csla
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "save",
                     objectType.Name));
-                method = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
+                _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<UpdateAttribute>(objectType, criteria, out method);
               }
             }
             else
             {
-              method = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
+              _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<UpdateAttribute>(objectType, criteria, out method);
             }
           }
           proxy = GetDataPortalProxy(method);
@@ -500,15 +486,16 @@ namespace Csla
       HandleDataPortalException("Update", ex);
     }
 
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
     private void HandleDataPortalException(string operation, Server.DataPortalException ex)
     {
       var result = ex.Result;
       var original = ex.InnerException;
       if (original.InnerException != null)
         original = original.InnerException;
-      throw new DataPortalException(
-        String.Format("DataPortal.{2} {0} ({1})", Resources.Failed, original.Message, operation),
-        ex.InnerException, result.ReturnObject);
+      throw new DataPortalException(String.Format("DataPortal.{2} {0} ({1})", Resources.Failed, original.Message, operation), ex.InnerException, result.ReturnObject);
     }
 
     /// <summary>
@@ -552,7 +539,7 @@ namespace Csla
             "delete",
             objectType.Name));
 
-        var method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
+        _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<DeleteAttribute>(objectType, criteria, out var method);
         var proxy = GetDataPortalProxy(method);
 
         dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
@@ -676,7 +663,7 @@ namespace Csla
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    private IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo method)
+    private IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo? method)
     {
       if (method != null)
         return GetDataPortalProxy(method.MethodInfo.RunLocal());

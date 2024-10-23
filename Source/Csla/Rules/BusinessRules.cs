@@ -560,6 +560,7 @@ namespace Csla.Rules
         throw new ArgumentNullException(nameof(applicationContext));
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
+
       return HasPermissionAsync(action, obj, applicationContext, obj.GetType(), null, applicationContext.RuleSet, ct);
     }
 

@@ -338,15 +338,15 @@ namespace Csla.DataPortalClient
 
     private CriteriaRequest GetBaseCriteriaRequest()
     {
-      var result = ApplicationContext.CreateInstanceDI<CriteriaRequest>();
       var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
-      result.CriteriaData = null;
-      result.ClientContext = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ApplicationContext.ClientContext);
-      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>()
-          .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
-      result.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
-      result.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
-      return result;
+
+      var serializer = ApplicationContext.GetRequiredService<ISerializationFormatter>();
+      var clientContext = serializer.Serialize(ApplicationContext.ClientContext);
+      var principal = serializer.Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
+      var clientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+      var clientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+
+      return ApplicationContext.CreateInstanceDI<CriteriaRequest>(principal, clientContext, clientCulture, clientUICulture);
     }
 
     private UpdateRequest GetBaseUpdateCriteriaRequest()
@@ -355,8 +355,7 @@ namespace Csla.DataPortalClient
       var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
       result.ObjectData = null;
       result.ClientContext = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ApplicationContext.ClientContext);
-      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>()
-          .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
+      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
       result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
       result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
       return result;

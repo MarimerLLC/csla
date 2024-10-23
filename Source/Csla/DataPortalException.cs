@@ -38,7 +38,7 @@ namespace Csla
     /// <param name="ex">Inner exception.</param>
     /// <param name="businessObject">The business object
     /// as it was at the time of the exception.</param>
-    public DataPortalException(string message, Exception ex, object businessObject)
+    public DataPortalException(string message, Exception ex, object? businessObject)
       : base(message, ex)
     {
       _innerStackTrace = ex.StackTrace;
@@ -132,7 +132,7 @@ namespace Csla
     /// state may have been altered by the server and
     /// may no longer reflect data in the database.
     /// </remarks>
-    public object BusinessObject { get; }
+    public object? BusinessObject { get; }
 
     private Exception _businessException;
 

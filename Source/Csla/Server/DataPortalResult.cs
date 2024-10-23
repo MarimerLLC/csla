@@ -30,7 +30,7 @@ namespace Csla.Server
     public object? ReturnObject { get; private set; }
 
     /// <summary>
-    /// Error that occurred during the DataPotal call.
+    /// Error that occurred during the DataPortal call.
     /// This will be null if no errors occurred.
     /// </summary>
     public Exception? Error { get; private set; }
@@ -74,7 +74,7 @@ namespace Csla.Server
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>
     /// <param name="ex">
-    /// Error that occurred during the DataPotal call.
+    /// Error that occurred during the DataPortal call.
     /// This will be null if no errors occurred.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>

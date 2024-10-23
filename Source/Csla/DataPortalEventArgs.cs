@@ -18,7 +18,7 @@ namespace Csla
     /// The DataPortalContext object passed to the
     /// server-side DataPortal.
     /// </summary>
-    public Server.DataPortalContext DataPortalContext { get; }
+    public Server.DataPortalContext? DataPortalContext { get; }
 
     /// <summary>
     /// Gets the requested data portal operation.
@@ -34,7 +34,7 @@ namespace Csla
     /// exception occurred. Exceptions are returned only as part
     /// of a data portal complete event or method.
     /// </remarks>
-    public Exception Exception { get; }
+    public Exception? Exception { get; }
 
     /// <summary>
     /// Gets the object type being processed by the 
@@ -46,7 +46,7 @@ namespace Csla
     /// Gets the criteria object or business object
     /// being processed by the data portal.
     /// </summary>
-    public object Object { get; }
+    public object? Object { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -63,7 +63,7 @@ namespace Csla
     /// <param name="operation">
     /// Data portal operation being performed.
     /// </param>
-    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object obj, DataPortalOperations operation)
+    public DataPortalEventArgs(Server.DataPortalContext? dataPortalContext, Type objectType, object? obj, DataPortalOperations operation)
     {
       DataPortalContext = dataPortalContext;
       Operation = operation;
@@ -89,7 +89,7 @@ namespace Csla
     /// <param name="exception">
     /// Exception encountered during processing.
     /// </param>
-    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object obj, DataPortalOperations operation, Exception exception)
+    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object? obj, DataPortalOperations operation, Exception exception)
       : this(dataPortalContext, objectType, obj, operation)
     {
       Exception = exception;

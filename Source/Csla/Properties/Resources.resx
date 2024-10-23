@@ -529,4 +529,8 @@
   <data name="ServerSideDataPortalRequestDeserializationFailed" xml:space="preserve">
     <value>The server side portal could not deserialize the incoming request stream.</value>
   </data>
+  <data name="NoInstanceProvidedForAuthorizationCheck" xml:space="preserve">
+    <value>No business object instance was provided for authorization action {0} of type {1}.</value>
+    <comment>0 - auth action, 1 - bo type</comment>
+  </data>
 </root>

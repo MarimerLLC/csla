@@ -238,7 +238,7 @@ namespace Csla.Channels.RabbitMq
       {
         request = ConvertRequest(request);
         // unpack object
-        object obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
+        object obj = GetCriteria(_applicationContext, request.ObjectData ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized));
 
         var context = new DataPortalContext(
           _applicationContext, Deserialize<IPrincipal>(request.Principal),
@@ -278,7 +278,7 @@ namespace Csla.Channels.RabbitMq
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -312,12 +312,9 @@ namespace Csla.Channels.RabbitMq
 
     #region Criteria
 
-    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
+    private static object GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
     {
-      object? criteria = null;
-      if (criteriaData != null)
-        criteria = applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(criteriaData);
-      return criteria;
+      return applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(criteriaData) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
     }
 
     #endregion Criteria

@@ -113,16 +113,15 @@ namespace Csla.Channels.RabbitMq
       Connection = null;
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to create a
-    /// new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">DataPortalContext object passed to the server.</param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Create(Type objectType, object? criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public override async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
@@ -137,18 +136,15 @@ namespace Csla.Channels.RabbitMq
       }
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to load an
-    /// existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Fetch(Type objectType, object? criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public override async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
@@ -163,17 +159,12 @@ namespace Csla.Channels.RabbitMq
       }
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to update a
-    /// business object.
-    /// </summary>
-    /// <param name="obj">The business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public override async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
@@ -188,18 +179,15 @@ namespace Csla.Channels.RabbitMq
       }
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to delete a
-    /// business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Delete(Type objectType, object? criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public override async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
       if (isSync)
         throw new NotSupportedException("isSync == true");
 

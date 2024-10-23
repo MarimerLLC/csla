@@ -134,7 +134,7 @@ namespace Csla.AspNetCore.Blazor
     /// IHostEnvironmentAuthenticationStateProvider service.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal principal)
+    public virtual void SetUser(IPrincipal? principal)
     {
       if (!ReferenceEquals(CurrentPrincipal, principal))
       {
@@ -151,13 +151,17 @@ namespace Csla.AspNetCore.Blazor
         }
         else if (HttpContext is not null)
         {
-          HttpContext.User = (ClaimsPrincipal)principal;
+          if (principal is not ClaimsPrincipal claimsPrincipal)
+          {
+            throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
+          }
+          HttpContext.User = claimsPrincipal;
         }
         else
         {
           throw new InvalidOperationException("HttpContext==null, !CircuitExists");
         }
-        CurrentPrincipal = principal;
+        CurrentPrincipal = principal ?? UnauthenticatedPrincipal;
       }
     }
 

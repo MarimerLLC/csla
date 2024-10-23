@@ -20,15 +20,15 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Serialized object data.
     /// </summary>
-    public static readonly PropertyInfo<byte[]?> ObjectDataProperty = RegisterProperty<byte[]?>(nameof(ObjectData));
+    public static readonly PropertyInfo<byte[]> ObjectDataProperty = RegisterProperty<byte[]>(nameof(ObjectData));
 
     /// <summary>
     /// Serialized object data.
     /// </summary>
-    public byte[]? ObjectData
+    public byte[] ObjectData
     {
       get { return GetProperty(ObjectDataProperty); }
-      set { LoadProperty(ObjectDataProperty, value); }
+      set { LoadProperty(ObjectDataProperty, value ?? throw new ArgumentNullException(nameof(ObjectData))); }
     }
 
     /// <summary>
@@ -102,14 +102,15 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <param name="clientContext"></param>
     /// <param name="clientCulture"></param>
     /// <param name="clientUICulture"></param>
-    /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/> or <paramref name="clientUICulture"/> is <see langword="null"/>.</exception>
-    public UpdateRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture)
+    /// <param name="objectData"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="objectData"/> is <see langword="null"/>.</exception>
+    public UpdateRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture, byte[] objectData)
     {
       Principal = principal ?? throw new ArgumentNullException(nameof(principal));
       ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
       ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));
       ClientUICulture = clientUICulture ?? throw new ArgumentNullException(nameof(clientUICulture));
-      ObjectData = null;
+      ObjectData = objectData ?? throw new ArgumentNullException(nameof(objectData));
     }
 
     /// <summary>

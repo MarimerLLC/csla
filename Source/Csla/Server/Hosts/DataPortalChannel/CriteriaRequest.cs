@@ -36,15 +36,15 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Serialized data for the criteria object.
     /// </summary>
-    public static readonly PropertyInfo<byte[]?> CriteriaDataProperty = RegisterProperty<byte[]?>(nameof(CriteriaData));
+    public static readonly PropertyInfo<byte[]> CriteriaDataProperty = RegisterProperty<byte[]>(nameof(CriteriaData));
 
     /// <summary>
     /// Serialized data for the criteria object.
     /// </summary>
-    public byte[]? CriteriaData
+    public byte[] CriteriaData
     {
       get { return GetProperty(CriteriaDataProperty); }
-      set { LoadProperty(CriteriaDataProperty, value); }
+      set { LoadProperty(CriteriaDataProperty, value ?? throw new ArgumentNullException(nameof(CriteriaData))); }
     }
 
     /// <summary>
@@ -118,15 +118,15 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <param name="clientContext"></param>
     /// <param name="clientCulture"></param>
     /// <param name="clientUICulture"></param>
-    /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/> or <paramref name="clientUICulture"/> is <see langword="null"/>.</exception>
-    public CriteriaRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture)
+    /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="criteriaData"/> is <see langword="null"/>.</exception>
+    public CriteriaRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture, byte[] criteriaData)
     {
       Principal = principal ?? throw new ArgumentNullException(nameof(principal));
       ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
       ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));
       ClientUICulture = clientUICulture ?? throw new ArgumentNullException(nameof(clientUICulture));
       TypeName = string.Empty;
-      CriteriaData = null;
+      CriteriaData = criteriaData ?? throw new ArgumentNullException(nameof(criteriaData));
     }
 
     /// <summary>

@@ -19,22 +19,25 @@ namespace Csla.DataPortalClient
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public PrimitiveCriteria() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// New instance of the criteria
     /// </summary>
     /// <param name="value">Criteria value</param>
-    public PrimitiveCriteria(object? value)
+    public PrimitiveCriteria(object value)
     {
       _value = value;
     }
 
-    private object? _value;
+    private object _value;
     /// <summary>
     /// Criteria value
     /// </summary>
-    public object? Value
+    public object Value
     {
       get { return _value; }
       private set { _value = value; }

@@ -54,7 +54,7 @@ namespace Csla.Web.Mvc
     /// Sets the current principal.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    public void SetUser(System.Security.Principal.IPrincipal principal)
+    public void SetUser(System.Security.Principal.IPrincipal? principal)
     {
       HttpContext.Current.User = principal;
     }

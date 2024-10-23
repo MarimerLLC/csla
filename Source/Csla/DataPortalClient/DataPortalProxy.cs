@@ -49,23 +49,21 @@ namespace Csla.DataPortalClient
     public abstract string DataPortalUrl { get; }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Create(Type objectType, object? criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
       DataPortalResult result;
       try
       {
-        var request = GetBaseCriteriaRequest();
+        var request = GetBaseCriteriaRequest(criteria);
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
-        if (criteria is not IMobileObject)
-        {
-          criteria = new PrimitiveCriteria(criteria);
-        }
-        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
+        
         request = ConvertRequest(request);
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
         serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
@@ -100,23 +98,20 @@ namespace Csla.DataPortalClient
     }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Fetch(Type objectType, object? criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
       DataPortalResult result;
       try
       {
-        var request = GetBaseCriteriaRequest();
+        var request = GetBaseCriteriaRequest(criteria);
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
-        if (criteria is not IMobileObject)
-        {
-          criteria = new PrimitiveCriteria(criteria);
-        }
-        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
@@ -163,8 +158,8 @@ namespace Csla.DataPortalClient
       DataPortalResult result;
       try
       {
-        var request = GetBaseUpdateCriteriaRequest();
-        request.ObjectData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(obj);
+        var request = GetBaseUpdateCriteriaRequest(obj);
+        
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
@@ -201,23 +196,20 @@ namespace Csla.DataPortalClient
     }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Delete(Type objectType, object? criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
       DataPortalResult result;
       try
       {
-        var request = GetBaseCriteriaRequest();
+        var request = GetBaseCriteriaRequest(criteria);
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
-        if (criteria is not IMobileObject)
-        {
-          criteria = new PrimitiveCriteria(criteria);
-        }
-        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
@@ -336,7 +328,23 @@ namespace Csla.DataPortalClient
 
     #region Criteria
 
-    private CriteriaRequest GetBaseCriteriaRequest()
+    private CriteriaRequest GetBaseCriteriaRequest(object criteria)
+    {
+      if (criteria is not IMobileObject)
+        criteria = new PrimitiveCriteria(criteria);
+      
+      var criteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
+
+      return CreateRequest<CriteriaRequest>(criteriaData);
+      
+    }
+
+    private UpdateRequest GetBaseUpdateCriteriaRequest(object obj)
+    {
+      return CreateRequest<UpdateRequest>(ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(obj));
+    }
+
+    private T CreateRequest<T>(object payload)
     {
       var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
 
@@ -346,19 +354,7 @@ namespace Csla.DataPortalClient
       var clientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
       var clientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
 
-      return ApplicationContext.CreateInstanceDI<CriteriaRequest>(principal, clientContext, clientCulture, clientUICulture);
-    }
-
-    private UpdateRequest GetBaseUpdateCriteriaRequest()
-    {
-      var result = ApplicationContext.CreateInstanceDI<UpdateRequest>();
-      var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
-      result.ObjectData = null;
-      result.ClientContext = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ApplicationContext.ClientContext);
-      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
-      result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
-      result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
-      return result;
+      return ApplicationContext.CreateInstanceDI<T>(principal, clientContext, clientCulture, clientUICulture, payload);
     }
 
     #endregion Criteria

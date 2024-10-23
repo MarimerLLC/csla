@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Manages the per-user id value</summary>
 //-----------------------------------------------------------------------
-#nullable enable
-
 namespace Csla.State
 {
   /// <summary>

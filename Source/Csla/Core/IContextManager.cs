@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Defines the interface for an application </summary>
 //-----------------------------------------------------------------------
-#nullable enable
-
 using System.Security.Principal;
 
 namespace Csla.Core

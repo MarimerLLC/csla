@@ -15,25 +15,21 @@ namespace Csla.Threading
   /// </summary>
   internal class ContextParams
   {
+    private readonly ApplicationContext _applicationContext;
+
     public ContextParams(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
-    }
-
-    private ApplicationContext _applicationContext;
-
-    public IPrincipal User { get; }
-    public Core.IContextDictionary ClientContext { get; }
-    public CultureInfo UICulture { get; }
-    public CultureInfo Culture { get; }
-
-    public ContextParams()
-    {
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       User = _applicationContext.User;
       ClientContext = _applicationContext.ClientContext;
       Culture = CultureInfo.CurrentCulture;
       UICulture = CultureInfo.CurrentUICulture;
     }
+
+    public IPrincipal User { get; }
+    public Core.IContextDictionary ClientContext { get; }
+    public CultureInfo UICulture { get; }
+    public CultureInfo Culture { get; }
 
     internal void SetThreadContext()
     {

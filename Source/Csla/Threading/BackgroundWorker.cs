@@ -17,23 +17,25 @@ namespace Csla.Threading
   public class BackgroundWorker : Component
   {
     private readonly System.ComponentModel.BackgroundWorker _myWorker = new System.ComponentModel.BackgroundWorker();
+    private readonly ApplicationContext _applicationContext;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BackgroundWorker"/> class.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public BackgroundWorker(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       _myWorker.DoWork += InternalDoWork;
       _myWorker.RunWorkerCompleted += InternalRunWorkerCompleted;
       _myWorker.ProgressChanged += InternalProgressChanged;
     }
 
-    private ApplicationContext _applicationContext;
 
     // overridden event handler to be invoked by this class
-    private DoWorkEventHandler _myDoWork;
-    private RunWorkerCompletedEventHandler _myWorkerCompleted;
-    private ProgressChangedEventHandler _myWorkerProgressChanged;
+    private DoWorkEventHandler? _myDoWork;
+    private RunWorkerCompletedEventHandler? _myWorkerCompleted;
+    private ProgressChangedEventHandler? _myWorkerProgressChanged;
     
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
@@ -166,9 +168,9 @@ namespace Csla.Threading
 
     private class WorkerAsyncRequest : ContextParams
     {
-      public object Argument { get; }
+      public object? Argument { get; }
 
-      public WorkerAsyncRequest(ApplicationContext applicationContext, object argument)
+      public WorkerAsyncRequest(ApplicationContext applicationContext, object? argument)
         : base(applicationContext)
       {
         Argument = argument;
@@ -177,11 +179,11 @@ namespace Csla.Threading
 
     private class WorkerAsyncResult
     {
-      public object Result { get; }
-      public Exception Error { get; }
+      public object? Result { get; }
+      public Exception? Error { get; }
       public bool Cancelled { get; private set; }
 
-      public WorkerAsyncResult(object result, Exception error)
+      public WorkerAsyncResult(object? result, Exception? error)
       {
         Result = result;
         Error = error;
@@ -213,7 +215,7 @@ namespace Csla.Threading
     /// <exception cref="T:System.InvalidOperationException">
     ///  <see cref="P:System.ComponentModel.BackgroundWorker.IsBusy"/> is true.
     /// </exception>
-    public void RunWorkerAsync(object argument)
+    public void RunWorkerAsync(object? argument)
     {
       _myWorker.RunWorkerAsync(new WorkerAsyncRequest(_applicationContext, argument));
     }
@@ -230,9 +232,9 @@ namespace Csla.Threading
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-    void InternalDoWork(object sender, DoWorkEventArgs e)
+    void InternalDoWork(object? sender, DoWorkEventArgs e)
     {
-      var request = (WorkerAsyncRequest)e.Argument;
+      var request = (WorkerAsyncRequest)e.Argument!;
 
       // set the background worker thread context
       request.SetThreadContext();
@@ -258,16 +260,14 @@ namespace Csla.Threading
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="e">The <see cref="System.ComponentModel.RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
-    private void InternalRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+    private void InternalRunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
     {
-
-
-      Exception error = null;
-      object result = null;
+      Exception? error = null;
+      object? result = null;
 
       if (!e.Cancelled)
       {
-        var workerResult = (WorkerAsyncResult)e.Result;
+        var workerResult = (WorkerAsyncResult)e.Result!;
 
         // must check for error as accessing e.Result will throw exception
         // if e.Error is not null.
@@ -290,7 +290,7 @@ namespace Csla.Threading
     /// <exception cref="T:System.InvalidOperationException">
     /// The <see cref="P:System.ComponentModel.BackgroundWorker.WorkerReportsProgress"/> property is set to false.
     /// </exception>
-    private void InternalProgressChanged(object sender, ProgressChangedEventArgs e)
+    private void InternalProgressChanged(object? sender, ProgressChangedEventArgs e)
     {
       _myWorkerProgressChanged?.Invoke(this, new ProgressChangedEventArgs(e.ProgressPercentage, e.UserState));
     }
@@ -309,7 +309,7 @@ namespace Csla.Threading
     /// </summary>
     /// <param name="percentProgress">The percent progress.</param>
     /// <param name="userState">User state object.</param>
-    public void ReportProgress(int percentProgress, object userState)
+    public void ReportProgress(int percentProgress, object? userState)
     {
       _myWorker.ReportProgress(percentProgress, userState);
     }

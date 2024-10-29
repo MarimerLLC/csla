@@ -2,6 +2,18 @@
 
 CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other enhancements.
 
+## CSLA .NET version 7.0.7 release
+
+* #4262 Backport `LocalProxy` fix from #3633 to 7.0.7
+
+## Change List
+
+[Changes in this release](https://github.com/MarimerLLC/csla/compare/v7.0.6...v7.0.7)
+
+## Contributors
+
+* [@tkyle](https://github.com/tkyle)
+
 ## CSLA .NET version 7.0.6 release
 
 * Addresses [CVE-2024-28698](https://github.com/advisories/GHSA-9xhh-3m78-gvgj) via [#4133](https://github.com/MarimerLLC/csla/issues/4133)

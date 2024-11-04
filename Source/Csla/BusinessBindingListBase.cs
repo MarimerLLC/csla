@@ -264,9 +264,10 @@ namespace Csla
       AcceptChanges(EditLevel - 1);
     }
 
-    void IParent.ApplyEditChild(IEditableBusinessObject child)
+    Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       EditChildComplete(child);
+      return Task.CompletedTask;
     }
 
     IParent IParent.Parent
@@ -323,9 +324,10 @@ namespace Csla
     /// wants to be removed from the collection.
     /// </summary>
     /// <param name="child">The child object to remove.</param>
-    void IParent.RemoveChild(IEditableBusinessObject child)
+    Task IParent.RemoveChild(IEditableBusinessObject child)
     {
       Remove((C)child);
+      return Task.CompletedTask;
     }
 
     /// <summary>

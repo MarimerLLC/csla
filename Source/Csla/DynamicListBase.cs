@@ -234,50 +234,6 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Saves the specified item in the list.
-    /// </summary>
-    /// <param name="item">
-    /// Reference to the item to be saved.
-    /// </param>
-    /// <remarks>
-    /// This method properly saves the child item,
-    /// by making sure the item in the collection
-    /// is properly replaced by the result of the
-    /// Save() method call.
-    /// </remarks>
-    public void SaveItem(T item)
-    {
-      SaveItem(IndexOf(item));
-    }
-
-    /// <summary>
-    /// Saves the specified item in the list.
-    /// </summary>
-    /// <param name="index">
-    /// Index of the item to be saved.
-    /// </param>
-    /// <remarks>
-    /// This method properly saves the child item,
-    /// by making sure the item in the collection
-    /// is properly replaced by the result of the
-    /// Save() method call.
-    /// </remarks>
-    public async void SaveItem(int index)
-    {
-      try
-      {
-        await SaveItemAsync(index);
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
-    }
-
     private void SafeSetItem(int index, T newObject)
     {
       //This is needed because we cannot call base.SetItem from lambda expression
@@ -343,7 +299,7 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index of the item
     /// to be removed.</param>
-    protected override async void RemoveItem(int index)
+    public virtual async Task RemoveItemAsync(int index)
     {
       T item = this[index];
       if (item.IsDeleted == false)
@@ -369,6 +325,16 @@ namespace Csla
           OnSaved(item, null);
         }
       }
+    }
+
+    /// <summary>
+    /// Removes an item from the list.
+    /// </summary>
+    /// <param name="index">Index of the item
+    /// to be removed.</param>
+    protected override async void RemoveItem(int index)
+    {
+      await RemoveItemAsync(index);
     }
 
     /// <summary>
@@ -424,16 +390,19 @@ namespace Csla
       }
     }
 
-    void IParent.ApplyEditChild(IEditableBusinessObject child)
+    Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       if (child.EditLevel == 0)
-        SaveItem((T)child);
+        return SaveItemAsync((T)child);
+      else
+        return Task.CompletedTask;
     }
 
-    void IParent.RemoveChild(IEditableBusinessObject child)
+    Task IParent.RemoveChild(IEditableBusinessObject child)
     {
       // do nothing, removal of a child is handled by
       // the RemoveItem override
+      return Task.CompletedTask;
     }
 
 

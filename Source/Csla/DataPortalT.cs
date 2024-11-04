@@ -8,6 +8,7 @@
 
 using System.Globalization;
 using Csla.Configuration;
+using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Properties;
 
@@ -470,9 +471,24 @@ namespace Csla
             // clone original object before saving
             if (obj is ICloneable cloneable)
               obj = (T)cloneable.Clone();
+            result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
+              async () => await proxy.Update(obj, dpContext, isSync));
           }
-          result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
-            async () => await proxy.Update(obj, dpContext, isSync));
+          else
+          {
+            var contextManager = _applicationContext.ApplicationContextAccessor;
+            try
+            {
+              result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
+                async () => await proxy.Update(obj, dpContext, isSync));
+            }
+            catch
+            {
+              if (obj is IUseApplicationContext useContext)
+                useContext.ApplicationContext.ApplicationContextAccessor = contextManager;
+              throw;
+            }
+          }
         }
         catch (AggregateException ex)
         {

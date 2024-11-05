@@ -1,0 +1,29 @@
+name: release
+
+on:
+  push:
+    branches: [ release/* ]
+    paths: ['Source/**', '.github/workflows/**']
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0'
+        include-prerelease: True
+
+    - name: Build
+      run: dotnet build Source\csla.build.sln
+
+    - name: Push NuGet packages
+      run: dotnet nuget push bin\packages\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

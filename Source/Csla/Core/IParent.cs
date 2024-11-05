@@ -20,14 +20,14 @@ namespace Csla.Core
     /// wants to be removed from the collection.
     /// </summary>
     /// <param name="child">The child object to remove.</param>
-    void RemoveChild(IEditableBusinessObject child);
+    Task RemoveChild(IEditableBusinessObject child);
     /// <summary>
     /// Override this method to be notified when a child object's
     /// <see cref="Core.BusinessBase.ApplyEdit" /> method has
     /// completed.
     /// </summary>
     /// <param name="child">The child object that was edited.</param>
-    void ApplyEditChild(IEditableBusinessObject child);
+    Task ApplyEditChild(IEditableBusinessObject child);
     /// <summary>
     /// Provide access to the parent reference for use
     /// in child object code.

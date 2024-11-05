@@ -3388,15 +3388,17 @@ namespace Csla.Core
       // when a child has its edits applied
     }
 
-    void IParent.ApplyEditChild(IEditableBusinessObject child)
+    Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       EditChildComplete(child);
+      return Task.CompletedTask;
     }
 
-    void IParent.RemoveChild(IEditableBusinessObject child)
+    Task IParent.RemoveChild(IEditableBusinessObject child)
     {
       var info = FieldManager.FindProperty(child);
       FieldManager.RemoveField(info);
+      return Task.CompletedTask;
     }
 
     IParent IParent.Parent

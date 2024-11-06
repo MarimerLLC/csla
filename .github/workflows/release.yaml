@@ -23,6 +23,9 @@ jobs:
         dotnet-version: '9.0'
         include-prerelease: True
 
+    - name: Install .NET workloads
+      run: dotnet workload restore
+
     - name: Build
       run: dotnet build Source\csla.build.sln
 

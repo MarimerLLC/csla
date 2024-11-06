@@ -1,10 +1,11 @@
 name: release
 
+# trigger on a push to any release/* branch
 on:
   push:
-    branches: [ release/* ]
-    paths: ['Source/**', '.github/workflows/**']
-
+    branches:
+      - 'release/*'
+      
 jobs:
 
   build:

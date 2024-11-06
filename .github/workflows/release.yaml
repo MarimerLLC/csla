@@ -21,7 +21,10 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0'
-        include-prerelease: True
+        dotnet-quality: 'preview'
+
+    - name: Install .NET MAUI workloads
+      run: dotnet workload install maui
 
     - name: Build
       run: dotnet build Source\csla.build.sln

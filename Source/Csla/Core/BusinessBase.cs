@@ -3626,16 +3626,17 @@ namespace Csla.Core
     }
 
     /// <inheritdoc />
-    void IParent.ApplyEditChild(IEditableBusinessObject child)
+    Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       if (child is null)
         throw new ArgumentNullException(nameof(child));
 
       EditChildComplete(child);
+      return Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    void IParent.RemoveChild(IEditableBusinessObject child)
+    Task IParent.RemoveChild(IEditableBusinessObject child)
     {
       if (child is null)
         throw new ArgumentNullException(nameof(child));
@@ -3645,6 +3646,8 @@ namespace Csla.Core
       {
         FieldManager.RemoveField(info);
       }
+
+      return Task.CompletedTask;
     }
 
     IParent? IParent.Parent

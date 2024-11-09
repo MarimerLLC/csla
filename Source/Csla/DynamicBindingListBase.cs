@@ -332,16 +332,18 @@ namespace Csla
 
     #region  IParent Members
 
-    void IParent.ApplyEditChild(IEditableBusinessObject child)
+    Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
       if (!_activelySaving && child.EditLevel == 0)
         SaveItem((T)child);
+      return Task.CompletedTask;
     }
 
-    void IParent.RemoveChild(IEditableBusinessObject child)
+    Task IParent.RemoveChild(IEditableBusinessObject child)
     {
       if (child.IsNew)
         Remove((T)child);
+      return Task.CompletedTask;
     }
 
     IParent IParent.Parent

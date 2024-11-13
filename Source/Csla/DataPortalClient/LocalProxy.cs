@@ -64,9 +64,6 @@ namespace Csla.Channels.Local
     private ApplicationContext OriginalApplicationContext { get; set; }
     private readonly LocalProxyOptions Options;
 
-    private IServiceScope _scope;
-    private Server.IDataPortalServer _portal;
-
     private void SetApplicationContext(object obj, ApplicationContext applicationContext)
     {
       // if there's no isolated scope, there's no reason to 
@@ -205,8 +202,6 @@ namespace Csla.Channels.Local
         await DisposeScope(_logicalServerScope);
       }
 
-      var operation = DataPortalOperations.Create;
-
       return result;
     }
 
@@ -249,8 +244,6 @@ namespace Csla.Channels.Local
         await DisposeScope(_logicalServerScope);
       }
 
-      var operation = DataPortalOperations.Fetch;
-
       return result;
     }
 
@@ -291,8 +284,6 @@ namespace Csla.Channels.Local
       {
         await DisposeScope(_logicalServerScope);
       }
-
-      var operation = DataPortalOperations.Update;
 
       return result;
     }
@@ -335,8 +326,6 @@ namespace Csla.Channels.Local
       {
         await DisposeScope(_logicalServerScope);
       }
-
-      var operation = DataPortalOperations.Delete;
 
       return result;
     }

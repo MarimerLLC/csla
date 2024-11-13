@@ -21,13 +21,12 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0'
-        dotnet-quality: 'preview'
 
     - name: Install .NET MAUI workloads
       run: dotnet workload install maui
 
     - name: Build
-      run: dotnet build Source\csla.build.sln
+      run: dotnet build Source\csla.build.sln --configuration Release
 
     - name: Push NuGet packages
       run: dotnet nuget push bin\packages\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

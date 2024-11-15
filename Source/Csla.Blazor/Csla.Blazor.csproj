@@ -12,7 +12,6 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Blazor</Title>
     <PackageTags>CSLA;Blazor;aspnetcore</PackageTags>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

@@ -95,6 +95,12 @@
     <PackageReference Include="Backport.System.Threading.Lock" Version="2.0.7" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\bin\Release\netstandard2.0\Csla.Analyzers.dll">
+      <Pack>true</Pack>
+      <PackagePath>analyzers/dotnet/cs/</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

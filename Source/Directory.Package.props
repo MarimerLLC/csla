@@ -20,7 +20,7 @@
    
    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-   <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+   <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
  </PropertyGroup>
 
   <ItemGroup>

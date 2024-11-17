@@ -23,7 +23,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '9.0'
-        include-prerelease: True
 
     - name: Build
       run: dotnet build Source\csla.test.sln

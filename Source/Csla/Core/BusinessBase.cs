@@ -1401,8 +1401,7 @@ namespace Csla.Core
         string result = string.Empty;
         if (!IsSelfValid)
         {
-          BrokenRule rule =
-            BusinessRules.GetBrokenRules().GetFirstBrokenRule(columnName);
+          BrokenRule? rule = BusinessRules.GetBrokenRules().GetFirstBrokenRule(columnName);
           if (rule != null)
             result = rule.Description;
         }
@@ -1576,7 +1575,7 @@ namespace Csla.Core
       DeleteChild();
     }
 
-    void IEditableBusinessObject.SetParent(IParent parent)
+    void IEditableBusinessObject.SetParent(IParent? parent)
     {
       SetParent(parent);
     }
@@ -3411,7 +3410,7 @@ namespace Csla.Core
     /// Event indicating that an exception occurred during
     /// the processing of an async operation.
     /// </summary>
-    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    public event EventHandler<ErrorEventArgs>? UnhandledAsyncException
     {
       add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value); }
       remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value); }

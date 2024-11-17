@@ -52,7 +52,7 @@ namespace Csla.Core
     /// Sets the current user principal.
     /// </summary>
     /// <param name="principal">User principal value</param>
-    public virtual void SetUser(IPrincipal principal)
+    public virtual void SetUser(IPrincipal? principal)
     {
       Thread.CurrentPrincipal = principal;
     }

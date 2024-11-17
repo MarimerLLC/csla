@@ -173,7 +173,7 @@ namespace Csla.Data
         // now handle lists/arrays/collections
         if (innerSource is IEnumerable)
         {
-          Type childType = Utilities.GetChildItemType(innerSource.GetType());
+          Type? childType = Utilities.GetChildItemType(innerSource.GetType());
           result = ScanObject(childType);
         }
         else
@@ -193,7 +193,7 @@ namespace Csla.Data
       return result;
     }
 
-    private List<string> ScanObject(Type sourceType)
+    private List<string> ScanObject(Type? sourceType)
     {
       List<string> result = [];
 

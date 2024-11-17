@@ -63,11 +63,12 @@ namespace Csla
     /// <param name="operation">
     /// Data portal operation being performed.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public DataPortalEventArgs(Server.DataPortalContext? dataPortalContext, Type objectType, object? obj, DataPortalOperations operation)
     {
       DataPortalContext = dataPortalContext;
       Operation = operation;
-      ObjectType = objectType;
+      ObjectType = objectType ?? throw new ArgumentNullException(nameof(objectType));
       Object = obj;
     }
 
@@ -89,10 +90,11 @@ namespace Csla
     /// <param name="exception">
     /// Exception encountered during processing.
     /// </param>
-    public DataPortalEventArgs(Server.DataPortalContext dataPortalContext, Type objectType, object? obj, DataPortalOperations operation, Exception exception)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="exception"/> is <see langword="null"/>.</exception>
+    public DataPortalEventArgs(Server.DataPortalContext? dataPortalContext, Type objectType, object? obj, DataPortalOperations operation, Exception exception)
       : this(dataPortalContext, objectType, obj, operation)
     {
-      Exception = exception;
+      Exception = exception ?? throw new ArgumentNullException(nameof(exception));
     }
   }
 }

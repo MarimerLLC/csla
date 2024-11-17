@@ -21,7 +21,8 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<T> CreateChildAsync(params object[] criteria);
+    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
+    Task<T> CreateChildAsync(params object?[] criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -29,14 +30,16 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<T> FetchChildAsync(params object[] criteria);
+    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
+    Task<T> FetchChildAsync(params object?[] criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <param name="parameters">Additional, optional parameters to pass</param>
-    Task UpdateChildAsync(T obj, params object[] parameters);
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
+    Task UpdateChildAsync(T obj, params object?[] parameters);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -44,14 +47,16 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    T CreateChild(params object[] criteria);
+    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
+    T CreateChild(params object?[] criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    T FetchChild(params object[] criteria);
+    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
+    T FetchChild(params object?[] criteria);
     /// <summary>
     /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
@@ -65,6 +70,7 @@ namespace Csla
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <param name="parameters"></param>
     /// <returns>A reference to the updated business object.</returns>
-    void UpdateChild(T obj, params object[] parameters);
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
+    void UpdateChild(T obj, params object?[] parameters);
   }
 }

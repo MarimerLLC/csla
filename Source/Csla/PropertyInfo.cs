@@ -314,7 +314,7 @@ namespace Csla
       if (typeof(T) == typeof(string))
         return (T)(object)string.Empty;
 
-      return default(T);
+      return default;
     }
   }
 }

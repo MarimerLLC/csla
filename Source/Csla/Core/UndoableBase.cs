@@ -241,7 +241,7 @@ namespace Csla.Core
         {
           buffer.Position = 0;
           var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
-          state = (MobileDictionary<string, object?>)formatter.Deserialize(buffer);
+          state = (MobileDictionary<string, object?>)(formatter.Deserialize(buffer) ?? throw new InvalidOperationException());
         }
 
         Type? currentType = GetType();
@@ -426,7 +426,7 @@ namespace Csla.Core
         _bindingEdit = info.GetValue<bool>("_bindingEdit");
         if (info.Values.ContainsKey("_stateStack"))
         {
-          var stackArray = info.GetValue<byte[][]>("_stateStack");
+          var stackArray = (IEnumerable<byte[]>)info.GetRequiredValue<byte[][]>("_stateStack");
           _stateStack.Clear();
           foreach (var item in stackArray.Reverse())
             _stateStack.Push(item);

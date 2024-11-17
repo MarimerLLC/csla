@@ -130,7 +130,7 @@ namespace Csla.Core
         }
         else
         {
-          V value = this[key];
+          V? value = this[key];
           info.AddValue(_valuePrefix + count, value);
         }
         count++;
@@ -159,13 +159,13 @@ namespace Csla.Core
         if (_keyIsMobile)
           key = (K)formatter.GetObject(info.Children[_keyPrefix + index].ReferenceId);
         else
-          key = info.GetValue<K>(_keyPrefix + index);
+          key = info.GetValue<K>(_keyPrefix + index)!;
 
         V value;
         if (_valueIsMobile)
           value = (V)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId);
         else
-          value = info.GetValue<V>(_valuePrefix + index);
+          value = info.GetValue<V>(_valuePrefix + index)!;
 
         Add(key, value);
       }

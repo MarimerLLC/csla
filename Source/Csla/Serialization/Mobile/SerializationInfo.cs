@@ -302,12 +302,24 @@ namespace Csla.Serialization.Mobile
       try
       {
         var value = _values[name].Value;
-        return (value != null ? Utilities.CoerceValue<T?>(value.GetType(), null, value) : (T?)value);
+        return value != null ? Utilities.CoerceValue<T?>(value.GetType(), null, value) : (T?)value;
       }
       catch (Exception ex)
       {
         throw new InvalidOperationException($"SerializationInfo.GetValue: {name}", ex);
       }
+    }
+
+    /// <summary>
+    /// Gets a value from the list of fields which is required to be not <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">Type to which the value should be coerced.</typeparam>
+    /// <param name="name">Name of the field.</param>
+    /// <returns>The value.</returns>
+    /// <exception cref="InvalidOperationException">Something went wrong or the returned value of <paramref name="name"/> would be <see langword="null"/>.</exception>
+    public T GetRequiredValue<T>(string name)
+    {
+      return GetValue<T>(name) ?? throw new InvalidOperationException($"SerializationInfo.GetValue: {name} => null");
     }
 
     /// <summary>

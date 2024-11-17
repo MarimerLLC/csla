@@ -67,7 +67,7 @@ namespace Csla.DataPortalClient
         request = ConvertRequest(request);
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
         serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
 
         if (response.ErrorData == null)
@@ -118,7 +118,7 @@ namespace Csla.DataPortalClient
 
         serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
@@ -166,7 +166,7 @@ namespace Csla.DataPortalClient
 
         serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
@@ -216,7 +216,7 @@ namespace Csla.DataPortalClient
 
         serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {

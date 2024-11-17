@@ -186,7 +186,7 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    event BusyChangedEventHandler INotifyBusy.BusyChanged
+    event BusyChangedEventHandler? INotifyBusy.BusyChanged
     {
       add { throw new NotImplementedException(); }
       remove { throw new NotImplementedException(); }
@@ -275,7 +275,7 @@ namespace Csla.Core.FieldManager
     {
       if (!_isChild)
       {
-        Name = info.GetValue<string>("_name");
+        Name = info.GetValue<string>("_name")!;
         _data = info.GetValue<T>("_data");
         _isDirty = info.GetValue<bool>("_isDirty");
       }
@@ -285,7 +285,7 @@ namespace Csla.Core.FieldManager
     {
       if (_isChild)
       {
-        Name = info.GetValue<string>("_name");
+        Name = info.GetValue<string>("_name")!;
         SerializationInfo.ChildData childData = info.Children[Name];
         _data = (T)formatter.GetObject(childData.ReferenceId);
       }

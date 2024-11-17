@@ -692,7 +692,7 @@ namespace Csla.Server
     /// serializable criteria value.
     /// </summary>
     /// <param name="criteria">Params array</param>
-    public static object GetCriteriaFromArray(params object[] criteria)
+    public static object GetCriteriaFromArray(params object?[] criteria)
     {
       var clength = 0;
       if (criteria != null)
@@ -706,9 +706,9 @@ namespace Csla.Server
       else if (clength == 0)
         return EmptyCriteria.Instance;
       else if (clength == 1)
-        return criteria[0];
+        return criteria[0]!;
       else
-        return new Core.MobileList<object>(criteria);
+        return new Core.MobileList<object?>(criteria);
     }
 
     /// <summary>

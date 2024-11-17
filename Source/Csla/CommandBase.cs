@@ -9,6 +9,7 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -208,7 +209,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this)!;
     }
 
     /// <summary>
@@ -239,8 +240,12 @@ namespace Csla
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(PropertyInfo<P> info)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
     }
 
@@ -250,8 +255,12 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string? propertyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
     }
 
@@ -261,8 +270,12 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name);
     }
@@ -274,8 +287,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string? propertyName, RelationshipTypes relationship)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
     }
 
@@ -286,8 +303,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="relationship">Relationship with property value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, relationship);
     }
@@ -299,8 +320,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string? propertyName, string? friendlyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
 
@@ -311,8 +336,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName);
     }
@@ -325,8 +354,12 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P defaultValue)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
 
@@ -338,8 +371,12 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue);
     }
@@ -353,8 +390,12 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P defaultValue, RelationshipTypes relationship)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
 
@@ -367,8 +408,12 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue, RelationshipTypes relationship)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue, RelationshipTypes relationship)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);
     }
@@ -379,7 +424,7 @@ namespace Csla
 
     bool IManageProperties.HasManagedProperties
     {
-      get { return (FieldManager != null && FieldManager.HasFields); }
+      get { return FieldManager.HasFields; }
     }
 
     List<IPropertyInfo> IManageProperties.GetManagedProperties()
@@ -387,37 +432,37 @@ namespace Csla
       return FieldManager.GetRegisteredProperties();
     }
 
-    object IManageProperties.GetProperty(IPropertyInfo propertyInfo)
+    object? IManageProperties.GetProperty(IPropertyInfo propertyInfo)
     {
       return ReadProperty(propertyInfo);
     }
 
-    object IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
+    object? IManageProperties.ReadProperty(IPropertyInfo propertyInfo)
     {
       return ReadProperty(propertyInfo);
     }
 
-    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    P? IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) where P: default
     {
       return ReadProperty<P>(propertyInfo);
     }
 
-    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue)
+    void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object? newValue)
     {
       FieldManager.SetFieldData(propertyInfo, newValue);
     }
 
-    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue)
+    void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object? newValue)
     {
       LoadProperty(propertyInfo, newValue);
     }
 
-    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default
     {
       LoadProperty<P>(propertyInfo, newValue);
     }
 
-    bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue)
+    bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue)
     {
       LoadProperty(propertyInfo, newValue);
       return false;

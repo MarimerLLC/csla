@@ -39,7 +39,7 @@ namespace Csla.Core
 
     private FieldDataManager? _fieldManager;
     /// <summary>
-    /// Gets a reference to the field mananger
+    /// Gets a reference to the field manager
     /// for this object.
     /// </summary>
     protected FieldDataManager FieldManager

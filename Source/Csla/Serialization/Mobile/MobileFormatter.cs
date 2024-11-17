@@ -300,9 +300,9 @@ namespace Csla.Serialization.Mobile
     /// reference id within the serialization stream.
     /// </summary>
     /// <param name="referenceId">Id of object in stream.</param>
-    public object? GetObject(int referenceId)
+    public object GetObject(int referenceId)
     {
-      return _deserializationReferences[referenceId];
+      return _deserializationReferences[referenceId] ?? throw new InvalidOperationException();
     }
 
 #endregion

@@ -569,7 +569,7 @@ namespace Csla.Core.FieldManager
         {
           buffer.Position = 0;
           var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
-          state = [.. ((MobileList<IFieldData>)formatter.Deserialize(buffer))];
+          state = [.. ((MobileList<IFieldData>)formatter.Deserialize(buffer)!)];
         }
 
         for (var index = 0; index < _fieldData.Length; index++)
@@ -770,10 +770,12 @@ namespace Csla.Core.FieldManager
     {
       foreach (IFieldData? data in _fieldData)
       {
-        var serializable = formatter.IsTypeSerializable(data?.Value?.GetType());
-        if (serializable)
+        if (data?.Value is null)
+          continue;
+
+        if (formatter.IsTypeSerializable(data.Value.GetType()))
         {
-          SerializationInfo childInfo = formatter.SerializeObject(data?.Value);
+          SerializationInfo childInfo = formatter.SerializeObject(data.Value);
           info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
         }
       }
@@ -801,7 +803,7 @@ namespace Csla.Core.FieldManager
         _stateStack.Clear();
         if (info.Values.ContainsKey("_stateStack"))
         {
-          var stackArray = info.GetValue<byte[][]>("_stateStack");
+          var stackArray = (IEnumerable<byte[]>)info.GetRequiredValue<byte[][]>("_stateStack");
           foreach (var item in stackArray.Reverse())
             _stateStack.Push(item);
         }

@@ -87,7 +87,7 @@ namespace Csla
     {
       get
       {
-        IContextDictionary ctx = ContextManager.GetLocalContext();
+        IContextDictionary? ctx = ContextManager.GetLocalContext();
         if (ctx == null)
         {
           ctx = new ContextDictionary();
@@ -254,8 +254,8 @@ namespace Csla
     {
       get
       {
-        var ruleSet = (string)ClientContext.GetValueOrNull("__ruleSet");
-        return string.IsNullOrEmpty(ruleSet) ? DefaultRuleSet : ruleSet;
+        var ruleSet = (string?)ClientContext.GetValueOrNull("__ruleSet");
+        return string.IsNullOrEmpty(ruleSet) ? DefaultRuleSet : ruleSet!;
       }
       set
       {
@@ -292,7 +292,7 @@ namespace Csla
     {
       get
       {
-        object location = LocalContext.GetValueOrNull("__logicalExecutionLocation");
+        object? location = LocalContext.GetValueOrNull("__logicalExecutionLocation");
         if (location != null)
           return (LogicalExecutionLocations)location;
         else
@@ -329,10 +329,8 @@ namespace Csla
     /// <typeparam name="T">Type of service/object to create.</typeparam>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T GetRequiredService<T>()
+      where T: notnull
     {
-      if (CurrentServiceProvider == null)
-        throw new NullReferenceException(nameof(CurrentServiceProvider));
-
       try
       {
         var result = CurrentServiceProvider.GetRequiredService<T>();
@@ -428,8 +426,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public object CreateInstance(Type objectType, params object[] parameters)
     {
-      object result;
-      result = Activator.CreateInstance(objectType, parameters);
+      object result = Activator.CreateInstance(objectType, parameters) ?? throw new InvalidOperationException("Internal: Nullable types can not be instantiated.");
       if (result is IUseApplicationContext tmp)
       {
         tmp.ApplicationContext = this;

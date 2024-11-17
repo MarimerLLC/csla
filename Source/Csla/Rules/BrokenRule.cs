@@ -153,8 +153,8 @@ namespace Csla.Rules
     /// </param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      _ruleName = info.GetValue<string>("_ruleName");
-      _description = info.GetValue<string>("_description");
+      _ruleName = info.GetValue<string>("_ruleName")!;
+      _description = info.GetValue<string>("_description")!;
       _property = info.GetValue<string>("_property");
       _severity = info.GetValue<RuleSeverity>("_severity");
       _originProperty = info.GetValue<string>("_originProperty");

@@ -165,8 +165,12 @@ namespace Csla.Core.FieldManager
     /// Registered property information is only available after at least one instance
     /// of the object type has been created within the current AppDomain.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static PropertyInfoList GetRegisteredProperties(Type objectType)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+
       // return a copy of the list to avoid
       // possible locking issues
       var list = GetPropertyListCache(objectType);
@@ -179,8 +183,14 @@ namespace Csla.Core.FieldManager
     /// </summary>
     /// <param name="objectType">The business object type.</param>
     /// <param name="propertyName">The name of the property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="propertyName"/> is <see langword="null"/>.</exception>
     public static IPropertyInfo? GetRegisteredProperty(Type objectType, string propertyName)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);
     }
 #if NET8_0_OR_GREATER

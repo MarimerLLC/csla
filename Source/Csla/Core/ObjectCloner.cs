@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>This class provides an implementation of a deep</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization;
 
 namespace Csla.Core
@@ -48,6 +49,7 @@ namespace Csla.Core
     /// specified in ApplicationContext.</para>
     /// <para>The default is to use the MobileFormatter.</para>
     /// </remarks>
+    [return: NotNullIfNotNull(nameof(obj))]
     public object? Clone(object? obj)
     {
       using var buffer = new MemoryStream();

@@ -119,7 +119,7 @@ namespace Csla.Core
         if (mobileChildren)
           value = (T)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId);
         else
-          value = info.GetValue<T>(_valuePrefix + index);
+          value = info.GetValue<T>(_valuePrefix + index)!;
 
         Add(value);
       }

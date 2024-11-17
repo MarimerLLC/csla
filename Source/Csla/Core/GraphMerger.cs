@@ -142,7 +142,7 @@ namespace Csla.Core
     private void MergeGraph(IEditableCollection target, IEditableCollection source)
     {
       var listType = target.GetType();
-      var childType = Utilities.GetChildItemType(listType);
+      var childType = Utilities.GetChildItemType(listType) ?? throw new InvalidOperationException();
       var genericTypeParams = new Type[] { listType, childType };
       System.Reflection.MethodInfo? methodReference;
       if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
@@ -343,7 +343,7 @@ namespace Csla.Core
       static (Type ListType, Type ChildType, bool IsExtendedBindingList) GetCacheKey(IEditableCollection target)
       {
         var listType = target.GetType();
-        var childType = Utilities.GetChildItemType(listType);
+        var childType = Utilities.GetChildItemType(listType) ?? throw new InvalidOperationException();
         var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
         return (listType, childType, isExtendedBindingList);
       }

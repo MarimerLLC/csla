@@ -72,7 +72,7 @@ namespace Csla.Web.Mvc
     {
       var applicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
       var formKeys = bindingContext.ActionContext.HttpContext.Request.Form.Keys.Where(_ => _.StartsWith(bindingContext.ModelName));
-      var childType = Utilities.GetChildItemType(bindingContext.ModelType);
+      var childType = Utilities.GetChildItemType(bindingContext.ModelType) ?? throw new InvalidOperationException();
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);
       var list = (IList)result;
 

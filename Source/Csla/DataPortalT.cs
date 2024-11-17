@@ -23,8 +23,16 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal
+  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T: notnull
   {
+    /// <summary>
+    /// Gets or sets the current ApplicationContext object.
+    /// </summary>
+    private readonly ApplicationContext _applicationContext;
+    private IDataPortalProxy DataPortalProxy { get; }
+    private IDataPortalCache Cache { get; }
+    private DataPortalClientOptions DataPortalClientOptions { get; }
+
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
@@ -32,22 +40,16 @@ namespace Csla
     /// <param name="proxy"></param>
     /// <param name="dataPortalCache">Data portal cache service</param>
     /// <param name="dataPortalOptions"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="proxy"/>, <paramref name="dataPortalCache"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortal(ApplicationContext applicationContext, IDataPortalProxy proxy, IDataPortalCache dataPortalCache, DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext;
-      DataPortalProxy = proxy;
-      Cache = dataPortalCache;
+      if (dataPortalOptions is null)
+        throw new ArgumentNullException(nameof(dataPortalOptions));
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      DataPortalProxy = proxy ?? throw new ArgumentNullException(nameof(proxy));
+      Cache = dataPortalCache ?? throw new ArgumentNullException(nameof(dataPortalCache));
       DataPortalClientOptions = dataPortalOptions.DataPortalClientOptions;
     }
-
-    /// <summary>
-    /// Gets or sets the current ApplicationContext object.
-    /// </summary>
-    private ApplicationContext _applicationContext;
-    private IDataPortalProxy DataPortalProxy { get; set; }
-
-    private IDataPortalCache Cache { get; set; }
-    private DataPortalClientOptions DataPortalClientOptions { get; set; }
 
     private class DataPortalAsyncRequest
     {
@@ -87,7 +89,7 @@ namespace Csla
       }
     }
 
-    private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller? serviceProviderMethodCaller;
     private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
       get
@@ -100,58 +102,52 @@ namespace Csla
 
     private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
-      Server.DataPortalResult result = null;
-      Server.DataPortalContext dpContext = null;
+
+      if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+        throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "create", objectType.Name));
+
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<CreateAttribute>(objectType, criteria, out var method);
+      var proxy = GetDataPortalProxy(method);
+
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+
+      Server.DataPortalResult result = default!;
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "create", objectType.Name));
-
-        _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<CreateAttribute>(objectType, criteria, out var method);
-        var proxy = GetDataPortalProxy(method);
-
-        dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-
-        try
-        {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create,
-            async () => await proxy.Create(objectType, criteria, dpContext, isSync));
-        }
-        catch (AggregateException ex)
-        {
-          if (ex.InnerExceptions.Count > 0)
-          {
-            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleCreateDataPortalException(dpe);
-          }
-          throw new DataPortalException($"DataPortal.Create {Resources.Failed}", ex, null);
-        }
-        catch (Server.DataPortalException ex)
-        {
-          HandleCreateDataPortalException(ex);
-        }
+        result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create,
+          async () => await proxy.Create(objectType, criteria, dpContext, isSync));
       }
-      catch
+      catch (AggregateException ex)
       {
-        throw;
+        if (ex.InnerExceptions.Count > 0)
+        {
+          if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
+            HandleCreateDataPortalException(dpe);
+        }
+        throw new DataPortalException($"DataPortal.Create {Resources.Failed}", ex, null);
       }
-      return result.ReturnObject;
+      catch (Server.DataPortalException ex)
+      {
+        HandleCreateDataPortalException(ex);
+      }
+
+      return result.ReturnObject!;
     }
 
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
     private void HandleCreateDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Create", ex);
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class to create 
-    /// a new object, which is loaded with default
-    /// values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <returns>A new object, populated with default values.</returns>
-    public T Create(params object[] criteria)
+    /// <inheritdoc />
+    public T Create(params object?[] criteria)
     {
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
       return (T)Create(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
@@ -177,14 +173,12 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to create a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    public async Task<T> CreateAsync(params object[] criteria)
+    /// <inheritdoc />
+    public async Task<T> CreateAsync(params object?[] criteria)
     {
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
       return (T)await DoCreateAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
@@ -195,62 +189,51 @@ namespace Csla
         return await DoExecuteAsync(objectType, criteria, isSync);
       }
 
-      Server.DataPortalResult result = null;
-      Server.DataPortalContext dpContext = null;
-      Reflection.ServiceProviderMethodInfo? method = null;
+
+      if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+        throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "get", objectType.Name));
+
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<FetchAttribute>(objectType, criteria, out var method);
+
+      var proxy = GetDataPortalProxy(method);
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+
+      Server.DataPortalResult result = default!;
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "get", objectType.Name));
-
-        _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<FetchAttribute>(objectType, criteria, out method);
-
-        var proxy = GetDataPortalProxy(method);
-
-        dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-
-        try
-        {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch,
-            async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
-        }
-        catch (AggregateException ex)
-        {
-          if (ex.InnerExceptions.Count > 0)
-          {
-            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleFetchDataPortalException(dpe);
-          }
-          throw new DataPortalException($"DataPortal.Fetch {Resources.Failed}", ex, null);
-        }
-        catch (Server.DataPortalException ex)
-        {
-          HandleFetchDataPortalException(ex);
-        }
+        result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch,
+          async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
       }
-      catch
+      catch (AggregateException ex)
       {
-        throw;
+        if (ex.InnerExceptions.Count > 0)
+        {
+          if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
+            HandleFetchDataPortalException(dpe);
+        }
+        throw new DataPortalException($"DataPortal.Fetch {Resources.Failed}", ex, null);
       }
-      return result.ReturnObject;
+      catch (Server.DataPortalException ex)
+      {
+        HandleFetchDataPortalException(ex);
+      }
+      
+      return result.ReturnObject!;
     }
 
     private async Task<object> DoExecuteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
-      Server.DataPortalResult? result = null;
-      Server.DataPortalContext? dpContext = null;
-      Reflection.ServiceProviderMethodInfo? method = null;
 
       if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
         throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
           "execute",
           objectType.Name));
 
-      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<ExecuteAttribute>(objectType, criteria, out method);
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<ExecuteAttribute>(objectType, criteria, out var method);
       var proxy = GetDataPortalProxy(method);
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
 
-      dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-
+      Server.DataPortalResult result = default!;
       try
       {
         result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute,
@@ -270,23 +253,23 @@ namespace Csla
         HandleDataPortalException("Execute", ex);
       }
 
-      return result.ReturnObject;
+      return result.ReturnObject!;
     }
 
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
     private void HandleFetchDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Fetch", ex);
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class to Fetch 
-    /// a new object, which is loaded with default
-    /// values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    /// <returns>A new object, populated with default values.</returns>
-    public T Fetch(params object[] criteria)
+    /// <inheritdoc />
+    public T Fetch(params object?[] criteria)
     {
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
       return (T)Fetch(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
@@ -311,75 +294,60 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to Fetch a new object, which is loaded 
-    /// with default values from the database.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    public async Task<T> FetchAsync(params object[] criteria)
+    /// <inheritdoc />
+    public async Task<T> FetchAsync(params object?[] criteria)
     {
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    internal async Task<T> DoUpdateAsync(T obj, bool isSync, CancellationToken ct = default)
+    private async Task<T> DoUpdateAsync(T obj, bool isSync, CancellationToken ct = default)
     {
-      Server.DataPortalResult result = null;
-      Server.DataPortalContext dpContext = null;
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      try
+      
+      IDataPortalProxy proxy;
+      var factoryInfo = Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
+      if (factoryInfo != null)
       {
-        IDataPortalProxy proxy = null;
-        var factoryInfo = Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
-        if (factoryInfo != null)
-        {
-          Server.DataPortalMethodInfo? method = null;
-          var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
-          var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
+        Server.DataPortalMethodInfo? method = null;
+        var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
+        var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
 
-          if (obj is Core.ICommandObject)
+        if (obj is Core.ICommandObject)
+        {
+          operation = DataPortalOperations.Execute;
+          if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+            throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+              "execute",
+              objectType.Name));
+          if (factoryType != null)
+            method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, [obj]);
+        }
+        else
+        {
+          if (obj is Core.BusinessBase bbase)
           {
-            operation = DataPortalOperations.Execute;
-            if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                "execute",
-                objectType.Name));
-            if (factoryType != null)
-              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.ExecuteMethodName, [obj]);
-          }
-          else
-          {
-            if (obj is Core.BusinessBase bbase)
+            if (bbase.IsDeleted)
             {
-              if (bbase.IsDeleted)
-              {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                                                                            "delete",
-                                                                            objectType.Name));
-                if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, [obj]);
-              }
-              // must check the same authorization rules as for DataPortal_XYZ methods 
-              else if (bbase.IsNew)
-              {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                                                                            "create",
-                                                                            objectType.Name));
-                if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
-              }
-              else
-              {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                                                                            "save",
-                                                                            objectType.Name));
-                if (factoryType != null)
-                  method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
-              }
+              if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
+                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                                                                          "delete",
+                                                                          objectType.Name));
+              if (factoryType != null)
+                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, [obj]);
+            }
+            // must check the same authorization rules as for DataPortal_XYZ methods 
+            else if (bbase.IsNew)
+            {
+              if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
+                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                                                                          "create",
+                                                                          objectType.Name));
+              if (factoryType != null)
+                method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
             }
             else
             {
@@ -387,116 +355,125 @@ namespace Csla
                 throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                           "save",
                                                                           objectType.Name));
-
               if (factoryType != null)
                 method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
             }
           }
+          else
+          {
+            if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                                                                        "save",
+                                                                        objectType.Name));
+
+            if (factoryType != null)
+              method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
+          }
+        }
           
-          var runLocal = method?.RunLocal ?? false;
-          proxy = GetDataPortalProxy(runLocal);
+        var runLocal = method?.RunLocal ?? false;
+        proxy = GetDataPortalProxy(runLocal);
+      }
+      else
+      {
+        Reflection.ServiceProviderMethodInfo? method;
+        var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
+        if (obj is Core.ICommandObject)
+        {
+          operation = DataPortalOperations.Execute;
+          if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+            throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+              "execute",
+              objectType.Name));
+          _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<ExecuteAttribute>(objectType, criteria, out method);
         }
         else
         {
-          Reflection.ServiceProviderMethodInfo? method;
-          var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
-          if (obj is Core.ICommandObject)
+          if (obj is Core.BusinessBase bbase)
           {
-            operation = DataPortalOperations.Execute;
-            if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                "execute",
-                objectType.Name));
-            _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<ExecuteAttribute>(objectType, criteria, out method);
-          }
-          else
-          {
-            if (obj is Core.BusinessBase bbase)
+            if (bbase.IsDeleted)
             {
-              if (bbase.IsDeleted)
-              {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                    "delete",
-                    objectType.Name));
-                _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria, out method);
-              }
-              else if (bbase.IsNew)
-              {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                    "create",
-                    objectType.Name));
-                _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<InsertAttribute>(objectType, criteria, out method);
-              }
-              else
-              {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                    "save",
-                    objectType.Name));
-                _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<UpdateAttribute>(objectType, criteria, out method);
-              }
+              if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
+                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  "delete",
+                  objectType.Name));
+              _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria, out method);
+            }
+            else if (bbase.IsNew)
+            {
+              if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
+                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  "create",
+                  objectType.Name));
+              _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<InsertAttribute>(objectType, criteria, out method);
             }
             else
             {
+              if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                  "save",
+                  objectType.Name));
               _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<UpdateAttribute>(objectType, criteria, out method);
             }
           }
-          proxy = GetDataPortalProxy(method);
-        }
-
-        dpContext =
-          new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-
-        try
-        {
-          if (!proxy.IsServerRemote && DataPortalClientOptions.AutoCloneOnUpdate)
+          else
           {
-            // when using local data portal, automatically
-            // clone original object before saving
-            if (obj is ICloneable cloneable)
-              obj = (T)cloneable.Clone();
+            _ = ServiceProviderMethodCaller.TryFindDataPortalMethod<UpdateAttribute>(objectType, criteria, out method);
+          }
+        }
+        proxy = GetDataPortalProxy(method);
+      }
+
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+
+      Server.DataPortalResult result = default!;
+      try
+      { 
+        if (!proxy.IsServerRemote && DataPortalClientOptions.AutoCloneOnUpdate)
+        {
+          // when using local data portal, automatically
+          // clone original object before saving
+          if (obj is ICloneable cloneable)
+            obj = (T)cloneable.Clone();
+          result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
+            async () => await proxy.Update(obj, dpContext, isSync));
+        }
+        else
+        {
+          var contextManager = _applicationContext.ApplicationContextAccessor;
+          try
+          {
             result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
               async () => await proxy.Update(obj, dpContext, isSync));
           }
-          else
+          catch
           {
-            var contextManager = _applicationContext.ApplicationContextAccessor;
-            try
-            {
-              result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
-                async () => await proxy.Update(obj, dpContext, isSync));
-            }
-            catch
-            {
-              if (obj is IUseApplicationContext useContext)
-                useContext.ApplicationContext.ApplicationContextAccessor = contextManager;
-              throw;
-            }
+            if (obj is IUseApplicationContext useContext)
+              useContext.ApplicationContext.ApplicationContextAccessor = contextManager;
+            throw;
           }
-        }
-        catch (AggregateException ex)
-        {
-          if (ex.InnerExceptions.Count > 0)
-          {
-            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleUpdateDataPortalException(dpe);
-          }
-          throw new DataPortalException($"DataPortal.Update {Resources.Failed}", ex, null);
-        }
-        catch (Server.DataPortalException ex)
-        {
-          HandleUpdateDataPortalException(ex);
         }
       }
-      catch
+      catch (AggregateException ex)
       {
-        throw;
+        if (ex.InnerExceptions.Count > 0)
+        {
+          if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
+            HandleUpdateDataPortalException(dpe);
+        }
+        throw new DataPortalException($"DataPortal.Update {Resources.Failed}", ex, null);
       }
-      return (T)result.ReturnObject;
-    }
+      catch (Server.DataPortalException ex)
+      {
+        HandleUpdateDataPortalException(ex);
+      }
+     
+    return (T)result.ReturnObject!;
+  }
 
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
     private void HandleUpdateDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Update", ex);
@@ -508,19 +485,18 @@ namespace Csla
     private void HandleDataPortalException(string operation, Server.DataPortalException ex)
     {
       var result = ex.Result;
-      var original = ex.InnerException;
+      var original = ex.InnerException!;
       if (original.InnerException != null)
         original = original.InnerException;
-      throw new DataPortalException(String.Format("DataPortal.{2} {0} ({1})", Resources.Failed, original.Message, operation), ex.InnerException, result.ReturnObject);
+      throw new DataPortalException(String.Format("DataPortal.{2} {0} ({1})", Resources.Failed, original.Message, operation), ex.InnerException!, result.ReturnObject);
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to update an object.
-    /// </summary>
-    /// <param name="obj">Object to update.</param>
+    /// <inheritdoc />
     public T Update(T obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       try
       {
         return DoUpdateAsync(obj, true).Result;
@@ -534,69 +510,59 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to update an object.
-    /// </summary>
-    /// <param name="obj">Object to update.</param>
+    /// <inheritdoc />
     public Task<T> UpdateAsync(T obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       return DoUpdateAsync(obj, false);
     }
 
-    internal async Task DoDeleteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task DoDeleteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
-      Server.DataPortalResult result = null;
-      Server.DataPortalContext dpContext = null;
+
+      if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+        throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "delete", objectType.Name));
+
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<DeleteAttribute>(objectType, criteria, out var method);
+      var proxy = GetDataPortalProxy(method);
+
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-            "delete",
-            objectType.Name));
-
-        _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<DeleteAttribute>(objectType, criteria, out var method);
-        var proxy = GetDataPortalProxy(method);
-
-        dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-
-        try
-        {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete,
-            async () => await proxy.Delete(objectType, criteria, dpContext, isSync));
-        }
-        catch (AggregateException ex)
-        {
-          if (ex.InnerExceptions.Count > 0)
-          {
-            if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
-              HandleDeleteDataPortalException(dpe);
-          }
-          throw new DataPortalException($"DataPortal.Delete {Resources.Failed}", ex, null);
-        }
-        catch (Server.DataPortalException ex)
-        {
-          HandleDeleteDataPortalException(ex);
-        }
+        var result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete,
+          async () => await proxy.Delete(objectType, criteria, dpContext, isSync));
       }
-      catch
+      catch (AggregateException ex)
       {
-        throw;
+        if (ex.InnerExceptions.Count > 0)
+        {
+          if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
+            HandleDeleteDataPortalException(dpe);
+        }
+        throw new DataPortalException($"DataPortal.Delete {Resources.Failed}", ex, null);
+      }
+      catch (Server.DataPortalException ex)
+      {
+        HandleDeleteDataPortalException(ex);
       }
     }
 
+#if NET8_0_OR_GREATER
+    [DoesNotReturn]
+#endif
     private void HandleDeleteDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Delete", ex);
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to delete an object.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    public void Delete(params object[] criteria)
+    /// <inheritdoc />
+    public void Delete(params object?[] criteria)
     {
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
       Delete(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
@@ -625,57 +591,48 @@ namespace Csla
       }
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to delete an object.
-    /// </summary>
-    /// <param name="criteria">Object-specific criteria.</param>
-    public Task DeleteAsync(params object[] criteria)
+    /// <inheritdoc />
+    public Task DeleteAsync(params object?[] criteria)
     {
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
       return DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to execute a command object.
-    /// </summary>
-    /// <param name="command">Command object to execute.</param>
+    /// <inheritdoc />
     public T Execute(T command)
     {
+      if (command is null)
+        throw new ArgumentNullException(nameof(command));
+
       return Update(command);
     }
 
-    /// <summary>
-    /// Execute a command on the logical server.
-    /// </summary>
-    /// <param name="criteria">
-    /// Criteria provided to the command object.
-    /// </param>
-    /// <returns>The resulting command object.</returns>
-    public T Execute(params object[] criteria)
+    /// <inheritdoc />
+    public T Execute(params object?[] criteria)
     {
-        return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
+      return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
     }
 
-    /// <summary>
-    /// Called by a factory method in a business class or
-    /// by the UI to execute a command object.
-    /// </summary>
-    /// <param name="command">Command object to execute.</param>
+    /// <inheritdoc />
     public Task<T> ExecuteAsync(T command)
     {
+      if (command is null)
+        throw new ArgumentNullException(nameof(command));
+
       return DoUpdateAsync(command, false);
     }
 
-    /// <summary>
-    /// Execute a command on the logical server.
-    /// </summary>
-    /// <param name="criteria">
-    /// Criteria provided to the command object.
-    /// </param>
-    /// <returns>The resulting command object.</returns>
-    public async Task<T> ExecuteAsync(params object[] criteria)
+    /// <inheritdoc />
+    public async Task<T> ExecuteAsync(params object?[] criteria)
     {
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
@@ -705,15 +662,12 @@ namespace Csla
       return (T)(portal.Create(typeof(T)));
     }
 
-    /// <summary>
-    /// Creates and initializes a new
-    /// child business object.
-    /// </summary>
-    /// <param name="parameters">
-    /// Parameters passed to child create method.
-    /// </param>
-    public T CreateChild(params object[] parameters)
+    /// <inheritdoc />
+    public T CreateChild(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       return (T)(portal.Create(typeof(T), parameters));
     }
@@ -728,15 +682,12 @@ namespace Csla
       return await portal.CreateAsync<T>();
     }
 
-    /// <summary>
-    /// Creates and initializes a new
-    /// child business object.
-    /// </summary>
-    /// <param name="parameters">
-    /// Parameters passed to child create method.
-    /// </param>
-    public async Task<T> CreateChildAsync(params object[] parameters)
+    /// <inheritdoc />
+    public async Task<T> CreateChildAsync(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       return await portal.CreateAsync<T>(parameters);
     }
@@ -751,15 +702,12 @@ namespace Csla
       return (T)(portal.Fetch(typeof(T)));
     }
 
-    /// <summary>
-    /// Fetches an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="parameters">
-    /// Parameters passed to child fetch method.
-    /// </param>
-    public T FetchChild(params object[] parameters)
+    /// <inheritdoc />
+    public T FetchChild(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       return (T)(portal.Fetch(typeof(T), parameters));
     }
@@ -774,110 +722,89 @@ namespace Csla
       return await portal.FetchAsync<T>();
     }
 
-    /// <summary>
-    /// Fetches an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="parameters">
-    /// Parameters passed to child fetch method.
-    /// </param>
-    public async Task<T> FetchChildAsync(params object[] parameters)
+    /// <inheritdoc />
+    public async Task<T> FetchChildAsync(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       return await portal.FetchAsync<T>(parameters);
     }
 
-    /// <summary>
-    /// Inserts, updates or deletes an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="child">
-    /// Business object to update.
-    /// </param>
+    /// <inheritdoc />
     public void UpdateChild(T child)
     {
+      if (child is null) 
+        throw new ArgumentNullException(nameof(child));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       portal.Update(child);
     }
 
-    /// <summary>
-    /// Inserts, updates or deletes an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="child">
-    /// Business object to update.
-    /// </param>
-    /// <param name="parameters">
-    /// Parameters passed to child update method.
-    /// </param>
-    public void UpdateChild(object child, params object[] parameters)
+    /// <inheritdoc />
+    public void UpdateChild(object child, params object?[] parameters)
     {
+      if (child is null)
+        throw new ArgumentNullException(nameof(child));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       portal.Update(child, parameters);
     }
 
-    /// <summary>
-    /// Inserts, updates or deletes an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="child">
-    /// Business object to update.
-    /// </param>
-    /// <param name="parameters">
-    /// Parameters passed to child update method.
-    /// </param>
-    public void UpdateChild(T child, params object[] parameters)
+    /// <inheritdoc />
+    public void UpdateChild(T child, params object?[] parameters)
     {
+      if (child is null) 
+        throw new ArgumentNullException(nameof(child));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       portal.Update(child, parameters);
     }
 
-    /// <summary>
-    /// Inserts, updates or deletes an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="child">
-    /// Business object to update.
-    /// </param>
+    /// <inheritdoc />
     public async Task UpdateChildAsync(T child)
     {
+      if (child is null) 
+        throw new ArgumentNullException(nameof(child));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       await portal.UpdateAsync(child).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Inserts, updates or deletes an existing
-    /// child business object.
-    /// </summary>
-    /// <param name="child">
-    /// Business object to update.
-    /// </param>
-    /// <param name="parameters">
-    /// Parameters passed to child update method.
-    /// </param>
-    public async Task UpdateChildAsync(T child, params object[] parameters)
+    /// <inheritdoc />
+    public async Task UpdateChildAsync(T child, params object?[] parameters)
     {
+      if (child is null) 
+        throw new ArgumentNullException(nameof(child));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var portal = new Server.ChildDataPortal(_applicationContext);
       await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
     }
 
-    async Task<object> IDataPortal.CreateAsync(params object[] criteria) => Task.FromResult(await CreateAsync(criteria));
-    async Task<object> IDataPortal.FetchAsync(params object[] criteria) => Task.FromResult(await FetchAsync(criteria));
+    async Task<object> IDataPortal.CreateAsync(params object?[] criteria) => Task.FromResult(await CreateAsync(criteria));
+    async Task<object> IDataPortal.FetchAsync(params object?[] criteria) => Task.FromResult(await FetchAsync(criteria));
     async Task<object> IDataPortal.UpdateAsync(object obj) => Task.FromResult(await UpdateAsync((T)obj));
     async Task<object> IDataPortal.ExecuteAsync(object command) => Task.FromResult(await ExecuteAsync((T)command));
-    async Task<object> IDataPortal.ExecuteAsync(params object[] criteria) => Task.FromResult(await ExecuteAsync(criteria));
-    object IDataPortal.Create(params object[] criteria) => Create(criteria);
-    object IDataPortal.Fetch(params object[] criteria) => Fetch(criteria);
+    async Task<object> IDataPortal.ExecuteAsync(params object?[] criteria) => Task.FromResult(await ExecuteAsync(criteria));
+    object IDataPortal.Create(params object?[] criteria) => Create(criteria);
+    object IDataPortal.Fetch(params object?[] criteria) => Fetch(criteria);
     object IDataPortal.Execute(object obj) => Execute((T)obj);
-    object IDataPortal.Execute(params object[] criteria) => Execute(criteria);
+    object IDataPortal.Execute(params object?[] criteria) => Execute(criteria);
     object IDataPortal.Update(object obj) => Update((T)obj);
 
-    async Task<object> IChildDataPortal.CreateChildAsync(params object[] criteria) => Task.FromResult(await CreateChildAsync(criteria));
-    async Task<object> IChildDataPortal.FetchChildAsync(params object[] criteria) => Task.FromResult(await FetchChildAsync(criteria));
-    async Task IChildDataPortal.UpdateChildAsync(object obj, params object[] parameters) => await UpdateChildAsync((T)obj);
-    object IChildDataPortal.CreateChild(params object[] criteria) => CreateChild(criteria);
-    object IChildDataPortal.FetchChild(params object[] criteria) => FetchChild(criteria);
-    void IChildDataPortal.UpdateChild(object obj, params object[] parameters) => UpdateChild(obj, parameters);
+    async Task<object> IChildDataPortal.CreateChildAsync(params object?[] criteria) => Task.FromResult(await CreateChildAsync(criteria));
+    async Task<object> IChildDataPortal.FetchChildAsync(params object?[] criteria) => Task.FromResult(await FetchChildAsync(criteria));
+    async Task IChildDataPortal.UpdateChildAsync(object obj, params object?[] parameters) => await UpdateChildAsync((T)obj);
+    object IChildDataPortal.CreateChild(params object?[] criteria) => CreateChild(criteria);
+    object IChildDataPortal.FetchChild(params object?[] criteria) => FetchChild(criteria);
+    void IChildDataPortal.UpdateChild(object obj, params object?[] parameters) => UpdateChild(obj, parameters);
   }
 
   internal static class Extensions

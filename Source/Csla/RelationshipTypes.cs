@@ -29,7 +29,7 @@ namespace Csla
     /// </summary>
     LazyLoad=0x2,
     /// <summary>
-    /// Property is stored in a private field. Attemting 
+    /// Property is stored in a private field. Attempting 
     /// to read or write the property in FieldManager 
     /// (managed fields) will throw an exception. 
     /// NonGeneric ReadProperty/LoadProperty will call

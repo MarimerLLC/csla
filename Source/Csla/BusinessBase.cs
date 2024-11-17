@@ -42,7 +42,7 @@ namespace Csla
     /// Override this method to return a unique identifying
     /// value for this object.
     /// </summary>
-    protected virtual object GetIdValue()
+    protected virtual object? GetIdValue()
     {
       return null;
     }
@@ -58,11 +58,11 @@ namespace Csla
     /// </summary>
     public override string ToString()
     {
-      object id = GetIdValue();
+      object? id = GetIdValue();
       if (id == null)
-        return base.ToString();
+        return base.ToString() ?? "";
       else
-        return id.ToString();
+        return id.ToString() ?? "";
     }
 
     #endregion
@@ -161,7 +161,7 @@ namespace Csla
     /// </param>
     /// <param name="userState">User state data.</param>
     /// <param name="isSync">True if the save operation should be synchronous.</param>
-    protected async virtual Task<T> SaveAsync(bool forceUpdate, object userState, bool isSync)
+    protected async virtual Task<T> SaveAsync(bool forceUpdate, object? userState, bool isSync)
     {
       if (forceUpdate && IsNew)
       {
@@ -171,7 +171,8 @@ namespace Csla
         // now mark the object as dirty so it can save
         MarkDirty(true);
       }
-      T result = default;
+
+      T? result = default;
       if (IsChild)
         throw new InvalidOperationException(Resources.NoSaveChildException);
       if (EditLevel > 0)
@@ -291,34 +292,36 @@ namespace Csla
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<SavedEventArgs> _nonSerializableSavedHandlers;
+    private EventHandler<SavedEventArgs>? _nonSerializableSavedHandlers;
     [NotUndoable]
-    private EventHandler<SavedEventArgs> _serializableSavedHandlers;
+    private EventHandler<SavedEventArgs>? _serializableSavedHandlers;
 
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event EventHandler<SavedEventArgs> Saved
+    public event EventHandler<SavedEventArgs>? Saved
     {
       add
       {
+        if (value is null)
+          return;
+
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Combine(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)Delegate.Combine(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Combine(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)Delegate.Combine(_nonSerializableSavedHandlers, value);
       }
       remove
       {
+        if (value is null)
+          return;
+
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Remove(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Remove(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
 
@@ -340,9 +343,13 @@ namespace Csla
     /// <param name="newObject">The new object instance.</param>
     /// <param name="e">Exception that occurred during operation.</param>
     /// <param name="userState">User state object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnSaved(T newObject, Exception e, object userState)
+    protected virtual void OnSaved(T newObject, Exception? e, object? userState)
     {
+      if (newObject is null)
+        throw new ArgumentNullException(nameof(newObject));
+
       SavedEventArgs args = new SavedEventArgs(newObject, e, userState);
       _nonSerializableSavedHandlers?.Invoke(this, args);
       _serializableSavedHandlers?.Invoke(this, args);
@@ -365,8 +372,12 @@ namespace Csla
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(PropertyInfo<P> info)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
     }
 
@@ -376,8 +387,12 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
     }
 
@@ -387,8 +402,12 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name);
     }
@@ -400,8 +419,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="relationship">Relationship with property value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
     }
 
@@ -412,8 +435,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="relationship">Relationship with property value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
     protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, relationship);
     }
@@ -425,8 +452,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
 
@@ -437,8 +468,12 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName);
     }
@@ -451,8 +486,12 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P? defaultValue)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
 
@@ -464,8 +503,12 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty(reflectedPropertyInfo.Name, friendlyName, defaultValue);
     }
@@ -479,8 +522,12 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
 
@@ -493,8 +540,12 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue, RelationshipTypes relationship)
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
     {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);
     }
@@ -503,8 +554,12 @@ namespace Csla
     /// Registers a method for use in Authorization.
     /// </summary>
     /// <param name="methodName">Method name from nameof()</param>
+    /// <exception cref="ArgumentNullException"><paramref name="methodName"/> is <see langword="null"/>.</exception>
     protected static MethodInfo RegisterMethod(string methodName)
     {
+      if (methodName is null)
+        throw new ArgumentNullException(nameof(methodName));
+
       return RegisterMethod(typeof(T), methodName);
     }
 
@@ -512,8 +567,12 @@ namespace Csla
     /// Registers a method for use in Authorization.
     /// </summary>
     /// <param name="methodLambdaExpression">The method lambda expression.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="methodLambdaExpression"/> is <see langword="null"/>.</exception>
     protected static MethodInfo RegisterMethod(Expression<Action<T>> methodLambdaExpression)
     {
+      if (methodLambdaExpression is null)
+        throw new ArgumentNullException(nameof(methodLambdaExpression));
+
       System.Reflection.MethodInfo reflectedMethodInfo = Reflect<T>.GetMethod(methodLambdaExpression);
       return RegisterMethod(reflectedMethodInfo.Name);
     }

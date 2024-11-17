@@ -55,7 +55,9 @@ namespace Csla
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public DynamicListBase()
+#pragma warning disable CS8618 // It must be available for derived classes to be de-/serialized
+    protected DynamicListBase()
+#pragma warning restore CS8618
     {
       InitializeIdentity();
       Initialize();
@@ -98,7 +100,7 @@ namespace Csla
 
     [NonSerialized]
     [NotUndoable]
-    private IdentityManager _identityManager;
+    private IdentityManager? _identityManager;
 
     int IParent.GetNextIdentity(int current)
     {
@@ -122,7 +124,7 @@ namespace Csla
     /// <summary>
     /// Event raised when an object in the list has been saved.
     /// </summary>
-    public event EventHandler<SavedEventArgs> Saved;
+    public event EventHandler<SavedEventArgs>? Saved;
 
     /// <summary>
     /// Raises the Saved event.
@@ -132,7 +134,7 @@ namespace Csla
     /// <param name="error">Exception returned as a result
     /// of the save operation.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnSaved(T newObject, Exception error)
+    protected virtual void OnSaved(T newObject, Exception? error)
     {
       Saved?.Invoke(this, new SavedEventArgs(newObject, error, null));
     }
@@ -141,8 +143,12 @@ namespace Csla
     /// Saves the specified item in the list.
     /// </summary>
     /// <param name="item">Item to be saved.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public Task SaveItemAsync(T item)
     {
+      if (item is null) 
+        throw new ArgumentNullException(nameof(item));
+
       return SaveItemAsync(IndexOf(item));
     }
 
@@ -184,8 +190,8 @@ namespace Csla
         if (delete)
           savable.Delete();
 
-        Exception error = null;
-        T result = default(T);
+        Exception? error = null;
+        T? result = default;
         var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
         try
         {
@@ -287,8 +293,12 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index at which to insert the item.</param>
     /// <param name="item">Item to insert.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void InsertItem(int index, T item)
     {
+      if(item is null) 
+        throw new ArgumentNullException(nameof(item));
+
       item.SetParent(this);
       // ensure child uses same context as parent
       if (item is IUseApplicationContext iuac)
@@ -345,8 +355,12 @@ namespace Csla
     /// <param name="index">Index of the item
     /// that was replaced.</param>
     /// <param name="item">New item.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void SetItem(int index, T item)
     {
+      if(item is null) 
+        throw new ArgumentNullException(nameof(item));
+
       item.SetParent(this);
       base.SetItem(index, item);
     }
@@ -372,10 +386,14 @@ namespace Csla
     /// Raises the CollectionChanged event.
     /// </summary>
     /// <param name="e">Event args object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       // SL Data Grid's DataGridDataConnection object does not support replace action.  
-      // It throws an excpetioon when this occurs.
+      // It throws an exception when this occurs.
       if (RaiseListChangedEvents && (e.Action != NotifyCollectionChangedAction.Replace || RaiseReplaceEvents))
         base.OnCollectionChanged(e);
     }
@@ -394,6 +412,9 @@ namespace Csla
 
     Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
+      if (child is null)
+        throw new ArgumentNullException(nameof(child));
+
       if (child.EditLevel == 0)
         return SaveItemAsync((T)child);
       else
@@ -408,7 +429,7 @@ namespace Csla
     }
 
 
-    IParent Csla.Core.IParent.Parent
+    IParent? Csla.Core.IParent.Parent
     {
       get { return null; }
     }
@@ -563,8 +584,12 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected override void OnGetState(SerializationInfo info)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       info.AddValue("Csla.Core.BusinessBase._identity", _identity);
       base.OnGetState(info);
     }
@@ -576,8 +601,12 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected override void OnSetState(SerializationInfo info)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
     }

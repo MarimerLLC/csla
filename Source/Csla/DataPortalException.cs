@@ -6,6 +6,7 @@
 // <summary>This exception is returned for any errors occuring</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Server.Hosts.DataPortalChannel;
 
 namespace Csla
@@ -64,10 +65,11 @@ namespace Csla
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="info">Info about the exception.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     public DataPortalException(DataPortalErrorInfo info)
       : base(info.Message)
     {
-      ErrorInfo = info;
+      ErrorInfo = info ?? throw new ArgumentNullException(nameof(info));
     }
 
     /// <summary>
@@ -101,13 +103,16 @@ namespace Csla
     /// but this property returns information
     /// about the exception.
     /// </summary>
-    public DataPortalErrorInfo ErrorInfo { get; private set; }
+#if NET8_0_OR_GREATER
+    [MemberNotNull(nameof(BusinessErrorInfo))]
+#endif
+    public DataPortalErrorInfo? ErrorInfo { get; }
 
     /// <summary>
     /// Gets the original exception error info
     /// that caused this exception.
     /// </summary>
-    public DataPortalErrorInfo BusinessErrorInfo
+    public DataPortalErrorInfo? BusinessErrorInfo
     {
       get
       {
@@ -118,7 +123,7 @@ namespace Csla
       }
     }
 
-    private string _innerStackTrace;
+    private readonly string? _innerStackTrace;
 
     /// <summary>
     /// Returns a reference to the business object
@@ -134,7 +139,7 @@ namespace Csla
     /// </remarks>
     public object? BusinessObject { get; }
 
-    private Exception _businessException;
+    private Exception? _businessException;
 
     /// <summary>
     /// Gets the original server-side exception.
@@ -145,14 +150,14 @@ namespace Csla
     /// instances in the exception stack to find the original
     /// exception.
     /// </remarks>
-    public Exception BusinessException
+    public Exception? BusinessException
     {
       get
       {
         if (_businessException == null)
         {
           _businessException = InnerException;
-          while (_businessException is Reflection.CallMethodException || _businessException is DataPortalException)
+          while (_businessException is Reflection.CallMethodException or DataPortalException)
             _businessException = _businessException.InnerException;
         }
         return _businessException;
@@ -170,7 +175,7 @@ namespace Csla
       get
       {
         if (ErrorInfo != null)
-          return BusinessErrorInfo.Message;
+          return BusinessErrorInfo!.Message;
         else if (BusinessException == null)
           return Message;
         else

@@ -38,7 +38,7 @@ namespace Csla
     protected ApplicationContext ApplicationContext { get; private set; }
 
     /// <inheritdoc />
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set
@@ -51,7 +51,9 @@ namespace Csla
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. Necessary for derived classes
     protected ReadOnlyListBase()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     { }
 
     #region Initialize
@@ -88,7 +90,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this)!;
     }
 
     /// <summary>

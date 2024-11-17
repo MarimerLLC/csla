@@ -49,7 +49,9 @@ namespace Csla
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public DynamicBindingListBase()
+#pragma warning disable CS8618 // It must be available for derived classes to be de-/serialized
+    protected DynamicBindingListBase()
+#pragma warning restore CS8618 
     { }
 
     /// <summary>
@@ -98,7 +100,7 @@ namespace Csla
 
     [NonSerialized]
     [NotUndoable]
-    private IdentityManager _identityManager;
+    private IdentityManager? _identityManager;
 
     int IParent.GetNextIdentity(int current)
     {
@@ -133,8 +135,12 @@ namespace Csla
     /// is properly replaced by the result of the
     /// Save() method call.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public T SaveItem(T item)
     {
+      if(item is null) 
+        throw new ArgumentNullException(nameof(item));
+
       return SaveItem(IndexOf(item));
     }
 
@@ -156,11 +162,10 @@ namespace Csla
       RaiseListChangedEvents = false;
       _activelySaving = true;
 
-      T item = default(T);
-      T result = default(T);
+      T result;
       try
       {
-        item = this[index];
+        T item = this[index];
         result = item;
         T savable = item;
 
@@ -209,36 +214,36 @@ namespace Csla
     #region Saved Event
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<SavedEventArgs> _nonSerializableSavedHandlers;
+    private EventHandler<SavedEventArgs>? _nonSerializableSavedHandlers;
     [NotUndoable]
-    private EventHandler<SavedEventArgs> _serializableSavedHandlers;
+    private EventHandler<SavedEventArgs>? _serializableSavedHandlers;
 
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event EventHandler<SavedEventArgs> Saved
+    public event EventHandler<SavedEventArgs>? Saved
     {
       add
       {
-        if (value.Method.IsPublic &&
-           value.Method.IsStatic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Combine(_serializableSavedHandlers, value);
+        if (value is null)
+          return;
+
+        if (value.Method.IsPublic && value.Method.IsStatic)
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)Delegate.Combine(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Combine(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)Delegate.Combine(_nonSerializableSavedHandlers, value);
       }
       remove
       {
-        if (value.Method.IsPublic &&
-           value.Method.IsStatic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Remove(_serializableSavedHandlers, value);
+        if (value is null)
+          return;
+
+        if (value.Method.IsPublic && value.Method.IsStatic)
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Remove(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
 
@@ -252,9 +257,13 @@ namespace Csla
     /// Reference to any exception that occurred during
     /// the save.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnSaved(T newObject, Exception e)
+    protected virtual void OnSaved(T newObject, Exception? e)
     {
+      if (newObject == null) 
+        throw new ArgumentNullException(nameof(newObject));
+
       SavedEventArgs args = new SavedEventArgs(newObject, e, null);
       _nonSerializableSavedHandlers?.Invoke(this, args);
       _serializableSavedHandlers?.Invoke(this, args);
@@ -283,8 +292,12 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index at which to insert the item.</param>
     /// <param name="item">Item to insert.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void InsertItem(int index, T item)
     {
+      if(item is null) 
+        throw new ArgumentNullException(nameof(item));
+
       item.SetParent(this);
       base.InsertItem(index, item);
     }
@@ -322,8 +335,12 @@ namespace Csla
     /// <param name="index">Index of the item
     /// that was replaced.</param>
     /// <param name="item">New item.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void SetItem(int index, T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       item.SetParent(this);
       base.SetItem(index, item);
     }
@@ -334,6 +351,9 @@ namespace Csla
 
     Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
+      if (child is null)
+        throw new ArgumentNullException(nameof(child));
+
       if (!_activelySaving && child.EditLevel == 0)
         SaveItem((T)child);
       return Task.CompletedTask;
@@ -341,12 +361,15 @@ namespace Csla
 
     Task IParent.RemoveChild(IEditableBusinessObject child)
     {
+      if (child is null)
+        throw new ArgumentNullException(nameof(child));
+
       if (child.IsNew)
         Remove((T)child);
       return Task.CompletedTask;
     }
 
-    IParent IParent.Parent
+    IParent? IParent.Parent
     {
       get { return null; }
     }
@@ -362,20 +385,22 @@ namespace Csla
     /// </summary>
     /// <param name="sender">Object that raised the event.</param>
     /// <param name="e">Property changed args.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected override void Child_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       for (int index = 0; index < Count; index++)
       {
         if (ReferenceEquals(this[index], sender))
         {
-          PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+          PropertyDescriptor? descriptor = GetPropertyDescriptor(e.PropertyName ?? "");
           if (descriptor != null)
-            OnListChanged(new ListChangedEventArgs(
-              ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)));
+            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index, descriptor));
           else
-            OnListChanged(new ListChangedEventArgs(
-              ListChangedType.ItemChanged, index));
+            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
           return;
         }
       }
@@ -399,22 +424,24 @@ namespace Csla
     /// PropertyChangedEventArgs from the child object.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void OnChildPropertyChanged(object? sender, PropertyChangedEventArgs e)
     { }
 
-    private static PropertyDescriptorCollection _propertyDescriptors;
+    private static PropertyDescriptorCollection? _propertyDescriptors;
 
-    private PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    private PropertyDescriptor? GetPropertyDescriptor(string propertyName)
     {
       if (_propertyDescriptors == null)
         _propertyDescriptors = TypeDescriptor.GetProperties(GetType());
-      PropertyDescriptor result = null;
+      PropertyDescriptor? result = null;
       foreach (PropertyDescriptor desc in _propertyDescriptors)
+      {
         if (desc.Name == propertyName)
         {
           result = desc;
           break;
         }
+      }
       return result;
     }
 

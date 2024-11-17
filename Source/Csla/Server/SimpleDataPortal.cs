@@ -85,7 +85,6 @@ namespace Csla.Server
       {
         if (obj?.Instance is not null)
           Activator.FinalizeInstance(obj.Instance);
-        
       }
     }
 

@@ -32,7 +32,7 @@ namespace Csla
     /// Determines the equality of two objects.
     /// </summary>
     /// <param name="obj">Object to compare.</param>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
       if (obj is MethodInfo other)
         return Name == other.Name;

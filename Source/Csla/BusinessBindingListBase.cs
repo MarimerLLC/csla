@@ -35,7 +35,9 @@ namespace Csla
     /// Creates an instance of the type.
     /// </summary>
     protected BusinessBindingListBase()
-    { }
+    {
+      ApplicationContext = default!;
+    }
 
     /// <summary>
     /// Gets the current ApplicationContext
@@ -83,7 +85,7 @@ namespace Csla
 
     [NonSerialized]
     [NotUndoable]
-    private IdentityManager _identityManager;
+    private IdentityManager? _identityManager;
 
     int IParent.GetNextIdentity(int current)
     {
@@ -115,7 +117,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this)!;
     }
 
     /// <summary>
@@ -131,7 +133,7 @@ namespace Csla
 
     #region Delete and Undelete child
 
-    private MobileList<C> _deletedList;
+    private MobileList<C>? _deletedList;
 
     /// <summary>
     /// A collection containing all child objects marked
@@ -268,11 +270,14 @@ namespace Csla
 
     Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
+      if (child is null)
+        throw new ArgumentNullException(nameof(child));
+
       EditChildComplete(child);
       return Task.CompletedTask;
     }
 
-    IParent IParent.Parent
+    IParent? IParent.Parent
     {
       get { return Parent; }
     }
@@ -311,8 +316,12 @@ namespace Csla
     /// wants to be removed from the collection.
     /// </summary>
     /// <param name="child">The child object to remove.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
     void IEditableCollection.RemoveChild(IEditableBusinessObject child)
     {
+      if (child is null)
+        throw new ArgumentNullException(nameof(child));
+
       Remove((C)child);
     }
 
@@ -321,13 +330,12 @@ namespace Csla
       return DeletedList;
     }
 
-    /// <summary>
-    /// This method is called by a child object when it
-    /// wants to be removed from the collection.
-    /// </summary>
-    /// <param name="child">The child object to remove.</param>
+    /// <inheritdoc />
     Task IParent.RemoveChild(IEditableBusinessObject child)
     {
+      if (child is null)
+        throw new ArgumentNullException(nameof(child));
+
       Remove((C)child);
       return Task.CompletedTask;
     }
@@ -337,8 +345,12 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index of the item to insert.</param>
     /// <param name="item">Item to insert.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void InsertItem(int index, C item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       if (item.IsChild)
       {
         // set parent reference
@@ -396,10 +408,14 @@ namespace Csla
     /// The value can be null for reference types.
     /// </param>
     /// <remarks></remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void SetItem(int index, C item)
     {
-      C child = default(C);
-      if (!(ReferenceEquals(this[index], item)))
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
+      C? child = default;
+      if (!ReferenceEquals(this[index], item))
         child = this[index];
       // replace the original object with this new
       // object
@@ -596,9 +612,13 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetState(Serialization.Mobile.SerializationInfo info)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       info.AddValue("Csla.BusinessListBase._editLevel", EditLevel);
       info.AddValue("Csla.Core.BusinessBase._identity", _identity);
@@ -612,9 +632,13 @@ namespace Csla
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetState(Serialization.Mobile.SerializationInfo info)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       EditLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
@@ -631,9 +655,15 @@ namespace Csla
     /// <param name="formatter">
     /// Reference to the current SerializationFormatterFactory.GetFormatter().
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="formatter"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnGetChildren(Serialization.Mobile.SerializationInfo info, Serialization.Mobile.MobileFormatter formatter)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+      if (formatter is null)
+        throw new ArgumentNullException(nameof(formatter));
+
       base.OnGetChildren(info, formatter);
       if (_deletedList != null)
       {
@@ -652,9 +682,15 @@ namespace Csla
     /// <param name="formatter">
     /// Reference to the current SerializationFormatterFactory.GetFormatter().
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="formatter"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected override void OnSetChildren(Serialization.Mobile.SerializationInfo info, Serialization.Mobile.MobileFormatter formatter)
     {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+      if (formatter is null)
+        throw new ArgumentNullException(nameof(formatter));
+
       if (info.Children.TryGetValue("_deletedList", out var child))
       {
         _deletedList = (MobileList<C>)formatter.GetObject(child.ReferenceId);
@@ -866,9 +902,13 @@ namespace Csla
     /// Optional parameters passed to child update
     /// methods.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Child_Update(params object[] parameters)
+    protected virtual void Child_Update(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       using (LoadListMode)
       {
         var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
@@ -889,10 +929,14 @@ namespace Csla
     /// Optional parameters passed to child update
     /// methods.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     [UpdateChild]
-    protected virtual async Task Child_UpdateAsync(params object[] parameters)
+    protected virtual async Task Child_UpdateAsync(params object?[] parameters)
     {
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       using (LoadListMode)
       {
         var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
@@ -964,7 +1008,7 @@ namespace Csla
     /// </summary>
     /// <param name="userState">User state data.</param>
     /// <param name="isSync">True if the save operation should be synchronous.</param>
-    protected virtual async Task<T> SaveAsync(object userState, bool isSync)
+    protected virtual async Task<T> SaveAsync(object? userState, bool isSync)
     {
       T result;
       if (IsChild)
@@ -1127,34 +1171,36 @@ namespace Csla
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<SavedEventArgs> _nonSerializableSavedHandlers;
+    private EventHandler<SavedEventArgs>? _nonSerializableSavedHandlers;
     [NotUndoable]
-    private EventHandler<SavedEventArgs> _serializableSavedHandlers;
+    private EventHandler<SavedEventArgs>? _serializableSavedHandlers;
 
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event EventHandler<SavedEventArgs> Saved
+    public event EventHandler<SavedEventArgs>? Saved
     {
       add
       {
+        if (value is null)
+          return;
+
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Combine(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)Delegate.Combine(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Combine(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)Delegate.Combine(_nonSerializableSavedHandlers, value);
       }
       remove
       {
+        if (value is null)
+          return;
+
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Remove(_serializableSavedHandlers, value);
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_serializableSavedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>)
-            Delegate.Remove(_nonSerializableSavedHandlers, value);
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_nonSerializableSavedHandlers, value);
       }
     }
 
@@ -1164,11 +1210,15 @@ namespace Csla
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
-    /// <param name="e">Execption that occurred during the operation.</param>
+    /// <param name="e">Exception that occurred during the operation.</param>
     /// <param name="userState">User state object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnSaved(T newObject, Exception e, object userState)
+    protected virtual void OnSaved(T newObject, Exception? e, object? userState)
     {
+      if (newObject is null)
+        throw new ArgumentNullException(nameof(newObject));
+
       SavedEventArgs args = new SavedEventArgs(newObject, e, userState);
       _nonSerializableSavedHandlers?.Invoke(this, args);
       _serializableSavedHandlers?.Invoke(this, args);
@@ -1178,7 +1228,7 @@ namespace Csla
     #region  Parent/Child link
 
     [NotUndoable, NonSerialized]
-    private IParent _parent;
+    private IParent? _parent;
 
     /// <summary>
     /// Provide access to the parent reference for use
@@ -1191,7 +1241,7 @@ namespace Csla
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public IParent Parent
+    public IParent? Parent
     {
       get
       {
@@ -1205,7 +1255,7 @@ namespace Csla
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    protected virtual void SetParent(IParent parent)
+    protected virtual void SetParent(IParent? parent)
     {
       // ensure parent & _identity manager not null for case to check
       if (parent != null && _identityManager != null)
@@ -1238,7 +1288,7 @@ namespace Csla
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    void IEditableCollection.SetParent(IParent parent)
+    void IEditableCollection.SetParent(IParent? parent)
     {
       SetParent(parent);
     }
@@ -1317,35 +1367,38 @@ namespace Csla
     /// a child object and echoes it up as
     /// a ListChanged event.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected override void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected override void Child_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-      if (RaiseListChangedEvents && e != null)
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
+      if (RaiseListChangedEvents)
       {
         for (int index = 0; index < Count; index++)
         {
           if (ReferenceEquals(this[index], sender))
           {
-            PropertyDescriptor descriptor = GetPropertyDescriptor(e.PropertyName);
+            PropertyDescriptor? descriptor = GetPropertyDescriptor(e.PropertyName);
             if (descriptor != null)
-              OnListChanged(new ListChangedEventArgs(
-                ListChangedType.ItemChanged, index, descriptor));
+              OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index, descriptor));
             else
-              OnListChanged(new ListChangedEventArgs(
-                ListChangedType.ItemChanged, index));
+              OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));
           }
         }
       }
       base.Child_PropertyChanged(sender, e);
     }
 
-    private static PropertyDescriptorCollection _propertyDescriptors;
+    private static PropertyDescriptorCollection? _propertyDescriptors;
 
-    private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
+    private static PropertyDescriptor? GetPropertyDescriptor(string? propertyName)
     {
       if (_propertyDescriptors == null)
         _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));
-      PropertyDescriptor result = null;
+
+      PropertyDescriptor? result = null;
       foreach (PropertyDescriptor desc in _propertyDescriptors)
         if (desc.Name == propertyName)
         {

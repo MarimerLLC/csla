@@ -290,7 +290,7 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    public event EventHandler<ChildChangedEventArgs> ChildChanged
+    public event EventHandler<ChildChangedEventArgs>? ChildChanged
     {
       add
       {

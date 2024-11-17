@@ -25,11 +25,13 @@ namespace Csla
     /// Determines whether the specified
     /// value can be converted to a valid number.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     public static bool IsNumeric(object value)
     {
-      double dbl;
-      return double.TryParse(value.ToString(), System.Globalization.NumberStyles.Any,
-        System.Globalization.NumberFormatInfo.InvariantInfo, out dbl);
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
+
+      return double.TryParse(value.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out var _);
     }
 
     /// <summary>
@@ -41,10 +43,15 @@ namespace Csla
     /// <param name="callType">Specifies how to invoke the property or method.</param>
     /// <param name="args">List of arguments to pass to the method.</param>
     /// <returns>The result of the property or method invocation.</returns>
-    public static object CallByName(
-      object target, string methodName, CallType callType,
-      params object[] args)
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="args"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? CallByName(object target, string methodName, CallType callType, params object?[] args)
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (string.IsNullOrWhiteSpace(methodName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(methodName)), nameof(methodName));
+
       switch (callType)
       {
         case CallType.Get:
@@ -73,13 +80,15 @@ namespace Csla
     /// </summary>
     /// <param name="propertyType">Type of the
     /// property as returned by reflection.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyType"/> is <see langword="null"/>.</exception>
     public static Type GetPropertyType(Type propertyType)
     {
-      Type type = propertyType;
-      if (type.IsGenericType &&
-        (type.GetGenericTypeDefinition() == typeof(Nullable<>)))
-        return Nullable.GetUnderlyingType(type);
-      return type;
+      if (propertyType is null)
+        throw new ArgumentNullException(nameof(propertyType));
+
+      if (propertyType.IsGenericType && (propertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
+        return Nullable.GetUnderlyingType(propertyType) ?? throw new InvalidOperationException($"The underlying type of {propertyType} is an open type. But we expect to resolve a closed type.");
+      return propertyType;
     }
 
     /// <summary>
@@ -87,16 +96,18 @@ namespace Csla
     /// contained in a collection or list.
     /// </summary>
     /// <param name="listType">Type of the list.</param>
-    public static Type GetChildItemType(Type listType)
+    /// <exception cref="ArgumentNullException"><paramref name="listType"/> is <see langword="null"/>.</exception>
+    public static Type? GetChildItemType(Type listType)
     {
-      Type result = null;
+      if (listType is null)
+        throw new ArgumentNullException(nameof(listType));
+
+      Type? result = null;
       if (listType.IsArray)
         result = listType.GetElementType();
       else
       {
-        var indexer =
-          (DefaultMemberAttribute)Attribute.GetCustomAttribute(
-          listType, typeof(DefaultMemberAttribute));
+        var indexer = (DefaultMemberAttribute?)Attribute.GetCustomAttribute(listType, typeof(DefaultMemberAttribute));
         if (indexer != null)
         {
           foreach (PropertyInfo prop in listType.GetProperties(
@@ -150,27 +161,32 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="desiredType"/> or <paramref name="valueType"/> is <see langword="null"/>.</exception>
     public static object? CoerceValue(Type desiredType, Type valueType, object? oldValue, object? value)
     {
+      if (desiredType is null)
+        throw new ArgumentNullException(nameof(desiredType));
+      if (valueType is null)
+        throw new ArgumentNullException(nameof(valueType));
+
+      
       if (desiredType.IsAssignableFrom(valueType))
       {
         // types match, just return value
         return value;
       }
-      else
+      
+      if (desiredType.IsGenericType)
       {
-        if (desiredType.IsGenericType)
-        {
-          if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
-            if (value == null)
-              return null;
-            else if (valueType.Equals(typeof(string)) && Convert.ToString(value) == string.Empty)
-              return null;
-        }
-        desiredType = GetPropertyType(desiredType);
+        if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
+          if (value == null)
+            return null;
+          else if (valueType.Equals(typeof(string)) && Convert.ToString(value) == string.Empty)
+            return null;
       }
 
-      if (desiredType.IsEnum)
+      var propertyType = GetPropertyType(desiredType) ?? throw new InvalidOperationException($"Type for ");
+      if (propertyType.IsEnum)
       {
         if (value is byte? && ((byte?) value).HasValue)
           return Enum.Parse(desiredType, ((byte?) value).Value.ToString());
@@ -182,14 +198,14 @@ namespace Csla
           return Enum.Parse(desiredType, ((long?) value).Value.ToString());
       }
 
-      if (desiredType.IsEnum && 
-        (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
-        return Enum.Parse(desiredType, value.ToString());
+      if (propertyType.IsEnum && (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(propertyType).Equals(valueType)))
+        return Enum.Parse(propertyType, value?.ToString() ?? throw new ArgumentException($"The value '{value ?? "<null>"}' could not be parsed into type {desiredType}.", nameof(value)));
 
-      if (desiredType.Equals(typeof(SmartDate)) && oldValue != null)
+      if (propertyType.Equals(typeof(SmartDate)) && oldValue != null)
       {
         if (value == null)
           value = string.Empty;
+
         var tmp = (SmartDate)oldValue;
         if (valueType.Equals(typeof(DateTime)))
           tmp.Date = (DateTime)value;
@@ -198,27 +214,26 @@ namespace Csla
         return tmp;
       }
 
-      if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) &&
-          valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+      if ((propertyType.IsPrimitive || propertyType.Equals(typeof(decimal))) && valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string?)value))
         value = 0;
 
       try
       {
-        if (desiredType.Equals(typeof(string)) && value != null)
+        if (propertyType.Equals(typeof(string)) && value != null)
         {
           return value.ToString();
         }
         else
-          return Convert.ChangeType(value, desiredType);
+          return Convert.ChangeType(value, propertyType);
       }
-      catch
+      catch when (value is not null)
       {
-        TypeConverter cnv = TypeDescriptor.GetConverter(desiredType);
+        TypeConverter cnv = TypeDescriptor.GetConverter(propertyType);
         TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
         if (cnv != null && cnv.CanConvertFrom(valueType))
           return cnv.ConvertFrom(value);
-        else if (cnv1 != null && cnv1.CanConvertTo(desiredType))
-          return cnv1.ConvertTo(value, desiredType);
+        else if (cnv1 != null && cnv1.CanConvertTo(propertyType))
+          return cnv1.ConvertTo(value, propertyType);
         else
           throw;
       }
@@ -262,7 +277,7 @@ namespace Csla
       if (valueType is null)
         throw new ArgumentNullException(nameof(valueType));
 
-      return (D?)(CoerceValue(typeof(D), valueType, oldValue, value));
+      return (D?)CoerceValue(typeof(D), valueType, oldValue, value);
     }
 
     #endregion

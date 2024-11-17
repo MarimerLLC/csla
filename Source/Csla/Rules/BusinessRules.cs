@@ -117,7 +117,6 @@ namespace Csla.Rules
       set { _cascadeOnDirtyProperties = value; }
     }
 
-
     [NonSerialized]
     private BusinessRuleManager? _typeRules;
     internal BusinessRuleManager TypeRules

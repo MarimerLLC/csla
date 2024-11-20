@@ -8,6 +8,7 @@
 
 using Csla.Core;
 using Csla.TestHelpers;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -136,6 +137,17 @@ namespace Csla.Test.GraphMerge
 
       var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
+    }
+
+    [TestMethod]
+    public async Task Identity_WhenAddingANewListItemAfterFetchTheIdentityWithinTheListMustBeUnique()
+    {
+      var root = await _testDIContext.CreateDataPortal<RootUniqueIdentities>().FetchAsync();
+
+      var newItem = await root.Branch.Leafs.AddNewAsync();
+      newItem.LeafId = 1337;
+
+      root.Branch.Leafs.Should().OnlyHaveUniqueItems(l => ((IBusinessObject)l).Identity);
     }
   }
 }

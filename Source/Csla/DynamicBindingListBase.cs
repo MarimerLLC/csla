@@ -283,6 +283,7 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, T item)
     {
+      IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
       item.SetParent(this);
       base.InsertItem(index, item);
     }

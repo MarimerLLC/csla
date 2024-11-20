@@ -287,6 +287,7 @@ namespace Csla
     /// <param name="item">Item to insert.</param>
     protected override void InsertItem(int index, T item)
     {
+      IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
       item.SetParent(this);
       // ensure child uses same context as parent
       if (item is IUseApplicationContext iuac)

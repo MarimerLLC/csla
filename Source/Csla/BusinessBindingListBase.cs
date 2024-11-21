@@ -338,6 +338,8 @@ namespace Csla
     {
       if (item.IsChild)
       {
+        IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
+
         // set parent reference
         item.SetParent(this);
         // ensure child uses same context as parent

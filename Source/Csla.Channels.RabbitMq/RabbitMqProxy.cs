@@ -44,7 +44,7 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Gets or sets the channel (model) for RabbitMQ.
     /// </summary>
-    protected IModel? Channel { get; set; }
+    protected IChannel? Channel { get; set; }
 
     /// <summary>
     /// Gets or sets the name of the data portal
@@ -71,7 +71,7 @@ namespace Csla.Channels.RabbitMq
 #if NET8_0_OR_GREATER
     [MemberNotNull(nameof(Connection), nameof(Channel), nameof(QueueListener))]
 #endif
-    protected virtual void InitializeRabbitMQ()
+    protected virtual async Task InitializeRabbitMQ()
     {
       if (Connection == null || Channel == null || QueueListener == null)
       {
@@ -91,12 +91,14 @@ namespace Csla.Channels.RabbitMq
           factory.UserName = userInfo[0];
         if (userInfo.Length > 1)
           factory.Password = userInfo[1];
-        Connection = factory.CreateConnection();
-        Channel = Connection.CreateModel();
+#pragma warning disable CS8774 // 11/22/2024, Nullable analysis can't track nullability with async/await
+        Connection = await factory.CreateConnectionAsync();
+        Channel = await Connection.CreateChannelAsync();
+#pragma warning restore CS8774
         if (QueueListener == null)
         {
           QueueListener = ProxyListener.GetListener(url);
-          QueueListener.StartListening();
+          await QueueListener.StartListening();
         }
       }
     }
@@ -125,7 +127,7 @@ namespace Csla.Channels.RabbitMq
 
       try
       {
-        InitializeRabbitMQ();
+        await InitializeRabbitMQ();
         return await base.Create(objectType, criteria, context, isSync);
       }
       finally
@@ -151,7 +153,7 @@ namespace Csla.Channels.RabbitMq
 
       try
       {
-        InitializeRabbitMQ();
+        await InitializeRabbitMQ();
         return await base.Fetch(objectType, criteria, context, isSync);
       }
       finally
@@ -176,7 +178,7 @@ namespace Csla.Channels.RabbitMq
 
       try
       {
-        InitializeRabbitMQ();
+        await InitializeRabbitMQ();
         return await base.Update(obj, context, isSync);
       }
       finally
@@ -202,7 +204,7 @@ namespace Csla.Channels.RabbitMq
 
       try
       {
-        InitializeRabbitMQ();
+        await InitializeRabbitMQ();
         return await base.Delete(objectType, criteria, context, isSync);
       }
       finally
@@ -226,7 +228,7 @@ namespace Csla.Channels.RabbitMq
       var resetEvent = new Threading.AsyncManualResetEvent();
       var wip = Wip.WorkInProgress.GetOrAdd(correlationId, new WipItem(resetEvent));
 
-      SendMessage(QueueListener!.ReplyQueue!.QueueName, correlationId, operation, serialized);
+      await SendMessage(QueueListener!.ReplyQueue!.QueueName, correlationId, operation, serialized);
 
       var timeout = Task.Delay(Options.Timeout);
       if (await Task.WhenAny(wip.ResetEvent.WaitAsync(), timeout) == timeout)
@@ -235,16 +237,20 @@ namespace Csla.Channels.RabbitMq
       return wip.Response!;
     }
 
-    private void SendMessage(string sender, string correlationId, string operation, byte[] request)
+    private async Task SendMessage(string sender, string correlationId, string operation, byte[] request)
     {
-      var props = Channel!.CreateBasicProperties();
+      var props = new BasicProperties
+      {
+        CorrelationId = correlationId,
+        Type = operation
+      };
       if (!string.IsNullOrWhiteSpace(sender))
         props.ReplyTo = sender;
-      props.CorrelationId = correlationId;
-      props.Type = operation;
-      Channel.BasicPublish(
+
+      await Channel!.BasicPublishAsync(
         exchange: "",
         routingKey: DataPortalQueueName,
+        mandatory: true,
         basicProperties: props,
         body: request);
     }

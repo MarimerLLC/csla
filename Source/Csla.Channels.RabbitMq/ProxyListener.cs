@@ -6,6 +6,7 @@
 // <summary>Handles replies from data portal server</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -25,7 +26,7 @@ namespace Csla.Channels.RabbitMq
     /// <summary>
     /// Gets or sets the channel (model) for RabbitMQ.
     /// </summary>
-    protected IModel? Channel { get; set; }
+    protected IChannel? Channel { get; set; }
 
     /// <summary>
     /// Gets or sets the queue for inbound messages
@@ -73,7 +74,7 @@ namespace Csla.Channels.RabbitMq
 #if NET8_0_OR_GREATER
     [MemberNotNull(nameof(Connection), nameof(Channel), nameof(ReplyQueue))]
 #endif
-    private void InitializeRabbitMQ()
+    private async Task InitializeRabbitMQ()
     {
       var factory = new ConnectionFactory { HostName = _queueUri.Host };
       if (_queueUri.Port < 0)
@@ -83,8 +84,10 @@ namespace Csla.Channels.RabbitMq
         factory.UserName = userInfo[0];
       if (userInfo.Length > 1)
         factory.Password = userInfo[1];
-      Connection = factory.CreateConnection();
-      Channel = Connection.CreateModel();
+#pragma warning disable CS8774 // 11/22/2024, Nullable analysis can't track nullability with async/await
+      Connection = await factory.CreateConnectionAsync();
+      Channel = await Connection.CreateChannelAsync();
+#pragma warning restore CS8774
       string[] query;
       if (string.IsNullOrWhiteSpace(_queueUri.Query))
         query = [];
@@ -93,25 +96,24 @@ namespace Csla.Channels.RabbitMq
       if (query.Length == 0 || !query[0].StartsWith("reply="))
       {
         IsNamedReplyQueue = false;
-        ReplyQueue = Channel.QueueDeclare();
+#pragma warning disable CS8774 // 11/22/2024, Nullable analysis can't track nullability with async/await
+        ReplyQueue = await Channel.QueueDeclareAsync();
+#pragma warning restore CS8774
       }
       else
       {
         IsNamedReplyQueue = true;
         var split = query[0].Split('=');
-        ReplyQueue = Channel.QueueDeclare(
-          queue: split[1],
-          durable: false,
-          exclusive: false,
-          autoDelete: false,
-          arguments: null);
+#pragma warning disable CS8774 // 11/22/2024, Nullable analysis can't track nullability with async/await
+        ReplyQueue = await Channel.QueueDeclareAsync(queue: split[1], durable: false, exclusive: false, autoDelete: false, arguments: null);
+#pragma warning restore CS8774
       }
     }
 
     private volatile bool IsListening;
     private readonly Lock ListeningLock = LockFactory.Create();
 
-    public void StartListening()
+    public async Task StartListening()
     {
       if (IsListening) return;
       lock (ListeningLock)
@@ -120,11 +122,17 @@ namespace Csla.Channels.RabbitMq
         IsListening = true;
       }
 
-      InitializeRabbitMQ();
+      await InitializeRabbitMQ();
+      Debug.Assert(Channel != null);
 
-      var consumer = new EventingBasicConsumer(Channel);
-      consumer.Received += (_, ea) =>
+      var consumer = new AsyncEventingBasicConsumer(Channel);
+      consumer.ReceivedAsync += async (_, ea) =>
       {
+        if (ea.BasicProperties.CorrelationId is null)
+        {
+          throw new InvalidOperationException($"{nameof(BasicDeliverEventArgs.BasicProperties)}.{nameof(IReadOnlyBasicProperties.CorrelationId)} == null");
+        }
+
         if (Wip.WorkInProgress.TryRemove(ea.BasicProperties.CorrelationId, out WipItem? item))
         {
           item.Response = ea.Body.ToArray();
@@ -137,16 +145,14 @@ namespace Csla.Channels.RabbitMq
           // listeners; if so requeue the message up to 9 times
           if (IsNamedReplyQueue && ea.BasicProperties.Priority < 9)
           {
-            ea.BasicProperties.Priority++;
-            Channel.BasicPublish(
-              exchange: "",
-              routingKey: ReplyQueue?.QueueName,
-              basicProperties: ea.BasicProperties,
-              body: ea.Body);
+            var updatedBasicProperties = new BasicProperties(ea.BasicProperties);
+            ++updatedBasicProperties.Priority;
+
+            await Channel.BasicPublishAsync(exchange: "", routingKey: ReplyQueue!.QueueName, mandatory: true, basicProperties: updatedBasicProperties, body: ea.Body.ToArray());
           }
         }
       };
-      Channel.BasicConsume(queue: ReplyQueue?.QueueName, autoAck: true, consumer: consumer);
+      await Channel.BasicConsumeAsync(queue: ReplyQueue!.QueueName, autoAck: true, consumer: consumer);
     }
 
     public void Dispose()

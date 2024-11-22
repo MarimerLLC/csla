@@ -8,6 +8,7 @@
 
 using Csla.Core;
 using Csla.TestHelpers;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -17,6 +18,8 @@ namespace Csla.Test.GraphMerge
   public class GraphMergerTests
   {
     private static TestDIContext _testDIContext;
+    private ApplicationContext _applicationContext;
+    private GraphMerger _systemUnderTest;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
@@ -28,6 +31,8 @@ namespace Csla.Test.GraphMerge
     public void Initialize()
     {
       TestResults.Reinitialise();
+      _applicationContext = _testDIContext.CreateTestApplicationContext();
+      _systemUnderTest = new GraphMerger(_applicationContext);
     }
 
     [TestMethod]
@@ -363,5 +368,18 @@ namespace Csla.Test.GraphMerge
       Assert.IsTrue(ReferenceEquals(target.ChildList, target.ChildList[1].Parent), "parent ref");
     }
 
+    [TestMethod]
+    public async Task MergeChildsAtDepth2Correctly()
+    {
+      var root = await _testDIContext.CreateDataPortal<RootUniqueIdentities>().FetchAsync();
+
+      root.Branch.Leafs.AddNew().LeafId = 1337;
+
+      var allLeafIds = root.Branch.Leafs.Select(l => l.LeafId).ToList();
+
+      await root.SaveAndMergeAsync();
+
+      root.Branch.Leafs.Select(l => l.LeafId).Should().ContainInOrder(allLeafIds);
+    }
   }
 }

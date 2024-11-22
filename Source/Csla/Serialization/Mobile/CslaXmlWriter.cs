@@ -7,6 +7,7 @@ namespace Csla.Serialization.Mobile
   /// This class uses <see cref="DataContractSerializer"/> and <see cref="XmlWriter"/> classes
   /// to write the data to a stream
   /// </summary>
+  [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
   public class CslaXmlWriter : ICslaWriter
   {
     /// <summary>

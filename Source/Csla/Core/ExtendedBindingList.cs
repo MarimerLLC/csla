@@ -11,6 +11,9 @@ using Csla.Serialization.Mobile;
 #if ANDROID || IOS
 using System.Collections.Specialized;
 #endif
+#if NET8_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Csla.Core
 {
@@ -20,7 +23,11 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
-  public class ExtendedBindingList<T> : MobileBindingList<T>,
+  public class ExtendedBindingList<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> : MobileBindingList<T>,
     IExtendedBindingList,
     INotifyBusy,
     INotifyChildChanged,

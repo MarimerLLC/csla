@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Csla.AspNetCore" Version="8.2.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BusinessLibrary\CslaMvc.BusinessLibrary.csproj" />
+    <ProjectReference Include="..\DataAccess\CslaMvc.DataAccess.csproj" />
+  </ItemGroup>
+
+</Project>

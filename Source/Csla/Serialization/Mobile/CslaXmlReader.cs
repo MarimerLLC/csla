@@ -7,6 +7,7 @@ namespace Csla.Serialization.Mobile
   /// This class uses <see cref="DataContractSerializer"/> and <see cref="XmlReader"/> classes
   /// to read the data from a stream
   /// </summary>
+  [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
   public class CslaXmlReader : ICslaReader
   {
     /// <summary>

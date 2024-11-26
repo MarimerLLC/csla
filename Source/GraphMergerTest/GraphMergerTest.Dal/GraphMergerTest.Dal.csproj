@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Backport.System.Threading.Lock" Version="3.0.1" />   
+    <PackageReference Include="Backport.System.Threading.Lock" Version="3.0.3" />   
     <PackageReference Include="System.Memory.Data" Version="8.0.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>

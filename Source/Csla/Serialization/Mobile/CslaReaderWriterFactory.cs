@@ -23,6 +23,7 @@ namespace Csla.Serialization.Mobile
     /// and setup known types for that class
     /// </summary>
     /// <returns>instance of <see cref="DataContractSerializer"/></returns>
+    [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
     public static DataContractSerializer GetDataContractSerializer()
     {
       return new DataContractSerializer(

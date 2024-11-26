@@ -1,0 +1,47 @@
+﻿@page "/listpersons"
+@inject Csla.Blazor.State.StateManager StateManager
+@inject Csla.IDataPortal<PersonList> personListPortal
+@inject Csla.Blazor.ViewModel<PersonList> vm
+
+<h1>List of People</h1>
+
+<p class="alert-danger">@vm.ViewModelErrorText</p>
+
+@if (vm.Model == null)
+{
+    <p>Loading List...</p>
+}
+else
+{
+    <p>
+        <a href="editperson">Add person</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in vm.Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td><a href="editperson/@item.Id">Edit (direct binding)</a></td>
+                    <td><a href="editpersonform/@item.Id">Edit (via EditForm)</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+        await vm.RefreshAsync(() => personListPortal.FetchAsync());
+    }
+}

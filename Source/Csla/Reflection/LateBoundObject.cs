@@ -6,6 +6,7 @@
 // <summary>Enables simple invocation of methods</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Reflection
@@ -37,7 +38,11 @@ namespace Csla.Reflection
     /// The specified type must implement a
     /// default constructor.
     /// </remarks>
-    public LateBoundObject(Type objectType)
+    public LateBoundObject(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType)
     {
       Instance = _applicationContext.CreateInstanceDI(objectType);
     }

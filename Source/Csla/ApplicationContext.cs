@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using Csla.Server;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {
@@ -367,7 +368,11 @@ namespace Csla
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstanceDI<T>(params object[] parameters)
+    public T CreateInstanceDI<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>(params object[] parameters)
     {
       return (T)CreateInstanceDI(typeof(T), parameters);
     }
@@ -378,7 +383,11 @@ namespace Csla
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Manually passed in parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public object CreateInstanceDI(Type objectType, params object[] parameters)
+    public object CreateInstanceDI(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, params object[] parameters)
     {
       try
       {
@@ -411,7 +420,11 @@ namespace Csla
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstance<T>(params object[] parameters)
+    public T CreateInstance<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>(params object[] parameters)
     {
       return (T)CreateInstance(typeof(T), parameters);
     }
@@ -422,7 +435,11 @@ namespace Csla
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public object CreateInstance(Type objectType, params object[] parameters)
+    public object CreateInstance(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, params object[] parameters)
     {
       object result;
       result = Activator.CreateInstance(objectType, parameters);

@@ -6,6 +6,7 @@
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Csla.Configuration;
 using Csla.Core;
@@ -21,7 +22,11 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal
+  public class DataPortal<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal
   {
     /// <summary>
     /// Creates an instance of the type
@@ -96,7 +101,11 @@ namespace Csla
       }
     }
 
-    private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoCreateAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -167,7 +176,11 @@ namespace Csla
     /// <param name="criteria">The criteria required to perform the creation operation</param>
     /// <returns>Returns a new, initialised object of the type requested</returns>
 
-    private object Create(Type objectType, object criteria)
+    private object Create(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria)
     {
       try
       {
@@ -193,7 +206,11 @@ namespace Csla
       return (T)await DoCreateAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    private async Task<object> DoFetchAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoFetchAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
@@ -243,7 +260,11 @@ namespace Csla
       return result.ReturnObject;
     }
 
-    private async Task<object> DoExecuteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoExecuteAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -310,7 +331,11 @@ namespace Csla
     /// <param name="objectType">The type of object to instantiate and load</param>
     /// <param name="criteria">The criteria required to perform the load operation</param>
     /// <returns>Returns a populated object of the type requested</returns>
-    private object Fetch(Type objectType, object criteria)
+    private object Fetch(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria)
     {
       try
       {
@@ -557,7 +582,11 @@ namespace Csla
       return DoUpdateAsync(obj, false);
     }
 
-    internal async Task DoDeleteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    internal async Task DoDeleteAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
       Server.DataPortalResult result = null;
       Server.DataPortalContext dpContext = null;
@@ -619,7 +648,11 @@ namespace Csla
     /// <param name="objectType">The type of object to instantiate and load</param>
     /// <param name="criteria">The criteria required to perform the load operation</param>
     /// <returns>Returns a populated object of the type requested</returns>
-    private void Delete(Type objectType, object criteria)
+    private void Delete(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria)
     {
       try
       {

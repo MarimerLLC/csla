@@ -6,6 +6,7 @@
 // <summary>Base class to be used when creating a data portal</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -171,7 +172,11 @@ namespace Csla.Server
         /// Loading values does not cause validation rules to be
         /// invoked.
         /// </remarks>
-        protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
+        protected void LoadProperty<
+#if NET8_0_OR_GREATER
+          [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+          P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
         {
             if (obj is IManageProperties target)
                 target.LoadProperty<P>(propertyInfo, newValue);
@@ -211,7 +216,11 @@ namespace Csla.Server
         /// <remarks>
         /// No authorization checks occur when this method is called.
         /// </remarks>
-        protected P ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
+        protected P ReadProperty<
+#if NET8_0_OR_GREATER
+          [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+          P>(object obj, PropertyInfo<P> propertyInfo)
         {
             if (obj is IManageProperties target)
                 return target.ReadProperty(propertyInfo);
@@ -275,7 +284,11 @@ namespace Csla.Server
         /// </summary>
         /// <typeparam name="C">Type of child objects in the colletion.</typeparam>
         /// <param name="obj">Editable collection object.</param>
-        protected Csla.Core.MobileList<C> GetDeletedList<C>(object obj)
+        protected Csla.Core.MobileList<C> GetDeletedList<
+#if NET8_0_OR_GREATER
+          [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+          C>(object obj)
         {
             if (obj is IEditableCollection target)
                 return (Csla.Core.MobileList<C>)target.GetDeletedList();

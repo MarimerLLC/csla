@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 
@@ -38,7 +39,14 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable]
-  public abstract class DynamicBindingListBase<T> :
+#if NET8_0_OR_GREATER
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+# endif
+  public abstract class DynamicBindingListBase<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+# endif
+    T> :
     ExtendedBindingList<T>,
     IParent,
     Server.IDataPortalTarget,

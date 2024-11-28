@@ -6,6 +6,8 @@
 // <summary>Invoke data portal methods on child</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -32,7 +34,11 @@ namespace Csla.Server
     /// Create a new business object.
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
-    public object Create(Type objectType)
+    public object Create(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType)
     {
       try
       { 
@@ -51,7 +57,11 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public object Create(Type objectType, params object[] parameters)
+    public object Create(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, params object[] parameters)
     {
       try
       { 
@@ -66,7 +76,11 @@ namespace Csla.Server
     /// <summary>
     /// Create a new business object.
     /// </summary>
-    public async Task<T> CreateAsync<T>()
+    public async Task<T> CreateAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>()
     {
       return (T) await DoCreateAsync(typeof(T)).ConfigureAwait(false);
     }
@@ -77,12 +91,20 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public async Task<T> CreateAsync<T>(params object[] parameters)
+    public async Task<T> CreateAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>(params object[] parameters)
     {
       return (T)await DoCreateAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoCreateAsync(Type objectType, params object[] parameters)
+    private async Task<object> DoCreateAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, params object[] parameters)
     {
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
@@ -126,7 +148,11 @@ namespace Csla.Server
     /// Get an existing business object.
     /// </summary>
     /// <param name="objectType">Type of business object to retrieve.</param>
-    public object Fetch(Type objectType)
+    public object Fetch(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType)
     {
       try
       {
@@ -145,7 +171,11 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public object Fetch(Type objectType, params object[] parameters)
+    public object Fetch(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, params object[] parameters)
     {
       try
       {
@@ -160,7 +190,11 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
-    public async Task<T> FetchAsync<T>()
+    public async Task<T> FetchAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>()
     {
       return (T)await DoFetchAsync(typeof(T)).ConfigureAwait(false);
     }
@@ -171,12 +205,20 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public async Task<T> FetchAsync<T>(params object[] parameters)
+    public async Task<T> FetchAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>(params object[] parameters)
     {
       return (T)await DoFetchAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoFetchAsync(Type objectType, params object[] parameters)
+    private async Task<object> DoFetchAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, params object[] parameters)
     {
       DataPortalTarget obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);

@@ -10,6 +10,7 @@ using System.Reflection;
 using Csla.Reflection;
 using System.ComponentModel;
 using Csla.Properties;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {
@@ -150,7 +151,15 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
-    public static object CoerceValue(Type desiredType, Type valueType, object oldValue, object value)
+    public static object CoerceValue(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type desiredType,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type valueType, object oldValue, object value)
     {
       if (desiredType.IsAssignableFrom(valueType))
       {
@@ -256,7 +265,15 @@ namespace Csla
     /// result is parsed to convert into the enum value.
     /// </para>
     /// </remarks>
-    public static D CoerceValue<D>(Type valueType, object oldValue, object value)
+    public static D CoerceValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      D>(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type valueType, object oldValue, object value)
     {
       return (D)(CoerceValue(typeof(D), valueType, oldValue, value));
     }

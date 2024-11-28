@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using Csla.Core;
@@ -32,7 +33,11 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   [Serializable]
-  public abstract class BusinessBase<T> :
+  public abstract class BusinessBase<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> :
     BusinessBase, ISavable, ISavable<T>, IBusinessBase where T : BusinessBase<T>
   {
 
@@ -365,7 +370,11 @@ namespace Csla
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    protected static PropertyInfo<P> RegisterProperty<P>(PropertyInfo<P> info)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> info)
     {
       return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
     }
@@ -376,7 +385,11 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(string propertyName)
     {
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
     }
@@ -387,7 +400,11 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name);
@@ -400,7 +417,11 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(string propertyName, RelationshipTypes relationship)
     {
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
     }
@@ -412,7 +433,11 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, relationship);
@@ -425,7 +450,11 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(string propertyName, string friendlyName)
     {
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
@@ -437,7 +466,11 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName);
@@ -451,7 +484,11 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(string propertyName, string friendlyName, P defaultValue)
     {
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
@@ -464,7 +501,11 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty(reflectedPropertyInfo.Name, friendlyName, defaultValue);
@@ -479,7 +520,11 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(string propertyName, string friendlyName, P defaultValue, RelationshipTypes relationship)
     {
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
@@ -493,7 +538,11 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
-    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue, RelationshipTypes relationship)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);

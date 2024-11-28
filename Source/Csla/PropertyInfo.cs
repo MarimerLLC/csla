@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {
@@ -17,7 +18,11 @@ namespace Csla
   /// <typeparam name="T">
   /// Data type of the property.
   /// </typeparam>
-  public class PropertyInfo<T> : Core.IPropertyInfo, IComparable
+  public class PropertyInfo<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> : Core.IPropertyInfo, IComparable
   {
     /// <summary>
     /// Creates a new instance of this class.

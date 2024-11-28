@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 
 namespace Csla.Rules
@@ -199,7 +200,11 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    T GetInputValue<T>(PropertyInfo<T> propertyInfo);
+    T GetInputValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(PropertyInfo<T> propertyInfo);
     /// <summary>
     /// Gets the value with explicit cast
     /// </summary>
@@ -213,7 +218,11 @@ namespace Csla.Rules
     /// <param name="propertyInfo">The generic property info.</param>
     /// <param name="value">The value.</param>
     /// <returns>true if value exists else false</returns>
-    bool TryGetInputValue<T>(PropertyInfo<T> propertyInfo, ref T value);
+    bool TryGetInputValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(PropertyInfo<T> propertyInfo, ref T value);
     /// <summary>
     /// Tries to get the value with explicit cast. Use this method on LazyLoaded properties to test if value has been provided or not.
     /// </summary>

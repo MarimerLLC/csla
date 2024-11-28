@@ -16,6 +16,7 @@ using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Core.FieldManager
 {
@@ -45,7 +46,11 @@ namespace Csla.Core.FieldManager
     /// </summary>
     public FieldDataManager() { }
 
-    internal FieldDataManager(ApplicationContext applicationContext, Type businessObjectType)
+    internal FieldDataManager(ApplicationContext applicationContext,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type businessObjectType)
     {
       _applicationContext = applicationContext;
       SetPropertyList(businessObjectType);
@@ -56,7 +61,11 @@ namespace Csla.Core.FieldManager
     /// Called when parent object is deserialized to
     /// restore property list.
     /// </summary>
-    internal void SetPropertyList(Type businessObjectType)
+    internal void SetPropertyList(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type businessObjectType)
     {
       _businessObjectType = businessObjectType.AssemblyQualifiedName;
       _propertyList = GetConsolidatedList(businessObjectType);
@@ -113,7 +122,11 @@ namespace Csla.Core.FieldManager
     private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
 #endif
 
-    private static List<IPropertyInfo> GetConsolidatedList(Type type)
+    private static List<IPropertyInfo> GetConsolidatedList(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type type)
     {
       List<IPropertyInfo> result = null;
 
@@ -172,7 +185,11 @@ namespace Csla.Core.FieldManager
       return result;
     }
 
-    private static List<IPropertyInfo> CreateConsolidatedList(Type type)
+    private static List<IPropertyInfo> CreateConsolidatedList(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type type)
     {
       ForceStaticFieldInit(type);
       List<IPropertyInfo> result = [];
@@ -842,7 +859,11 @@ namespace Csla.Core.FieldManager
     /// by a type, and any of its base class types.
     /// </summary>
     /// <param name="type">Type of object to initialize.</param>
-    public static void ForceStaticFieldInit(Type type)
+    public static void ForceStaticFieldInit(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type type)
     {
       const BindingFlags attr =
         BindingFlags.Static |

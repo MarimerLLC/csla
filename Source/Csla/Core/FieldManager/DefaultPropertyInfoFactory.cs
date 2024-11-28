@@ -6,6 +6,8 @@
 // <summary>Creates PropertyInfo objects.</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Core.FieldManager
 {
   /// <summary>
@@ -21,7 +23,11 @@ namespace Csla.Core.FieldManager
     /// declaration.
     /// </param>
     /// <param name="name">Name of the property.</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name)
     {
       return new PropertyInfo<T>(name, null, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, null);
     }
@@ -37,7 +43,11 @@ namespace Csla.Core.FieldManager
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, null);
     }
@@ -55,7 +65,11 @@ namespace Csla.Core.FieldManager
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), relationship, null);
     }
@@ -74,7 +88,11 @@ namespace Csla.Core.FieldManager
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName, T defaultValue)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, null);
     }
@@ -95,7 +113,11 @@ namespace Csla.Core.FieldManager
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship, null);
     }
@@ -109,7 +131,11 @@ namespace Csla.Core.FieldManager
     /// </param>
     /// <param name="name">Name of the property.</param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, bool isSerializable)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, bool isSerializable)
     {
       return new PropertyInfo<T>(name, null, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable);
     }
@@ -126,7 +152,11 @@ namespace Csla.Core.FieldManager
     /// Friendly display name for the property.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, bool isSerializable)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName, bool isSerializable)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable);
     }
@@ -145,7 +175,11 @@ namespace Csla.Core.FieldManager
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship, bool isSerializable)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship, bool isSerializable)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, PropertyInfo<T>.DataBindingFriendlyDefault(), relationship, isSerializable);
     }
@@ -165,7 +199,11 @@ namespace Csla.Core.FieldManager
     /// Default value for the property.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, bool isSerializable)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName, T defaultValue, bool isSerializable)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, isSerializable);
     }
@@ -187,7 +225,11 @@ namespace Csla.Core.FieldManager
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo<T> Create<T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship, bool isSerializable)
+    public PropertyInfo<T> Create<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship, bool isSerializable)
     {
       return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship, isSerializable);
     }

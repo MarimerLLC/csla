@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using Csla.Core.FieldManager;
@@ -20,6 +21,9 @@ namespace Csla.Core
   /// using SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
+#if NET8_0_OR_GREATER
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+# endif
   public abstract class ManagedObjectBase : MobileObject,
     INotifyPropertyChanged,
     IManageProperties,
@@ -71,7 +75,15 @@ namespace Csla.Core
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    protected static PropertyInfo<P> RegisterProperty<P>(Type objectType, PropertyInfo<P> info)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type objectType, PropertyInfo<P> info)
     {
       return PropertyInfoManager.RegisterProperty<P>(objectType, info);
     }
@@ -85,7 +97,15 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
@@ -100,7 +120,15 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
@@ -116,7 +144,15 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
@@ -132,7 +168,15 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    protected static PropertyInfo<P> RegisterProperty<T, P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T,
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(Expression<Func<T, object>> propertyLambdaExpression, string friendlyName, P defaultValue)
     {
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
 
@@ -156,7 +200,15 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
+    protected P ReadPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
     }
@@ -169,7 +221,11 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    protected P ReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo)
     {
       P result = default(P);
       IFieldData data = FieldManager.GetFieldData(propertyInfo);
@@ -233,7 +289,15 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void LoadPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F>(PropertyInfo<P> propertyInfo, F newValue)
     {
       try
       {
@@ -277,7 +341,11 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    protected void LoadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       try
       {
@@ -303,7 +371,11 @@ namespace Csla.Core
       }
     }
 
-    private bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    private bool LoadPropertyMarkDirty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       try
       {
@@ -330,7 +402,11 @@ namespace Csla.Core
       }
     }
 
-    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue)
+    private void LoadPropertyValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue)
     {
       bool valuesDiffer;
       if (oldValue == null)
@@ -462,16 +538,40 @@ namespace Csla.Core
     bool IManageProperties.FieldExists(IPropertyInfo property) => FieldManager.FieldExists(property);
     List<IPropertyInfo> IManageProperties.GetManagedProperties() => FieldManager.GetRegisteredProperties();
     object IManageProperties.GetProperty(IPropertyInfo propertyInfo) => throw new NotImplementedException();
-    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
-    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
+    object IManageProperties.LazyGetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
+    object IManageProperties.LazyGetPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
     object IManageProperties.ReadProperty(IPropertyInfo propertyInfo) => ReadProperty(propertyInfo);
-    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) => ReadProperty(propertyInfo);
-    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
-    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
+    P IManageProperties.ReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo) => ReadProperty(propertyInfo);
+    P IManageProperties.LazyReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
+    P IManageProperties.LazyReadPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
     void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object newValue) => throw new NotImplementedException();
     void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object newValue) => LoadProperty(propertyInfo, newValue);
     bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue) => throw new NotImplementedException();
-    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue) => LoadProperty(propertyInfo, newValue);
+    void IManageProperties.LoadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue) => LoadProperty(propertyInfo, newValue);
     List<object> IManageProperties.GetChildren() => FieldManager.GetChildren();
     bool IManageProperties.HasManagedProperties => true;
   }

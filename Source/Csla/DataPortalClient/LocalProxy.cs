@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Runtime;
@@ -176,6 +177,9 @@ namespace Csla.Channels.Local
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     public override async Task<DataPortalResult> Create(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       IServiceScope _logicalServerScope = null;
@@ -224,7 +228,11 @@ namespace Csla.Channels.Local
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Fetch(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       IServiceScope _logicalServerScope = null;
       DataPortalResult result;
@@ -319,7 +327,11 @@ namespace Csla.Channels.Local
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public override async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Delete(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       IServiceScope _logicalServerScope = null;
       DataPortalResult result;

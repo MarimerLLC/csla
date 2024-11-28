@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Core
 {
@@ -151,7 +152,11 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    public void MergeBusinessListGraph<T, C>(T target, T source)
+    public void MergeBusinessListGraph<T,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -181,7 +186,11 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    public void MergeBusinessBindingListGraph<T, C>(T target, T source)
+    public void MergeBusinessBindingListGraph<T,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -325,7 +334,11 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    public async Task MergeBusinessListGraphAsync<T, C>(T target, T source)
+    public async Task MergeBusinessListGraphAsync<T,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -355,7 +368,11 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    public async Task MergeBusinessBindingListGraphAsync<T, C>(T target, T source)
+    public async Task MergeBusinessBindingListGraphAsync<T,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {

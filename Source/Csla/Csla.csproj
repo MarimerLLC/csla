@@ -12,6 +12,16 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
+    <EnableTrimAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableSingleFileAnalyzer>
+    <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer> 
+    <!-- This is first priority warnings which should be fixed. They are usually trimming friendly, in a sense that, develop annotate what parts of types should be preserved.  -->
+    <NoWarn>$(NoWarn);IL2067;IL2070;IL2072;IL2075;IL2087;IL2091</NoWarn>
+    <!-- 
+      This is problematic for NativeAOT pieces of code, which require analysis of API and what can be done to improve situation. 
+      Slapping "Here we require dynamic code" means, that we opt-out of supporting NativeAOT for these methods which is undesirable.
+    -->
+    <NoWarn>$(NoWarn);IL2026;IL2055;IL2057;IL2060;IL2096;IL3050</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

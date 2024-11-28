@@ -10,6 +10,9 @@ using System.Data;
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 using System.Data.SqlClient;
 #endif
+#if NET8_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Csla.Data
 {
@@ -662,6 +665,9 @@ namespace Csla.Data
     /// Invokes the GetFieldType method of the underlying datareader.
     /// </summary>
     /// <param name="i">Ordinal column position of the value.</param>
+#if NET8_0_OR_GREATER
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)]
+#endif
     public virtual Type GetFieldType(int i)
     {
       return DataReader.GetFieldType(i);

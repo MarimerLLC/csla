@@ -10,6 +10,9 @@ using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
 using System.Diagnostics;
+#if NET8_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Csla.Core
 {
@@ -24,7 +27,11 @@ namespace Csla.Core
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class MobileBindingList<T> : BindingList<T>, IMobileList
+  public class MobileBindingList<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> : BindingList<T>, IMobileList
   {
     #region LoadListMode
 

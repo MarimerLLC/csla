@@ -54,7 +54,7 @@ namespace Csla.Core
     public IContextManager GetContextManager()
     {
       var runtimeInfo = ServiceProvider.GetRequiredService<IRuntimeInfo>();
-      if (!runtimeInfo.LocalProxyNewScopeExists)
+      if (!runtimeInfo.LocalProxyNewScopeExists && ContextManager.IsValid)
         return ContextManager;
       else
         return LocalContextManager;

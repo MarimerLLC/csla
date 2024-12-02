@@ -8,6 +8,7 @@
 
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
@@ -40,7 +41,11 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable]
-  public abstract class DynamicListBase<T> :
+  public abstract class DynamicListBase<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T> :
 #if ANDROID || IOS
     ExtendedBindingList<T>,
 #else

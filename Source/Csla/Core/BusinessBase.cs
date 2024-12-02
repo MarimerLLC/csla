@@ -12,6 +12,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
@@ -1605,7 +1606,15 @@ namespace Csla.Core
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    protected static PropertyInfo<P> RegisterProperty<P>(Type objectType, PropertyInfo<P> info)
+    protected static PropertyInfo<P> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type objectType, PropertyInfo<P> info)
     {
       return PropertyInfoManager.RegisterProperty<P>(objectType, info);
     }
@@ -1685,7 +1694,11 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field)
+    protected P GetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P field)
     {
       return GetProperty<P>(propertyInfo.Name, field, propertyInfo.DefaultValue, NoAccessBehavior.SuppressException);
     }
@@ -1706,7 +1719,11 @@ namespace Csla.Core
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
-    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, P field, P defaultValue, NoAccessBehavior noAccess)
+    protected P GetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P field, P defaultValue, NoAccessBehavior noAccess)
     {
       return GetProperty<P>(propertyInfo.Name, field, defaultValue, noAccess);
     }
@@ -1730,7 +1747,15 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field)
+    protected P GetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    F,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    P>(PropertyInfo<F> propertyInfo, F field)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, NoAccessBehavior.SuppressException));
     }
@@ -1757,7 +1782,15 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field, NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<F> propertyInfo, F field, NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo.Name, field, propertyInfo.DefaultValue, noAccess));
     }
@@ -1776,7 +1809,11 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<P>(PropertyInfo<P> propertyInfo)
+    protected P GetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo)
     {
       return GetProperty<P>(propertyInfo, NoAccessBehavior.SuppressException);
     }
@@ -1799,7 +1836,15 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
+    protected P GetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, NoAccessBehavior.SuppressException));
     }
@@ -1825,7 +1870,15 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, NoAccessBehavior noAccess)
+    protected P GetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<F> propertyInfo, NoAccessBehavior noAccess)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, GetProperty<F>(propertyInfo, noAccess));
     }
@@ -1847,7 +1900,11 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P GetProperty<P>(PropertyInfo<P> propertyInfo, NoAccessBehavior noAccess)
+    protected P GetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    P>(PropertyInfo<P> propertyInfo, NoAccessBehavior noAccess)
     {
       if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
       {
@@ -1920,7 +1977,11 @@ namespace Csla.Core
     /// value, the defaultValue value is returned as a
     /// result.
     /// </remarks>
-    protected P LazyGetProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    protected P LazyGetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> property, Func<P> valueGenerator)
     {
       if (!(FieldManager.FieldExists(property)))
       {
@@ -1961,7 +2022,11 @@ namespace Csla.Core
     /// result.
     /// </para>
     /// </remarks>
-    protected P LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    protected P LazyGetPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> property, Task<P> factory)
     {
       if (!(FieldManager.FieldExists(property)) && !PropertyIsLoading(property))
       {
@@ -1970,12 +2035,20 @@ namespace Csla.Core
       return GetProperty<P>(property);
     }
 
-    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    object IManageProperties.LazyGetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       return LazyGetProperty(propertyInfo, valueGenerator);
     }
 
-    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    object IManageProperties.LazyGetPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       return LazyGetPropertyAsync(propertyInfo, factory);
     }
@@ -1997,7 +2070,15 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
+    protected P ReadPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<F> propertyInfo)
     {
       return Utilities.CoerceValue<P>(typeof(F), null, ReadProperty<F>(propertyInfo));
     }
@@ -2010,7 +2091,11 @@ namespace Csla.Core
     /// </typeparam>
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
-    protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    protected P ReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo)
     {
       if (((propertyInfo.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad) && !FieldManager.FieldExists(propertyInfo))
       {
@@ -2078,7 +2163,11 @@ namespace Csla.Core
     /// <param name="property">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="valueGenerator">Method returning the new value.</param>
-    protected P LazyReadProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    protected P LazyReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> property, Func<P> valueGenerator)
     {
       if (!(FieldManager.FieldExists(property)))
       {
@@ -2097,7 +2186,11 @@ namespace Csla.Core
     /// <param name="property">
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="factory">Async method returning the new value.</param>
-    protected P LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    protected P LazyReadPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> property, Task<P> factory)
     {
       if (!(FieldManager.FieldExists(property)) && !PropertyIsLoading(property))
       {
@@ -2106,12 +2199,20 @@ namespace Csla.Core
       return ReadProperty<P>(property);
     }
 
-    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    P IManageProperties.LazyReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       return LazyReadProperty(propertyInfo, valueGenerator);
     }
 
-    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    P IManageProperties.LazyReadPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       return LazyReadPropertyAsync(propertyInfo, factory);
     }
@@ -2135,7 +2236,11 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, ref P field, P newValue)
+    protected void SetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, ref P field, P newValue)
     {
       SetProperty<P>(propertyInfo.Name, ref field, newValue, NoAccessBehavior.ThrowException);
     }
@@ -2155,7 +2260,11 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetProperty<P>(string propertyName, ref P field, P newValue)
+    protected void SetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(string propertyName, ref P field, P newValue)
     {
       SetProperty<P>(propertyName, ref field, newValue, NoAccessBehavior.ThrowException);
     }
@@ -2181,7 +2290,15 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
+    protected void SetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      V>(PropertyInfo<P> propertyInfo, ref P field, V newValue)
     {
       SetPropertyConvert<P, V>(propertyInfo, ref field, newValue, NoAccessBehavior.ThrowException);
     }
@@ -2210,7 +2327,15 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      V>(PropertyInfo<P> propertyInfo, ref P field, V newValue, NoAccessBehavior noAccess)
     {
       SetPropertyConvert<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
     }
@@ -2229,7 +2354,11 @@ namespace Csla.Core
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P>(string propertyName, ref P field, P newValue, NoAccessBehavior noAccess)
+    protected void SetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(string propertyName, ref P field, P newValue, NoAccessBehavior noAccess)
     {
       try
       {
@@ -2304,7 +2433,15 @@ namespace Csla.Core
     /// If the field value is of type string, any incoming
     /// null values are converted to string.Empty.
     /// </remarks>
-    protected void SetPropertyConvert<P, V>(string propertyName, ref P field, V newValue, NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      V>(string propertyName, ref P field, V newValue, NoAccessBehavior noAccess)
     {
       try
       {
@@ -2369,7 +2506,11 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    protected void SetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       SetProperty<P>(propertyInfo, newValue, NoAccessBehavior.ThrowException);
     }
@@ -2387,7 +2528,15 @@ namespace Csla.Core
     /// If the user is not authorized to change the property, this
     /// overload throws a SecurityException.
     /// </remarks>
-    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void SetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F>(PropertyInfo<P> propertyInfo, F newValue)
     {
       SetPropertyConvert<P, F>(propertyInfo, newValue, NoAccessBehavior.ThrowException);
     }
@@ -2404,7 +2553,15 @@ namespace Csla.Core
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue, NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F>(PropertyInfo<P> propertyInfo, F newValue, NoAccessBehavior noAccess)
     {
       try
       {
@@ -2459,7 +2616,11 @@ namespace Csla.Core
     /// <param name="noAccess">
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P newValue, NoAccessBehavior noAccess)
+    protected void SetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue, NoAccessBehavior noAccess)
     {
       if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == NoAccessBehavior.ThrowException))
       {
@@ -2569,7 +2730,15 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F newValue)
+    protected void LoadPropertyConvert<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      F>(PropertyInfo<P> propertyInfo, F newValue)
     {
       try
       {
@@ -2596,7 +2765,11 @@ namespace Csla.Core
       }
     }
 
-    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    void IManageProperties.LoadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       LoadProperty<P>(propertyInfo, newValue);
     }
@@ -2623,7 +2796,11 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    protected void LoadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       try
       {
@@ -2667,7 +2844,11 @@ namespace Csla.Core
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P newValue)
+    protected bool LoadPropertyMarkDirty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue)
     {
       try
       {
@@ -2724,7 +2905,11 @@ namespace Csla.Core
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <param name="oldValue">The old value.</param>
-    private static bool ValuesDiffer<P>(PropertyInfo<P> propertyInfo, P newValue, P oldValue)
+    private static bool ValuesDiffer<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue, P oldValue)
     {
       var valuesDiffer = false;
       if (oldValue == null)
@@ -2744,7 +2929,11 @@ namespace Csla.Core
       return valuesDiffer;
     }
 
-    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
+    private void LoadPropertyValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P oldValue, P newValue, bool markDirty)
     {
       var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
 
@@ -3040,7 +3229,11 @@ namespace Csla.Core
     /// <typeparam name="R"></typeparam>
     /// <param name="property"></param>
     /// <param name="factory"></param>
-    protected void LoadPropertyAsync<R>(PropertyInfo<R> property, Task<R> factory)
+    protected void LoadPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      R>(PropertyInfo<R> property, Task<R> factory)
     {
       LoadManager.BeginLoad(new TaskLoader<R>(property, factory));
     }
@@ -3489,7 +3682,11 @@ namespace Csla.Core
       return ReadProperty(propertyInfo);
     }
 
-    P IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    P IManageProperties.ReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo)
     {
       return ReadProperty<P>(propertyInfo);
     }

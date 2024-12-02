@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;
@@ -320,7 +321,13 @@ namespace Csla.Rules
     /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
-    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType)
+    public static bool HasPermission(
+      ApplicationContext applicationContext, 
+      AuthorizationActions action,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -337,7 +344,13 @@ namespace Csla.Rules
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     /// <param name="criteria">The criteria object provided.</param>
-    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object[] criteria)
+    public static bool HasPermission(ApplicationContext applicationContext,
+      AuthorizationActions action,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType,
+      object[] criteria)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -357,7 +370,14 @@ namespace Csla.Rules
     /// <returns>
     /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
     /// </returns>
-    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string ruleSet)
+    public static bool HasPermission(
+      ApplicationContext applicationContext, 
+      AuthorizationActions action,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType,
+      string ruleSet)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -446,7 +466,14 @@ namespace Csla.Rules
     /// <param name="objectType">The type of the business object.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A task representing the asynchronous operation that returns a boolean indicating whether the permission is granted.</returns>
-    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, CancellationToken ct)
+    public static Task<bool> HasPermissionAsync(
+      ApplicationContext applicationContext, 
+      AuthorizationActions action,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, 
+      CancellationToken ct)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -467,7 +494,15 @@ namespace Csla.Rules
     /// <param name="criteria">The criteria object provided.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the permission is granted.</returns>
-    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object[] criteria, CancellationToken ct)
+    public static Task<bool> HasPermissionAsync(
+      ApplicationContext applicationContext, 
+      AuthorizationActions action,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, 
+      object[] criteria, 
+      CancellationToken ct)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -490,7 +525,15 @@ namespace Csla.Rules
     /// <returns>
     /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
     /// </returns>
-    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string ruleSet, CancellationToken ct)
+    public static Task<bool> HasPermissionAsync(
+      ApplicationContext applicationContext,
+      AuthorizationActions action,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType,
+      string ruleSet,
+      CancellationToken ct)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));

@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 #if NET8_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Versioning;
 #endif
 using System.Transactions;
@@ -58,6 +59,9 @@ namespace Csla.Server
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
     public async Task<DataPortalResult> Create(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
       Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       using TransactionScope tr = CreateTransactionScope();
@@ -116,7 +120,11 @@ namespace Csla.Server
     /// <param name="context">Object containing context data from client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Fetch(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
@@ -162,7 +170,11 @@ namespace Csla.Server
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Delete(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);

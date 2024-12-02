@@ -6,6 +6,8 @@
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -20,7 +22,11 @@ namespace Csla.Server
     /// <param name="requestedType">Requested business type (class or interface).</param>
     /// <param name="parameters">Param array for the constructor</param>
     /// <returns>Business object instance.</returns>
-    object CreateInstance(Type requestedType, params object[] parameters);
+    object CreateInstance(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type requestedType, params object[] parameters);
     /// <summary>
     /// Initializes an existing business object instance.
     /// </summary>
@@ -37,6 +43,13 @@ namespace Csla.Server
     /// requested type (which might be an interface).
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
-    Type ResolveType(Type requestedType);
+#if NET8_0_OR_GREATER
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    Type ResolveType(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+     Type requestedType);
   }
 }

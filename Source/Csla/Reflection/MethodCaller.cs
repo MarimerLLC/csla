@@ -10,6 +10,8 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Globalization;
 using Csla.Properties;
+using System.Diagnostics.CodeAnalysis;
+
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 using Csla.Runtime;
@@ -743,7 +745,11 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public static System.Reflection.MethodInfo GetMethod(Type objectType, string method)
+    public static System.Reflection.MethodInfo GetMethod(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+#endif
+      Type objectType, string method)
     {
       return GetMethod(objectType, method, true, false, null);
     }
@@ -761,12 +767,20 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static System.Reflection.MethodInfo GetMethod(Type objectType, string method, params object[] parameters)
+    public static System.Reflection.MethodInfo GetMethod(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+#endif
+      Type objectType, string method, params object[] parameters)
     {
       return GetMethod(objectType, method, true, parameters);
     }
 
-    private static System.Reflection.MethodInfo GetMethod(Type objectType, string method, bool hasParameters, params object[] parameters)
+    private static System.Reflection.MethodInfo GetMethod(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+#endif
+      Type objectType, string method, bool hasParameters, params object[] parameters)
     {
       System.Reflection.MethodInfo result;
 
@@ -915,7 +929,13 @@ namespace Csla.Reflection
     /// <param name="parameterCount">
     /// Number of parameters to pass to method.
     /// </param>
-    public static System.Reflection.MethodInfo FindMethod(Type objectType, string method, int parameterCount)
+    public static System.Reflection.MethodInfo FindMethod(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+      [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2075:UnrecognizedReflectionPattern",
+            Justification = "We only walk BaseType chain in this method, so assumption will holds")]
+#endif
+      Type objectType, string method, int parameterCount)
     {
       // walk up the inheritance hierarchy looking
       // for a method with the right number of
@@ -1011,7 +1031,11 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="t">Type of object containing the property.</param>
     /// <param name="propertyName">Name of the property.</param>
-    public static PropertyDescriptor GetPropertyDescriptor(Type t, string propertyName)
+    public static PropertyDescriptor GetPropertyDescriptor(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type t, string propertyName)
     {
       var propertyDescriptors = TypeDescriptor.GetProperties(t);
       PropertyDescriptor result = null;

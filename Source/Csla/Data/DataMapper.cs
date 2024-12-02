@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -285,9 +286,13 @@ namespace Csla.Data
       }
     }
 
-      private static IList<string> GetPropertyNames(Type sourceType)
+      private static IList<string> GetPropertyNames(
+#if NET8_0_OR_GREATER
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+        Type sourceType)
       {
-        List<string> result = [];
+      List<string> result = [];
         PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
         foreach (PropertyDescriptor item in props)
             if (item.IsBrowsable)

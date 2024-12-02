@@ -6,6 +6,7 @@
 // <summary>Provides a sorted view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections;
 using Csla.Properties;
 
@@ -19,7 +20,11 @@ namespace Csla
   /// Type of child object contained by
   /// the original list or collection.
   /// </typeparam>
-  public class SortedBindingList<T> :
+  public class SortedBindingList<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> :
     IList<T>,
     IBindingList,
     ICancelAddNew

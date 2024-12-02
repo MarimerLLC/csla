@@ -6,6 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Core
 {
   internal interface IManageProperties
@@ -14,16 +16,40 @@ namespace Csla.Core
     bool FieldExists(IPropertyInfo property);
     List<IPropertyInfo> GetManagedProperties();
     object GetProperty(IPropertyInfo propertyInfo);
-    object LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
-    object LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory);
+    object LazyGetProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
+    object LazyGetPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Task<P> factory);
     object ReadProperty(IPropertyInfo propertyInfo);
-    P ReadProperty<P>(PropertyInfo<P> propertyInfo);
-    P LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
-    P LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory);
+    P ReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo);
+    P LazyReadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator);
+    P LazyReadPropertyAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, Task<P> factory);
     void SetProperty(IPropertyInfo propertyInfo, object newValue);
     void LoadProperty(IPropertyInfo propertyInfo, object newValue);
     bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object newValue);
-    void LoadProperty<P>(PropertyInfo<P> propertyInfo, P newValue);
+    void LoadProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      P>(PropertyInfo<P> propertyInfo, P newValue);
     List<object> GetChildren();
   }
 }

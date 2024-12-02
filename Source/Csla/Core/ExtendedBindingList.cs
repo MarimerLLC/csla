@@ -396,7 +396,11 @@ namespace Csla.Core
     /// Will be instanciated by a factory property on the ObservableBindingList implementation.
     /// </summary>
     /// <typeparam name="TC">The type of the C.</typeparam>
-    class SuppressListChangedEventsClass<TC> : IDisposable
+    class SuppressListChangedEventsClass<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      TC> : IDisposable
     {
       private readonly BindingList<TC> _businessObject;
       private readonly bool _initialRaiseListChangedEvents;

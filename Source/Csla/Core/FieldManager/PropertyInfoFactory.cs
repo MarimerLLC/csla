@@ -6,6 +6,8 @@
 // <summary>Creates the factory object that</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Core.FieldManager
 {
   /// <summary>
@@ -17,6 +19,9 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets the PropertyInfoFactory type.
     /// </summary>
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+#endif
     public static Type FactoryType { get; internal set; } = typeof(DefaultPropertyInfoFactory);
 
     private static IPropertyInfoFactory _factory;

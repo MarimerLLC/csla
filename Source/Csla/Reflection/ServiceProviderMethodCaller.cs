@@ -15,6 +15,7 @@ using Csla.Runtime;
 #endif
 using Csla.Properties;
 using Csla.Server;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Reflection
 {
@@ -61,7 +62,11 @@ namespace Csla.Reflection
     /// <param name="targetType">Type of domain object</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="throwOnError">Throw exceptions on error</param>
-    public ServiceProviderMethodInfo FindDataPortalMethod<T>(Type targetType, object[] criteria, bool throwOnError = true)
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type targetType, object[] criteria, bool throwOnError = true)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)

@@ -11,6 +11,7 @@ using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
 using Csla.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Server
 {
@@ -22,7 +23,11 @@ namespace Csla.Server
     private static Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache = [];
 #endif
 
-    public static DataPortalMethodInfo GetMethodInfo(Type objectType, string methodName, params object[] parameters)
+    public static DataPortalMethodInfo GetMethodInfo(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+#endif
+      Type objectType, string methodName, params object[] parameters)
     {
       var key = new MethodCacheKey(objectType.FullName, methodName, MethodCaller.GetParameterTypes(parameters));
 

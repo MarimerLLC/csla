@@ -6,6 +6,8 @@
 // <summary>Message containing details about any</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>

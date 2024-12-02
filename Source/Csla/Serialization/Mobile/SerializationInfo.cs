@@ -6,6 +6,7 @@
 // <summary>Object containing the serialization</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile
@@ -285,7 +286,11 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    public T GetValue<T>(string name)
+    public T GetValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(string name)
     {
       try
       {

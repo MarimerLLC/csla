@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 
@@ -442,7 +443,11 @@ namespace Csla.Rules
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    public  T GetInputValue<T>(PropertyInfo<T> propertyInfo)
+    public  T GetInputValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(PropertyInfo<T> propertyInfo)
     {
       return (T)InputPropertyValues[propertyInfo];
     }
@@ -464,7 +469,11 @@ namespace Csla.Rules
     /// <param name="propertyInfo">The generic property info.</param>
     /// <param name="value">The value.</param>
     /// <returns>true if value exists else false</returns>
-    public bool TryGetInputValue<T>(PropertyInfo<T> propertyInfo, ref T value)
+    public bool TryGetInputValue<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(PropertyInfo<T> propertyInfo, ref T value)
     {
       if (!InputPropertyValues.TryGetValue(propertyInfo, out var propertyValue))
       {

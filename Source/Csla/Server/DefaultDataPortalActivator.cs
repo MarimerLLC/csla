@@ -6,6 +6,7 @@
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,7 +32,11 @@ namespace Csla.Server
     /// <param name="requestedType">Requested type (class or interface).</param>
     /// <param name="parameters">Param array for the constructor</param>
     /// <returns>Instance of requested type</returns>
-    public virtual object CreateInstance(Type requestedType, params object[] parameters)
+    public virtual object CreateInstance(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type requestedType, params object[] parameters)
     {
       object result;
       var realType = ResolveType(requestedType);
@@ -71,7 +76,14 @@ namespace Csla.Server
     /// requested type (which might be an interface).
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
-    public virtual Type ResolveType(Type requestedType)
+#if NET8_0_OR_GREATER
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    public virtual Type ResolveType(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type requestedType)
     {
       // return requested type by default
       return requestedType;

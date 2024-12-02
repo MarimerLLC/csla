@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
+
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -52,7 +54,11 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
-    public CslaOptions RegisterPropertyInfoFactory<T>() where T : IPropertyInfoFactory
+    public CslaOptions RegisterPropertyInfoFactory<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+#endif
+      T>() where T : IPropertyInfoFactory
     {
       Core.FieldManager.PropertyInfoFactory.FactoryType = typeof(T);
       return this;

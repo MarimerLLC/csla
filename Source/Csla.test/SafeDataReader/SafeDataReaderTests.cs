@@ -8,7 +8,7 @@
 
 using System.Globalization;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #if DEBUG
@@ -192,7 +192,7 @@ namespace Csla.Test.SafeDataReader
     public void ThrowSqlException()
     {
       // TODO: Connection strings were lost, and I don't know how to set them correctly
-      SqlConnection cn = new SqlConnection(CONNECTION_STRING);
+      var cn = new SqlConnection(CONNECTION_STRING);
       cn.Open();
 
       using SqlCommand cm = cn.CreateCommand();

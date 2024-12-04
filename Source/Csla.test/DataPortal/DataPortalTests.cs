@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Test.DataBinding;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;

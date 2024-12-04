@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Web;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration;
 
@@ -38,7 +38,7 @@ public static class WebConfigurationExtensions
     options?.Invoke(webOptions);
 
     // use correct IContextManager
-    config.Services.TryAddSingleton<Csla.Core.IContextManager, ApplicationContextManager>();
+    config.Services.AddSingleton<Csla.Core.IContextManager, ApplicationContextManager>();
 
     return config;
   }

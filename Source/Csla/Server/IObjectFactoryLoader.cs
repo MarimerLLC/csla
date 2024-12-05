@@ -6,6 +6,8 @@
 // <summary>Defines an interface to be implemented by</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -23,6 +25,9 @@ namespace Csla.Server
     /// Name of the factory to create, typically
     /// an assembly qualified type name.
     /// </param>
+#if NET8_0_OR_GREATER
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+#endif
     Type GetFactoryType(string factoryName);
     /// <summary>
     /// Returns an ObjectFactory object.

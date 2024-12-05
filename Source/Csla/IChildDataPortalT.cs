@@ -6,13 +6,19 @@
 // <summary>Interface defining the members of the child data portal type</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla
 {
   /// <summary>
   /// Interface defining the members of the child data portal type.
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public interface IChildDataPortal<T>
+  public interface IChildDataPortal<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T>
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to

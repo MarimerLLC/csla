@@ -6,6 +6,7 @@
 // <summary>Class containing the default implementation for</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Server
@@ -14,6 +15,9 @@ namespace Csla.Server
   /// Class containing the default implementation for
   /// the FactoryLoader delegate used by the data portal host.
   /// </summary>
+#if NET8_0_OR_GREATER
+  [RequiresUnreferencedCode("The factory type with moniker factoryName cannot be statically guessed, and can be trimmed")]
+#endif
   public class ObjectFactoryLoader : IObjectFactoryLoader
   {
     /// <summary>
@@ -36,6 +40,9 @@ namespace Csla.Server
     /// the ObjectFactory attribute
     /// on the business object.
     /// </param>
+#if NET8_0_OR_GREATER
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+#endif
     public Type GetFactoryType(string factoryName)
     {
       return Type.GetType(factoryName);

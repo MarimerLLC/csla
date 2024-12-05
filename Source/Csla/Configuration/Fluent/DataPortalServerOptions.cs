@@ -78,15 +78,19 @@ namespace Csla.Configuration
     /// that should be executed by the server-side data portal.
     /// injection.
     /// </summary>
-    internal List<Type> InterceptorProviders { get; } = [typeof(Server.Interceptors.ServerSide.RevalidatingInterceptor)];
+    internal List<ActivatableType> InterceptorProviders { get; } = [new(typeof(Server.Interceptors.ServerSide.RevalidatingInterceptor))];
 
     /// <summary>
     /// Adds the type of an IInterceptDataPortal that will
     /// be executed by the server-side data portal.
     /// </summary>
-    public DataPortalServerOptions AddInterceptorProvider<T>() where T: IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>() where T: IInterceptDataPortal
     {
-      InterceptorProviders.Add(typeof(T));
+      InterceptorProviders.Add(new(typeof(T)));
       return this;
     }
 
@@ -95,9 +99,13 @@ namespace Csla.Configuration
     /// be executed by the server-side data portal.
     /// </summary>
     /// <param name="index">Index at which new item should be added.</param>
-    public DataPortalServerOptions AddInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>(int index) where T : IInterceptDataPortal
     {
-      InterceptorProviders.Insert(index, typeof(T));
+      InterceptorProviders.Insert(index, new(typeof(T)));
       return this;
     }
 
@@ -191,4 +199,21 @@ namespace Csla.Configuration
     /// </summary>
     public bool DataPortalReturnObjectOnException { get; set; } = false;
   }
+  struct ActivatableType
+  {
+    public ActivatableType(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type type)
+    {
+      this.type = type;
+    }
+
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    public Type type;
+  }
+
 }

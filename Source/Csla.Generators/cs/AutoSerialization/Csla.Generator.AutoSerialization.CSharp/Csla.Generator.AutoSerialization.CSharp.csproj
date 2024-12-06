@@ -16,6 +16,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <BaseOutputPath>..\..\..\..\..\Bin</BaseOutputPath>
+    <OutputPath>..\..\..\..\..\bin\packages\</OutputPath>
 
     <AssemblyName>Csla.Generator.AutoSerialization.CSharp</AssemblyName>
     <RootNamespace>Csla.Generator.AutoSerialization.CSharp</RootNamespace>
@@ -31,7 +32,8 @@
    <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" PrivateAssets="all" />
-  </ItemGroup>
+     <PackageReference Include="Backport.System.Threading.Lock" Version="3.0.3" />
+   </ItemGroup>
 
   <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />

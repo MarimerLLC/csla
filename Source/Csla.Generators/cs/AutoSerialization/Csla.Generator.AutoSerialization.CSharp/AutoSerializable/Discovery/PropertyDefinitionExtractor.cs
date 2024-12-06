@@ -22,7 +22,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// Extract information about a single property from its declaration in the syntax tree
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary data</param>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary data</param>
     /// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedPropertyDefinition ExtractPropertyDefinition(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
@@ -54,7 +54,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// Extract the name of the property for which we are building information
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the property for which we are extracting information</returns>
     private static string GetPropertyName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
@@ -65,7 +65,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// Extract the type name of the property for which we are building information
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
+    /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The type name of the property for which we are extracting information</returns>
     private static string GetPropertyTypeName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {

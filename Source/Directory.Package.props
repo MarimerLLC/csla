@@ -17,7 +17,10 @@
    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
    <NeutralLanguage>en-US</NeutralLanguage>
    <DefaultLanguage>en-US</DefaultLanguage>
-   
+
+   <EmbedUntrackedSources>true</EmbedUntrackedSources>
+   <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
    <GenerateDocumentationFile>True</GenerateDocumentationFile>
    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>

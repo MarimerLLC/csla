@@ -4,15 +4,13 @@
     <CslaVersion>9.0.0-alpha-g27c299cae5</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Csla" Version="$(CslaVersion)" />
-    <PackageVersion Include="Csla.AspNetCore" Version="$(CslaVersion)" />
-    <PackageVersion Include="Csla.Blazor" Version="$(CslaVersion)" />
-    <PackageVersion Include="Csla.Blazor.WebAssembly" Version="$(CslaVersion)" />
-
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.7" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.1" />
-
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.1" />
+    <PackageVersion Include="Csla" Version="9.0.0-R24070301" />
+    <PackageVersion Include="Csla.AspNetCore" Version="9.0.0-R24070301" />
+    <PackageVersion Include="Csla.Blazor" Version="9.0.0-R24070301" />
+    <PackageVersion Include="Csla.Blazor.WebAssembly" Version="9.0.0-R24070301" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0" />
   </ItemGroup>
 </Project>

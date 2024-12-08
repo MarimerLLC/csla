@@ -27,7 +27,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public byte[] ObjectData
     {
-      get { return GetProperty(ObjectDataProperty); }
+      get { return GetProperty(ObjectDataProperty)!; }
       set { LoadProperty(ObjectDataProperty, value ?? throw new ArgumentNullException(nameof(ObjectData))); }
     }
 
@@ -42,7 +42,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] Principal
     {
-      get { return GetProperty(PrincipalProperty); }
+      get { return GetProperty(PrincipalProperty)!; }
       set { LoadProperty(PrincipalProperty, value ?? throw new ArgumentNullException(nameof(Principal))); }
     }
 
@@ -57,7 +57,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] ClientContext
     {
-      get { return GetProperty(ClientContextProperty); }
+      get { return GetProperty(ClientContextProperty)!; }
       set { LoadProperty(ClientContextProperty, value ?? throw new ArgumentNullException(nameof(ClientContext))); }
     }
 
@@ -74,7 +74,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientCulture
     {
-      get { return GetProperty(ClientCultureProperty); }
+      get { return GetProperty(ClientCultureProperty)!; }
       set { LoadProperty(ClientCultureProperty, value ?? throw new ArgumentNullException(nameof(ClientCulture))); }
     }
 
@@ -91,7 +91,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientUICulture
     {
-      get { return GetProperty(ClientUICultureProperty); }
+      get { return GetProperty(ClientUICultureProperty)!; }
       set { LoadProperty(ClientUICultureProperty, value ?? throw new ArgumentNullException(nameof(ClientUICulture))); }
     }
 

@@ -27,7 +27,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string ExceptionTypeName
     {
-      get { return GetProperty(ExceptionTypeNameProperty); }
+      get { return GetProperty(ExceptionTypeNameProperty)!; }
       private set { LoadProperty(ExceptionTypeNameProperty, value); }
     }
 
@@ -41,7 +41,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string Message
     {
-      get { return GetProperty(MessageProperty); }
+      get { return GetProperty(MessageProperty)!; }
       private set { LoadProperty(MessageProperty, value); }
     }
 
@@ -55,7 +55,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string StackTrace
     {
-      get { return GetProperty(StackTraceProperty); }
+      get { return GetProperty(StackTraceProperty)!; }
       private set { LoadProperty(StackTraceProperty, value); }
     }
 
@@ -69,37 +69,23 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string Source
     {
-      get { return GetProperty(SourceProperty); }
+      get { return GetProperty(SourceProperty)!; }
       private set { LoadProperty(SourceProperty, value); }
     }
 
     /// <summary>
-    /// TargetSiteName of the exception object.
+    /// HttpErrorInfo object containing information
+    /// about any inner exception of the original
+    /// exception.
     /// </summary>
-    public static readonly PropertyInfo<string> TargetSiteNameProperty = RegisterProperty<string>(c => c.TargetSiteName);
-
-    /// <summary>
-    /// TargetSiteName of the exception object.
-    /// </summary>
-    public string TargetSiteName
-    {
-      get { return GetProperty(TargetSiteNameProperty); }
-      private set { LoadProperty(TargetSiteNameProperty, value); }
-    }
+    public static readonly PropertyInfo<DataPortalErrorInfo?> InnerErrorProperty = RegisterProperty<DataPortalErrorInfo?>(nameof(InnerError));
 
     /// <summary>
     /// HttpErrorInfo object containing information
     /// about any inner exception of the original
     /// exception.
     /// </summary>
-    public static readonly PropertyInfo<DataPortalErrorInfo> InnerErrorProperty = RegisterProperty<DataPortalErrorInfo>(c => c.InnerError);
-
-    /// <summary>
-    /// HttpErrorInfo object containing information
-    /// about any inner exception of the original
-    /// exception.
-    /// </summary>
-    public DataPortalErrorInfo InnerError
+    public DataPortalErrorInfo? InnerError
     {
       get { return GetProperty(InnerErrorProperty); }
       private set { LoadProperty(InnerErrorProperty, value); }

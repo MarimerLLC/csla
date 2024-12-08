@@ -335,8 +335,7 @@ namespace Csla.DataPortalClient
       
       var criteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
 
-      return CreateRequest<CriteriaRequest>(criteriaData);
-      
+      return CreateRequest<CriteriaRequest>(criteriaData); 
     }
 
     private UpdateRequest GetBaseUpdateCriteriaRequest(object obj)

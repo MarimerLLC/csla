@@ -42,7 +42,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] ObjectData
     {
-      get { return GetProperty(ObjectDataProperty); }
+      get { return GetProperty(ObjectDataProperty)!; }
       set { LoadProperty(ObjectDataProperty, value ?? throw new ArgumentNullException(nameof(ObjectData))); }
     }
 

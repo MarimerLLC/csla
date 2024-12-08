@@ -172,7 +172,7 @@ namespace Csla.Channels.Grpc
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -220,7 +220,7 @@ namespace Csla.Channels.Grpc
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;

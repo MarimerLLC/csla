@@ -1123,7 +1123,7 @@ namespace Csla
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P GetProperty<P>(PropertyInfo<P> propertyInfo)
+    protected P? GetProperty<P>(PropertyInfo<P> propertyInfo)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1291,7 +1291,7 @@ namespace Csla
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    protected P? ReadProperty<P>(PropertyInfo<P> propertyInfo)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));

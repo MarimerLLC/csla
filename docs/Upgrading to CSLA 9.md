@@ -174,7 +174,14 @@ The following APIs changed
 
 ## Nullable Reference Types
 
-CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and CSLA will work correctly.
+CSLA 9 partially supports the use of nullable reference types in your code. This means that you can start using the `#nullable enable` directive in your code and CSLA types will have the necessary annotations.
+The following projects have nullable reference types enabled and annotated
+* `Csla.Channels.Grpc`
+* `Csla.Channels.RabbitMq`
+* `Csla.Data.SqlClient`
+* `Csla.Data.SqlClient.Fx`
+* `Csla.Web.Mvc`
+* `Csla.AspNetCore`
 
 ### API Changes
 

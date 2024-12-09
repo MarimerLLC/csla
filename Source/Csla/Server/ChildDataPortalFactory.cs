@@ -6,6 +6,8 @@
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -29,7 +31,11 @@ namespace Csla.Server
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    public IChildDataPortal<T> GetPortal<T>()
+    public IChildDataPortal<T> GetPortal<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>()
     {
       return (IChildDataPortal<T>)ServiceProvider.GetService(typeof(IChildDataPortal<T>));
     }

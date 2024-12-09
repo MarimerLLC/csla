@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup Condition="False" Label="For local development">
+    <!-- Place any interesing properties here, which can simplify local loop -->
+    <SelfContained>true</SelfContained>
+    <PublishTrimmed>true</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup Condition="False" Label="For local development">
+    <PackageReference Remove="Csla" />
+    <ProjectReference Include="..\..\..\Source\Csla\Csla.csproj" />
+  </ItemGroup>
+</Project>

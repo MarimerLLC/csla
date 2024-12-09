@@ -7,9 +7,16 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
 {
+  /// <summary>
+  /// 
+  /// </summary>
   [Generator]
   public class IncrementalSerializationPartialsGenerator : IIncrementalGenerator
   {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="context"></param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
       // Register a syntax receiver to collect information during the initial parsing phase

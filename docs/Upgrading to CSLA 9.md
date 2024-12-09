@@ -163,7 +163,14 @@ public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);
 
 ## RabbitMq Data Portal Channel
 
-The RabbitMQ data portal channel has been updated to work with dependency injection. You can explore the `RabbitMqExample` project in the `Samples` folder for an example of how to use the RabbitMQ data portal channel.
+The RabbitMQ data portal channel has been updated to work with dependency injection. You can explore the `RabbitMqExample` project in the `Samples` folder for an example of how to use the RabbitMQ data portal channel. 
+
+Furthermore it was updated to v7 which means there are breaking changes due to the changed made in RabbitMq. The biggest change is that now all related methods have to be async.
+The following APIs changed
+* `Csla.Channels.RabbitMq.RabbitMqPortal`
+  * `public void StartListening()` -> `public Task StartListening()`
+* `Csla.Channels.RabbitMq.RabbitMqProxy`
+  * `protected virtual void InitializeRabbitMQ()` -> `protected virtual Task InitializeRabbitMQ()`
 
 ## Nullable Reference Types
 

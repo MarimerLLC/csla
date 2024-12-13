@@ -1,7 +1,9 @@
 ﻿@page "/editpersonform"
 @page "/editpersonform/{id}"
+
 @* @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false)) *@
 @rendermode InteractiveAuto
+
 @inject Csla.Blazor.State.StateManager StateManager
 @inject Csla.IDataPortal<PersonEdit> personEditPortal
 @inject Csla.Blazor.ViewModel<PersonEdit> vm

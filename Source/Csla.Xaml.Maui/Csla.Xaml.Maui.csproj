@@ -23,19 +23,18 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net9&quot;))">
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.21" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.21" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.12" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net8&quot;))">
-    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.21" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.21" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.12" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
   </ItemGroup>
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>CSLA .NET for MAUI</Title>
     <PackageTags>CSLA;Business;MAUI</PackageTags>
     <PackageId>Csla.Maui</PackageId>

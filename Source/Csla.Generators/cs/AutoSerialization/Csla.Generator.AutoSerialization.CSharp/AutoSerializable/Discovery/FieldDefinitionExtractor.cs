@@ -55,7 +55,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// Extract the name of the field for which we are building information
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
+    /// <param name="fieldDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the field for which we are extracting information</returns>
     private static string GetFieldName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
     {
@@ -66,7 +66,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// Extract the type name of the field for which we are building information
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
+    /// <param name="fieldDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The type name of the field for which we are extracting information</returns>
     private static string GetFieldTypeName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
     {

@@ -15,11 +15,25 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the max size of the PrincipalCache cache.
     /// </summary>
-    /// <param name="size">Max cache size</param>
-    public SecurityOptions PrincipalCacheMaxCacheSize(int size)
-    {
-      Security.PrincipalCache.MaxCacheSize = size;
-      return this;
-    }
+    public int PrincipalCacheMaxCacheSize { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether we 
+    /// are to flow User Principal to the server
+    /// </summary>
+    /// <remarks>
+    /// This should generally be left at the default of false. Values on 
+    /// the client can be manipulated, and therefore allowing the principal 
+    /// to flow from client to server could result in an exploitable security 
+    /// weakness, including impersonation or elevation of privileges.
+    /// </remarks>
+    public bool FlowSecurityPrincipalFromClient { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets the authentication type being used by the
+    /// CSLA .NET framework.
+    /// </summary>
+    /// <value></value>
+    public string AuthenticationType { get; set; } = "Csla";
   }
 }

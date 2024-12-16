@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Csla.Configuration;
 
 namespace Csla.Test.ObjectFactory
 {
@@ -142,9 +143,9 @@ namespace Csla.Test.ObjectFactory
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {
-
+      var cslaOptions = ApplicationContext.GetRequiredService<CslaOptions>();
       obj.IsolationLevel = System.Transactions.Transaction.Current.IsolationLevel.ToString();
-      obj.TransactionTimeout = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+      obj.TransactionTimeout = cslaOptions.DataOptions.DefaultTransactionTimeoutInSeconds;
       obj.TransactionalType = _transactionalType;
       obj.Data = "Update";
       obj.MarkAsOld();
@@ -243,9 +244,9 @@ namespace Csla.Test.ObjectFactory
     [Transactional(TransactionalTypes.TransactionScope)]
     public object Update(Root obj)
     {
-
+      var cslaOptions = ApplicationContext.GetRequiredService<CslaOptions>();
       obj.IsolationLevel = System.Transactions.Transaction.Current.IsolationLevel.ToString();
-      obj.TransactionTimeout = ApplicationContext.DefaultTransactionTimeoutInSeconds;
+      obj.TransactionTimeout = cslaOptions.DataOptions.DefaultTransactionTimeoutInSeconds;
       obj.TransactionalType = _transactionalType;
       obj.Data = "Update";
       obj.MarkAsOld();

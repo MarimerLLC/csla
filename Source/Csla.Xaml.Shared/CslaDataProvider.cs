@@ -33,7 +33,7 @@ namespace Csla.Xaml
     {
       _commandManager = new CslaDataProviderCommandManager(this);
       _factoryParameters = new ObservableCollection<object>();
-      _factoryParameters.CollectionChanged += 
+      _factoryParameters.CollectionChanged +=
         new System.Collections.Specialized.NotifyCollectionChangedEventHandler(_factoryParameters_CollectionChanged);
     }
 
@@ -61,7 +61,7 @@ namespace Csla.Xaml
       BeginQuery();
     }
 
-#region Properties
+    #region Properties
 
     private Type _objectType = null;
     private bool _manageLifetime;
@@ -90,12 +90,12 @@ namespace Csla.Xaml
     /// </summary>
     public Type ObjectType
     {
-      get 
-      { 
-        return _objectType; 
+      get
+      {
+        return _objectType;
       }
-      set 
-      { 
+      set
+      {
         _objectType = value;
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectType"));
       }
@@ -196,7 +196,7 @@ namespace Csla.Xaml
     public object ObjectInstance
     {
       get { return Data; }
-      set 
+      set
       {
         OnQueryFinished(value, null, null, null);
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
@@ -227,9 +227,9 @@ namespace Csla.Xaml
       ObjectInstance = tmp;
     }
 
-#endregion
+    #endregion
 
-#region Query
+    #region Query
 
     private bool _firstRun = true;
     private bool _init = false;
@@ -415,7 +415,7 @@ namespace Csla.Xaml
         // get factory method info
         BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
         System.Reflection.MethodInfo factory = request.ObjectType.GetMethod(
-          request.FactoryMethod, flags, null, 
+          request.FactoryMethod, flags, null,
           MethodCaller.GetParameterTypes(parameters), null);
 
         if (factory == null)
@@ -487,7 +487,7 @@ namespace Csla.Xaml
     }
 
 
-#region QueryRequest Class
+    #region QueryRequest Class
 
     private class QueryRequest
     {
@@ -499,7 +499,7 @@ namespace Csla.Xaml
         set { _objectType = value; }
       }
 
-      public Func<object[], Task<object>> Factory {  get; set; }
+      public Func<object[], Task<object>> Factory { get; set; }
 
       private string _factoryMethod;
 
@@ -514,8 +514,11 @@ namespace Csla.Xaml
       public ObservableCollection<object> FactoryParameters
       {
         get { return _factoryParameters; }
-        set { _factoryParameters = 
-          new ObservableCollection<object>(new List<object>(value)); }
+        set
+        {
+          _factoryParameters =
+          new ObservableCollection<object>(new List<object>(value));
+        }
       }
       private bool _manageLifetime;
 
@@ -524,14 +527,14 @@ namespace Csla.Xaml
         get { return _manageLifetime; }
         set { _manageLifetime = value; }
       }
-	
+
     }
 
-#endregion
+    #endregion
 
-#endregion
+    #endregion
 
-#region Cancel/Update/New/Remove  
+    #region Cancel/Update/New/Remove  
 
     /// <summary>
     /// Cancels changes to the business object, returning
@@ -577,8 +580,7 @@ namespace Csla.Xaml
     {
       // only do something if the object implements
       // ISavable
-      Csla.Core.ISavable savable = this.Data as Csla.Core.ISavable;
-      if (savable != null)
+      if (this.Data is Csla.Core.ISavable savable)
       {
         object result = savable;
         Exception exceptionResult = null;
@@ -587,25 +589,22 @@ namespace Csla.Xaml
           IsBusy = true;
 
           // clone the object if possible
-          ICloneable clonable = savable as ICloneable;
-          if (clonable != null)
-            savable = (Csla.Core.ISavable)clonable.Clone();
+          if (savable is ICloneable cloneable)
+            savable = (Csla.Core.ISavable)cloneable.Clone();
 
           // apply edits in memory
-          Csla.Core.ISupportUndo undo = savable as Csla.Core.ISupportUndo;
-          if (undo != null && _manageLifetime)
+          if (savable is Csla.Core.ISupportUndo undo && _manageLifetime)
             undo.ApplyEdit();
 
 
           // save the clone
           result = savable.Save();
 
-          if (!ReferenceEquals(savable, this.Data) && !Csla.ApplicationContext.AutoCloneOnUpdate)
+          if (!ReferenceEquals(savable, this.Data))
           {
             // raise Saved event from original object
-            Core.ISavable original = this.Data as Core.ISavable;
-            if (original != null)
-              original.SaveComplete(result);
+            var original = this.Data as Core.ISavable;
+            original?.SaveComplete(result);
           }
 
           // start editing the resulting object
@@ -667,7 +666,7 @@ namespace Csla.Xaml
         list.Remove(item);
     }
 
-#endregion
+    #endregion
 
   }
 }

@@ -9,6 +9,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Csla.Configuration;
 using Csla.Properties;
 
 namespace Csla
@@ -27,10 +28,11 @@ namespace Csla
     /// </summary>
     /// <param name="applicationContext">ApplicationContext</param>
     /// <param name="proxy"></param>
-    public DataPortal(ApplicationContext applicationContext, DataPortalClient.IDataPortalProxy proxy)
+    public DataPortal(ApplicationContext applicationContext, DataPortalClient.IDataPortalProxy proxy, DataPortalOptions dataPortalOptions)
     {
       ApplicationContext = applicationContext;
       DataPortalProxy = proxy;
+      DataPortalClientOptions = dataPortalOptions.DataPortalClientOptions;
     }
 
     /// <summary>
@@ -38,6 +40,7 @@ namespace Csla
     /// </summary>
     private ApplicationContext ApplicationContext { get; set; }
     private DataPortalClient.IDataPortalProxy DataPortalProxy { get; set; }
+    private DataPortalClientOptions DataPortalClientOptions { get; set; }
 
     private class DataPortalAsyncRequest
     {
@@ -461,7 +464,7 @@ namespace Csla
 
         try
         {
-          if (!proxy.IsServerRemote && ApplicationContext.AutoCloneOnUpdate)
+          if (!proxy.IsServerRemote && DataPortalClientOptions.AutoCloneOnUpdate)
           {
             // when using local data portal, automatically
             // clone original object before saving

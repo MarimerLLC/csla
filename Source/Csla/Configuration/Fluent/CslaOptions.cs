@@ -5,9 +5,9 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
+using System;
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace Csla.Configuration
 {
@@ -17,32 +17,25 @@ namespace Csla.Configuration
   public class CslaOptions
   {
     /// <summary>
-    /// Gets the current service collection.
+    /// Creates an instance of the type
+    /// </summary>
+    /// <param name="services">Services collection</param>
+    public CslaOptions(IServiceCollection services)
+    {
+      Services = services;
+      DataPortalOptions = new DataPortalOptions(this);
+    }
+
+    /// <summary>
+    /// Gets a reference to the current services collection.
     /// </summary>
     public IServiceCollection Services { get; private set; }
 
     /// <summary>
-    /// Creates an instance of the type.
+    /// Gets or sets the type for the IContextManager to
+    /// be used by ApplicationContext.
     /// </summary>
-    /// <param name="services">Service collection</param>
-    public CslaOptions(IServiceCollection services)
-    {
-      Services = services;
-      DataPortalClientOptions = new DataPortalClientOptions(this);
-    }
-
-    /// <summary>
-    /// Registers a specific ApplicationContext manager service,
-    /// overriding the default service registration.
-    /// </summary>
-    /// <typeparam name="T">IContextManager implementation type.</typeparam>
-    /// <returns></returns>
-    public CslaOptions RegisterContextManager<T>() 
-      where T : IContextManager
-    {
-      Services.AddScoped(typeof(IContextManager), typeof(T));
-      return this;
-    }
+    public Type ContextManagerType { get; set; }
 
     /// <summary>
     /// Sets a value indicating whether CSLA
@@ -57,39 +50,10 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Sets a value specifying how CSLA .NET should
-    /// raise PropertyChanged events.
+    /// Gets or sets the default timeout in seconds
+    /// for the WaitForIdle method.
     /// </summary>
-    /// <param name="mode">Property changed mode</param>
-    public CslaOptions PropertyChangedMode(ApplicationContext.PropertyChangedModes mode)
-    {
-      ApplicationContext.PropertyChangedMode = mode;
-      return this;
-    }
-
-    /// <summary>
-    /// Sets a value representing the application version
-    /// for use in server-side data portal routing.
-    /// </summary>
-    /// <param name="version">
-    /// Application version used to create data portal
-    /// routing tag (can not contain '-').
-    /// </param>
-    /// <remarks>
-    /// If this value is set then you must use the
-    /// .NET Core server-side Http data portal endpoint
-    /// as a router so the request can be routed to
-    /// another app server that is running the correct
-    /// version of the application's assemblies.
-    /// </remarks>
-    public CslaOptions VersionRoutingTag(string version)
-    {
-      if (!string.IsNullOrWhiteSpace(version))
-        if (version.Contains("-") || version.Contains("/"))
-          throw new ArgumentException("VersionRoutingTag");
-      ApplicationContext.VersionRoutingTag = version;
-      return this;
-    }
+    public int DefaultWaitForIdleTimeoutInSeconds { get; set; } = 90;
 
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
@@ -103,22 +67,26 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the SecurityOptions instance.
     /// </summary>
-    internal SecurityOptions SecurityOptions { get; set; } = new SecurityOptions();
+    internal SecurityOptions SecurityOptions { get; private set; } = new SecurityOptions();
     /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
-    internal SerializationOptions SerializationOptions { get; set; } = new SerializationOptions();
+    internal SerializationOptions SerializationOptions { get; private set; } = new SerializationOptions();
     /// <summary>
     /// Gets the DataPortalClientOptions instance.
     /// </summary>
-    internal DataPortalClientOptions DataPortalClientOptions { get; private set; }
-    /// <summary>
-    /// Gets the DataPortalServerOptions instance.
-    /// </summary>
-    internal DataPortalServerOptions DataPortalServerOptions { get; private set; } = new DataPortalServerOptions();
+    internal DataPortalOptions DataPortalOptions { get; private set; }
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>
-    internal DataOptions DataOptions { get; set; } = new DataOptions();
+    public DataOptions DataOptions { get; private set; } = new DataOptions();
+    /// <summary>
+    /// Gets the DataOptions instance.
+    /// </summary>
+    public BindingOptions BindingOptions { get; private set; } = new BindingOptions();
+    /// <summary>
+    /// Gets the CoreOptions instance.
+    /// </summary>
+    internal CoreOptions CoreOptions { get; private set; } = new CoreOptions();
   }
 }

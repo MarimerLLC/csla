@@ -203,11 +203,12 @@ namespace Csla.Test.ObjectFactory
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(
         options => options
-        .Data(
-          cfg => cfg
-          .DefaultTransactionIsolationLevel(TransactionIsolationLevel.RepeatableRead)
-          .DefaultTransactionTimeoutInSeconds(45)
-        )
+          .Data(cfg =>
+            {
+              cfg.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+              cfg.DefaultTransactionTimeoutInSeconds = 45;
+            }
+          )
         .DataPortal(
           dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory4>>())
           )
@@ -234,11 +235,11 @@ namespace Csla.Test.ObjectFactory
     {
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(
         options => options
-        .Data(
-          cfg => cfg
-          .DefaultTransactionIsolationLevel(TransactionIsolationLevel.RepeatableRead)
-          .DefaultTransactionTimeoutInSeconds(45)
-        )
+          .Data(cfg =>
+          {
+            cfg.DefaultTransactionIsolationLevel = TransactionIsolationLevel.RepeatableRead;
+            cfg.DefaultTransactionTimeoutInSeconds = 45;
+          })
         .DataPortal(
           dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactory5>>()))
         );

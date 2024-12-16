@@ -25,16 +25,18 @@ namespace Csla.Server
     /// <param name="applicationContext"></param>
     /// <param name="factoryLoader"></param>
     /// <param name="inspector"></param>
-    public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector)
+    public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector, DataPortalOptions dataPortalOptions)
     {
       ApplicationContext = applicationContext;
       FactoryLoader = factoryLoader;
       ExceptionInspector = inspector;
+      DataPortalOptions = dataPortalOptions;
     }
 
     private ApplicationContext ApplicationContext { get; set; }
     private IObjectFactoryLoader FactoryLoader { get; set; }
     private IDataPortalExceptionInspector ExceptionInspector { get; set; }
+    private DataPortalOptions DataPortalOptions { get; set; }
 
     #region Method invokes
 
@@ -124,7 +126,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
             ApplicationContext, context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
             new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
-            null);
+            null, DataPortalOptions);
       }
     }
 
@@ -158,7 +160,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
-          null);
+          null, DataPortalOptions);
       }
     }
 
@@ -178,7 +180,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.ExecuteMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.ExecuteMethodName, ex),
-          null);
+          null, DataPortalOptions);
       }
     }
 
@@ -209,7 +211,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
           ApplicationContext, methodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(obj.GetType(), obj, null, methodName, ex),
-          obj);
+          obj, DataPortalOptions);
 
       }
     }
@@ -239,7 +241,7 @@ namespace Csla.Server
         throw DataPortal.NewDataPortalException(
           ApplicationContext, context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
           new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
-          null);
+          null, DataPortalOptions);
       }
     }
 

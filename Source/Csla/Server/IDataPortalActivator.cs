@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
+
 using System;
 
 namespace Csla.Server
@@ -19,9 +20,9 @@ namespace Csla.Server
     /// Gets a new instance of the requested type.
     /// </summary>
     /// <param name="requestedType">Requested business type (class or interface).</param>
+    /// <param name="parameters">Param array for the constructor</param>
     /// <returns>Business object instance.</returns>
-    [Obsolete]
-    object CreateInstance(Type requestedType);
+    object CreateInstance(Type requestedType, params object[] parameters);
     /// <summary>
     /// Initializes an existing business object instance.
     /// </summary>
@@ -38,7 +39,6 @@ namespace Csla.Server
     /// requested type (which might be an interface).
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
-    [Obsolete]
     Type ResolveType(Type requestedType);
   }
 }

@@ -6,6 +6,7 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 using System.Threading.Tasks;
+using Csla.Configuration;
 using Csla.DataPortalClient;
 using Google.Protobuf;
 using Grpc.Net.Client;
@@ -25,20 +26,22 @@ namespace Csla.Channels.Grpc
     /// <param name="applicationContext"></param>
     /// <param name="channel">GrpcChannel instance</param>
     /// <param name="options">Proxy options</param>
-    public GrpcProxy(ApplicationContext applicationContext, GrpcChannel channel, GrpcProxyOptions options)
+    /// <param name="dataPortalOptions">Data portal options</param>
+    public GrpcProxy(ApplicationContext applicationContext, GrpcChannel channel, GrpcProxyOptions options, DataPortalOptions dataPortalOptions)
       : base(applicationContext)
     {
       _channel = channel;
       DataPortalUrl = options.DataPortalUrl;
+      VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
     private GrpcChannel _channel;
     private static GrpcChannel _defaultChannel;
+    private string VersionRoutingTag { get; set; }
 
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
     /// </summary>
-    /// <returns></returns>
     protected virtual GrpcChannel GetChannel()
     {
       if (_channel == null)
@@ -63,7 +66,6 @@ namespace Csla.Channels.Grpc
     /// <summary>
     /// Get gRPC client object used by data portal.
     /// </summary>
-    /// <returns></returns>
     protected virtual GrpcService.GrpcServiceClient GetGrpcClient()
     {
       return _grpcClient ??= new GrpcService.GrpcServiceClient(GetChannel());
@@ -84,7 +86,7 @@ namespace Csla.Channels.Grpc
       var request = new RequestMessage
       {
         Body = outbound,
-        Operation = CreateOperationTag(operation, ApplicationContext.VersionRoutingTag, routingToken)
+        Operation = CreateOperationTag(operation, VersionRoutingTag, routingToken)
       };
       ResponseMessage response;
       if (isSync)

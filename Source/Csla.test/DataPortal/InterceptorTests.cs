@@ -263,10 +263,10 @@ namespace Csla.Test.DataPortal
 
   public class TestActivator : Csla.Server.IDataPortalActivator
   {
-    public object CreateInstance(Type requestedType)
+    public object CreateInstance(Type requestedType, params object[] parameters)
     {
       TestResults.Add("Activate1+" + requestedType.Name, "CreateInstance");
-      return Activator.CreateInstance(requestedType);
+      return Activator.CreateInstance(requestedType, parameters);
     }
 
     public void InitializeInstance(object obj)

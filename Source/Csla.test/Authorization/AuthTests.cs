@@ -577,9 +577,9 @@ namespace Csla.Test.Authorization
 
   public class PerTypeAuthDPActivator : Server.IDataPortalActivator
   {
-    public object CreateInstance(Type requestedType)
+    public object CreateInstance(Type requestedType, params object[] parameters)
     {
-      return Activator.CreateInstance(ResolveType(requestedType));
+      return Activator.CreateInstance(ResolveType(requestedType), parameters);
     }
 
     public void FinalizeInstance(object obj)

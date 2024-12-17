@@ -721,7 +721,7 @@ namespace Csla.Windows
                   }
 
                   break;
-                //case CslaFormAction.Validate
+                  //case CslaFormAction.Validate
 
               } // switch (props.ActionType)
 
@@ -823,12 +823,7 @@ namespace Csla.Windows
           if (!savingArgs.Cancel)
           {
             _bindingSourceTree.Apply();
-            ISavable objectToSave;
-
-            if (Csla.ApplicationContext.AutoCloneOnUpdate == false)
-              objectToSave = ((ICloneable)savableObject).Clone() as ISavable;// if not AutoClone, clone manually
-            else
-              objectToSave = savableObject;
+            ISavable objectToSave = savableObject;
 
             if (objectToSave != null)
             {
@@ -937,7 +932,7 @@ namespace Csla.Windows
               ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);
             if (pair.Value.ActionType == CslaFormAction.Save)
               ChangeEnabled(ctl, (trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted)
-                && trackableObject.IsValid);
+                                 && trackableObject.IsValid);
           }
         }
       }

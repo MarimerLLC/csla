@@ -8,6 +8,7 @@
 using System;
 using System.Security.Principal;
 using System.Collections.Specialized;
+using Csla.Configuration;
 using Csla.Core;
 
 namespace Csla.Server
@@ -138,7 +139,8 @@ namespace Csla.Server
 
     private IPrincipal GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
     {
-      if (isRemotePortal && !ApplicationContext.FlowSecurityPrincipalFromClient)
+      var securityOptions = applicationContext.GetRequiredService<SecurityOptions>();
+      if (isRemotePortal && !securityOptions.FlowSecurityPrincipalFromClient)
       {
         // Platform-supplied security (including Windows and ASP.NET)
         return null;

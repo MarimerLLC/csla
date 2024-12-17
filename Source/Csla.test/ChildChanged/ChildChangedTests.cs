@@ -8,8 +8,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Configuration;
 using UnitDriven;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
+
 
 #if NUNIT
 using NUnit.Framework;
@@ -33,20 +36,10 @@ namespace Csla.Test.ChildChanged
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
+      var services = new ServiceCollection();
+
+      services.AddCsla(o => o.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows);
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
-    }
-
-    [TestInitialize]
-    public void Initialize()
-    {
-      _mode = Csla.ApplicationContext.PropertyChangedMode;
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
-    }
-
-    [TestCleanup]
-    public void Cleanup()
-    {
-      Csla.ApplicationContext.PropertyChangedMode = _mode;
     }
 
     [TestMethod]

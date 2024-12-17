@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Csla.Configuration;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
+
 
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,7 +28,10 @@ namespace Csla.Test.BasicModern
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      var services = new ServiceCollection();
+      services.AddCsla(o => o.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml);
+      var serviceProvider = services.BuildServiceProvider();
+      _testDIContext = new TestDIContext(serviceProvider);
     }
 
     [TestMethod]
@@ -151,7 +157,6 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsId()
     {
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
@@ -174,7 +179,6 @@ namespace Csla.Test.BasicModern
     [TestMethod]
     public void RootChangedMetastateEventsName()
     {
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>
@@ -221,7 +225,6 @@ namespace Csla.Test.BasicModern
     {
       IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
 
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
       var graph = NewRoot();
       var changed = new List<string>();
       graph.PropertyChanged += (o, e) =>

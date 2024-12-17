@@ -30,8 +30,9 @@ namespace Csla.Configuration
         sp =>
         {
           var applicationContext = sp.GetRequiredService<ApplicationContext>();
+          var dataPortalOptions = sp.GetRequiredService<DataPortalOptions>();
           var client = sp.GetRequiredService<HttpClient>();
-          return new Csla.Channels.Http.HttpProxy(applicationContext, client, proxyOptions);
+          return new Csla.Channels.Http.HttpProxy(applicationContext, client, proxyOptions, dataPortalOptions);
         });
       return config;
     }

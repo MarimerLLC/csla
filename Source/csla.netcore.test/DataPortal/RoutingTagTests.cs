@@ -115,9 +115,10 @@ namespace csla.netcore.test.DataPortal
       System.Net.Http.HttpClient httpClient;
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var dataPortalOptions = applicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
       httpClient = new System.Net.Http.HttpClient();
       proxyOptions = new Csla.Channels.Http.HttpProxyOptions();
-      proxy = new Csla.Channels.Http.HttpProxy(applicationContext, httpClient, proxyOptions);
+      proxy = new Csla.Channels.Http.HttpProxy(applicationContext, httpClient, proxyOptions, dataPortalOptions);
 
       return proxy;
     }

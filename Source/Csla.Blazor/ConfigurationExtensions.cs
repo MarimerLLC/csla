@@ -43,7 +43,7 @@ namespace Csla.Configuration
       options?.Invoke(blazorOptions);
 
       // minimize PropertyChanged events
-      config.PropertyChangedMode(ApplicationContext.PropertyChangedModes.Windows);
+      config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
 
 #if NET5_0_OR_GREATER
       var managerType = Type.GetType("Csla.AspNetCore.Blazor.ApplicationContextManagerBlazor,Csla.AspNetCore");

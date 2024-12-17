@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
+
 using System;
 using System.Transactions;
 
@@ -19,33 +20,56 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the default transaction isolation level.
     /// </summary>
-    /// <param name="level">The default transaction isolation level</param>
-    public DataOptions DefaultTransactionIsolationLevel(TransactionIsolationLevel level)
+    public TransactionIsolationLevel DefaultTransactionIsolationLevel
     {
-      ApplicationContext.DefaultTransactionIsolationLevel = level;
-      return this;
+      get => defaultTransactionIsolationLevel;
+      set => defaultTransactionIsolationLevel = value;
     }
 
     /// <summary>
     /// Sets the default transaction timeout in seconds.
     /// </summary>
-    /// <param name="seconds">The default transaction timeout in seconds</param>
-    public DataOptions DefaultTransactionTimeoutInSeconds(int seconds)
+    public int DefaultTransactionTimeoutInSeconds
     {
-      ApplicationContext.DefaultTransactionTimeoutInSeconds = seconds;
-      return this;
+      get => defaultTransactionTimeoutInSeconds;
+      set => defaultTransactionTimeoutInSeconds = value;
     }
 
     /// <summary>
     /// Sets the default transaction async flow option
     /// used to create new TransactionScope objects.
     /// </summary>
-    /// <param name="asyncFlowOption">Async flow option</param>
-    public DataOptions DefaultTransactionAsyncFlowOption(TransactionScopeAsyncFlowOption asyncFlowOption)
+    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
     {
-      ApplicationContext.DefaultTransactionAsyncFlowOption = asyncFlowOption;
-      return this;
+      get => defaultTransactionScopeAsyncFlowOption;
+      set => defaultTransactionScopeAsyncFlowOption = value;
     }
+
+    private static TransactionIsolationLevel defaultTransactionIsolationLevel = TransactionIsolationLevel.Unspecified;
+    private static int defaultTransactionTimeoutInSeconds = 30;
+    private static TransactionScopeAsyncFlowOption defaultTransactionScopeAsyncFlowOption = TransactionScopeAsyncFlowOption.Suppress;
+
+    /// <summary>
+    /// Gets the default transaction isolation level.
+    /// </summary>
+    /// <value>
+    /// The default transaction isolation level.
+    /// </value>
+    internal static TransactionIsolationLevel GetDefaultTransactionIsolationLevel() => defaultTransactionIsolationLevel;
+
+    /// <summary>
+    /// Gets default transaction timeout in seconds.
+    /// </summary>
+    /// <value>
+    /// The default transaction timeout in seconds.
+    /// </value>
+    internal static int GetDefaultTransactionTimeoutInSeconds() => defaultTransactionTimeoutInSeconds;
+
+    /// <summary>
+    /// Gets the default transaction scope async flow option.
+    /// </summary>
+    /// <returns>The default transaction scope async flow option.</returns>
+    internal static TransactionScopeAsyncFlowOption GetDefaultTransactionScopeAsyncFlowOption() => defaultTransactionScopeAsyncFlowOption;
 
 #if !NETSTANDARD2_0 && !NET6_0_OR_GREATER
     /// <summary>
@@ -53,8 +77,7 @@ namespace Csla.Configuration
     /// use by DbProviderFactories.GetFactory().
     /// </summary>
     /// <param name="dbProvider"></param>
-    /// <returns></returns>
-    [Obsolete("Use dependency injection", false)]
+    [Obsolete("Use dependency injection", true)]
     public DataOptions DbProvider(string dbProvider)
     {
       Data.ConnectionManager.DbProvider = dbProvider;

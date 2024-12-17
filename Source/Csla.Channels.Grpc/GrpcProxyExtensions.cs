@@ -31,8 +31,9 @@ namespace Csla.Configuration
         sp =>
         {
           var applicationContext = sp.GetRequiredService<ApplicationContext>();
+          var dataPortalOptions = sp.GetRequiredService<DataPortalOptions>();
           var channel = GrpcChannel.ForAddress(proxyOptions.DataPortalUrl);
-          return new Csla.Channels.Grpc.GrpcProxy(applicationContext, channel, proxyOptions);
+          return new Csla.Channels.Grpc.GrpcProxy(applicationContext, channel, proxyOptions, dataPortalOptions);
         });
       return config;
     }

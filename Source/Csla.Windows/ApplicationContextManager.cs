@@ -5,35 +5,29 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Security.Principal;
 using System.Threading;
-using Csla.Core;
+using Csla.Configuration;
 
 namespace Csla.Windows
 {
   /// <summary>
   /// ApplicationContextManager for Windows Forms applications
   /// </summary>
-  public class ApplicationContextManager : Csla.Core.ApplicationContextManager
+  /// <param name="securityOptions"></param>
+  public class ApplicationContextManager(SecurityOptions securityOptions) : Csla.Core.ApplicationContextManager
   {
-    /// <summary>
-    /// Creates an instance of the type.
-    /// </summary>
-    public ApplicationContextManager()
-    { }
-
     private static IPrincipal _principal;
+    private SecurityOptions SecurityOptions { get; set; } = securityOptions;
 
     /// <summary>
     /// Gets the current principal.
     /// </summary>
-    /// <returns></returns>
     public override IPrincipal GetUser()
     {
       if (_principal == null)
       {
-        if (ApplicationContext.FlowSecurityPrincipalFromClient)
+        if (SecurityOptions.FlowSecurityPrincipalFromClient)
           SetUser(new System.Security.Claims.ClaimsPrincipal());
         else
 #pragma warning disable CA1416 // Validate platform compatibility

@@ -190,7 +190,8 @@ namespace Csla
         }
         else
         {
-          if (ApplicationContext.AutoCloneOnUpdate)
+          var dataPortalOptions = ApplicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
+          if (dataPortalOptions.DataPortalClientOptions.AutoCloneOnUpdate)
             MarkBusy();
           try
           {
@@ -198,7 +199,7 @@ namespace Csla
           }
           finally
           {
-            if (ApplicationContext.AutoCloneOnUpdate)
+            if (dataPortalOptions.DataPortalClientOptions.AutoCloneOnUpdate)
             {
               if (result != null)
                 result.MarkIdle();

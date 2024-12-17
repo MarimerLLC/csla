@@ -5,39 +5,85 @@
 // </copyright>
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
+
 using System;
+using Csla.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Server
 {
-  internal class DefaultDataPortalActivator : IDataPortalActivator
+  /// <summary>
+  /// Default data portal activator. Can also be used as a base class.
+  /// </summary>
+  /// <remarks>
+  /// Creates an instance of the type.
+  /// </remarks>
+  /// <param name="serviceProvider"></param>
+  public class DefaultDataPortalActivator : IDataPortalActivator
   {
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    public DefaultDataPortalActivator(ApplicationContext applicationContext)
+    /// <param name="serviceProvider"></param>
+    public DefaultDataPortalActivator(IServiceProvider serviceProvider)
     {
-      ApplicationContext = applicationContext;
+      ServiceProvider = serviceProvider;
     }
 
-    private ApplicationContext ApplicationContext { get; set; }
+    /// <summary>
+    /// Gets a reference to the current DI service provider.
+    /// </summary>
+    protected IServiceProvider ServiceProvider { get; } 
 
-    public object CreateInstance(Type requestedType)
+    /// <summary>
+    /// Gets a new instance of the requested type.
+    /// </summary>
+    /// <param name="requestedType">Requested type (class or interface).</param>
+    /// <param name="parameters">Param array for the constructor</param>
+    /// <returns>Instance of requested type</returns>
+    public virtual object CreateInstance(Type requestedType, params object[] parameters)
     {
-      return ApplicationContext.CreateInstanceDI(requestedType);
+      object result;
+      var realType = ResolveType(requestedType);
+      if (ServiceProvider != null)
+        result = ActivatorUtilities.CreateInstance(ServiceProvider, realType, parameters);
+      else
+        result = Activator.CreateInstance(realType, parameters);
+      if (result is IUseApplicationContext tmp)
+      {
+        tmp.ApplicationContext = ServiceProvider.GetRequiredService<ApplicationContext>();
+      }
+
+      InitializeInstance(result);
+
+      return result;
     }
 
-    public void InitializeInstance(object obj)
+    /// <summary>
+    /// Initializes an object instance.
+    /// </summary>
+    /// <param name="obj">Reference to the business object.</param>
+    public virtual void InitializeInstance(object obj)
     {
       // do no work by default
     }
 
-    public void FinalizeInstance(object obj)
+    /// <summary>
+    /// Finalizes an object instance. Called
+    /// after a data portal operation is complete.
+    /// </summary>
+    /// <param name="obj">Reference to the business object.</param>
+    public virtual void FinalizeInstance(object obj)
     {
       // do no work by default
     }
 
-    public Type ResolveType(Type requestedType)
+    /// <summary>
+    /// Gets the actual business domain class type based on the
+    /// requested type (which might be an interface).
+    /// </summary>
+    /// <param name="requestedType">Type requested from the data portal.</param>
+    public virtual Type ResolveType(Type requestedType)
     {
       // return requested type by default
       return requestedType;

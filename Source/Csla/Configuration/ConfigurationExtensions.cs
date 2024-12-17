@@ -6,8 +6,9 @@
 // </copyright>
 // <summary>Implement extension methods for base .NET configuration</summary>
 //-----------------------------------------------------------------------
-using System;
 using System.Linq;
+using System;
+using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,45 +42,54 @@ namespace Csla.Configuration
       options?.Invoke(cslaOptions);
 
       // capture options object
-      services.AddScoped((p) => cslaOptions);
+      services.AddScoped(_ => cslaOptions);
+      services.AddScoped(_ => cslaOptions.DataPortalOptions);
+      services.AddScoped(_ => cslaOptions.SecurityOptions);
 
       // ApplicationContext defaults
       services.AddScoped<ApplicationContext>();
-      RegisterContextManager(services);
+      RegisterContextManager(services, cslaOptions.ContextManagerType);
+      if (cslaOptions.ContextManagerType != null)
+        services.AddScoped(typeof(Csla.Core.IContextManager), cslaOptions.ContextManagerType);
 
       // Runtime Info defaults
       services.TryAddScoped(typeof(IRuntimeInfo), typeof(RuntimeInfo));
 
-      cslaOptions.AddRequiredDataPortalServices();
+      cslaOptions.AddRequiredDataPortalServices(services);
 
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Where(i => i.ServiceType.Equals(typeof(IDataPortalProxy))).Any();
       if (!proxyInit)
       {
-        cslaOptions.DataPortal((options) => options.UseLocalProxy());
+        cslaOptions.DataPortal((options) => options.DataPortalClientOptions.UseLocalProxy());
       }
 
       return services;
     }
 
-    private static void RegisterContextManager(IServiceCollection services)
+    private static void RegisterContextManager(IServiceCollection services, Type contextManagerType)
     {
       services.AddScoped<Core.ApplicationContextAccessor>();
       services.TryAddScoped(typeof(Core.IContextManagerLocal), typeof(Core.ApplicationContextManagerAsyncLocal));
 
-      var contextManagerType = typeof(Core.IContextManager);
-
-      var managerInit = services.Where(i => i.ServiceType.Equals(contextManagerType)).Any();
+      var managerInit = services.Count(static i => i.ServiceType.Equals(typeof(IContextManager))) > 0;
       if (managerInit) return;
 
-      if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;
-      if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
-      if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
-      if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
-      if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
+      if (contextManagerType != null)
+      {
+        services.AddScoped(typeof(Core.IContextManager), contextManagerType);
+      }
+      else
+      {
+        if (LoadContextManager(services, "Csla.Blazor.WebAssembly.ApplicationContextManager, Csla.Blazor.WebAssembly")) return;
+        if (LoadContextManager(services, "Csla.Xaml.ApplicationContextManager, Csla.Xaml")) return;
+        if (LoadContextManager(services, "Csla.Web.Mvc.ApplicationContextManager, Csla.Web.Mvc")) return;
+        if (LoadContextManager(services, "Csla.Web.ApplicationContextManager, Csla.Web")) return;
+        if (LoadContextManager(services, "Csla.Windows.Forms.ApplicationContextManager, Csla.Windows.Forms")) return;
 
-      // default to AsyncLocal context manager
-      services.AddScoped(contextManagerType, typeof(Core.ApplicationContextManager));
+        // default to AsyncLocal context manager
+        services.AddScoped(typeof(Core.IContextManager), typeof(Core.ApplicationContextManager));
+      }
     }
 
     private static bool LoadContextManager(IServiceCollection services, string managerTypeName)

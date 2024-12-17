@@ -12,7 +12,10 @@ using Csla.Serialization.Mobile;
 using Csla.Core;
 using Csla.Serialization;
 using System.IO;
+using Csla.Configuration;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
+
 
 #if NUNIT
 using NUnit.Framework;
@@ -38,6 +41,9 @@ namespace Csla.Test.PropertyGetSet
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
+      var services = new ServiceCollection();
+
+      services.AddCsla(o => o.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows);
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
@@ -45,16 +51,8 @@ namespace Csla.Test.PropertyGetSet
     public void Initialize()
     {
       TestResults.Reinitialise();
-      _mode = Csla.ApplicationContext.PropertyChangedMode;
-      Csla.ApplicationContext.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
       _changedName = "";
       _changedName = "";
-    }
-
-    [TestCleanup]
-    public void Cleanup()
-    {
-      Csla.ApplicationContext.PropertyChangedMode = _mode;
     }
 
     [TestMethod]

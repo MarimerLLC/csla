@@ -10,7 +10,7 @@ on:
 
 jobs:
 
-  build:
+  build-and-test:
 
     runs-on: windows-latest
 

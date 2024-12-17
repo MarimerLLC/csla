@@ -19,12 +19,21 @@ namespace Csla.Server
   /// Creates an instance of the type.
   /// </remarks>
   /// <param name="serviceProvider"></param>
-  public class DefaultDataPortalActivator(IServiceProvider serviceProvider) : IDataPortalActivator
+  public class DefaultDataPortalActivator : IDataPortalActivator
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="serviceProvider"></param>
+    public DefaultDataPortalActivator(IServiceProvider serviceProvider)
+    {
+      ServiceProvider = serviceProvider;
+    }
+
     /// <summary>
     /// Gets a reference to the current DI service provider.
     /// </summary>
-    protected IServiceProvider ServiceProvider { get; } = serviceProvider;
+    protected IServiceProvider ServiceProvider { get; } 
 
     /// <summary>
     /// Gets a new instance of the requested type.
@@ -44,7 +53,9 @@ namespace Csla.Server
       {
         tmp.ApplicationContext = ServiceProvider.GetRequiredService<ApplicationContext>();
       }
+
       InitializeInstance(result);
+
       return result;
     }
 

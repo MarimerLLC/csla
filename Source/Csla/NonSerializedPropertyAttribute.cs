@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="NonSerializedAttribute.cs" company="Marimer LLC">
+// <copyright file="NonSerializedPropertyAttribute.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -12,5 +12,5 @@ namespace Csla
   /// Indicate that a public field or property should be excluded from auto serialization
   /// </summary>
   [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-  public class NonSerializedAttribute : Attribute;
+  public class NonSerializedPropertyAttribute : Attribute;
 }

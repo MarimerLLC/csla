@@ -1,4 +1,4 @@
-# Introduction
+# Analyzers
 
 With the 4.6 release of CSLA, a set of analyzers have been added to encourage and enforce patterns and idioms when using the CSLA framework. Let's go through the details on the analyzers.
 

@@ -1,4 +1,4 @@
-name: main
+name: not-code
 
 on:
   push:

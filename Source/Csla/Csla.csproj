@@ -12,6 +12,7 @@
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

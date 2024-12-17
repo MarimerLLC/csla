@@ -10,10 +10,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ProjectTracker.BusinessLibrary\ProjectTracker.BusinessLibrary.csproj" />
-    <PackageReference Include="Backport.System.Threading.Lock" Version="2.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.8" />
-    <PackageReference Include="Csla.Blazor" Version="8.2.8-R24100101" />
-    <PackageReference Include="Csla.Blazor.WebAssembly" Version="8.2.8-R24100101" />
+    <PackageReference Include="Csla.Blazor" Version="8.2.8" />
+    <PackageReference Include="Csla.Blazor.WebAssembly" Version="8.2.8" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />

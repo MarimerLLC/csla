@@ -1,3 +1,5 @@
+# Business Object Design
+
 This is a list of frequently asked questions about designing business objects for CSLA .NET.
 
 ## Object-oriented design and CSLA .NET

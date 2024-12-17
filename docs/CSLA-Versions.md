@@ -2,6 +2,30 @@
 
 This document lists the versions of CSLA .NET that are considered "primary" versions.
 
+## CSLA 9
+
+* Runtimes
+  * .NET 9
+  * .NET 8
+  * .NET Standard 2.0 and 2.1
+  * .NET Framework 4.6.2 through 4.8
+  * mono
+* Platform support
+  * ASP.NET Core (Blazor, MVC, Razor Pages, and other app models)
+  * ASP.NET (MVC, Web Forms, and other app models)
+  * MAUI (iOS, Android, UWP, Mac, Linux)
+  * Uno Platform
+  * Avalonia
+  * Windows Forms, WPF
+* Operating systems
+  * Windows
+  * Android
+  * iOS
+  * Linux (including containers)
+  * Mac
+  * WebAssembly
+  * Others (via .NET 8 and 9)
+
 ## CSLA 8
 
 * Runtimes
@@ -98,6 +122,14 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
 
 ## Upgrading
 
+Here are some specific upgrade notes for each version:
+
+* [Upgrading to CSLA 9](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%209.md)
+* [Upgrading to CSLA 8](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%208.md)
+* [Upgrading to CSLA 6](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%206.md)
+
+Here are some general guidelines for upgrading:
+
 1. The upgrade difficulty depends on your current version
    1. From 1.x – it is a rewrite (but to be fair, that code was obsoleted 17 years ago 😊 )
    1. From 2.x-3.6 – it requires quite a lot of changes (removing now-obsolete code), but the process is typically mechanical/repetitive, not hard
@@ -106,7 +138,7 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
    1. From 4.0 – there’ve been some minor breaking changes that don’t affect everyone, but reviewing the release notes to see if a given codebase is affected is required
    1. From 5.0 – CSLA 6 is a major update that embraces dependency injection, so nearly all apps will be affected in their startup code, and in any interaction with the `ApplicationContext` or data portal types (all of which are now available as DI services)
    1. From 6.0 - CSLA 7 is a relatively minor upgrade with some important bug fixes. Check the release notes for breaking changes that may affect your specific scenarios.
-   1. From 7.0 = CLSA 8 includes some important bug fixes and useful enhancements. Check the release notes for breaking changes that may affect your specific scenarios. 
+   1. From 7.0 = CLSA 8 includes some important bug fixes and useful enhancements. Check the release notes for breaking changes that may affect your specific scenarios.
 
 Some older posts with information about upgrading:
 
@@ -141,3 +173,4 @@ The roadmap is [available here](https://github.com/MarimerLLC/csla/issues?q=is%3
 * CSLA 6 is a major update that requires the use of dependency injection, so _all_ apps must configure an `IServiceCollection` and `IServiceProvider` on startup. This is normal for ASP.NET and Blazor apps, but is not necessarily familiar to Windows Forms or WPF developers. Some important static types are now DI services, most notably `ApplicationContext` and the data portal types. The data portal types are now injected as `IDataPortal<T>`, `IChildDataPortal<T>`, `IDataPortalFactory`, and `IChildDataPortalFactory`.
 * CSLA 7 implements some important bug fixes and some breaking changes (bug fixes and enhancements) to improve the use of CSLA when building business apps. The most notable change is enhancement around authentication and tightening default security for the data portal.
 * CSLA 8 implements some important bug fixes and some breaking changes (bug fixes and enhancements) to improve the use of CSLA when building business apps. This release supports .NET 8, and also enhances behaviors around the `ObjectFactory` implmenetation in the data portal.
+* CSLA 9 removes support for UWP, .NET 6 and the `BinaryFormatter`. It adds support for .NET 9. There are numerous changes to clean up the configuration API. It also includes a couple of code generators to improve serialization speed and radically reduce the amount of code necessary to create a business domain class. There are also many bug fixes and other enhancements in this release.

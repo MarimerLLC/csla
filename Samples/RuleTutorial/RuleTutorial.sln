@@ -58,6 +58,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0FDAA019-DE44-48CD-9614-2A36E45EFCA3}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
+		..\Directory.Build.targets = ..\Directory.Build.targets
 		RuleTutorial.rtf = RuleTutorial.rtf
 		RuleTutorial.vsmdi = RuleTutorial.vsmdi
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings

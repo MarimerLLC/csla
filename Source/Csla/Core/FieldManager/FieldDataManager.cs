@@ -195,18 +195,18 @@ namespace Csla.Core.FieldManager
       List<IPropertyInfo> result = [];
 
       // get inheritance hierarchy
-      Type current = type;
-      List<Type> hierarchy = [];
+      AllMembersType current = new(type);
+      List<AllMembersType> hierarchy = [];
       do
       {
         hierarchy.Add(current);
-        current = current.BaseType;
-      } while (current != null && !current.Equals(typeof(BusinessBase)));
+        current = new (current.type.BaseType);
+      } while (current.type != null && !current.Equals(typeof(BusinessBase)));
 
       // walk from top to bottom to build consolidated list
       for (int index = hierarchy.Count - 1; index >= 0; index--)
       {
-        var source = PropertyInfoManager.GetPropertyListCache(hierarchy[index]);
+        var source = PropertyInfoManager.GetPropertyListCache(hierarchy[index].type);
         source.IsLocked = true;
         result.AddRange(source);
       }
@@ -890,5 +890,21 @@ namespace Csla.Core.FieldManager
         AssemblyLoadContextManager.RemoveFromCache(_consolidatedLists, context);
     }
 #endif
+  }
+  struct AllMembersType
+  {
+    public AllMembersType(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type type)
+    {
+      this.type = type;
+    }
+
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    public Type type;
   }
 }

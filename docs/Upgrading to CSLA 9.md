@@ -188,6 +188,9 @@ The following projects have nullable reference types enabled and annotated
 Supporting nullable types means that some APIs have changed to support nullable types.
 
 * The `User` and `Principal` properties of `ApplicationContext` no longer return null
+* Type `Csla.Serialization.SerializationFormatterFactory` was removed. To get the serializer resolve an instance of type `ISerializationFormatter`. For example `ApplicationContext.GetRequiredService<ISerializationFormatter>()`(from within a business object)
+* `Csla.Core.IParent`
+  * `ApplyEditChild` and `RemoveChild` changed from `void` to `Task` return type
 
 #### Using Timeout in `HttpProxy` and `HttpCompressionProxy`
 

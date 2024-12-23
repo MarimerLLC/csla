@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
 using Csla.Properties;
@@ -774,7 +775,7 @@ namespace Csla.Server
       if (!context.IsRemotePortal) return;
       _applicationContext.Clear();
       if (SecurityOptions.FlowSecurityPrincipalFromClient)
-        _applicationContext.User = null;
+        _applicationContext.User = new ClaimsPrincipal(new ClaimsIdentity());
     }
 
     #endregion

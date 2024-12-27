@@ -1,5 +1,5 @@
-﻿using Csla;
-using Csla.Configuration;
+﻿using Csla.Configuration;
+using MauiExample.ViewModels;
 
 namespace MauiExample;
 
@@ -16,13 +16,19 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
-    builder.Services.AddTransient<DataAccess.IPersonDal, DataAccess.PersonDal>();
     builder.Services.AddCsla(options => options
       .AddXaml());
 
-    var provider = builder.Services.BuildServiceProvider();
-    App.ApplicationContext = provider.GetRequiredService<ApplicationContext>();
+    AddDependancyInjection(builder);
 
     return builder.Build();
 	}
+
+  private static void AddDependancyInjection(MauiAppBuilder builder)
+  {
+    builder.Services.AddTransient<DataAccess.IPersonDal, DataAccess.PersonDal>();
+
+    builder.Services.AddScoped<PersonEditViewModel>();
+    builder.Services.AddScoped<PersonListViewModel>();
+  }
 }

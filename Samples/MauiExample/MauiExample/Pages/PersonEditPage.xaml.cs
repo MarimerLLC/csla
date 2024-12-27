@@ -4,18 +4,16 @@ using MauiExample.ViewModels;
 
 namespace MauiExample.Pages;
 
-public partial class PersonEditPage : ContentPage
+public partial class PersonEditPage : ContentPage, IQueryAttributable
 {
-	public PersonEditPage()
-	{
-    BindingContext = new PersonEditViewModel();
-    InitializeComponent();
-  }
+  private IDataPortal<PersonEdit>  _personDataPortal;
 
-  public PersonEditPage(int personId)
-    :this()
-  {
-    _personId = personId;
+	public PersonEditPage(PersonEditViewModel viewModel, IDataPortal<PersonEdit> dataPortal)
+	{
+    InitializeComponent();
+
+    BindingContext = viewModel;
+    _personDataPortal = dataPortal;
   }
 
   private bool _isLoaded;
@@ -33,22 +31,31 @@ public partial class PersonEditPage : ContentPage
   private async Task RefreshData(int id)
   {
     var vm = (PersonEditViewModel)BindingContext;
-    var dp = App.ApplicationContext.GetRequiredService<IDataPortal<PersonEdit>>();
     if (id < 1)
-      await vm.RefreshAsync<PersonEdit>(async () => await dp.CreateAsync());
+      await vm.RefreshAsync<PersonEdit>(async () => await _personDataPortal.CreateAsync());
     else
-      await vm.RefreshAsync<PersonEdit>(async () => await dp.FetchAsync(id));
+      await vm.RefreshAsync<PersonEdit>(async () => await _personDataPortal.FetchAsync(id));
   }
 
   private async void SavePerson(object sender, EventArgs e)
   {
     var vm = (PersonEditViewModel)BindingContext;
     await vm.SaveAsync();
-    await Navigation.PopModalAsync();
+    await Shell.Current.GoToAsync("..", true);
   }
 
   private async void ClosePage(object sender, EventArgs e)
   {
-    await Navigation.PopModalAsync();
+    await Shell.Current.GoToAsync("..", true);
+  }
+
+  public void ApplyQueryAttributes(IDictionary<string, object> query)
+  {
+    if (query != null && query.ContainsKey(Constants.PersonIdParameter))
+    {
+      int? personId = query[Constants.PersonIdParameter] as int?;
+      if (personId.HasValue)
+        _personId = personId.Value;
+    }
   }
 }

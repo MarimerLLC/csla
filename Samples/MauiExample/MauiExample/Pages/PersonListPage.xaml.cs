@@ -6,11 +6,15 @@ namespace MauiExample.Pages;
 
 public partial class PersonListPage : ContentPage
 {
-  public PersonListPage()
+
+  private IDataPortal<PersonList> _PersonListDataPortal;
+
+  public PersonListPage(PersonListViewModel viewModel, IDataPortal<PersonList> dataPortal)
   {
     InitializeComponent();
 
-    this.BindingContext = new PersonListViewModel();
+    _PersonListDataPortal = dataPortal;
+    this.BindingContext = viewModel;
   }
 
   protected override async void OnAppearing()
@@ -25,14 +29,17 @@ public partial class PersonListPage : ContentPage
   private async Task RefreshData()
   {
     var vm = (PersonListViewModel)BindingContext;
-    var dp = App.ApplicationContext.GetRequiredService<IDataPortal<PersonList>>();
-    await vm.RefreshAsync<PersonList>(async () => await dp.FetchAsync());
+    await vm.RefreshAsync<PersonList>(async () => await _PersonListDataPortal.FetchAsync());
   }
 
-  private void EditPerson(object sender, EventArgs e)
+  private async void EditPerson(object sender, EventArgs e)
   {
-    var btn = sender as Button;
-    var data = btn.BindingContext as PersonInfo;
-    Navigation.PushModalAsync(new PersonEditPage(data.Id));
+    var btn = (Button)sender;
+    var data = (PersonInfo)btn.BindingContext;
+
+    var pageParams = new ShellNavigationQueryParameters();
+
+    pageParams.Add(Constants.PersonIdParameter, data.Id);
+    await Shell.Current.GoToAsync(Constants.PersonEditRoute, true, pageParams);
   }
 }

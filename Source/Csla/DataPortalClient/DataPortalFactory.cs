@@ -6,32 +6,38 @@
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.DataPortalClient
 {
-  /// <summary>
-  /// Get an access to a client-side data portal
-  /// instance.
-  /// </summary>
-  public class DataPortalFactory : IDataPortalFactory
-  {
     /// <summary>
-    /// Creates an instance of the type.
+    /// Get an access to a client-side data portal
+    /// instance.
     /// </summary>
-    /// <param name="serviceProvider">Current ServiceProvider</param>
-    public DataPortalFactory(IServiceProvider serviceProvider)
+    public class DataPortalFactory : IDataPortalFactory
     {
-      ServiceProvider = serviceProvider;
-    }
+        /// <summary>
+        /// Creates an instance of the type.
+        /// </summary>
+        /// <param name="serviceProvider">Current ServiceProvider</param>
+        public DataPortalFactory(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
 
-    private IServiceProvider ServiceProvider { get; set; }
+        private IServiceProvider ServiceProvider { get; set; }
 
     /// <summary>
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    public IDataPortal<T> GetPortal<T>()
+    public IDataPortal<T> GetPortal<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>()
     {
-      return (IDataPortal<T>)ServiceProvider.GetService(typeof(IDataPortal<T>));
+            return (IDataPortal<T>)ServiceProvider.GetService(typeof(IDataPortal<T>));
+        }
     }
-  }
 }

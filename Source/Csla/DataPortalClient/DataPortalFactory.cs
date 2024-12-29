@@ -10,22 +10,22 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.DataPortalClient
 {
+  /// <summary>
+  /// Get an access to a client-side data portal
+  /// instance.
+  /// </summary>
+  public class DataPortalFactory : IDataPortalFactory
+  {
     /// <summary>
-    /// Get an access to a client-side data portal
-    /// instance.
+    /// Creates an instance of the type.
     /// </summary>
-    public class DataPortalFactory : IDataPortalFactory
+    /// <param name="serviceProvider">Current ServiceProvider</param>
+    public DataPortalFactory(IServiceProvider serviceProvider)
     {
-        /// <summary>
-        /// Creates an instance of the type.
-        /// </summary>
-        /// <param name="serviceProvider">Current ServiceProvider</param>
-        public DataPortalFactory(IServiceProvider serviceProvider)
-        {
-            ServiceProvider = serviceProvider;
-        }
+      ServiceProvider = serviceProvider;
+    }
 
-        private IServiceProvider ServiceProvider { get; set; }
+    private IServiceProvider ServiceProvider { get; set; }
 
     /// <summary>
     /// Get a client-side data portal instance.
@@ -33,11 +33,11 @@ namespace Csla.DataPortalClient
     /// <typeparam name="T">Root business object type</typeparam>
     public IDataPortal<T> GetPortal<
 #if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
-      T>()
+    T>()
     {
-            return (IDataPortal<T>)ServiceProvider.GetService(typeof(IDataPortal<T>));
-        }
+      return (IDataPortal<T>)ServiceProvider.GetService(typeof(IDataPortal<T>));
     }
+  }
 }

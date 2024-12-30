@@ -204,7 +204,7 @@ namespace Csla
     /// Gets or sets a value indicating whether this property is serializable.
     /// </summary>
     /// <remarks>
-    /// If the property is marked with the <see cref="NonSerializedPropertyAttribute"/>,
+    /// If the property is marked with the <see cref="DoNotSerializeAttribute"/>,
     /// it is considered not serializable. Otherwise, it is considered serializable.
     /// </remarks>
     public virtual bool IsSerializable
@@ -217,7 +217,7 @@ namespace Csla
         }
         else if (_propertyInfo != null)
         {
-          var nonSerialized = _propertyInfo.GetCustomAttributes(typeof(NonSerializedPropertyAttribute), true).OfType<NonSerializedPropertyAttribute>().Any();
+          var nonSerialized = _propertyInfo.GetCustomAttributes(typeof(DoNotSerializeAttribute), true).OfType<DoNotSerializeAttribute>().Any();
           _isSerializable = !nonSerialized;
           return !nonSerialized;
         }

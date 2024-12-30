@@ -47,8 +47,8 @@ namespace Csla
     /// </summary>
     public ClaimsPrincipal Principal
     {
-      get { return (ClaimsPrincipal)ContextManager.GetUser(); }
-      set { ContextManager.SetUser(value); }
+      get { return (ClaimsPrincipal)User; }
+      set { User = value; }
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ namespace Csla
     public IPrincipal User
     {
       get { return ContextManager.GetUser(); }
-      set { ContextManager.SetUser(value); }
+      set { ContextManager.SetUser(value ?? new ClaimsPrincipal(new ClaimsIdentity())); }
     }
 
     /// <summary>

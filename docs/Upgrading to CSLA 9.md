@@ -191,6 +191,8 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * Type `Csla.Serialization.SerializationFormatterFactory` was removed. To get the serializer resolve an instance of type `ISerializationFormatter`. For example `ApplicationContext.GetRequiredService<ISerializationFormatter>()`(from within a business object)
 * `Csla.Core.IParent`
   * `ApplyEditChild` and `RemoveChild` changed from `void` to `Task` return type
+* `void Csla.Core.IContextManager.SetUser(IPrincipal principal)` does not accept `null` anymore
+  * This change only affects you when you use the `IContextManager` directly. If you use `ApplicationContext.User` CSLA will take care of translating it into a non-null IPrincipal.
 
 #### Using Timeout in `HttpProxy` and `HttpCompressionProxy`
 

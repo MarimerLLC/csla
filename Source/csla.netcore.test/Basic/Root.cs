@@ -19,7 +19,7 @@ namespace Csla.Test.Basic
     }
 
     public static PropertyInfo<string> NotSerializableDataProperty = RegisterProperty<string>(c => c.NotSerializableData);
-    [NonSerialized]
+    [DoNotSerialize]
     public string NotSerializableData
     {
       get { return GetProperty(NotSerializableDataProperty); }

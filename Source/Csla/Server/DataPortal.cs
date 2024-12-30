@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
 using Csla.Properties;

@@ -71,7 +71,7 @@ namespace Csla.Test.DPException
 #if (NETFRAMEWORK)
       Assert.AreEqual(".Net SqlClient Data Provider", exceptionSource);
 #else
-      Assert.AreEqual("Core .Net SqlClient Data Provider", exceptionSource);
+      Assert.AreEqual("Core Microsoft SqlClient Data Provider", exceptionSource);
 #endif
 
       //verify that the implemented method, DataPortal_OnDataPortal 

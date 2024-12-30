@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+             xmlns:vms="clr-namespace:MauiExample.ViewModels"
+             xmlns:models="clr-namespace:BusinessLibrary;assembly=BusinessLibrary"
              x:Class="MauiExample.Pages.PersonEditPage"
              Title="Person Edit">
   <VerticalStackLayout>
@@ -13,7 +15,7 @@
              Margin="10,0,0,10"
            SemanticProperties.HeadingLevel="Level1"/>
     </HorizontalStackLayout>
-    <Grid BindingContext="{Binding Model}">
+    <Grid BindingContext="{Binding Model, x:DataType=vms:PersonEditViewModel}">
       <Grid.RowDefinitions>
         <RowDefinition Height="10" />
         <RowDefinition Height="Auto" />
@@ -25,14 +27,14 @@
       </Grid.ColumnDefinitions>
       <Label Text="Name" Grid.Row="1" Grid.Column="0" />
       <HorizontalStackLayout Grid.Row="1" Grid.Column="1">
-        <Entry Text="{Binding Name}" WidthRequest="200" />
+        <Entry Text="{Binding Name, x:DataType=models:PersonEdit}" WidthRequest="200" />
         <csla:PropertyInfo Path="Name" x:Name="NameInfo" />
-        <Label TextColor="Red" BindingContext="{x:Reference NameInfo}" Text="{Binding ErrorText}" Margin="3" />
-        <Label TextColor="Yellow" BindingContext="{x:Reference NameInfo}" Text="{Binding WarningText}" Margin="3" />
-        <Label TextColor="LightGreen" BindingContext="{x:Reference NameInfo}" Text="{Binding InformationText}" Margin="3" />
+        <Label TextColor="Red" BindingContext="{x:Reference NameInfo}" Text="{Binding ErrorText, x:DataType=csla:PropertyInfo}" Margin="3" />
+        <Label TextColor="Yellow" BindingContext="{x:Reference NameInfo}" Text="{Binding WarningText, x:DataType=csla:PropertyInfo}" Margin="3" />
+        <Label TextColor="LightGreen" BindingContext="{x:Reference NameInfo}" Text="{Binding InformationText, x:DataType=csla:PropertyInfo}" Margin="3" />
       </HorizontalStackLayout>
       <HorizontalStackLayout Grid.Row="2" Grid.Column="1" >
-        <Button Text="Save" IsEnabled="{Binding IsSavable}" Clicked="SavePerson" Margin="3" />
+        <Button Text="Save" IsEnabled="{Binding IsSavable, x:DataType=models:PersonEdit}" Clicked="SavePerson" Margin="3" />
         <Button Text="Close" Clicked="ClosePage" Margin="3" />
       </HorizontalStackLayout>
     </Grid>

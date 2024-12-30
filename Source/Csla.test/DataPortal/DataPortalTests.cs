@@ -371,37 +371,6 @@ namespace Csla.Test.DataPortal
 
   }
 
-  public class UserLoggingContextManagerDecorator : IContextManager
-  {
-    private readonly IContextManager _decorated;
-    public IPrincipal LastSetPrincipal
-    {
-      get; private set;
-    }
-
-    public UserLoggingContextManagerDecorator(IContextManager contextManager)
-    {
-      _decorated = contextManager;
-    }
-
-    public bool IsStatefulContext => _decorated.IsStatefulContext;
-
-    public bool IsValid => _decorated.IsValid;
-
-    public ApplicationContext ApplicationContext { get => _decorated.ApplicationContext; set => _decorated.ApplicationContext = value; }
-
-    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation) => _decorated.GetClientContext(executionLocation);
-    public IContextDictionary GetLocalContext() => _decorated.GetLocalContext();
-    public IPrincipal GetUser() => _decorated.GetUser();
-    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation) => _decorated.SetClientContext(clientContext, executionLocation);
-    public void SetLocalContext(IContextDictionary localContext) => _decorated.SetLocalContext(localContext);
-    public void SetUser(IPrincipal principal)
-    {
-      LastSetPrincipal = principal;
-      _decorated.SetUser(principal);
-    }
-  }
-
   [Serializable]
   public class EncapsulatedBusy : BusinessBase<EncapsulatedBusy>
   {

@@ -775,7 +775,7 @@ namespace Csla.Server
       if (!context.IsRemotePortal) return;
       _applicationContext.Clear();
       if (SecurityOptions.FlowSecurityPrincipalFromClient)
-        _applicationContext.User = null;
+        _applicationContext.User = new ClaimsPrincipal(new ClaimsIdentity());
     }
 
     #endregion

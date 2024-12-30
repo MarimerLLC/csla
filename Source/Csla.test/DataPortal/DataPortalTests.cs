@@ -15,6 +15,10 @@ using FluentAssertions;
 using Csla.Rules;
 using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.Testing.Business.DataPortal;
+using Csla.Server;
+using System.Security.Principal;
+using FluentAssertions.Execution;
 
 namespace Csla.Test.DataPortal
 {
@@ -311,6 +315,29 @@ namespace Csla.Test.DataPortal
       }
     }
 
+    [TestMethod]
+    public async Task CleanupShouldSetThePrincipalToAnUnathenticatedOne()
+    {
+      // We have to use an extra DI context here to setup the TestableDataPortal and set necessary options
+      var diContext = TestDIContextFactory.CreateContext(options =>
+      {
+        options.Services.AddTransient<TestableDataPortal>();
+        options.Security(s => s.FlowSecurityPrincipalFromClient = true);
+        options.DataPortal(dpo => dpo.AddServerSideDataPortal());
+      });
+
+      var applicationContext = diContext.CreateTestApplicationContext();
+      var contextManager = (ApplicationContextManagerUnitTests)applicationContext.ContextManager;
+      var dp = diContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      _ = await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, true, "en-US", "en-US", new Core.ContextDictionary()), true);
+
+      using (new AssertionScope())
+      {
+        contextManager.LastSetUserPrincipal.Should().NotBeNull();
+        contextManager.LastSetUserPrincipal.Should().Match<IPrincipal>(p => !p.Identity.IsAuthenticated);
+      }
+    }
+
     private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)
     {
       TestResults.Add("dpinvoke", "true");
@@ -342,6 +369,37 @@ namespace Csla.Test.DataPortal
       dataPortal.Delete(id);
     }
 
+  }
+
+  public class UserLoggingContextManagerDecorator : IContextManager
+  {
+    private readonly IContextManager _decorated;
+    public IPrincipal LastSetPrincipal
+    {
+      get; private set;
+    }
+
+    public UserLoggingContextManagerDecorator(IContextManager contextManager)
+    {
+      _decorated = contextManager;
+    }
+
+    public bool IsStatefulContext => _decorated.IsStatefulContext;
+
+    public bool IsValid => _decorated.IsValid;
+
+    public ApplicationContext ApplicationContext { get => _decorated.ApplicationContext; set => _decorated.ApplicationContext = value; }
+
+    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation) => _decorated.GetClientContext(executionLocation);
+    public IContextDictionary GetLocalContext() => _decorated.GetLocalContext();
+    public IPrincipal GetUser() => _decorated.GetUser();
+    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation) => _decorated.SetClientContext(clientContext, executionLocation);
+    public void SetLocalContext(IContextDictionary localContext) => _decorated.SetLocalContext(localContext);
+    public void SetUser(IPrincipal principal)
+    {
+      LastSetPrincipal = principal;
+      _decorated.SetUser(principal);
+    }
   }
 
   [Serializable]

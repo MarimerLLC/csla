@@ -1,3 +1,5 @@
+# Windows Forms
+
 ## Is Windows Forms supported in CSLA .NET 4.0?
 
 Yes, but your business collections need to inherit from base classes in Csla.Windows, not the ones in the main Csla namespace. Starting with CSLA .NET 4.0, the base collection types fully support WPF binding.

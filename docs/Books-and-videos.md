@@ -1,3 +1,5 @@
+# Books and videos
+
 The following is a list of important books and videos for CSLA .NET:
 
 The most recent book is _free_ and is available from the online store.

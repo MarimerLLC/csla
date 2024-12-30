@@ -16,6 +16,7 @@
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <BaseOutputPath>..\..\..\..\..\Bin</BaseOutputPath>
+    <OutputPath>..\..\..\..\..\bin\packages\</OutputPath>
 
     <AssemblyName>Csla.Generator.AutoImplementProperties.CSharp</AssemblyName>
     <RootNamespace>Csla.Generator.AutoImplementProperties.CSharp</RootNamespace>
@@ -29,10 +30,11 @@
   </PropertyGroup>
 
    <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" PrivateAssets="all" />
-  </ItemGroup>
+     <PackageReference Include="Backport.System.Threading.Lock" Version="3.1.0" />
+   </ItemGroup>
 
   <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />

@@ -163,17 +163,36 @@ public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);
 
 ## RabbitMq Data Portal Channel
 
-The RabbitMQ data portal channel has been updated to work with dependency injection. You can explore the `RabbitMqExample` project in the `Samples` folder for an example of how to use the RabbitMQ data portal channel.
+The RabbitMQ data portal channel has been updated to work with dependency injection. You can explore the `RabbitMqExample` project in the `Samples` folder for an example of how to use the RabbitMQ data portal channel. 
+
+Furthermore it was updated to v7 which means there are breaking changes due to the changed made in RabbitMq. The biggest change is that now all related methods have to be async.
+The following APIs changed
+* `Csla.Channels.RabbitMq.RabbitMqPortal`
+  * `public void StartListening()` -> `public Task StartListening()`
+* `Csla.Channels.RabbitMq.RabbitMqProxy`
+  * `protected virtual void InitializeRabbitMQ()` -> `protected virtual Task InitializeRabbitMQ()`
 
 ## Nullable Reference Types
 
-CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and CSLA will work correctly.
+CSLA 9 partially supports the use of nullable reference types in your code. This means that you can start using the `#nullable enable` directive in your code and CSLA types will have the necessary annotations.
+The following projects have nullable reference types enabled and annotated
+* `Csla.Channels.Grpc`
+* `Csla.Channels.RabbitMq`
+* `Csla.Data.SqlClient`
+* `Csla.Data.SqlClient.Fx`
+* `Csla.Web.Mvc`
+* `Csla.AspNetCore`
 
 ### API Changes
 
 Supporting nullable types means that some APIs have changed to support nullable types.
 
 * The `User` and `Principal` properties of `ApplicationContext` no longer return null
+* Type `Csla.Serialization.SerializationFormatterFactory` was removed. To get the serializer resolve an instance of type `ISerializationFormatter`. For example `ApplicationContext.GetRequiredService<ISerializationFormatter>()`(from within a business object)
+* `Csla.Core.IParent`
+  * `ApplyEditChild` and `RemoveChild` changed from `void` to `Task` return type
+* `void Csla.Core.IContextManager.SetUser(IPrincipal principal)` does not accept `null` anymore
+  * This change only affects you when you use the `IContextManager` directly. If you use `ApplicationContext.User` CSLA will take care of translating it into a non-null IPrincipal.
 
 #### Using Timeout in `HttpProxy` and `HttpCompressionProxy`
 

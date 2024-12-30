@@ -35,7 +35,6 @@
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>CSLA .NET for MAUI</Title>
     <PackageTags>CSLA;Business;MAUI</PackageTags>
     <PackageId>Csla.Maui</PackageId>

@@ -1,3 +1,5 @@
+# WPF
+
 ## Does CSLA .NET support WPF?
 
 Yes. CSLA .NET has extensive support for WPF, both through its support for data binding, and with productivity controls and components in the Csla.Wpf namespace.

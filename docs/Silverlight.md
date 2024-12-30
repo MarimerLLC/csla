@@ -1,3 +1,5 @@
+# Silverlight
+
 > ℹ️ This information applies only to CSLA 4 and older. Silverlight is not supported in CSLA 5 or later.
 
 ## Does CSLA .NET support Silverlight 2.0?

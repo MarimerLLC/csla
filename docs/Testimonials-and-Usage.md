@@ -1,4 +1,6 @@
-## Testimonials:
+# Testimonials and Usage
+
+## Testimonials
 
 "You’ve done a fantastic job with the framework. It is absolutely the best domain framework available."
 
@@ -38,46 +40,47 @@
 
 ## CSLA .NET is used
 
-* UNIT4 (ERP and financials package) 
-* Sybiz Software (accounting, payroll, contact mgmt) 
-* one NFL Football front office 
-* one NBA Basketball front office 
-* Novosibirsk State University Of Economics And Management (NSUEM, Russia,  http://www.nsaem.ru) 
-* A major US sporting goods retailer 
-* ilovetoplay.com (a site for sports enthusiasts) 
-* Journaling system for eye doctors (Apertura.no) 
-* Railway logistics system (Shangai ESoSi Information Technology Co.,Ltd.) 
-* the largest music festival in the US 
-* fire department for a major city 
-* Programmers' Heaven web site 
-* an aluminum treatment and painting company in Italy (Andrea Colaci, Architect) 
-* Aaron Rents (running in 1200+ stores in the US and Canada) 
-* Gore Mutual Insurance Co. (Robert Achmann, Architect) 
-* a major telecom company 
-* several US state governments 
-* Department of Transportation for a US state government 
-* a national insurance company 
-* several county governments 
-* IDG 
-* one of the major cruise lines 
-* a large biomedical device manufacturer 
-* two mortgage finance companies 
-* a shipyard 
-* one nation's military 
-* a payroll and time management system 
-* a tracking system for biological museum data 
-* a claims administration system 
-* an ASP providing purchasing services 
-* an HR system 
-* a medical ecommerce site 
-* a medical administration system 
-* a Major League Baseball front office 
-* a payroll system for a national health service 
-* a widely used commercial service management application (AyaNova) 
-* the United Nations 
-* a specialized point of sale system (ISV) 
-* a building security and monitoring system (ISV) 
-* a geo-location tracking package 
+* a major US healthcare and pharmaceutical provider
+* UNIT4 (ERP and financials package)
+* Sybiz Software (accounting, payroll, contact mgmt)
+* one NFL Football front office
+* one NBA Basketball front office
+* Novosibirsk State University Of Economics And Management (NSUEM, Russia,  http://www.nsaem.ru)
+* A major US sporting goods retailer
+* ilovetoplay.com (a site for sports enthusiasts)
+* Journaling system for eye doctors (Apertura.no)
+* Railway logistics system (Shangai ESoSi Information Technology Co.,Ltd.)
+* the largest music festival in the US
+* fire department for a major city
+* Programmers' Heaven web site
+* an aluminum treatment and painting company in Italy (Andrea Colaci, Architect)
+* Aaron Rents (running in 1200+ stores in the US and Canada)
+* Gore Mutual Insurance Co. (Robert Achmann, Architect)
+* a major telecom company
+* several US state governments
+* Department of Transportation for a US state government
+* a national insurance company
+* several county governments
+* IDG
+* one of the major cruise lines
+* a large biomedical device manufacturer
+* two mortgage finance companies
+* a shipyard
+* one nation's military
+* a payroll and time management system
+* a tracking system for biological museum data
+* a claims administration system
+* an ASP providing purchasing services
+* an HR system
+* a medical ecommerce site
+* a medical administration system
+* a Major League Baseball front office
+* a payroll system for a national health service
+* a widely used commercial service management application (AyaNova)
+* the United Nations
+* a specialized point of sale system (ISV)
+* a building security and monitoring system (ISV)
+* a geo-location tracking package
 * a Department of the State of California
 
 I can't provide the names of the specific organizations without their permission, and it can take a lot of time to work with every organization's legal department to get access to the use of their names. I can't justify spending that time, as it simply doesn't drive enough book sales to be worth the effort.

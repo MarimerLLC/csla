@@ -22,7 +22,7 @@ namespace Csla
     /// <typeparam name="T">Root business object type</typeparam>
     IDataPortal<T> GetPortal<
 #if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
       T>();
   }

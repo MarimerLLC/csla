@@ -88,9 +88,9 @@ namespace Csla.Configuration
       services.TryAddTransient<IChildDataPortalFactory, ChildDataPortalFactory>();
 
       services.TryAddScoped(typeof(IAuthorizeDataPortal), config.DataPortalOptions.DataPortalServerOptions.AuthorizerProviderType);
-      foreach (Type interceptorType in config.DataPortalOptions.DataPortalServerOptions.InterceptorProviders)
+      foreach (var interceptorType in config.DataPortalOptions.DataPortalServerOptions.InterceptorProviders)
       {
-        services.AddScoped(typeof(IInterceptDataPortal), interceptorType);
+        services.AddScoped(typeof(IInterceptDataPortal), interceptorType.type);
       }
       services.TryAddScoped(typeof(IObjectFactoryLoader), config.DataPortalOptions.DataPortalServerOptions.ObjectFactoryLoaderType);
       services.TryAddScoped(typeof(IDataPortalActivator), config.DataPortalOptions.DataPortalServerOptions.ActivatorType);

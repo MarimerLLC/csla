@@ -33,9 +33,9 @@ namespace Csla.DataPortalClient
     /// <typeparam name="T">Root business object type</typeparam>
     public IDataPortal<T> GetPortal<
 #if NET8_0_OR_GREATER
-  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
 #endif
-    T>()
+      T>()
     {
       return (IDataPortal<T>)ServiceProvider.GetService(typeof(IDataPortal<T>));
     }

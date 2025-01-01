@@ -74,7 +74,15 @@ namespace Csla
     /// </summary>
     /// <param name="propertyType">Type of the
     /// property as returned by reflection.</param>
-    public static Type GetPropertyType(Type propertyType)
+
+#if NET8_0_OR_GREATER
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    public static Type GetPropertyType(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type propertyType)
     {
       Type type = propertyType;
       if (type.IsGenericType &&
@@ -88,7 +96,11 @@ namespace Csla
     /// contained in a collection or list.
     /// </summary>
     /// <param name="listType">Type of the list.</param>
-    public static Type GetChildItemType(Type listType)
+    public static Type GetChildItemType(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type listType)
     {
       Type result = null;
       if (listType.IsArray)

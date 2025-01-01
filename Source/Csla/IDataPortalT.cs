@@ -17,7 +17,7 @@ namespace Csla
   public interface IDataPortal<
 #if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-# endif
+#endif
     T>
   {
     /// <summary>

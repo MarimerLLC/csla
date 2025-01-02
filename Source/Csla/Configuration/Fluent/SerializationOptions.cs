@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -33,7 +34,11 @@ namespace Csla.Configuration
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc). Default is MobileFormatter.
     /// </summary>
-    public SerializationOptions UseSerializationFormatter<T>() where T : ISerializationFormatter
+    public SerializationOptions UseSerializationFormatter<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>() where T : ISerializationFormatter
     {
       CslaOptions.Services.AddTransient(typeof(ISerializationFormatter), typeof(T));
       return this;

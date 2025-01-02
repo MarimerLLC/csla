@@ -797,7 +797,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static System.Reflection.MethodInfo? GetMethod(Type objectType, string method)
+    public static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -822,7 +822,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static System.Reflection.MethodInfo? GetMethod(Type objectType, string method, params object?[]? parameters)
+    public static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method, params object?[]? parameters)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -832,7 +832,7 @@ namespace Csla.Reflection
       return GetMethod(objectType, method, true, parameters);
     }
 
-    private static System.Reflection.MethodInfo? GetMethod(Type objectType, string method, bool hasParameters, params object?[]? parameters)
+    private static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method, bool hasParameters, params object?[]? parameters)
     {
       object?[] inParams;
       if (!hasParameters)
@@ -991,7 +991,10 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static System.Reflection.MethodInfo? FindMethod(Type objectType, string method, int parameterCount)
+    public static System.Reflection.MethodInfo? FindMethod(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2075:UnrecognizedReflectionPattern", Justification = "We only walk BaseType chain in this method, so assumption will holds")]
+        Type objectType, string method, int parameterCount)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -1094,7 +1097,7 @@ namespace Csla.Reflection
     /// <param name="propertyName">Name of the property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="t"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static PropertyDescriptor? GetPropertyDescriptor(Type t, string propertyName)
+    public static PropertyDescriptor? GetPropertyDescriptor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type t, string propertyName)
     {
       if (t is null)
         throw new ArgumentNullException(nameof(t));

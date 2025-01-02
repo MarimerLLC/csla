@@ -6,6 +6,7 @@
 // <summary>Defines a dictionary that can be serialized through</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core
@@ -17,7 +18,7 @@ namespace Csla.Core
   /// <typeparam name="K">Key value: any primitive or IMobileObject type.</typeparam>
   /// <typeparam name="V">Value: any primitive or IMobileObject type.</typeparam>
   [Serializable]
-  public class MobileDictionary<K, V> : Dictionary<K, V>, IMobileObject where K: notnull
+  public class MobileDictionary<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] K, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] V> : Dictionary<K, V>, IMobileObject where K: notnull
   {
     private bool _keyIsMobile;
     private bool _valueIsMobile;

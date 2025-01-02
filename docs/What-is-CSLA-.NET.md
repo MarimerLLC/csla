@@ -1,6 +1,6 @@
-![CSLA .NET logo](https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla%20win8_compact_s.png)
-
 # A home for your business logic
+
+![CSLA logo](https://raw.githubusercontent.com/MarimerLLC/csla/master/Support/Logos/csla%20win8_compact_s.png)
 
 If you stop and think about it, we have all these great frameworks to create a UI and presentation layer: Windows Forms up through Xamarin Forms, and patterns like MVC, MVP, and MVVM. And we have myriad ways to interact with databases: ADO.NET, Entity Framework, Dapper, nHibernate, and many more. **But what about business logic?**
 

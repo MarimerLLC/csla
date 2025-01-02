@@ -6,6 +6,8 @@
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -21,7 +23,7 @@ namespace Csla.Server
     /// <param name="parameters">Param array for the constructor</param>
     /// <returns>Business object instance.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="requestedType"/> or <paramref name="requestedType"/> is <see langword="null"/>.</exception>
-    object CreateInstance(Type requestedType, params object[] parameters);
+    object CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType, params object[] parameters);
     /// <summary>
     /// Initializes an existing business object instance.
     /// </summary>
@@ -41,6 +43,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
     /// <exception cref="ArgumentNullException"><paramref name="requestedType"/> is <see langword="null"/>.</exception>
-    Type ResolveType(Type requestedType);
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    Type ResolveType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType);
   }
 }

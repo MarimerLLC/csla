@@ -89,7 +89,7 @@ namespace Csla.Reflection
     /// <param name="throwOnError">Throw exceptions on error</param>
     /// <returns>The <see cref="ServiceProviderMethodInfo"/> of the data portal method if found. Does not return <see langword="null"/> if <paramref name="throwOnError"/> is <see langword="true"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
-    private ServiceProviderMethodInfo? FindDataPortalMethod<T>(Type targetType, object?[]? criteria, bool throwOnError)
+    private ServiceProviderMethodInfo? FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, bool throwOnError)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)

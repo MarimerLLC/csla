@@ -218,7 +218,7 @@ namespace Csla.Rules
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    T? GetInputValue<T>(PropertyInfo<T> propertyInfo);
+    T? GetInputValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(PropertyInfo<T> propertyInfo);
     /// <summary>
     /// Gets the value with explicit cast
     /// </summary>
@@ -234,7 +234,7 @@ namespace Csla.Rules
     /// <param name="value">The value.</param>
     /// <returns>true if value exists else false</returns>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    bool TryGetInputValue<T>(PropertyInfo<T> propertyInfo, ref T? value);
+    bool TryGetInputValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(PropertyInfo<T> propertyInfo, ref T? value);
     /// <summary>
     /// Tries to get the value with explicit cast. Use this method on LazyLoaded properties to test if value has been provided or not.
     /// </summary>

@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
@@ -22,7 +23,15 @@ namespace Csla
   /// <typeparam name="V">Type of the values.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class NameValueListBase<K, V> :
+  public abstract class NameValueListBase<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    K,
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    V> :
     ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>,
     ICloneable,
     Server.IDataPortalTarget,

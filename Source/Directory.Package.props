@@ -17,14 +17,17 @@
    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
    <NeutralLanguage>en-US</NeutralLanguage>
    <DefaultLanguage>en-US</DefaultLanguage>
-   
+
+   <EmbedUntrackedSources>true</EmbedUntrackedSources>
+   <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
    <GenerateDocumentationFile>True</GenerateDocumentationFile>
    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
  </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.146">
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.7.112">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

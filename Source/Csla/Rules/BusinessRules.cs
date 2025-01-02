@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;
@@ -345,7 +346,7 @@ namespace Csla.Rules
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType)
+    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -365,7 +366,7 @@ namespace Csla.Rules
     /// <param name="objectType">Type of business object.</param>
     /// <param name="criteria">The criteria object provided.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object?[]? criteria)
+    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object?[]? criteria)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -388,7 +389,7 @@ namespace Csla.Rules
     /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string? ruleSet)
+    public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, string? ruleSet)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -484,7 +485,7 @@ namespace Csla.Rules
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A task representing the asynchronous operation that returns a boolean indicating whether the permission is granted.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, CancellationToken ct)
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, CancellationToken ct)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -508,7 +509,7 @@ namespace Csla.Rules
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the permission is granted.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, object?[]? criteria, CancellationToken ct)
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object?[]? criteria, CancellationToken ct)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));
@@ -534,7 +535,7 @@ namespace Csla.Rules
     /// 	<c>true</c> if the specified action has permission; otherwise, <c>false</c>.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Type objectType, string? ruleSet, CancellationToken ct)
+    public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, string? ruleSet, CancellationToken ct)
     {
       if (applicationContext == null)
         throw new ArgumentNullException(nameof(applicationContext));

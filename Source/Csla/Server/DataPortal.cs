@@ -7,10 +7,12 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
+using Csla.Server;
 using Csla.Server.Dashboard;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -114,7 +116,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -196,7 +198,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -290,7 +292,11 @@ namespace Csla.Server
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    private async Task<DataPortalResult> Execute(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> Execute(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -484,7 +490,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

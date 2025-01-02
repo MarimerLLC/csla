@@ -6,6 +6,7 @@
 // <summary>Abstract data portal proxy with common data portal proxy behaviour. Implements IDataPortalProxy</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Configuration;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
@@ -49,7 +50,7 @@ namespace Csla.DataPortalClient
     public abstract string DataPortalUrl { get; }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -98,7 +99,7 @@ namespace Csla.DataPortalClient
     }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -196,7 +197,7 @@ namespace Csla.DataPortalClient
     }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

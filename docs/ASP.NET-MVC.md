@@ -2,11 +2,15 @@
 
 ## ASP.NET Core
 
-CSLA 5 and 6 provide support for ASP.NET Core - MVC and Razor Pages - with various helper types in the `Csla.AspNetCore` namespace.
+CSLA 5 and higher supports ASP.NET Core - MVC and Razor Pages - with various helper types in the `Csla.AspNetCore` namespace.
+
+CSLA 6 and higher supports Blazor WebAssembly, and CSLA 8 and higher supports all Blazor models.
 
 > ℹ️ If you host code in ASP.NET Core you _must_ add the `Csla.AspNetCore` NuGet package to your project. This is true if you are using MVC, Razor Pages, server-side Blazor, or creating an app server using aspnetcore.
 
 ## ASP.NET in .NET Framework
+
+CSLA 9 continues to support ASP.NET MVC 5 projects. You must use dependency injection in your project for CSLA to work correctly.
 
 _Please remember that ASP.NET MVC does run in ASP.NET. So nearly all the FAQ items under the [Web Forms](Web-forms.md) topic apply to ASP.NET MVC as well._
 

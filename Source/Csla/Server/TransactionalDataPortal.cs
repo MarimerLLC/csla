@@ -9,6 +9,7 @@
 #if NET8_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
+using System.Diagnostics.CodeAnalysis;
 using System.Transactions;
 
 namespace Csla.Server
@@ -59,7 +60,7 @@ namespace Csla.Server
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
@@ -118,7 +119,7 @@ namespace Csla.Server
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -178,7 +179,7 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

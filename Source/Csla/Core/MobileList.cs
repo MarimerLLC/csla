@@ -6,6 +6,7 @@
 // <summary>Implements a list that is serializable using</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core
@@ -18,7 +19,11 @@ namespace Csla.Core
   /// Type of object contained in the list.
   /// </typeparam>
   [Serializable]
-  public class MobileList<T> : List<T>, IMobileObject
+  public class MobileList<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> : List<T>, IMobileObject
   {
     /// <summary>
     /// Creates an instance of the type.

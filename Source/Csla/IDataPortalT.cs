@@ -6,13 +6,19 @@
 // <summary>Interface defining the members of the data portal type</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla
 {
   /// <summary>
   /// Interface defining the members of the data portal type.
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public interface IDataPortal<T>
+  public interface IDataPortal<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+# endif
+    T>
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to

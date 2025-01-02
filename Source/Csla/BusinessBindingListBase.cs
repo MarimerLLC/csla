@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Server;
@@ -23,7 +24,15 @@ namespace Csla
   [System.Diagnostics.CodeAnalysis.SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class BusinessBindingListBase<T, C> :
+  public abstract class BusinessBindingListBase<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T,
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      C> :
       ExtendedBindingList<C>, IContainsDeletedList,
       IEditableCollection, IUndoableObject, ICloneable,
       ISavable, ISavable<T>, IParent, IDataPortalTarget,
@@ -353,6 +362,8 @@ namespace Csla
 
       if (item.IsChild)
       {
+        IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
+
         // set parent reference
         item.SetParent(this);
         // ensure child uses same context as parent

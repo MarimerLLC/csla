@@ -6,6 +6,8 @@
 // <summary>Invoke data portal methods on child</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -34,7 +36,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="objectType">Type of business object to create.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public object Create(Type objectType)
+    public object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -52,7 +54,7 @@ namespace Csla.Server
     /// Criteria parameters passed from caller.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public object Create(Type objectType, params object?[] parameters)
+    public object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -67,7 +69,11 @@ namespace Csla.Server
     /// <summary>
     /// Create a new business object.
     /// </summary>
-    public async Task<T> CreateAsync<T>()
+    public async Task<T> CreateAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>()
     {
       return (T) await DoCreateAsync(typeof(T)).ConfigureAwait(false);
     }
@@ -79,14 +85,14 @@ namespace Csla.Server
     /// Criteria parameters passed from caller.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public async Task<T> CreateAsync<T>(params object?[] parameters)
+    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[] parameters)
     {
       if (parameters is null)
         throw new ArgumentNullException(nameof(parameters));
       return (T)await DoCreateAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoCreateAsync(Type objectType, params object?[] parameters)
+    private async Task<object> DoCreateAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
@@ -130,7 +136,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="objectType">Type of business object to retrieve.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public object Fetch(Type objectType)
+    public object Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -148,7 +154,7 @@ namespace Csla.Server
     /// Criteria parameters passed from caller.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public object Fetch(Type objectType, params object?[] parameters)
+    public object Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -163,7 +169,11 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
-    public async Task<T> FetchAsync<T>()
+    public async Task<T> FetchAsync<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      T>()
     {
       return (T)await DoFetchAsync(typeof(T)).ConfigureAwait(false);
     }
@@ -175,7 +185,7 @@ namespace Csla.Server
     /// Criteria parameters passed from caller.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public async Task<T> FetchAsync<T>(params object?[] parameters)
+    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[] parameters)
     {
       if (parameters is null)
         throw new ArgumentNullException(nameof(parameters));
@@ -183,7 +193,7 @@ namespace Csla.Server
       return (T)await DoFetchAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoFetchAsync(Type objectType, params object?[] parameters)
+    private async Task<object> DoFetchAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);

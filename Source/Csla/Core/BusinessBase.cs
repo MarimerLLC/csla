@@ -1658,7 +1658,7 @@ namespace Csla.Core
     /// The provided IPropertyInfo object.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<P>(Type objectType, PropertyInfo<P> info)
+    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, PropertyInfo<P> info)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -1752,7 +1752,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetProperty<P>(PropertyInfo<P> propertyInfo, P field)
+    protected P? GetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P field)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1777,7 +1777,7 @@ namespace Csla.Core
     /// True if an exception should be thrown when the
     /// user is not authorized to read this property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetProperty<P>(PropertyInfo<P> propertyInfo, P field, P? defaultValue, NoAccessBehavior noAccess)
+    protected P? GetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P field, P? defaultValue, NoAccessBehavior noAccess)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1805,7 +1805,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field)
+    protected P? GetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<F> propertyInfo, F field)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1836,7 +1836,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, F field, NoAccessBehavior noAccess)
+    protected P? GetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<F> propertyInfo, F field, NoAccessBehavior noAccess)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1859,7 +1859,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetProperty<P>(PropertyInfo<P> propertyInfo)
+    protected P? GetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1886,7 +1886,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
+    protected P? GetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<F> propertyInfo)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1916,7 +1916,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetPropertyConvert<F, P>(PropertyInfo<F> propertyInfo, NoAccessBehavior noAccess)
+    protected P? GetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<F> propertyInfo, NoAccessBehavior noAccess)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -1942,7 +1942,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? GetProperty<P>(PropertyInfo<P> propertyInfo, NoAccessBehavior noAccess)
+    protected P? GetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, NoAccessBehavior noAccess)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2027,7 +2027,7 @@ namespace Csla.Core
     /// result.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="valueGenerator"/> is <see langword="null"/>.</exception>
-    protected P? LazyGetProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    protected P? LazyGetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> property, Func<P> valueGenerator)
     {
       if (property is null)
         throw new ArgumentNullException(nameof(property));
@@ -2078,7 +2078,7 @@ namespace Csla.Core
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
-    protected P? LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    protected P? LazyGetPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> property, Task<P> factory)
     {
       if (property is null)
         throw new ArgumentNullException(nameof(property));
@@ -2092,12 +2092,12 @@ namespace Csla.Core
       return GetProperty<P>(property);
     }
 
-    object? IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    object? IManageProperties.LazyGetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       return LazyGetProperty(propertyInfo, valueGenerator);
     }
 
-    object? IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    object? IManageProperties.LazyGetPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       return LazyGetPropertyAsync(propertyInfo, factory);
     }
@@ -2120,7 +2120,7 @@ namespace Csla.Core
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? ReadPropertyConvert<F, P>(PropertyInfo<F> propertyInfo)
+    protected P? ReadPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<F> propertyInfo)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2137,7 +2137,7 @@ namespace Csla.Core
     /// <param name="propertyInfo">
     /// PropertyInfo object containing property metadata.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    protected P? ReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2213,7 +2213,7 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="valueGenerator">Method returning the new value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="valueGenerator"/> is <see langword="null"/>.</exception>
-    protected P? LazyReadProperty<P>(PropertyInfo<P> property, Func<P> valueGenerator)
+    protected P? LazyReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> property, Func<P> valueGenerator)
     {
       if (property is null)
         throw new ArgumentNullException(nameof(property));
@@ -2238,7 +2238,7 @@ namespace Csla.Core
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="factory">Async method returning the new value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
-    protected P? LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    protected P? LazyReadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> property, Task<P> factory)
     {
       if (property is null)
         throw new ArgumentNullException(nameof(property));
@@ -2252,12 +2252,12 @@ namespace Csla.Core
       return ReadProperty<P>(property);
     }
 
-    P? IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) where P : default
+    P? IManageProperties.LazyReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) where P : default
     {
       return LazyReadProperty(propertyInfo, valueGenerator);
     }
 
-    P? IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) where P : default
+    P? IManageProperties.LazyReadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory) where P : default
     {
       return LazyReadPropertyAsync(propertyInfo, factory);
     }
@@ -2282,7 +2282,7 @@ namespace Csla.Core
     /// overload throws a SecurityException.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, ref P? field, P? newValue)
+    protected void SetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, ref P? field, P? newValue)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2306,7 +2306,7 @@ namespace Csla.Core
     /// overload throws a SecurityException.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected void SetProperty<P>(string propertyName, ref P? field, P? newValue)
+    protected void SetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, ref P? field, P? newValue)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -2338,7 +2338,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     /// <exception cref="SecurityException"></exception>
     /// <exception cref="PropertyLoadException"></exception>
-    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P? field, V? newValue)
+    protected void SetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] V>(PropertyInfo<P> propertyInfo, ref P? field, V? newValue)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2371,7 +2371,7 @@ namespace Csla.Core
     /// null values are converted to string.Empty.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected void SetPropertyConvert<P, V>(PropertyInfo<P> propertyInfo, ref P? field, V? newValue, NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] V>(PropertyInfo<P> propertyInfo, ref P? field, V? newValue, NoAccessBehavior noAccess)
     {
       SetPropertyConvert<P, V>(propertyInfo.Name, ref field, newValue, noAccess);
     }
@@ -2391,7 +2391,7 @@ namespace Csla.Core
     /// True if an exception should be thrown when the
     /// user is not authorized to change this property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected void SetProperty<P>(string propertyName, ref P? field, P? newValue, NoAccessBehavior noAccess)
+    protected void SetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, ref P? field, P? newValue, NoAccessBehavior noAccess)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -2472,7 +2472,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     /// <exception cref="SecurityException"></exception>
     /// <exception cref="PropertyLoadException"></exception>
-    protected void SetPropertyConvert<P, V>(string propertyName, ref P? field, V? newValue, NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] V>(string propertyName, ref P? field, V? newValue, NoAccessBehavior noAccess)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -2541,7 +2541,7 @@ namespace Csla.Core
     /// overload throws a SecurityException.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P? newValue)
+    protected void SetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2563,7 +2563,7 @@ namespace Csla.Core
     /// overload throws a SecurityException.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F? newValue)
+    protected void SetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F>(PropertyInfo<P> propertyInfo, F? newValue)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2586,7 +2586,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     /// <exception cref="SecurityException"></exception>
     /// <exception cref="PropertyLoadException"></exception>
-    protected void SetPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F? newValue, NoAccessBehavior noAccess)
+    protected void SetPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F>(PropertyInfo<P> propertyInfo, F? newValue, NoAccessBehavior noAccess)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2646,7 +2646,7 @@ namespace Csla.Core
     /// user is not authorized to change this property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     /// <exception cref="PropertyLoadException"></exception>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P? newValue, NoAccessBehavior noAccess)
+    protected void SetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue, NoAccessBehavior noAccess)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2768,7 +2768,7 @@ namespace Csla.Core
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     /// <exception cref="PropertyLoadException"></exception>
-    protected void LoadPropertyConvert<P, F>(PropertyInfo<P> propertyInfo, F? newValue)
+    protected void LoadPropertyConvert<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] F>(PropertyInfo<P> propertyInfo, F? newValue)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2798,7 +2798,7 @@ namespace Csla.Core
       }
     }
 
-    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P? newValue) where P : default
+    void IManageProperties.LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P : default
     {
       LoadProperty<P>(propertyInfo, newValue);
     }
@@ -2827,7 +2827,7 @@ namespace Csla.Core
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     /// <exception cref="PropertyLoadException"></exception>
-    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P? newValue)
+    protected void LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2876,7 +2876,7 @@ namespace Csla.Core
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     /// <exception cref="PropertyLoadException"></exception>
-    protected bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P? newValue)
+    protected bool LoadPropertyMarkDirty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
@@ -2936,7 +2936,7 @@ namespace Csla.Core
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <param name="oldValue">The old value.</param>
-    private static bool ValuesDiffer<P>(PropertyInfo<P> propertyInfo, P? newValue, P? oldValue)
+    private static bool ValuesDiffer<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue, P? oldValue)
     {
       var valuesDiffer = false;
       if (oldValue == null)
@@ -2956,7 +2956,7 @@ namespace Csla.Core
       return valuesDiffer;
     }
 
-    private void LoadPropertyValue<P>(PropertyInfo<P> propertyInfo, P? oldValue, P? newValue, bool markDirty)
+    private void LoadPropertyValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? oldValue, P? newValue, bool markDirty)
     {
       var valuesDiffer = ValuesDiffer(propertyInfo, newValue, oldValue);
 
@@ -3265,7 +3265,7 @@ namespace Csla.Core
     /// <param name="property"></param>
     /// <param name="factory"></param>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
-    protected void LoadPropertyAsync<R>(PropertyInfo<R> property, Task<R> factory)
+    protected void LoadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] R>(PropertyInfo<R> property, Task<R> factory)
     {
       if (property is null)
         throw new ArgumentNullException(nameof(property));
@@ -3737,7 +3737,7 @@ namespace Csla.Core
       return ReadProperty(propertyInfo);
     }
 
-    P? IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) where P : default
+    P? IManageProperties.ReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo) where P : default
     {
       return ReadProperty<P>(propertyInfo);
     }

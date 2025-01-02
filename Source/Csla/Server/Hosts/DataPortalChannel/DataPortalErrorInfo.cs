@@ -8,6 +8,8 @@
 
 using Csla.Serialization.Mobile;
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server.Hosts.DataPortalChannel
 {
   /// <summary>

@@ -10,6 +10,7 @@ using System.Reflection;
 using Csla.Reflection;
 using System.ComponentModel;
 using Csla.Properties;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {
@@ -162,7 +163,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="desiredType"/> or <paramref name="valueType"/> is <see langword="null"/>.</exception>
-    public static object? CoerceValue(Type desiredType, Type valueType, object? oldValue, object? value)
+    public static object? CoerceValue([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type desiredType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
     {
       if (desiredType is null)
         throw new ArgumentNullException(nameof(desiredType));
@@ -272,7 +273,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="valueType"/> is <see langword="null"/>.</exception>
-    public static D? CoerceValue<D>(Type valueType, object? oldValue, object? value)
+    public static D? CoerceValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] D>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
     {
       if (valueType is null)
         throw new ArgumentNullException(nameof(valueType));

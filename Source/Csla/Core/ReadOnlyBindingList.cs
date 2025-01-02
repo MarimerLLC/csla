@@ -6,6 +6,7 @@
 // <summary>A readonly version of BindingList(Of T)</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Core
@@ -20,10 +21,14 @@ namespace Csla.Core
   /// from the list. Use the IsReadOnly property
   /// to unlock the list for loading/unloading data.
   /// </remarks>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", 
+  [SuppressMessage("Microsoft.Naming", 
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyBindingList<C> :
+  public abstract class ReadOnlyBindingList<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    C> :
     ExtendedBindingList<C>, IBusinessObject, IReadOnlyBindingList
   {
     #region Identity

@@ -1,0 +1,18 @@
+name: not-code
+
+on:
+  push:
+    branches: [ main, v7.x, v8.x, v9.x ]
+    paths-ignore: ['Source/**', '.github/workflows/**']
+  pull_request:
+    branches: [ main, v7.x, v8.x, v9.x ]
+    paths-ignore: ['Source/**', '.github/workflows/**']
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+        - run: echo "This is not a code change"

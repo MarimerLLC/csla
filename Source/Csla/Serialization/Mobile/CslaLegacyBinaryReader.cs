@@ -7,6 +7,7 @@ namespace Csla.Serialization.Mobile
   /// This is a legacy version of <see cref="CslaBinaryReader"/>. You should
   /// not use this type unless you have issues with the <see cref="CslaBinaryReader"/>.
   /// </summary>
+  [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
   public class CslaLegacyBinaryReader : ICslaReader
   {
     private readonly Dictionary<int, string> keywordsDictionary;

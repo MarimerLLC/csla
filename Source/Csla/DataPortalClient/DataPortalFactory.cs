@@ -8,6 +8,8 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.DataPortalClient
 {
   /// <summary>
@@ -32,7 +34,11 @@ namespace Csla.DataPortalClient
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    public IDataPortal<T> GetPortal<T>()
+    public IDataPortal<T> GetPortal<
+#if NET8_0_OR_GREATER
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T>()
     {
       return (IDataPortal<T>)ServiceProvider.GetRequiredService(typeof(IDataPortal<T>));
     }

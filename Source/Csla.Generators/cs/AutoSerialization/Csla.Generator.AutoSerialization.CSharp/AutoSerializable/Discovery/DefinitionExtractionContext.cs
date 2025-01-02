@@ -22,7 +22,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     private const string _cslaNamespace = "Csla";
     private const string _autoSerializableAttributeName = "AutoSerializableAttribute";
     private const string _autoSerializedAttributeName = "AutoSerializedAttribute";
-    private const string _autoNonSerializedAttributeName = "NonSerializedAttribute";
+    private const string _autoDoNotSerializeAttributeName = "DoNotSerializeAttribute";
     private const string _iMobileObjectInterfaceNamespace = "Csla.Serialization.Mobile";
     private const string _iMobileObjectInterfaceName = "IMobileObject";
 
@@ -63,7 +63,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Determine if a type declaration represents a type that is auto serializable
     /// </summary>
-    /// <param name="typeSymbol">The declaration representing the type to be tested</param>
+    /// <param name="typeDeclarationSyntax">The declaration representing the type to be tested</param>
     /// <returns>Boolean true if the type is decorated with the AutoSerializable attribute, otherwise false</returns>
     public bool IsTypeAutoSerializable(TypeDeclarationSyntax typeDeclarationSyntax)
     {
@@ -76,7 +76,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Determine if a type declaration represents a type that is auto serializable
     /// </summary>
-    /// <param name="typeSymbol">The declaration representing the type to be tested</param>
+    /// <param name="typeSyntax">The declaration representing the type to be tested</param>
     /// <returns>Boolean true if the type is decorated with the AutoSerializable attribute, otherwise false</returns>
     public bool IsTypeAutoSerializable(TypeSyntax typeSyntax)
     {
@@ -90,7 +90,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Determine if a type declaration represents a type that implements the IMobileObject interface
     /// </summary>
-    /// <param name="typeSymbol">The declaration representing the type to be tested</param>
+    /// <param name="typeSyntax">The declaration representing the type to be tested</param>
     /// <remarks>Determines if the type either implements the interface directly or via inheritance</remarks>
     /// <returns>Boolean true if the type implements the IMobileObject interface, otherwise false</returns>
     public bool DoesTypeImplementIMobileObject(TypeSyntax typeSyntax)
@@ -128,7 +128,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the property is decorated with the AutoNonSerialized attribute, otherwise false</returns>
     public bool IsPropertyDecoratedWithAutoNonSerialized(PropertyDeclarationSyntax propertyDeclaration)
     {
-      return IsPropertyDecoratedWith(propertyDeclaration, _autoNonSerializedAttributeName, _cslaNamespace);
+      return IsPropertyDecoratedWith(propertyDeclaration, _autoDoNotSerializeAttributeName, _cslaNamespace);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the field is decorated with the AutoNonSerialized attribute, otherwise false</returns>
     public bool IsFieldDecoratedWithAutoNonSerialized(FieldDeclarationSyntax fieldDeclaration)
     {
-      return IsFieldDecoratedWith(fieldDeclaration, _autoNonSerializedAttributeName, _cslaNamespace);
+      return IsFieldDecoratedWith(fieldDeclaration, _autoDoNotSerializeAttributeName, _cslaNamespace);
     }
 
     #region Private Helper Methods

@@ -16,6 +16,16 @@
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <EnableTrimAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableSingleFileAnalyzer>
+    <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer> 
+    <!-- This is first priority warnings which should be fixed. They are usually trimming friendly, in a sense that, develop annotate what parts of types should be preserved.  -->
+    <NoWarn>$(NoWarn);IL2070;IL2072;IL2075</NoWarn>
+    <!-- 
+      This is problematic for NativeAOT pieces of code, which require analysis of API and what can be done to improve situation. 
+      Slapping "Here we require dynamic code" means, that we opt-out of supporting NativeAOT for these methods which is undesirable.
+    -->
+    <NoWarn>$(NoWarn);IL2026;IL2055;IL2057;IL2060;IL2096;IL2111;IL3050</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -104,7 +114,7 @@
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="Backport.System.Threading.Lock" Version="2.0.7" />
+    <PackageReference Include="Backport.System.Threading.Lock" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\bin\Release\netstandard2.0\Csla.Analyzers.dll">

@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla
@@ -18,7 +19,11 @@ namespace Csla
   /// <typeparam name="T">
   /// Data type of the property.
   /// </typeparam>
-  public class PropertyInfo<T> : Core.IPropertyInfo, IComparable
+  public class PropertyInfo<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> : Core.IPropertyInfo, IComparable
   {
     /// <summary>
     /// Creates a new instance of this class.
@@ -207,7 +212,7 @@ namespace Csla
     /// Gets or sets a value indicating whether this property is serializable.
     /// </summary>
     /// <remarks>
-    /// If the property is marked with the <see cref="Csla.NonSerializedAttribute"/>,
+    /// If the property is marked with the <see cref="DoNotSerializeAttribute"/>,
     /// it is considered not serializable. Otherwise, it is considered serializable.
     /// </remarks>
     public virtual bool IsSerializable
@@ -220,7 +225,7 @@ namespace Csla
         }
         else if (_propertyInfo != null)
         {
-          var nonSerialized = _propertyInfo.GetCustomAttributes(typeof(Csla.NonSerializedAttribute), true).OfType<NonSerializedAttribute>().Any();
+          var nonSerialized = _propertyInfo.GetCustomAttributes(typeof(DoNotSerializeAttribute), true).OfType<DoNotSerializeAttribute>().Any();
           _isSerializable = !nonSerialized;
           return !nonSerialized;
         }

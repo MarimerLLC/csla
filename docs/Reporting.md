@@ -1,3 +1,5 @@
+# Report Generation
+
 ## Does CSLA .NET support report generation?
 
 Business objects created using CSLA .NET are bindable, and therefore can sometimes be used directly from report generation tools.

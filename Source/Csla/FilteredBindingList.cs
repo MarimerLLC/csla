@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Collections;
 using Csla.Properties;
 using System.Diagnostics.CodeAnalysis;
@@ -18,7 +19,11 @@ namespace Csla
   /// </summary>
   /// <typeparam name="T">The type of the objects contained
   /// in the original list.</typeparam>
-  public class FilteredBindingList<T> :
+  public class FilteredBindingList<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    T> :
     IList<T>, IBindingList, IEnumerable<T>,
     ICancelAddNew
     where T: notnull

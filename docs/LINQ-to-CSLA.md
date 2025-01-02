@@ -1,3 +1,5 @@
+# LINQ to CSLA
+
 ## When is it appropriate or inappropriate to use LINQ to CSLA indexing?
 
 The indexing feature of LINQ to CSLA allows for amazingly fast queries against a collection. However, it does require that an index be constructed and maintained, and that is not free. This is discussed in the _Expert 2008 Business Objects_ book, but is a topic worth reinforcing.

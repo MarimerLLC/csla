@@ -6,6 +6,8 @@
 // <summary>Interface implemented by server-side data portal</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -24,7 +26,7 @@ namespace Csla.Server
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync);
+    Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync);
     /// <summary>
     /// Get an existing business object.
     /// </summary>
@@ -35,7 +37,7 @@ namespace Csla.Server
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync);
+    Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync);
     /// <summary>
     /// Update a business object.
     /// </summary>
@@ -56,6 +58,6 @@ namespace Csla.Server
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync);
+    Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync);
   }
 }

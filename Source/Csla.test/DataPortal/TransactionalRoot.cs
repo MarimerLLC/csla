@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace Csla.Test.DataPortal
 {

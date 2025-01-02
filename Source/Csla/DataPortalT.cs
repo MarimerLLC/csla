@@ -23,7 +23,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T: notnull
+  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T: notnull
   {
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
@@ -100,7 +100,11 @@ namespace Csla
       }
     }
 
-    private async Task<object> DoCreateAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoCreateAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
 
       if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
@@ -158,7 +162,11 @@ namespace Csla
     /// <param name="criteria">The criteria required to perform the creation operation</param>
     /// <returns>Returns a new, initialised object of the type requested</returns>
 
-    private object Create(Type objectType, object criteria)
+    private object Create(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria)
     {
       try
       {
@@ -182,7 +190,11 @@ namespace Csla
       return (T)await DoCreateAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    private async Task<object> DoFetchAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoFetchAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
@@ -221,7 +233,11 @@ namespace Csla
       return result.ReturnObject!;
     }
 
-    private async Task<object> DoExecuteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoExecuteAsync(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
 
       if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
@@ -279,7 +295,11 @@ namespace Csla
     /// <param name="objectType">The type of object to instantiate and load</param>
     /// <param name="criteria">The criteria required to perform the load operation</param>
     /// <returns>Returns a populated object of the type requested</returns>
-    private object Fetch(Type objectType, object criteria)
+    private object Fetch(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria)
     {
       try
       {
@@ -519,7 +539,7 @@ namespace Csla
       return DoUpdateAsync(obj, false);
     }
 
-    private async Task DoDeleteAsync(Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task DoDeleteAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
 
       if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
@@ -572,7 +592,11 @@ namespace Csla
     /// <param name="objectType">The type of object to instantiate and load</param>
     /// <param name="criteria">The criteria required to perform the load operation</param>
     /// <returns>Returns a populated object of the type requested</returns>
-    private void Delete(Type objectType, object criteria)
+    private void Delete(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+      Type objectType, object criteria)
     {
       try
       {

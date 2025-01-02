@@ -2,15 +2,18 @@
 
 Links to blogs or other resources regarding various aspects of securing the CSLA data portal and other features.
 
+## CSLA 8+
+
+In CSLA 8 the data portal was enhanced to always rerun business rules on the server for each inbound request from a client. This is a significant security enhancement, as it ensures that business rules are always enforced, regardless of the client's behavior.
+
+Also in CSLA 8, the default behavior was changed so the user identity never automatically flows from the client to the server. You can still enable that behavior if you want, but it is disabled by default. This enhances security by default.
+
 ## CSLA 5 and CSLA 6 Remote Data Portal Security
 
 * [CSLA 5 and CSLA 6 Remote Data Portal Security](https://blog.dotnotstandard.com/blog/csla-data-portal-security)
 
 ## Using Windows Authentication
 
-<!---* [http://forums.lhotka.net/forums/22855/ShowThread.aspx#22855](http://forums.lhotka.net/forums/22855/ShowThread.aspx#22855)
-* [http://forums.lhotka.net/forums/thread/22529.aspx](http://forums.lhotka.net/forums/thread/22529.aspx)
-* [http://forums.lhotka.net/forums/thread/22107.aspx](http://forums.lhotka.net/forums/thread/22107.aspx)--->
 * https://cslanet.com/old-forum/2331.html
 * https://cslanet.com/old-forum/844.html
 

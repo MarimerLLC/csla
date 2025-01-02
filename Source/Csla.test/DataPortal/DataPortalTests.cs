@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Test.DataBinding;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
@@ -15,6 +15,10 @@ using FluentAssertions;
 using Csla.Rules;
 using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.Testing.Business.DataPortal;
+using Csla.Server;
+using System.Security.Principal;
+using FluentAssertions.Execution;
 
 namespace Csla.Test.DataPortal
 {
@@ -308,6 +312,29 @@ namespace Csla.Test.DataPortal
       finally
       {
         cslaOptions.DefaultWaitForIdleTimeoutInSeconds = oldTimeout;
+      }
+    }
+
+    [TestMethod]
+    public async Task CleanupShouldSetThePrincipalToAnUnathenticatedOne()
+    {
+      // We have to use an extra DI context here to setup the TestableDataPortal and set necessary options
+      var diContext = TestDIContextFactory.CreateContext(options =>
+      {
+        options.Services.AddTransient<TestableDataPortal>();
+        options.Security(s => s.FlowSecurityPrincipalFromClient = true);
+        options.DataPortal(dpo => dpo.AddServerSideDataPortal());
+      });
+
+      var applicationContext = diContext.CreateTestApplicationContext();
+      var contextManager = (ApplicationContextManagerUnitTests)applicationContext.ContextManager;
+      var dp = diContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      _ = await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, true, "en-US", "en-US", new Core.ContextDictionary()), true);
+
+      using (new AssertionScope())
+      {
+        contextManager.LastSetUserPrincipal.Should().NotBeNull();
+        contextManager.LastSetUserPrincipal.Should().Match<IPrincipal>(p => !p.Identity.IsAuthenticated);
       }
     }
 

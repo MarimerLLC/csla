@@ -6,6 +6,7 @@
 // <summary>Base class to be used when creating a data portal</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -205,7 +206,7 @@ namespace Csla.Server
     /// invoked.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P? newValue)
+    protected void LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(object obj, PropertyInfo<P> propertyInfo, P? newValue)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -257,7 +258,7 @@ namespace Csla.Server
     /// No authorization checks occur when this method is called.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
+    protected P? ReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(object obj, PropertyInfo<P> propertyInfo)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -343,7 +344,7 @@ namespace Csla.Server
     /// <typeparam name="C">Type of child objects in the collection.</typeparam>
     /// <param name="obj">Editable collection object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    protected Csla.Core.MobileList<C> GetDeletedList<C>(object obj)
+    protected Csla.Core.MobileList<C> GetDeletedList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(object obj)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

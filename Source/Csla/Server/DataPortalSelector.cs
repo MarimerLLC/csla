@@ -6,6 +6,7 @@
 // <summary>Selects the appropriate data portal implementation</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Server
@@ -38,7 +39,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -65,7 +66,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -124,7 +125,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {

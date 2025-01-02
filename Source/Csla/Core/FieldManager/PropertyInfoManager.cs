@@ -69,7 +69,15 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    internal static PropertyInfoList GetPropertyListCache(Type objectType)
+#if NET8_0_OR_GREATER
+    [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067:UnrecognizedReflectionPattern",
+          Justification = "Type in cache is the same as objectType")]
+#endif
+    internal static PropertyInfoList GetPropertyListCache(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type objectType)
     {
       var cache = PropertyInfoCache;
 
@@ -123,7 +131,15 @@ namespace Csla.Core.FieldManager
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    internal static PropertyInfo<T> RegisterProperty<T>(Type objectType, PropertyInfo<T> info)
+    internal static PropertyInfo<T> RegisterProperty<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      T>(
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+      Type objectType, PropertyInfo<T> info)
     {
       var list = GetPropertyListCache(objectType);
       lock (list)
@@ -166,7 +182,7 @@ namespace Csla.Core.FieldManager
     /// of the object type has been created within the current AppDomain.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static PropertyInfoList GetRegisteredProperties(Type objectType)
+    public static PropertyInfoList GetRegisteredProperties([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -184,7 +200,7 @@ namespace Csla.Core.FieldManager
     /// <param name="objectType">The business object type.</param>
     /// <param name="propertyName">The name of the property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    public static IPropertyInfo? GetRegisteredProperty(Type objectType, string propertyName)
+    public static IPropertyInfo? GetRegisteredProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, string propertyName)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

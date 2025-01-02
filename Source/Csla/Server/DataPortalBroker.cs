@@ -8,6 +8,8 @@
 
 using System.Xml;
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -34,7 +36,7 @@ namespace Csla.Server
     public static IDataPortalServer? DataPortalServer { get; set; }
 
     /// <inheritdoc />
-    public Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -54,7 +56,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -92,7 +94,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

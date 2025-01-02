@@ -6,6 +6,7 @@
 // <summary>This is the base class from which readonly collections</summary>
 //-----------------------------------------------------------------------
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 
@@ -17,10 +18,14 @@ namespace Csla
   /// </summary>
   /// <typeparam name="T">Type of the list class.</typeparam>
   /// <typeparam name="C">Type of child objects contained in the list.</typeparam>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage(
+  [SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyBindingListBase<T, C> :
+  public abstract class ReadOnlyBindingListBase<T,
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+#endif
+    C> :
     Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection,
     ICloneable, Server.IDataPortalTarget, Core.IUseApplicationContext
     where T : ReadOnlyBindingListBase<T, C>

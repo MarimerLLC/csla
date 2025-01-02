@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using Csla.Properties;
 
@@ -297,7 +298,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    public T? GetValue<T>(string name)
+    public T? GetValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string name)
     {
       try
       {

@@ -1,10 +1,16 @@
-﻿namespace Csla
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Csla
 {
   /// <summary>
   /// An alternative to Lazy&lt;T&gt; 
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public sealed class LazySingleton<T> : Core.IUseApplicationContext
+  public sealed class LazySingleton<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T> : Core.IUseApplicationContext
     where T : class
   {
     private readonly Lock _syncRoot = LockFactory.Create();

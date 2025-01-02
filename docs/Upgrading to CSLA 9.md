@@ -163,23 +163,52 @@ public static bool CanSerialize(Type type) => type == typeof(ClaimsPrincipal);
 
 ## RabbitMq Data Portal Channel
 
-The RabbitMQ data portal channel has been updated to work with dependency injection. You can explore the `RabbitMqExample` project in the `Samples` folder for an example of how to use the RabbitMQ data portal channel.
+The RabbitMQ data portal channel has been updated to work with dependency injection. You can explore the `RabbitMqExample` project in the `Samples` folder for an example of how to use the RabbitMQ data portal channel. 
 
-## Using Timeout in `HttpProxy` and `HttpCompressionProxy`
+Furthermore it was updated to v7 which means there are breaking changes due to the changed made in RabbitMq. The biggest change is that now all related methods have to be async.
+The following APIs changed
+* `Csla.Channels.RabbitMq.RabbitMqPortal`
+  * `public void StartListening()` -> `public Task StartListening()`
+* `Csla.Channels.RabbitMq.RabbitMqProxy`
+  * `protected virtual void InitializeRabbitMQ()` -> `protected virtual Task InitializeRabbitMQ()`
 
-### Overview
+## Nullable Reference Types
+
+CSLA 9 partially supports the use of nullable reference types in your code. This means that you can start using the `#nullable enable` directive in your code and CSLA types will have the necessary annotations.
+The following projects have nullable reference types enabled and annotated
+* `Csla.Channels.Grpc`
+* `Csla.Channels.RabbitMq`
+* `Csla.Data.SqlClient`
+* `Csla.Data.SqlClient.Fx`
+* `Csla.Web.Mvc`
+* `Csla.AspNetCore`
+
+### API Changes
+
+Supporting nullable types means that some APIs have changed to support nullable types.
+
+* The `User` and `Principal` properties of `ApplicationContext` no longer return null
+* Type `Csla.Serialization.SerializationFormatterFactory` was removed. To get the serializer resolve an instance of type `ISerializationFormatter`. For example `ApplicationContext.GetRequiredService<ISerializationFormatter>()`(from within a business object)
+* `Csla.Core.IParent`
+  * `ApplyEditChild` and `RemoveChild` changed from `void` to `Task` return type
+* `void Csla.Core.IContextManager.SetUser(IPrincipal principal)` does not accept `null` anymore
+  * This change only affects you when you use the `IContextManager` directly. If you use `ApplicationContext.User` CSLA will take care of translating it into a non-null IPrincipal.
+
+#### Using Timeout in `HttpProxy` and `HttpCompressionProxy`
+
+##### Overview
 
 The `HttpProxy` and `HttpCompressionProxy` classes now support configuring timeouts through the `HttpProxyOptions` class. This allows for more flexible and centralized configuration of HTTP request timeouts.
 
-### Configuration
+##### Configuration
 
 To configure the timeout for `HttpProxy` and `HttpCompressionProxy`, you need to set the `Timeout` and `ReadWriteTimeout` properties in the `HttpProxyOptions` class.
 
-### Example
+##### Example
 
 Below is an example of how to configure and use the timeout settings in `HttpProxy` and `HttpCompressionProxy`.
 
-### Configure `HttpProxyOptions`
+###### Configure `HttpProxyOptions`
 
 ```csharp
 services.AddCsla(
@@ -194,43 +223,7 @@ services.AddCsla(
 
 ```
 
-### Summary
+
+##### Summary
 
 By configuring the `HttpProxyOptions` class, you can easily set the timeout values for `HttpProxy` and `HttpCompressionProxy`. This approach centralizes the configuration and makes it easier to manage timeout settings across your application.
-
-# Nullable Reference Types
-
-CSLA 9 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values or returns `null`.
-
-## API Changes
-
-Supporting nullable types means that some APIs have changed to support nullable types.
-
-* Many methods now throw an `ArgumentNullException` instead of a `NullReferenceException`. That means typically the methods didn't work so far with `null` anyway
-* The `User` and `Principal` properties of `ApplicationContext` no longer return null
-* `Csla.Configuration.ConfigurationManager.AppSettings` and `.ConnectionStrings` are no longer settable
-* `Csla.Core.LoadManager.AsyncLoadException.Property` property set removed. It can now only be set by the constructor
-* `Csla.Core.AddedNewEventArgs<T>` default constructor removed
-* `Csla.Reflection.LateBoundObject(Type objectType)` constructor removed (hasn't worked so far anyway)
-* `Csla.Core.UndoException` constructors now throw `ArgumentNullException` on necessary parameters and all public fields changed to readonly properties
-* `Csla.Data.ObjectAdapter.Fill(DataTable dt, object source)` throws an `ArgumentNullException` for source instead of `ArgumentException`.
-* `Csla.Reflection.ServiceProviderMethodInfo` 
-  * Now has a constructor requiring a `MethodInfo` parameter
-  * Property `MethodInfo` property set removed and replaced by the constructor
-* `Csla.Reflection.DynamicMemberHandle` does not accept any `null` parameters now. That includes having no get/set for a property/field.
-* `Csla.Rules.BrokenRule` can not be instantiated by user code. It wasn't useable before because all property setters were internal.
-* `Csla.Rules.BrokenRulesCollection` does not accept any null, empty or white space values for methods which accepts a string for a property name.
-* `Csla.Rules.IRuleContext.Add*Result(...)` methods now throw an `ArgumentException` when the provided `string description` is `IsNullOrWhiteSpace`.
-* `Csla.Security.IAuthorizeReadWrite` all methods `ArgumentNullException` are now documented.
-* `Csla.Web.Mvc.CslaModelBinder` now needs an `ApplicationContext` in it's constructor.
-* `AddAspNetCore()` configuration method now adds the necessary services to support resolving `CslaModelBinder` from the DI container
-* `Csla.Serialization.Mobile.SerializationInfo`
-  * Now has a constructor requiring `int referenceId` and `string typeName`
-  * Property `ReferenceId` and `TypeName` property set removed and replaced by the constructor
-* `Csla.Server.InterceptArgs`
-  * Now as two new constructors requiring necessary parameters
-  * Property set for required parameters removed
-* `Csla.Server.EmptyCriteria`
-  * Public constructor removed (now private). Instead use `Csla.Server.EmptyCriteria.Instance`.
-* `Csla.Server.ObjectFactory`
-  * Protected methods now guard against `null` objects

@@ -6,6 +6,7 @@
 // <summary>Exposes server-side DataPortal functionality through RabbitMQ</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Security.Principal;
@@ -36,7 +37,7 @@ namespace Csla.Channels.RabbitMq
     private readonly ApplicationContext _applicationContext;
 
     private IConnection? Connection;
-    private IModel? Channel;
+    private IChannel? Channel;
     private string? DataPortalQueueName;
 
     private Uri DataPortalUri { get; set; }
@@ -44,7 +45,7 @@ namespace Csla.Channels.RabbitMq
 #if NET8_0_OR_GREATER
     [MemberNotNull(nameof(DataPortalUri), nameof(DataPortalQueueName), nameof(Connection), nameof(Channel))]
 #endif
-    private void InitializeRabbitMQ()
+    private async Task InitializeRabbitMQ()
     {
       if (Connection == null || DataPortalUri == null || Channel == null || DataPortalQueueName == null)
       {
@@ -60,39 +61,42 @@ namespace Csla.Channels.RabbitMq
           factory.UserName = userInfo[0];
         if (userInfo.Length > 1)
           factory.Password = userInfo[1];
-        Connection = factory.CreateConnection();
-        Channel = Connection.CreateModel();
+#pragma warning disable CS8774 // 11/22/2024, Nullable analysis can't track nullability with async/await
+        Connection = await factory.CreateConnectionAsync();
+        Channel = await Connection.CreateChannelAsync();
+#pragma warning restore CS8774
       }
     }
 
     /// <summary>
     /// Start processing inbound messages.
     /// </summary>
-    public void StartListening()
+    public async Task StartListening()
     {
-      InitializeRabbitMQ();
-      Channel?.QueueDeclare(
-        queue: DataPortalQueueName,
-        durable: false,
-        exclusive: false,
-        autoDelete: false,
-        arguments: null);
+      await InitializeRabbitMQ();
+      await Channel!.QueueDeclareAsync(queue: DataPortalQueueName!, durable: false, exclusive: false, autoDelete: false);
 
-      var consumer = new EventingBasicConsumer(Channel);
-      consumer.Received += (_, ea) =>
-      {
-        InvokePortal(ea, ea.Body.ToArray());
-      };
-      Channel.BasicConsume(queue: DataPortalQueueName, autoAck: true, consumer: consumer);
+      var consumer = new AsyncEventingBasicConsumer(Channel);
+      consumer.ReceivedAsync += async (_, ea) => await InvokePortal(ea, ea.Body.ToArray());
+      await Channel.BasicConsumeAsync(queue: DataPortalQueueName!, autoAck: true, consumer: consumer);
     }
 
-    private async void InvokePortal(BasicDeliverEventArgs ea, byte[] requestData)
+    private async Task InvokePortal(BasicDeliverEventArgs ea, byte[] requestData)
     {
+      if (ea.BasicProperties.ReplyTo is null)
+      {
+        throw new InvalidOperationException($"{nameof(BasicDeliverEventArgs.BasicProperties)}.{nameof(IReadOnlyBasicProperties.ReplyTo)} == null");
+      }
+      if (ea.BasicProperties.CorrelationId is null)
+      {
+        throw new InvalidOperationException($"{nameof(BasicDeliverEventArgs.BasicProperties)}.{nameof(IReadOnlyBasicProperties.CorrelationId)} == null");
+      }
+
       var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
       try
       {
         var request = Deserialize<object>(requestData);
-        result = await CallPortal(ea.BasicProperties.Type, request);
+        result = await CallPortal(ea.BasicProperties.Type ?? throw new InvalidOperationException($"{nameof(BasicDeliverEventArgs.BasicProperties)}.{nameof(IReadOnlyBasicProperties.Type)} == null"), request);
       }
       catch (Exception ex)
       {
@@ -102,29 +106,27 @@ namespace Csla.Channels.RabbitMq
       try
       {
         var response = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
-        SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
+        await SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
       }
       catch (Exception ex)
       {
         result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
         result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
         var response = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
-        SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
+        await SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
       }
     }
 
-    private void SendMessage(string target, string correlationId, byte[] request)
+    private async Task SendMessage(string target, string correlationId, byte[] request)
     {
-      InitializeRabbitMQ();
+      await InitializeRabbitMQ();
       if (Channel is null)
         throw new InvalidOperationException($"{nameof(Channel)} == null");
-      var props = Channel.CreateBasicProperties();
-      props.CorrelationId = correlationId;
-      Channel.BasicPublish(
-        exchange: "",
-        routingKey: target,
-        basicProperties: props,
-        body: request);
+      var props = new BasicProperties
+      {
+        CorrelationId = correlationId
+      };
+      await Channel.BasicPublishAsync(exchange: "", routingKey: target, mandatory: true, basicProperties: props, body: request);
     }
 
     private async Task<DataPortalResponse> CallPortal(string operation, object request)

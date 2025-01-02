@@ -11,6 +11,9 @@ using System.Data;
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 using System.Data.SqlClient;
 #endif
+#if NET8_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Csla.Data
 {
@@ -44,100 +47,6 @@ namespace Csla.Data
       _sqlDataReader = DataReader as SqlDataReader;
 #endif
     }
-
-#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
-    /// <summary>
-    /// Asynchronously gets the data value as a type.
-    /// </summary>
-    /// <typeparam name="T">Type of value</typeparam>
-    /// <param name="ordinal">Ordinal position of value</param>
-    public Task<T> GetFieldValueAsync<T>(int ordinal)
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("GetFieldValueAsync");
-      return _sqlDataReader.GetFieldValueAsync<T>(ordinal);
-    }
-
-    /// <summary>
-    /// Asynchronously gets the data value as a type.
-    /// </summary>
-    /// <typeparam name="T">Type of value</typeparam>
-    /// <param name="ordinal">Ordinal position of value</param>
-    /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<T> GetFieldValueAsync<T>(int ordinal, CancellationToken cancellationToken)
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("GetFieldValueAsync");
-      return _sqlDataReader.GetFieldValueAsync<T>(ordinal, cancellationToken);
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the column has a null
-    /// or missing value.
-    /// </summary>
-    /// <param name="ordinal">Ordinal position of value</param>
-    public Task<bool> IsDbNullAsync(int ordinal)
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("IsDbNullAsync");
-      return _sqlDataReader.IsDBNullAsync(ordinal);
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether the column has a null
-    /// or missing value.
-    /// </summary>
-    /// <param name="ordinal">Ordinal position of value</param>
-    /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> IsDbNullAsync(int ordinal, CancellationToken cancellationToken)
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("IsDbNullAsync");
-      return _sqlDataReader.IsDBNullAsync(ordinal, cancellationToken);
-    }
-
-    /// <summary>
-    /// Advances the reader to the next result.
-    /// </summary>
-    public Task<bool> NextResultAsync()
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return _sqlDataReader.NextResultAsync();
-    }
-
-    /// <summary>
-    /// Advances the reader to the next result.
-    /// </summary>
-    /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> NextResultAsync(CancellationToken cancellationToken)
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return _sqlDataReader.NextResultAsync(cancellationToken);
-    }
-
-    /// <summary>
-    /// Advances to the next record in a recordset.
-    /// </summary>
-    public Task<bool> ReadAsync()
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return _sqlDataReader.ReadAsync();
-    }
-
-    /// <summary>
-    /// Advances to the next record in a recordset.
-    /// </summary>
-    /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> ReadAsync(CancellationToken cancellationToken)
-    {
-      if (_sqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return _sqlDataReader.ReadAsync(cancellationToken);
-    }
-#endif
 
     /// <summary>
     /// Gets a string value from the datareader.
@@ -733,6 +642,9 @@ namespace Csla.Data
     /// Invokes the GetFieldType method of the underlying datareader.
     /// </summary>
     /// <param name="i">Ordinal column position of the value.</param>
+#if NET8_0_OR_GREATER
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)]
+#endif
     public virtual Type GetFieldType(int i)
     {
       return DataReader.GetFieldType(i);

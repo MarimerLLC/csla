@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla
 {
   /// <summary>
@@ -18,6 +20,10 @@ namespace Csla
     /// Get a child data portal instance.
     /// </summary>
     /// <typeparam name="T">Child business object type</typeparam>
-    IChildDataPortal<T> GetPortal<T>();
+    IChildDataPortal<T> GetPortal<
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T>();
   }
 }

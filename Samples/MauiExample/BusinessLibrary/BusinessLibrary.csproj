@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla" Version="9.0.0-rc1-gb7b53fbc46" />
+    <PackageReference Include="Csla" Version="9.0.0-rc3-g44c5640a07" />
   </ItemGroup>
 
   <ItemGroup>

@@ -672,7 +672,7 @@ namespace Csla.Server
       if (!context.IsRemotePortal) return;
       _applicationContext.Clear();
       if (SecurityOptions.FlowSecurityPrincipalFromClient)
-        _applicationContext.SetUnauthenticatedUser();
+        _applicationContext.User = null;
     }
 
     #endregion

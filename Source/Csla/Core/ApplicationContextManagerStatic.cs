@@ -117,13 +117,10 @@ namespace Csla.Core
       currentServiceProvider = scope ?? throw new ArgumentNullException(nameof(scope));
     }
 
-    /// <summary>
-    /// Sets the current user principal.
-    /// </summary>
-    /// <param name="principal">User principal value</param>
-    public void SetUser(IPrincipal? principal)
+    /// <inheritdoc />
+    public void SetUser(IPrincipal principal)
     {
-      currentPrincipal = principal ?? new ClaimsPrincipal();
+      currentPrincipal = principal ?? throw new ArgumentNullException(nameof(principal));
     }
 
     private static ApplicationContext? _applicationContext;

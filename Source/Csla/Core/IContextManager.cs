@@ -36,7 +36,8 @@ namespace Csla.Core
     /// Sets the current principal.
     /// </summary>
     /// <param name="principal">Principal object.</param>
-    void SetUser(IPrincipal? principal);
+    /// <exception cref="ArgumentNullException"><paramref name="principal"/> is <see langword="null"/>.</exception>
+    void SetUser(IPrincipal principal);
     /// <summary>
     /// Gets the local context.
     /// </summary>

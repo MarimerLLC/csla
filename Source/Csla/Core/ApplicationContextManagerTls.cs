@@ -50,13 +50,10 @@ namespace Csla.Core
       return result;
     }
 
-    /// <summary>
-    /// Sets the current user principal.
-    /// </summary>
-    /// <param name="principal">User principal value</param>
-    public virtual void SetUser(IPrincipal? principal)
+    /// <inheritdoc />
+    public virtual void SetUser(IPrincipal principal)
     {
-      Thread.CurrentPrincipal = principal;
+      Thread.CurrentPrincipal = principal ?? throw new ArgumentNullException(nameof(principal));
     }
 
     /// <summary>

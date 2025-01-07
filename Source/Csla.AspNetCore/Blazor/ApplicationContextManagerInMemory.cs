@@ -129,13 +129,11 @@ namespace Csla.AspNetCore.Blazor
       return CurrentPrincipal;
     }
 
-    /// <summary>
-    /// Attempts to set the current principal on the registered
-    /// IHostEnvironmentAuthenticationStateProvider service.
-    /// </summary>
-    /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal? principal)
+    /// <inheritdoc />
+    public virtual void SetUser(IPrincipal principal)
     {
+      ArgumentNullException.ThrowIfNull(principal);
+      
       if (!ReferenceEquals(CurrentPrincipal, principal))
       {
         if (ActiveCircuitState.CircuitExists)
@@ -161,7 +159,7 @@ namespace Csla.AspNetCore.Blazor
         {
           throw new InvalidOperationException("HttpContext==null, !CircuitExists");
         }
-        CurrentPrincipal = principal ?? UnauthenticatedPrincipal;
+        CurrentPrincipal = principal;
       }
     }
 

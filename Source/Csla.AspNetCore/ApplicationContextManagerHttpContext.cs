@@ -120,7 +120,7 @@ namespace Csla.AspNetCore
     /// <param name="principal">Principal object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="principal"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">The underlying <see cref="HttpContext"/> is <see langword="null"/>.</exception>
-    public void SetUser(System.Security.Principal.IPrincipal? principal)
+    public void SetUser(System.Security.Principal.IPrincipal principal)
     {
       ArgumentNullException.ThrowIfNull(principal);
       ThrowIfHttpContextIsNull();

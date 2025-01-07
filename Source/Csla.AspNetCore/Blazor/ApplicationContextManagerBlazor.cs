@@ -130,11 +130,8 @@ namespace Csla.AspNetCore.Blazor
       return CurrentPrincipal;
     }
 
-    /// <summary>
-    /// Not supported in Blazor.
-    /// </summary>
-    /// <param name="principal">Principal object.</param>
-    public virtual void SetUser(IPrincipal? principal)
+    /// <inheritdoc />
+    public virtual void SetUser(IPrincipal principal)
     {
       ArgumentNullException.ThrowIfNull(principal);
       if (HttpContext != null)

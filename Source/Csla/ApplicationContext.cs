@@ -61,9 +61,7 @@ namespace Csla
     /// is used, otherwise the current Thread.CurrentPrincipal
     /// value is used.
     /// </remarks>
-#if NET8_0_OR_GREATER
     [AllowNull]
-#endif
     public IPrincipal User
     {
       get { return ContextManager.GetUser(); }
@@ -461,7 +459,5 @@ namespace Csla
       var gt = genericType.MakeGenericType(paramTypes);
       return CreateInstance(gt);
     }
-
-    internal void SetUnauthenticatedUser() => ContextManager.SetUser(null);
   }
 }

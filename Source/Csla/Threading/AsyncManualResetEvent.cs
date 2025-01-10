@@ -38,6 +38,13 @@ namespace Csla.Threading
     public void Set() { _tcs.TrySetResult(true); }
 
     /// <summary>
+    /// Suggestion - If the rules throw an exception
+    /// let the client know about it if/when they await all rules
+    /// </summary>
+    /// <param name="ex"></param>
+    public void Set(Exception ex) { ) _tcs.TrySetException(ex); }
+
+    /// <summary>
     /// Reset the event, preparing it for reuse
     /// </summary>
     public void Reset()

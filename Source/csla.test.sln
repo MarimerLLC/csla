@@ -70,6 +70,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Generator.AutoImplemen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Generator.AutoSerialization.CSharp", "Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj", "{E838D906-6C66-40E7-3604-9CD97AFD47B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Csla.Generator.AutoImplementProperties.Attributes.CSharp", "Csla.Generator.AutoImplementProperties.Attributes.CSharp\Csla.Generator.AutoImplementProperties.Attributes.CSharp.csproj", "{D2FAD695-B432-489A-81BC-3D0482F057D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1094,6 +1096,46 @@ Global
 		{E838D906-6C66-40E7-3604-9CD97AFD47B0}.Testing|x64.Build.0 = Debug|Any CPU
 		{E838D906-6C66-40E7-3604-9CD97AFD47B0}.Testing|x86.ActiveCfg = Debug|Any CPU
 		{E838D906-6C66-40E7-3604-9CD97AFD47B0}.Testing|x86.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|ARM.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|x64.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Debug|x86.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|ARM.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|ARM.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|x64.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|x64.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|x86.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Debug|x86.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|Any CPU.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|ARM.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|ARM.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|x64.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|x64.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|x86.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Mono Release|x86.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|ARM.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|ARM.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|x64.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|x64.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|x86.ActiveCfg = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Release|x86.Build.0 = Release|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|Any CPU.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|ARM.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|ARM.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|x64.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|x64.Build.0 = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|x86.ActiveCfg = Debug|Any CPU
+		{D2FAD695-B432-489A-81BC-3D0482F057D2}.Testing|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1117,6 +1159,7 @@ Global
 		{53B68DDF-4A03-4051-B1EC-0E86CD7951C7} = {207BA2D1-EB2E-45A0-9F82-4B7975EDD8C6}
 		{3F0193BB-6B1D-E2A3-ABEB-538D3494C837} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{E838D906-6C66-40E7-3604-9CD97AFD47B0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D2FAD695-B432-489A-81BC-3D0482F057D2} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46D05EF4-18C0-4E24-A0A3-A11C7FFFFBBA}

@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
   /// <summary>
-  /// Generates partial classes for incremental properties implementation based on the presence of the <see cref="Csla.CslaImplementPropertiesAttribute"/> attribute.
+  /// Generates partial classes for incremental properties implementation based on the presence of the Csla.CslaImplementPropertiesAttribute attribute.
   /// </summary>
   [Generator]
   public class IncrementalAutoImplementPropertiesPartialsGenerator : IIncrementalGenerator

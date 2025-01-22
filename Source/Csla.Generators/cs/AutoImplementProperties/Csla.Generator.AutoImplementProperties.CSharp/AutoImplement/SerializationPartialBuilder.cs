@@ -123,8 +123,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <param name="typeDefinition">The definition of the type for which we are generating</param>
     private void AppendTypeDefinition(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
     {
-      textWriter.WriteLine($"namespace {typeDefinition.Namespace};");
-      textWriter.WriteLine();
+      if (!string.IsNullOrWhiteSpace(typeDefinition.Namespace))
+      {
+        textWriter.WriteLine($"namespace {typeDefinition.Namespace};");
+        textWriter.WriteLine();
+      }
 
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");

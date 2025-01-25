@@ -81,8 +81,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
         containerDefinitionBuilder.Append(" ");
       }
 
-      containerDefinitionBuilder.Append("namespace ");
-      containerDefinitionBuilder.Append(namespaceDeclarationSyntax.Name.ToString());
+      var namespaceValue = namespaceDeclarationSyntax.Name.ToString();
+      if (!string.IsNullOrWhiteSpace(namespaceValue))
+      {
+        containerDefinitionBuilder.Append("namespace ");
+        containerDefinitionBuilder.Append(namespaceValue);
+      }
 
       containerDefinition = new ExtractedContainerDefinition
       {

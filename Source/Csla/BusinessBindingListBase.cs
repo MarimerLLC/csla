@@ -704,7 +704,7 @@ namespace Csla
 
       if (info.Children.TryGetValue("_deletedList", out var child))
       {
-        _deletedList = (MobileList<C>)formatter.GetObject(child.ReferenceId);
+        _deletedList = (MobileList<C>?)formatter.GetObject(child.ReferenceId);
       }
       base.OnSetChildren(info, formatter);
     }

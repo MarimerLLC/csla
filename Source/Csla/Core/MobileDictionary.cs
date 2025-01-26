@@ -158,13 +158,13 @@ namespace Csla.Core
       {
         K key;
         if (_keyIsMobile)
-          key = (K)formatter.GetObject(info.Children[_keyPrefix + index].ReferenceId);
+          key = (K)(formatter.GetObject(info.Children[_keyPrefix + index].ReferenceId) ?? throw new InvalidOperationException());
         else
           key = info.GetValue<K>(_keyPrefix + index)!;
 
         V value;
         if (_valueIsMobile)
-          value = (V)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId);
+          value = (V)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId)!;
         else
           value = info.GetValue<V>(_valuePrefix + index)!;
 

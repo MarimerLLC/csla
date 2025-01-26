@@ -19,11 +19,7 @@ namespace Csla.Core
   /// Type of object contained in the list.
   /// </typeparam>
   [Serializable]
-  public class MobileList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : List<T>, IMobileObject
+  public class MobileList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : List<T>, IMobileObject
   {
     /// <summary>
     /// Creates an instance of the type.
@@ -122,7 +118,7 @@ namespace Csla.Core
       {
         T value;
         if (mobileChildren)
-          value = (T)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId);
+          value = (T)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId)!;
         else
           value = info.GetValue<T>(_valuePrefix + index)!;
 

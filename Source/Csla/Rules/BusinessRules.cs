@@ -1290,7 +1290,7 @@ namespace Csla.Rules
       if (info.Children.TryGetValue("_brokenRules", out var child))
       {
         int referenceId = child.ReferenceId;
-        _brokenRules = (BrokenRulesCollection)formatter.GetObject(referenceId);
+        _brokenRules = (BrokenRulesCollection?)formatter.GetObject(referenceId);
       }
 
       base.OnSetChildren(info, formatter);

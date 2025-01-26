@@ -183,7 +183,7 @@ namespace Csla.Core
         var references = (List<int>)value.Value!;
         foreach (int reference in references)
         {
-          T child = (T)formatter.GetObject(reference);
+          T child = (T)formatter.GetObject(reference)!;
           if (child is IBusinessBase bb)
           {
             var editLevelAdded = bb.EditLevelAdded;

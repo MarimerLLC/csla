@@ -161,6 +161,7 @@ namespace Csla.Channels.RabbitMq
       }
     }
 
+    /// <inheritdoc />
     public override async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)

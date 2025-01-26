@@ -21,9 +21,7 @@ namespace Csla.Core
   /// using SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
-#if NET8_0_OR_GREATER
   [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-# endif
   public abstract class ManagedObjectBase : MobileObject,
     INotifyPropertyChanged,
     IManageProperties,
@@ -49,7 +47,7 @@ namespace Csla.Core
     {
       get
       {
-        if (_fieldManager == null)          
+        if (_fieldManager == null)
           _fieldManager = new FieldDataManager(ApplicationContext, GetType());
         
         return _fieldManager;
@@ -373,7 +371,7 @@ namespace Csla.Core
             oldValue = (P?)fieldData.Value;
         }
         LoadPropertyValue<P>(propertyInfo, oldValue, newValue);
-        return !ValueComparer.AreEqual(oldValue, newValue);
+        return ValueComparer.AreNotEqual(oldValue, newValue);
       }
       catch (Exception ex)
       {
@@ -383,7 +381,7 @@ namespace Csla.Core
 
     private void LoadPropertyValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? oldValue, P? newValue)
     {
-      if (!ValueComparer.AreEqual(oldValue, newValue))
+      if (ValueComparer.AreNotEqual(oldValue, newValue))
         FieldManager.LoadFieldData<P>(propertyInfo, newValue);
     }
 
@@ -512,7 +510,7 @@ namespace Csla.Core
       if (info.Children.TryGetValue("_fieldManager", out var child))
       {
         int referenceId = child.ReferenceId;
-        _fieldManager = (FieldDataManager)formatter.GetObject(referenceId);
+        _fieldManager = (FieldDataManager?)formatter.GetObject(referenceId);
       }
 
       base.OnSetChildren(info, formatter);
@@ -557,20 +555,5 @@ namespace Csla.Core
     void IManageProperties.LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default => LoadProperty(propertyInfo, newValue);
     List<object> IManageProperties.GetChildren() => FieldManager.GetChildren();
     bool IManageProperties.HasManagedProperties => true;
-  }
-
-  internal static class ValueComparer
-  {
-    internal static bool AreEqual(object? value1, object? value2)
-    {
-      bool valuesDiffer;
-      
-      if (value1 == null)
-        valuesDiffer = value2 != null;
-      else
-        valuesDiffer = !value1.Equals(value2);
-
-      return valuesDiffer;
-    }
   }
 }

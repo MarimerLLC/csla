@@ -1452,7 +1452,7 @@ namespace Csla
           oldValue = (P?)fieldData.Value;
         }
 
-        if (!ValueComparer.AreEqual(oldValue, newValue))
+        if (ValueComparer.AreNotEqual(oldValue, newValue))
           FieldManager.LoadFieldData(propertyInfo, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
 
       }
@@ -1510,7 +1510,7 @@ namespace Csla
           oldValue = (P?)fieldData.Value;
         }
 
-        if (!ValueComparer.AreEqual(oldValue, newValue))
+        if (ValueComparer.AreNotEqual(oldValue, newValue))
           FieldManager.LoadFieldData(propertyInfo, newValue);
         
       }
@@ -1910,7 +1910,7 @@ namespace Csla
     {
       if (info.Children.TryGetValue("_fieldManager", out var child))
       {
-        _fieldManager = (FieldDataManager)formatter.GetObject(child.ReferenceId);
+        _fieldManager = (FieldDataManager?)formatter.GetObject(child.ReferenceId);
       }
       base.OnSetChildren(info, formatter);
     }

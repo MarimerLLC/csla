@@ -292,7 +292,7 @@ namespace Csla.Core.FieldManager
       {
         Name = info.GetValue<string>("_name")!;
         SerializationInfo.ChildData childData = info.Children[Name];
-        _data = (T)formatter.GetObject(childData.ReferenceId);
+        _data = (T?)formatter.GetObject(childData.ReferenceId);
       }
     }
   }

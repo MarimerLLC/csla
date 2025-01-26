@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Collections;
 using Csla.Properties;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {
@@ -19,11 +18,7 @@ namespace Csla
   /// </summary>
   /// <typeparam name="T">The type of the objects contained
   /// in the original list.</typeparam>
-  public class FilteredBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> :
+  public class FilteredBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]T> :
     IList<T>, IBindingList, IEnumerable<T>,
     ICancelAddNew
     where T: notnull
@@ -758,9 +753,7 @@ namespace Csla
 
     #endregion
 
-#if NET8_0_OR_GREATER
     [MemberNotNullWhen(true, nameof(_bindingList))]
-#endif
     private bool SupportsBinding { get; set; }
     private IBindingList? _bindingList;
     private object? _filter;

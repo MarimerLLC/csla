@@ -3860,13 +3860,13 @@ namespace Csla.Core
     {
       if (info.Children.TryGetValue("_fieldManager", out var child))
       {
-        _fieldManager = (FieldDataManager)formatter.GetObject(child.ReferenceId);
+        _fieldManager = (FieldDataManager?)formatter.GetObject(child.ReferenceId);
       }
 
       if (info.Children.TryGetValue("_businessRules", out child))
       {
         int refId = child.ReferenceId;
-        _businessRules = (BusinessRules)formatter.GetObject(refId);
+        _businessRules = (BusinessRules?)formatter.GetObject(refId);
       }
 
       base.OnSetChildren(info, formatter);

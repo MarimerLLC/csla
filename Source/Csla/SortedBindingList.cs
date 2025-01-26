@@ -21,11 +21,7 @@ namespace Csla
   /// Type of child object contained by
   /// the original list or collection.
   /// </typeparam>
-  public class SortedBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> :
+  public class SortedBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]T> :
     IList<T>,
     IBindingList,
     ICancelAddNew

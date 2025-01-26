@@ -17,7 +17,6 @@ using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Core.FieldManager
 {
@@ -51,18 +50,14 @@ namespace Csla.Core.FieldManager
     public FieldDataManager() { }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-    internal FieldDataManager(ApplicationContext applicationContext,
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type businessObjectType)
+    internal FieldDataManager(ApplicationContext applicationContext, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]Type businessObjectType)
     {
       if (businessObjectType is null)
         throw new ArgumentNullException(nameof(businessObjectType));
 
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       SetPropertyList(businessObjectType);
-      _fieldData = new IFieldData[_propertyList!.Count];
+      _fieldData = new IFieldData[_propertyList.Count];
     }
 
     /// <summary>
@@ -70,9 +65,7 @@ namespace Csla.Core.FieldManager
     /// restore property list.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="businessObjectType"/> is <see langword="null"/>.</exception>
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_propertyList))]
-#endif
     internal void SetPropertyList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type businessObjectType)
     {
       _businessObjectType = businessObjectType.AssemblyQualifiedName;

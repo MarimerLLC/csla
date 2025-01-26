@@ -10,9 +10,7 @@ using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
 using System.Diagnostics;
-#if NET8_0_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
-#endif
 
 namespace Csla.Core
 {
@@ -27,11 +25,7 @@ namespace Csla.Core
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public class MobileBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : BindingList<T>, IMobileList
+  public class MobileBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindingList<T>, IMobileList
   {
     #region LoadListMode
 
@@ -227,7 +221,7 @@ namespace Csla.Core
           List<int> references = (List<int>)value.Value!;
           foreach (int reference in references)
           {
-            T child = (T)formatter.GetObject(reference);
+            T child = (T)formatter.GetObject(reference)!;
             if (child is IBusinessBase bb)
             {
               var editLevelAdded = bb.EditLevelAdded;

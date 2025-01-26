@@ -19,11 +19,7 @@ namespace Csla
   /// derived in a business class. 
   /// </summary>
   [Serializable]
-  public abstract class CriteriaBase<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : ManagedObjectBase
+  public abstract class CriteriaBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : ManagedObjectBase
     where T : CriteriaBase<T>
   {
     /// <summary>
@@ -32,7 +28,9 @@ namespace Csla
     /// MUST be supplied by the subclass.
     /// </summary>
     protected CriteriaBase()
-    { }
+    {
+      ((IUseApplicationContext)this).ApplicationContext = ApplicationContext.DummyApplicationContext.Value;
+    }
 
     #region  Register Properties
 

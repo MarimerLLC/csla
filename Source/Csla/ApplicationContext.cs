@@ -23,6 +23,11 @@ namespace Csla
   public class ApplicationContext
   {
     /// <summary>
+    /// For internal usage ONLY. Is only intended to be used in situations where an application context dependency is required but actually not used.
+    /// </summary>
+    internal static Lazy<ApplicationContext> DummyApplicationContext { get; } = new Lazy<ApplicationContext>(() => new ApplicationContext());
+
+    /// <summary>
     /// Creates a new instance of the type
     /// </summary>
     /// <param name="applicationContextAccessor"></param>
@@ -30,6 +35,12 @@ namespace Csla
     {
       ApplicationContextAccessor = applicationContextAccessor;
       ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
+    }
+
+#pragma warning disable CS8618 // Ctor to create a dummy instance which is required but is not used in the used contextt
+    private ApplicationContext()
+#pragma warning restore CS8618 // 
+    {
     }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
@@ -367,11 +378,7 @@ namespace Csla
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstanceDI<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>(params object[] parameters)
+    public T CreateInstanceDI<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]T>(params object[] parameters)
     {
       return (T)CreateInstanceDI(typeof(T), parameters);
     }
@@ -382,11 +389,7 @@ namespace Csla
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Manually passed in parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public object CreateInstanceDI(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, params object[] parameters)
+    public object CreateInstanceDI([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]Type objectType, params object[] parameters)
     {
       try
       {

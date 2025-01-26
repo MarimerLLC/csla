@@ -98,8 +98,8 @@ namespace Csla.Server
     /// <param name="fetchMethod">
     /// Name of the method to call for a fetch operation.
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="factoryType"/> or <paramref name="fetchMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string fetchMethod) : this(factoryType, "Create", fetchMethod)
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string? fetchMethod) : this(factoryType, "Create", fetchMethod)
     {
     }
 
@@ -114,8 +114,8 @@ namespace Csla.Server
     /// <param name="fetchMethod">
     /// Name of the method to call for a fetch operation.
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="factoryType"/>, <paramref name="createMethod"/> or <paramref name="fetchMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string createMethod, string fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
     {
     }
 
@@ -134,8 +134,8 @@ namespace Csla.Server
     /// Name of the method to call for a update operation.</param>
     /// <param name="deleteMethod">
     /// Name of the method to call for a delete operation.</param>
-    /// <exception cref="ArgumentException"><paramref name="factoryType"/>, <paramref name="createMethod"/>, <paramref name="fetchMethod"/>, <paramref name="updateMethod"/> or <paramref name="deleteMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
     {
     }
 
@@ -160,28 +160,18 @@ namespace Csla.Server
     /// <param name="executeMethod">
     /// Name of the method to call for a Execute operation.
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="factoryType"/>, <paramref name="createMethod"/>, <paramref name="fetchMethod"/>, <paramref name="updateMethod"/>, <paramref name="deleteMethod"/> or <paramref name="executeMethod"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
+    /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod, string? executeMethod)
     {
       if (string.IsNullOrEmpty(factoryType))
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(factoryType)), nameof(factoryType));
-      if (string.IsNullOrEmpty(createMethod))
-        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(createMethod)), nameof(createMethod));
-      if (string.IsNullOrEmpty(fetchMethod))
-        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(fetchMethod)), nameof(fetchMethod));
-      if (string.IsNullOrEmpty(updateMethod))
-        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(updateMethod)), nameof(updateMethod));
-      if (string.IsNullOrEmpty(deleteMethod))
-        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(deleteMethod)), nameof(deleteMethod));
-      if (string.IsNullOrEmpty(executeMethod))
-        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(executeMethod)), nameof(executeMethod));
 
       FactoryTypeName = factoryType;
-      CreateMethodName = createMethod;
-      FetchMethodName = fetchMethod;
-      UpdateMethodName = updateMethod;
-      DeleteMethodName = deleteMethod;
-      ExecuteMethodName = executeMethod;
+      CreateMethodName = createMethod ?? "";
+      FetchMethodName = fetchMethod ?? "";
+      UpdateMethodName = updateMethod ?? "";
+      DeleteMethodName = deleteMethod ?? "";
+      ExecuteMethodName = executeMethod ?? "";
     }
 
     /// <summary>

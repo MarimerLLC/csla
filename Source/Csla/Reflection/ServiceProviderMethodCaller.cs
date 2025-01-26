@@ -55,6 +55,23 @@ namespace Csla.Reflection
         throw new ArgumentNullException(nameof(target));
 
       var targetType = target.GetType();
+      return FindDataPortalMethod<T>(targetType, criteria);
+    }
+
+    /// <summary>
+    /// Find a method based on data portal criteria
+    /// and providing any remaining parameters with
+    /// values from an IServiceProvider
+    /// </summary>
+    /// <param name="targetType">Object with methods</param>
+    /// <param name="criteria">Data portal criteria values</param>
+    /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>(Type targetType, object?[]? criteria)
+      where T : DataPortalOperationAttribute
+    {
+      if (targetType == null)
+        throw new ArgumentNullException(nameof(targetType));
+
       return FindDataPortalMethod<T>(targetType, criteria, true)!;
     }
 

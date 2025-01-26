@@ -38,7 +38,7 @@ namespace Csla.Test.Authorization
 
     [TestMethod]
     public void WhenReadOnlyBaseHasAuthorizationRuleChecksDisabledThePropertiesShouldBeReadableEvenThoughIDontHaveTheNeededRule() {
-      var person = ReadOnlyPerson.GetReadOnlyPerson();
+      var person = ReadOnlyPerson.GetReadOnlyPerson(_testDIContext);
       ((IUseApplicationContext)person).ApplicationContext = _testDIContext.CreateTestApplicationContext();
 
       person.SetDisableCanReadAuthorizationChecks(isCanReadAuthorizationChecksDisabled: true);

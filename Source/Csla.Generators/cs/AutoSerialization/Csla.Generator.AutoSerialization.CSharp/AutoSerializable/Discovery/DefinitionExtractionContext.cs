@@ -54,6 +54,11 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     public string GetTypeNamespace(TypeSyntax typeSyntax)
     {
       INamedTypeSymbol typeSymbol;
+      
+      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
+      {
+        typeSyntax = nullableTypeSyntax.ElementType;
+      }
 
       typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;

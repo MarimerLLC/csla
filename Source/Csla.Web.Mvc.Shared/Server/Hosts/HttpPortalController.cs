@@ -189,8 +189,7 @@ namespace Csla.Server.Hosts
     private async Task InvokePortal(string operation, Stream requestStream, Stream responseStream)
     {
       var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      DataPortalErrorInfo? errorData = null;
+      DataPortalResponse result = new DataPortalResponse();
       if (UseTextSerialization)
         Response.Headers.ContentType = "text/plain";
       else
@@ -199,19 +198,17 @@ namespace Csla.Server.Hosts
       try
       {
         var request = await DeserializeRequestBody(requestStream, serializer);
-        result = await CallPortal(operation, request);
+        var callResult = await CallPortal(operation, request);
+        result.ObjectData = callResult.ObjectData;
       }
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
+        result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      portalResult.ErrorData = errorData;
-      portalResult.ObjectData = result.ObjectData;
 
-      await SerializeToResponse(portalResult, responseStream, serializer);
+      await SerializeToResponse(result, responseStream, serializer);
     }
 
     private async Task InvokeTextPortal(string operation, Stream requestStream, Stream responseStream)
@@ -224,25 +221,22 @@ namespace Csla.Server.Hosts
       var requestBuffer = new MemoryStream(requestArray);
 
       var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      DataPortalErrorInfo? errorData = null;
+      DataPortalResponse? result = new DataPortalResponse();
       try
       {
         var request = await DeserializeRequestBody(requestBuffer, serializer);
-        result = await CallPortal(operation, request);
+        var callResult = await CallPortal(operation, request);
+        result.ObjectData = callResult.ObjectData;
       }
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
+        result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      portalResult.ErrorData = errorData;
-      portalResult.ObjectData = result.ObjectData;
-
+      
       var responseBuffer = new MemoryStream();
-      serializer.Serialize(responseBuffer, portalResult);
+      serializer.Serialize(responseBuffer, result);
       responseBuffer.Position = 0;
       using var writer = new StreamWriter(responseStream)
       {
@@ -269,8 +263,7 @@ namespace Csla.Server.Hosts
 #else
     private async Task<byte[]> InvokePortal(string operation, byte[] data)
     {
-      var result = _applicationContext.CreateInstance<DataPortalResponse>();
-      DataPortalErrorInfo? errorData = null;
+      var result = new DataPortalResponse();
       try
       {
         var buffer = new MemoryStream(data)
@@ -278,18 +271,17 @@ namespace Csla.Server.Hosts
           Position = 0
         };
         var request = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(buffer.ToArray()) ?? throw new System.Runtime.Serialization.SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
-        result = await CallPortal(operation, request);
+        var callResult = await CallPortal(operation, request);
+        result.ObjectData = callResult.ObjectData;
       }
 #pragma warning disable CA1031 // Do not catch general exception types
       catch (Exception ex)
       {
-        errorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
+        result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
       }
 #pragma warning restore CA1031 // Do not catch general exception types
-      var portalResult = _applicationContext.CreateInstance<DataPortalResponse>();
-      portalResult.ErrorData = errorData;
-      portalResult.ObjectData = result.ObjectData;
-      var bytes = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(portalResult);
+      
+      var bytes = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
       return bytes;
     }
 #endif

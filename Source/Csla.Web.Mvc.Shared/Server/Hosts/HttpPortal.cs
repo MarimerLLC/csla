@@ -45,7 +45,7 @@ namespace Csla.Server.Hosts
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -93,7 +93,7 @@ namespace Csla.Server.Hosts
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -141,11 +141,10 @@ namespace Csla.Server.Hosts
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
-        // unpack object
         object obj = GetCriteria(_applicationContext, request.ObjectData ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized));
 
         var context = new DataPortalContext(
@@ -184,7 +183,7 @@ namespace Csla.Server.Hosts
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);

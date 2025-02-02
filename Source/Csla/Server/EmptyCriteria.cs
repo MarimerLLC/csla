@@ -19,7 +19,7 @@ namespace Csla.Server
     /// <summary>
     /// Creates a new instance of the type.
     /// </summary>
-    private EmptyCriteria() { }
+    public EmptyCriteria() { }
 
     /// <summary>
     /// Gets an instance of EmptyCriteria

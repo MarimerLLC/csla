@@ -71,7 +71,7 @@ namespace Csla.DataPortalClient
         var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
 
-        if (response.ErrorData == null)
+        if (!response.HasError)
         {
           var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
@@ -121,7 +121,7 @@ namespace Csla.DataPortalClient
 
         var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
-        if (response.ErrorData == null)
+        if (!response.HasError)
         {
           var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
@@ -169,7 +169,7 @@ namespace Csla.DataPortalClient
 
         var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
-        if (response.ErrorData == null)
+        if (!response.HasError)
         {
           var newobj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, newobj, null);

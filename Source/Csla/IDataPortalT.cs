@@ -14,11 +14,7 @@ namespace Csla
   /// Interface defining the members of the data portal type.
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public interface IDataPortal<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-# endif
-    T>
+  public interface IDataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to

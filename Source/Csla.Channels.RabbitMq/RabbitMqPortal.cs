@@ -92,7 +92,7 @@ namespace Csla.Channels.RabbitMq
         throw new InvalidOperationException($"{nameof(BasicDeliverEventArgs.BasicProperties)}.{nameof(IReadOnlyBasicProperties.CorrelationId)} == null");
       }
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      DataPortalResponse result;
       try
       {
         var request = Deserialize<object>(requestData);
@@ -100,7 +100,7 @@ namespace Csla.Channels.RabbitMq
       }
       catch (Exception ex)
       {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        result = new DataPortalResponse(_applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex));
       }
 
       try
@@ -110,9 +110,8 @@ namespace Csla.Channels.RabbitMq
       }
       catch (Exception ex)
       {
-        result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        var response = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
+        var errorResult = new DataPortalResponse(_applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex));
+        var response = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(errorResult);
         await SendMessage(ea.BasicProperties.ReplyTo, ea.BasicProperties.CorrelationId, response);
       }
     }
@@ -147,7 +146,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     private async Task<DataPortalResponse> Create(CriteriaRequest request)
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -191,7 +190,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     private async Task<DataPortalResponse> Fetch(CriteriaRequest request)
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -235,7 +234,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     private async Task<DataPortalResponse> Update(UpdateRequest request)
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -274,7 +273,7 @@ namespace Csla.Channels.RabbitMq
     /// <param name="request">The request parameter object.</param>
     private async Task<DataPortalResponse> Delete(CriteriaRequest request)
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);

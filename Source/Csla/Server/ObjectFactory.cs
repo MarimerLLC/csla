@@ -24,7 +24,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="applicationContext">The application context.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
-    public ObjectFactory(ApplicationContext? applicationContext)
+    public ObjectFactory(ApplicationContext applicationContext)
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }

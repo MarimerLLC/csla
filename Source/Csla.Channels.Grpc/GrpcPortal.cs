@@ -111,21 +111,19 @@ namespace Csla.Channels.Grpc
 
     private async Task<ResponseMessage> InvokePortal(string operation, ByteString requestData)
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      DataPortalErrorInfo? errorData = null;
+      var result = new DataPortalResponse();
       try
       {
         var request = Deserialize<object>(requestData.ToByteArray());
-        result = await CallPortal(operation, request);
+        var callResult = await CallPortal(operation, request);
+        result.ObjectData = callResult.ObjectData;
       }
       catch (Exception ex)
       {
-        errorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
       }
-      var portalResult = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      portalResult.ErrorData = errorData;
-      portalResult.ObjectData = result.ObjectData;
-      var buffer = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(portalResult);
+
+      var buffer = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
       return new ResponseMessage { Body = ByteString.CopyFrom(buffer) };
     }
 
@@ -166,7 +164,7 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -214,7 +212,7 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -262,7 +260,7 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
@@ -305,7 +303,7 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);

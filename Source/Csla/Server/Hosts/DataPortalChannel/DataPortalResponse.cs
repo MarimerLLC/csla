@@ -6,6 +6,8 @@
 // <summary>Response message for returning</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Server.Hosts.DataPortalChannel
@@ -15,35 +17,41 @@ namespace Csla.Server.Hosts.DataPortalChannel
   /// the results of a data portal call.
   /// </summary>
   [Serializable]
-  public class DataPortalResponse : ReadOnlyBase<DataPortalResponse>
+  public class DataPortalResponse : MobileObject
   {
     /// <summary>
-    /// Server-side exception data if an exception occurred on the server.
+    /// Indicates whether <see cref="ErrorData"/> are present or not.
     /// </summary>
-    public static readonly PropertyInfo<DataPortalErrorInfo?> ErrorDataProperty = RegisterProperty<DataPortalErrorInfo?>(nameof(ErrorData));
+    [MemberNotNullWhen(true, nameof(ErrorData))]
+    [MemberNotNullWhen(false, nameof(ObjectData))]
+    public bool HasError => ErrorData is not null;
 
     /// <summary>
     /// Server-side exception data if an exception occurred on the server.
     /// </summary>
     public DataPortalErrorInfo? ErrorData
     {
-      get { return GetProperty(ErrorDataProperty); }
-      set { LoadProperty(ErrorDataProperty, value); }
+      get;
+      set;
     }
 
     /// <summary>
     /// Serialized business object data returned from the server (deserialize with MobileFormatter).
     /// </summary>
-    public static readonly PropertyInfo<byte[]> ObjectDataProperty = RegisterProperty<byte[]>(c => c.ObjectData);
+    public byte[]? ObjectData
+    {
+      get;
+      set;
+    }
 
     /// <summary>
-    /// Serialized business object data returned from the server (deserialize with MobileFormatter).
+    /// Initializes a new instance of <see cref="DataPortalResponse"/>-object.
     /// </summary>
-    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
-    public byte[] ObjectData
+    /// <param name="errorData"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="errorData"/> is <see langword="null"/>.</exception>
+    public DataPortalResponse(DataPortalErrorInfo errorData)
     {
-      get { return GetProperty(ObjectDataProperty)!; }
-      set { LoadProperty(ObjectDataProperty, value ?? throw new ArgumentNullException(nameof(ObjectData))); }
+      ErrorData = errorData ?? throw new ArgumentNullException(nameof(errorData));
     }
 
     /// <summary>
@@ -59,9 +67,49 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Initializes an empty instance for <see cref="MobileFormatter"/>.
     /// </summary>
-    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
     public DataPortalResponse()
     {
+    }
+
+    /// <inheritdoc />
+    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      if (ObjectData is not null)
+      {
+        info.AddValue(nameof(ObjectData), ObjectData);
+      }
+      base.OnGetState(info, mode);
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      if (info.Values.TryGetValue(nameof(ObjectData), out var objectData))
+      {
+        ObjectData = (byte[])objectData.Value!;
+      }
+      base.OnSetState(info, mode);
+    }
+
+    /// <inheritdoc />
+    protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (ErrorData is not null)
+      {
+        SerializationInfo childInfo = formatter.SerializeObject(ErrorData);
+        info.AddChild(nameof(ErrorData), childInfo.ReferenceId);
+      }
+      base.OnGetChildren(info, formatter);
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      if (info.Children.TryGetValue(nameof(ErrorData), out var child))
+      {
+        ErrorData = (DataPortalErrorInfo)formatter.GetObject(child.ReferenceId)!;
+      }
+      base.OnSetChildren(info, formatter);
     }
   }
 }

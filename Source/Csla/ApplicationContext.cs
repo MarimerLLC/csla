@@ -422,11 +422,7 @@ namespace Csla
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstance<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>(params object[] parameters)
+    public T CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object[] parameters)
     {
       return (T)CreateInstance(typeof(T), parameters);
     }
@@ -437,11 +433,7 @@ namespace Csla
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public object CreateInstance(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, params object[] parameters)
+    public object CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object[] parameters)
     {
       object result = Activator.CreateInstance(objectType, parameters) ?? throw new InvalidOperationException("Internal: Nullable types can not be instantiated.");
       if (result is IUseApplicationContext tmp)

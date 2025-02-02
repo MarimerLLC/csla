@@ -114,14 +114,16 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Initializes a new instance of <see cref="CriteriaRequest"/>-object.
     /// </summary>
+    /// <param name="applicationContext"></param>
     /// <param name="principal"></param>
     /// <param name="clientContext"></param>
     /// <param name="clientCulture"></param>
     /// <param name="clientUICulture"></param>
     /// <param name="criteriaData"></param>
-    /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="criteriaData"/> is <see langword="null"/>.</exception>
-    public CriteriaRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture, byte[] criteriaData)
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="criteriaData"/> is <see langword="null"/>.</exception>
+    public CriteriaRequest(ApplicationContext applicationContext, byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture, byte[] criteriaData)
     {
+      ApplicationContext = applicationContext;
       Principal = principal ?? throw new ArgumentNullException(nameof(principal));
       ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
       ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));

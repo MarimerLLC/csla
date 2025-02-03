@@ -90,6 +90,12 @@ CSLA 9 fixes the issue with transfering binary data between the client and serve
         .UseHttpProxy(o => o.DataPortalUrl = "https://server/api/DataPortal"))));
 ```
 
+## CriteriaBase Obsolete
+
+The `CriteriaBase` class is now obsolete. You should use normal .NET or CSLA-derived types for criteria values instead.
+
+The most direct replacement for a complex criteria class is to subclass `ReadOnlyBase`. This is because criteria classes are typically read-only, and `ReadOnlyBase` provides the necessary functionality.
+
 ## BinaryFormatter and NetDataContractSerializer Removed
 
 CSLA 9 removes support for the `BinaryFormatter` serialization format. This format is not secure and should not be used.

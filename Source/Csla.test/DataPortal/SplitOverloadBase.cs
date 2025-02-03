@@ -50,7 +50,7 @@ namespace Csla.Test.DataPortalTest
     #region Data Access
 
     [Serializable]
-    private class Criteria : CriteriaBase<Criteria>
+    private class Criteria : ReadOnlyBase<Criteria>
     {
       public int Id { get; }
 
@@ -58,7 +58,7 @@ namespace Csla.Test.DataPortalTest
       { Id = id; }
     }
     [Serializable]
-    private class Criteria1 : CriteriaBase<Criteria1>
+    private class Criteria1 : ReadOnlyBase<Criteria1>
     {
       public int Id { get; }
 

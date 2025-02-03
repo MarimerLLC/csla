@@ -19,6 +19,7 @@ namespace Csla
   /// derived in a business class. 
   /// </summary>
   [Serializable]
+  [Obsolete("Use normal .NET or CSLA types", false)]
   public abstract class CriteriaBase<
 #if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]

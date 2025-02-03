@@ -9,7 +9,7 @@ services.AddMemoryCache();
 // use CSLA with client-side data portal cache
 services.AddCsla(o => o
   .DataPortal(o => o
-    .ClientSideDataPortal(o => o
+    .AddClientSideDataPortal(o => o
       .DataPortalCacheType = typeof(DataPortalCache))));
 var provider = services.BuildServiceProvider();
 

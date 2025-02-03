@@ -27,6 +27,7 @@ namespace AuthzFactoryMethods
     /// <summary>
     /// The add object authorization rules.
     /// </summary>
+    [ObjectAuthorizationRules]
     private static void AddObjectAuthorizationRules()
     {
       BusinessRules.AddRule(typeof (Root), new IsInRole(AuthorizationActions.CreateObject, "role1", "role2"));

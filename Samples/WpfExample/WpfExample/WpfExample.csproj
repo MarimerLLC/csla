@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Wpf" Version="8.0.0-R24021201" />
+    <PackageReference Include="Csla.Wpf" Version="9.0.0-rc4-gc005a93a3c" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
   </ItemGroup>
 
   <ItemGroup>

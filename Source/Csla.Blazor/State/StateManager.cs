@@ -13,8 +13,9 @@ namespace Csla.Blazor.State
   /// <summary>
   /// Get and save state from Blazor pages.
   /// </summary>
+  /// <param name="sessionIdManager"></param>
   /// <param name="sessionManager"></param>
-  public class StateManager(ISessionManager sessionManager)
+  public class StateManager(ISessionIdManager sessionIdManager, ISessionManager sessionManager)
   {
     private readonly ISessionManager _sessionManager = sessionManager;
 
@@ -41,10 +42,11 @@ namespace Csla.Blazor.State
     /// <param name="timeout">Time to wait before timing out</param>
     private async Task GetState(TimeSpan timeout)
     {
-      Session session;
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
-        session = await _sessionManager.RetrieveSession();
+        _ = await _sessionManager.RetrieveSession();
+      else
+        _ = sessionIdManager.GetSessionId();
     }
 
     /// <summary>

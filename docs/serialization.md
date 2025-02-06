@@ -4,12 +4,50 @@ Serialization is the process of taking the state of an object graph and converti
 
 CSLA .NET relies on deep serialization to do this work. Most serializers do shallow serialization: operating only on public properties. Deep serialization serializes at the field level, including non-public field values. Deep serialization also preserves the shape of the object graph upon deserialization, where shallow serialization usually changes the shape of the object graph on deserialization, often creating new instances of objects that didn't exist in the original graph.
 
+## CSLA 9+
+
+The default serializer for CSLA (version 6 and later) is `MobileFormatter`. This is a custom serializer that is optimized for CSLA .NET, and is the only serializer that is guaranteed to work on all .NET implementations.
+
+### Using MobileFormatter
+
+MobileFormatter supports many basic .NET types, including "primitive" types like `int`, `string`, `DateTime`, etc. It also supports `List<T>`, `Dictionary<K,V>`, and other common collection types. It also supports any type that implements `IMobileObject`, which includes all CSLA base types.
+
+If you create your complex types by subclassing CSLA base types and using the managed property syntax, you don't need to do anything special to support serialization. 
+
+You can also serialize your own types that don't subclass from CSLA. In this case your type needs to implement `IMobileObject` and manage the serialization of your type's state, or create and register a custom serializer for your type.
+
+### Custom Serializers
+
+Starting with CSLA 9 it is possible to create your own custom serializers for specific types. On application startup you register your custom serializer with CSLA and the MobileFormatter will use your custom serializer for the specific type(s) you've registered.
+
+CSLA includes some pre-built serializers in the [/Source/Csla/Serialization](https://github.com/MarimerLLC/csla/tree/main/Source/Csla/Serialization/Mobile/CustomSerializers) folder. The `ClaimsPrincipalSerializer` is registered by default, and you can register the `PocoSerializer` to serialize POCO types if you choose.
+
+### Replacing MobileFormatter
+
+It is possible to create your own equivalent to `MobileFormatter`, but this is a complex and error-prone task.
+
+There are already some serializers you may consider using.
+
+#### AutoSerialization
+
+The CSLA project includes an optional NuGet package that brings in a code generator to optimize the use of `MobileFormatter`. This package is called `Csla.AutoSerialization` and is available on NuGet.
+
+The code and readme for [AutoSerialization](https://github.com/MarimerLLC/csla/tree/main/Source/Csla.Generators/cs/AutoSerialization) are in the CSLA project.
+
+#### CslaGeneratorSerialization
+
+@JasonBock has created a serializer for CSLA 9 that may provide some insights: [CslaGeneratorSerialization](https://github.com/JasonBock/CslaGeneratorSerialization).
+
+Jason's serializer offers substantial performance and memory consumption benefits over `MobileFormatter`.
+
+## History
+
 Prior to .NET 9, .NET provided two built-in deep serializers:
 
 * `BinaryFormatter`
 * `NetDataContractSerializer` (NDCS)
 
-CSLA .NET provides its own highly optimized serializer:
+CSLA .NET provides its own serializer:
 
 * `MobileFormatter`
 
@@ -25,7 +63,7 @@ In CSLA 6 the default serializer is `MobileFormatter`. In previous versions, the
 * .NET Core defaults to `MobileFormatter`
 * Mono (Xamarin/WebAssembly) defaults to `MobileFormatter`
 
-## MobileFormatter Constraints
+### MobileFormatter Constraints
 
 The `MobileFormatter` imposes some constraints on your code beyond `BinaryFormatter` or NDCS. These constraints are why `MobileFormatter` works on all .NET implementations and why we've been able to optimize it for CSLA .NET.
 

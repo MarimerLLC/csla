@@ -32,7 +32,7 @@ namespace Csla.Test.RollBack
     }
 
     [Serializable]
-    protected class Criteria : CriteriaBase<Criteria>
+    protected class Criteria : ReadOnlyBase<Criteria>
     {
       private static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
 

@@ -92,9 +92,11 @@ CSLA 9 fixes the issue with transfering binary data between the client and serve
 
 ## CriteriaBase Obsolete
 
-The `CriteriaBase` class is now obsolete. You should use normal .NET or CSLA-derived types for criteria values instead.
+The `CriteriaBase` class is now obsolete. You should use [CSLA serializable](serialization.md) types for criteria values instead.
 
-The most direct replacement for a complex criteria class is to subclass `ReadOnlyBase`. This is because criteria classes are typically read-only, and `ReadOnlyBase` provides the necessary functionality.
+In most cases you can simply pass your criteria values to a data portal method as parameters, and CSLA will serialize them for you. There is no longer the need for a complex type to contain the parameter values.
+
+If you want to use a complex type to contain the parameter values, thus passing a single "criteria" value to the data portal you should consider replacing `CriteriaBase` with `ReadOnlyBase`. This is because criteria classes are typically read-only, and `ReadOnlyBase` provides the necessary functionality.
 
 ## BinaryFormatter and NetDataContractSerializer Removed
 

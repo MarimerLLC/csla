@@ -45,7 +45,14 @@ namespace RuleTutorial.Testing.Common
     /// </summary>
     public void ExecuteRule()
     {
-      AuthorizationContext.Rule.Execute(AuthorizationContext);
+      if (AuthorizationContext.Rule is IAuthorizationRule syncRule)
+      {
+        syncRule.Execute(AuthorizationContext);
+      }
+      else
+      {
+        throw new InvalidOperationException("Rule is not an IAuthorizationRule");
+      }
     }
   }
 }

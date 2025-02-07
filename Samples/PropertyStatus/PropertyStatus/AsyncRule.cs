@@ -13,7 +13,7 @@ namespace PropertyStatus
     public AsyncRule(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo> { PrimaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
     protected override async Task ExecuteAsync(IRuleContext context)

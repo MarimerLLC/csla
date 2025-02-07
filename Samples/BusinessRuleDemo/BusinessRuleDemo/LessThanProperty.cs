@@ -22,10 +22,6 @@ namespace BusinessRuleDemo
     {
       CompareTo = compareToProperty;
 
-      if (InputProperties == null)
-      {
-        InputProperties = new List<IPropertyInfo>();
-      }
       InputProperties.Add(primaryProperty);
       InputProperties.Add(compareToProperty);
     }

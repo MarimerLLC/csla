@@ -32,7 +32,7 @@ namespace Csla.Test.Basic
     }
 
     [Serializable]
-    public class Criteria : CriteriaBase<Criteria>
+    public class Criteria : ReadOnlyBase<Criteria>
     {
       public string _data;
 

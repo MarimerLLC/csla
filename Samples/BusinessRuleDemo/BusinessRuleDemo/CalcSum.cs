@@ -18,10 +18,6 @@ namespace BusinessRuleDemo
     public CalcSum(IPropertyInfo primaryProperty, params IPropertyInfo[] inputProperties)
       : base(primaryProperty)
     {
-      if (InputProperties == null)
-      {
-        InputProperties = new List<IPropertyInfo>();
-      }
       InputProperties.AddRange(inputProperties);
     }
 

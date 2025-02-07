@@ -16,7 +16,7 @@ namespace Csla.Security
   /// custom identity class.
   /// </summary>
   [Serializable]
-  public class UsernameCriteria : CriteriaBase<UsernameCriteria>
+  public class UsernameCriteria : ReadOnlyBase<UsernameCriteria>
   {
     /// <summary>
     /// Username property definition.

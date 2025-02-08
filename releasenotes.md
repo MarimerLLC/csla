@@ -2,6 +2,18 @@
 
 CSLA 8 is a substantial update to CSLA .NET, adding support for .NET 8 and other enhancements.
 
+## CSLA .NET version 8.2.9 release
+
+Fixes bug with server-side Blazor state manager.
+
+### Change List
+
+* https://github.com/MarimerLLC/csla/compare/v8.2.8...v8.2.9
+
+### Contributors
+
+* @rockfordlhotka
+
 ## CSLA .NET version 8.2.8 release
 
 Fixes bugs from the previous release.

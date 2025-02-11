@@ -6,6 +6,7 @@
 // <summary>Request message for updating</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Server.Hosts.DataPortalChannel
@@ -14,27 +15,17 @@ namespace Csla.Server.Hosts.DataPortalChannel
   /// Request message for updating
   /// a business object.
   /// </summary>
-  [Serializable]
-  public class UpdateRequest : ReadOnlyBase<UpdateRequest>
+  [AutoSerializable]
+  public partial class UpdateRequest
   {
-    /// <summary>
-    /// Serialized object data.
-    /// </summary>
-    public static readonly PropertyInfo<byte[]> ObjectDataProperty = RegisterProperty<byte[]>(nameof(ObjectData));
-
     /// <summary>
     /// Serialized object data.
     /// </summary>
     public byte[] ObjectData
     {
-      get { return GetProperty(ObjectDataProperty)!; }
-      set { LoadProperty(ObjectDataProperty, value ?? throw new ArgumentNullException(nameof(ObjectData))); }
+      get;
+      private set;
     }
-
-    /// <summary>
-    /// Serialized data for the principal object.
-    /// </summary>
-    public static readonly PropertyInfo<byte[]> PrincipalProperty = RegisterProperty<byte[]>(c => c.Principal);
 
     /// <summary>
     /// Serialized data for the principal object.
@@ -42,14 +33,9 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] Principal
     {
-      get { return GetProperty(PrincipalProperty)!; }
-      set { LoadProperty(PrincipalProperty, value ?? throw new ArgumentNullException(nameof(Principal))); }
+      get;
+      private set;
     }
-
-    /// <summary>
-    /// Serialized data for the client context object.
-    /// </summary>
-    public static readonly PropertyInfo<byte[]> ClientContextProperty = RegisterProperty<byte[]>(c => c.ClientContext);
 
     /// <summary>
     /// Serialized data for the client context object.
@@ -57,15 +43,9 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] ClientContext
     {
-      get { return GetProperty(ClientContextProperty)!; }
-      set { LoadProperty(ClientContextProperty, value ?? throw new ArgumentNullException(nameof(ClientContext))); }
+      get;
+      private set;
     }
-
-    /// <summary>
-    /// Serialized client culture.
-    /// </summary>
-    /// <value>The client culture.</value>
-    public static readonly PropertyInfo<string> ClientCultureProperty = RegisterProperty<string>(c => c.ClientCulture);
 
     /// <summary>
     /// Serialized client culture.
@@ -74,15 +54,9 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientCulture
     {
-      get { return GetProperty(ClientCultureProperty)!; }
-      set { LoadProperty(ClientCultureProperty, value ?? throw new ArgumentNullException(nameof(ClientCulture))); }
+      get;
+      private set;
     }
-
-    /// <summary>
-    /// Serialized client UI culture.
-    /// </summary>
-    /// <value>The client UI culture.</value>
-    public static readonly PropertyInfo<string> ClientUICultureProperty = RegisterProperty<string>(c => c.ClientUICulture);
 
     /// <summary>
     /// Serialized client UI culture.
@@ -91,8 +65,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientUICulture
     {
-      get { return GetProperty(ClientUICultureProperty)!; }
-      set { LoadProperty(ClientUICultureProperty, value ?? throw new ArgumentNullException(nameof(ClientUICulture))); }
+      get;
+      private set;
     }
 
     /// <summary>
@@ -117,7 +91,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// Initializes an empty instance for <see cref="MobileFormatter"/>.
     /// </summary>
     [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
-    public UpdateRequest()
+    public UpdateRequest() : this([], [], string.Empty, string.Empty, [])
     {
     }
   }

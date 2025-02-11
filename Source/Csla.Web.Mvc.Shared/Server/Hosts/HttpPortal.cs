@@ -59,11 +59,11 @@ namespace Csla.Server.Hosts
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, Deserialize<IPrincipal>(request.Principal),
+          _applicationContext, Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -107,11 +107,11 @@ namespace Csla.Server.Hosts
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, Deserialize<IPrincipal>(request.Principal),
+          _applicationContext, Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -148,11 +148,11 @@ namespace Csla.Server.Hosts
         object obj = GetCriteria(_applicationContext, request.ObjectData ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized));
 
         var context = new DataPortalContext(
-          _applicationContext, Deserialize<IPrincipal>(request.Principal),
+          _applicationContext, Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Update(obj, context, true);
 
@@ -197,11 +197,12 @@ namespace Csla.Server.Hosts
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, Deserialize<IPrincipal>(request.Principal),
+          _applicationContext, 
+          Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
@@ -264,13 +265,15 @@ namespace Csla.Server.Hosts
 
     #endregion Extension Method for Requests
 
-    private T Deserialize<T>(byte[] data)
+    private T? Deserialize<T>(byte[] data)
     {
-      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
-      if (deserializedData is not T castedData)
-        throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T).FullName));
+      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data);
+      return (T?)deserializedData;
+    }
 
-      return castedData;
+    private T DeserializeRequired<T>(byte[] data)
+    {
+      return Deserialize<T>(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
     }
   }
 }

@@ -438,6 +438,9 @@ namespace Csla.Reflection
       else
       {
         var mh = GetCachedProperty(obj.GetType(), property);
+        if (mh.DynamicMemberGet is null)
+          throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a public getter.", property, obj.GetType()));
+        
         return mh.DynamicMemberGet(obj);
       }
     }
@@ -469,6 +472,9 @@ namespace Csla.Reflection
       else
       {
         var mh = GetCachedProperty(obj.GetType(), property);
+        if (mh.DynamicMemberSet is null)
+          throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a public setter.", property, obj.GetType()));
+
         mh.DynamicMemberSet(obj, value);
       }
     }
@@ -724,9 +730,6 @@ namespace Csla.Reflection
 
       if (methodHandle.HasFinalArrayParam)
       {
-        if (parameters is null)
-          throw new ArgumentNullException(nameof(parameters));
-
         // last param is a param array or only param is an array
         var pCount = methodHandle.MethodParamsLength;
         var inCount = inParams.Length;
@@ -736,7 +739,7 @@ namespace Csla.Reflection
           // copy items into new array with last entry null
           object?[] paramList = new object[pCount];
           for (var pos = 0; pos <= pCount - 2; pos++)
-            paramList[pos] = parameters[pos];
+            paramList[pos] = inParams[pos];
           paramList[paramList.Length - 1] = hasParameters && inParams.Length == 0 ? inParams : null;
 
           // use new array
@@ -756,7 +759,7 @@ namespace Csla.Reflection
           // copy items into new array
           object?[] paramList = new object[pCount];
           for (var pos = 0; pos <= pCount - 2; pos++)
-            paramList[pos] = parameters[pos];
+            paramList[pos] = inParams[pos];
           paramList[paramList.Length - 1] = extraArray;
 
           // use new array

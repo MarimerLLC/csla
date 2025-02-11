@@ -9,7 +9,6 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Collections;
 using Csla.Properties;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {
@@ -356,10 +355,16 @@ namespace Csla
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public int Find(string propertyName, object key)
     {
-      if (string.IsNullOrWhiteSpace(propertyName))
-        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
       if (key is null)
         throw new ArgumentNullException(nameof(key));
+
+      if (string.IsNullOrWhiteSpace(propertyName))
+      {
+        if (!SupportsBinding)
+          return -1;
+        
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+      }
 
       var findProperty = GetPropertyDescriptor(propertyName)!;
 
@@ -377,7 +382,6 @@ namespace Csla
           }
         }
 
-        // throw exception if propertyDescriptor could not be found
         throw new ArgumentException(string.Format(Resources.SortedBindingListPropertyNameNotFound, propertyName), propertyName);
     }
 

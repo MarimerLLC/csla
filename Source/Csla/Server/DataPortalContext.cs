@@ -106,11 +106,11 @@ namespace Csla.Server
     /// <param name="clientContext">Client context.</param>
     /// <param name="clientCulture">Client culture.</param>
     /// <param name="clientUICulture">Client UI culture.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="principal"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="clientContext"/> is <see langword="null"/>.</exception>
-    public DataPortalContext(ApplicationContext applicationContext, IPrincipal principal, bool isRemotePortal, string clientCulture, string clientUICulture, IContextDictionary clientContext)
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="clientContext"/> is <see langword="null"/>.</exception>
+    public DataPortalContext(ApplicationContext applicationContext, IPrincipal? principal, bool isRemotePortal, string clientCulture, string clientUICulture, IContextDictionary clientContext)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      Principal = principal ?? throw new ArgumentNullException(nameof(principal));
+      Principal = principal;
       ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
       ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));
       ClientUICulture = clientUICulture ?? throw new ArgumentNullException(nameof(clientUICulture));

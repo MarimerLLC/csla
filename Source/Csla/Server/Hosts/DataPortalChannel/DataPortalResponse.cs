@@ -8,6 +8,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
+using Csla.Serialization;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Server.Hosts.DataPortalChannel
@@ -16,8 +17,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
   /// Response message for returning
   /// the results of a data portal call.
   /// </summary>
-  [Serializable]
-  public class DataPortalResponse : MobileObject
+  [AutoSerializable]
+  public partial class DataPortalResponse
   {
     /// <summary>
     /// Indicates whether <see cref="ErrorData"/> are present or not.
@@ -69,47 +70,6 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public DataPortalResponse()
     {
-    }
-
-    /// <inheritdoc />
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
-    {
-      if (ObjectData is not null)
-      {
-        info.AddValue(nameof(ObjectData), ObjectData);
-      }
-      base.OnGetState(info, mode);
-    }
-
-    /// <inheritdoc />
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
-    {
-      if (info.Values.TryGetValue(nameof(ObjectData), out var objectData))
-      {
-        ObjectData = (byte[])objectData.Value!;
-      }
-      base.OnSetState(info, mode);
-    }
-
-    /// <inheritdoc />
-    protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      if (ErrorData is not null)
-      {
-        SerializationInfo childInfo = formatter.SerializeObject(ErrorData);
-        info.AddChild(nameof(ErrorData), childInfo.ReferenceId);
-      }
-      base.OnGetChildren(info, formatter);
-    }
-
-    /// <inheritdoc />
-    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      if (info.Children.TryGetValue(nameof(ErrorData), out var child))
-      {
-        ErrorData = (DataPortalErrorInfo)formatter.GetObject(child.ReferenceId)!;
-      }
-      base.OnSetChildren(info, formatter);
     }
   }
 }

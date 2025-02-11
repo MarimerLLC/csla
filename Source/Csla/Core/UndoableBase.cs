@@ -9,9 +9,8 @@
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
-using Csla.Serialization.Mobile;
 using Csla.Serialization;
-using System.Security;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -151,7 +150,7 @@ namespace Csla.Core
         List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
         foreach (var h in handlers)
         {
-          var value = h.DynamicMemberGet(this);
+          var value = h.MemberGetOrNotSupportedException(this);
           var fieldName = GetFieldName(currentTypeName, h.MemberName);
 
           if (typeof(IUndoableObject).IsAssignableFrom(h.MemberType))
@@ -255,7 +254,7 @@ namespace Csla.Core
           foreach (var h in handlers)
           {
             // the field is undoable, so restore its value
-            var value = h.DynamicMemberGet(this);
+            var value = h.MemberGetOrNotSupportedException(this);
             var fieldName = GetFieldName(currentTypeName, h.MemberName);
 
             if (typeof(IUndoableObject).IsAssignableFrom(h.MemberType))
@@ -266,7 +265,7 @@ namespace Csla.Core
               if (state.Contains(fieldName))
               {
                 // previous value was empty - restore to empty
-                h.DynamicMemberSet(this, null);
+                h.MemberSetOrNotSupportedException(this, null);
               }
               else
               {
@@ -282,12 +281,12 @@ namespace Csla.Core
               buffer.Position = 0;
               var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
               var obj = formatter.Deserialize(buffer);
-              h.DynamicMemberSet(this, obj);
+              h.MemberSetOrNotSupportedException(this, obj);
             }
             else
             {
               // this is a regular field, restore its value
-              h.DynamicMemberSet(this, state[fieldName]);
+              h.MemberSetOrNotSupportedException(this, state[fieldName]);
             }
           }
 
@@ -346,7 +345,7 @@ namespace Csla.Core
             // the field is undoable so see if it is a child object
             if (typeof(IUndoableObject).IsAssignableFrom(h.MemberType))
             {
-              object? value = h.DynamicMemberGet(this);
+              object? value = h.MemberGetOrNotSupportedException(this);
               // make sure the variable has a value
               // it is a child object so cascade the call
               ((IUndoableObject?)value)?.AcceptChanges(EditLevel, BindingEdit);

@@ -314,15 +314,13 @@ namespace Csla.Data
       {
         try
         {
-          object? value = mapping.FromMemberHandle.DynamicMemberGet(source);
+          object? value = mapping.FromMemberHandle.MemberGetOrNotSupportedException(source);
           SetValueWithCoercion(target, mapping.ToMemberHandle, value);
         }
         catch (Exception ex)
         {
           if (!suppressExceptions)
-            throw new ArgumentException(
-              String.Format("{0} ({1})",
-              Resources.PropertyCopyFailed, mapping.FromMemberHandle.MemberName), ex);
+            throw new ArgumentException(String.Format("{0} ({1})", Resources.PropertyCopyFailed, mapping.FromMemberHandle.MemberName), ex);
         }
       }
     }
@@ -438,7 +436,7 @@ namespace Csla.Data
 
     private static void SetValueWithCoercion(object target, DynamicMemberHandle handle, object? value)
     {
-      var oldValue = handle.DynamicMemberGet(target);
+      var oldValue = handle.MemberGetOrNotSupportedException(target);
 
       Type pType = handle.MemberType;
 
@@ -459,7 +457,7 @@ namespace Csla.Data
         Type vType = Utilities.GetPropertyType(value.GetType());
         value = Utilities.CoerceValue(pType, vType, oldValue, value);
       }
-      handle.DynamicMemberSet(target, value);
+      handle.MemberSetOrNotSupportedException(target, value);
     }
 
     /// <summary>
@@ -498,7 +496,7 @@ namespace Csla.Data
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(fieldName)), nameof(fieldName));
 
       DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
-      return handle.DynamicMemberGet.Invoke(target);
+      return handle.MemberGetOrNotSupportedException(target);
     }
 
     #endregion

@@ -166,7 +166,7 @@ namespace Csla.Channels.Local
     }
 
     /// <inheritdoc />
-    public override async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -210,7 +210,7 @@ namespace Csla.Channels.Local
     }
 
     /// <inheritdoc />
-    public override async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -298,7 +298,7 @@ namespace Csla.Channels.Local
     }
 
     /// <inheritdoc />
-    public override async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

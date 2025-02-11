@@ -50,7 +50,7 @@ namespace Csla.DataPortalClient
     public abstract string DataPortalUrl { get; }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -99,7 +99,7 @@ namespace Csla.DataPortalClient
     }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -197,7 +197,7 @@ namespace Csla.DataPortalClient
     }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

@@ -44,5 +44,6 @@ Supporting nullable types means that some APIs have changed to support nullable 
   * Public constructor removed (now private). Instead use `Csla.Server.EmptyCriteria.Instance`.
 * `Csla.Server.ObjectFactory`
   * Protected methods now guard against `null` objects
-* `SessionMessage` now inherits from `MobileObject` instead of `CommandBase<SessionMessage>`.
-* `DataPortalResponse` now inherits from `MobileObject` instead of `ReadOnlyBase<DataPortalResponse>`
+* `SessionMessage` now inherits from `MobileObject` instead of `CommandBase`.
+* `DataPortalResponse` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.
+* `UpdateRequest` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.

@@ -110,6 +110,63 @@ namespace Csla.Test.Serialization
       var clone = (SerializablePoco)cloner.Clone(poco);
       Assert.AreEqual(poco.Name, clone.Name);
     }
+
+    [TestMethod]
+    public async Task ClonePoco()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla(o => o
+        .Serialization(o => o
+          .UseMobileFormatter(o => o
+            .CustomSerializers.Add(new TypeMap<object, PocoSerializer<SerializablePoco>>(PocoSerializer<SerializablePoco>.CanSerialize)))));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
+      var portal = applicationContext.GetRequiredService<IDataPortal<PocoContainer>>();
+      var pocoContainer = await portal.CreateAsync();
+      Assert.AreEqual("test", pocoContainer.Poco.Name);
+      var cloner = new Core.ObjectCloner(applicationContext);
+      var clone = (PocoContainer)cloner.Clone(pocoContainer);
+      Assert.AreEqual(pocoContainer.Poco.Name, clone.Poco.Name);
+    }
+
+    [TestMethod]
+    public void NLevelPoco()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla(o => o
+        .Serialization(o => o
+          .UseMobileFormatter(o => o
+            .CustomSerializers.Add(new TypeMap<object, PocoSerializer<SerializablePoco>>(PocoSerializer<SerializablePoco>.CanSerialize)))));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
+      var portal = applicationContext.GetRequiredService<IDataPortal<PocoContainer>>();
+      var pocoContainer = portal.Create();
+      Assert.AreEqual("test", pocoContainer.Poco.Name);
+      pocoContainer.BeginEdit();
+      pocoContainer.Poco.Name = "test2";
+      pocoContainer.CancelEdit();
+      Assert.AreEqual("test", pocoContainer.Poco.Name);
+    }
+  }
+
+  public class PocoContainer : BusinessBase<PocoContainer>
+  {
+    public static readonly PropertyInfo<SerializablePoco> PocoProperty = RegisterProperty<SerializablePoco>(c => c.Poco);
+    public SerializablePoco Poco
+    {
+      get => GetProperty(PocoProperty);
+      set => SetProperty(PocoProperty, value);
+    }
+
+    [Create]
+    private void Create()
+    {
+      Poco = new SerializablePoco { Name = "test" };
+    }
   }
 
   public class SerializablePoco

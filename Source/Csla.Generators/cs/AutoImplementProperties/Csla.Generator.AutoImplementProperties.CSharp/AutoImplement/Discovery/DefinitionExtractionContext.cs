@@ -48,12 +48,18 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     public string GetTypeNamespace(TypeSyntax typeSyntax)
     {
       INamedTypeSymbol typeSymbol;
+      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
+      {
+        typeSyntax = nullableTypeSyntax.ElementType;
+      }
+      
       if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
       {
         typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
       }
       else
       {
+        
         typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       }
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;

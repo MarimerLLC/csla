@@ -33,12 +33,23 @@
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" PrivateAssets="all" />
-     <PackageReference Include="Backport.System.Threading.Lock" Version="3.1.0" />
    </ItemGroup>
 
   <ItemGroup>
-    <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\Csla.Generator.AutoImplementProperties.Attributes.CSharp.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.Generator.AutoImplementProperties.Attributes.CSharp\Csla.Generator.AutoImplementProperties.Attributes.CSharp.csproj" 
+                      PrivateAssets="All"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Backport.System.Threading.Lock" Version="3.1.4" />
+    <Using Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" Alias="Lock" Include="System.Threading.Lock" />
+    <Using Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" Alias="Lock" Include="Backport.System.Threading.Lock" />
+    <Using Alias="LockFactory" Include="Backport.System.Threading.LockFactory" />
   </ItemGroup>
 
 </Project>

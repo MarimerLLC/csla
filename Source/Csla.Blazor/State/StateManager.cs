@@ -53,6 +53,8 @@ namespace Csla.Blazor.State
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
         _ = await _sessionManager.RetrieveSession(timeout);
+      else
+        _ = _sessionManager.GetSession();
     }
 
     /// <summary>
@@ -64,6 +66,8 @@ namespace Csla.Blazor.State
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
         _ = await _sessionManager.RetrieveSession(ct);
+      else
+        _ = _sessionManager.GetSession();
     }
 
     /// <summary>

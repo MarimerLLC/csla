@@ -21,7 +21,6 @@ namespace BusinessRuleDemo
     {
       _countryProperty = countryProperty;
       _innerRule = (IBusinessRule)new Csla.Rules.CommonRules.Required(primaryProperty);
-      InputProperties = new List<IPropertyInfo>();
 
       // this rule needs the Country property
       InputProperties.Add(countryProperty);

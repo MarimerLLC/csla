@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CslaVersion>9.0.0-rc1-g7947dbebf0</CslaVersion>
+    <CslaVersion>9.0.0-rc4-gc005a93a3c</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Csla" Version="$(CslaVersion)" />

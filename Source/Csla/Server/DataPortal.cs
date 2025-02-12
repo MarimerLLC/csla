@@ -682,9 +682,7 @@ namespace Csla.Server
       await Authorizer.AuthorizeAsync(clientRequest, ct);
     }
 
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     internal static DataPortalException NewDataPortalException(ApplicationContext applicationContext, string message, Exception innerException, object? businessObject, DataPortalOptions dataPortalOptions)
     {
       if (!dataPortalOptions.DataPortalServerOptions.DataPortalReturnObjectOnException)
@@ -698,7 +696,7 @@ namespace Csla.Server
     /// serializable criteria value.
     /// </summary>
     /// <param name="criteria">Params array</param>
-    public static object GetCriteriaFromArray(params object?[] criteria)
+    public static object GetCriteriaFromArray(params object?[]? criteria)
     {
       var clength = 0;
       if (criteria != null)

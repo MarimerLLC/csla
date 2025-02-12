@@ -438,10 +438,7 @@ namespace Csla.Reflection
       else
       {
         var mh = GetCachedProperty(obj.GetType(), property);
-        if (mh.DynamicMemberGet is null)
-          throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a public getter.", property, obj.GetType()));
-        
-        return mh.DynamicMemberGet(obj);
+        return mh.MemberGetOrNotSupportedException(obj);
       }
     }
 
@@ -472,10 +469,7 @@ namespace Csla.Reflection
       else
       {
         var mh = GetCachedProperty(obj.GetType(), property);
-        if (mh.DynamicMemberSet is null)
-          throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a public setter.", property, obj.GetType()));
-
-        mh.DynamicMemberSet(obj, value);
+        mh.MemberSetOrNotSupportedException(obj, value);
       }
     }
 
@@ -1305,9 +1299,8 @@ namespace Csla.Reflection
 
         return await t.ConfigureAwait(false);
       }
-    #if NET8_0_OR_GREATER
-      [System.Diagnostics.CodeAnalysis.DoesNotReturn]
-    #endif
+
+      [DoesNotReturn]
       static void ThrowNotSupportedException(object obj, string method)
       {
         throw new NotSupportedException(string.Format(Resources.TaskOfObjectException, obj.GetType().Name + "." + method));

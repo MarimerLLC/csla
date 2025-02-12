@@ -13,10 +13,11 @@ namespace Csla.Reflection
 {
   internal class DynamicMemberHandle
   {
+    private readonly DynamicMemberSetDelegate? _dynamicMemberSet;
+    private readonly DynamicMemberGetDelegate? _dynamicMemberGet;
+
     public string MemberName { get; }
     public Type MemberType { get; }
-    public DynamicMemberGetDelegate? DynamicMemberGet { get; }
-    public DynamicMemberSetDelegate? DynamicMemberSet { get; }
 
     public DynamicMemberHandle(PropertyInfo info) :
       this(
@@ -47,25 +48,25 @@ namespace Csla.Reflection
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(memberName)), nameof(memberName));
 
       MemberName = memberName;
-      DynamicMemberSet = dynamicMemberSet;
-      DynamicMemberGet = dynamicMemberGet;
+      _dynamicMemberSet = dynamicMemberSet;
+      _dynamicMemberGet = dynamicMemberGet;
       MemberType = memberType ?? throw new ArgumentNullException(nameof(memberType));
     }
 
     public object? MemberGetOrNotSupportedException(object target)
     {
-      if (DynamicMemberGet is null)
+      if (_dynamicMemberGet is null)
         throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a public getter.", MemberName, target.GetType()));
 
-      return DynamicMemberGet(target);
+      return _dynamicMemberGet(target);
     }
 
     public void MemberSetOrNotSupportedException(object target, object? value)
     {
-      if (DynamicMemberSet is null)
+      if (_dynamicMemberSet is null)
         throw new NotSupportedException(string.Format(CultureInfo.CurrentCulture, "The property '{0}' on Type '{1}' does not have a public setter.", MemberName, target.GetType()));
 
-      DynamicMemberSet(target, value);
+      _dynamicMemberSet(target, value);
     }
   }
 }

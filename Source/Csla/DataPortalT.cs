@@ -100,11 +100,7 @@ namespace Csla
       }
     }
 
-    private async Task<object> DoCreateAsync(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoCreateAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
 
       if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
@@ -138,9 +134,7 @@ namespace Csla
       return result.ReturnObject!;
     }
 
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     private void HandleCreateDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Create", ex);
@@ -162,11 +156,7 @@ namespace Csla
     /// <param name="criteria">The criteria required to perform the creation operation</param>
     /// <returns>Returns a new, initialised object of the type requested</returns>
 
-    private object Create(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria)
+    private object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria)
     {
       try
       {
@@ -190,11 +180,7 @@ namespace Csla
       return (T)await DoCreateAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
-    private async Task<object> DoFetchAsync(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoFetchAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
@@ -233,11 +219,7 @@ namespace Csla
       return result.ReturnObject!;
     }
 
-    private async Task<object> DoExecuteAsync(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, bool isSync, CancellationToken ct = default)
+    private async Task<object> DoExecuteAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
 
       if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
@@ -272,9 +254,7 @@ namespace Csla
       return result.ReturnObject!;
     }
 
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     private void HandleFetchDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Fetch", ex);
@@ -295,11 +275,7 @@ namespace Csla
     /// <param name="objectType">The type of object to instantiate and load</param>
     /// <param name="criteria">The criteria required to perform the load operation</param>
     /// <returns>Returns a populated object of the type requested</returns>
-    private object Fetch(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria)
+    private object Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria)
     {
       try
       {
@@ -491,17 +467,13 @@ namespace Csla
     return (T)result.ReturnObject!;
   }
 
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     private void HandleUpdateDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Update", ex);
     }
 
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     private void HandleDataPortalException(string operation, Server.DataPortalException ex)
     {
       var result = ex.Result;
@@ -569,9 +541,7 @@ namespace Csla
       }
     }
 
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     private void HandleDeleteDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Delete", ex);
@@ -592,11 +562,7 @@ namespace Csla
     /// <param name="objectType">The type of object to instantiate and load</param>
     /// <param name="criteria">The criteria required to perform the load operation</param>
     /// <returns>Returns a populated object of the type requested</returns>
-    private void Delete(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria)
+    private void Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria)
     {
       try
       {

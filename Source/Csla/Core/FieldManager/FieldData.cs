@@ -249,14 +249,18 @@ namespace Csla.Core.FieldManager
       MarkClean();
     }
 
+    private static bool IsFieldSerializable(MobileFormatter formatter)
+    {
+      return formatter.IsTypeSerializable(typeof(T));
+    }
+
     void IMobileObject.GetState(SerializationInfo info)
     { }
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      bool isSerializable = formatter.IsTypeSerializable(_data.GetType());
+      bool isSerializable = IsFieldSerializable(formatter);
       info.AddValue("_name", Name);
-      info.AddValue("_isDataSerializable", isSerializable);
       if (isSerializable)
       {
         SerializationInfo childInfo = formatter.SerializeObject(_data);
@@ -274,8 +278,8 @@ namespace Csla.Core.FieldManager
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
+      bool isSerializable = IsFieldSerializable(formatter);
       Name = info.GetValue<string>("_name");
-      bool isSerializable = info.GetValue<bool>("_isDataSerializable");
       if (isSerializable)
       {
         SerializationInfo.ChildData childData = info.Children[Name];

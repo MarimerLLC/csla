@@ -151,6 +151,28 @@ namespace Csla.Test.Serialization
       pocoContainer.CancelEdit();
       Assert.AreEqual("test", pocoContainer.Poco.Name);
     }
+
+    [TestMethod]
+    public void NLevelNullPoco()
+    {
+      var services = new ServiceCollection();
+      services.AddCsla(o => o
+        .Serialization(o => o
+          .UseMobileFormatter(o => o
+            .CustomSerializers.Add(new TypeMap<object, PocoSerializer<SerializablePoco>>(PocoSerializer<SerializablePoco>.CanSerialize)))));
+      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
+      var provider = services.BuildServiceProvider();
+      var applicationContext = provider.GetRequiredService<ApplicationContext>();
+
+      var portal = applicationContext.GetRequiredService<IDataPortal<PocoContainer>>();
+      var pocoContainer = portal.Create();
+      pocoContainer.Poco = null;
+      Assert.IsNull(pocoContainer.Poco);
+      pocoContainer.BeginEdit();
+      pocoContainer.Poco = new SerializablePoco { Name = "test" };
+      pocoContainer.CancelEdit();
+      Assert.IsNull(pocoContainer.Poco);
+    }
   }
 
   public class PocoContainer : BusinessBase<PocoContainer>

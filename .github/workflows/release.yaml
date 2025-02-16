@@ -26,7 +26,7 @@ jobs:
       run: dotnet workload install maui
 
     - name: Build and Pack
-      run: dotnet pack Source\csla.build.sln --configuration Release
+      run: dotnet pack Source\csla.build.sln --configuration Release -p:PublicRelease=true
 
     - name: Push NuGet packages
       run: dotnet nuget push bin\packages\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

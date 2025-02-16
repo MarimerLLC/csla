@@ -42,7 +42,7 @@ Also expected to work on:
 
 ### Change List
 
-* https://github.com/MarimerLLC/csla/compare/v8.2.4...v9.0.0
+* https://github.com/MarimerLLC/csla/compare/v8.2.9...v9.0.0
 
 ### Contributors
 
@@ -51,6 +51,7 @@ Also expected to work on:
 * @crazyfox55
 * @EricNgo1972
 * @Freelancingonupwork
+* @jensbrand
 * @kant2002
 * @luizfbicalho
 * @michaelcsikos

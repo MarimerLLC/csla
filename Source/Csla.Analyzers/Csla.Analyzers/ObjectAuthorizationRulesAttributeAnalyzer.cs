@@ -15,21 +15,21 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor missingAttributeRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesAttributeMissing, ObjectAuthorizationRulesAttributeAnalyzerConstants.AttributeMissingTitle,
         ObjectAuthorizationRulesAttributeAnalyzerConstants.AttributeMissingMessage, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesAttributeMissing, nameof(ObjectAuthorizationRulesAttributeAnalyzer)));
     private static readonly DiagnosticDescriptor shouldBePublicRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesPublic, ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesPublicTitle,
         ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesPublicMessage, Constants.Categories.Usage,
         DiagnosticSeverity.Info, true,
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesPublic, nameof(ObjectAuthorizationRulesAttributeAnalyzer)));
     private static readonly DiagnosticDescriptor shouldBeStaticRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesStatic, ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesStaticTitle,
         ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesStaticMessage, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,

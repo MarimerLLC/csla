@@ -49,7 +49,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindBusinessObjectCreationConstants_Message), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString Message = new(nameof(Resources.FindBusinessObjectCreationConstants_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   /// <summary>

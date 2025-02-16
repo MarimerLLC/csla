@@ -38,19 +38,20 @@ namespace Csla
     public DataPortal(ApplicationContext applicationContext, IDataPortalProxy proxy, IDataPortalCache dataPortalCache, DataPortalOptions dataPortalOptions)
     {
       _applicationContext = applicationContext;
-      DataPortalProxy = proxy;
-      Cache = dataPortalCache;
-      DataPortalClientOptions = dataPortalOptions.DataPortalClientOptions;
+      _dataPortalProxy = proxy;
+      _cache = dataPortalCache;
+      _dataPortalClientOptions = dataPortalOptions.DataPortalClientOptions;
     }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
     private ApplicationContext _applicationContext;
-    private IDataPortalProxy DataPortalProxy { get; set; }
 
-    private IDataPortalCache Cache { get; set; }
-    private DataPortalClientOptions DataPortalClientOptions { get; set; }
+    private IDataPortalProxy _dataPortalProxy;
+
+    private IDataPortalCache _cache;
+    private DataPortalClientOptions _dataPortalClientOptions;
 
     private class DataPortalAsyncRequest
     {
@@ -128,7 +129,7 @@ namespace Csla
 
         try
         {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create,
+          result = await _cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Create,
             async () => await proxy.Create(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
@@ -236,7 +237,7 @@ namespace Csla
 
         try
         {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch,
+          result = await _cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Fetch,
             async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
@@ -284,7 +285,7 @@ namespace Csla
 
         try
         {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute,
+          result = await _cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Execute,
             async () => await proxy.Fetch(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
@@ -490,13 +491,13 @@ namespace Csla
 
         try
         {
-          if (!proxy.IsServerRemote && DataPortalClientOptions.AutoCloneOnUpdate)
+          if (!proxy.IsServerRemote && _dataPortalClientOptions.AutoCloneOnUpdate)
           {
             // when using local data portal, automatically
             // clone original object before saving
             if (obj is ICloneable cloneable)
               obj = (T)cloneable.Clone();
-            result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
+            result = await _cache.GetDataPortalResultAsync(objectType, obj, operation,
               async () => await proxy.Update(obj, dpContext, isSync));
           }
           else
@@ -504,7 +505,7 @@ namespace Csla
             var contextManager = _applicationContext.ApplicationContextAccessor;
             try
             {
-              result = await Cache.GetDataPortalResultAsync(objectType, obj, operation,
+              result = await _cache.GetDataPortalResultAsync(objectType, obj, operation,
                 async () => await proxy.Update(obj, dpContext, isSync));
             }
             catch
@@ -604,7 +605,7 @@ namespace Csla
 
         try
         {
-          result = await Cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete,
+          result = await _cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete,
             async () => await proxy.Delete(objectType, criteria, dpContext, isSync));
         }
         catch (AggregateException ex)
@@ -738,7 +739,7 @@ namespace Csla
       if (forceLocal || _applicationContext.IsOffline)
         return _applicationContext.CreateInstanceDI<Channels.Local.LocalProxy>();
       else
-        return DataPortalProxy;
+        return _dataPortalProxy;
     }
 
     /// <summary>

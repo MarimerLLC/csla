@@ -53,7 +53,7 @@ namespace Csla.Analyzers
 
       foreach(var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
       {
-        newRoot = newRoot.RemoveNode(attribute.ApplicationSyntaxReference.GetSyntax(), SyntaxRemoveOptions.KeepNoTrivia);
+        newRoot = newRoot.RemoveNode(await attribute.ApplicationSyntaxReference.GetSyntaxAsync(), SyntaxRemoveOptions.KeepNoTrivia);
       }
 
       var attributeListsToRemove = new List<AttributeListSyntax>();

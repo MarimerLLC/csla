@@ -33,9 +33,10 @@ namespace Csla.Analyzers
     /// 
     /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(
+    [
         publicNoArgumentConstructorIsMissingRule,
-        constructorHasParametersRule);
+        constructorHasParametersRule
+    ];
 
     /// <summary>
     /// 

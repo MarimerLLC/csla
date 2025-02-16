@@ -31,8 +31,8 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
-      ImmutableArray.Create(saveResultIsNotAssignedRule, saveAsyncResultIsNotAssignedRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+      [saveResultIsNotAssignedRule, saveAsyncResultIsNotAssignedRule];
 
     /// <summary>
     /// 

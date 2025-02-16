@@ -34,8 +34,8 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
-      ImmutableArray.Create(makeNonPublicRule, makeNonPublicForInterfaceRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+      [makeNonPublicRule, makeNonPublicForInterfaceRule];
 
     /// <summary>
     /// 

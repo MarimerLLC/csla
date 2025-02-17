@@ -31,13 +31,13 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       while (containingTypeDeclaration.Parent is TypeDeclarationSyntax syntax)
       {
         containingTypeDeclaration = syntax;
-        containers.Add(GetContainerDefinition(extractionContext, containingTypeDeclaration));
+        containers.Add(GetContainerDefinition(containingTypeDeclaration));
       }
 
       namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
       if (namespaceDeclaration is not null)
       {
-        containers.Add(GetContainerDefinition(extractionContext, namespaceDeclaration));
+        containers.Add(GetContainerDefinition(namespaceDeclaration));
       }
 
       containers.Reverse();
@@ -45,7 +45,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       return containers;
     }
 
-    private static ExtractedContainerDefinition GetContainerDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax typeDeclarationSyntax)
+    private static ExtractedContainerDefinition GetContainerDefinition(TypeDeclarationSyntax typeDeclarationSyntax)
     {
       StringBuilder containerDefinitionBuilder = new StringBuilder();
       ExtractedContainerDefinition containerDefinition;
@@ -70,7 +70,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       return containerDefinition;
     }
 
-    private static ExtractedContainerDefinition GetContainerDefinition(DefinitionExtractionContext extractionContext, NamespaceDeclarationSyntax namespaceDeclarationSyntax)
+    private static ExtractedContainerDefinition GetContainerDefinition(NamespaceDeclarationSyntax namespaceDeclarationSyntax)
     {
       StringBuilder containerDefinitionBuilder = new StringBuilder();
       ExtractedContainerDefinition containerDefinition;

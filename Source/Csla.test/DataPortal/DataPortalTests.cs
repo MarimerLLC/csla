@@ -338,6 +338,14 @@ namespace Csla.Test.DataPortal
       }
     }
 
+    [TestMethod]
+    public async Task CreateMustCanHandleNullValueAsCriteria()
+    {
+      var dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
+
+      string[] createValue = null;
+      var instance = await dataPortal.CreateAsync(createValue);
+    }
     private void ClientPortal_DataPortalInvoke(DataPortalEventArgs obj)
     {
       TestResults.Add("dpinvoke", "true");

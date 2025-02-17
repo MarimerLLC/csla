@@ -141,11 +141,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public T Create(params object?[] criteria)
+    public T Create(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       return (T)Create(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
@@ -155,7 +152,6 @@ namespace Csla
     /// <param name="objectType">The type of object to instantiate and initialise</param>
     /// <param name="criteria">The criteria required to perform the creation operation</param>
     /// <returns>Returns a new, initialised object of the type requested</returns>
-
     private object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria)
     {
       try
@@ -172,11 +168,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task<T> CreateAsync(params object?[] criteria)
+    public async Task<T> CreateAsync(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       return (T)await DoCreateAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
@@ -186,7 +179,6 @@ namespace Csla
       {
         return await DoExecuteAsync(objectType, criteria, isSync);
       }
-
 
       if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
         throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "get", objectType.Name));
@@ -261,11 +253,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public T Fetch(params object?[] criteria)
+    public T Fetch(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       return (T)Fetch(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
@@ -291,11 +280,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task<T> FetchAsync(params object?[] criteria)
+    public async Task<T> FetchAsync(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
@@ -548,11 +534,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public void Delete(params object?[] criteria)
+    public void Delete(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       Delete(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria));
     }
 
@@ -582,11 +565,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public Task DeleteAsync(params object?[] criteria)
+    public Task DeleteAsync(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       return DoDeleteAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
@@ -600,11 +580,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public T Execute(params object?[] criteria)
+    public T Execute(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
     }
 
@@ -618,11 +595,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task<T> ExecuteAsync(params object?[] criteria)
+    public async Task<T> ExecuteAsync(params object?[]? criteria)
     {
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
@@ -653,11 +627,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public T CreateChild(params object?[] parameters)
+    public T CreateChild(params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
-
       var portal = new Server.ChildDataPortal(_applicationContext);
       return (T)(portal.Create(typeof(T), parameters));
     }
@@ -673,11 +644,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task<T> CreateChildAsync(params object?[] parameters)
+    public async Task<T> CreateChildAsync(params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
-
       var portal = new Server.ChildDataPortal(_applicationContext);
       return await portal.CreateAsync<T>(parameters);
     }
@@ -693,11 +661,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public T FetchChild(params object?[] parameters)
+    public T FetchChild(params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
-
       var portal = new Server.ChildDataPortal(_applicationContext);
       return (T)(portal.Fetch(typeof(T), parameters));
     }
@@ -713,11 +678,8 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task<T> FetchChildAsync(params object?[] parameters)
+    public async Task<T> FetchChildAsync(params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
-
       var portal = new Server.ChildDataPortal(_applicationContext);
       return await portal.FetchAsync<T>(parameters);
     }
@@ -733,24 +695,20 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public void UpdateChild(object child, params object?[] parameters)
+    public void UpdateChild(object child, params object?[]? parameters)
     {
       if (child is null)
         throw new ArgumentNullException(nameof(child));
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
 
       var portal = new Server.ChildDataPortal(_applicationContext);
       portal.Update(child, parameters);
     }
 
     /// <inheritdoc />
-    public void UpdateChild(T child, params object?[] parameters)
+    public void UpdateChild(T child, params object?[]? parameters)
     {
       if (child is null) 
         throw new ArgumentNullException(nameof(child));
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
 
       var portal = new Server.ChildDataPortal(_applicationContext);
       portal.Update(child, parameters);
@@ -767,34 +725,32 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task UpdateChildAsync(T child, params object?[] parameters)
+    public async Task UpdateChildAsync(T child, params object?[]? parameters)
     {
       if (child is null) 
         throw new ArgumentNullException(nameof(child));
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
 
       var portal = new Server.ChildDataPortal(_applicationContext);
       await portal.UpdateAsync(child, parameters).ConfigureAwait(false);
     }
 
-    async Task<object> IDataPortal.CreateAsync(params object?[] criteria) => Task.FromResult(await CreateAsync(criteria));
-    async Task<object> IDataPortal.FetchAsync(params object?[] criteria) => Task.FromResult(await FetchAsync(criteria));
-    async Task<object> IDataPortal.UpdateAsync(object obj) => Task.FromResult(await UpdateAsync((T)obj));
-    async Task<object> IDataPortal.ExecuteAsync(object command) => Task.FromResult(await ExecuteAsync((T)command));
-    async Task<object> IDataPortal.ExecuteAsync(params object?[] criteria) => Task.FromResult(await ExecuteAsync(criteria));
-    object IDataPortal.Create(params object?[] criteria) => Create(criteria);
-    object IDataPortal.Fetch(params object?[] criteria) => Fetch(criteria);
+    async Task<object> IDataPortal.CreateAsync(params object?[]? criteria) => await CreateAsync(criteria);
+    async Task<object> IDataPortal.FetchAsync(params object?[]? criteria) => await FetchAsync(criteria);
+    async Task<object> IDataPortal.UpdateAsync(object obj) => await UpdateAsync((T)obj);
+    async Task<object> IDataPortal.ExecuteAsync(object command) => await ExecuteAsync((T)command);
+    async Task<object> IDataPortal.ExecuteAsync(params object?[]? criteria) => await ExecuteAsync(criteria);
+    object IDataPortal.Create(params object?[]? criteria) => Create(criteria);
+    object IDataPortal.Fetch(params object?[]? criteria) => Fetch(criteria);
     object IDataPortal.Execute(object obj) => Execute((T)obj);
-    object IDataPortal.Execute(params object?[] criteria) => Execute(criteria);
+    object IDataPortal.Execute(params object?[]? criteria) => Execute(criteria);
     object IDataPortal.Update(object obj) => Update((T)obj);
 
-    async Task<object> IChildDataPortal.CreateChildAsync(params object?[] criteria) => Task.FromResult(await CreateChildAsync(criteria));
-    async Task<object> IChildDataPortal.FetchChildAsync(params object?[] criteria) => Task.FromResult(await FetchChildAsync(criteria));
-    async Task IChildDataPortal.UpdateChildAsync(object obj, params object?[] parameters) => await UpdateChildAsync((T)obj);
-    object IChildDataPortal.CreateChild(params object?[] criteria) => CreateChild(criteria);
-    object IChildDataPortal.FetchChild(params object?[] criteria) => FetchChild(criteria);
-    void IChildDataPortal.UpdateChild(object obj, params object?[] parameters) => UpdateChild(obj, parameters);
+    async Task<object> IChildDataPortal.CreateChildAsync(params object?[]? criteria) => Task.FromResult(await CreateChildAsync(criteria));
+    async Task<object> IChildDataPortal.FetchChildAsync(params object?[]? criteria) => Task.FromResult(await FetchChildAsync(criteria));
+    async Task IChildDataPortal.UpdateChildAsync(object obj, params object?[]? parameters) => await UpdateChildAsync((T)obj);
+    object IChildDataPortal.CreateChild(params object?[]? criteria) => CreateChild(criteria);
+    object IChildDataPortal.FetchChild(params object?[]? criteria) => FetchChild(criteria);
+    void IChildDataPortal.UpdateChild(object obj, params object?[]? parameters) => UpdateChild(obj, parameters);
   }
 
   internal static class Extensions

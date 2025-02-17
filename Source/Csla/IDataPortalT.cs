@@ -23,8 +23,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    Task<T> CreateAsync(params object?[] criteria);
+    Task<T> CreateAsync(params object?[]? criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -32,8 +31,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    Task<T> FetchAsync(params object?[] criteria);
+    Task<T> FetchAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
@@ -55,15 +53,13 @@ namespace Csla
     /// Criteria provided to the command object.
     /// </param>
     /// <returns>The resulting command object.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    Task<T> ExecuteAsync(params object?[] criteria);
+    Task<T> ExecuteAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    Task DeleteAsync(params object?[] criteria);
+    Task DeleteAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -71,16 +67,14 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    T Create(params object?[] criteria);
+    T Create(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    T Fetch(params object?[] criteria);
+    T Fetch(params object?[]? criteria);
     /// <summary>
     /// Called to execute a Command object on the server.
     /// </summary>
@@ -110,8 +104,7 @@ namespace Csla
     /// Criteria provided to the command object.
     /// </param>
     /// <returns>The resulting command object.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    T Execute(params object?[] criteria);
+    T Execute(params object?[]? criteria);
     /// <summary>
     /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
@@ -131,7 +124,6 @@ namespace Csla
     /// immediate deletion of a specific object from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="criteria"/> is <see langword="null"/>.</exception>
-    void Delete(params object?[] criteria);
+    void Delete(params object?[]? criteria);
   }
 }

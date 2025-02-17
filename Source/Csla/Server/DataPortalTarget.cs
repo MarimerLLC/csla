@@ -163,7 +163,7 @@ namespace Csla.Server
       return InvokeOperationAsync<CreateAttribute>(criteria, isSync);
     }
 
-    public Task CreateChildAsync(params object?[] parameters)
+    public Task CreateChildAsync(params object?[]? parameters)
     {
       return CallMethodTryAsyncDI<CreateChildAttribute>(false, parameters);
     }
@@ -173,7 +173,7 @@ namespace Csla.Server
       return InvokeOperationAsync<FetchAttribute>(criteria, isSync);
     }
 
-    public Task FetchChildAsync(params object?[] parameters)
+    public Task FetchChildAsync(params object?[]? parameters)
     {
       return CallMethodTryAsyncDI<FetchChildAttribute>(false, parameters);
     }
@@ -221,7 +221,7 @@ namespace Csla.Server
       }
     }
 
-    public async Task UpdateChildAsync(params object?[] parameters)
+    public async Task UpdateChildAsync(params object?[]? parameters)
     {
       // tell the business object to update itself
       if (Instance is BusinessBase busObj)
@@ -275,8 +275,8 @@ namespace Csla.Server
     {
       return InvokeOperationAsync<DeleteAttribute>(criteria, isSync);
     }
-#if NET8_0_OR_GREATER
 
+#if NET8_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_methodNameList, context, true);

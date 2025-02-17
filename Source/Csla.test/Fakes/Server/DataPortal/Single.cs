@@ -48,6 +48,12 @@ namespace Csla.Test.DataPortalTest
       BusinessRules.CheckRules();
     }
 
+    [Create]
+    private void Create(string[] values)
+    {
+      _ = values;
+    }
+
     private void DoCreate(int id)
     {
       Id = id;

@@ -53,13 +53,11 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    public object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
 
       return ExecuteWithAggregateExceptionHandling(
         () => DoCreateAsync(objectType, parameters).Result
@@ -69,11 +67,7 @@ namespace Csla.Server
     /// <summary>
     /// Create a new business object.
     /// </summary>
-    public async Task<T> CreateAsync<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>()
+    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
     {
       return (T) await DoCreateAsync(typeof(T)).ConfigureAwait(false);
     }
@@ -84,15 +78,12 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[] parameters)
+    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
       return (T)await DoCreateAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoCreateAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
+    private async Task<object> DoCreateAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
@@ -153,13 +144,11 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public object Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    public object Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
 
       return ExecuteWithAggregateExceptionHandling(
   () => DoFetchAsync(objectType, parameters).Result
@@ -169,11 +158,7 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
-    public async Task<T> FetchAsync<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>()
+    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
     {
       return (T)await DoFetchAsync(typeof(T)).ConfigureAwait(false);
     }
@@ -184,16 +169,12 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[] parameters)
+    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
-
       return (T)await DoFetchAsync(typeof(T), parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoFetchAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[] parameters)
+    private async Task<object> DoFetchAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
@@ -234,8 +215,12 @@ namespace Csla.Server
     /// Update a business object.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public void Update(object? obj)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public void Update(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       _ = ExecuteWithAggregateExceptionHandling(() =>
         {
           DoUpdateAsync(obj, false).Wait();
@@ -251,11 +236,12 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public void Update(object? obj, params object?[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public void Update(object obj, params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       _ = ExecuteWithAggregateExceptionHandling(() =>
         {
           DoUpdateAsync(obj, false, parameters).Wait();
@@ -268,8 +254,12 @@ namespace Csla.Server
     /// Update a business object.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public Task UpdateAsync(object? obj)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public Task UpdateAsync(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       return DoUpdateAsync(obj, false);
     }
 
@@ -280,11 +270,11 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public Task UpdateAsync(object? obj, params object?[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public Task UpdateAsync(object obj, params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
 
       return DoUpdateAsync(obj, false, parameters);
     }
@@ -293,8 +283,12 @@ namespace Csla.Server
     /// Update a business object. Include objects which are not dirty.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public void UpdateAll(object? obj)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public void UpdateAll(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       DoUpdateAsync(obj, true).Wait();
     }
 
@@ -305,11 +299,11 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public void UpdateAll(object? obj, params object?[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public void UpdateAll(object obj, params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
 
       DoUpdateAsync(obj, true, parameters).Wait();
     }
@@ -318,8 +312,12 @@ namespace Csla.Server
     /// Update a business object. Include objects which are not dirty.
     /// </summary>
     /// <param name="obj">Business object to update.</param>
-    public Task UpdateAllAsync(object? obj)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public Task UpdateAllAsync(object obj)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       return DoUpdateAsync(obj, true);
     }
 
@@ -330,20 +328,17 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Parameters passed to method.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public Task UpdateAllAsync(object? obj, params object?[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    public Task UpdateAllAsync(object obj, params object?[]? parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
 
       return DoUpdateAsync(obj, true, parameters);
     }
 
-    private async Task DoUpdateAsync(object? obj, bool bypassIsDirtyTest, params object?[] parameters)
+    private async Task DoUpdateAsync(object obj, bool bypassIsDirtyTest, params object?[]? parameters)
     {
-      if (obj == null)
-        return;
-
       if (obj is Core.BusinessBase busObj && busObj.IsDirty == false && bypassIsDirtyTest == false)
       {
         // if the object isn't dirty, then just exit

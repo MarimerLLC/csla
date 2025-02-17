@@ -203,13 +203,10 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException"><see cref="Csla.Core.IUseApplicationContext.ApplicationContext"/> is <see langword="null"/>.</exception>
-    public async Task CallMethodTryAsyncDI<T>(bool isSync, params object?[] parameters)
+    public async Task CallMethodTryAsyncDI<T>(bool isSync, params object?[]? parameters)
       where T : DataPortalOperationAttribute
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
       ThrowInvalidOperationExceptionWhenApplicationContextIsNull();
 
       var method = ServiceProviderMethodCaller.FindDataPortalMethod<T>(Instance, parameters);
@@ -228,17 +225,13 @@ namespace Csla.Reflection
       }
     }
 
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_applicationContext))]
-#endif
     private void ThrowInvalidOperationExceptionWhenApplicationContextIsNull()
     {
       if (_applicationContext is null)
         Throw();
 
-#if NET8_0_OR_GREATER
       [DoesNotReturn]
-#endif
       static void Throw() => throw new InvalidOperationException($"{nameof(ApplicationContext)} == null");
     }
   }

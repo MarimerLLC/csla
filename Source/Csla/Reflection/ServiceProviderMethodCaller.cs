@@ -501,15 +501,13 @@ namespace Csla.Reflection
     /// <param name="obj">Target object</param>
     /// <param name="method">Method to invoke</param>
     /// <param name="parameters">Criteria params array</param>
-    /// <exception cref="ArgumentNullException"><paramref name="obj"/>, <paramref name="method"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
-    public async Task<object?> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object?[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="method"/> is <see langword="null"/>.</exception>
+    public async Task<object?> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object?[]? parameters)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
       if (method == null)
         throw new ArgumentNullException(obj.GetType().FullName + ".<null>() " + Resources.MethodNotImplemented);
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
 
       var info = method.MethodInfo;
       method.PrepForInvocation();
@@ -539,7 +537,7 @@ namespace Csla.Reflection
           }
           else
           {
-            if (parameters.GetType().Equals(typeof(object[])))
+            if (parameters is not null && parameters.GetType().Equals(typeof(object[])))
             {
               if (parameters.Length - 1 < criteriaIndex)
                 plist[index] = null;

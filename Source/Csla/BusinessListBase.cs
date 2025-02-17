@@ -27,15 +27,7 @@ namespace Csla
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [Serializable]
-  public abstract class BusinessListBase<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T,
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      C> :
+  public abstract class BusinessListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
       ObservableBindingList<C>,
       IContainsDeletedList,
       ISavable<T>,

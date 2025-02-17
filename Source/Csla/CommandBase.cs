@@ -479,38 +479,22 @@ namespace Csla
       return FieldManager.FieldExists(property);
     }
 
-    object IManageProperties.LazyGetProperty<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    object IManageProperties.LazyGetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       throw new NotImplementedException();
     }
 
-    object IManageProperties.LazyGetPropertyAsync<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    object IManageProperties.LazyGetPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       throw new NotImplementedException();
     }
 
-    P IManageProperties.LazyReadProperty<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    P IManageProperties.LazyReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       throw new NotImplementedException();
     }
 
-    P IManageProperties.LazyReadPropertyAsync<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    P IManageProperties.LazyReadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       throw new NotImplementedException();
     }

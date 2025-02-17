@@ -33,11 +33,7 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   [Serializable]
-  public abstract class BusinessBase<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> :
+  public abstract class BusinessBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> :
     BusinessBase, ISavable, ISavable<T>, IBusinessBase where T : BusinessBase<T>
   {
 

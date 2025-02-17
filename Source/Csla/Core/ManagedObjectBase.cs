@@ -521,36 +521,22 @@ namespace Csla.Core
     bool IManageProperties.FieldExists(IPropertyInfo property) => FieldManager.FieldExists(property);
     List<IPropertyInfo> IManageProperties.GetManagedProperties() => FieldManager.GetRegisteredProperties();
 
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     object? IManageProperties.GetProperty(IPropertyInfo propertyInfo) => throw new NotImplementedException();
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     object? IManageProperties.LazyGetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     object? IManageProperties.LazyGetPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
     object? IManageProperties.ReadProperty(IPropertyInfo propertyInfo) => ReadProperty(propertyInfo);
     P? IManageProperties.ReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo) where P: default => ReadProperty(propertyInfo);
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     P? IManageProperties.LazyReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) where P: default => throw new NotImplementedException();
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     P? IManageProperties.LazyReadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory) where P: default => throw new NotImplementedException();
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object? newValue) => throw new NotImplementedException();
     void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object? newValue) => LoadProperty(propertyInfo, newValue);
-#if NET8_0_OR_GREATER
     [DoesNotReturn]
-#endif
     bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue) => throw new NotImplementedException();
     void IManageProperties.LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default => LoadProperty(propertyInfo, newValue);
     List<object> IManageProperties.GetChildren() => FieldManager.GetChildren();

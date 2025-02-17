@@ -71,9 +71,7 @@ namespace Csla.Channels.RabbitMq
     /// Channel, ReplyQueue, and DataPortalQueueName values
     /// used for bi-directional communication.
     /// </summary>
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(Connection), nameof(Channel), nameof(QueueListener))]
-#endif
     protected virtual async Task InitializeRabbitMQ()
     {
       if (Connection == null || Channel == null || QueueListener == null)

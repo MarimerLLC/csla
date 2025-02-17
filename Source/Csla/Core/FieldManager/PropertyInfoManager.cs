@@ -69,15 +69,8 @@ namespace Csla.Core.FieldManager
       }
     }
 
-#if NET8_0_OR_GREATER
-    [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067:UnrecognizedReflectionPattern",
-          Justification = "Type in cache is the same as objectType")]
-#endif
-    internal static PropertyInfoList GetPropertyListCache(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type objectType)
+    [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067:UnrecognizedReflectionPattern", Justification = "Type in cache is the same as objectType")]
+    internal static PropertyInfoList GetPropertyListCache([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType)
     {
       var cache = PropertyInfoCache;
 
@@ -131,15 +124,7 @@ namespace Csla.Core.FieldManager
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    internal static PropertyInfo<T> RegisterProperty<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type objectType, PropertyInfo<T> info)
+    internal static PropertyInfo<T> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, PropertyInfo<T> info)
     {
       var list = GetPropertyListCache(objectType);
       lock (list)

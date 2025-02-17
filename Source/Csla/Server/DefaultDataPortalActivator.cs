@@ -71,14 +71,8 @@ namespace Csla.Server
     /// requested type (which might be an interface).
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
-#if NET8_0_OR_GREATER
     [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    public virtual Type ResolveType(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type requestedType)
+    public virtual Type ResolveType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType)
     {
       // return requested type by default
       return requestedType;

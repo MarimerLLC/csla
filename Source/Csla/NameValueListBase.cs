@@ -23,15 +23,7 @@ namespace Csla
   /// <typeparam name="V">Type of the values.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class NameValueListBase<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    K,
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    V> :
+  public abstract class NameValueListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] K, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] V> :
     ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>,
     ICloneable,
     Server.IDataPortalTarget,

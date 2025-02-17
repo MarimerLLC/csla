@@ -92,11 +92,7 @@ namespace Csla.Server
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    public async Task<DataPortalResult> Fetch(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -149,11 +145,7 @@ namespace Csla.Server
       }
     }
 
-    private async Task<DataPortalResult> Execute(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> Execute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Execute);
@@ -280,11 +272,7 @@ namespace Csla.Server
 
     /// <inheritdoc />
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
-    public async Task<DataPortalResult> Delete(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);

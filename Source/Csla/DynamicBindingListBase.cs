@@ -39,14 +39,8 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable]
-#if NET8_0_OR_GREATER
   [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-# endif
-  public abstract class DynamicBindingListBase<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-# endif
-    T> :
+  public abstract class DynamicBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> :
     ExtendedBindingList<T>,
     IParent,
     Server.IDataPortalTarget,

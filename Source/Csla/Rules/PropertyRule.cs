@@ -1,4 +1,4 @@
-﻿﻿//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="PropertyRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -6,6 +6,7 @@
 // <summary>Base class used to create property level rule</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 
 namespace Csla.Rules
@@ -43,9 +44,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance has message delegate; otherwise, <c>false</c>.
     /// </value>
-#if NET8_0_OR_GREATER
-    [System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(MessageDelegate))]
-#endif
+    [MemberNotNullWhen(true, nameof(MessageDelegate))]
     protected bool HasMessageDelegate
     {
       get { return MessageDelegate != null; }

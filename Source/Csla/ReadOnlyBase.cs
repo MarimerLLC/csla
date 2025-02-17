@@ -36,11 +36,7 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object.</typeparam>
   [Serializable]
-  public abstract class ReadOnlyBase<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : BindableBase,
+  public abstract class ReadOnlyBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindableBase,
     IDataPortalTarget,
     IManageProperties,
     IReadOnlyBase,
@@ -313,9 +309,7 @@ namespace Csla
       return false;
     }
 
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_readResultCache), nameof(_executeResultCache))]
-#endif
     private void VerifyAuthorizationCache()
     {
       if (_readResultCache == null)
@@ -1967,4 +1961,4 @@ namespace Csla
 
     #endregion
   }
-}
+} 

@@ -178,9 +178,7 @@ namespace Csla.Reflection
     }
 
     private ServiceProviderMethodCaller? _serviceProviderMethodCaller;
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_serviceProviderMethodCaller))]
-#endif
     private ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
       get

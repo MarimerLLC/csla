@@ -654,9 +654,7 @@ namespace Csla.Core
       return CanWriteProperty(propertyInfo, throwOnFalse);
     }
 
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_readResultCache), nameof(_writeResultCache), nameof(_executeResultCache))]
-#endif
     private void VerifyAuthorizationCache()
     {
       if (_readResultCache == null)
@@ -3231,9 +3229,7 @@ namespace Csla.Core
     [NotUndoable]
     private AsyncLoadManager? _loadManager;
 
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_loadManager))]
-#endif
     internal AsyncLoadManager LoadManager
     {
       get
@@ -3571,9 +3567,7 @@ namespace Csla.Core
     /// Gets the PropertyManager object for this
     /// business object.
     /// </summary>
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(_fieldManager))]
-#endif
     protected FieldDataManager FieldManager
     {
       get

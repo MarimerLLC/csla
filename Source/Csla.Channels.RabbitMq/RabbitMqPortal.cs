@@ -42,9 +42,7 @@ namespace Csla.Channels.RabbitMq
 
     private Uri DataPortalUri { get; set; }
 
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(DataPortalUri), nameof(DataPortalQueueName), nameof(Connection), nameof(Channel))]
-#endif
     private async Task InitializeRabbitMQ()
     {
       if (Connection == null || DataPortalUri == null || Channel == null || DataPortalQueueName == null)

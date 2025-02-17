@@ -19,9 +19,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets the PropertyInfoFactory type.
     /// </summary>
-#if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
-#endif
     public static Type FactoryType { get; internal set; } = typeof(DefaultPropertyInfoFactory);
 
     private static IPropertyInfoFactory? _factory;

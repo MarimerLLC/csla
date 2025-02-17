@@ -71,11 +71,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
-    public CslaOptions RegisterPropertyInfoFactory<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
-#endif
-      T>() where T : IPropertyInfoFactory
+    public CslaOptions RegisterPropertyInfoFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>() where T : IPropertyInfoFactory
     {
       Core.FieldManager.PropertyInfoFactory.FactoryType = typeof(T);
       return this;

@@ -85,11 +85,7 @@ namespace Csla.Reflection
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="dataPortalMethod">The maybe found method.</param>
     /// <returns><see langword="true"/> if a method with the provided attribute was found. Otherwise <see langword="false"/>.</returns>
-    public bool TryFindDataPortalMethod<T>(Type targetType, object?[]? criteria,
-#if NET8_0_OR_GREATER
-      [NotNullWhen(true)]
-#endif
-      out ServiceProviderMethodInfo? dataPortalMethod)
+    public bool TryFindDataPortalMethod<T>(Type targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
       where T : DataPortalOperationAttribute
     {
       dataPortalMethod = FindDataPortalMethod<T>(targetType, criteria, false);

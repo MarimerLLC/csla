@@ -762,9 +762,7 @@ namespace Csla
 
     #endregion
 
-#if NET8_0_OR_GREATER
     [MemberNotNullWhen(true, nameof(_bindingList))]
-#endif
     private bool SupportsBinding { get; }
     private IBindingList? _bindingList;
     private bool _initiatedLocally;

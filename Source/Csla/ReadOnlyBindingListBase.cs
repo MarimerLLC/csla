@@ -21,11 +21,7 @@ namespace Csla
   [SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyBindingListBase<T,
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    C> :
+  public abstract class ReadOnlyBindingListBase<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
     Core.ReadOnlyBindingList<C>, Csla.Core.IReadOnlyCollection,
     ICloneable, Server.IDataPortalTarget, Core.IUseApplicationContext
     where T : ReadOnlyBindingListBase<T, C>

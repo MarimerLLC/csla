@@ -372,9 +372,7 @@ namespace Csla
     /// .NET System.String.Format statement.
     /// </remarks>
     /// <value>A format string.</value>
-#if NET8_0_OR_GREATER
     [AllowNull]
-#endif
     public string FormatString
     {
       get
@@ -404,9 +402,7 @@ namespace Csla
     /// short date format (d).
     /// </para>
     /// </remarks>
-#if NET8_0_OR_GREATER
     [AllowNull]
-#endif
     public string Text
     {
       get { return DateToString(Date, FormatString, _emptyValue); }

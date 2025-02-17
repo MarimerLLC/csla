@@ -293,11 +293,7 @@ namespace Csla.Server
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    private async Task<DataPortalResult> Execute(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> Execute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {

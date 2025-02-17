@@ -103,9 +103,7 @@ namespace Csla
     /// but this property returns information
     /// about the exception.
     /// </summary>
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(BusinessErrorInfo))]
-#endif
     public DataPortalErrorInfo? ErrorInfo { get; }
 
     /// <summary>

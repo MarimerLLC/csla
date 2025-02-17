@@ -29,11 +29,7 @@ namespace Csla.Core.FieldManager
     public FieldDataList()
     { /* required due to serialization ctor */ }
 
-    public bool TryGetValue(string key,
-#if NET8_0_OR_GREATER
-      [NotNullWhen(true)]
-#endif
-      out IFieldData? result)
+    public bool TryGetValue(string key, [NotNullWhen(true)] out IFieldData? result)
     {
       if (key is null)
         throw new ArgumentNullException(nameof(key));

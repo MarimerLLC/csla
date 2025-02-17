@@ -28,9 +28,7 @@ namespace Csla.Configuration
     /// Gets or sets a value containing the type of the
     /// IDashboard to be used by the data portal.
     /// </summary>
-#if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
     internal Type DashboardType { get; private set; } = typeof(Server.Dashboard.NullDashboard);
 
     /// <summary>
@@ -38,11 +36,7 @@ namespace Csla.Configuration
     /// used by the data portal. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterDashboard<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>() where T : Server.Dashboard.IDashboard
+    public DataPortalServerOptions RegisterDashboard<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : Server.Dashboard.IDashboard
     {
       DashboardType = typeof(T);
       return this;
@@ -54,9 +48,7 @@ namespace Csla.Configuration
     /// An instance of this type is created using dependency
     /// injection.
     /// </summary>
-#if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
     internal Type AuthorizerProviderType { get; private set; } = typeof(ActiveAuthorizer);
 
     /// <summary>
@@ -64,11 +56,7 @@ namespace Csla.Configuration
     /// used by the data portal. 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterAuthorizerProvider<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>() where T : IAuthorizeDataPortal
+    public DataPortalServerOptions RegisterAuthorizerProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : IAuthorizeDataPortal
     {
       AuthorizerProviderType = typeof(T);
       return this;
@@ -115,20 +103,14 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the ExceptionInspector.
     /// </summary>
-#if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
     internal Type ExceptionInspectorType { get; private set; } = typeof(DefaultExceptionInspector);
 
     /// <summary>
     /// Sets the type of the ExceptionInspector.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterExceptionInspector<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>() where T: IDataPortalExceptionInspector
+    public DataPortalServerOptions RegisterExceptionInspector<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T: IDataPortalExceptionInspector
     {
       ExceptionInspectorType = typeof(T);
       return this;
@@ -137,20 +119,14 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the Activator.
     /// </summary>
-#if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
     internal Type ActivatorType { get; private set; } = typeof(DefaultDataPortalActivator);
 
     /// <summary>
     /// Sets the type of the Activator.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterActivator<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>() where T: IDataPortalActivator
+    public DataPortalServerOptions RegisterActivator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T: IDataPortalActivator
     {
       ActivatorType = typeof(T);
       return this;
@@ -162,9 +138,7 @@ namespace Csla.Configuration
     /// the FactoryDataPortal model. Type must implement
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
-#if NET8_0_OR_GREATER
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
     internal Type ObjectFactoryLoaderType { get; private set; } = typeof(ObjectFactoryLoader);
 
     /// <summary>
@@ -174,11 +148,7 @@ namespace Csla.Configuration
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public DataPortalServerOptions RegisterObjectFactoryLoader<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>() where T: IObjectFactoryLoader
+    public DataPortalServerOptions RegisterObjectFactoryLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T: IObjectFactoryLoader
     {
       ObjectFactoryLoaderType = typeof(T);
       return this;

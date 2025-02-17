@@ -18,9 +18,7 @@ namespace Csla.Reflection
   /// </summary>
   public class ServiceProviderMethodInfo
   {
-#if NET8_0_OR_GREATER
     [MemberNotNullWhen(true, nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(DataPortalMethodInfo))]
-#endif
     private bool Initialized { get; set; }
 
     /// <summary>
@@ -76,9 +74,7 @@ namespace Csla.Reflection
     /// Initializes and caches the metastate values
     /// necessary to invoke the method
     /// </summary>
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(DataPortalMethodInfo))]
-#endif
     public void PrepForInvocation()
     {
       if (!Initialized)

@@ -34,11 +34,7 @@ namespace Csla.DataPortalClient
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    public IDataPortal<T> GetPortal<
-#if NET8_0_OR_GREATER
-  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    T>()
+    public IDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
     {
       return (IDataPortal<T>)_serviceProvider.GetRequiredService(typeof(IDataPortal<T>));
     }

@@ -113,11 +113,7 @@ namespace Csla.Server
     /// <returns>
     /// true if new exception was thrown else false
     /// </returns>
-    private bool CallExceptionInspector(Type objectType, object? businessObject, object? criteria, string methodName, Exception exception,
-#if NET8_0_OR_GREATER
-      [NotNullWhen(true)]
-#endif
-      out Exception? handledException
+    private bool CallExceptionInspector(Type objectType, object? businessObject, object? criteria, string methodName, Exception exception, [NotNullWhen(true)] out Exception? handledException
     )
     {
       handledException = null;

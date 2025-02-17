@@ -24,11 +24,7 @@ namespace Csla.Server
     private static readonly Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache = [];
 #endif
 
-    public static DataPortalMethodInfo GetMethodInfo(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-#endif
-      Type objectType, string methodName, params object[] parameters)
+    public static DataPortalMethodInfo GetMethodInfo([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string methodName, params object[] parameters)
     {
       var key = new MethodCacheKey(objectType.FullName!, methodName, MethodCaller.GetParameterTypes(parameters));
 

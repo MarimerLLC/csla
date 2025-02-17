@@ -6,11 +6,7 @@ namespace Csla
   /// An alternative to Lazy&lt;T&gt; 
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public sealed class LazySingleton<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    T> : Core.IUseApplicationContext
+  public sealed class LazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Core.IUseApplicationContext
     where T : class
   {
     private readonly Lock _syncRoot = LockFactory.Create();
@@ -48,9 +44,7 @@ namespace Csla
     /// <value>
     /// 	<c>true</c> if this instance is value created; otherwise, <c>false</c>.
     /// </value>
-#if NET8_0_OR_GREATER
-    [System.Diagnostics.CodeAnalysis.MemberNotNullWhen(true, nameof(_value))]
-#endif
+    [MemberNotNullWhen(true, nameof(_value))]
     public bool IsValueCreated { get; private set; }
 
     /// <summary>

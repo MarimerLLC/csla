@@ -122,11 +122,7 @@ namespace Csla.Core.FieldManager
     private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
 #endif
 
-    private static List<IPropertyInfo> GetConsolidatedList(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type type)
+    private static List<IPropertyInfo> GetConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       List<IPropertyInfo> result = []; // Only initialized to make the compiler happy
 
@@ -187,11 +183,7 @@ namespace Csla.Core.FieldManager
       return result;
     }
 
-    private static List<IPropertyInfo> CreateConsolidatedList(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type type)
+    private static List<IPropertyInfo> CreateConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       ForceStaticFieldInit(type);
       List<IPropertyInfo> result = [];
@@ -878,11 +870,7 @@ namespace Csla.Core.FieldManager
     /// by a type, and any of its base class types.
     /// </summary>
     /// <param name="type">Type of object to initialize.</param>
-    public static void ForceStaticFieldInit(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type type)
+    public static void ForceStaticFieldInit([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       const BindingFlags attr =
         BindingFlags.Static |

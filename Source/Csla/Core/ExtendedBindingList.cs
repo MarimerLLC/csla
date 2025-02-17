@@ -7,13 +7,12 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 #if ANDROID || IOS
 using System.Collections.Specialized;
 #endif
-#if NET8_0_OR_GREATER
-using System.Diagnostics.CodeAnalysis;
-#endif
+
 
 namespace Csla.Core
 {
@@ -23,11 +22,7 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
-  public class ExtendedBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : MobileBindingList<T>,
+  public class ExtendedBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : MobileBindingList<T>,
     IExtendedBindingList,
     INotifyBusy,
     INotifyChildChanged,
@@ -402,11 +397,7 @@ namespace Csla.Core
     /// Will be instanciated by a factory property on the ObservableBindingList implementation.
     /// </summary>
     /// <typeparam name="TC">The type of the C.</typeparam>
-    class SuppressListChangedEventsClass<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      TC> : IDisposable
+    class SuppressListChangedEventsClass<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TC> : IDisposable
     {
       private readonly BindingList<TC> _businessObject;
       private readonly bool _initialRaiseListChangedEvents;

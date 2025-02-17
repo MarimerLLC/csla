@@ -644,7 +644,7 @@ namespace Csla.Xaml
         if (value != _canRead)
         {
           _canRead = value;
-          OnPropertyChanged();
+          OnPropertyChanged(nameof(CanRead));
         }
       }
     }
@@ -663,7 +663,7 @@ namespace Csla.Xaml
         if (value != _canWrite)
         {
           _canWrite = value;
-          OnPropertyChanged();
+          OnPropertyChanged(nameof(CanWrite));
         }
       }
     }
@@ -682,7 +682,7 @@ namespace Csla.Xaml
         if (value != _isBusy)
         {
           _isBusy = value;
-          OnPropertyChanged();
+          OnPropertyChanged(nameof(IsBusy));
         }
       }
     }
@@ -701,7 +701,7 @@ namespace Csla.Xaml
         if (value != _isValid)
         {
           _isValid = value;
-          OnPropertyChanged();
+          OnPropertyChanged(nameof(IsValid));
         }
       }
     }
@@ -722,7 +722,7 @@ namespace Csla.Xaml
         if (value != _worst)
         {
           _worst = value;
-          OnPropertyChanged();
+          OnPropertyChanged(nameof(RuleSeverity));
         }
       }
     }
@@ -741,7 +741,7 @@ namespace Csla.Xaml
         if (value != _ruleDescription)
         {
           _ruleDescription = value;
-          OnPropertyChanged();
+          OnPropertyChanged(nameof(RuleDescription));
         }
       }
     }
@@ -763,7 +763,7 @@ namespace Csla.Xaml
         if (!ReferenceEquals(_customTag, value))
         {
           _customTag = value;
-          OnPropertyChanged();
+          OnPropertyChanged(nameof(CustomTag));
         }
       }
     }

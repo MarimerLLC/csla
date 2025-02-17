@@ -51,7 +51,7 @@ namespace Csla.Xaml
     /// StepInterval property to control speed of animation.
     /// </summary>
     public static readonly DependencyProperty StepIntervalProperty = DependencyProperty.Register(
-      "StepInterval",
+      nameof(StepInterval),
       typeof(TimeSpan),
       typeof(BusyAnimation),
       new PropertyMetadata(
@@ -69,7 +69,7 @@ namespace Csla.Xaml
     /// animation is running.
     /// </summary>
     public static readonly DependencyProperty IsRunningProperty = DependencyProperty.Register(
-      "IsRunning",
+      nameof(IsRunning),
       typeof(bool),
       typeof(BusyAnimation),
       new PropertyMetadata((o, e) => ((BusyAnimation)o).SetupRunningState((bool)e.NewValue)));

@@ -101,7 +101,7 @@ namespace Csla.Xaml
     /// business object.
     /// </summary>
     public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
-      "BrokenRules",
+      nameof(BrokenRules),
       typeof(ObservableCollection<BrokenRule>),
       typeof(PropertyInfo),
       null);
@@ -274,7 +274,7 @@ namespace Csla.Xaml
     /// property to which this control is bound.
     /// </summary>
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
-      "Property",
+      nameof(Property),
       typeof(object),
       typeof(PropertyInfo),
       new PropertyMetadata(new object(), (o, e) =>

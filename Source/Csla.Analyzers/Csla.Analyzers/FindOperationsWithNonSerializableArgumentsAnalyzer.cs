@@ -54,7 +54,7 @@ namespace Csla.Analyzers
               !argumentType.IsSerializableByMobileFormatter(context.Compilation) &&
               !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) && 
               argumentType is not { ContainingNamespace.Name: "System", Name: "Nullable" } &&
-              argumentType is INamedTypeSymbol namedArgument)
+              argumentType is INamedTypeSymbol)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               shouldUseSerializableTypesRule, argument.Locations[0]));

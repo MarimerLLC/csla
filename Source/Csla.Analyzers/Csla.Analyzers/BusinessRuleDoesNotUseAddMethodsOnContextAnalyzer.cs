@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor usesAddMethodsOnContextRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.BusinessRuleContextUsage,
         BusinessRuleDoesNotUseAddMethodsOnContextAnalyzerConstants.Title,
         BusinessRuleDoesNotUseAddMethodsOnContextAnalyzerConstants.Message,

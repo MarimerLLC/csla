@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor inheritsFromBusinessRuleRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance,
         AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants.Title,
         AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants.Message,

@@ -63,7 +63,7 @@ namespace Csla.Xaml
     /// Gets or sets the Model object.
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
-        DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
+        DependencyProperty.Register(nameof(Model), typeof(T), typeof(ViewModelBase<T>),
         new PropertyMetadata((o, e) =>
         {
           var viewmodel = (ViewModelBase<T>)o;
@@ -89,7 +89,7 @@ namespace Csla.Xaml
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
-        DependencyProperty.Register("ManageObjectLifetime", typeof(bool),
+        DependencyProperty.Register(nameof(ManageObjectLifetime), typeof(bool),
         typeof(ViewModelBase<T>), new PropertyMetadata(true));
 #endif
     /// <summary>

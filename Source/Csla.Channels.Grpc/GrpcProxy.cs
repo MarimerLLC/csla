@@ -39,12 +39,12 @@ namespace Csla.Channels.Grpc
 
       _channel = channel ?? throw new ArgumentNullException(nameof(channel));
       DataPortalUrl = options.DataPortalUrl;
-      VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
+      _versionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
     private GrpcChannel? _channel;
     private static GrpcChannel? _defaultChannel;
-    private string? VersionRoutingTag { get; set; }
+    private string? _versionRoutingTag;
 
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
@@ -97,7 +97,7 @@ namespace Csla.Channels.Grpc
       var request = new RequestMessage
       {
         Body = outbound,
-        Operation = CreateOperationTag(operation, VersionRoutingTag, routingToken)
+        Operation = CreateOperationTag(operation, _versionRoutingTag, routingToken)
       };
       ResponseMessage response;
       if (isSync)

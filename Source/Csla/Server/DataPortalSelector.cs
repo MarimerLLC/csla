@@ -27,15 +27,15 @@ namespace Csla.Server
     public DataPortalSelector(ApplicationContext applicationContext, SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal, Configuration.DataPortalOptions dataPortalOptions)
     {
       _applicationContext = applicationContext;
-      SimpleDataPortal = simpleDataPortal;
-      FactoryDataPortal = factoryDataPortal;
-      DataPortalOptions = dataPortalOptions;
+      _simpleDataPortal = simpleDataPortal;
+      _factoryDataPortal = factoryDataPortal;
+      _dataPortalOptions = dataPortalOptions;
     }
 
     private ApplicationContext _applicationContext;
-    private SimpleDataPortal SimpleDataPortal { get; set; }
-    private FactoryDataPortal FactoryDataPortal { get; set; }
-    private Configuration.DataPortalOptions DataPortalOptions { get; set; }
+    private SimpleDataPortal _simpleDataPortal;
+    private FactoryDataPortal _factoryDataPortal;
+    private Configuration.DataPortalOptions _dataPortalOptions;
 
     /// <summary>
     /// Create a new business object.
@@ -57,11 +57,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -72,7 +72,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
-          ex, null, DataPortalOptions);
+          ex, null, _dataPortalOptions);
       }
     }
 
@@ -96,11 +96,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -112,11 +112,11 @@ namespace Csla.Server
         if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
           throw DataPortal.NewDataPortalException(
             _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
-            ex, null, DataPortalOptions);
+            ex, null, _dataPortalOptions);
         else
           throw DataPortal.NewDataPortalException(
             _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
-            ex, null, DataPortalOptions);
+            ex, null, _dataPortalOptions);
       }
     }
 
@@ -135,11 +135,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType());
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -150,7 +150,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
-          ex, obj, DataPortalOptions);
+          ex, obj, _dataPortalOptions);
       }
     }
 
@@ -174,11 +174,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -189,7 +189,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
-          ex, null, DataPortalOptions);
+          ex, null, _dataPortalOptions);
       }
     }
   }

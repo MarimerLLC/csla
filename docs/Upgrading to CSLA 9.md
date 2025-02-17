@@ -90,6 +90,10 @@ CSLA 9 fixes the issue with transfering binary data between the client and serve
         .UseHttpProxy(o => o.DataPortalUrl = "https://server/api/DataPortal"))));
 ```
 
+## CslaClaimsPrincipal Removed
+
+Because CSLA can now directly serialize `ClaimsPrincipal` (see the MobileFormatter Custom Serializers section), there is no longer a need for the `CslaClaimsPrincipal` wrapper type. It has been removed, and you should now simply use the `ClaimsPrincipal` type directly.
+
 ## CriteriaBase Obsolete
 
 The `CriteriaBase` class is now obsolete. You should use [CSLA serializable](serialization.md) types for criteria values instead.

@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor incorrectParameterRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation,
         FindRefAndOutParametersInOperationsAnalyzerConstants.Title,
         FindRefAndOutParametersInOperationsAnalyzerConstants.Message,

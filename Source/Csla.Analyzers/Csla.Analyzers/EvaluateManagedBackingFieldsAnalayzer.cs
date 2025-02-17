@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor mustBePublicStaticAndReadonlyRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
         EvaluateManagedBackingFieldsAnalayzerConstants.Title,
         EvaluateManagedBackingFieldsAnalayzerConstants.Message,

@@ -14,14 +14,14 @@ namespace Csla.Analyzers
   public sealed class FindSaveAssignmentIssueAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly DiagnosticDescriptor saveResultIsNotAssignedRule = new DiagnosticDescriptor(
+    private static readonly DiagnosticDescriptor saveResultIsNotAssignedRule = new(
       Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue, FindSaveAssignmentIssueAnalyzerConstants.Title,
       FindSaveAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true,
       helpLinkUri: HelpUrlBuilder.Build(
         Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue, nameof(FindSaveAssignmentIssueAnalyzer)));
 
-    private static readonly DiagnosticDescriptor saveAsyncResultIsNotAssignedRule = new DiagnosticDescriptor(
+    private static readonly DiagnosticDescriptor saveAsyncResultIsNotAssignedRule = new(
       Constants.AnalyzerIdentifiers.FindSaveAsyncAssignmentIssue, FindSaveAsyncAssignmentIssueAnalyzerConstants.Title,
       FindSaveAsyncAssignmentIssueAnalyzerConstants.Message, Constants.Categories.Usage,
       DiagnosticSeverity.Error, true,

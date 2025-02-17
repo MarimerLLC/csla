@@ -15,14 +15,14 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule = 
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
         PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Error, true, 
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, nameof(CheckConstructorsAnalyzer)));
     private static readonly DiagnosticDescriptor constructorHasParametersRule = 
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ConstructorHasParameters, ConstructorHasParametersConstants.Title,
         ConstructorHasParametersConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,

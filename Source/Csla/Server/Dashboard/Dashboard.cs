@@ -15,7 +15,7 @@ namespace Csla.Server.Dashboard
   /// </summary>
   public class Dashboard : IDashboard
   {
-    private readonly object _syncLock = new object();
+    private readonly object _syncLock = new();
     private ConcurrentQueue<InterceptArgs> _initializeQueue = [];
     private ConcurrentQueue<InterceptArgs> _completeQueue = [];
     private readonly Timer _timerInitialize;

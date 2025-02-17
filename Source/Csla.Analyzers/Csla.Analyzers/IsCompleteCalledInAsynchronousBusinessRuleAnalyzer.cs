@@ -53,7 +53,7 @@ namespace Csla.Analyzers
         {
           var contextParameter = methodSymbol.Parameters[0];
           var wasCompleteMethodCalled =
-            methodNode.DescendantNodes(_ => true).OfType<InvocationExpressionSyntax>()
+            methodNode.DescendantNodes().OfType<InvocationExpressionSyntax>()
             .Any(invocation =>
             {
               return context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&

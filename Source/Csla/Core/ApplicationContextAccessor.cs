@@ -30,22 +30,22 @@ namespace Csla.Core
       IServiceProvider serviceProvider)
     {
       ServiceProvider = serviceProvider;
-      LocalContextManager = localContextManager;
+      _localContextManager = localContextManager;
 
       var managers = contextManagerList.ToList();
       for (int i = managers.Count - 1; i >= 0; i--)
       {
         if (managers[i].IsValid)
         {
-          ContextManager = managers[i];
+          _contextManager = managers[i];
           break;
         }
       }
     }
 
     internal IServiceProvider ServiceProvider { get; }
-    private IContextManager? ContextManager { get; set; }
-    private IContextManager LocalContextManager { get; set; }
+    private IContextManager? _contextManager;
+    private IContextManager _localContextManager;
 
     /// <summary>
     /// Gets a reference to the correct current application
@@ -54,10 +54,10 @@ namespace Csla.Core
     public IContextManager GetContextManager()
     {
       var runtimeInfo = ServiceProvider.GetRequiredService<IRuntimeInfo>();
-      if (ContextManager != null && !runtimeInfo.LocalProxyNewScopeExists && ContextManager.IsValid)
-        return ContextManager;
+      if (_contextManager != null && !runtimeInfo.LocalProxyNewScopeExists && _contextManager.IsValid)
+        return _contextManager;
       else
-        return LocalContextManager;
+        return _localContextManager;
     }
   }
 }

@@ -504,7 +504,7 @@ namespace Csla
     private void CopyState(int parentEditLevel)
     {
       if (EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), GetType().Name, _parent != null ? _parent.GetType().Name : null, EditLevel, parentEditLevel - 1);
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel - 1);
 
       // we are going a level deeper in editing
       EditLevel += 1;
@@ -528,7 +528,7 @@ namespace Csla
       C child;
 
       if (EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), GetType().Name, _parent != null ? _parent.GetType().Name : null, EditLevel, parentEditLevel + 1);
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       EditLevel -= 1;
@@ -601,7 +601,7 @@ namespace Csla
     private void AcceptChanges(int parentEditLevel)
     {
       if (EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), GetType().Name, _parent != null ? _parent.GetType().Name : null, EditLevel, parentEditLevel + 1);
+        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
       // we are coming up one edit level
       EditLevel -= 1;

@@ -9,7 +9,6 @@
     <Product>CSLA .NET Windows.Forms</Product>
     <Description>UI helpers for using CSLA .NET business types with Windows Forms.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Windows Forms</Title>

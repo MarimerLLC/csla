@@ -7,7 +7,6 @@
     <Product>CSLA .NET Blazor WebAssembly</Product>
     <Description>UI helpers for using CSLA .NET business types with Blazor WebAssembly.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Title>CSLA .NET Blazor WebAssembly</Title>
     <PackageTags>CSLA;Blazor;aspnetcore;WebAssembly;wasm</PackageTags>

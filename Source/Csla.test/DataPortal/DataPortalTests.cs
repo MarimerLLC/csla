@@ -329,7 +329,7 @@ namespace Csla.Test.DataPortal
       var applicationContext = diContext.CreateTestApplicationContext();
       var contextManager = (ApplicationContextManagerUnitTests)applicationContext.ContextManager;
       var dp = diContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      _ = await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, true, "en-US", "en-US", new Core.ContextDictionary()), true);
+      _ = await dp.Create(typeof(TestBO), EmptyCriteria.Instance, new DataPortalContext(applicationContext, applicationContext.Principal, true, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       using (new AssertionScope())
       {

@@ -51,7 +51,7 @@ namespace Csla.Server.Hosts
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -99,7 +99,7 @@ namespace Csla.Server.Hosts
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -145,7 +145,7 @@ namespace Csla.Server.Hosts
       try
       {
         request = ConvertRequest(request);
-        object obj = GetCriteria(_applicationContext, request.ObjectData ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized));
+        var obj = GetCriteria(_applicationContext, request.ObjectData ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized));
 
         var context = new DataPortalContext(
           _applicationContext, Deserialize<IPrincipal?>(request.Principal),
@@ -189,7 +189,7 @@ namespace Csla.Server.Hosts
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;

@@ -97,7 +97,7 @@ namespace Csla.Analyzers
 
       var list = new SeparatedSyntaxList<BaseTypeSyntax>();
 
-      foreach (var baseTypeNode in typeNode.BaseList.DescendantNodes(_ => true).OfType<SimpleBaseTypeSyntax>())
+      foreach (var baseTypeNode in typeNode.BaseList.DescendantNodes().OfType<SimpleBaseTypeSyntax>())
       {
         var baseTypeNodeIdentifier = baseTypeNode.DescendantNodes().OfType<IdentifierNameSyntax>().Single();
 

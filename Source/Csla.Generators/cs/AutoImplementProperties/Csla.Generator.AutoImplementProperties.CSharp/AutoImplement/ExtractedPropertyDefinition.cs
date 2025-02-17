@@ -24,7 +24,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <summary>
     /// The definition of the type of this property
     /// </summary>
-    public ExtractedMemberTypeDefinition TypeDefinition { get; } = new ExtractedMemberTypeDefinition();
+    public ExtractedMemberTypeDefinition TypeDefinition { get; } = new();
 
     /// <summary>
     /// The member name for the field
@@ -34,7 +34,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <summary>
     /// The attribute definitions for this property
     /// </summary>
-    public List<ExtractedAttributeDefinition> AttributeDefinitions { get; } = new List<ExtractedAttributeDefinition>();
+    public List<ExtractedAttributeDefinition> AttributeDefinitions { get; } = new();
 
     /// <summary>
     /// Gets or sets a value indicating whether this property has a getter.

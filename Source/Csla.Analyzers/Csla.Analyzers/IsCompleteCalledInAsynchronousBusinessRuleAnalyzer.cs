@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor completeCalledInAsyncBusinessRuleRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.CompleteInExecuteAsync,
         IsCompleteCalledInAsynchronousBusinessRuleConstants.Title,
         IsCompleteCalledInAsynchronousBusinessRuleConstants.Message,

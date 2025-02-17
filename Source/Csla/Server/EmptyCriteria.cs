@@ -24,6 +24,6 @@ namespace Csla.Server
     /// <summary>
     /// Gets an instance of EmptyCriteria
     /// </summary>
-    public static EmptyCriteria Instance { get; } = new EmptyCriteria();
+    public static EmptyCriteria Instance { get; } = new();
   }
 }

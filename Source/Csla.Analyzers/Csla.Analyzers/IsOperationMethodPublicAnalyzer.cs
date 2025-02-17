@@ -16,7 +16,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor makeNonPublicRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.IsOperationMethodPublic, IsOperationMethodPublicAnalyzerConstants.Title,
         IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Warning, true,
@@ -24,7 +24,7 @@ namespace Csla.Analyzers
           Constants.AnalyzerIdentifiers.IsOperationMethodPublic, nameof(IsOperationMethodPublicAnalyzer)));
 
     private static readonly DiagnosticDescriptor makeNonPublicForInterfaceRule = 
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, IsOperationMethodPublicAnalyzerConstants.Title,
         IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Warning, true,

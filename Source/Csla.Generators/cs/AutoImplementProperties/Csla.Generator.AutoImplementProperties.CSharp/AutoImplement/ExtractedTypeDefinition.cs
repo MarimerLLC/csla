@@ -94,6 +94,6 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public override int GetHashCode()
   {
     // Calculate and return the hash code based on the properties, fields, or any other relevant data
-    return System.HashCode.Combine(Namespace + Scope + TypeName, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
+    return HashCode.Combine(Namespace + Scope + TypeName, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
   }
 }

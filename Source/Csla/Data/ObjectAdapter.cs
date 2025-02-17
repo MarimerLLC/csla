@@ -11,6 +11,7 @@ using System.Data;
 using System.ComponentModel;
 using System.Reflection;
 using Csla.Properties;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Data
 {
@@ -106,7 +107,7 @@ namespace Csla.Data
       }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+    [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private void CopyData(
       DataTable dt, IList ds, List<string> columns)
     {

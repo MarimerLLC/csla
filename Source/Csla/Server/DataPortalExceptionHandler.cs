@@ -21,6 +21,8 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalExceptionHandler
   {
+    private readonly IDataPortalExceptionInspector _exceptionInspector;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -28,10 +30,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="exceptionInspector"/> is <see langword="null"/>.</exception>
     public DataPortalExceptionHandler(IDataPortalExceptionInspector exceptionInspector)
     {
-      ExceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
+      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
     }
-
-    private IDataPortalExceptionInspector ExceptionInspector { get; set; }
 
     /// <summary>
     /// Transforms the exception in a Fetch, Create or Execute method.
@@ -124,7 +124,7 @@ namespace Csla.Server
       try
       {
         // This method should rethrow a new exception to be handled 
-        ExceptionInspector?.InspectException(objectType, businessObject, criteria, methodName, exception);
+        _exceptionInspector?.InspectException(objectType, businessObject, criteria, methodName, exception);
       }
       catch (Exception ex)
       {

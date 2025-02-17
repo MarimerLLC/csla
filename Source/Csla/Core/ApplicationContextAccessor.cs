@@ -17,6 +17,11 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextAccessor
   {
+    private readonly IContextManager? _contextManager;
+    private readonly IContextManager _localContextManager;
+    
+    internal IServiceProvider ServiceProvider { get; }
+    
     /// <summary>
     /// Creates a new instance of the type.
     /// </summary>
@@ -33,22 +38,18 @@ namespace Csla.Core
         throw new ArgumentNullException(nameof(contextManagerList));
 
       ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-      LocalContextManager = localContextManager ?? throw new ArgumentNullException(nameof(localContextManager));
+      _localContextManager = localContextManager ?? throw new ArgumentNullException(nameof(localContextManager));
 
-      var managers = contextManagerList.ToList();
+            var managers = contextManagerList.ToList();
       for (int i = managers.Count - 1; i >= 0; i--)
       {
         if (managers[i].IsValid)
         {
-          ContextManager = managers[i];
+          _contextManager = managers[i];
           break;
         }
       }
     }
-
-    internal IServiceProvider ServiceProvider { get; }
-    private IContextManager? ContextManager { get; }
-    private IContextManager LocalContextManager { get; }
 
     /// <summary>
     /// Gets a reference to the correct current application
@@ -57,10 +58,10 @@ namespace Csla.Core
     public IContextManager GetContextManager()
     {
       var runtimeInfo = ServiceProvider.GetRequiredService<IRuntimeInfo>();
-      if (ContextManager != null && !runtimeInfo.LocalProxyNewScopeExists && ContextManager.IsValid)
-        return ContextManager;
+      if (_contextManager != null && !runtimeInfo.LocalProxyNewScopeExists && _contextManager.IsValid)
+        return _contextManager;
       else
-        return LocalContextManager;
+        return _localContextManager;
     }
   }
 }

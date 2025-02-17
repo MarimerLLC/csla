@@ -18,6 +18,8 @@ namespace Csla.Server
   /// </summary>
   public class ChildDataPortalFactory : IChildDataPortalFactory
   {
+    private readonly IServiceProvider _serviceProvider;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -25,10 +27,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public ChildDataPortalFactory(IServiceProvider serviceProvider)
     {
-      ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
-
-    private IServiceProvider ServiceProvider { get; }
 
     /// <summary>
     /// Get a client-side data portal instance.
@@ -36,7 +36,7 @@ namespace Csla.Server
     /// <typeparam name="T">Root business object type</typeparam>
     public IChildDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]T>()
     {
-      return ServiceProvider.GetRequiredService<IChildDataPortal<T>>();
+      return _serviceProvider.GetRequiredService<IChildDataPortal<T>>();
     }
   }
 }

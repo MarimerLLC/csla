@@ -18,9 +18,9 @@ namespace Csla.Server
   public class SimpleDataPortal : IDataPortalServer
   {
     private readonly ApplicationContext _applicationContext;
-    private IDataPortalActivator Activator { get; }
-    private IDataPortalExceptionInspector ExceptionInspector { get; }
-    private Configuration.DataPortalOptions DataPortalOptions { get; }
+    private readonly IDataPortalActivator _activator;
+    private readonly IDataPortalExceptionInspector _exceptionInspector;
+    private readonly Configuration.DataPortalOptions _dataPortalOptions;
 
     /// <summary>
     /// Creates an instance of the type
@@ -33,9 +33,9 @@ namespace Csla.Server
     public SimpleDataPortal(ApplicationContext applicationContext, IDataPortalActivator activator, IDataPortalExceptionInspector exceptionInspector, Configuration.DataPortalOptions dataPortalOptions)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      Activator = activator ?? throw new ArgumentNullException(nameof(activator));
-      ExceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
-      DataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
+      _activator = activator ?? throw new ArgumentNullException(nameof(activator));
+      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
+      _dataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
 
     /// <inheritdoc />
@@ -79,13 +79,13 @@ namespace Csla.Server
         
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Create", ex),
-              outval, DataPortalOptions);
+              new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Create", ex),
+              outval, _dataPortalOptions);
       }
       finally
       {
         if (obj?.Instance is not null)
-          Activator.FinalizeInstance(obj.Instance);
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
 
@@ -115,7 +115,7 @@ namespace Csla.Server
       try
       {
         obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
-        Activator.InitializeInstance(obj.Instance);
+        _activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
         await obj.FetchAsync(criteria, isSync).ConfigureAwait(false);
@@ -139,13 +139,13 @@ namespace Csla.Server
           outval = obj.Instance;
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
-              outval, DataPortalOptions);
+              new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
+              outval, _dataPortalOptions);
       }
       finally
       {
         if (obj?.Instance is not null)
-          Activator.FinalizeInstance(obj.Instance);
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
 
@@ -160,7 +160,7 @@ namespace Csla.Server
       try
       {
         obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
-        Activator.InitializeInstance(obj.Instance);
+        _activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         obj.MarkOld();
         await obj.ExecuteAsync(criteria, isSync).ConfigureAwait(false);
@@ -183,13 +183,13 @@ namespace Csla.Server
         if (obj != null) outval = obj.Instance;
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Execute", ex),
-              outval, DataPortalOptions);
+              new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Execute", ex),
+              outval, _dataPortalOptions);
       }
       finally
       {
         if (obj?.Instance is not null)
-          Activator.FinalizeInstance(obj.Instance);
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
 
@@ -212,7 +212,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, obj, operation);
       try
       {
-        Activator.InitializeInstance(lb.Instance);
+        _activator.InitializeInstance(lb.Instance);
         lb.OnDataPortalInvoke(eventArgs);
         await lb.UpdateAsync(isSync).ConfigureAwait(false);
         await lb.WaitForIdle().ConfigureAwait(false);
@@ -232,12 +232,12 @@ namespace Csla.Server
         }
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler(ExceptionInspector).InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
-              obj, DataPortalOptions);
+              new DataPortalExceptionHandler(_exceptionInspector).InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
+              obj, _dataPortalOptions);
       }
       finally
       {
-        Activator.FinalizeInstance(lb.Instance);
+        _activator.FinalizeInstance(lb.Instance);
       }
     }
 
@@ -248,7 +248,7 @@ namespace Csla.Server
       var eventArgs = new DataPortalEventArgs(context, objectType, obj, operation);
       try
       {
-        Activator.InitializeInstance(obj.Instance);
+        _activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.ExecuteAsync(isSync).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
@@ -269,12 +269,12 @@ namespace Csla.Server
         var reference = obj.Instance;
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler(ExceptionInspector).InspectException(reference.GetType(), reference, null, "DataPortal.Execute", ex),
-              reference, DataPortalOptions);
+              new DataPortalExceptionHandler(_exceptionInspector).InspectException(reference.GetType(), reference, null, "DataPortal.Execute", ex),
+              reference, _dataPortalOptions);
       }
       finally
       {
-        Activator.FinalizeInstance(obj.Instance);
+        _activator.FinalizeInstance(obj.Instance);
       }
     }
 
@@ -291,7 +291,7 @@ namespace Csla.Server
       try
       {
         obj = _applicationContext.CreateInstanceDI<DataPortalTarget>(_applicationContext.CreateInstanceDI(objectType));
-        Activator.InitializeInstance(obj.Instance);
+        _activator.InitializeInstance(obj.Instance);
         obj.OnDataPortalInvoke(eventArgs);
         await obj.DeleteAsync(criteria, isSync).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
@@ -311,13 +311,13 @@ namespace Csla.Server
         }
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
-              new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, obj, null, "DataPortal.Delete", ex),
-              null, DataPortalOptions);
+              new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, obj, null, "DataPortal.Delete", ex),
+              null, _dataPortalOptions);
       }
       finally
       {
         if (obj?.Instance is not null)
-          Activator.FinalizeInstance(obj.Instance);
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
   }

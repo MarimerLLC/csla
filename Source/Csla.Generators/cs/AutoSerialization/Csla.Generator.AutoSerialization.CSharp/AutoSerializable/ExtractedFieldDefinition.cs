@@ -23,7 +23,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// <summary>
     /// The definition of the type of this field
     /// </summary>
-    public ExtractedMemberTypeDefinition TypeDefinition { get; } = new ExtractedMemberTypeDefinition();
+    public ExtractedMemberTypeDefinition TypeDefinition { get; } = new();
 
     /// <summary>
     /// The member name for the field

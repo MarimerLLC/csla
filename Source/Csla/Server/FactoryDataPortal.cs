@@ -20,9 +20,9 @@ namespace Csla.Server
   public class FactoryDataPortal : IDataPortalServer
   {
     private readonly ApplicationContext _applicationContext;
-    private IObjectFactoryLoader FactoryLoader { get; }
-    private IDataPortalExceptionInspector ExceptionInspector { get; }
-    private DataPortalOptions DataPortalOptions { get; }
+    private readonly IObjectFactoryLoader _factoryLoader;
+    private readonly IDataPortalExceptionInspector _exceptionInspector;
+    private readonly DataPortalOptions _dataPortalOptions;
 
     /// <summary>
     /// Creates an instance of the type.
@@ -35,16 +35,16 @@ namespace Csla.Server
     public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector, DataPortalOptions dataPortalOptions)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      FactoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
-      ExceptionInspector = inspector ?? throw new ArgumentNullException(nameof(inspector));
-      DataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
+      _factoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
+      _exceptionInspector = inspector ?? throw new ArgumentNullException(nameof(inspector));
+      _dataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
 
     #region Method invokes
 
     private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, DataPortalContext context, bool isSync)
     {
-      object factory = FactoryLoader.GetFactory(factoryTypeName);
+      object factory = _factoryLoader.GetFactory(factoryTypeName);
       var eventArgs = new DataPortalEventArgs(context, objectType, null, operation);
 
       Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
@@ -73,7 +73,7 @@ namespace Csla.Server
 
     private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context, bool isSync)
     {
-      object factory = FactoryLoader.GetFactory(factoryTypeName);
+      object factory = _factoryLoader.GetFactory(factoryTypeName);
       var eventArgs = new DataPortalEventArgs(context, objectType, e, operation);
 
       Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
@@ -128,8 +128,8 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
             _applicationContext, context.FactoryInfo.CreateMethodName + " " + Resources.FailedOnServer,
-            new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
-            null, DataPortalOptions);
+            new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.CreateMethodName, ex),
+            null, _dataPortalOptions);
       }
     }
 
@@ -163,8 +163,8 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, context.FactoryInfo.FetchMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
-          null, DataPortalOptions);
+          new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.FetchMethodName, ex),
+          null, _dataPortalOptions);
       }
     }
 
@@ -183,8 +183,8 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, factoryInfo.ExecuteMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, factoryInfo.ExecuteMethodName, ex),
-          null, DataPortalOptions);
+          new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, criteria, factoryInfo.ExecuteMethodName, ex),
+          null, _dataPortalOptions);
       }
     }
 
@@ -215,8 +215,8 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, methodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(ExceptionInspector).InspectException(obj.GetType(), obj, null, methodName, ex),
-          obj, DataPortalOptions);
+          new DataPortalExceptionHandler(_exceptionInspector).InspectException(obj.GetType(), obj, null, methodName, ex),
+          obj, _dataPortalOptions);
 
       }
     }
@@ -246,8 +246,8 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, context.FactoryInfo.DeleteMethodName + " " + Resources.FailedOnServer,
-          new DataPortalExceptionHandler(ExceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
-          null, DataPortalOptions);
+          new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, criteria, context.FactoryInfo.DeleteMethodName, ex),
+          null, _dataPortalOptions);
       }
     }
 

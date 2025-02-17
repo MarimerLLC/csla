@@ -25,10 +25,10 @@ namespace Csla.DataPortalClient
     /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public DataPortalFactory(IServiceProvider serviceProvider)
     {
-      ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      this._serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
-    private IServiceProvider ServiceProvider { get; }
+    private IServiceProvider _serviceProvider;
 
     /// <summary>
     /// Get a client-side data portal instance.
@@ -40,7 +40,7 @@ namespace Csla.DataPortalClient
 #endif
     T>()
     {
-      return (IDataPortal<T>)ServiceProvider.GetRequiredService(typeof(IDataPortal<T>));
+      return (IDataPortal<T>)_serviceProvider.GetRequiredService(typeof(IDataPortal<T>));
     }
   }
 }

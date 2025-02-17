@@ -24,9 +24,6 @@ namespace Csla.Core.FieldManager
 #endif
     T> : IFieldData<T>
   {
-    [NonSerialized]
-    [NotUndoable]
-    private readonly bool _isChild = typeof(T).IsAssignableFrom(typeof(IMobileObject));
     private T? _data;
     private bool _isDirty;
 
@@ -256,43 +253,46 @@ namespace Csla.Core.FieldManager
       MarkClean();
     }
 
-    void IMobileObject.GetState(SerializationInfo info)
+    private static bool IsFieldSerializable(MobileFormatter formatter)
     {
-      if (!_isChild)
+      return formatter.IsTypeSerializable(typeof(T));
+    }
+
+    void IMobileObject.GetState(SerializationInfo info)
+    { }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      bool isSerializable = IsFieldSerializable(formatter);
+      info.AddValue("_name", Name);
+      if (isSerializable)
       {
-        info.AddValue("_name", Name);
+        SerializationInfo childInfo = formatter.SerializeObject(_data);
+        info.AddChild(Name, childInfo.ReferenceId, _isDirty);
+      }
+      else
+      {
         info.AddValue("_data", _data);
         info.AddValue("_isDirty", _isDirty);
       }
     }
 
-    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      if (_isChild)
-      {
-        info.AddValue("_name", Name);
-        SerializationInfo childInfo = formatter.SerializeObject((IMobileObject)_data!);
-        info.AddChild(Name, childInfo.ReferenceId, _isDirty);
-      }
-    }
-
     void IMobileObject.SetState(SerializationInfo info)
-    {
-      if (!_isChild)
-      {
-        Name = info.GetValue<string>("_name")!;
-        _data = info.GetValue<T>("_data");
-        _isDirty = info.GetValue<bool>("_isDirty");
-      }
-    }
+    { }
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (_isChild)
+      bool isSerializable = IsFieldSerializable(formatter);
+      Name = info.GetRequiredValue<string>("_name");
+      if (isSerializable)
       {
-        Name = info.GetValue<string>("_name")!;
         SerializationInfo.ChildData childData = info.Children[Name];
         _data = (T?)formatter.GetObject(childData.ReferenceId);
+      }
+      else
+      {
+        _data = info.GetValue<T>("_data");
+        _isDirty = info.GetValue<bool>("_isDirty");
       }
     }
   }

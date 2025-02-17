@@ -54,7 +54,7 @@ namespace Csla.Threading
   /// </summary>
   public class BusyLocker : IDisposable
   {
-    private readonly ManualResetEvent _event = new ManualResetEvent(false);
+    private readonly ManualResetEvent _event = new(false);
     private readonly INotifyBusy _target;
     private readonly TimeSpan _timeout;
 

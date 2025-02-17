@@ -33,15 +33,16 @@ namespace Csla.Server
     /// <summary>
     /// Gets the data portal dashboard instance.
     /// </summary>
-    private IDashboard Dashboard { get; }
-    private DataPortalOptions DataPortalOptions { get; }
-    private IAuthorizeDataPortal Authorizer { get; }
-    private InterceptorManager InterceptorManager { get; }
-    private IObjectFactoryLoader FactoryLoader { get; }
-    private IDataPortalActivator Activator { get; }
-    private IDataPortalExceptionInspector ExceptionInspector { get; }
-    private DataPortalExceptionHandler DataPortalExceptionHandler { get; }
-    private SecurityOptions SecurityOptions { get; }
+    private IDashboard _dashboard;
+
+    private DataPortalOptions _dataPortalOptions;
+    private IAuthorizeDataPortal _authorizer;
+    private InterceptorManager _interceptorManager;
+    private IObjectFactoryLoader _factoryLoader;
+    private IDataPortalActivator _activator;
+    private IDataPortalExceptionInspector _exceptionInspector;
+    private DataPortalExceptionHandler _dataPortalExceptionHandler;
+    private SecurityOptions _securityOptions;
 
     /// <summary>
     /// Creates an instance of the type.
@@ -72,15 +73,15 @@ namespace Csla.Server
       if (options is null)
         throw new ArgumentNullException(nameof(options));
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      Dashboard = dashboard ?? throw new ArgumentNullException(nameof(dashboard));
-      DataPortalOptions = options.DataPortalOptions;
-      Authorizer = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
-      InterceptorManager = interceptors ?? throw new ArgumentNullException(nameof(interceptors));
-      FactoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
-      Activator = activator ?? throw new ArgumentNullException(nameof(activator));
-      ExceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
-      DataPortalExceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
-      SecurityOptions = securityOptions ?? throw new ArgumentNullException(nameof(securityOptions));
+      _dashboard = dashboard ?? throw new ArgumentNullException(nameof(dashboard));
+      _dataPortalOptions = options.DataPortalOptions;
+      _authorizer = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
+      _interceptorManager = interceptors ?? throw new ArgumentNullException(nameof(interceptors));
+      _factoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
+      _activator = activator ?? throw new ArgumentNullException(nameof(activator));
+      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
+      _dataPortalExceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
+      _securityOptions = securityOptions ?? throw new ArgumentNullException(nameof(securityOptions));
     }
 
     #region Data Access
@@ -186,8 +187,8 @@ namespace Csla.Server
 
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
-            DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Create", ex),
-            null, DataPortalOptions);
+            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Create", ex),
+            null, _dataPortalOptions);
         Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Create, isSync));
         throw fex;
       }
@@ -272,8 +273,8 @@ namespace Csla.Server
 
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
-            DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Fetch", ex),
-            null, DataPortalOptions);
+            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Fetch", ex),
+            null, _dataPortalOptions);
         Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Fetch, isSync));
         throw fex;
       }
@@ -358,8 +359,8 @@ namespace Csla.Server
 
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
-            DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", ex),
-            null, DataPortalOptions);
+            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", ex),
+            null, _dataPortalOptions);
         Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Execute, isSync));
         throw fex;
       }
@@ -478,8 +479,8 @@ namespace Csla.Server
 
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
-            DataPortalExceptionHandler.InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
-            obj, DataPortalOptions);
+            _dataPortalExceptionHandler.InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
+            obj, _dataPortalOptions);
         Complete(new InterceptArgs(objectType, obj, fex, operation, isSync));
         throw fex;
       }
@@ -571,8 +572,8 @@ namespace Csla.Server
 
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
-            DataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Delete", ex),
-            null, DataPortalOptions);
+            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Delete", ex),
+            null, _dataPortalOptions);
         Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Delete, isSync));
         throw fex;
       }
@@ -584,22 +585,22 @@ namespace Csla.Server
 
     internal void Complete(InterceptArgs e)
     {
-      InterceptorManager.Complete(e);
+      _interceptorManager.Complete(e);
 
       var timer = _applicationContext.ClientContext.GetValueOrNull("__dataportaltimer");
       if (timer == null) return;
 
       var startTime = (DateTimeOffset)timer;
       e.Runtime = DateTimeOffset.Now - startTime;
-      Dashboard.CompleteCall(e);
+      _dashboard.CompleteCall(e);
     }
 
     internal async Task InitializeAsync(InterceptArgs e)
     {
       _applicationContext.ClientContext["__dataportaltimer"] = DateTimeOffset.Now;
-      Dashboard.InitializeCall(e);
+      _dashboard.InitializeCall(e);
 
-      await InterceptorManager.InitializeAsync(e);
+      await _interceptorManager.InitializeAsync(e);
     }
 
     #endregion
@@ -631,14 +632,14 @@ namespace Csla.Server
 
     private void SetPrincipal(DataPortalContext context)
     {
-      if (context.IsRemotePortal && !SecurityOptions.FlowSecurityPrincipalFromClient)
+      if (context.IsRemotePortal && !_securityOptions.FlowSecurityPrincipalFromClient)
       {
         // When using platform-supplied security, Principal must be null
         if (context.Principal != null)
         {
           throw new Security.SecurityException(Resources.NoPrincipalAllowedException);
         }
-        if (SecurityOptions.AuthenticationType == "Windows")
+        if (_securityOptions.AuthenticationType == "Windows")
         {
           // Set .NET to use integrated security
           AppDomain.CurrentDomain.SetPrincipalPolicy(PrincipalPolicy.WindowsPrincipal);
@@ -671,7 +672,7 @@ namespace Csla.Server
       // do nothing
       if (!context.IsRemotePortal) return;
       _applicationContext.Clear();
-      if (SecurityOptions.FlowSecurityPrincipalFromClient)
+      if (_securityOptions.FlowSecurityPrincipalFromClient)
         _applicationContext.User = null;
     }
 
@@ -679,7 +680,7 @@ namespace Csla.Server
 
     private async Task AuthorizeRequestAsync(AuthorizeRequest clientRequest, CancellationToken ct)
     {
-      await Authorizer.AuthorizeAsync(clientRequest, ct);
+      await _authorizer.AuthorizeAsync(clientRequest, ct);
     }
 
     [DoesNotReturn]

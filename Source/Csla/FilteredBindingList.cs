@@ -90,37 +90,11 @@ namespace Csla
 
       #region IDisposable Support
 
-      private bool _disposedValue = false; // To detect redundant calls.
-
-      // IDisposable
-      protected virtual void Dispose(bool disposing)
-      {
-        if (!_disposedValue)
-        {
-          if (disposing)
-          {
-            // free unmanaged resources when explicitly called
-          }
-          // free shared unmanaged resources
-        }
-        _disposedValue = true;
-      }
-
-      // this code added to correctly implement the disposable pattern.
       public void Dispose()
       {
-        // Do not change this code.  Put cleanup code in Dispose(bool disposing) above.
-        Dispose(true);
-        GC.SuppressFinalize(this);
-      }
-
-      ~FilteredEnumerator()
-      {
-        Dispose(false);
       }
 
       #endregion
-
     }
 
     #endregion
@@ -155,7 +129,6 @@ namespace Csla
       IsFiltered = true;
 
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
-
     }
 
     private void UnDoFilter()

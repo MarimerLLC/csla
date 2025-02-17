@@ -84,7 +84,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the SecurityOptions instance.
     /// </summary>
-    internal SecurityOptions SecurityOptions { get; } = new SecurityOptions();
+    internal SecurityOptions SecurityOptions { get; } = new();
     /// <summary>
     /// Gets the SerializationOptions instance.
     /// </summary>
@@ -96,14 +96,14 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>
-    public DataOptions DataOptions { get; } = new DataOptions();
+    public DataOptions DataOptions { get; } = new();
     /// <summary>
     /// Gets the DataOptions instance.
     /// </summary>
-    public BindingOptions BindingOptions { get; } = new BindingOptions();
+    public BindingOptions BindingOptions { get; } = new();
     /// <summary>
     /// Gets the CoreOptions instance.
     /// </summary>
-    internal CoreOptions CoreOptions { get; } = new CoreOptions();
+    internal CoreOptions CoreOptions { get; } = new();
   }
 }

@@ -16,7 +16,7 @@ namespace Csla.Threading
   /// </summary>
   public class AsyncManualResetEvent
   {
-    private volatile TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
+    private volatile TaskCompletionSource<bool> _tcs = new();
 
     /// <summary>
     /// Get awaitable task for the event

@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor onlyUseCslaPropertyMethodsInGetSetRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Title,
         OnlyUseCslaPropertyMethodsInGetSetRuleConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,

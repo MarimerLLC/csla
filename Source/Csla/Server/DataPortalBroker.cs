@@ -18,6 +18,8 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalBroker : IDataPortalServer
   {
+    private readonly DataPortalSelector _dataPortalSelector;
+
     /// <summary>
     /// 
     /// </summary>
@@ -25,10 +27,9 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalSelector"/> is <see langword="null"/>.</exception>
     public DataPortalBroker(DataPortalSelector dataPortalSelector)
     {
-      DataPortalSelector = dataPortalSelector ?? throw new ArgumentNullException(nameof(dataPortalSelector));
+      _dataPortalSelector = dataPortalSelector ?? throw new ArgumentNullException(nameof(dataPortalSelector));
     }
 
-    private DataPortalSelector DataPortalSelector { get; set; }
     /// <summary>
     /// Gets or sets a reference to a implementation of
     /// IDataPortalServer to be used.
@@ -51,7 +52,7 @@ namespace Csla.Server
       }
       else
       {
-        return DataPortalSelector.Create(objectType, criteria, context, isSync);
+        return _dataPortalSelector.Create(objectType, criteria, context, isSync);
       }      
     }
 
@@ -71,7 +72,7 @@ namespace Csla.Server
       }
       else
       {
-        return DataPortalSelector.Fetch(objectType, criteria, context, isSync);
+        return _dataPortalSelector.Fetch(objectType, criteria, context, isSync);
       }
     }
 
@@ -89,7 +90,7 @@ namespace Csla.Server
       }
       else
       {
-        return DataPortalSelector.Update(obj, context, isSync);
+        return _dataPortalSelector.Update(obj, context, isSync);
       }
     }
 
@@ -109,7 +110,7 @@ namespace Csla.Server
       }
       else
       {
-        return DataPortalSelector.Delete(objectType, criteria, context, isSync);
+        return _dataPortalSelector.Delete(objectType, criteria, context, isSync);
       }
     }
   }

@@ -17,7 +17,7 @@ namespace Csla.Windows
   public class ApplicationContextManager(SecurityOptions securityOptions) : Csla.Core.ApplicationContextManager
   {
     private static IPrincipal _principal;
-    private SecurityOptions SecurityOptions { get; set; } = securityOptions;
+    private SecurityOptions _securityOptions = securityOptions;
 
     /// <summary>
     /// Gets the current principal.
@@ -26,7 +26,7 @@ namespace Csla.Windows
     {
       if (_principal == null)
       {
-        if (SecurityOptions.FlowSecurityPrincipalFromClient)
+        if (_securityOptions.FlowSecurityPrincipalFromClient)
           SetUser(new System.Security.Claims.ClaimsPrincipal());
         else
 #pragma warning disable CA1416 // Validate platform compatibility

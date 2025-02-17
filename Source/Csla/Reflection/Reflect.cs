@@ -64,10 +64,10 @@ namespace Csla.Reflection
 
       if (method is not LambdaExpression lambda)
         throw new ArgumentException("Not a lambda expression", nameof(method));
-      if (lambda.Body.NodeType != ExpressionType.Call)
+      if (lambda.Body is not MethodCallExpression callExpression)
         throw new ArgumentException("Not a method call", nameof(method));
 
-      return ((MethodCallExpression)lambda.Body).Method;
+      return callExpression.Method;
     }
 
     /// <summary>

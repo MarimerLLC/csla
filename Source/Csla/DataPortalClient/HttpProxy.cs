@@ -40,7 +40,7 @@ namespace Csla.Channels.Http
       _httpClient = httpClient;
       Options = options;
       DataPortalUrl = options.DataPortalUrl;
-      VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
+      _versionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace Csla.Channels.Http
     /// </summary>
     protected HttpProxyOptions Options { get; set; }
 
-    private string VersionRoutingTag { get; set; }
+    private string _versionRoutingTag;
 
     /// <inheritdoc />
     public override string DataPortalUrl { get; }
@@ -150,7 +150,7 @@ namespace Csla.Channels.Http
       var client = GetHttpClient();
       using var httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
-        $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
+        $"{DataPortalUrl}?operation={CreateOperationTag(operation, _versionRoutingTag, routingToken)}");
       SetHttpRequestHeaders(httpRequest);
 #if NET8_0_OR_GREATER
       if (Options.UseTextSerialization)
@@ -194,7 +194,7 @@ namespace Csla.Channels.Http
       }
 #endif
       WebClient client = GetWebClient();
-      var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}";
+      var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, _versionRoutingTag, routingToken)}";
       client.Headers["Content-Type"] = Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream";
       SetWebClientHeaders(client);
       try

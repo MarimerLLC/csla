@@ -16,7 +16,7 @@ namespace Csla.Threading
   /// </summary>
   public class BackgroundWorker : Component
   {
-    private readonly System.ComponentModel.BackgroundWorker _myWorker = new System.ComponentModel.BackgroundWorker();
+    private readonly System.ComponentModel.BackgroundWorker _myWorker = new();
     private readonly ApplicationContext _applicationContext;
 
     /// <summary>

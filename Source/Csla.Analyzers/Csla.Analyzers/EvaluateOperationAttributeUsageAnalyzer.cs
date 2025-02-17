@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor operationUsageRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect, EvaluateOperationAttributeUsageAnalyzerConstants.Title,
         EvaluateOperationAttributeUsageAnalyzerConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Error, true,

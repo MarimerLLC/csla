@@ -21,8 +21,7 @@ namespace Csla.Server
   internal class DataPortalTarget : LateBoundObject
   {
 #if NET8_0_OR_GREATER
-    private static readonly ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>> _methodNameList =
-      new ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>>();
+    private static readonly ConcurrentDictionary<Type, Tuple<string, DataPortalMethodNames>> _methodNameList = new();
 #else
     private static readonly ConcurrentDictionary<Type, DataPortalMethodNames> _methodNameList = new();
 #endif

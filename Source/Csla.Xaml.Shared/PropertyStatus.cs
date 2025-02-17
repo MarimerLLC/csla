@@ -58,7 +58,6 @@ namespace Csla.Xaml
     /// Creates an instance of the object.
     /// </summary>
     public PropertyStatus()
-      : base()
     {
       BrokenRules = new ObservableCollection<BrokenRule>();
       DefaultStyleKey = typeof(PropertyStatus);

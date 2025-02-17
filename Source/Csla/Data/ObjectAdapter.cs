@@ -150,7 +150,7 @@ namespace Csla.Data
       else
       {
         // now handle lists/arrays/collections
-        if (innerSource is IEnumerable iEnumerable)
+        if (innerSource is IEnumerable)
         {
           Type childType = Utilities.GetChildItemType(
             innerSource.GetType());

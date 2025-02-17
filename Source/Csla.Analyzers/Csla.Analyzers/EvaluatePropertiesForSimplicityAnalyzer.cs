@@ -145,7 +145,6 @@ namespace Csla.Analyzers
       }
       else if (getterWalkerExpression.Invocation != null)
       {
-        var getterStatements = getterExpression.Expression;
         if (!(getterExpression.Expression is InvocationExpressionSyntax invocation) || invocation != getterWalkerExpression.Invocation)
         {
           context.ReportDiagnostic(Diagnostic.Create(
@@ -203,7 +202,6 @@ namespace Csla.Analyzers
       }
       else if (setterWalkerExpression.Invocation != null)
       {
-        var getterStatements = setterExpression.Expression;
         if (!(setterExpression.Expression is InvocationExpressionSyntax invocation) || invocation != setterWalkerExpression.Invocation)
         {
           context.ReportDiagnostic(Diagnostic.Create(

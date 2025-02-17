@@ -47,7 +47,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns><c>true</c> if the field type is nullable; otherwise, <c>false</c>.</returns>
     private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
-      return propertyDeclaration.Type is NullableTypeSyntax nullableType;
+      return propertyDeclaration.Type is NullableTypeSyntax;
     }
 
     /// <summary>

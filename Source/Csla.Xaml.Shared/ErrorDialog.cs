@@ -38,7 +38,7 @@ namespace Csla.Xaml
     /// dialog.
     /// </summary>
     public static readonly DependencyProperty DialogTitleProperty = DependencyProperty.Register(
-      "DialogTitle",
+      nameof(DialogTitle),
       typeof(string),
       typeof(ErrorDialog),
       null);
@@ -59,7 +59,7 @@ namespace Csla.Xaml
     /// exception message).
     /// </summary>
     public static readonly DependencyProperty DialogFirstLineProperty = DependencyProperty.Register(
-      "DialogFirstLine",
+      nameof(DialogFirstLine),
       typeof(string),
       typeof(ErrorDialog),
       null);
@@ -81,7 +81,7 @@ namespace Csla.Xaml
     /// or just the exception summary message.
     /// </summary>
     public static readonly DependencyProperty ShowExceptionDetailProperty = DependencyProperty.Register(
-      "ShowExceptionDetail",
+      nameof(ShowExceptionDetail),
       typeof(bool),
       typeof(ErrorDialog),
       null);
@@ -103,7 +103,7 @@ namespace Csla.Xaml
     /// or just the exception summary message.
     /// </summary>
     public static readonly DependencyProperty DialogIconProperty = DependencyProperty.Register(
-      "DialogIcon",
+      nameof(DialogIcon),
       typeof(MessageBoxImage),
       typeof(ErrorDialog),
       null);

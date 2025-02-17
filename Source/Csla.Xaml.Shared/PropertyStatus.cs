@@ -106,7 +106,7 @@ namespace Csla.Xaml
     /// property to which this control is bound.
     /// </summary>
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
-      "Property",
+      nameof(Property),
       typeof(object),
       typeof(PropertyStatus),
       new PropertyMetadata(new object(), (o, e) =>
@@ -199,15 +199,14 @@ namespace Csla.Xaml
       var propertyName = string.Empty;
 
       var binding = GetBindingExpression(PropertyProperty);
-      if (binding != null)
+      if (binding?.ParentBinding is {Path: not null})
       {
-        if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
-          bindingPath = binding.ParentBinding.Path.Path;
-        else
-          bindingPath = string.Empty;
-        propertyName = (bindingPath.IndexOf('.') > 0)
-                           ? bindingPath.Substring(bindingPath.LastIndexOf('.') + 1)
-                           : bindingPath;
+        bindingPath = binding.ParentBinding.Path.Path;
+
+        var separatorPosition = bindingPath.LastIndexOf('.');
+        propertyName = separatorPosition > 0
+          ? bindingPath.Substring(separatorPosition + 1)
+          : bindingPath;
       }
 
       BindingPath = bindingPath;
@@ -288,7 +287,7 @@ namespace Csla.Xaml
     /// business object.
     /// </summary>
     public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
-      "BrokenRules",
+      nameof(BrokenRules),
       typeof(ObservableCollection<BrokenRule>),
       typeof(PropertyStatus),
       null);

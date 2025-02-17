@@ -86,7 +86,7 @@ namespace Csla.Analyzers
     private static void AnalyzePropertyGetterWithExpressionBody(PropertyDeclarationSyntax propertyNode, SyntaxNodeAnalysisContext context)
     {
       var getterExpression = propertyNode.ExpressionBody.Expression;
-      var getterChildren = getterExpression.DescendantNodes().ToImmutableArray();
+      var getterChildren = getterExpression.DescendantNodes(_ => true).ToArray();
 
       if (getterChildren.Length > 1)
       {

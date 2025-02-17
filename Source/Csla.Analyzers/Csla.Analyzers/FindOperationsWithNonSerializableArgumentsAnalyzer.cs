@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor shouldUseSerializableTypesRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, FindOperationsWithNonSerializableArgumentsConstants.Title,
         FindOperationsWithNonSerializableArgumentsConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Warning, true,

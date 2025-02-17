@@ -192,7 +192,7 @@ namespace Csla.Reflection
 
     #region Dynamic Constructor Cache
 
-    private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
+    private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new();
 
     private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
     {

@@ -28,14 +28,11 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
     public static IReadOnlyList<ExtractedPropertyDefinition> ExtractPropertyDefinitions(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      List<ExtractedPropertyDefinition> propertyDefinitions = new List<ExtractedPropertyDefinition>();
-      ExtractedPropertyDefinition propertyDefinition;
-      IReadOnlyList<PropertyDeclarationSyntax> serializableProperties;
-
-      serializableProperties = GetSerializablePropertyDeclarations(extractionContext, targetTypeDeclaration);
+      var serializableProperties = GetSerializablePropertyDeclarations(extractionContext, targetTypeDeclaration);
+      var propertyDefinitions = new List<ExtractedPropertyDefinition>(serializableProperties.Count);
       foreach (PropertyDeclarationSyntax propertyDeclaration in serializableProperties)
       {
-        propertyDefinition = PropertyDefinitionExtractor.ExtractPropertyDefinition(extractionContext, propertyDeclaration);
+        var propertyDefinition = PropertyDefinitionExtractor.ExtractPropertyDefinition(extractionContext, propertyDeclaration);
         propertyDefinitions.Add(propertyDefinition);
       }
 

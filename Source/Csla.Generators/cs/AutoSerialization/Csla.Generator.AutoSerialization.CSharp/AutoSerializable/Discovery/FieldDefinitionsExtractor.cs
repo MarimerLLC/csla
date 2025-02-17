@@ -28,14 +28,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>A readonly list of ExtractedFieldDefinition containing the data extracted from the syntax tree</returns>
     public static IReadOnlyList<ExtractedFieldDefinition> ExtractFieldDefinitions(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      List<ExtractedFieldDefinition> propertyDefinitions = new List<ExtractedFieldDefinition>();
-      ExtractedFieldDefinition fieldDefinition;
-      IReadOnlyList<FieldDeclarationSyntax> serializableFields;
+      var serializableFields = GetSerializableFieldDeclarations(extractionContext, targetTypeDeclaration);
 
-      serializableFields = GetSerializableFieldDeclarations(extractionContext, targetTypeDeclaration);
+      var propertyDefinitions = new List<ExtractedFieldDefinition>(serializableFields.Count);
       foreach (FieldDeclarationSyntax fieldDeclaration in serializableFields)
       {
-        fieldDefinition = FieldDefinitionExtractor.ExtractFieldDefinition(extractionContext, fieldDeclaration);
+        var fieldDefinition = FieldDefinitionExtractor.ExtractFieldDefinition(extractionContext, fieldDeclaration);
         propertyDefinitions.Add(fieldDefinition);
       }
 

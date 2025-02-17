@@ -51,9 +51,12 @@ namespace Csla.Analyzers
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
 
-      foreach(var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
+      if (methodSymbol != null)
       {
-        newRoot = newRoot.RemoveNode(await attribute.ApplicationSyntaxReference.GetSyntaxAsync(), SyntaxRemoveOptions.KeepNoTrivia);
+        foreach (var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
+        {
+          newRoot = newRoot.RemoveNode(await attribute.ApplicationSyntaxReference.GetSyntaxAsync(), SyntaxRemoveOptions.KeepNoTrivia);
+        }
       }
 
       var attributeListsToRemove = new List<AttributeListSyntax>();

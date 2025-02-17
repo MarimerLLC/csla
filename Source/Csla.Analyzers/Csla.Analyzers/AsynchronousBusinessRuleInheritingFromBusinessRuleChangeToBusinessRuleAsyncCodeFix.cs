@@ -57,7 +57,7 @@ namespace Csla.Analyzers
 
       foreach (var typeSymbolReference in typeSymbol.DeclaringSyntaxReferences)
       {
-        var typeNode = await typeSymbolReference.GetSyntaxAsync() as TypeDeclarationSyntax;
+        var typeNode = (TypeDeclarationSyntax)await typeSymbolReference.GetSyntaxAsync();
 
         var newTypeNode = typeNode.WithBaseList(GetBaseTypes(typeNode))
           .WithTriviaFrom(typeNode);

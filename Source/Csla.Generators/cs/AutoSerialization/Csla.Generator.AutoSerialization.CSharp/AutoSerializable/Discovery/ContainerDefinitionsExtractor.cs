@@ -53,18 +53,17 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       foreach (SyntaxToken modifier in typeDeclarationSyntax.Modifiers)
       {
         containerDefinitionBuilder.Append(modifier.ToString());
-        containerDefinitionBuilder.Append(" ");
+        containerDefinitionBuilder.Append(' ');
       }
 
       containerDefinitionBuilder.Append(typeDeclarationSyntax.Keyword.ToString());
-      containerDefinitionBuilder.Append(" ");
+      containerDefinitionBuilder.Append(' ');
       containerDefinitionBuilder.Append(typeDeclarationSyntax.Identifier.ToString());
 
       containerDefinition = new ExtractedContainerDefinition
       {
         Name = typeDeclarationSyntax.Identifier.ToString(),
         FullDefinition = containerDefinitionBuilder.ToString()
-
       };
 
       return containerDefinition;
@@ -78,7 +77,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       foreach (SyntaxToken modifier in namespaceDeclarationSyntax.Modifiers)
       {
         containerDefinitionBuilder.Append(modifier.ToString());
-        containerDefinitionBuilder.Append(" ");
+        containerDefinitionBuilder.Append(' ');
       }
 
       var namespaceValue = namespaceDeclarationSyntax.Name.ToString();

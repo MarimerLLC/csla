@@ -217,7 +217,7 @@ namespace Csla.Data
         if (obj is string tmp)
         {
           // this is a simple string
-          result = (string)obj;
+          result = tmp;
         }
         else
         {

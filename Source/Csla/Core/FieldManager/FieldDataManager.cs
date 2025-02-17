@@ -117,7 +117,7 @@ namespace Csla.Core.FieldManager
     #region ConsolidatedPropertyList
 
 #if NET8_0_OR_GREATER
-    private static Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new Dictionary<Type, Tuple<string, List<IPropertyInfo>>>();
+    private static Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new();
 #else
     private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
 #endif

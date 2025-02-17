@@ -15,11 +15,11 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.PublicNoArgumentConstructorIsMissing_Title), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString Title = new(nameof(Resources.PublicNoArgumentConstructorIsMissing_Title), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.PublicNoArgumentConstructorIsMissing_Message), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString Message = new(nameof(Resources.PublicNoArgumentConstructorIsMissing_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   /// <summary>
@@ -30,11 +30,11 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.ConstructorHasParameters_Title), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString Title = new(nameof(Resources.ConstructorHasParameters_Title), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.ConstructorHasParameters_Message), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString Message = new(nameof(Resources.ConstructorHasParameters_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   /// <summary>
@@ -45,11 +45,11 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString Title = new LocalizableResourceString(nameof(Resources.FindBusinessObjectCreationConstants_Title), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString Title = new(nameof(Resources.FindBusinessObjectCreationConstants_Title), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString Message = new LocalizableResourceString(nameof(Resources.FindBusinessObjectCreationConstants_Message), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString Message = new(nameof(Resources.FindBusinessObjectCreationConstants_Message), Resources.ResourceManager, typeof(Resources));
   }
 
   /// <summary>

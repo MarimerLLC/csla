@@ -11,27 +11,27 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString AttributeMissingTitle = new LocalizableResourceString(nameof(Resources.ObjectAuthorizationRulesAttribute_AttributeMissingTitle), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString AttributeMissingTitle = new(nameof(Resources.ObjectAuthorizationRulesAttribute_AttributeMissingTitle), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString AttributeMissingMessage = new LocalizableResourceString(nameof(Resources.ObjectAuthorizationRulesAttribute_AttributeMissingMessage), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString AttributeMissingMessage = new(nameof(Resources.ObjectAuthorizationRulesAttribute_AttributeMissingMessage), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString RulesPublicTitle = new LocalizableResourceString(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesPublicTitle), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString RulesPublicTitle = new(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesPublicTitle), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString RulesPublicMessage = new LocalizableResourceString(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesPublicMessage), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString RulesPublicMessage = new(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesPublicMessage), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString RulesStaticTitle = new LocalizableResourceString(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesStaticTitle), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString RulesStaticTitle = new(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesStaticTitle), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
     /// </summary>
-    public static readonly LocalizableResourceString RulesStaticMessage = new LocalizableResourceString(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesStaticMessage), Resources.ResourceManager, typeof(Resources));
+    public static readonly LocalizableResourceString RulesStaticMessage = new(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesStaticMessage), Resources.ResourceManager, typeof(Resources));
   }
 
   /// <summary>

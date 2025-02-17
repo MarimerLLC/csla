@@ -22,10 +22,10 @@ namespace Csla.Server
     /// <param name="serviceProvider">Current ServiceProvider</param>
     public ChildDataPortalFactory(IServiceProvider serviceProvider)
     {
-      ServiceProvider = serviceProvider;
+      _serviceProvider = serviceProvider;
     }
 
-    private IServiceProvider ServiceProvider { get; set; }
+    private IServiceProvider _serviceProvider;
 
     /// <summary>
     /// Get a client-side data portal instance.
@@ -37,7 +37,7 @@ namespace Csla.Server
 #endif
     T>()
     {
-      return (IChildDataPortal<T>)ServiceProvider.GetService(typeof(IChildDataPortal<T>));
+      return (IChildDataPortal<T>)_serviceProvider.GetService(typeof(IChildDataPortal<T>));
     }
   }
 }

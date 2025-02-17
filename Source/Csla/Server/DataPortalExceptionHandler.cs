@@ -26,10 +26,10 @@ namespace Csla.Server
     /// <param name="exceptionInspector"></param>
     public DataPortalExceptionHandler(IDataPortalExceptionInspector exceptionInspector)
     {
-      ExceptionInspector = exceptionInspector;
+      _exceptionInspector = exceptionInspector;
     }
 
-    private IDataPortalExceptionInspector ExceptionInspector { get; set; }
+    private IDataPortalExceptionInspector _exceptionInspector;
 
     /// <summary>
     /// Transforms the exception in a Fetch, Create or Execute method.
@@ -107,7 +107,7 @@ namespace Csla.Server
       try
       {
         // This method should rethrow a new exception to be handled 
-        ExceptionInspector?.InspectException(objectType, businessObject, criteria, methodName, exception);
+        _exceptionInspector?.InspectException(objectType, businessObject, criteria, methodName, exception);
       }
       catch (Exception ex)
       {

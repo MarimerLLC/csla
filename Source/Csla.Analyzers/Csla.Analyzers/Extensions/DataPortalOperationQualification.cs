@@ -15,7 +15,7 @@
     /// 
     /// </summary>
     public DataPortalOperationQualification Combine(DataPortalOperationQualification qualification) =>
-      new DataPortalOperationQualification(
+      new(
         qualification.ByNamingConvention | ByNamingConvention,
         qualification.ByAttribute | ByAttribute);
 

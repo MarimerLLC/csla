@@ -43,7 +43,6 @@ namespace Csla.Configuration
     /// Gets or sets the connection strings from the 
     /// application's default settings.
     /// </summary>
-    public static ConnectionStringSettingsCollection ConnectionStrings { get; set; }
-      = new ConnectionStringSettingsCollection();
+    public static ConnectionStringSettingsCollection ConnectionStrings { get; set; } = new();
   }
 }

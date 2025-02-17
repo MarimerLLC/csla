@@ -21,10 +21,10 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="activeCircuitState"></param>
     public ActiveCircuitHandler(ActiveCircuitState activeCircuitState)
     {
-      ActiveCircuitState = activeCircuitState;
+      _activeCircuitState = activeCircuitState;
     }
 
-    private ActiveCircuitState ActiveCircuitState { get; set; }
+    private ActiveCircuitState _activeCircuitState;
 
     /// <summary>
     /// Handler for the OnCircuitOpenedAsync call
@@ -33,7 +33,7 @@ namespace Csla.AspNetCore.Blazor
     /// <param name="cancellationToken">The cancellation token provided by the runtime</param>
     public override Task OnCircuitOpenedAsync(Circuit circuit, CancellationToken cancellationToken)
     {
-      ActiveCircuitState.CircuitExists = true;
+      _activeCircuitState.CircuitExists = true;
       return base.OnCircuitOpenedAsync(circuit, cancellationToken);
     }
   }

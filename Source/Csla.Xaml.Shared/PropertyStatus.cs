@@ -199,15 +199,14 @@ namespace Csla.Xaml
       var propertyName = string.Empty;
 
       var binding = GetBindingExpression(PropertyProperty);
-      if (binding != null)
+      if (binding?.ParentBinding is {Path: not null})
       {
-        if (binding.ParentBinding != null && binding.ParentBinding.Path != null)
-          bindingPath = binding.ParentBinding.Path.Path;
-        else
-          bindingPath = string.Empty;
-        propertyName = (bindingPath.IndexOf('.') > 0)
-                           ? bindingPath.Substring(bindingPath.LastIndexOf('.') + 1)
-                           : bindingPath;
+        bindingPath = binding.ParentBinding.Path.Path;
+
+        var separatorPosition = bindingPath.LastIndexOf('.');
+        propertyName = separatorPosition > 0
+          ? bindingPath.Substring(separatorPosition + 1)
+          : bindingPath;
       }
 
       BindingPath = bindingPath;

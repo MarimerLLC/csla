@@ -10,7 +10,7 @@ namespace Csla.Channels.RabbitMq
 
   internal class WipItem
   {
-    public Threading.AsyncManualResetEvent ResetEvent { get; }
+    public AsyncManualResetEvent ResetEvent { get; }
     public byte[]? Response { get; set; }
 
     internal WipItem(AsyncManualResetEvent resetEvent)

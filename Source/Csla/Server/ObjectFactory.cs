@@ -82,7 +82,7 @@ namespace Csla.Server
         /// <returns>void</returns>
         protected async Task WaitForIdle(object obj)
         {
-            var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+            var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
             await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds).ToCancellationToken()).ConfigureAwait(false);
         }
 
@@ -259,7 +259,7 @@ namespace Csla.Server
         /// bypassing of normal authorization checks during
         /// property setting.
         /// </returns>
-        protected IDisposable BypassPropertyChecks(Csla.Core.BusinessBase businessObject)
+        protected IDisposable BypassPropertyChecks(BusinessBase businessObject)
         {
             return businessObject.BypassPropertyChecks;
         }
@@ -270,7 +270,7 @@ namespace Csla.Server
         /// </summary>
         /// <param name="obj">Business object.</param>
         /// <param name="property">Property info object.</param>
-        protected bool FieldExists(object obj, Csla.Core.IPropertyInfo property)
+        protected bool FieldExists(object obj, IPropertyInfo property)
         {
             if (obj is IManageProperties target)
                 return target.FieldExists(property);
@@ -284,14 +284,14 @@ namespace Csla.Server
         /// </summary>
         /// <typeparam name="C">Type of child objects in the colletion.</typeparam>
         /// <param name="obj">Editable collection object.</param>
-        protected Csla.Core.MobileList<C> GetDeletedList<
+        protected MobileList<C> GetDeletedList<
 #if NET8_0_OR_GREATER
           [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
 #endif
           C>(object obj)
         {
             if (obj is IEditableCollection target)
-                return (Csla.Core.MobileList<C>)target.GetDeletedList();
+                return (MobileList<C>)target.GetDeletedList();
             else
                 throw new ArgumentException(Resources.IEditableCollectionRequiredException);
         }

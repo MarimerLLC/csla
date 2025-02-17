@@ -26,7 +26,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public class FieldDataManager : MobileObject, IUndoableObject, IUseApplicationContext

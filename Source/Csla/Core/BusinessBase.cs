@@ -31,7 +31,7 @@ namespace Csla.Core
   /// business objects will be derived.
   /// </summary>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public abstract class BusinessBase : UndoableBase,
@@ -1247,7 +1247,7 @@ namespace Csla.Core
     /// <param name="timeout">Timeout duration</param>
     public Task WaitForIdle(TimeSpan timeout)
     {
-      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), this.GetType(), nameof(WaitForIdle), timeout);
+      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
     }
 
     /// <summary>
@@ -3404,8 +3404,7 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-      "CA1062:ValidateArgumentsOfPublicMethods")]
+    [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<ChildChangedEventArgs> ChildChanged
     {
       add

@@ -78,7 +78,7 @@ namespace Csla.Analyzers
 
         if (!newRoot.HasUsing(Namespaces.SystemThreadingTasks))
         {
-          newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
+          newRoot = ((CompilationUnitSyntax)newRoot).AddUsings(
             SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
               Namespaces.SystemThreadingTasks)));
         }

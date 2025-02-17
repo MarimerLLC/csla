@@ -16,12 +16,12 @@ public class ExtractedAttributeDefinition : IEquatable<ExtractedAttributeDefinit
   /// <summary>
   /// A list of arguments passed to the attribute's constructor.
   /// </summary>
-  public List<object> ConstructorArguments { get; set; } = new List<object>();
+  public List<object> ConstructorArguments { get; set; } = new();
 
   /// <summary>
   /// A dictionary to hold named properties and their values.
   /// </summary>
-  public Dictionary<string, object> NamedProperties { get; set; } = new Dictionary<string, object>();
+  public Dictionary<string, object> NamedProperties { get; set; } = new();
   /// <summary>
   /// Determines whether the current <see cref="ExtractedAttributeDefinition"/> object is equal to another object of the same type.
   /// </summary>

@@ -162,7 +162,7 @@ namespace Csla.Reflection
 
       ScoredMethodInfo result = null;
 
-      if (candidates != null && candidates.Any())
+      if (candidates.Any())
       {
         // scan candidate methods for matching criteria parameters
         int criteriaLength = 0;
@@ -494,7 +494,7 @@ namespace Csla.Reflection
           {
             if (parameters.GetType().Equals(typeof(object[])))
             {
-              if (parameters == null || parameters.Length - 1 < criteriaIndex)
+              if (parameters.Length - 1 < criteriaIndex)
                 plist[index] = null;
               else
                 plist[index] = parameters[criteriaIndex];

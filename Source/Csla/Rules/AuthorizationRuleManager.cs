@@ -22,8 +22,7 @@ namespace Csla.Rules
   public class AuthorizationRuleManager
   {
 #if NET8_0_OR_GREATER
-    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>> _perTypeRules =
-      new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>>();
+    private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, Tuple<string, AuthorizationRuleManager>>> _perTypeRules = new();
 #else
     private static Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>> _perTypeRules =
       new Lazy<System.Collections.Concurrent.ConcurrentDictionary<RuleSetKey, AuthorizationRuleManager>>();

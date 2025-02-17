@@ -236,7 +236,7 @@ namespace Csla.Xaml
       public string PropertyName { get; }
     }
 
-    private readonly List<SourceReference> _sources = new List<SourceReference>();
+    private readonly List<SourceReference> _sources = new();
 
     private void SetSource()
     {

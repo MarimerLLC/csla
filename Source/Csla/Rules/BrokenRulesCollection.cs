@@ -56,7 +56,7 @@ namespace Csla.Rules
       {
         IsReadOnly = false;
 
-        var propertyName = property == null ? null : property.Name;
+        var propertyName = property?.Name;
         for (int i = 0, n = Count; i < n; i++)
         {
             var x = this[i];
@@ -108,8 +108,7 @@ namespace Csla.Rules
           {
             RuleName = resultRuleName,
             Description = resultDescription,
-            Property = resultPrimaryProperty == null
-                       ? null : resultPrimaryProperty.Name,
+            Property = resultPrimaryProperty?.Name,
             Severity = result.Severity,
             OriginProperty = originPropertyName,
             Priority = priority,

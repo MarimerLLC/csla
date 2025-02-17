@@ -21,6 +21,6 @@ namespace Csla.Server
     /// <summary>
     /// Gets an instance of NullCriteria
     /// </summary>
-    public static NullCriteria Instance { get; } = new NullCriteria();
+    public static NullCriteria Instance { get; } = new();
   }
 }

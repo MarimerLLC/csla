@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor childHasRunLocalRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal, DoesChildOperationHaveRunLocalAnalyzerConstants.Title,
         DoesChildOperationHaveRunLocalAnalyzerConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,

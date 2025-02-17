@@ -57,7 +57,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the block start</param>
     private void AppendBlockStart(IndentedTextWriter textWriter)
     {
-      textWriter.WriteLine("{");
+      textWriter.WriteLine('{');
       textWriter.Indent++;
     }
 
@@ -68,7 +68,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     private void AppendBlockEnd(IndentedTextWriter textWriter)
     {
       textWriter.Indent--;
-      textWriter.WriteLine("}");
+      textWriter.WriteLine('}');
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       {
         textWriter.Write("using ");
         textWriter.Write(requiredNamespace);
-        textWriter.WriteLine(";");
+        textWriter.WriteLine(';');
       }
 
       textWriter.WriteLine();
@@ -132,7 +132,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");
       textWriter.Write(typeDefinition.TypeKind);
-      textWriter.Write(" ");
+      textWriter.Write(' ');
       textWriter.Write(typeDefinition.TypeName);
       textWriter.WriteLine();
     }

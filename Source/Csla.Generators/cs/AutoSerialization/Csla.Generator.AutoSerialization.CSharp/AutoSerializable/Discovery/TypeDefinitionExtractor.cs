@@ -39,7 +39,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       {
         definition.ContainerDefinitions.Add(containerDefinition);
         fullyQualifiedNameBuilder.Append(containerDefinition.Name);
-        fullyQualifiedNameBuilder.Append(".");
+        fullyQualifiedNameBuilder.Append('.');
       }
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
@@ -160,7 +160,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     private static void AppendScopeName(StringBuilder stringBuilder, string scope)
     {
       stringBuilder.Append(scope);
-      stringBuilder.Append(" ");
+      stringBuilder.Append(' ');
     }
 
     /// <summary>

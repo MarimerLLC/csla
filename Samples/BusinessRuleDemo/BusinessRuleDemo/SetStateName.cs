@@ -14,7 +14,7 @@ namespace BusinessRuleDemo
       : base(stateIdProperty)
     {
       StateName = stateNameProperty;
-      InputProperties = new List<IPropertyInfo> { stateIdProperty };
+      InputProperties.Add(stateIdProperty);
       AffectedProperties.Add(StateName);
     }
 

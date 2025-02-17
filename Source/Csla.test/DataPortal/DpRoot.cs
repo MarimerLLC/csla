@@ -40,7 +40,7 @@ namespace Csla.Test.DataPortal
     #region "Criteria class"
 
     [Serializable]
-    internal class Criteria : CriteriaBase<Criteria>
+    internal class Criteria : ReadOnlyBase<Criteria>
     {
       public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
       public string Data

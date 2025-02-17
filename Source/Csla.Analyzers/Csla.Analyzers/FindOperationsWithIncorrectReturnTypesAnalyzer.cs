@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor shouldOnlyReturnVoidOrTaskRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes, FindOperationsWithIncorrectReturnTypesAnalyzerConstants.Title,
         FindOperationsWithIncorrectReturnTypesAnalyzerConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Error, true,

@@ -65,7 +65,7 @@ namespace Csla.Server.Interceptors.ServerSide
     /// Perform revalidation of business rules on any supporting type
     /// </summary>
     /// <param name="parameter">The parameter that was passed to the DataPortal as part of the operation</param>
-    private async Task RevalidateObjectAsync(object parameter)
+    private static async Task RevalidateObjectAsync(object parameter)
     {
       if (parameter is IEnumerable list)
       {

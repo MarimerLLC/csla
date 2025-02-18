@@ -60,7 +60,7 @@ namespace Csla.Xaml
       UpdateDataObject(e.OldValue, e.NewValue);
     }
 
-    private object GetDataObject(object dataContext)
+    private static object GetDataObject(object dataContext)
     {
       object result = dataContext;
       if (dataContext is DataSourceProvider provider)

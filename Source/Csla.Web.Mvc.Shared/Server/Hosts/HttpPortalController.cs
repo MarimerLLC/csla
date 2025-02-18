@@ -292,14 +292,14 @@ namespace Csla.Server.Hosts
       return result;
     }
 
-    private async Task<object> DeserializeRequestBody(Stream requestBody, ISerializationFormatter serializer) {
+    private static async Task<object> DeserializeRequestBody(Stream requestBody, ISerializationFormatter serializer) {
       using var requestBodyBuffer = new MemoryStream();
       await requestBody.CopyToAsync(requestBodyBuffer).ConfigureAwait(false);
       requestBodyBuffer.Seek(0, SeekOrigin.Begin);
       return serializer.Deserialize(requestBodyBuffer);
     }
 
-    private async Task SerializeToResponse(DataPortalResponse portalResult, Stream responseStream, ISerializationFormatter serializer) {
+    private static async Task SerializeToResponse(DataPortalResponse portalResult, Stream responseStream, ISerializationFormatter serializer) {
       using var responseBodyBuffer = new MemoryStream();
       serializer.Serialize(responseBodyBuffer, portalResult);
       responseBodyBuffer.Seek(0, SeekOrigin.Begin);

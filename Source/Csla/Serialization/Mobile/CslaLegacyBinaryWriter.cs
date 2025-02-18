@@ -87,7 +87,7 @@ namespace Csla.Serialization.Mobile
       return returnValue;
     }
 
-    private void Write(object target, BinaryWriter writer)
+    private static void Write(object target, BinaryWriter writer)
     {
       if (target == null)
       {

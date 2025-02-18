@@ -228,7 +228,7 @@ namespace Csla.Xaml
 
 #region Helpers
 
-    private DependencyObject FindChild(DependencyObject parent, string name)
+    private static DependencyObject FindChild(DependencyObject parent, string name)
     {
       DependencyObject found = null;
       int count = VisualTreeHelper.GetChildrenCount(parent);

@@ -244,7 +244,7 @@ namespace Csla.Channels.Http
       }
     }
 
-    private string CreateOperationTag(string operation, string versionToken, string routingToken)
+    private static string CreateOperationTag(string operation, string versionToken, string routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
         return $"{operation}/{routingToken}-{versionToken}";

@@ -17,4 +17,8 @@
     <PackageId>Csla.Windows.Forms</PackageId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Csla\Csla.csproj" />
+  </ItemGroup>
+
 </Project>

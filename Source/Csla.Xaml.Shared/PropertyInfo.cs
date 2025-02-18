@@ -330,10 +330,11 @@ namespace Csla.Xaml
         FieldInfo fi = null;
         while (type != null)
         {
+          var name = $"{path}{_dependencyPropertySuffix}";
 #if NETFX_CORE
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
+          fi = type.GetField(name, BindingFlags.Instance | BindingFlags.Public);
 #else
-          fi = type.GetField($"{path}{_dependencyPropertySuffix}");
+          fi = type.GetField(name);
 #endif
 
           if (fi != null)

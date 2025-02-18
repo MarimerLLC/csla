@@ -214,12 +214,12 @@ namespace Csla.Rules
         sb.Append(typeName.Replace("`1", ""));
         foreach (var t in type.GetGenericArguments())
         {
-          sb.Append("-");
-          if (t.IsGenericType) 
+          sb.Append('-');
+          if (t.IsGenericType)
             sb.Append(GetTypeName(t));
-          else 
+          else
             sb.Append(t.FullName);
-          sb.Append("-");
+          sb.Append('-');
         }
         return sb.ToString();
       }

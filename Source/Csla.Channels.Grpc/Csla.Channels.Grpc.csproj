@@ -6,7 +6,6 @@
     <Product>CSLA .NET gRPC Channel</Product>
     <Description>gRPC data portal channel for CSLA .NET.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Title>CSLA .NET gRPC data portal channel</Title>
     <PackageTags>CSLA;gRPC</PackageTags>
@@ -29,7 +28,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>

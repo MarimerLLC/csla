@@ -529,10 +529,7 @@ namespace Csla.Core
       bool result = CanReadProperty(property);
       if (throwOnFalse && result == false)
       {
-        SecurityException ex = new SecurityException(
-          String.Format("{0} ({1})",
-          Resources.PropertyGetNotAllowed, property.Name));
-        throw ex;
+        throw new SecurityException($"{Resources.PropertyGetNotAllowed} ({property.Name})");
       }
       return result;
     }

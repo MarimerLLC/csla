@@ -125,7 +125,7 @@ namespace Csla.Analyzers
         return DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
           propertyNode => propertyNode.ExpressionBody as SyntaxNode ??
-            propertyNode.AccessorList.Accessors.Single(
+            propertyNode.AccessorList?.Accessors.Single(
               _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)));
       }
 
@@ -133,7 +133,7 @@ namespace Csla.Analyzers
       {
         return DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
-          propertyNode => propertyNode.AccessorList.Accessors.Single(
+          propertyNode => propertyNode.AccessorList?.Accessors.Single(
             _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)));
       }
 

@@ -372,7 +372,7 @@ namespace Csla.Reflection
     private static string GetCriteriaTypeNames(object[] criteria)
     {
       var result = new System.Text.StringBuilder();
-      result.Append("(");
+      result.Append('(');
       if (criteria != null)
       {
         if (criteria.GetType().Equals(typeof(object[])))
@@ -383,7 +383,7 @@ namespace Csla.Reflection
             if (first)
               first = false;
             else
-              result.Append(",");
+              result.Append(',');
             if (item == null)
               result.Append("null");
             else
@@ -394,7 +394,7 @@ namespace Csla.Reflection
           result.Append(GetTypeName(criteria.GetType()));
       }
 
-      result.Append(")");
+      result.Append(')');
       return result.ToString();
     }
 
@@ -413,19 +413,19 @@ namespace Csla.Reflection
       var result = new System.Text.StringBuilder();
       var genericArguments = type.GetGenericArguments();
       result.Append(type.Name);
-      result.Append("<");
+      result.Append('<');
 
       for (int i = 0; i < genericArguments.Length; i++)
       {
         if (i > 0)
         {
-          result.Append(",");
+          result.Append(',');
         }
 
         result.Append(GetTypeName(genericArguments[i]));
       }
 
-      result.Append(">");
+      result.Append('>');
 
       return result.ToString();
     }

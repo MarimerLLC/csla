@@ -30,11 +30,12 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-      ApplicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
       if (bindingContext == null)
       {
         throw new ArgumentNullException(nameof(bindingContext));
       }
+
+      ApplicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
 
       bindingContext.Result = ModelBindingResult.Failed();
       var result = ApplicationContext.CreateInstanceDI(bindingContext.ModelType);

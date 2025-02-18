@@ -7,7 +7,6 @@
     <RootNamespace>Csla.Web</RootNamespace>
     <PackageId>Csla.Web</PackageId>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>

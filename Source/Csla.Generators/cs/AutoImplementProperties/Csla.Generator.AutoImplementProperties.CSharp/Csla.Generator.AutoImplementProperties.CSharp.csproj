@@ -23,7 +23,6 @@
     <PackageId>Csla.Generator.AutoImplementProperties.CSharp</PackageId>
     <Description>CSLA .NET Generator AutoImplementProperties for CSharp</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Generators</Title>
     <PackageTags>CSLA;Roslyn;Generator</PackageTags>

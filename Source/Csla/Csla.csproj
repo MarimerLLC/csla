@@ -10,7 +10,6 @@
     <PackageTags>CSLA;Business;Rules</PackageTags>
     <DelaySign>false</DelaySign>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <EnableTrimAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableTrimAnalyzer>
     <EnableSingleFileAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableSingleFileAnalyzer>

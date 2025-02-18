@@ -17,42 +17,31 @@ namespace Csla
   {
     internal static AuthorizationActions ToAuthAction(this DataPortalOperations operation)
     {
-      switch (operation)
+      return operation switch
       {
-        case DataPortalOperations.Create:
-          return AuthorizationActions.CreateObject;
-        case DataPortalOperations.Fetch:
-          return AuthorizationActions.GetObject;
-        case DataPortalOperations.Update:
-          return AuthorizationActions.EditObject;
-        case DataPortalOperations.Delete:
-          return AuthorizationActions.DeleteObject;
-        case DataPortalOperations.Execute:
+        DataPortalOperations.Create => AuthorizationActions.CreateObject,
+        DataPortalOperations.Fetch => AuthorizationActions.GetObject,
+        DataPortalOperations.Update => AuthorizationActions.EditObject,
+        DataPortalOperations.Delete => AuthorizationActions.DeleteObject,
+        DataPortalOperations.Execute =>
           // CSLA handles Execute/CommandObject as Update operations 
           // - this is the permission that the client DataPortal checks.
-          return AuthorizationActions.EditObject;
-        default:
-          throw new ArgumentOutOfRangeException(nameof(operation));
-      }
+          AuthorizationActions.EditObject,
+        _ => throw new ArgumentOutOfRangeException(nameof(operation))
+      };
     }
 
     internal static string ToSecurityActionDescription(this DataPortalOperations operation)
     {
-      switch (operation)
+      return operation switch
       {
-        case DataPortalOperations.Create:
-          return "create";
-        case DataPortalOperations.Fetch:
-          return "get";
-        case DataPortalOperations.Update:
-          return "save";
-        case DataPortalOperations.Delete:
-          return "delete";
-        case DataPortalOperations.Execute:
-          return "execute";
-        default:
-          throw new ArgumentOutOfRangeException(nameof(operation));
-      }
+        DataPortalOperations.Create => "create",
+        DataPortalOperations.Fetch => "get",
+        DataPortalOperations.Update => "save",
+        DataPortalOperations.Delete => "delete",
+        DataPortalOperations.Execute => "execute",
+        _ => throw new ArgumentOutOfRangeException(nameof(operation))
+      };
     }
   }
 }

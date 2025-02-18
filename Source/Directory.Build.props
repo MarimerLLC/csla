@@ -19,5 +19,6 @@
    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
    <NeutralLanguage>en-US</NeutralLanguage>
    <DefaultLanguage>en-US</DefaultLanguage>
+   <AssemblyOriginatorKeyFile>$(SolutionDir)Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
  </PropertyGroup>
 </Project>

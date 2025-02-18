@@ -7,7 +7,6 @@
     <Product>CSLA .NET Blazor</Product>
     <Description>UI helpers for using CSLA .NET business types with Blazor.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Blazor</Title>

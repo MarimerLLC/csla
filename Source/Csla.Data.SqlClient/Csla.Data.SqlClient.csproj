@@ -6,7 +6,6 @@
     <Product>CSLA .NET Microsoft.Data.SqlClient</Product>
     <Description>CSLA .NET Microsoft.Data.SqlClient support.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>

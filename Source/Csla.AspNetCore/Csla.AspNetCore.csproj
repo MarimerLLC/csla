@@ -8,7 +8,6 @@
     <PackageId>Csla.AspNetCore</PackageId>
     <Description>CSLA .NET support for AspNetCore and .NET 5</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Nullable>enable</Nullable>

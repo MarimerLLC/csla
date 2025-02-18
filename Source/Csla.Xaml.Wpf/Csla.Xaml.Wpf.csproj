@@ -10,7 +10,6 @@
     <ApplicationIcon />
     <StartupObject />
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
 
     <Title>CSLA .NET WPF</Title>

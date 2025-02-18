@@ -6,7 +6,6 @@
     <Product>CSLA .NET gRPC Channel</Product>
     <Description>gRPC data portal channel for CSLA .NET.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Title>CSLA .NET gRPC data portal channel</Title>
     <PackageTags>CSLA;gRPC</PackageTags>

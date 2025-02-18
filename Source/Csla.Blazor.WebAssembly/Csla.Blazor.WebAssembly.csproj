@@ -7,7 +7,6 @@
     <Product>CSLA .NET Blazor WebAssembly</Product>
     <Description>UI helpers for using CSLA .NET business types with Blazor WebAssembly.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Title>CSLA .NET Blazor WebAssembly</Title>
     <PackageTags>CSLA;Blazor;aspnetcore;WebAssembly;wasm</PackageTags>
@@ -30,13 +29,6 @@
     <PackageReference Include="System.Net.Http.Json" Version="9.0.2" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\Csla.Blazor\Csla.Blazor.csproj" />
     <ProjectReference Include="..\Csla\Csla.csproj" />

@@ -129,29 +129,14 @@ namespace Csla.Channels.Grpc
 
     private async Task<DataPortalResponse> CallPortal(string operation, object request)
     {
-      DataPortalResponse result;
-      switch (operation)
+      return operation switch
       {
-        case "create":
-          result = await Create((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-
-        case "fetch":
-          result = await Fetch((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-
-        case "update":
-          result = await Update((UpdateRequest)request).ConfigureAwait(false);
-          break;
-
-        case "delete":
-          result = await Delete((CriteriaRequest)request).ConfigureAwait(false);
-          break;
-
-        default:
-          throw new InvalidOperationException(operation);
-      }
-      return result;
+        "create" => await Create((CriteriaRequest) request).ConfigureAwait(false),
+        "fetch" => await Fetch((CriteriaRequest) request).ConfigureAwait(false),
+        "update" => await Update((UpdateRequest) request).ConfigureAwait(false),
+        "delete" => await Delete((CriteriaRequest) request).ConfigureAwait(false),
+        _ => throw new InvalidOperationException(operation)
+      };
     }
 
     /// <summary>

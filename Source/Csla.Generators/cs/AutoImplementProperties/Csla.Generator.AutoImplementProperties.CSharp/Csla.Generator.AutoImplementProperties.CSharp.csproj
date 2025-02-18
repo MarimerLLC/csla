@@ -3,7 +3,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <LangVersion>latest</LangVersion>
     <IsRoslynComponent>true</IsRoslynComponent>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
@@ -23,9 +22,8 @@
     <PackageId>Csla.Generator.AutoImplementProperties.CSharp</PackageId>
     <Description>CSLA .NET Generator AutoImplementProperties for CSharp</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Title>CSLA .NET Generators </Title>
+    <Title>CSLA .NET Generators</Title>
     <PackageTags>CSLA;Roslyn;Generator</PackageTags>
   </PropertyGroup>
 

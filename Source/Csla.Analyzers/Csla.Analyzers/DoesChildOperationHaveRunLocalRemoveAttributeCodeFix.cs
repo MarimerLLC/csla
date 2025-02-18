@@ -61,7 +61,7 @@ namespace Csla.Analyzers
 
       var attributeListsToRemove = new List<AttributeListSyntax>();
 
-      foreach (var attributeList in newRoot.DescendantNodes(_ => true).OfType<AttributeListSyntax>())
+      foreach (var attributeList in newRoot.DescendantNodes().OfType<AttributeListSyntax>())
       {
         if (attributeList.Attributes.Count == 0)
         {

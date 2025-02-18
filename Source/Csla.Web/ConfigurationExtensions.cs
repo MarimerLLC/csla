@@ -38,7 +38,7 @@ public static class WebConfigurationExtensions
     options?.Invoke(webOptions);
 
     // use correct IContextManager
-    config.Services.TryAddSingleton<Csla.Core.IContextManager, ApplicationContextManager>();
+    config.Services.TryAddSingleton<Core.IContextManager, ApplicationContextManager>();
 
     return config;
   }

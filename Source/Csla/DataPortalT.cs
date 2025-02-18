@@ -8,6 +8,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Security.Principal;
 using Csla.Configuration;
 using Csla.Core;
 using Csla.DataPortalClient;
@@ -58,8 +59,8 @@ namespace Csla
       private ApplicationContext _applicationContext;
 
       public object Argument { get; set; }
-      public System.Security.Principal.IPrincipal Principal { get; set; }
-      public Core.IContextDictionary ClientContext { get; set; }
+      public IPrincipal Principal { get; set; }
+      public IContextDictionary ClientContext { get; set; }
       public object UserState { get; set; }
       // passes CurrentCulture and CurrentUICulture to the async thread
       public CultureInfo CurrentCulture;
@@ -112,8 +113,8 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(
+        if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+          throw new Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "create",
             objectType.Name));
@@ -213,7 +214,7 @@ namespace Csla
 #endif
       Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
-      if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
+      if (typeof(ICommandObject).IsAssignableFrom(objectType))
       {
         return await DoExecuteAsync(objectType, criteria, isSync);
       }
@@ -223,8 +224,8 @@ namespace Csla
       Reflection.ServiceProviderMethodInfo method = null;
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(
+        if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+          throw new Security.SecurityException(string.Format(
             Resources.UserNotAuthorizedException,
             "get",
             objectType.Name));
@@ -272,8 +273,8 @@ namespace Csla
       Reflection.ServiceProviderMethodInfo method = null;
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+        if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+          throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "execute",
             objectType.Name));
         method = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, Server.DataPortal.GetCriteriaArray(criteria), false);
@@ -378,11 +379,11 @@ namespace Csla
           var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(Server.IObjectFactoryLoader)) as Server.IObjectFactoryLoader;
           var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
 
-          if (obj is Core.ICommandObject)
+          if (obj is ICommandObject)
           {
             operation = DataPortalOperations.Execute;
-            if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+            if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+              throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
             if (factoryType != null)
@@ -390,12 +391,12 @@ namespace Csla
           }
           else
           {
-            if (obj is Core.BusinessBase bbase)
+            if (obj is BusinessBase bbase)
             {
               if (bbase.IsDeleted)
               {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
+                  throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "delete",
                                                                             objectType.Name));
                 if (factoryType != null)
@@ -404,8 +405,8 @@ namespace Csla
               // must check the same authorization rules as for DataPortal_XYZ methods 
               else if (bbase.IsNew)
               {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
+                  throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "create",
                                                                             objectType.Name));
                 if (factoryType != null)
@@ -413,8 +414,8 @@ namespace Csla
               }
               else
               {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+                  throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "save",
                                                                             objectType.Name));
                 if (factoryType != null)
@@ -423,8 +424,8 @@ namespace Csla
             }
             else
             {
-              if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-                throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+              if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+                throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                           "save",
                                                                           objectType.Name));
 
@@ -440,39 +441,39 @@ namespace Csla
         {
           Reflection.ServiceProviderMethodInfo method;
           var criteria = Server.DataPortal.GetCriteriaArray(Server.EmptyCriteria.Instance);
-          if (obj is Core.ICommandObject)
+          if (obj is ICommandObject)
           {
             operation = DataPortalOperations.Execute;
-            if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-              throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+            if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+              throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                 "execute",
                 objectType.Name));
             method = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, criteria, false);
           }
           else
           {
-            if (obj is Core.BusinessBase bbase)
+            if (obj is BusinessBase bbase)
             {
               if (bbase.IsDeleted)
               {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, obj, ct))
+                  throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "delete",
                     objectType.Name));
                 method = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, criteria, false);
               }
               else if (bbase.IsNew)
               {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))
+                  throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "create",
                     objectType.Name));
                 method = ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, criteria, false);
               }
               else
               {
-                if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
-                  throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+                if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
+                  throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                     "save",
                     objectType.Name));
                 method = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
@@ -593,8 +594,8 @@ namespace Csla
       Server.DataPortalContext dpContext = null;
       try
       {
-        if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
-          throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
+        if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
+          throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
             "delete",
             objectType.Name));
 

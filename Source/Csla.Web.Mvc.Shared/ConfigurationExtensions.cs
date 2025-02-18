@@ -41,7 +41,7 @@ public static class MvcConfigurationExtensions
 
 #if NET462
     // use correct IContextManager
-    config.Services.TryAddSingleton<Csla.Core.IContextManager, ApplicationContextManager>();
+    config.Services.TryAddSingleton<Core.IContextManager, ApplicationContextManager>();
 #endif
 
     return config;

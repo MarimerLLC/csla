@@ -22,8 +22,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
-    public static DataPortalClientOptions UseHttpProxy(this DataPortalClientOptions config, Action<HttpProxyOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static DataPortalClientOptions UseHttpProxy(this DataPortalClientOptions config, Action<HttpProxyOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       var proxyOptions = new HttpProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy>(

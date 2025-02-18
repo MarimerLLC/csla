@@ -27,7 +27,7 @@ namespace Csla.Rules
     /// Will always return null.
     /// Will throw ArgumentException if set to anything but null.
     /// </summary>
-    public override IPropertyInfo PrimaryProperty
+    public override IPropertyInfo? PrimaryProperty
     {
       get
       {

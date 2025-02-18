@@ -35,14 +35,14 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the connection name.
     /// </summary>
-    public string Name { get; set; }
+    public string? Name { get; set; }
     /// <summary>
     /// Gets or sets the connection string text.
     /// </summary>
-    public string ConnectionString { get; set; }
+    public string? ConnectionString { get; set; }
     /// <summary>
     /// Gets or sets the provider name.
     /// </summary>
-    public string ProviderName { get; set; }
+    public string? ProviderName { get; set; }
   }
 }

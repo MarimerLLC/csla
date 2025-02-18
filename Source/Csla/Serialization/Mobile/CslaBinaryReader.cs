@@ -9,26 +9,25 @@ namespace Csla.Serialization.Mobile
   public class CslaBinaryReader : ICslaReader
   {
     private readonly Dictionary<int, string> keywordsDictionary;
-    private ApplicationContext _applicationContext;
+    private readonly ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates new instance of <see cref="CslaBinaryReader"/>
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaBinaryReader(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       keywordsDictionary = new Dictionary<int, string>();
     }
 
-    /// <summary>
-    /// Read a data from a stream, typically <see cref="MemoryStream"/>, and convert it into 
-    /// a list of <see cref="SerializationInfo"/> objects
-    /// </summary>
-    /// <param name="serializationStream">Stream to read the data from</param>
-    /// <returns>List of <see cref="SerializationInfo"/> objects</returns>
+    /// <inheritdoc />
     public List<SerializationInfo> Read(Stream serializationStream)
     {
+      if (serializationStream is null)
+        throw new ArgumentNullException(nameof(serializationStream));
+
       var returnValue = new List<SerializationInfo>();
       keywordsDictionary.Clear();
 
@@ -36,11 +35,7 @@ namespace Csla.Serialization.Mobile
       var totalCount = reader.ReadInt32();
       for (var counter = 0; counter < totalCount; counter++)
       {
-        var info = new SerializationInfo
-        {
-          ReferenceId = reader.ReadInt32(),
-          TypeName = ReadString(reader)
-        };
+        var info = new SerializationInfo(referenceId: reader.ReadInt32(), typeName: ReadString(reader));
 
         var childCount = reader.ReadInt32();
         string systemName;
@@ -88,7 +83,7 @@ namespace Csla.Serialization.Mobile
       }
     }
 
-    private object ReadObject(BinaryReader reader)
+    private object? ReadObject(BinaryReader reader)
     {
       var knownType = (CslaKnownTypes)reader.ReadByte();
       switch (knownType)

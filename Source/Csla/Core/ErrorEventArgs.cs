@@ -32,10 +32,11 @@ namespace Csla.Core
     /// <param name="error">
     /// Reference to the unhandled async exception object.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="originalSender"/> or <paramref name="error"/> is <see langword="null"/>.</exception>
     public ErrorEventArgs(object originalSender, Exception error)
     {
-      OriginalSender = originalSender;
-      Error = error;
+      OriginalSender = originalSender ?? throw new ArgumentNullException(nameof(originalSender));
+      Error = error ?? throw new ArgumentNullException(nameof(error));
     }
   }
 }

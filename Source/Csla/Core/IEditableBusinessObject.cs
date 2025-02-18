@@ -40,7 +40,7 @@ namespace Csla.Core
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    void SetParent(IParent parent);
+    void SetParent(IParent? parent);
     /// <summary>
     /// Marks the object for deletion. The object will be deleted as part of the
     /// next save operation.

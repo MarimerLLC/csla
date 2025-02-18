@@ -24,12 +24,12 @@ namespace Csla.Core
     /// <summary>
     /// Gets any exception that occurred during the save.
     /// </summary>
-    public Exception Error { get; }
+    public Exception? Error { get; }
 
     /// <summary>
     /// Gets the user state object.
     /// </summary>
-    public object UserState { get; }
+    public object? UserState { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -38,11 +38,9 @@ namespace Csla.Core
     /// The object that was returned as a
     /// result of the Save() operation.
     /// </param>
-    public SavedEventArgs(object newObject)
+    /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
+    public SavedEventArgs(object newObject) : this(newObject, null, null)
     {
-      NewObject = newObject;
-      Error = null;
-      UserState = null;
     }
 
     /// <summary>
@@ -54,7 +52,8 @@ namespace Csla.Core
     /// </param>
     /// <param name="error">Exception object.</param>
     /// <param name="userState">User state object.</param>
-    public SavedEventArgs(object newObject, Exception error, object userState)
+    /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
+    public SavedEventArgs(object newObject, Exception? error, object? userState)
     {
       NewObject = newObject;
       Error = error;

@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
 using Csla.Server;
 
 namespace Csla.Test.DataPortalTest
@@ -45,6 +46,12 @@ namespace Csla.Test.DataPortalTest
     {
       DoCreate(id);
       BusinessRules.CheckRules();
+    }
+
+    [Create]
+    private void Create(string[] values)
+    {
+      _ = values;
     }
 
     private void DoCreate(int id)
@@ -121,21 +128,30 @@ namespace Csla.Test.DataPortalTest
 
   public class SingleWithFactoryFactory : ObjectFactoryLoader
   {
+    private readonly ApplicationContext _applicationContext;
+
     public SingleWithFactoryFactory(ApplicationContext applicationContext) : base(applicationContext)
     {
-
+      _applicationContext = applicationContext;
     }
 
     public async Task<object> Fetch()
     {
-      return await Task.Run(() => new SingleWithFactory());
+      return await Task.Run(Create);
     }
 
     public async Task<object> Create(int id)
     {
       Console.WriteLine($"Create {id},{Thread.GetCurrentProcessorId()}, {Thread.CurrentThread.ManagedThreadId}");
       await Task.Delay(1);
-      return await Task.Run(() => new SingleWithFactory());
+      return await Task.Run(Create);
+    }
+
+    private SingleWithFactory Create()
+    {
+      var obj = new SingleWithFactory();
+      ((IUseApplicationContext)obj).ApplicationContext = _applicationContext;
+      return obj;
     }
   }
 

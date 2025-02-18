@@ -32,10 +32,9 @@ public class SessionManagerTests
     var provider = services.BuildServiceProvider();
     var _applicationContext = provider.GetRequiredService<ApplicationContext>();
 
-    _sessionValue = new SessionMessage
+    _sessionValue = new SessionMessage([])
     {
-      Principal = new ClaimsPrincipal() { },
-      Session = []
+      Principal = new ClaimsPrincipal()
     };
 
     _sessionManager = new SessionManager(_applicationContext, GetHttpClient(_sessionValue, _applicationContext), new BlazorWebAssemblyConfigurationOptions { SyncContextWithServer = true });

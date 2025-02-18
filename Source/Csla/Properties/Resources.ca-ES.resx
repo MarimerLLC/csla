@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -232,20 +237,17 @@
   <data name="MinValueRule" xml:space="preserve">
     <value>{0} no pot ser menor que {1}</value>
   </data>
-  <data name="RegExMatchRule" xml:space="preserve">
-    <value>{0} no coincideix amb l'expressió regular</value>
-  </data>
   <data name="StringMaxLengthRule" xml:space="preserve">
     <value>{0} no pot excedir de {1} caràcters</value>
   </data>
   <data name="StringRequiredRule" xml:space="preserve">
     <value>{0} obligatori</value>
   </data>
-  <data name="EditLevelMismatchException" xml:space="preserve">
-    <value>Discrepància en el nivell d'edició en {0}</value>
+  <data name="RegExMatchRule" xml:space="preserve">
+    <value>{0} no coincideix amb l'expressió regular</value>
   </data>
-  <data name="MethodExecuteNotAllowed" xml:space="preserve">
-    <value>Execució de mètode no permès</value>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>Error al carregar el tipus '{0}'</value>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>No existeix aquest mètode : {0}</value>
@@ -253,7 +255,14 @@
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} no pot ser menor de {1} caràcters</value>
   </data>
-  <data name="TypeLoadException" xml:space="preserve">
-    <value>Error al carregar el tipus '{0}'</value>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Discrepància en el nivell d'edició en {0}</value>
+  </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Execució de mètode no permès</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

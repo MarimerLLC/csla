@@ -19,16 +19,17 @@ namespace Csla.Server
   /// </summary>
   public class ActiveAuthorizer : IAuthorizeDataPortal
   {
+    private readonly ApplicationContext _applicationContext;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ActiveAuthorizer(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
-
-    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Checks authorization rules for the request.
@@ -42,11 +43,14 @@ namespace Csla.Server
     public async Task AuthorizeAsync(AuthorizeRequest clientRequest, CancellationToken ct)
     {
       if (_applicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server &&
-          _applicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
+      _applicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server)
       {
         if (clientRequest.Operation == DataPortalOperations.Update ||
             clientRequest.Operation == DataPortalOperations.Execute)
         {
+          if (clientRequest.RequestObject is null)
+            throw new InvalidOperationException(string.Format(Resources.NoInstanceProvidedForAuthorizationCheck, clientRequest.Operation.ToSecurityActionDescription(), clientRequest.ObjectType.Name));
+
           // Per-Instance checks
           if (!await BusinessRules.HasPermissionAsync(_applicationContext, clientRequest.Operation.ToAuthAction(), clientRequest.RequestObject, ct))
           {

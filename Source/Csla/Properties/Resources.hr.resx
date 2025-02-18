@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -112,8 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BusinessPrincipalException" xml:space="preserve">
-    <value>Principal objekt mora biti tipa BusinessPrincipal, a ne</value>
+  <data name="ClearInvalidException" xml:space="preserve">
+    <value>Čišćenje nije dozvoljeno</value>
+  </data>
+  <data name="InsertInvalidException" xml:space="preserve">
+    <value>Dodavanje nije dozvoljeno</value>
+  </data>
+  <data name="RemoveInvalidException" xml:space="preserve">
+    <value>Uklanjanje nije dozvoljeno</value>
   </data>
   <data name="ChangeInvalidException" xml:space="preserve">
     <value>Izmjena nije dozvoljena</value>
@@ -121,59 +132,8 @@
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Objekti "djeca" se ne mogu direktno označiti za brisanje - koristite "roditelj" kolekciju</value>
   </data>
-  <data name="ClearInvalidException" xml:space="preserve">
-    <value>Čišćenje nije dozvoljeno</value>
-  </data>
-  <data name="CreateNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - kreiranje</value>
-  </data>
-  <data name="DatabaseNameNotFound" xml:space="preserve">
-    <value>Ime Baze podataka nije nađeno u kofiguracijskoj datoteci</value>
-  </data>
-  <data name="DeleteNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - brisanje</value>
-  </data>
-  <data name="ErrorReadingValueException" xml:space="preserve">
-    <value>Greška pri čitanju vrijednosti:</value>
-  </data>
-  <data name="ExecuteNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - izvršavanje</value>
-  </data>
-  <data name="Failed" xml:space="preserve">
-    <value>neuspješno</value>
-  </data>
-  <data name="FailedOnServer" xml:space="preserve">
-    <value>neuspješno na serveru</value>
-  </data>
-  <data name="FetchNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - učitavanje</value>
-  </data>
-  <data name="InsertInvalidException" xml:space="preserve">
-    <value>Dodavanje nije dozvoljeno</value>
-  </data>
-  <data name="InsertNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - dodavanje</value>
-  </data>
-  <data name="MethodCallFailed" xml:space="preserve">
-    <value>neuspješan poziv metoda</value>
-  </data>
-  <data name="MethodNotImplemented" xml:space="preserve">
-    <value>metod nije implementiran</value>
-  </data>
-  <data name="NoApplyEditChildException" xml:space="preserve">
-    <value>ApplyEdit nije važeći na "dijete" objektu</value>
-  </data>
-  <data name="NoBeginEditChildException" xml:space="preserve">
-    <value>BeginEdit nije važeći na "dijete" objektu</value>
-  </data>
-  <data name="NoCancelEditChildException" xml:space="preserve">
-    <value>CancelEdit nije važeći na "dijete" objektu</value>
-  </data>
   <data name="NoDeleteRootException" xml:space="preserve">
     <value>Nedozvoljena operacija za osnovne objekte - koristite Delete</value>
-  </data>
-  <data name="NoPrincipalAllowedException" xml:space="preserve">
-    <value>Principal objekt ne može biti proslijeđen DataPortal-u kada se koristi integrisana Windows sigurnost</value>
   </data>
   <data name="NoSaveChildException" xml:space="preserve">
     <value>"Dijete" objekt se ne može direktno sačuvati</value>
@@ -184,23 +144,44 @@
   <data name="NoSaveInvalidException" xml:space="preserve">
     <value>Objekt nije ispravan i ne može biti sačuvan</value>
   </data>
+  <data name="CreateNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - kreiranje</value>
+  </data>
+  <data name="FetchNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - učitavanje</value>
+  </data>
+  <data name="UpdateNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - ažuriranje</value>
+  </data>
+  <data name="DeleteNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - brisanje</value>
+  </data>
+  <data name="NoBeginEditChildException" xml:space="preserve">
+    <value>BeginEdit nije važeći na "dijete" objektu</value>
+  </data>
+  <data name="NoCancelEditChildException" xml:space="preserve">
+    <value>CancelEdit nije važeći na "dijete" objektu</value>
+  </data>
+  <data name="NoApplyEditChildException" xml:space="preserve">
+    <value>ApplyEdit nije važeći na "dijete" objektu</value>
+  </data>
   <data name="NoSuchValueExistsException" xml:space="preserve">
     <value>Ne postoji vrijednost:</value>
   </data>
-  <data name="NothingNotValid" xml:space="preserve">
-    <value>Argument ne smije biti Nothing</value>
+  <data name="ErrorReadingValueException" xml:space="preserve">
+    <value>Greška pri čitanju vrijednosti:</value>
   </data>
-  <data name="PropertyCopyFailed" xml:space="preserve">
-    <value>Kopiranje osobine nije uspjelo</value>
+  <data name="StringToDateException" xml:space="preserve">
+    <value>String vrijednost ne može biti konvertovana u datum</value>
   </data>
-  <data name="PropertyGetNotAllowed" xml:space="preserve">
-    <value>Uzimanje osobine objekta (Property get) nije dopušteno</value>
+  <data name="ValueNotSmartDateException" xml:space="preserve">
+    <value>Vrijednost nije tipa SmartDate</value>
   </data>
-  <data name="PropertySetNotAllowed" xml:space="preserve">
-    <value>Podešavanje osobine objekta (Property set) nije dopušteno</value>
+  <data name="NoPrincipalAllowedException" xml:space="preserve">
+    <value>Principal objekt ne može biti proslijeđen DataPortal-u kada se koristi integrisana Windows sigurnost</value>
   </data>
-  <data name="RemoveInvalidException" xml:space="preserve">
-    <value>Uklanjanje nije dozvoljeno</value>
+  <data name="BusinessPrincipalException" xml:space="preserve">
+    <value>Principal objekt mora biti tipa BusinessPrincipal, a ne</value>
   </data>
   <data name="SmartDateT" xml:space="preserve">
     <value>t</value>
@@ -208,25 +189,53 @@
   <data name="SmartDateToday" xml:space="preserve">
     <value>today</value>
   </data>
-  <data name="SmartDateTom" xml:space="preserve">
-    <value>tom</value>
-  </data>
-  <data name="SmartDateTomorrow" xml:space="preserve">
-    <value>tomorrow</value>
-  </data>
   <data name="SmartDateY" xml:space="preserve">
     <value>y</value>
   </data>
   <data name="SmartDateYesterday" xml:space="preserve">
     <value>yesterday</value>
   </data>
-  <data name="StringToDateException" xml:space="preserve">
-    <value>String vrijednost ne može biti konvertovana u datum</value>
+  <data name="SmartDateTom" xml:space="preserve">
+    <value>tom</value>
   </data>
-  <data name="UpdateNotSupportedException" xml:space="preserve">
-    <value>Nedozvoljena operacija - ažuriranje</value>
+  <data name="SmartDateTomorrow" xml:space="preserve">
+    <value>tomorrow</value>
   </data>
-  <data name="ValueNotSmartDateException" xml:space="preserve">
-    <value>Vrijednost nije tipa SmartDate</value>
+  <data name="Failed" xml:space="preserve">
+    <value>neuspješno</value>
+  </data>
+  <data name="FailedOnServer" xml:space="preserve">
+    <value>neuspješno na serveru</value>
+  </data>
+  <data name="MethodCallFailed" xml:space="preserve">
+    <value>neuspješan poziv metoda</value>
+  </data>
+  <data name="MethodNotImplemented" xml:space="preserve">
+    <value>metod nije implementiran</value>
+  </data>
+  <data name="ExecuteNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - izvršavanje</value>
+  </data>
+  <data name="InsertNotSupportedException" xml:space="preserve">
+    <value>Nedozvoljena operacija - dodavanje</value>
+  </data>
+  <data name="PropertyGetNotAllowed" xml:space="preserve">
+    <value>Uzimanje osobine objekta (Property get) nije dopušteno</value>
+  </data>
+  <data name="PropertySetNotAllowed" xml:space="preserve">
+    <value>Podešavanje osobine objekta (Property set) nije dopušteno</value>
+  </data>
+  <data name="NothingNotValid" xml:space="preserve">
+    <value>Argument ne smije biti Nothing</value>
+  </data>
+  <data name="PropertyCopyFailed" xml:space="preserve">
+    <value>Kopiranje osobine nije uspjelo</value>
+  </data>
+  <data name="DatabaseNameNotFound" xml:space="preserve">
+    <value>Ime Baze podataka nije nađeno u kofiguracijskoj datoteci</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

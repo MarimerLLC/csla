@@ -43,7 +43,7 @@ namespace Csla.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GenericBusinessException"/> class.
-    /// Reads information for a NonSerializable excpeption into GenericBusinessException
+    /// Reads information for a NonSerializable exception into GenericBusinessException
     /// </summary>
     /// <param name="wrappedException">The wrapped exception.</param>
     public GenericBusinessException(Exception wrappedException)
@@ -52,7 +52,7 @@ namespace Csla.Server
       Source = wrappedException.Source;
       HelpLink = wrappedException.HelpLink;
       Data = wrappedException.Data;
-      StackTrace = wrappedException.StackTrace;
+      StackTrace = wrappedException.StackTrace ?? "<No stack trace available>";
       TypeName = wrappedException.GetType().ToString();
     }
 
@@ -67,7 +67,7 @@ namespace Csla.Server
       Source = wrappedException.Source;
       HelpLink = wrappedException.HelpLink;
       Data = wrappedException.Data;
-      StackTrace = wrappedException.StackTrace;
+      StackTrace = wrappedException.StackTrace ?? "<No stack trace available>";
       TypeName = wrappedException.GetType().ToString();
     }
 

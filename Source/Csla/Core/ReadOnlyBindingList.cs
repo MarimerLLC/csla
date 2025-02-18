@@ -24,11 +24,7 @@ namespace Csla.Core
   [SuppressMessage("Microsoft.Naming", 
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    C> :
+  public abstract class ReadOnlyBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
     ExtendedBindingList<C>, IBusinessObject, IReadOnlyBindingList
   {
     #region Identity
@@ -125,7 +121,7 @@ namespace Csla.Core
     protected override object AddNewCore()
     {
       if (!IsReadOnly)
-        return base.AddNewCore();
+        return base.AddNewCore()!;
       else
         throw new NotSupportedException(Resources.InsertInvalidException);
     }

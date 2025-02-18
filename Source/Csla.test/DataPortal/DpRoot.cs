@@ -6,6 +6,9 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
+using Csla.Serialization.Mobile;
+
 namespace Csla.Test.DataPortal
 {
   [Serializable]
@@ -39,14 +42,12 @@ namespace Csla.Test.DataPortal
 
     #region "Criteria class"
 
-    [Serializable]
-    internal class Criteria : ReadOnlyBase<Criteria>
+    internal class Criteria : MobileObject
     {
-      public static PropertyInfo<string> DataProperty = RegisterProperty<string>(c => c.Data);
       public string Data
       {
-        get { return ReadProperty(DataProperty); }
-        set { LoadProperty(DataProperty, value); }
+        get;
+        set;
       }
 
       public Criteria()
@@ -57,6 +58,18 @@ namespace Csla.Test.DataPortal
       public Criteria(string data)
       {
         Data = data;
+      }
+
+      protected override void OnGetState(SerializationInfo info, StateMode mode)
+      {
+        info.AddValue(nameof(Data), Data);
+        base.OnGetState(info, mode);
+      }
+
+      protected override void OnSetState(SerializationInfo info, StateMode mode)
+      {
+        Data = info.GetRequiredValue<string>(nameof(Data));
+        base.OnSetState(info, mode);
       }
     }
 

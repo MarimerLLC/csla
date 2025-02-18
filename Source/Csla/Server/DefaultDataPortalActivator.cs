@@ -19,35 +19,30 @@ namespace Csla.Server
   /// Creates an instance of the type.
   /// </remarks>
   /// <param name="serviceProvider"></param>
+  /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
   public class DefaultDataPortalActivator(IServiceProvider serviceProvider) : IDataPortalActivator
   {
     /// <summary>
     /// Gets a reference to the current DI service provider.
     /// </summary>
-    protected IServiceProvider ServiceProvider { get; } = serviceProvider;
+    protected IServiceProvider ServiceProvider { get; } = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
-    /// <summary>
-    /// Gets a new instance of the requested type.
-    /// </summary>
-    /// <param name="requestedType">Requested type (class or interface).</param>
-    /// <param name="parameters">Param array for the constructor</param>
-    /// <returns>Instance of requested type</returns>
-    public virtual object CreateInstance(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type requestedType, params object[] parameters)
+    /// <inheritdoc />
+    public virtual object CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType, params object[] parameters)
     {
-      object result;
+      if (requestedType is null)
+        throw new ArgumentNullException(nameof(requestedType));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
       var realType = ResolveType(requestedType);
-      if (ServiceProvider != null)
-        result = ActivatorUtilities.CreateInstance(ServiceProvider, realType, parameters);
-      else
-        result = Activator.CreateInstance(realType, parameters);
+      object result = ActivatorUtilities.CreateInstance(ServiceProvider, realType, parameters);
+      
       if (result is IUseApplicationContext tmp)
       {
         tmp.ApplicationContext = ServiceProvider.GetRequiredService<ApplicationContext>();
       }
+
       InitializeInstance(result);
       return result;
     }
@@ -76,14 +71,8 @@ namespace Csla.Server
     /// requested type (which might be an interface).
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
-#if NET8_0_OR_GREATER
     [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    public virtual Type ResolveType(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type requestedType)
+    public virtual Type ResolveType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType)
     {
       // return requested type by default
       return requestedType;

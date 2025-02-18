@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Razor tag helper</summary>
 //-----------------------------------------------------------------------
+using Csla.Properties;
 using Csla.Rules;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -39,7 +40,7 @@ namespace Csla.AspNetCore.Mvc.TagHelpers
       var propertyName = parts[parts.Length - 1];
       object source = model;
       for (int i = 0; i < parts.Length - 1; i++)
-        source = Reflection.MethodCaller.CallPropertyGetter(source, parts[i]);
+        source = Reflection.MethodCaller.CallPropertyGetter(source, parts[i]) ?? throw new InvalidOperationException(string.Format(Resources.TagHelperPropertyInPathHasNullValue, parts[i], CslaWarningsFor.Name));
       var result = string.Empty;
       if (source is Core.BusinessBase obj)
         result = obj.BrokenRulesCollection.ToString(",", RuleSeverity.Warning, propertyName);

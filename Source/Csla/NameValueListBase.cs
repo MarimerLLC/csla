@@ -23,30 +23,26 @@ namespace Csla
   /// <typeparam name="V">Type of the values.</typeparam>
   [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class NameValueListBase<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    K,
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    V> :
+  public abstract class NameValueListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] K, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] V> :
     ReadOnlyBindingList<NameValueListBase<K, V>.NameValuePair>,
     ICloneable,
     Server.IDataPortalTarget,
     IUseApplicationContext
+    where K: notnull
+    where V: notnull
   {
     /// <summary>
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
+
+    /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set
       {
-        ApplicationContext = value;
+        ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         Initialize();
       }
     }
@@ -58,8 +54,12 @@ namespace Csla
     /// specified key.
     /// </summary>
     /// <param name="key">Key value for which to retrieve a value.</param>
-    public V Value(K key)
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    public V? Value(K key)
     {
+      if(key is null) 
+        throw new ArgumentNullException(nameof(key));
+
       foreach (NameValuePair item in this)
         if (item.Key.Equals(key))
           return item.Value;
@@ -72,8 +72,12 @@ namespace Csla
     /// in the list.
     /// </summary>
     /// <param name="value">Value for which to retrieve the key.</param>
-    public K Key(V value)
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    public K? Key(V value)
     {
+      if(value is null) 
+        throw new ArgumentNullException(nameof(value));
+
       foreach (NameValuePair item in this)
         if (item.Value.Equals(value))
           return item.Key;
@@ -85,8 +89,12 @@ namespace Csla
     /// specified key.
     /// </summary>
     /// <param name="key">Key value for which to search.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool ContainsKey(K key)
     {
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
       foreach (NameValuePair item in this)
         if (item.Key.Equals(key))
           return true;
@@ -98,8 +106,12 @@ namespace Csla
     /// specified value.
     /// </summary>
     /// <param name="value">Value for which to search.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     public bool ContainsValue(V value)
     {
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
+
       foreach (NameValuePair item in this)
         if (item.Value.Equals(value))
           return true;
@@ -114,16 +126,20 @@ namespace Csla
     /// Value to search for in the list.
     /// </param>
     /// <returns>Item from the list.</returns>
-    public NameValuePair GetItemByValue(V value)
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    public NameValuePair? GetItemByValue(V value)
     {
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
 
       foreach (NameValuePair item in this)
       {
-        if (item != null && item.Value.Equals(value))
+        if (item.Value.Equals(value))
         {
           return item;
         }
       }
+
       return null;
 
     }
@@ -136,8 +152,11 @@ namespace Csla
     /// Key to search for in the list.
     /// </param>
     /// <returns>Item from the list.</returns>
-    public NameValuePair GetItemByKey(K key)
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    public NameValuePair? GetItemByKey(K key)
     {
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
 
       foreach (NameValuePair item in this)
       {
@@ -155,7 +174,9 @@ namespace Csla
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. Necessary for derived classes
     protected NameValueListBase()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     { }
 
     #region Initialize
@@ -183,7 +204,10 @@ namespace Csla
       /// <summary>
       /// Creates an instance of the type (for use by MobileFormatter only).
       /// </summary>
+      [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
       public NameValuePair()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
       { }
 
       /// <summary>
@@ -204,8 +228,14 @@ namespace Csla
       /// </summary>
       /// <param name="key">The key.</param>
       /// <param name="value">The value.</param>
+      /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
       public NameValuePair(K key, V value)
       {
+        if (key is null) 
+          throw new ArgumentNullException(nameof(key));
+        if (value is null) 
+          throw new ArgumentNullException(nameof(value));
+
         Key = key;
         _value = value;
       }
@@ -216,7 +246,7 @@ namespace Csla
       /// </summary>
       public override string ToString()
       {
-        return _value.ToString();
+        return _value!.ToString()!;
       }
 
       /// <summary>
@@ -241,8 +271,8 @@ namespace Csla
       protected override void OnSetState(SerializationInfo info, StateMode mode)
       {
         base.OnSetState(info, mode);
-        Key = info.GetValue<K>("NameValuePair._key");
-        _value = info.GetValue<V>("NameValuePair._value");
+        Key = info.GetValue<K>("NameValuePair._key")!;
+        _value = info.GetValue<V>("NameValuePair._value")!;
       }
 
     }
@@ -263,7 +293,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this)!;
     }
 
     /// <summary>

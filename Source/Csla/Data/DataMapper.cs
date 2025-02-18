@@ -86,9 +86,7 @@ namespace Csla.Data
           catch (Exception ex)
           {
             if (!suppressExceptions)
-              throw new ArgumentException(
-                String.Format("{0} ({1})",
-                Resources.PropertyCopyFailed, propertyName), ex);
+              throw new ArgumentException($"{Resources.PropertyCopyFailed} ({propertyName})", ex);
           }
         }
       }
@@ -145,9 +143,7 @@ namespace Csla.Data
           catch (Exception ex)
           {
             if (!suppressExceptions)
-              throw new ArgumentException(
-                String.Format("{0} ({1})",
-                Resources.PropertyCopyFailed, propertyName), ex);
+              throw new ArgumentException($"{Resources.PropertyCopyFailed} ({propertyName})", ex);
           }
         }
       }
@@ -229,9 +225,7 @@ namespace Csla.Data
               catch (Exception ex)
               {
                   if (!suppressExceptions)
-                      throw new ArgumentException(
-                          String.Format("{0} ({1})",
-                                        Resources.PropertyCopyFailed, propertyName), ex);
+                      throw new ArgumentException($"{Resources.PropertyCopyFailed} ({propertyName})", ex);
               }
           }
       }
@@ -279,9 +273,7 @@ namespace Csla.Data
         catch (Exception ex)
         {
           if (!suppressExceptions)
-            throw new ArgumentException(
-              String.Format("{0} ({1})",
-              Resources.PropertyCopyFailed, mapping.FromMemberHandle.MemberName), ex);
+            throw new ArgumentException($"{Resources.PropertyCopyFailed} ({mapping.FromMemberHandle.MemberName})", ex);
         }
       }
     }

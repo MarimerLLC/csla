@@ -13,8 +13,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.5.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.5.0" />
-    <PackageReference Include="Verify.MSTest" Version="26.1.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.0" />
+    <PackageReference Include="Verify.MSTest" Version="28.11.0" />
     <PackageReference Include="Verify.SourceGenerators" Version="2.2.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>

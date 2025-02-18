@@ -887,7 +887,7 @@ namespace Csla.Windows
       }
     }
 
-    private void ChangeEnabled(ToolStripButton ctl, bool newEnabled)
+    private static void ChangeEnabled(ToolStripButton ctl, bool newEnabled)
     {
       // only do this if it's changed to avoid flicker
       if (ctl.Enabled != newEnabled)
@@ -913,7 +913,7 @@ namespace Csla.Windows
       return GetParentForm(thisToolStripButton.GetCurrentParent());
     }
 
-    private Form GetParentForm(Control thisControl)
+    private static Form GetParentForm(Control thisControl)
     {
       Form frm;
 

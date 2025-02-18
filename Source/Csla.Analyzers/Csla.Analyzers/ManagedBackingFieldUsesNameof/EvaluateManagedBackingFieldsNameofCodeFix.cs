@@ -47,7 +47,7 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
         diagnostic);
     }
 
-    private async Task<Document> UseNameofAsync(Document document, ArgumentSyntax argumentSyntax, CancellationToken cancellationToken)
+    private static async Task<Document> UseNameofAsync(Document document, ArgumentSyntax argumentSyntax, CancellationToken cancellationToken)
     {
       var propertyName = "";
       if (argumentSyntax.Expression is SimpleLambdaExpressionSyntax lambdaExpression)

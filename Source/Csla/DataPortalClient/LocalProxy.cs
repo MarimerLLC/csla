@@ -159,7 +159,7 @@ namespace Csla.Channels.Local
       }
     }
 
-    private async Task DisposeScope(IServiceScope _logicalServerScope)
+    private static async Task DisposeScope(IServiceScope _logicalServerScope)
     {
       if (_logicalServerScope is IAsyncDisposable asyncDisposable)
         await asyncDisposable.DisposeAsync();

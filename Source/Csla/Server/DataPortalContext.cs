@@ -86,7 +86,7 @@ namespace Csla.Server
     public DataPortalContext(ApplicationContext applicationContext, bool isRemotePortal)
     {
       _applicationContext = applicationContext;
-      Principal = GetPrincipal(applicationContext, isRemotePortal);
+      Principal = DataPortalContext.GetPrincipal(applicationContext, isRemotePortal);
       IsRemotePortal = isRemotePortal;
       ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
       ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
@@ -118,7 +118,7 @@ namespace Csla.Server
     public DataPortalContext()
     { }
 
-    private IPrincipal GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
+    private static IPrincipal GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
     {
       var securityOptions = applicationContext.GetRequiredService<SecurityOptions>();
       if (isRemotePortal && !securityOptions.FlowSecurityPrincipalFromClient)

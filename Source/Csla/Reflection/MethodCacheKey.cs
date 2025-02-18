@@ -40,7 +40,7 @@ namespace Csla.Reflection
       return false;
     }
 
-    private bool ArrayEquals(Type[] a1, Type[] a2)
+    private static bool ArrayEquals(Type[] a1, Type[] a2)
     {
       if (a1.Length != a2.Length)
         return false;

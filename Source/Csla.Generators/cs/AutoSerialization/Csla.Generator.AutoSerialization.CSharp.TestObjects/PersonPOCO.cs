@@ -44,7 +44,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.TestObjects
       set { _lastName = value; }
     }
 
-    [NonSerialized]
+    [DoNotSerialize]
     public string NonSerializedText { get; set; } = string.Empty;
 
     [AutoSerialized]

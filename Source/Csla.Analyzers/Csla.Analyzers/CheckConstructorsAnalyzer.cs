@@ -89,7 +89,7 @@ namespace Csla.Analyzers
           var properties = new Dictionary<string, string>
           {
             [PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor] = hasNonPublicNoArgumentConstructor.ToString()
-          }.ToImmutableDictionary();
+          };
 
           context.ReportDiagnostic(Diagnostic.Create(
             publicNoArgumentConstructorIsMissingRule,

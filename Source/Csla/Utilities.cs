@@ -173,7 +173,7 @@ namespace Csla
           if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
             if (value == null)
               return null;
-            else if (valueType.Equals(typeof(string)) && Convert.ToString(value) == string.Empty)
+            else if (valueType == typeof(string) && Convert.ToString(value) == string.Empty)
               return null;
         }
         desiredType = GetPropertyType(desiredType);
@@ -191,29 +191,29 @@ namespace Csla
           return Enum.Parse(desiredType, ((long?) value).Value.ToString());
       }
 
-      if (desiredType.IsEnum && 
-        (valueType.Equals(typeof(string)) || Enum.GetUnderlyingType(desiredType).Equals(valueType)))
+      if (desiredType.IsEnum &&
+        (valueType == typeof(string) || Enum.GetUnderlyingType(desiredType) == valueType))
         return Enum.Parse(desiredType, value.ToString());
 
-      if (desiredType.Equals(typeof(SmartDate)) && oldValue != null)
+      if (desiredType == typeof(SmartDate) && oldValue != null)
       {
         if (value == null)
           value = string.Empty;
         var tmp = (SmartDate)oldValue;
-        if (valueType.Equals(typeof(DateTime)))
+        if (valueType == typeof(DateTime))
           tmp.Date = (DateTime)value;
         else
           tmp.Text = value.ToString();
         return tmp;
       }
 
-      if ((desiredType.IsPrimitive || desiredType.Equals(typeof(decimal))) &&
-          valueType.Equals(typeof(string)) && string.IsNullOrEmpty((string)value))
+      if ((desiredType.IsPrimitive || desiredType == typeof(decimal)) &&
+          valueType == typeof(string) && string.IsNullOrEmpty((string)value))
         value = 0;
 
       try
       {
-        if (desiredType.Equals(typeof(string)) && value != null)
+        if (desiredType == typeof(string) && value != null)
         {
           return value.ToString();
         }

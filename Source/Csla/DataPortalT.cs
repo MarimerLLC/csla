@@ -416,7 +416,7 @@ namespace Csla
                 if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
                   throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
                                                                             "save",
-                                                                            objectType.Name));
+                    objectType.Name));
                 if (factoryType != null)
                   method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
               }
@@ -425,13 +425,14 @@ namespace Csla
             {
               if (!await Csla.Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, obj, ct))
                 throw new Csla.Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
-                                                                          "save",
-                                                                          objectType.Name));
+                  "save",
+                  objectType.Name));
 
               if (factoryType != null)
                 method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
             }
           }
+
           if (method == null)
             method = new Server.DataPortalMethodInfo();
           proxy = GetDataPortalProxy(method.RunLocal);
@@ -483,6 +484,7 @@ namespace Csla
               method = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, criteria, false);
             }
           }
+
           proxy = GetDataPortalProxy(method);
         }
 
@@ -523,6 +525,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleUpdateDataPortalException(dpe);
           }
+
           throw new DataPortalException($"DataPortal.Update {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
@@ -534,6 +537,7 @@ namespace Csla
       {
         throw;
       }
+
       return (T)result.ReturnObject;
     }
 
@@ -615,6 +619,7 @@ namespace Csla
             if (ex.InnerExceptions[0] is Server.DataPortalException dpe)
               HandleDeleteDataPortalException(dpe);
           }
+
           throw new DataPortalException($"DataPortal.Delete {Resources.Failed}", ex, null);
         }
         catch (Server.DataPortalException ex)
@@ -701,7 +706,7 @@ namespace Csla
     /// <returns>The resulting command object.</returns>
     public T Execute(params object[] criteria)
     {
-        return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
+      return (T)DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), true).Result;
     }
 
     /// <summary>
@@ -931,7 +936,7 @@ namespace Csla
   {
     internal static bool RunLocal(this System.Reflection.MethodInfo t)
     {
-      return t.CustomAttributes.Count(a => a.AttributeType.Equals(typeof(RunLocalAttribute))) > 0;
+      return t.CustomAttributes.Count(a => a.AttributeType == typeof(RunLocalAttribute)) > 0;
     }
   }
 }

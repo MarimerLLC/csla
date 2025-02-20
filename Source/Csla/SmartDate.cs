@@ -1303,9 +1303,9 @@ namespace Csla
 
     object IConvertible.ToType(Type conversionType, IFormatProvider provider)
     {
-      if (conversionType.Equals(typeof(string)))
+      if (conversionType == typeof(string))
         return ((IConvertible)Text).ToType(conversionType, provider);
-      else if (conversionType.Equals(typeof(SmartDate)))
+      else if (conversionType == typeof(SmartDate))
         return this;
       else
         return ((IConvertible)_date).ToType(conversionType, provider);

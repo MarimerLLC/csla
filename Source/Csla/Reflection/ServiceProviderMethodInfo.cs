@@ -71,7 +71,7 @@ namespace Csla.Reflection
           {
             DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(MethodInfo);
             Parameters = MethodInfo.GetParameters();
-            TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
+            TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType == typeof(object[]));
             IsInjected = new bool[Parameters.Length];
 
             int index = 0;

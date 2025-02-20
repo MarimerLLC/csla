@@ -101,7 +101,7 @@ namespace Csla.Web.Mvc
         var value = bindingContext.ActionContext.HttpContext.Request.Form[index].FirstOrDefault();
         try
         {
-          if (item.Type.Equals(typeof(string)))
+          if (item.Type == typeof(string))
             Reflection.MethodCaller.CallPropertySetter(result, item.Name, value);
           else if (value != null)
             Reflection.MethodCaller.CallPropertySetter(result, item.Name, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
@@ -110,7 +110,7 @@ namespace Csla.Web.Mvc
         }
         catch
         {
-          if (item.Type.Equals(typeof(string)))
+          if (item.Type == typeof(string))
             LoadProperty(result, item, value);
           else if (value != null)
             LoadProperty(result, item, Utilities.CoerceValue(item.Type, value.GetType(), null, value));

@@ -665,9 +665,9 @@ namespace Csla.Test.Authorization
   {
     public override Type ResolveType(Type requestedType)
     {
-      if (requestedType.Equals(typeof(IPerTypeAuthRoot)))
+      if (requestedType == typeof(IPerTypeAuthRoot))
         return typeof(PerTypeAuthRoot);
-      if (requestedType.Equals(typeof(IPerTypeAuthRootAsync)))
+      if (requestedType == typeof(IPerTypeAuthRootAsync))
         return typeof(PerTypeAuthRootAsync);
       else
         return base.ResolveType(requestedType);

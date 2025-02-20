@@ -625,10 +625,14 @@ namespace Csla.Reflection
         var infoParamsCount = infoParams.Length;
         bool hasParamArray = infoParamsCount > 0 && infoParams[infoParamsCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0;
         bool specialParamArray = false;
-        if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(string[])))
-          specialParamArray = true;
-        if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(object[])))
-          specialParamArray = true;
+        if (hasParamArray)
+        {
+          var parameterType = infoParams[infoParamsCount - 1].ParameterType;
+
+          specialParamArray = parameterType == typeof(string[]) ||
+                              parameterType == typeof(object[]);
+        }
+
         object[] par;
         if (infoParamsCount == 1 && specialParamArray)
         {

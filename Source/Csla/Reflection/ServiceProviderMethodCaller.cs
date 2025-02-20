@@ -236,7 +236,7 @@ namespace Csla.Reflection
           foreach (var item in candidates)
           {
             var lastParam = item.MethodInfo.GetParameters().LastOrDefault();
-            if (lastParam != null && lastParam.ParameterType.Equals(typeof(object[])) &&
+            if (lastParam != null && lastParam.ParameterType == typeof(object[]) &&
               lastParam.GetCustomAttributes<ParamArrayAttribute>().Any())
             {
               matches.Add(new ScoredMethodInfo { MethodInfo = item.MethodInfo, Score = 1 + item.Score });
@@ -355,7 +355,7 @@ namespace Csla.Reflection
       {
         if (c.GetType() == methodParam.ParameterType)
           return 3;
-        else if (methodParam.ParameterType.Equals(typeof(object)))
+        else if (methodParam.ParameterType == typeof(object))
           return 1;
         else if (methodParam.ParameterType.IsAssignableFrom(c.GetType()))
           return 2;

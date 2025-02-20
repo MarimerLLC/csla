@@ -58,17 +58,17 @@ namespace Csla.Web.Design
         int colIndex = 0;
         foreach (DataColumn col in result.Columns)
         {
-          if (col.DataType.Equals(typeof(string)))
+          if (col.DataType == typeof(string))
             values[colIndex] = "abc";
-          else if (col.DataType.Equals(typeof(DateTime)))
+          else if (col.DataType == typeof(DateTime))
             values[colIndex] = DateTime.Today.ToShortDateString();
-          else if (col.DataType.Equals(typeof(DateTimeOffset)))
+          else if (col.DataType == typeof(DateTimeOffset))
             values[colIndex] = DateTime.Today.ToShortDateString();
-          else if (col.DataType.Equals(typeof(bool)))
+          else if (col.DataType == typeof(bool))
             values[colIndex] = false;
           else if (col.DataType.IsPrimitive)
             values[colIndex] = index;
-          else if (col.DataType.Equals(typeof(Guid)))
+          else if (col.DataType == typeof(Guid))
             values[colIndex] = Guid.Empty;
           else if (col.DataType.IsValueType)
             values[colIndex] = Activator.CreateInstance(col.DataType);

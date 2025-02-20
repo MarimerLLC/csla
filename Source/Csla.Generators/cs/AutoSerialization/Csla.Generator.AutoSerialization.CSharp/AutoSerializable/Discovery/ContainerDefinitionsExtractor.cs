@@ -8,7 +8,6 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Text;
 
 namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
 {

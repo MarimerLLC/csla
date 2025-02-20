@@ -15,6 +15,9 @@
    <Using Include="System.Reflection" />
    <Using Include="System.Security.Claims" />
    <Using Include="System.Security.Principal" />
+   <Using Include="System.Text" />
+   <Using Include="System.Text.Json" />
+   <Using Include="System.Text.RegularExpressions" />
  </ItemGroup>
 
  <!-- Common Package Settings -->

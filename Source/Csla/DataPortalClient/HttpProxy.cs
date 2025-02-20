@@ -15,7 +15,6 @@ using System.Net.Http.Headers;
 #if NET8_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
-using System.Text;
 
 namespace Csla.Channels.Http
 {

@@ -6,8 +6,6 @@
 // <summary>Parses a rule:// URI to provide</summary>
 //-----------------------------------------------------------------------
 
-using System.Text;
-
 namespace Csla.Rules
 {
   /// <summary>

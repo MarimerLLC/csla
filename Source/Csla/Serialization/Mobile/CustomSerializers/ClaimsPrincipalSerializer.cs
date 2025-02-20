@@ -43,7 +43,6 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   }
 }
 #else
-using System.Text.Json;
 
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.

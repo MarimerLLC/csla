@@ -6,7 +6,6 @@
 // <summary>Source generator for partial properties implementation</summary>
 //-----------------------------------------------------------------------
 
-using System.Text;
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

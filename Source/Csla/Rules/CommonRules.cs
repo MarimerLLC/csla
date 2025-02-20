@@ -6,9 +6,6 @@
 // <summary>Base class used to create common rules.</summary>
 //-----------------------------------------------------------------------
 
-using System.Text;
-using System.Text.RegularExpressions;
-
 namespace Csla.Rules.CommonRules
 {
   /// <summary>

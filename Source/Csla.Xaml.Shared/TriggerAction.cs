@@ -7,9 +7,7 @@
 // <summary>Control used to invoke a method on the DataContext</summary>
 //-----------------------------------------------------------------------
 #define DEBUG
-using System.Diagnostics;
 using System.Windows;
-using System.ComponentModel;
 using System.Windows.Data;
 
 namespace Csla.Xaml

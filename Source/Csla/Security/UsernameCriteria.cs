@@ -6,8 +6,6 @@
 // <summary>Criteria class for passing a</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Security
 {
   /// <summary>

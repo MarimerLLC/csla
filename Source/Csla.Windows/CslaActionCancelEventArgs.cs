@@ -6,8 +6,6 @@
 // <summary>Event args providing information about</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-
 namespace Csla.Windows
 {
   /// <summary>

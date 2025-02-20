@@ -6,9 +6,7 @@
 // <summary>Contains a field value and related metadata.</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core.FieldManager

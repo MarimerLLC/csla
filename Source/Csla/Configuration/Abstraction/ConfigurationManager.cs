@@ -6,8 +6,6 @@
 // <summary>ConfigurationManager that abstracts underlying configuration</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Specialized;
-
 namespace Csla.Configuration
 {
   /// <summary>

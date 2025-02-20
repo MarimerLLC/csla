@@ -6,8 +6,6 @@
 // <summary>Map data from a source into a target object</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;

@@ -6,9 +6,6 @@
 // <summary>Provides a filtered view into an existing IList(Of T).</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Collections;
 using Csla.Properties;
 
 namespace Csla

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Csla.Blazor
+﻿namespace Csla.Blazor
 {
   /// <summary>
   /// Exposes metastate for a property.

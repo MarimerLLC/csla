@@ -6,7 +6,6 @@
 // <summary>Initiates revalidation on business objects during data portal operations</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using Csla.Core;
 using Csla.Properties;
 

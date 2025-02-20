@@ -6,8 +6,6 @@
 // <summary>This is the base class from which readonly name/value</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization.Mobile;

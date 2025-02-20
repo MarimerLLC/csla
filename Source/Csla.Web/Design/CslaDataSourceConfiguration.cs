@@ -6,7 +6,6 @@
 // <summary>CslaDataSource configuration form.</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using System.Web.UI;
 using System.ComponentModel.Design;
 using System.Windows.Forms;

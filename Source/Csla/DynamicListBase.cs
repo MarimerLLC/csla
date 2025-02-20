@@ -6,9 +6,6 @@
 // <summary>This is the base class from which collections</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;

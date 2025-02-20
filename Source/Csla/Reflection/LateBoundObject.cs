@@ -6,7 +6,6 @@
 // <summary>Enables simple invocation of methods</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Reflection

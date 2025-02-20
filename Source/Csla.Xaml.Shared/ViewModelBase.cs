@@ -6,9 +6,6 @@
 // <summary>Base class used to create ViewModel objects that</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Windows;
 using Csla.Core;

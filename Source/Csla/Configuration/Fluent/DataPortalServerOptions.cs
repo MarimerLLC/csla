@@ -6,7 +6,6 @@
 // <summary>Server-side data portal options.</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -6,10 +6,7 @@
 // <summary>An ObjectAdapter is used to convert data in an object </summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using System.Data;
-using System.ComponentModel;
-using System.Reflection;
 using Csla.Properties;
 
 namespace Csla.Data

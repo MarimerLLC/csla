@@ -6,8 +6,6 @@
 // <summary>Interface implemented by server-side data portal</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Server
 {
   /// <summary>

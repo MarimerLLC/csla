@@ -6,7 +6,6 @@
 // <summary>Implements the server-side DataPortal as discussed</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Server

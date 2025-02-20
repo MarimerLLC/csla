@@ -6,8 +6,6 @@
 // <summary>This class implements INotifyPropertyChanged</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-
 namespace Csla.Core
 {
   /// <summary>

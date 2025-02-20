@@ -6,8 +6,6 @@
 // <summary>User control that displays busy animation</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-
 namespace Csla.Windows
 {
   /// <summary>

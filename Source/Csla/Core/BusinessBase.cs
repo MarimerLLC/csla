@@ -6,14 +6,7 @@
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
 using Csla.Properties;

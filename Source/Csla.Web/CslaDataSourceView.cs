@@ -6,7 +6,6 @@
 // <summary>The object responsible for managing data binding</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using System.Web.UI;
 
 namespace Csla.Web

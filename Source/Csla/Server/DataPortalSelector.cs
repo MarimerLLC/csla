@@ -6,7 +6,6 @@
 // <summary>Selects the appropriate data portal implementation</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Server

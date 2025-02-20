@@ -6,11 +6,9 @@
 // <summary>Expose metastate information about a property.</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Reflection;
 using Csla.Core;
 using Csla.Rules;
-using System.Reflection;
 using System.Collections.ObjectModel;
 
 #if NETFX_CORE

@@ -6,7 +6,6 @@
 // <summary>Object containing the serialization</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile

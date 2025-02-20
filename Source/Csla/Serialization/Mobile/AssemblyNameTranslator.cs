@@ -6,8 +6,6 @@
 // <summary>Translates assembly names to and from short</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel.DataAnnotations;
-
 namespace Csla.Serialization.Mobile
 {
   /// <summary>

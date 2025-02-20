@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>List of data portal operations.</summary>
 //-----------------------------------------------------------------------
-using System.ComponentModel;
 
 namespace Csla
 {

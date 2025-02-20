@@ -6,10 +6,7 @@
 // <summary>Base type for creating your own view model</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;

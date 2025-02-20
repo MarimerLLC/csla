@@ -6,7 +6,6 @@
 // <summary>Helper methods for dealing with BindingSource</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Properties;
 
 namespace Csla.Windows

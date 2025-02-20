@@ -7,7 +7,6 @@
 // <summary>Container for other UI controls that exposes</summary>
 //-----------------------------------------------------------------------
 using System.Windows;
-using System.ComponentModel;
 using Csla.Core;
 
 namespace Csla.Xaml

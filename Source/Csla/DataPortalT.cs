@@ -6,7 +6,6 @@
 // <summary>Client side data portal used for making asynchronous</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Csla.Configuration;
 using Csla.Core;

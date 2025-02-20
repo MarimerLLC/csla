@@ -6,8 +6,6 @@
 // <summary>Wraps a System.ComponentModel.BackgroundWorker and transfers ApplicationContext.User, ClientContest, CurrentCulture and CurrentUICulture to background thread.</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-
 namespace Csla.Threading
 {
   /// <summary>

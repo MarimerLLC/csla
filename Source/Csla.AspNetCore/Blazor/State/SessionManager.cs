@@ -6,7 +6,6 @@
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using Csla.State;
 
 namespace Csla.Blazor.State

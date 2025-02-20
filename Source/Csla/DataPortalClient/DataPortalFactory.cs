@@ -6,8 +6,6 @@
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.DataPortalClient
 {
   /// <summary>

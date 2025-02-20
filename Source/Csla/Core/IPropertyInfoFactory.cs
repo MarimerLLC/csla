@@ -6,8 +6,6 @@
 // <summary>Defines the interface for a factory object</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Core
 {
   /// <summary>

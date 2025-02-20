@@ -3,7 +3,17 @@
    <LangVersion>latest</LangVersion>
    <ImplicitUsings>enable</ImplicitUsings>
  </PropertyGroup>
- 
+
+ <ItemGroup>
+   <Using Include="System.Collections" />
+   <Using Include="System.Collections.Concurrent" />
+   <Using Include="System.Collections.Specialized" />
+   <Using Include="System.ComponentModel" />
+   <Using Include="System.Diagnostics" />
+   <Using Include="System.Diagnostics.CodeAnalysis" />
+   <Using Include="System.Reflection" />
+ </ItemGroup>
+
  <!-- Common Package Settings -->
  <PropertyGroup>
    <Version>9.0.0.0</Version>

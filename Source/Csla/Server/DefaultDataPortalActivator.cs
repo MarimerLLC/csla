@@ -6,7 +6,6 @@
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 

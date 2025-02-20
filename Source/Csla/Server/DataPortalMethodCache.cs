@@ -11,7 +11,6 @@ using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
 using Csla.Reflection;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Server
 {

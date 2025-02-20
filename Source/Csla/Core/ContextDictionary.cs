@@ -8,7 +8,6 @@
 
 using Csla.Properties;
 using Csla.Serialization.Mobile;
-using System.Collections.Concurrent;
 
 namespace Csla.Core
 {

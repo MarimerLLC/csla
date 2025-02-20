@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Converts values to and from a SmartDate.</summary>
 //-----------------------------------------------------------------------
-using System.ComponentModel;
 
 namespace Csla.Core.TypeConverters
 {

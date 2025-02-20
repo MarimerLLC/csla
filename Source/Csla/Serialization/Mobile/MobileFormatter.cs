@@ -6,7 +6,6 @@
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel.DataAnnotations;
 using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;

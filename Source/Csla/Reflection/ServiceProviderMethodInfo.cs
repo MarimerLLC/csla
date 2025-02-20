@@ -6,7 +6,6 @@
 // <summary>Class that contains cached metadata about data portal</summary>
 //-----------------------------------------------------------------------
 
-using System.Reflection;
 using Csla.Server;
 
 namespace Csla.Reflection

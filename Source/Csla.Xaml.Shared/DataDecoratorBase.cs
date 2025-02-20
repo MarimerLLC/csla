@@ -6,13 +6,10 @@
 // </copyright>
 // <summary>Base class for creating WPF panel</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace Csla.Xaml
 {

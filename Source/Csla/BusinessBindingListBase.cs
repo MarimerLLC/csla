@@ -6,9 +6,7 @@
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Server;

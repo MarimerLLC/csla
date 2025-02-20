@@ -6,13 +6,8 @@
 // <summary>This is a base class from which readonly business classes</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using System.Reflection;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;

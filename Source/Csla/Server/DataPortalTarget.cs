@@ -6,7 +6,6 @@
 // <summary>Encapsulates server-side data portal invocations</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using Csla.Core;
 
 #if NET8_0_OR_GREATER

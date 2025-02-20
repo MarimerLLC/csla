@@ -6,8 +6,6 @@
 // <summary>Synchronized view over a source list, </summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Specialized;
 using System.Linq.Expressions;
 
 namespace Csla

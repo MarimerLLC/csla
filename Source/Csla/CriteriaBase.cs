@@ -9,8 +9,6 @@
 using Csla.Core;
 using System.Linq.Expressions;
 using Csla.Reflection;
-using System.Reflection;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {

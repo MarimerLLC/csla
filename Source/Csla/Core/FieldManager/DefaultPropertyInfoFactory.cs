@@ -6,8 +6,6 @@
 // <summary>Creates PropertyInfo objects.</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Core.FieldManager
 {
   /// <summary>

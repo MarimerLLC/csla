@@ -6,7 +6,6 @@
 // <summary>Manages the list of authorization </summary>
 //-----------------------------------------------------------------------
 
-using System.Reflection;
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 

@@ -6,10 +6,8 @@
 // <summary>Inherit from this base class to easily</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
-using System.Diagnostics;
 
 namespace Csla.Core
 {

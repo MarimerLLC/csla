@@ -6,8 +6,6 @@
 // </copyright>
 // <summary>This exception is returned as BusinessException in DataPortalException when the </summary>
 //-----------------------------------------------------------------------
-using System.Collections;
-
 namespace Csla.Server
 {
   /// <summary>

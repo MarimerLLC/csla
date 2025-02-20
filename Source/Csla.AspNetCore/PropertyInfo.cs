@@ -6,7 +6,6 @@
 // <summary>Exposes metastate for a property</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Rules;
 
 namespace Csla.AspNetCore

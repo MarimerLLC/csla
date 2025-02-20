@@ -6,11 +6,8 @@
 // <summary>Contains utility methods used by the</summary>
 //-----------------------------------------------------------------------
 
-using System.Reflection;
 using Csla.Reflection;
-using System.ComponentModel;
 using Csla.Properties;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {

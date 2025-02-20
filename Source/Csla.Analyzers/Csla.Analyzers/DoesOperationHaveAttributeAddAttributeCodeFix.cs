@@ -17,7 +17,7 @@ namespace Csla.Analyzers
   public sealed class DoesOperationHaveAttributeAddAttributeCodeFix
     : CodeFixProvider
   {
-    private static readonly ImmutableDictionary<string, string> nameAttributeMap = new Dictionary<string, string>
+    private static readonly IReadOnlyDictionary<string, string> nameAttributeMap = new Dictionary<string, string>
     {
       { CslaMemberConstants.Operations.DataPortalCreate, CslaMemberConstants.OperationAttributes.Create },
       { CslaMemberConstants.Operations.DataPortalFetch, CslaMemberConstants.OperationAttributes.Fetch },
@@ -32,7 +32,7 @@ namespace Csla.Analyzers
       { CslaMemberConstants.Operations.ChildUpdate, CslaMemberConstants.OperationAttributes.UpdateChild },
       { CslaMemberConstants.Operations.ChildDeleteSelf, CslaMemberConstants.OperationAttributes.DeleteSelfChild },
       { CslaMemberConstants.Operations.ChildExecute, CslaMemberConstants.OperationAttributes.ExecuteChild }
-    }.ToImmutableDictionary();
+    };
 
     /// <summary>
     /// 

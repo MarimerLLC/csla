@@ -363,16 +363,8 @@ namespace Csla
     /// <value>A format string.</value>
     public string FormatString
     {
-      get
-      {
-        if (_format == null)
-          _format = _defaultFormat;
-        return _format;
-      }
-      set
-      {
-        _format = value;
-      }
+      get => _format ??= _defaultFormat;
+      set => _format = value;
     }
 
     /// <summary>

@@ -526,11 +526,7 @@ namespace Csla.Reflection
       }
       catch (Exception ex)
       {
-        Exception inner = null;
-        if (ex.InnerException == null)
-          inner = ex;
-        else
-          inner = ex.InnerException;
+        var inner = ex.InnerException ?? ex;
         throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
     }

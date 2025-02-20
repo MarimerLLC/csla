@@ -100,15 +100,8 @@ namespace Csla.Server
 #endif
 
     private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
-    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
-    {
-      get
-      {
-        if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
-        return serviceProviderMethodCaller;
-      }
-    }
+    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller =>
+      serviceProviderMethodCaller ??= (Reflection.ServiceProviderMethodCaller) _applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
 
     /// <summary>
     /// Create a new business object.

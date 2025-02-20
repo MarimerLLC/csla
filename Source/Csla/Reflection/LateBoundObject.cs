@@ -163,15 +163,8 @@ namespace Csla.Reflection
     }
 
     private ServiceProviderMethodCaller serviceProviderMethodCaller;
-    private ServiceProviderMethodCaller ServiceProviderMethodCaller
-    {
-      get
-      {
-        if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(ServiceProviderMethodCaller));
-        return serviceProviderMethodCaller;
-      }
-    }
+    private ServiceProviderMethodCaller ServiceProviderMethodCaller =>
+      serviceProviderMethodCaller ??= (ServiceProviderMethodCaller) _applicationContext.CreateInstanceDI(typeof(ServiceProviderMethodCaller));
 
     /// <summary>
     /// Invokes a method using the await keyword

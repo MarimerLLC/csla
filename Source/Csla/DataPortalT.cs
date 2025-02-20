@@ -92,15 +92,8 @@ namespace Csla
     }
 
     private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
-    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
-    {
-      get
-      {
-        if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
-        return serviceProviderMethodCaller;
-      }
-    }
+    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller =>
+      serviceProviderMethodCaller ??= (Reflection.ServiceProviderMethodCaller) _applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
 
     private async Task<object> DoCreateAsync(
 #if NET8_0_OR_GREATER

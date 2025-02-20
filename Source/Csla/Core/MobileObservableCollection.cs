@@ -40,15 +40,9 @@ namespace Csla.Core
     /// and checking user rights.
     /// </summary>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    protected LoadListModeObject LoadListMode
-    {
-      get
-      {
-        if (_loadListModeObject == null)
-          _loadListModeObject = new LoadListModeObject(this);
-        return _loadListModeObject;
-      }
-    }
+    protected LoadListModeObject LoadListMode =>
+      _loadListModeObject ??= new(this);
+
     void IMobileList.SetLoadListMode(bool enabled)
     {
       _loadListModeObject = null;

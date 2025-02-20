@@ -30,14 +30,7 @@ namespace Csla.Core.FieldManager
     /// Gets the factory object that
     /// creates PropertyInfo objects.
     /// </summary>
-    public static IPropertyInfoFactory Factory
-    {
-      get
-      {
-        if (_factory == null)
-            _factory = (IPropertyInfoFactory)Activator.CreateInstance(FactoryType);
-        return _factory;
-      }
-    }
+    public static IPropertyInfoFactory Factory =>
+        _factory ??= (IPropertyInfoFactory) Activator.CreateInstance(FactoryType);
   }
 }

@@ -27,8 +27,7 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(shouldUseNameofRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldUseNameofRule];
 
     /// <summary>
     /// 

@@ -39,7 +39,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(missingAttributeRule, shouldBePublicRule, shouldBeStaticRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [missingAttributeRule, shouldBePublicRule, shouldBeStaticRule];
 
     /// <summary>
     /// 

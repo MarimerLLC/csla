@@ -6,9 +6,7 @@
 // </copyright>
 // <summary>Delegate for a dynamic constructor method.</summary>
 //-----------------------------------------------------------------------
-#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
-using System.Reflection.Emit;
-#endif
+
 using Csla.Properties;
 
 namespace Csla.Reflection

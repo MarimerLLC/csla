@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Security;
+using Label = System.Windows.Forms.Label;
 
 namespace Csla.Windows
 {

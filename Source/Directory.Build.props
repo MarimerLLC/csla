@@ -10,6 +10,7 @@
    <Using Include="System.Collections.ObjectModel" />
    <Using Include="System.Collections.Specialized" />
    <Using Include="System.ComponentModel" />
+   <Using Include="System.Data" />
    <Using Include="System.Diagnostics" />
    <Using Include="System.Diagnostics.CodeAnalysis" />
    <Using Include="System.Linq.Expressions" />

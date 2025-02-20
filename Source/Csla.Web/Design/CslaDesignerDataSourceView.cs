@@ -8,7 +8,6 @@
 
 using System.Web.UI.Design;
 using System.ComponentModel.Design;
-using System.Data;
 
 namespace Csla.Web.Design
 {

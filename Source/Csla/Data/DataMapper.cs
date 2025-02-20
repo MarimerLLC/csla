@@ -62,9 +62,9 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">A name/value dictionary containing the source values.</param>
     /// <param name="target">An object with properties to be set from the dictionary.</param>
-    /// <param name="ignoreList">A list of property names to ignore. 
+    /// <param name="ignoreList">A list of property names to ignore.
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     /// <remarks>
     /// The key names in the dictionary must match the property names on the target
     /// object. Target properties may not be readonly or indexed.
@@ -123,9 +123,9 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object with properties to be loaded into the dictionary.</param>
     /// <param name="target">A name/value dictionary containing the source values.</param>
-    /// <param name="ignoreList">A list of property names to ignore. 
+    /// <param name="ignoreList">A list of property names to ignore.
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     public static void Map(
       object source, Dictionary<string, object> target,
       bool suppressExceptions,
@@ -193,13 +193,13 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object containing the source values.</param>
     /// <param name="target">An object with properties to be set from the dictionary.</param>
-    /// <param name="ignoreList">A list of property names to ignore. 
+    /// <param name="ignoreList">A list of property names to ignore.
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     /// <remarks>
     /// <para>
     /// The property names and types of the source object must match the property names and types
-    /// on the target object. Source properties may not be indexed. 
+    /// on the target object. Source properties may not be indexed.
     /// Target properties may not be readonly or indexed.
     /// </para><para>
     /// Properties to copy are determined based on the source object. Any properties
@@ -254,11 +254,11 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object containing the source values.</param>
     /// <param name="target">An object with properties to be set from the dictionary.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     /// <param name="map">A DataMap object containing the mappings to use during the copy process.</param>
     /// <remarks>
     /// The property names and types of the source object must match the property names and types
-    /// on the target object. Source properties may not be indexed. 
+    /// on the target object. Source properties may not be indexed.
     /// Target properties may not be readonly or indexed.
     /// </remarks>
     public static void Map(object source, object target, DataMap map, bool suppressExceptions)

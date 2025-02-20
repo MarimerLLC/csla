@@ -15,7 +15,7 @@ Primary changes in this release include:
 * New and enhanced analyzers
 * Support for async authorization rules
 * Enhancements to business rules
-* Enahncements to MobileFormatter, including support for custom serializers
+* Enhancements to MobileFormatter, including support for custom serializers
 * Data portal default configuration now works on Android
 * Rework RabbitMQ data portal channel to support dependency injection
 * Updates and improvements to several analyzers

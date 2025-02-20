@@ -6,6 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraphMergerTest.Dal\GraphMergerTest.Dal.csproj" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="System.Text.Json" Version="9.0.1" />
   </ItemGroup>
 </Project>

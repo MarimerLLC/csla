@@ -6,7 +6,6 @@
 // <summary>Exposes server-side DataPortal functionality through RabbitMQ</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Principal;
 using Csla.Core;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;

@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 #nullable enable
 
-using System.Security.Principal;
 
 namespace Csla.Core
 {

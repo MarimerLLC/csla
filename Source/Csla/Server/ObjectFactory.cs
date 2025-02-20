@@ -6,7 +6,6 @@
 // <summary>Base class to be used when creating a data portal</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;

@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using Csla.Serialization.Mobile;
+﻿using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {

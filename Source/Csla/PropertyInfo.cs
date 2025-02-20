@@ -6,9 +6,7 @@
 // <summary>Maintains metadata about a property.</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla
 {

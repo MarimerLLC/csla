@@ -6,9 +6,8 @@
 // <summary>Windows Forms extender control that automatically</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Reflection;
 using Csla.Security;
+using Label = System.Windows.Forms.Label;
 
 namespace Csla.Windows
 {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Csla.Core
+﻿namespace Csla.Core
 {
 
   /// <summary>

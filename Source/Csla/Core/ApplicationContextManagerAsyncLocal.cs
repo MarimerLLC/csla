@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Application context manager using AsyncLocal</summary>
 //-----------------------------------------------------------------------
-using System.Security.Principal;
 
 namespace Csla.Core
 {

@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Invokes a method on a target object when a </summary>
 //-----------------------------------------------------------------------
+
 using System.Windows;
-using System.ComponentModel;
 
 namespace Csla.Xaml
 {

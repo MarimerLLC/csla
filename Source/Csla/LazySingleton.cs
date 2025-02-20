@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Csla
+﻿namespace Csla
 {
   /// <summary>
   /// An alternative to Lazy&lt;T&gt; 

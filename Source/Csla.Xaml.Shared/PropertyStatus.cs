@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Displays validation information for a business</summary>
 //-----------------------------------------------------------------------
+
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;

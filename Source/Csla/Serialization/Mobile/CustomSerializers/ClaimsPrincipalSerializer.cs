@@ -6,7 +6,7 @@
 // <summary>A formatter that can serialize and deserialize a ClaimsPrincipal object</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Claims;
+using System.Text.Json;
 
 namespace Csla.Serialization.Mobile.CustomSerializers;
 
@@ -45,7 +45,6 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   }
 }
 #else
-using System.Text.Json;
 
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.

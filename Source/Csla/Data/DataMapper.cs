@@ -6,8 +6,6 @@
 // <summary>Map data from a source into a target object</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -70,7 +68,7 @@ namespace Csla.Data
     /// object. Target properties may not be readonly or indexed.
     /// </remarks>
     public static void Map(
-      System.Collections.IDictionary source,
+      IDictionary source,
       object target, bool suppressExceptions,
       params string[] ignoreList)
     {

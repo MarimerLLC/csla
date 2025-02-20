@@ -1,4 +1,3 @@
-using System.Text;
 using Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;

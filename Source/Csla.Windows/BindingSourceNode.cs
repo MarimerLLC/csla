@@ -6,7 +6,6 @@
 // <summary>Maintains a reference to a BindingSource object</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Core;
 
 namespace Csla.Windows

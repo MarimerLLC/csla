@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Context for the AddObjectAuthorizationRulesContext method.</summary>
 //-----------------------------------------------------------------------
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Rules

@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Razor tag helper</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Rules;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;

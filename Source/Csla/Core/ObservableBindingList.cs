@@ -6,8 +6,6 @@
 // <summary>Extends ObservableCollection with behaviors required</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Csla.Properties;
 using Csla.Serialization.Mobile;

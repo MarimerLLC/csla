@@ -6,7 +6,6 @@
 // <summary>Manages properties and property data for</summary>
 //-----------------------------------------------------------------------
 
-using System.Reflection;
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
@@ -15,8 +14,6 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Core.FieldManager
 {
@@ -26,7 +23,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public class FieldDataManager : MobileObject, IUndoableObject, IUseApplicationContext
@@ -240,7 +237,7 @@ namespace Csla.Core.FieldManager
     /// <param name="propertyInfo">
     /// The property corresponding to the field.
     /// </param>
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public IFieldData GetFieldData(IPropertyInfo propertyInfo)
     {
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)

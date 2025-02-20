@@ -6,8 +6,6 @@
 // <summary>This class implements INotifyPropertyChanged</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-
 namespace Csla.Core
 {
   /// <summary>
@@ -34,8 +32,7 @@ namespace Csla.Core
     /// <summary>
     /// Implements a serialization-safe PropertyChanged event.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", 
-      "CA1062:ValidateArgumentsOfPublicMethods")]
+    [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event PropertyChangedEventHandler PropertyChanged
     {
       add
@@ -159,8 +156,7 @@ namespace Csla.Core
     /// <summary>
     /// Implements a serialization-safe PropertyChanging event.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-      "CA1062:ValidateArgumentsOfPublicMethods")]
+    [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event PropertyChangingEventHandler PropertyChanging
     {
       add

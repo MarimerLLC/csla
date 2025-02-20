@@ -6,14 +6,7 @@
 // <summary>This is the non-generic base class from which most</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Concurrent;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
 using Csla.Properties;
@@ -31,7 +24,7 @@ namespace Csla.Core
   /// business objects will be derived.
   /// </summary>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public abstract class BusinessBase : UndoableBase,
@@ -3401,8 +3394,7 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-      "CA1062:ValidateArgumentsOfPublicMethods")]
+    [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<ChildChangedEventArgs> ChildChanged
     {
       add

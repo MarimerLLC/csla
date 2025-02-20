@@ -6,7 +6,6 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
 

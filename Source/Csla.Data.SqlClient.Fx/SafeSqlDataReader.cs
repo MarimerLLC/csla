@@ -6,7 +6,6 @@
 // <summary>This is a SqlDataReader based on SafeDataReader</summary>
 //-----------------------------------------------------------------------
 
-using System.Data;
 #if NETFX
 using System.Data.SqlClient;
 #else

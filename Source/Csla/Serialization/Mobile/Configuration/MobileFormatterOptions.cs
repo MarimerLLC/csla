@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Options for MobileFormatter configuration</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Serialization.Mobile;
 
 namespace Csla.Configuration;

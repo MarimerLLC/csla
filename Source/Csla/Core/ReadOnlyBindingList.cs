@@ -6,7 +6,6 @@
 // <summary>A readonly version of BindingList(Of T)</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Core

@@ -6,10 +6,8 @@
 // <summary>Inherit from this base class to easily</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
-using System.Diagnostics;
 #if NET8_0_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 #endif
@@ -24,7 +22,7 @@ namespace Csla.Core
   /// Type of the items contained in the list.
   /// </typeparam>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public class MobileBindingList<

@@ -6,9 +6,6 @@
 // <summary>This is the base class from which collections</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
@@ -458,7 +455,7 @@ namespace Csla
       throw new NotSupportedException(Properties.Resources.UpdateNotSupportedException);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
+    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
     [Delete]
     private void DataPortal_Delete(object criteria)
     {
@@ -470,7 +467,7 @@ namespace Csla
     /// requested DataPortal_xyz method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member"), EditorBrowsable(EditorBrowsableState.Advanced)]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member"), EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
 
@@ -481,7 +478,7 @@ namespace Csla
     /// requested DataPortal_xyz method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member"), EditorBrowsable(EditorBrowsableState.Advanced)]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member"), EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
 
@@ -493,7 +490,7 @@ namespace Csla
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     /// <param name="ex">The Exception thrown during data access.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member"), EditorBrowsable(EditorBrowsableState.Advanced)]
+    [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member"), EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
 

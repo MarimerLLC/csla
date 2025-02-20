@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.ObjectModel;
 using Csla.Properties;
 
 namespace Csla.Core.LoadManager

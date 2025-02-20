@@ -6,17 +6,13 @@
 // <summary>Exposes platform-specific web call capabilities</summary>
 //-----------------------------------------------------------------------
 
-using System.Runtime.InteropServices;
-
 namespace Csla.DataPortalClient
 {
-
   /// <summary>
   /// Determines capabilities of web calls in the current runtime environment
   /// </summary>
   internal static class WebCallCapabilities
   {
-
     /// <summary>
     /// Method to determine if the runtime supports synchronous WebClient usage
     /// WebAssembly specifically disallows use of this synchronous class

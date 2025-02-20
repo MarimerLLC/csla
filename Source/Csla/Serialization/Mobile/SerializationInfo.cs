@@ -6,7 +6,6 @@
 // <summary>Object containing the serialization</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile
@@ -16,7 +15,7 @@ namespace Csla.Serialization.Mobile
   /// data for a specific object.
   /// </summary>
 #if TESTING
-  [System.Diagnostics.DebuggerNonUserCode]
+  [DebuggerNonUserCode]
 #endif
   [Serializable]
   [DataContract]

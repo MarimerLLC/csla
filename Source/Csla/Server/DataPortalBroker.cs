@@ -6,8 +6,6 @@
 // <summary>Allows interception of DataPortal call</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Server
 {
   /// <summary>

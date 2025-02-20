@@ -6,7 +6,6 @@
 // <summary>Per-user session data.</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Core;
 
 namespace Csla.State

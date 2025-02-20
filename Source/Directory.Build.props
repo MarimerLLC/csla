@@ -3,7 +3,30 @@
    <LangVersion>latest</LangVersion>
    <ImplicitUsings>enable</ImplicitUsings>
  </PropertyGroup>
- 
+
+ <ItemGroup>
+   <Using Include="System.Collections" />
+   <Using Include="System.Collections.Concurrent" />
+   <Using Include="System.Collections.ObjectModel" />
+   <Using Include="System.Collections.Specialized" />
+   <Using Include="System.ComponentModel" />
+   <Using Include="System.Data" />
+   <Using Include="System.Diagnostics" />
+   <Using Include="System.Diagnostics.CodeAnalysis" />
+   <Using Include="System.Globalization" />
+   <Using Include="System.Linq.Expressions" />
+   <Using Include="System.Net" />
+   <Using Include="System.Reflection" />
+   <Using Include="System.Reflection.Emit" />
+   <Using Include="System.Runtime.Versioning" />
+   <Using Include="System.Runtime.InteropServices" />
+   <Using Include="System.Security.Claims" />
+   <Using Include="System.Security.Principal" />
+   <Using Include="System.Text" />
+   <Using Include="System.Text.RegularExpressions" />
+   <Using Include="System.Xml" />
+ </ItemGroup>
+
  <!-- Common Package Settings -->
  <PropertyGroup>
    <Version>9.0.0.0</Version>

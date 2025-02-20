@@ -6,8 +6,6 @@
 // <summary>Data portal dashboard</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
-
 namespace Csla.Server.Dashboard
 {
   /// <summary>

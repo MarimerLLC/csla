@@ -6,7 +6,6 @@
 // <summary>Implements a list that is serializable using</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core

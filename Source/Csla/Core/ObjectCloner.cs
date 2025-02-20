@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>This class provides an implementation of a deep</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Serialization;
 
 namespace Csla.Core

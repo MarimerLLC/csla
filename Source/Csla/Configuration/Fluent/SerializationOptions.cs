@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration

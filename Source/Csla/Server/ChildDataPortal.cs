@@ -6,8 +6,6 @@
 // <summary>Invoke data portal methods on child</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Server
 {
   /// <summary>

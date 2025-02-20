@@ -7,8 +7,6 @@
 //-----------------------------------------------------------------------
 
 using System.Web.UI;
-using System.ComponentModel;
-using System.Reflection;
 using Csla.Properties;
 
 namespace Csla.Web

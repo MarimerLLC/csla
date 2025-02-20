@@ -6,8 +6,6 @@
 // <summary>Context information provided to an authorization</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-
 namespace Csla.Rules
 {
   /// <summary>

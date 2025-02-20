@@ -6,8 +6,6 @@
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
 

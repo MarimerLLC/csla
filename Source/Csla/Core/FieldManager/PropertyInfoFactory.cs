@@ -6,8 +6,6 @@
 // <summary>Creates the factory object that</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Core.FieldManager
 {
   /// <summary>

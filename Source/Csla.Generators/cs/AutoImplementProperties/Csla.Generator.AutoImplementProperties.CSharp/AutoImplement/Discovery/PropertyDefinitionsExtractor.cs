@@ -6,7 +6,6 @@
 // <summary>Extract the definitions of all properties of a type for source generation</summary>
 //-----------------------------------------------------------------------
 
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery

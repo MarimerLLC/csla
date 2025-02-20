@@ -6,8 +6,6 @@
 // <summary>Interface defining the members of the child data portal type</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla
 {
   /// <summary>

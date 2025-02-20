@@ -15,7 +15,7 @@ namespace Csla.Serialization.Mobile
   /// data for a specific object.
   /// </summary>
 #if TESTING
-  [System.Diagnostics.DebuggerNonUserCode]
+  [DebuggerNonUserCode]
 #endif
   [Serializable]
   [DataContract]

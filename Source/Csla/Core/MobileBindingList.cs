@@ -22,7 +22,7 @@ namespace Csla.Core
   /// Type of the items contained in the list.
   /// </typeparam>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public class MobileBindingList<

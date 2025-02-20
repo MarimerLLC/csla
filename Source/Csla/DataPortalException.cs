@@ -14,7 +14,7 @@ namespace Csla
   /// This exception is returned for any errors occurring
   /// during the server-side DataPortal invocation.
   /// </summary>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
+  [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
   [Serializable]
   public class DataPortalException : Exception
   {
@@ -182,7 +182,7 @@ namespace Csla
     /// Get the combined stack trace from the server
     /// and client.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
+    [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
     public override string StackTrace
     {
       get { return $"{_innerStackTrace}{Environment.NewLine}{base.StackTrace}"; }

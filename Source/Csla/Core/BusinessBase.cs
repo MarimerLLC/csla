@@ -24,7 +24,7 @@ namespace Csla.Core
   /// business objects will be derived.
   /// </summary>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public abstract class BusinessBase : UndoableBase,
@@ -3394,8 +3394,7 @@ namespace Csla.Core
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-      "CA1062:ValidateArgumentsOfPublicMethods")]
+    [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<ChildChangedEventArgs> ChildChanged
     {
       add

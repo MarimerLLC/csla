@@ -23,7 +23,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public class FieldDataManager : MobileObject, IUndoableObject, IUseApplicationContext
@@ -237,7 +237,7 @@ namespace Csla.Core.FieldManager
     /// <param name="propertyInfo">
     /// The property corresponding to the field.
     /// </param>
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
     public IFieldData GetFieldData(IPropertyInfo propertyInfo)
     {
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)

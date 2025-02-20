@@ -101,7 +101,7 @@ namespace Csla.Data
       }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+    [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     private void CopyData(
       DataTable dt, IList ds, List<string> columns)
     {

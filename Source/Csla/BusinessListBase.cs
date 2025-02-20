@@ -21,7 +21,7 @@ namespace Csla
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public abstract class BusinessListBase<
@@ -146,7 +146,7 @@ namespace Csla
     /// A collection containing all child objects marked
     /// for deletion.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+    [SuppressMessage(
       "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected MobileList<C> DeletedList
@@ -159,7 +159,7 @@ namespace Csla
       }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+    [SuppressMessage(
       "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList => (IEnumerable<IEditableBusinessObject>)DeletedList;
@@ -1153,8 +1153,7 @@ namespace Csla
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-      "CA1062:ValidateArgumentsOfPublicMethods")]
+    [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<SavedEventArgs> Saved
     {
       add

@@ -21,7 +21,7 @@ namespace Csla.Serialization.Mobile
   /// </remarks>
   /// <param name="applicationContext"></param>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   public sealed class MobileFormatter(ApplicationContext applicationContext) : ISerializationFormatter
   {

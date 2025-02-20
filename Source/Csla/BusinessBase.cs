@@ -299,7 +299,7 @@ namespace Csla
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+    [SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<SavedEventArgs> Saved
     {

@@ -25,7 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(childHasRunLocalRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [childHasRunLocalRule];
 
     /// <summary>
     /// 

@@ -26,8 +26,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(completeCalledInAsyncBusinessRuleRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [completeCalledInAsyncBusinessRuleRule];
 
     /// <summary>
     /// 

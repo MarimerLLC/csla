@@ -21,8 +21,8 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<string> FixableDiagnosticIds =>
-      ImmutableArray.Create(AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance);
+    public override ImmutableArray<string> FixableDiagnosticIds => [AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance];
+
     /// <summary>
     /// 
     /// </summary>

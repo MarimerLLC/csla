@@ -25,8 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(shouldOnlyReturnVoidOrTaskRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldOnlyReturnVoidOrTaskRule];
 
     /// <summary>
     /// 

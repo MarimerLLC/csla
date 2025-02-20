@@ -6,7 +6,6 @@
 // <summary>Provides methods to dynamically find and call methods.</summary>
 //-----------------------------------------------------------------------
 
-using System.Globalization;
 using Csla.Properties;
 
 #if NET8_0_OR_GREATER

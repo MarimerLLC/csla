@@ -13,6 +13,7 @@
    <Using Include="System.Data" />
    <Using Include="System.Diagnostics" />
    <Using Include="System.Diagnostics.CodeAnalysis" />
+   <Using Include="System.Globalization" />
    <Using Include="System.Linq.Expressions" />
    <Using Include="System.Net" />
    <Using Include="System.Reflection" />
@@ -23,6 +24,7 @@
    <Using Include="System.Security.Principal" />
    <Using Include="System.Text" />
    <Using Include="System.Text.RegularExpressions" />
+   <Using Include="System.Xml" />
  </ItemGroup>
 
  <!-- Common Package Settings -->

@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Serialization;
-using System.Xml;
 
 namespace Csla.Serialization.Mobile
 {

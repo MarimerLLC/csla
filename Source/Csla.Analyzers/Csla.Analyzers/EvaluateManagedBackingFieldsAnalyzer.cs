@@ -11,17 +11,17 @@ namespace Csla.Analyzers
   /// 
   /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
-  public sealed class EvaluateManagedBackingFieldsAnalayzer
+  public sealed class EvaluateManagedBackingFieldsAnalyzer
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor mustBePublicStaticAndReadonlyRule =
       new(
         Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
-        EvaluateManagedBackingFieldsAnalayzerConstants.Title,
-        EvaluateManagedBackingFieldsAnalayzerConstants.Message,
+        EvaluateManagedBackingFieldsAnalyzerConstants.Title,
+        EvaluateManagedBackingFieldsAnalyzerConstants.Message,
         Constants.Categories.Usage, DiagnosticSeverity.Error, true,
         helpLinkUri: HelpUrlBuilder.Build(
-          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalayzer)));
+          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalyzer)));
 
     /// <summary>
     /// 
@@ -125,7 +125,7 @@ namespace Csla.Analyzers
         return DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
           propertyNode => propertyNode.ExpressionBody as SyntaxNode ??
-            propertyNode.AccessorList?.Accessors.Single(
+            propertyNode.AccessorList.Accessors.Single(
               _ => _.IsKind(SyntaxKind.GetAccessorDeclaration)));
       }
 
@@ -133,7 +133,7 @@ namespace Csla.Analyzers
       {
         return DetermineIfPropertyUsesField(
           context, fieldSymbol, classProperty,
-          propertyNode => propertyNode.AccessorList?.Accessors.Single(
+          propertyNode => propertyNode.AccessorList.Accessors.Single(
             _ => _.IsKind(SyntaxKind.SetAccessorDeclaration)));
       }
 

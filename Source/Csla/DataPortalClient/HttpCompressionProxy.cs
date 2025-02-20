@@ -6,9 +6,6 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 
-using System.Net;
-using System.Net.Http;
-using System.Runtime.Versioning;
 using Csla.Configuration;
 
 namespace Csla.Channels.Http

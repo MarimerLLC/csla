@@ -9,12 +9,7 @@
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
-#if NET8_0_OR_GREATER
-using System.Runtime.Versioning;
-#endif
 
 namespace Csla.Channels.Http
 {

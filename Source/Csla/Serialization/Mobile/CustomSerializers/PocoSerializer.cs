@@ -6,6 +6,8 @@
 // <summary>A formatter that can serialize and deserialize a POCO</summary>
 //-----------------------------------------------------------------------
 
+using System.Text.Json;
+
 namespace Csla.Serialization.Mobile.CustomSerializers;
 
 /// <summary>

@@ -42,7 +42,7 @@ namespace Csla.Analyzers.Tests
         """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalayzer());
+      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalyzer());
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(
@@ -86,7 +86,7 @@ namespace Csla.Analyzers.Tests
         """;
       var document = TestHelpers.Create(code);
       var tree = await document.GetSyntaxTreeAsync();
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalayzer());
+      var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new EvaluateManagedBackingFieldsAnalyzer());
 
       var actions = new List<CodeAction>();
       var codeActionRegistration = new Action<CodeAction, ImmutableArray<Diagnostic>>(

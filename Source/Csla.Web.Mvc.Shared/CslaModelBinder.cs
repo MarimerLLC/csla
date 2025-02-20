@@ -126,7 +126,6 @@ namespace Csla.Web.Mvc
 }
 #elif !NETSTANDARD
 using System.Web.Mvc;
-using System.ComponentModel;
 using Csla.Core;
 
 namespace Csla.Web.Mvc

@@ -18,6 +18,7 @@
    <Using Include="System.Reflection" />
    <Using Include="System.Reflection.Emit" />
    <Using Include="System.Runtime.Versioning" />
+   <Using Include="System.Runtime.InteropServices" />
    <Using Include="System.Security.Claims" />
    <Using Include="System.Security.Principal" />
    <Using Include="System.Text" />

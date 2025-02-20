@@ -8,7 +8,6 @@
 //-----------------------------------------------------------------------
 
 using System.EnterpriseServices;
-using System.Runtime.InteropServices;
 
 namespace Csla.Server
 {

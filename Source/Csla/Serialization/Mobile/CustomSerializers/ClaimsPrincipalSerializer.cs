@@ -6,8 +6,6 @@
 // <summary>A formatter that can serialize and deserialize a ClaimsPrincipal object</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Claims;
-
 namespace Csla.Serialization.Mobile.CustomSerializers;
 
 #if NET8_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER

@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using Csla.Core;
-using System.Security.Claims;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Server;
 

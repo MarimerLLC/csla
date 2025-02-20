@@ -8,7 +8,6 @@
 using Csla.Core;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
 
 namespace Csla.Blazor.WebAssembly
 {

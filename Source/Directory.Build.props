@@ -12,6 +12,7 @@
    <Using Include="System.Diagnostics" />
    <Using Include="System.Diagnostics.CodeAnalysis" />
    <Using Include="System.Reflection" />
+   <Using Include="System.Security.Claims" />
    <Using Include="System.Security.Principal" />
  </ItemGroup>
 

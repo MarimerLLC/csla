@@ -8,7 +8,6 @@
 using Csla.Core;
 using Csla.Runtime;
 using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace Csla.AspNetCore
 {

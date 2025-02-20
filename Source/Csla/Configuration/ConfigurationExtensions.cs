@@ -54,7 +54,7 @@ namespace Csla.Configuration
       cslaOptions.AddRequiredDataPortalServices(services);
 
       // Default to using LocalProxy and local data portal
-      var proxyInit = services.Count(i => i.ServiceType.Equals(typeof(IDataPortalProxy))) > 0;
+      var proxyInit = services.Any(i => i.ServiceType == typeof(IDataPortalProxy));
       if (!proxyInit)
       {
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());

@@ -65,12 +65,8 @@ namespace Csla.Web
     /// </summary>
     /// <param name="viewName">Ignored.</param>
     /// <remarks>This control only contains a "Default" view.</remarks>
-    protected override DataSourceView GetView(string viewName)
-    {
-      if (_defaultView == null)
-        _defaultView = new CslaDataSourceView(this, "Default");
-      return _defaultView;
-    }
+    protected override DataSourceView GetView(string viewName) =>
+      _defaultView ??= new CslaDataSourceView(this, "Default");
 
     /// <summary>
     /// Get or set the name of the assembly (no longer used).

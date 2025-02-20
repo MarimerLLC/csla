@@ -653,11 +653,7 @@ namespace Csla.Reflection
         }
         catch (Exception e)
         {
-          Exception inner;
-          if (e.InnerException == null)
-            inner = e;
-          else
-            inner = e.InnerException;
+          var inner = e.InnerException ?? e;
           throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
         }
         return result;
@@ -1073,11 +1069,7 @@ namespace Csla.Reflection
       }
       catch (Exception e)
       {
-        Exception inner;
-        if (e.InnerException == null)
-          inner = e;
-        else
-          inner = e.InnerException;
+        var inner = e.InnerException ?? e;
         throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
       return result;
@@ -1098,11 +1090,7 @@ namespace Csla.Reflection
       }
       catch (Exception e)
       {
-        Exception inner;
-        if (e.InnerException == null)
-          inner = e;
-        else
-          inner = e.InnerException;
+        var inner = e.InnerException ?? e;
         throw new CallMethodException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodCallFailed, inner);
       }
       return result;

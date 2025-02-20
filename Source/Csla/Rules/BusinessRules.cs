@@ -47,15 +47,8 @@ namespace Csla.Rules
 
     // list of broken rules for this business object.
     private BrokenRulesCollection _brokenRules;
-    private BrokenRulesCollection BrokenRules
-    {
-      get
-      {
-        if (_brokenRules == null)
-          _brokenRules = new BrokenRulesCollection(true);
-        return _brokenRules;
-      }
-    }
+    private BrokenRulesCollection BrokenRules =>
+      _brokenRules ??= new(true);
 
     private bool _suppressRuleChecking;
     /// <summary>
@@ -278,15 +271,8 @@ namespace Csla.Rules
 
     [NonSerialized]
     private AsyncManualResetEvent _busyChanged;
-    private AsyncManualResetEvent BusyChanged
-    {
-      get
-      {
-        if (_busyChanged == null)
-          _busyChanged = new AsyncManualResetEvent();
-        return _busyChanged;
-      }
-    }
+    private AsyncManualResetEvent BusyChanged =>
+      _busyChanged ??= new AsyncManualResetEvent();
 
     /// <summary>
     /// Gets a value indicating whether any async

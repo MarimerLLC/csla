@@ -1593,17 +1593,8 @@ namespace Csla
     /// Gets the PropertyManager object for this
     /// business object.
     /// </summary>
-    protected FieldDataManager FieldManager
-    {
-      get
-      {
-        if (_fieldManager == null)
-        {
-          _fieldManager = new FieldDataManager(ApplicationContext, GetType());
-        }
-        return _fieldManager;
-      }
-    }
+    protected FieldDataManager FieldManager =>
+      _fieldManager ??= new(ApplicationContext, GetType());
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 

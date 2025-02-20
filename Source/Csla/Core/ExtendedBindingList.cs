@@ -7,9 +7,6 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization.Mobile;
-#if ANDROID || IOS
-using System.Collections.Specialized;
-#endif
 #if NET8_0_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
 #endif

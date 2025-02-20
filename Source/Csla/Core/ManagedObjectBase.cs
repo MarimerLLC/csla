@@ -6,7 +6,6 @@
 // <summary>Base class for an object that is serializable</summary>
 //-----------------------------------------------------------------------
 
-using System.Linq.Expressions;
 using Csla.Core.FieldManager;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;

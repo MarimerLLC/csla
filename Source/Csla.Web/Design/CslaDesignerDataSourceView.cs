@@ -6,11 +6,9 @@
 // <summary>Object responsible for providing details about</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using System.Web.UI.Design;
 using System.ComponentModel.Design;
 using System.Data;
-using System.ComponentModel;
 
 namespace Csla.Web.Design
 {

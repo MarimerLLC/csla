@@ -68,7 +68,7 @@ namespace Csla.Data
     /// object. Target properties may not be readonly or indexed.
     /// </remarks>
     public static void Map(
-      System.Collections.IDictionary source,
+      IDictionary source,
       object target, bool suppressExceptions,
       params string[] ignoreList)
     {

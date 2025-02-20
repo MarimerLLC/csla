@@ -7,8 +7,6 @@
 // <summary>Provides common access to "AssemblyLoadContext" logic</summary>
 //-----------------------------------------------------------------------
 
-using System.Runtime.Loader;
-
 namespace Csla.Runtime
 {
   /// <summary>

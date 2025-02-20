@@ -6,8 +6,6 @@
 //-----------------------------------------------------------------------
 
 #if NET8_0_OR_GREATER
-using System.Runtime.Loader;
-
 using Csla.Runtime;
 #endif
 using Csla.Reflection;

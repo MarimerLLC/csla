@@ -17,6 +17,7 @@
    <Using Include="System.Net" />
    <Using Include="System.Reflection" />
    <Using Include="System.Reflection.Emit" />
+   <Using Include="System.Runtime.Loader" />
    <Using Include="System.Runtime.Versioning" />
    <Using Include="System.Security.Claims" />
    <Using Include="System.Security.Principal" />

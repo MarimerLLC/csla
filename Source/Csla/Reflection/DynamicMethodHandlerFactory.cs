@@ -6,7 +6,6 @@
 // </copyright>
 // <summary>Delegate for a dynamic constructor method.</summary>
 //-----------------------------------------------------------------------
-using System.Linq.Expressions;
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 using System.Reflection.Emit;
 #endif

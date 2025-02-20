@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Converts a Boolean value into its inverse.</summary>
 //-----------------------------------------------------------------------
+
 using System.Windows.Data;
 
 namespace Csla.Xaml

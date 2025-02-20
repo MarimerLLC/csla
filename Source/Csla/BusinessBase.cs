@@ -6,7 +6,6 @@
 // <summary>This is the base class from which most business objects</summary>
 //-----------------------------------------------------------------------
 
-using System.Linq.Expressions;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;

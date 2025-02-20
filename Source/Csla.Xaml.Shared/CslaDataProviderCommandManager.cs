@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Implements support for RoutedCommands that can</summary>
 //-----------------------------------------------------------------------
+
 using System.Windows.Input;
 using Csla.Core;
 

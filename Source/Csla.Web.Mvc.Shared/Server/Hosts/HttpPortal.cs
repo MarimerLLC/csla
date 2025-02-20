@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Serialization.Mobile;
 using Csla.Core;
 using Csla.Serialization;

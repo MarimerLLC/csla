@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 using Csla.Core;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;

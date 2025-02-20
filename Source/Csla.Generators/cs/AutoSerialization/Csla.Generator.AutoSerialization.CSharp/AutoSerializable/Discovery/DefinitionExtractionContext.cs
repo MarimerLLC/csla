@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Helper for definition extraction, used to optimise symbo, recognition</summary>
 //-----------------------------------------------------------------------
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

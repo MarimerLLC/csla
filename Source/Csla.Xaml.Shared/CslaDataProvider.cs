@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Wraps and creates a CSLA .NET-style object </summary>
 //-----------------------------------------------------------------------
+
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using Csla.Core;

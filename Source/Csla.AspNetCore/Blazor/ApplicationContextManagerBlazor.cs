@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Core;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;

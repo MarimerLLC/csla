@@ -5,6 +5,7 @@
 // </copyright>
 // <summary></summary>
 //-----------------------------------------------------------------------
+
 using Csla.Rules;
 
 namespace Csla.Core

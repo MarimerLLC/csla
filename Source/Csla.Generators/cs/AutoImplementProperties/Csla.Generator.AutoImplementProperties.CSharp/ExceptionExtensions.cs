@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Extension methods for the Exception type</summary>
 //-----------------------------------------------------------------------
+
 using Microsoft.CodeAnalysis;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp

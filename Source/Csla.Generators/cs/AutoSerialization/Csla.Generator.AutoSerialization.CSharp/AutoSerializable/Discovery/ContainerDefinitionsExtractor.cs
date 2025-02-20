@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Extract the definitions of the containers of a type</summary>
 //-----------------------------------------------------------------------
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Text;

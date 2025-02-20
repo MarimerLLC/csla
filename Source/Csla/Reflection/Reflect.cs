@@ -6,8 +6,6 @@
 // <summary>Provides strong-typed reflection of the <typeparamref name="TTarget"/> </summary>
 //-----------------------------------------------------------------------
 
-using System.Linq.Expressions;
-
 namespace Csla.Reflection
 {
   /// <summary>

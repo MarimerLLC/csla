@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Defines the members required by a field</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core.FieldManager

@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods for base .NET configuration</summary>
 //-----------------------------------------------------------------------
+
 using Csla.DataPortalClient;
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;

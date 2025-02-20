@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Invokes a method on a target object when a </summary>
 //-----------------------------------------------------------------------
+
 using System.Windows;
 
 namespace Csla.Xaml

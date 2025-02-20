@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Basic implementation of AuthenticationStateProvider</summary>
 //-----------------------------------------------------------------------
+
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Csla.Blazor.Authentication

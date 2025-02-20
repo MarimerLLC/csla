@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Source generator for interface implementation</summary>
 //-----------------------------------------------------------------------
+
 using System.Text;
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery;
 using Microsoft.CodeAnalysis;

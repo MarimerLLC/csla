@@ -25,11 +25,11 @@ namespace Csla.Web.Mvc
     /// <param name="expression">Model property</param>
     public static HtmlString InformationFor<T>(
       this IHtmlHelper<T> htmlHelper,
-      System.Linq.Expressions.Expression<Func<T, object>> expression)
+      Expression<Func<T, object>> expression)
     {
       var result = string.Empty;
       var model = htmlHelper.ViewData.Model;
-      System.Reflection.PropertyInfo reflectedPropertyInfo = Reflection.Reflect<T>.GetProperty(expression);
+      PropertyInfo reflectedPropertyInfo = Reflection.Reflect<T>.GetProperty(expression);
       var propertyName = reflectedPropertyInfo.Name;
       if (model is Core.BusinessBase bb)
         result = bb.BrokenRulesCollection.ToString(",", Rules.RuleSeverity.Information, propertyName);
@@ -65,7 +65,7 @@ namespace Csla.Web.Mvc
     /// <param name="expression">Model property</param>
     public static HtmlString ErrorFor<T>(
       this IHtmlHelper<T> htmlHelper,
-      System.Linq.Expressions.Expression<Func<T, object>> expression)
+      Expression<Func<T, object>> expression)
     {
       var result = string.Empty;
       var model = htmlHelper.ViewData.Model;

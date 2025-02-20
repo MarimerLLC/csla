@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implementation of a lock that waits while</summary>
 //----------------------------------------------------------------------
+
 using System.Globalization;
 
 namespace Csla.Threading

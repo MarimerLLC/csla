@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Configuration;
 
 namespace Csla.Windows

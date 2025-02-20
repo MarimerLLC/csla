@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Implement extension methods for MobileFormatter configuration</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Serialization.Mobile;
 using Csla.Serialization.Mobile.CustomSerializers;
 using Microsoft.Extensions.DependencyInjection;

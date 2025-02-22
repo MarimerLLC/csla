@@ -69,7 +69,7 @@ namespace Csla.Server
       return result;
     }
 
-    private static System.Reflection.MethodInfo GetMethodOfCaller(Type objectType, string methodName, object[] parameters)
+    private static System.Reflection.MethodInfo GetMethodOfCaller([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string methodName, object[] parameters)
     {
       return MethodCaller.GetMethod(objectType, methodName, parameters) ?? throw new InvalidOperationException(string.Format(Resources.NoSuchMethod, $"{objectType.FullName}.{methodName}"));
     }

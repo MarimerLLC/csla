@@ -344,7 +344,7 @@ namespace Csla.DataPortalClient
       return CreateRequest<UpdateRequest>(ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(obj));
     }
 
-    private T CreateRequest<T>(object payload)
+    private T CreateRequest<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(object payload)
     {
       var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
 

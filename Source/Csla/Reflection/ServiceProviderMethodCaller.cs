@@ -66,7 +66,7 @@ namespace Csla.Reflection
     /// <param name="targetType">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
-    public ServiceProviderMethodInfo FindDataPortalMethod<T>(Type targetType, object?[]? criteria)
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)
@@ -85,7 +85,7 @@ namespace Csla.Reflection
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="dataPortalMethod">The maybe found method.</param>
     /// <returns><see langword="true"/> if a method with the provided attribute was found. Otherwise <see langword="false"/>.</returns>
-    public bool TryFindDataPortalMethod<T>(Type targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
+    public bool TryFindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
       where T : DataPortalOperationAttribute
     {
       dataPortalMethod = FindDataPortalMethod<T>(targetType, criteria, false);

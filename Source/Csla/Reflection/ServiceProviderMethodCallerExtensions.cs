@@ -6,6 +6,7 @@
 // <summary>Dynamically find/invoke methods with DI provided params</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Server;
 
 namespace Csla.Reflection
@@ -15,13 +16,13 @@ namespace Csla.Reflection
   /// </summary>
   internal static class ServiceProviderMethodCallerExtensions
   {
-    public static DataPortalMethodInfo GetDataPortalMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, Type objectType)
+    public static DataPortalMethodInfo GetDataPortalMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
       where TAttribute : DataPortalOperationAttribute
     {
       return GetDataPortalMethodInfoFor<TAttribute>(source, objectType, EmptyCriteria.Instance);
     }
 
-    public static DataPortalMethodInfo GetDataPortalMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, Type objectType, object criteria)
+    public static DataPortalMethodInfo GetDataPortalMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria)
       where TAttribute : DataPortalOperationAttribute
     {
       var dataPortalMethod = source.FindDataPortalMethod<TAttribute>(objectType, UnpackCriteria(criteria));
@@ -29,7 +30,7 @@ namespace Csla.Reflection
       return dataPortalMethod.DataPortalMethodInfo!;
     }
 
-    public static bool TryGetProviderMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, Type objectType, object criteria, out ServiceProviderMethodInfo? providerMethodInfo)
+    public static bool TryGetProviderMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, out ServiceProviderMethodInfo? providerMethodInfo)
       where TAttribute : DataPortalOperationAttribute
     {
       return source.TryFindDataPortalMethod<TAttribute>(objectType, UnpackCriteria(criteria), out providerMethodInfo);

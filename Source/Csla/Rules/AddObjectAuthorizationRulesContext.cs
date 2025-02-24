@@ -18,9 +18,10 @@ namespace Csla.Rules
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public AddObjectAuthorizationRulesContext(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>

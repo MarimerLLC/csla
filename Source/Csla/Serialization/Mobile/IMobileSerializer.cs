@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Custom serializer for a type</summary>
 //-----------------------------------------------------------------------
-using System.Text;
-using Csla.Core;
 
 namespace Csla.Serialization.Mobile
 {
@@ -21,6 +19,7 @@ namespace Csla.Serialization.Mobile
     /// serialize the specified type.
     /// </summary>
     /// <param name="type">Type to check</param>
+    /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
     static bool CanSerialize(Type type) => false;
 #endif
     /// <summary>
@@ -28,12 +27,14 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="obj">Source object</param>
     /// <param name="info">SerializationInfo instance</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
     void Serialize(object obj, SerializationInfo info);
     /// <summary>
     /// Deserialize the object from the SerializationInfo
     /// </summary>
     /// <param name="info">SerializationInfo instance</param>
     /// <returns></returns>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     object Deserialize(SerializationInfo info);
   }
 }

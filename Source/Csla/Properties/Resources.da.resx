@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -126,6 +131,9 @@
   </data>
   <data name="ChildDeleteException" xml:space="preserve">
     <value>Det er ikke muligt direkte at markere et børneobjekt til sletning - brug objektets forældre kollektion</value>
+  </data>
+  <data name="NoDeleteRootException" xml:space="preserve">
+    <value>Ugyldig for rod objekter - brug Delete i stedet</value>
   </data>
   <data name="NoSaveChildException" xml:space="preserve">
     <value>Kan ikke direkte lagre et børneobjekt</value>
@@ -217,9 +225,6 @@
   <data name="PropertySetNotAllowed" xml:space="preserve">
     <value>Property set er ikke tilladt</value>
   </data>
-  <data name="NoDeleteRootException" xml:space="preserve">
-    <value>Ugyldig for rod objekter - brug Delete i stedet</value>
-  </data>
   <data name="NothingNotValid" xml:space="preserve">
     <value>Argument kan ikke være Nothing</value>
   </data>
@@ -244,16 +249,20 @@
   <data name="TypeLoadException" xml:space="preserve">
     <value>Kunne ikke læse typen '{0}'</value>
   </data>
+  <data name="NoSuchFactoryMethod" xml:space="preserve">
+    <value>Factory metode findes ikke:{0}</value>
+  </data>
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} må ikke være mindre end {1} tegn</value>
+  </data>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Uoverensstemmelse i redigeringsniveau i {0}</value>
   </data>
   <data name="MethodExecuteNotAllowed" xml:space="preserve">
     <value>Udførsel af metoden er ikke tilladt</value>
   </data>
-  <data name="NoSuchFactoryMethod" xml:space="preserve">
-    <value>Factory metode findes ikke:{0}</value>
-  </data>
-  <data name="EditLevelMismatchException" xml:space="preserve">
-    <value>Uoverensstemmelse i redigeringsniveau i {0}</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

@@ -18,6 +18,6 @@ namespace Csla.Core.FieldManager
     /// </summary>
     /// <value>The value of the field.</value>
     /// <returns>The value of the field.</returns>
-    new T Value { get; set; }
+    new T? Value { get; set; }
   }
 }

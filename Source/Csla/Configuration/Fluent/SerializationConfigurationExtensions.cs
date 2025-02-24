@@ -16,6 +16,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaSerializationConfiguration
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions Serialization(this CslaOptions config)
     {
       return Serialization(config, null);
@@ -24,8 +25,12 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaSerializationConfiguration
     /// </summary>
-    public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       options?.Invoke(config.SerializationOptions);
       return config;
     }

@@ -17,33 +17,34 @@ namespace Csla.Core
     /// </summary>
     /// <param name="key">The key of the value to get.</param>
     /// <returns>The value associated with the specified key, or null if the key does not exist.</returns>
-    object GetValueOrNull(string key);
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    object? GetValueOrNull(string key);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.TryAdd(TKey, TValue)"/>
-    bool TryAdd(object key, object value);
+    bool TryAdd(object key, object? value);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.ContainsKey(TKey)"/>
     public bool ContainsKey(object key);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.TryRemove(TKey, out TValue)"/>
-    public bool TryRemove(object key, out object value);
+    public bool TryRemove(object key, out object? value);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.TryGetValue(TKey, out TValue)"/>
-    public bool TryGetValue(object key, out object value);
+    public bool TryGetValue(object key, out object? value);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.TryUpdate(TKey, TValue, TValue)"/>
-    bool TryUpdate(object key, object newValue, object comparisonValue);
+    bool TryUpdate(object key, object? newValue, object? comparisonValue);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.GetOrAdd(TKey, Func{TKey, TValue})"/>
-    object GetOrAdd(object key, Func<object, object> valueFactory);
+    object? GetOrAdd(object key, Func<object?, object?> valueFactory);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.GetOrAdd(TKey, TValue)"/>
-    public object GetOrAdd(object key, object value);
+    public object? GetOrAdd(object key, object? value);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.AddOrUpdate(TKey, Func{TKey, TValue}, Func{TKey, TValue, TValue})"/>
-    public object AddOrUpdate(object key, Func<object, object> addValueFactory, Func<object, object, object> updateValueFactory);
+    public object? AddOrUpdate(object key, Func<object?, object?> addValueFactory, Func<object?, object?, object?> updateValueFactory);
 
     /// <inheritdoc cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}.AddOrUpdate(TKey, TValue, Func{TKey, TValue, TValue})"/>
-    public object AddOrUpdate(object key, object addValue, Func<object, object, object> updateValueFactory);
+    public object? AddOrUpdate(object key, object? addValue, Func<object?, object?, object?> updateValueFactory);
   }
 }

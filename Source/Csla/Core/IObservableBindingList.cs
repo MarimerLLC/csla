@@ -23,7 +23,7 @@ namespace Csla.Core
     /// Event indicating that an item is being
     /// removed from the list.
     /// </summary>
-    event EventHandler<RemovingItemEventArgs> RemovingItem;
+    event EventHandler<RemovingItemEventArgs>? RemovingItem;
     /// <summary>
     /// Creates and adds a new item to the collection.
     /// </summary>

@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Text.Json;
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile.CustomSerializers;
 
@@ -23,7 +24,10 @@ public class PocoSerializer<T> : IMobileSerializer
   public object Deserialize(SerializationInfo info)
   {
     var json = info.GetValue<string>("s");
-    return JsonSerializer.Deserialize<T>(json);
+    if (json is null)
+      throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T)));
+
+    return JsonSerializer.Deserialize<T>(json) ?? throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T)));
   }
 
   /// <inheritdoc />

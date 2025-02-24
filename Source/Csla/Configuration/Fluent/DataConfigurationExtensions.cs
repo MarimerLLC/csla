@@ -16,8 +16,12 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaDataConfiguration
     /// </summary>
-    public static CslaOptions Data(this CslaOptions config, Action<DataOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions Data(this CslaOptions config, Action<DataOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       options?.Invoke(config.DataOptions);
       return config;
     }

@@ -10,11 +10,11 @@ namespace Csla
 {
   internal static class DefaultFilter
   {
-    public static bool Filter(object item, object filter)
+    public static bool Filter(object? item, object? filter)
     {
       bool result = false;
-      if (item != null && filter != null)
-        result = item.ToString().Contains(filter.ToString());
+      if (item?.ToString() is string itemStr && filter?.ToString() is string filterStr)
+        result = itemStr.Contains(filterStr);
       return result;
     }
   }

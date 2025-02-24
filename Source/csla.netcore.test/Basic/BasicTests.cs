@@ -362,12 +362,12 @@ namespace Csla.Test.Basic
     }
 
     [TestMethod]
-    public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
+    public async Task SuppressListChangedEventsDoNotRaiseCollectionChanged()
     {
       TestResults.Reinitialise();
 
       bool changed = false;
-      var obj = new RootList();
+      var obj = await _testDIContext.CreateDataPortal<RootList>().CreateAsync();
       obj.ListChanged += (_, _) =>
       {
         changed = true;

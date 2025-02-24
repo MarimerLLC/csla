@@ -8,6 +8,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -16,28 +18,25 @@ namespace Csla.Server
   /// </summary>
   public class ChildDataPortalFactory : IChildDataPortalFactory
   {
+    private readonly IServiceProvider _serviceProvider;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="serviceProvider">Current ServiceProvider</param>
+    /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public ChildDataPortalFactory(IServiceProvider serviceProvider)
     {
-      _serviceProvider = serviceProvider;
+        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
-
-    private IServiceProvider _serviceProvider;
 
     /// <summary>
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    public IChildDataPortal<T> GetPortal<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    T>()
+    public IChildDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]T>()
     {
-      return (IChildDataPortal<T>)_serviceProvider.GetService(typeof(IChildDataPortal<T>));
+      return _serviceProvider.GetRequiredService<IChildDataPortal<T>>();
     }
   }
 }

@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Provides access to the correct current application</summary>
 //-----------------------------------------------------------------------
-#nullable enable
 
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,21 +17,30 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextAccessor
   {
+    private readonly IContextManager? _contextManager;
+    private readonly IContextManager _localContextManager;
+    
+    internal IServiceProvider ServiceProvider { get; }
+    
     /// <summary>
     /// Creates a new instance of the type.
     /// </summary>
     /// <param name="contextManagerList"></param>
     /// <param name="localContextManager"></param>
     /// <param name="serviceProvider"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="contextManagerList"/>, <paramref name="localContextManager"/> or <paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public ApplicationContextAccessor(
       IEnumerable<IContextManager> contextManagerList, 
       IContextManagerLocal localContextManager, 
       IServiceProvider serviceProvider)
     {
-      ServiceProvider = serviceProvider;
-      _localContextManager = localContextManager;
+      if (contextManagerList is null)
+        throw new ArgumentNullException(nameof(contextManagerList));
 
-      var managers = contextManagerList.ToList();
+      ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      _localContextManager = localContextManager ?? throw new ArgumentNullException(nameof(localContextManager));
+
+            var managers = contextManagerList.ToList();
       for (int i = managers.Count - 1; i >= 0; i--)
       {
         if (managers[i].IsValid)
@@ -42,10 +50,6 @@ namespace Csla.Core
         }
       }
     }
-
-    internal IServiceProvider ServiceProvider { get; }
-    private IContextManager? _contextManager;
-    private IContextManager _localContextManager;
 
     /// <summary>
     /// Gets a reference to the correct current application

@@ -18,34 +18,24 @@ namespace Csla.Reflection
   /// </summary>
   public class LateBoundObject : Core.IUseApplicationContext
   {
-    private ApplicationContext _applicationContext;
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    private ApplicationContext? _applicationContext;
+
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext
+    {
+      get
+      {
+        ThrowInvalidOperationExceptionWhenApplicationContextIsNull();
+        return _applicationContext!;
+      }
+
+      set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
+    }
 
     /// <summary>
     /// Object instance managed by LateBoundObject.
     /// </summary>
     public object Instance { get; }
-
-    /// <summary>
-    /// Creates an instance of the specified
-    /// type and contains it within a new
-    /// LateBoundObject.
-    /// </summary>
-    /// <param name="objectType">
-    /// Type of object to create.
-    /// </param>
-    /// <remarks>
-    /// The specified type must implement a
-    /// default constructor.
-    /// </remarks>
-    public LateBoundObject(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType)
-    {
-      Instance = _applicationContext.CreateInstanceDI(objectType);
-    }
 
     /// <summary>
     /// Contains the provided object within
@@ -54,9 +44,10 @@ namespace Csla.Reflection
     /// <param name="instance">
     /// Object to contain.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="instance"/> is <see langword="null"/>.</exception>
     public LateBoundObject(object instance)
     {
-      Instance = instance;
+      Instance = instance ?? throw new ArgumentNullException(nameof(instance));
     }
 
     /// <summary>
@@ -66,8 +57,12 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public object CallMethodIfImplemented(string method)
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public object? CallMethodIfImplemented(string method)
     {
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return MethodCaller.CallMethodIfImplemented(Instance, method);
     }
 
@@ -81,8 +76,12 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public object CallMethodIfImplemented(string method, params object[] parameters)
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public object? CallMethodIfImplemented(string method, params object[] parameters)
     {
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return MethodCaller.CallMethodIfImplemented(Instance, method, parameters);
     }
 
@@ -94,8 +93,12 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public object CallMethod(string method)
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public object? CallMethod(string method)
     {
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return MethodCaller.CallMethod(Instance, method);
     }
 
@@ -110,8 +113,12 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public object CallMethod(string method, params object[] parameters)
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public object? CallMethod(string method, params object?[]? parameters)
     {
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return MethodCaller.CallMethod(Instance, method, parameters);
     }
 
@@ -121,8 +128,12 @@ namespace Csla.Reflection
     /// otherwise synchronously invokes the method.
     /// </summary>
     /// <param name="methodName">Name of the method.</param>
+    /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public async Task CallMethodTryAsync(string methodName)
     {
+      if (string.IsNullOrWhiteSpace(methodName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(methodName)), nameof(methodName));
+
       try
       {
         await MethodCaller.CallMethodTryAsync(Instance, methodName);
@@ -146,8 +157,12 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public async Task CallMethodTryAsync(string methodName, params object[] parameters)
+    /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public async Task CallMethodTryAsync(string methodName, params object?[]? parameters)
     {
+      if (string.IsNullOrWhiteSpace(methodName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(methodName)), nameof(methodName));
+
       try
       {
         await MethodCaller.CallMethodTryAsync(Instance, methodName, parameters);
@@ -162,14 +177,18 @@ namespace Csla.Reflection
       }
     }
 
-    private ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private ServiceProviderMethodCaller? _serviceProviderMethodCaller;
+    [MemberNotNull(nameof(_serviceProviderMethodCaller))]
     private ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
       get
       {
-        if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(ServiceProviderMethodCaller));
-        return serviceProviderMethodCaller;
+        if (_serviceProviderMethodCaller == null)
+        {
+          ThrowInvalidOperationExceptionWhenApplicationContextIsNull();
+          _serviceProviderMethodCaller = (ServiceProviderMethodCaller)_applicationContext!.CreateInstanceDI(typeof(ServiceProviderMethodCaller));
+        }
+        return _serviceProviderMethodCaller;
       }
     }
 
@@ -182,14 +201,16 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public async Task CallMethodTryAsyncDI<T>(bool isSync, params object[] parameters)
+    /// <exception cref="InvalidOperationException"><see cref="Csla.Core.IUseApplicationContext.ApplicationContext"/> is <see langword="null"/>.</exception>
+    public async Task CallMethodTryAsyncDI<T>(bool isSync, params object?[]? parameters)
       where T : DataPortalOperationAttribute
     {
-      var method = ServiceProviderMethodCaller.FindDataPortalMethod<T>(
-        Instance, parameters);
+      ThrowInvalidOperationExceptionWhenApplicationContextIsNull();
+
+      var method = ServiceProviderMethodCaller.FindDataPortalMethod<T>(Instance, parameters);
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, method.MethodInfo);
+        Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext!, isSync, method.MethodInfo);
         await ServiceProviderMethodCaller.CallMethodTryAsync(Instance, method, parameters).ConfigureAwait(false);
       }
       catch (CallMethodException)
@@ -200,6 +221,16 @@ namespace Csla.Reflection
       {
         throw new CallMethodException(Instance.GetType().Name + "." + method.MethodInfo.Name + " " + Resources.MethodCallFailed, ex);
       }
+    }
+
+    [MemberNotNull(nameof(_applicationContext))]
+    private void ThrowInvalidOperationExceptionWhenApplicationContextIsNull()
+    {
+      if (_applicationContext is null)
+        Throw();
+
+      [DoesNotReturn]
+      static void Throw() => throw new InvalidOperationException($"{nameof(ApplicationContext)} == null");
     }
   }
 }

@@ -20,10 +20,6 @@ namespace Csla
     /// Get a child data portal instance.
     /// </summary>
     /// <typeparam name="T">Child business object type</typeparam>
-    IChildDataPortal<T> GetPortal<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    T>();
+    IChildDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>();
   }
 }

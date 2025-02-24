@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel.DataAnnotations;
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile
 {
@@ -16,27 +17,27 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public static class AssemblyNameTranslator
   {
-    private static string _coreLibAssembly = null;
+    private static string? _coreLibAssembly = null;
     private static string CoreLibAssembly
     {
       get
       {
         if (_coreLibAssembly == null)
         {
-          _coreLibAssembly = typeof(object).AssemblyQualifiedName;
+          _coreLibAssembly = typeof(object).AssemblyQualifiedName!;
           _coreLibAssembly = _coreLibAssembly.Substring(_coreLibAssembly.IndexOf(", ") + 2);
         }
         return _coreLibAssembly;
       }
     }
-    private static string _cslaLibAssembly = null;
+    private static string? _cslaLibAssembly = null;
     private static string CslaLibAssembly
     {
       get
       {
         if (_cslaLibAssembly == null)
         {
-          _cslaLibAssembly = typeof(NullPlaceholder).AssemblyQualifiedName;
+          _cslaLibAssembly = typeof(NullPlaceholder).AssemblyQualifiedName!;
           _cslaLibAssembly = _cslaLibAssembly.Substring(_cslaLibAssembly.IndexOf(", ") + 2);
         }
         return _cslaLibAssembly;
@@ -52,6 +53,7 @@ namespace Csla.Serialization.Mobile
     /// a short code.
     /// </summary>
     /// <param name="type">Original type.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
     public static string GetAssemblyQualifiedName(Type type)
     {
       return GetSerializationName(type, true);
@@ -64,11 +66,15 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="type">Original type.</param>
     /// <param name="useStrongName">Use strong name as type name</param>
+    /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
     public static string GetSerializationName(Type type, bool useStrongName)
     {
+      if (type is null)
+        throw new ArgumentNullException(nameof(type));
+
       if (useStrongName)
       {
-        var result = type.AssemblyQualifiedName;
+        var result = type.AssemblyQualifiedName ?? throw new InvalidOperationException(string.Format(Resources.TypeAssemblyQualifiedNameIsNull, type));
         result = result.Replace(CoreLibAssembly, CORELIB);
         result = result.Replace(CslaLibAssembly, CSLALIB);
         return result;

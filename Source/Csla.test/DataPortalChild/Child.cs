@@ -37,6 +37,13 @@ namespace Csla.Test.DataPortalChild
       private set { SetProperty(StatusProperty, value); }
     }
 
+    private static PropertyInfo<string[]> CreateValuesProperty = RegisterProperty<string[]>(nameof(CreateValues));
+    public string[] CreateValues
+    {
+      get { return GetProperty(CreateValuesProperty); }
+      private set { SetProperty(CreateValuesProperty, value); }
+    }
+
     public void DeleteChild()
     {
       MarkDeleted();
@@ -46,6 +53,12 @@ namespace Csla.Test.DataPortalChild
     protected override void Child_Create()
     {
       LoadProperty(StatusProperty, "Created");
+    }
+
+    [CreateChild]
+    private void ChildCreate(string[] createValue)
+    {
+      CreateValues = createValue;
     }
 
     [FetchChild]

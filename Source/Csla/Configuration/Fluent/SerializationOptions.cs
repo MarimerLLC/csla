@@ -16,12 +16,13 @@ namespace Csla.Configuration
   /// Use this type to configure the settings for serialization.
   /// </summary>
   /// <param name="cslaOptions">The CSLA options.</param>
+  /// <exception cref="ArgumentNullException"><paramref name="cslaOptions"/> is <see langword="null"/>.</exception>
   public class SerializationOptions(CslaOptions cslaOptions)
   {
     /// <summary>
     /// Gets the CSLA .NET configuration options.
     /// </summary>
-    protected CslaOptions CslaOptions => cslaOptions;
+    protected CslaOptions CslaOptions { get; } = cslaOptions ?? throw new ArgumentNullException(nameof(cslaOptions));
 
     /// <summary>
     /// Gets the current services collection.
@@ -33,11 +34,7 @@ namespace Csla.Configuration
     /// for all explicit object serialization (such as cloning,
     /// n-level undo, etc). Default is MobileFormatter.
     /// </summary>
-    public SerializationOptions UseSerializationFormatter<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>() where T : ISerializationFormatter
+    public SerializationOptions UseSerializationFormatter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : ISerializationFormatter
     {
       CslaOptions.Services.AddTransient(typeof(ISerializationFormatter), typeof(T));
       return this;

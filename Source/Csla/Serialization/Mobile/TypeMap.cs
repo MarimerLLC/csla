@@ -13,6 +13,7 @@ namespace Csla.Serialization.Mobile;
 /// Creates an instance of the class.
 /// </summary>
 /// <param name="canSerialize">A function that determines if the type can be serialized.</param>
+/// <exception cref="ArgumentNullException"><paramref name="canSerialize"/> is <see langword="null"/>.</exception>
 public class TypeMap<T, S>(Func<Type, bool> canSerialize) : ITypeMap
   where S : IMobileSerializer
 {
@@ -26,5 +27,5 @@ public class TypeMap<T, S>(Func<Type, bool> canSerialize) : ITypeMap
   /// <inheritdoc />
   public Type SerializerType => typeof(S);
   /// <inheritdoc />
-  public Func<Type, bool> CanSerialize { get; } = canSerialize;
+  public Func<Type, bool> CanSerialize { get; } = canSerialize ?? throw new ArgumentNullException(nameof(canSerialize));
 }

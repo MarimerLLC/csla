@@ -45,8 +45,7 @@ namespace Csla.Threading
       while (true)
       {
         var tcs = _tcs;
-        if (!tcs.Task.IsCompleted ||
-            Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
+        if (!tcs.Task.IsCompleted || Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
           return;
       }
     }

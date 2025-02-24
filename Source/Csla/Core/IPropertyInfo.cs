@@ -31,10 +31,11 @@ namespace Csla.Core
     /// if the user is not authorized to 
     /// read the property.
     /// </remarks>
-    object DefaultValue { get; }
+    object? DefaultValue { get; }
     /// <summary>
     /// Gets a new field data container for the property.
     /// </summary>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or consists only of white spaces.</exception>
     FieldManager.IFieldData NewFieldData(string name);
     /// <summary>
     /// Gets the relationship between the declaring object
@@ -61,6 +62,6 @@ namespace Csla.Core
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    System.Reflection.PropertyInfo GetPropertyInfo();
+    System.Reflection.PropertyInfo? GetPropertyInfo();
   }
 }

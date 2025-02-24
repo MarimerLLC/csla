@@ -9,20 +9,20 @@ namespace Csla.Core
 {
   internal static class TypeSystem
   {
-    internal static Type GetElementType(Type seqType)
+    internal static Type? GetElementType(Type? seqType)
     {
-      Type ienum = FindIEnumerable(seqType);
+      Type? ienum = FindIEnumerable(seqType);
       if (ienum == null) return seqType;
       return ienum.GetGenericArguments()[0];
     }
 
-    private static Type FindIEnumerable(Type seqType)
+    private static Type? FindIEnumerable(Type? seqType)
     {
       if (seqType == null || seqType == typeof(string))
         return null;
 
       if (seqType.IsArray)
-        return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType());
+        return typeof(IEnumerable<>).MakeGenericType(seqType.GetElementType()!);
 
       if (seqType.IsGenericType)
       {
@@ -37,11 +37,11 @@ namespace Csla.Core
       }
 
       Type[] ifaces = seqType.GetInterfaces();
-      if (ifaces != null && ifaces.Length > 0)
+      if (ifaces.Length > 0)
       {
         foreach (Type iface in ifaces)
         {
-          Type ienum = FindIEnumerable(iface);
+          Type? ienum = FindIEnumerable(iface);
           if (ienum != null) return ienum;
         }
       }

@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -211,10 +216,14 @@
   <data name="StringMaxLengthRule" xml:space="preserve">
     <value>Значение "{0}" не может превышать {1} символов(а)</value>
   </data>
+  <data name="StringRequiredRule" xml:space="preserve">
+    <value>Значение "{0}" не может быть пустым</value>
+  </data>
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>Значение "{0}" должно быть больше {1} символов(а)</value>
   </data>
-  <data name="StringRequiredRule" xml:space="preserve">
-    <value>Значение "{0}" не может быть пустым</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

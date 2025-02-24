@@ -22,6 +22,7 @@ public static class MobileFormatterConfigurationExtensions
   /// </summary>
   /// <param name="config"></param>
   /// <returns></returns>
+  /// <exception cref="ArgumentNullException"> is <see langword="null"/>.</exception>
   public static SerializationOptions UseMobileFormatter(this SerializationOptions config)
   {
     return UseMobileFormatter(config, null);
@@ -33,14 +34,16 @@ public static class MobileFormatterConfigurationExtensions
   /// <param name="config"></param>
   /// <param name="options"></param>
   /// <returns></returns>
-  public static SerializationOptions UseMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions> options)
+  /// <exception cref="ArgumentNullException"> is <see langword="null"/>.</exception>
+  public static SerializationOptions UseMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions>? options)
   {
+    if (config is null)
+      throw new ArgumentNullException(nameof(config));
     config.UseSerializationFormatter<MobileFormatter>();
     var mobileFormatterOptions = new MobileFormatterOptions();
 
     // add default custom serializers
-    mobileFormatterOptions.CustomSerializers.Add(
-      new TypeMap<ClaimsPrincipal, ClaimsPrincipalSerializer>(ClaimsPrincipalSerializer.CanSerialize));
+    mobileFormatterOptions.CustomSerializers.Add(new TypeMap<ClaimsPrincipal, ClaimsPrincipalSerializer>(ClaimsPrincipalSerializer.CanSerialize));
 
     options?.Invoke(mobileFormatterOptions);
     config.Services.AddScoped(_ => mobileFormatterOptions);

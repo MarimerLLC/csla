@@ -6,19 +6,17 @@ namespace Csla
   /// An alternative to Lazy&lt;T&gt; 
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public sealed class LazySingleton<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    T> : Core.IUseApplicationContext
+  public sealed class LazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Core.IUseApplicationContext
     where T : class
   {
     private readonly Lock _syncRoot = LockFactory.Create();
-    private T _value;
+    private T? _value;
     private readonly Func<T> _delegate;
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
-    private ApplicationContext _applicationContext;
+    private ApplicationContext _applicationContext = default!;
+
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
@@ -34,17 +32,19 @@ namespace Csla
     /// Will call the supplied delegate to create an instance of T (the value)
     /// </summary>
     /// <param name="delegate">The @delegate.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="delegate"/> is <see langword="null"/>.</exception>
     public LazySingleton(Func<T> @delegate)
     {
-      _delegate = @delegate;
+      _delegate = @delegate ?? throw new ArgumentNullException(nameof(@delegate));
     }
 
     /// <summary>
-    /// Gets a value indicating whether this instance is initilized and contains a value.
+    /// Gets a value indicating whether this instance is initialized and contains a value.
     /// </summary>
     /// <value>
     /// 	<c>true</c> if this instance is value created; otherwise, <c>false</c>.
     /// </value>
+    [MemberNotNullWhen(true, nameof(_value))]
     public bool IsValueCreated { get; private set; }
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace Csla
           }
         }
 
-        return _value;
+        return _value!;
       }
     }
   }

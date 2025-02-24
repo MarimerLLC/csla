@@ -20,7 +20,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<object> CreateChildAsync(params object[] criteria);
+    Task<object> CreateChildAsync(params object?[]? criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -28,14 +28,15 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<object> FetchChildAsync(params object[] criteria);
+    Task<object> FetchChildAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <param name="parameters">Additional, optional parameters to pass</param>
-    Task UpdateChildAsync(object obj, params object[] parameters);
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    Task UpdateChildAsync(object obj, params object?[]? parameters);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -43,14 +44,14 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    object CreateChild(params object[] criteria);
+    object CreateChild(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    object FetchChild(params object[] criteria);
+    object FetchChild(params object?[]? criteria);
     /// <summary>
     /// Called by the business object's Save() method to
     /// insert, update or delete an object in the database.
@@ -64,6 +65,7 @@ namespace Csla
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <param name="parameters"></param>
     /// <returns>A reference to the updated business object.</returns>
-    void UpdateChild(object obj, params object[] parameters);
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    void UpdateChild(object obj, params object?[]? parameters);
   }
 }

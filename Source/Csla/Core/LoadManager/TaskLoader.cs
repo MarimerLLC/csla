@@ -3,9 +3,9 @@
 
   internal class TaskDataPortalResult : IDataPortalResult
   {
-    public object Object { get; internal set; }
-    public Exception Error { get; internal set; }
-    public object UserState { get; internal set; }
+    public object? Object { get; internal set; }
+    public Exception? Error { get; internal set; }
+    public object? UserState { get; internal set; }
   }
 
   /// <summary>

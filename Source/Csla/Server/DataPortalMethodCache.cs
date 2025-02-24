@@ -11,6 +11,7 @@ using System.Runtime.Loader;
 using Csla.Runtime;
 #endif
 using Csla.Reflection;
+using Csla.Properties;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Server
@@ -18,81 +19,66 @@ namespace Csla.Server
   internal static class DataPortalMethodCache
   {
 #if NET8_0_OR_GREATER
-    private static Dictionary<MethodCacheKey, Tuple<string, DataPortalMethodInfo>> _cache = [];
+    private static readonly Dictionary<MethodCacheKey, Tuple<string?, DataPortalMethodInfo>> _cache = [];
 #else
-    private static Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache = [];
+    private static readonly Dictionary<MethodCacheKey, DataPortalMethodInfo> _cache = [];
 #endif
 
-    public static DataPortalMethodInfo GetMethodInfo(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-#endif
-      Type objectType, string methodName, params object[] parameters)
+    public static DataPortalMethodInfo GetMethodInfo([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string methodName, params object[] parameters)
     {
-      var key = new MethodCacheKey(objectType.FullName, methodName, MethodCaller.GetParameterTypes(parameters));
+      var key = new MethodCacheKey(objectType.FullName!, methodName, MethodCaller.GetParameterTypes(parameters));
 
-      DataPortalMethodInfo result = null;
-
-      var found = false;
+      DataPortalMethodInfo result;
 
 #if NET8_0_OR_GREATER
-      try
+      if (_cache.TryGetValue(key, out var methodInfo))
       {
-        found = _cache.TryGetValue(key, out var methodInfo);
-
-        result = methodInfo?.Item2;
+        return methodInfo.Item2;
       }
-      catch
-      { /* failure will drop into !found block */ }
 
-      if (!found)
+      lock (_cache)
       {
-        lock (_cache)
+        if (_cache.TryGetValue(key, out methodInfo))
         {
-          found = _cache.TryGetValue(key, out var methodInfo);
-
-          result = methodInfo?.Item2;
-
-          if (!found)
-          {
-            result = new DataPortalMethodInfo(MethodCaller.GetMethod(objectType, methodName, parameters));
-
-            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, result, OnAssemblyLoadContextUnload);
-
-            _cache.Add(key, cacheInstance);
-          }
+          return methodInfo.Item2;
         }
+
+        var method = GetMethodOfCaller(objectType, methodName, parameters);
+        
+        result = new DataPortalMethodInfo(method);
+        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, result, OnAssemblyLoadContextUnload);
+        _cache.Add(key, cacheInstance);
       }
+      
 #else
-      try
-      {
-        found = _cache.TryGetValue(key, out result);
-      }
-      catch
-      { /* failure will drop into !found block */ }
+      if (_cache.TryGetValue(key, out result)) 
+        return result;
 
-      if (!found)
+      lock (_cache)
       {
-        lock (_cache)
+        if (!_cache.TryGetValue(key, out result))
         {
-          if (!_cache.TryGetValue(key, out result))
-          {
-            result = new DataPortalMethodInfo(MethodCaller.GetMethod(objectType, methodName, parameters));
+          var method = GetMethodOfCaller(objectType, methodName, parameters);
+          result = new DataPortalMethodInfo(method);
 
-            _cache.Add(key, result);
-          }
+          _cache.Add(key, result);
         }
-      }
+      }      
 #endif
 
       return result;
+    }
+
+    private static System.Reflection.MethodInfo GetMethodOfCaller([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string methodName, object[] parameters)
+    {
+      return MethodCaller.GetMethod(objectType, methodName, parameters) ?? throw new InvalidOperationException(string.Format(Resources.NoSuchMethod, $"{objectType.FullName}.{methodName}"));
     }
 
 #if NET8_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_cache)
-        AssemblyLoadContextManager.RemoveFromCache(_cache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_cache, context);
     }
 #endif
   }

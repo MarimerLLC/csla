@@ -21,6 +21,7 @@ namespace Csla.Configuration
     /// Configure data portal client to use LocalProxy.
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalClientOptions UseLocalProxy(this DataPortalClientOptions config)
     {
       return UseLocalProxy(config, null);
@@ -31,8 +32,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
-    public static DataPortalClientOptions UseLocalProxy(this DataPortalClientOptions config, Action<LocalProxyOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static DataPortalClientOptions UseLocalProxy(this DataPortalClientOptions config, Action<LocalProxyOptions>? options)
     {
+      if (config is null)
+        throw new ArgumentNullException(nameof(config));
+
       var proxyOptions = new LocalProxyOptions();
       options?.Invoke(proxyOptions);
       config.Services.AddTransient<IDataPortalProxy, LocalProxy>();

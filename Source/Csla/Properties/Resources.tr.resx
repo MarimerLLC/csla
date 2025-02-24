@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -448,17 +453,9 @@
     <value>Bir önceki değerlere dönmek istediğinizden emin misiniz?</value>
     <comment>translated</comment>
   </data>
-  <data name="Warning" xml:space="preserve">
-    <value>Uyarı</value>
-    <comment>translated</comment>
-  </data>
-  <data name="AddNewCoreMustBeOverriden" xml:space="preserve">
-    <value>AddNewCore must be overridden</value>
+  <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
+    <value>Cannot register property {0}, a PropertyInfo with the same name already exists.</value>
     <comment>kept</comment>
-  </data>
-  <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
-    <value>Can not change a read-only list or collection</value>
-    <comment>translated</comment>
   </data>
   <data name="ExecuteBadParams" xml:space="preserve">
     <value>Method to be executed must have 0 or 2 parameters</value>
@@ -468,48 +465,60 @@
     <value>Trigger event has an unsupported signature</value>
     <comment>kept</comment>
   </data>
+  <data name="AddNewCoreMustBeOverriden" xml:space="preserve">
+    <value>AddNewCore must be overridden</value>
+    <comment>kept</comment>
+  </data>
+  <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
+    <value>Can not change a read-only list or collection</value>
+    <comment>translated</comment>
+  </data>
+  <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
+    <value>PropertyName '{0}' not found in list</value>
+    <comment>kept</comment>
+  </data>
   <data name="IndexedExpressionsMustBeClosed" xml:space="preserve">
     <value>Indexed expressions must be closed</value>
     <comment>Csla.Mobile</comment>
   </data>
-  <data name="ListItemNotAChildException" xml:space="preserve">
-    <value>List item must be marked as a child object</value>
-    <comment>kept</comment>
-  </data>
   <data name="NavigatorProviderSetPriorToTriggerEvent" xml:space="preserve">
     <value>Please set NavigatorProvider prior to TriggerEvent property.</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="ObjectNotNull" xml:space="preserve">
+    <value>Can not set property if data object is not null</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="PropertyNameDoesNotExist" xml:space="preserve">
+    <value>The specified property name '{0}' does not exist</value>
+    <comment>Csla.Mobile</comment>
+  </data>
+  <data name="PropertyRequiresIndexArguments" xml:space="preserve">
+    <value>This property requires {0} index arguments, {1} were provided</value>
     <comment>Csla.Mobile</comment>
   </data>
   <data name="NoSuchMethod" xml:space="preserve">
     <value>No such method {0}</value>
     <comment>kept</comment>
   </data>
-  <data name="ObjectNotNull" xml:space="preserve">
-    <value>Can not set property if data object is not null</value>
-    <comment>Csla.Mobile</comment>
+  <data name="PropertyIsPrivateField" xml:space="preserve">
+    <value>Attempt to read/load private field property in managed properties.</value>
+    <comment>kept</comment>
+  </data>
+  <data name="ListItemNotAChildException" xml:space="preserve">
+    <value>List item must be marked as a child object</value>
+    <comment>kept</comment>
   </data>
   <data name="PrivateFieldException" xml:space="preserve">
     <value>Properties with private backing fields must be marked as RelationshipTypes.PrivateField</value>
     <comment>kept</comment>
   </data>
-  <data name="PropertyIsPrivateField" xml:space="preserve">
-    <value>Attempt to read/load private field property in managed properties.</value>
-    <comment>kept</comment>
+  <data name="Warning" xml:space="preserve">
+    <value>Uyarı</value>
+    <comment>translated</comment>
   </data>
-  <data name="PropertyNameDoesNotExist" xml:space="preserve">
-    <value>The specified property name '{0}' does not exist</value>
-    <comment>Csla.Mobile</comment>
-  </data>
-  <data name="PropertyRegisterDuplicateNotAllowed" xml:space="preserve">
-    <value>Cannot register property {0}, a PropertyInfo with the same name already exists.</value>
-    <comment>kept</comment>
-  </data>
-  <data name="PropertyRequiresIndexArguments" xml:space="preserve">
-    <value>This property requires {0} index arguments, {1} were provided</value>
-    <comment>Csla.Mobile</comment>
-  </data>
-  <data name="SortedBindingListPropertyNameNotFound" xml:space="preserve">
-    <value>PropertyName '{0}' not found in list</value>
-    <comment>kept</comment>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

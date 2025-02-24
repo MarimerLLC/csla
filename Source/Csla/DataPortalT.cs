@@ -757,7 +757,7 @@ namespace Csla
   {
     internal static bool RunLocal(this System.Reflection.MethodInfo t)
     {
-      return t.CustomAttributes.Count(a => a.AttributeType.Equals(typeof(RunLocalAttribute))) > 0;
+      return t.CustomAttributes.Any(a => a.AttributeType == typeof(RunLocalAttribute));
     }
   }
 }

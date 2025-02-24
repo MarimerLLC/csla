@@ -182,7 +182,7 @@ namespace Csla.Core
 
       // add items not in target
       foreach (var item in source)
-        if (target.Count(_ => _.Identity == item.Identity) == 0)
+        if (!target.Any(_ => _.Identity == item.Identity))
           target.Add(item);
 
       // remove items not in source
@@ -218,7 +218,7 @@ namespace Csla.Core
 
       // add items not in target
       foreach (var item in source)
-        if (target.Count(_ => _.Identity == item.Identity) == 0)
+        if (!target.Any(_ => _.Identity == item.Identity))
           target.Add(item);
 
       // remove items not in source
@@ -376,7 +376,7 @@ namespace Csla.Core
 
       // add items not in target
       foreach (var item in source)
-        if (target.Count(_ => _.Identity == item.Identity) == 0)
+        if (!target.Any(_ => _.Identity == item.Identity))
           target.Add(item);
 
       // remove items not in source
@@ -412,7 +412,7 @@ namespace Csla.Core
 
       // add items not in target
       foreach (var item in source)
-        if (target.Count(_ => _.Identity == item.Identity) == 0)
+        if (!target.Any(_ => _.Identity == item.Identity))
           target.Add(item);
 
       // remove items not in source

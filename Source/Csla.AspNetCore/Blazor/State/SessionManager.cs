@@ -6,7 +6,6 @@
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using Csla.State;
 
 namespace Csla.Blazor.State
@@ -16,23 +15,30 @@ namespace Csla.Blazor.State
   /// root DI container.
   /// </summary>
   /// <param name="sessionIdManager"></param>
-  public class SessionManager(ISessionIdManager sessionIdManager) : ISessionManager
+  /// <param name="sessionStore"></param>
+  public class SessionManager(ISessionIdManager sessionIdManager, ISessionStore sessionStore) : ISessionManager
   {
-    private readonly ConcurrentDictionary<string, Session> _sessions = [];
     private readonly ISessionIdManager _sessionIdManager = sessionIdManager;
+    private readonly ISessionStore _sessionStore = sessionStore;
 
     /// <summary>
     /// Gets the session data for the current user.
     /// </summary>
     public Session GetSession()
     {
-      Session result;
       var key = _sessionIdManager.GetSessionId();
-      if (!_sessions.ContainsKey(key))
-        _sessions.TryAdd(key, []);
-      result = _sessions[key];
-      result.Touch();
-      return result;
+      var session = _sessionStore.GetSession(key);
+      if (session == null)
+      {
+        session = [];
+        session.Touch();
+        _sessionStore.CreateSession(key, session);
+        return session;
+      }
+
+      session.Touch();
+      _sessionStore.UpdateSession(key, session);
+      return session;
     }
 
     /// <summary>
@@ -44,9 +50,19 @@ namespace Csla.Blazor.State
     {
       ArgumentNullException.ThrowIfNull(newSession);
       var key = _sessionIdManager.GetSessionId();
-      var existingSession = _sessions[key];
+      var existingSession = _sessionStore.GetSession(key)!;
       Replace(newSession, existingSession);
       existingSession.Touch();
+      _sessionStore.UpdateSession(key, existingSession);
+    }
+
+    /// <summary>
+    /// Remove all expired session data.
+    /// </summary>
+    /// <param name="expiration">Expiration duration</param>
+    public void PurgeSessions(TimeSpan expiration)
+    {
+      _sessionStore.DeleteSessions(new SessionsFilter { Expiration = expiration });
     }
 
     /// <summary>
@@ -60,21 +76,6 @@ namespace Csla.Blazor.State
       oldSession.Clear();
       foreach (var key in newSession.Keys)
         oldSession.Add(key, newSession[key]);
-    }
-
-    /// <summary>
-    /// Remove all expired session data.
-    /// </summary>
-    /// <param name="expiration">Expiration duration</param>
-    public void PurgeSessions(TimeSpan expiration)
-    {
-      var expirationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - expiration.TotalSeconds;
-      List<string> toRemove = [];
-      foreach (var session in _sessions)
-        if (session.Value.LastTouched < expirationTime)
-          toRemove.Add(session.Key);
-      foreach (var key in toRemove)
-        _sessions.TryRemove(key, out _);
     }
 
     // wasm client-side methods

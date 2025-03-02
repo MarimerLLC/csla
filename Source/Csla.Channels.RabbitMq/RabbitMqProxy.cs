@@ -6,7 +6,6 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.DataPortalClient;
 using Csla.Server;
 using RabbitMQ.Client;

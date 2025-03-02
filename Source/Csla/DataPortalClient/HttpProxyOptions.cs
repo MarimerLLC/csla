@@ -8,9 +8,6 @@
 //-----------------------------------------------------------------------
 
 using Microsoft.Extensions.DependencyInjection;
-#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
-using System.Net.Http;
-#endif
 
 namespace Csla.Channels.Http
 {

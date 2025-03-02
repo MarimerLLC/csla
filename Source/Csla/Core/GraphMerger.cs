@@ -6,9 +6,6 @@
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Core
 {
   /// <summary>

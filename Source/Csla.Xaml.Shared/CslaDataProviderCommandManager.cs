@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Implements support for RoutedCommands that can</summary>
 //-----------------------------------------------------------------------
+
 using System.Windows.Input;
-using System.ComponentModel;
 using Csla.Core;
 
 namespace Csla.Xaml

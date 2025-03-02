@@ -6,7 +6,6 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 

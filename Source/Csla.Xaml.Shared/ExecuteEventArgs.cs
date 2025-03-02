@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Arguments passed to a method invoked</summary>
 //-----------------------------------------------------------------------
+
 using System.Windows;
 
 #if ANDROID

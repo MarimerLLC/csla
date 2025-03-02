@@ -6,8 +6,6 @@
 // <summary>Defines a type used to activate concrete business instances.</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Server
 {
   /// <summary>

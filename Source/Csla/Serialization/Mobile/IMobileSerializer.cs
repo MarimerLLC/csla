@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Custom serializer for a type</summary>
 //-----------------------------------------------------------------------
-using System.Text;
-using Csla.Core;
 
 namespace Csla.Serialization.Mobile
 {

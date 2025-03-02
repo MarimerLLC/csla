@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Object providing access to schema information for</summary>
 //-----------------------------------------------------------------------
+
 using System.Web.UI.Design;
 
 namespace Csla.Web.Design

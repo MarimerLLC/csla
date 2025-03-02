@@ -1,5 +1,4 @@
 ﻿using Csla.Core;
-using System.ComponentModel;
 using Csla.Security;
 using Csla.Rules;
 using Csla.Serialization.Mobile;

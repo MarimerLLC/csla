@@ -6,8 +6,6 @@
 // <summary>Tracks the business rules for a business object.</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 using Csla.Server;

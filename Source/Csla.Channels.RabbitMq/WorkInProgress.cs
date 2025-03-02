@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using Csla.Threading;
+﻿using Csla.Threading;
 
 namespace Csla.Channels.RabbitMq
 {

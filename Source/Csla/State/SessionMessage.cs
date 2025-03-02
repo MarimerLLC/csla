@@ -6,8 +6,6 @@
 // <summary>Per-user session data.</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Claims;
-
 namespace Csla.State;
 
 /// <summary>

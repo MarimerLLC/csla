@@ -6,9 +6,7 @@
 // <summary>Object providing schema information for a</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using System.Web.UI.Design;
-using System.ComponentModel;
 using System.ComponentModel.Design;
 
 namespace Csla.Web.Design

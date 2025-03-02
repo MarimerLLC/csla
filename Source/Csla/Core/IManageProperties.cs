@@ -6,8 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
-
 namespace Csla.Core
 {
   internal interface IManageProperties

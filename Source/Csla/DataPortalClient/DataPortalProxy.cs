@@ -6,7 +6,6 @@
 // <summary>Abstract data portal proxy with common data portal proxy behaviour. Implements IDataPortalProxy</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Configuration;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;

@@ -6,7 +6,7 @@
 // </copyright>
 // <summary>Provides common access to "AssemblyLoadContext" logic</summary>
 //-----------------------------------------------------------------------
-using System.Collections.Concurrent;
+
 using System.Runtime.Loader;
 
 namespace Csla.Runtime

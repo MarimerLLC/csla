@@ -8,7 +8,6 @@
 
 using System.Web.UI;
 using System.Web.UI.Design;
-using System.ComponentModel;
 using System.Windows.Forms.Design;
 
 namespace Csla.Web.Design

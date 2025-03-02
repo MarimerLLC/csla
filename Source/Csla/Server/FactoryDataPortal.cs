@@ -6,7 +6,6 @@
 // <summary>Server-side data portal implementation that</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Configuration;
 using Csla.Properties;
 

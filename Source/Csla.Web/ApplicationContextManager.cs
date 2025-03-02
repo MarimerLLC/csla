@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Application context manager that uses HttpContext</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Core;
 using System.Web;
 

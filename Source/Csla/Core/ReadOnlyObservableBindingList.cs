@@ -6,7 +6,6 @@
 // <summary>A readonly version of ObservableBindingList.</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Specialized;
 using Csla.Properties;
 
 namespace Csla.Core

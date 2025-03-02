@@ -6,7 +6,6 @@
 // <summary>Defines a dictionary that can be serialized through</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core

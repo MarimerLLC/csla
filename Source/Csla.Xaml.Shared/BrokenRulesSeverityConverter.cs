@@ -6,6 +6,7 @@
 // </copyright>
 // <summary>Converts validation severity values into corresponding</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Rules;
 using System.Windows.Resources;
 using System.Windows.Media.Imaging;

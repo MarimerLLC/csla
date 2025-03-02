@@ -6,7 +6,6 @@
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Principal;
 using Csla.Core;
 using Csla.Configuration;
 using Csla.Serialization;

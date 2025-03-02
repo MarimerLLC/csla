@@ -6,10 +6,6 @@
 // <summary>This is the base class from which most business objects</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
-using System.Reflection;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
@@ -303,7 +299,7 @@ namespace Csla
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
+    [SuppressMessage("Microsoft.Design",
       "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<SavedEventArgs> Saved
     {

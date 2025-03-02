@@ -1,7 +1,5 @@
 ﻿using Csla.Core;
 using Csla.Serialization.Mobile;
-using System.Collections.Specialized;
-using System.ComponentModel;
 
 namespace Csla
 {

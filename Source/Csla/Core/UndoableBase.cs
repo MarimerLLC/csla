@@ -6,7 +6,6 @@
 // <summary>Implements n-level undo capabilities as</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;

@@ -6,7 +6,6 @@
 // <summary>This is a DataReader that 'fixes' any null values before</summary>
 //-----------------------------------------------------------------------
 
-using System.Data;
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 using System.Data.SqlClient;
 #endif

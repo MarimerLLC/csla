@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
-using System.Diagnostics.CodeAnalysis;
+
 using Csla.Core;
 
 namespace Csla.Rules

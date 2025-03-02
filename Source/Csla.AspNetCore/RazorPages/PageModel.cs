@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Csla.Rules;
 using Csla.Core;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.AspNetCore.RazorPages
 {

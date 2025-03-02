@@ -6,11 +6,11 @@
 // </copyright>
 // <summary>Displays a busy animation.</summary>
 //-----------------------------------------------------------------------
+
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using System.ComponentModel;
 
 namespace Csla.Xaml
 {

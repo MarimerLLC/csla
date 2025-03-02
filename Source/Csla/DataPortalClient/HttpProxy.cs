@@ -5,16 +5,11 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
+
 using Csla.Configuration;
 using Csla.DataPortalClient;
 using Csla.Properties;
-using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
-#if NET8_0_OR_GREATER
-using System.Runtime.Versioning;
-#endif
-using System.Text;
 
 namespace Csla.Channels.Http
 {

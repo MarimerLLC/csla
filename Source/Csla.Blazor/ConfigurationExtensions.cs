@@ -6,6 +6,7 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Blazor;
 using Csla.Blazor.State;
 using Csla.Core;
@@ -63,6 +64,7 @@ namespace Csla.Configuration
         // use Blazor state management
         config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
         config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
+        config.Services.TryAddTransient(typeof(ISessionStore), blazorOptions.SessionStoreType);
         config.Services.AddTransient<StateManager>();
       }
 
@@ -105,5 +107,27 @@ namespace Csla.Configuration
     /// Gets or sets the type of the ISessionIdManager service.
     /// </summary>
     public Type SessionIdManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionIdManager, Csla.AspNetCore", true);
+
+    /// <summary>
+    /// Gets or sets the type of the SessionStore.
+    /// </summary>
+#if NET8_0_OR_GREATER
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    internal Type SessionStoreType { get; set; } = typeof(DefaultSessionStore);
+
+    /// <summary>
+    /// Sets the type of the SessionStore.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public BlazorServerConfigurationOptions RegisterSessionStore<
+#if NET8_0_OR_GREATER
+      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+#endif
+    T>() where T: ISessionStore
+    {
+      SessionStoreType = typeof(T);
+      return this;
+    }
   }
 }

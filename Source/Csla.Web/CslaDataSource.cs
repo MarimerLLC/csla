@@ -138,7 +138,7 @@ namespace Csla.Web
         // explicit assembly name provided
         result = Type.GetType($"{typeName}, {typeAssemblyName}", true, true);
       }
-      else if (typeName.IndexOf(",") > 0)
+      else if (typeName.Contains(','))
       {
         // assembly qualified type name provided
         result = Type.GetType(typeName, true, true);

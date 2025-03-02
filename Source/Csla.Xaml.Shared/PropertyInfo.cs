@@ -252,9 +252,10 @@ namespace Csla.Xaml
         {
           while (BindingPath.Contains(".") && Source != null)
           {
-            var refName = BindingPath.Substring(0, BindingPath.IndexOf("."));
+            var dotIndex = BindingPath.IndexOf('.');
+            var refName = BindingPath.Substring(0, dotIndex);
             _sources.Add(new SourceReference(this, Source, refName));
-            BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
+            BindingPath = BindingPath.Substring(dotIndex + 1);
             Source = MethodCaller.CallPropertyGetter(Source, refName);
           }
         }
@@ -416,7 +417,7 @@ namespace Csla.Xaml
         }
       }
 
-      if (BindingPath.IndexOf('.') > 0)
+      if (BindingPath.Contains('.'))
         BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
 
       if (isDataLoaded)
@@ -460,18 +461,19 @@ namespace Csla.Xaml
     {
       if (source is ICollectionView icv)
         source = icv.CurrentItem;
-      if (source != null && bindingPath.IndexOf('.') > 0)
+      var dotIndex = bindingPath.IndexOf('.');
+      if (source != null && dotIndex > 0)
       {
-        var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+        var firstProperty = bindingPath.Substring(0, dotIndex);
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         if (p != null)
         {
          source = GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
-          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+          bindingPath.Substring(dotIndex + 1));
         }
       }
-        
+
       return source;
     }
 
@@ -484,15 +486,16 @@ namespace Csla.Xaml
     {
       if (source != null)
       {
-        if (bindingPath.IndexOf('.') > 0)
+        var dotIndex = bindingPath.IndexOf('.');
+        if (dotIndex > 0)
         {
-          var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+          var firstProperty = bindingPath.Substring(0, dotIndex);
           var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
 
           if (p != null)
             return new PropertyPath(firstProperty);
           else
-            return GetRelativePath(source, bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+            return GetRelativePath(source, bindingPath.Substring(dotIndex + 1));
         }
         else
           return new PropertyPath(bindingPath);

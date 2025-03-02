@@ -43,15 +43,8 @@ namespace Csla.Core
     /// Gets a reference to the field mananger
     /// for this object.
     /// </summary>
-    protected FieldDataManager FieldManager
-    {
-      get
-      {
-        if (_fieldManager == null)
-          _fieldManager = new FieldDataManager(ApplicationContext, GetType());
-        return _fieldManager;
-      }
-    }
+    protected FieldDataManager FieldManager =>
+      _fieldManager ??= new(ApplicationContext, GetType());
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 

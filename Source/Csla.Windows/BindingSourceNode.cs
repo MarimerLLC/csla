@@ -40,16 +40,8 @@ namespace Csla.Windows
 
     internal BindingSource Source { get; }
 
-    internal List<BindingSourceNode> Children
-    {
-      get
-      {
-        if (_children == null)
-          _children = new List<BindingSourceNode>();
-
-        return _children;
-      }
-    }
+    internal List<BindingSourceNode> Children =>
+      _children ??= [];
 
     internal BindingSourceNode Parent { get; set; }
 

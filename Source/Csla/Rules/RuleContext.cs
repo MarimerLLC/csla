@@ -110,16 +110,8 @@ namespace Csla.Rules
     [EditorBrowsable(EditorBrowsableState.Never)]
     public List<RuleResult> Results
     {
-      get
-      {
-        if (_results == null)
-          _results = new List<RuleResult>();
-        return _results;
-      }
-      private set
-      {
-        _results = value;
-      }
+      get => _results ??= [];
+      private set => _results = value;
     }
 
     private readonly Action<IRuleContext> _completeHandler;

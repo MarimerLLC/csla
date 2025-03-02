@@ -152,15 +152,7 @@ namespace Csla
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
       "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected MobileList<C> DeletedList
-    {
-      get
-      {
-        if (_deletedList == null)
-          _deletedList = new MobileList<C>();
-        return _deletedList;
-      }
-    }
+    protected MobileList<C> DeletedList => _deletedList ??= [];
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
       "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]

@@ -47,14 +47,8 @@ namespace Csla.Web.Design
     /// <remarks>
     /// This designer supports only a "Default" view.
     /// </remarks>
-    public override DesignerDataSourceView GetView(string viewName)
-    {
-      if (_view == null)
-      {
-        _view = new CslaDesignerDataSourceView(this, "Default");
-      }
-      return _view;
-    }
+    public override DesignerDataSourceView GetView(string viewName) =>
+      _view ??= new CslaDesignerDataSourceView(this, "Default");
 
     /// <summary>
     /// Return a list of available views.

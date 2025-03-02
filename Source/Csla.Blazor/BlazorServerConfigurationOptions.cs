@@ -36,5 +36,10 @@ namespace Csla.Configuration
     /// Gets or sets the type of the ISessionIdManager service.
     /// </summary>
     public Type SessionIdManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionIdManager, Csla.AspNetCore", true)!;
+
+    /// <summary>
+    /// Gets or sets the type of the ISessionStore service.
+    /// </summary>
+    public Type SessionStoreType { get; set; } = Type.GetType("Csla.Blazor.State.InMemorySessionStore, Csla.AspNetCore", true)!;
   }
 }

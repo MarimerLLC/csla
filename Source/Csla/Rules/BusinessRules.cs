@@ -448,7 +448,7 @@ namespace Csla.Rules
       {
         if (rule is IAuthorizationRule sync)
         {
-          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
           sync.Execute(context);
           result = context.HasPermission;
         }
@@ -595,7 +595,7 @@ namespace Csla.Rules
     /// <param name="element">The property or method to check.</param>
     /// <param name="ct">The cancellation token.</param>
     /// <returns>A task representing the asynchronous operation. The task result contains a boolean value indicating whether the permission is granted.</returns>
-    public async Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, Csla.Core.IMemberInfo element, CancellationToken ct)
+    public async Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, IMemberInfo element, CancellationToken ct)
     {
       if (_suppressRuleChecking)
         return true;
@@ -613,13 +613,13 @@ namespace Csla.Rules
       {
         if (rule is IAuthorizationRule sync)
         {
-          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
           sync.Execute(context);
           result = context.HasPermission;
         }
         else if (rule is IAuthorizationRuleAsync nsync)
         {
-          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
           await nsync.ExecuteAsync(context, ct);
           result = context.HasPermission;
         }
@@ -845,7 +845,7 @@ namespace Csla.Rules
       return CheckRules(property, RuleContextModes.PropertyChanged);
     }
 
-    private List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
+    private List<string> CheckRules(IPropertyInfo property, RuleContextModes executionContext)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));

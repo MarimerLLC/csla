@@ -6,6 +6,8 @@
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Reflection
 {
   /// <summary>
@@ -15,7 +17,7 @@ namespace Csla.Reflection
   /// underlying business object method that was
   /// being invoked.
   /// </summary>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
+  [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
   [Serializable]
   public class CallMethodException : Exception
   {
@@ -27,7 +29,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <value></value>
     /// <remarks></remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
+    [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
     public override string StackTrace
     {
       get

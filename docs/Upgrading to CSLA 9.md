@@ -6,6 +6,13 @@ In this document I'll try to highlight the most common changes required when upg
 
 If you are upgrading from a version of CSLA prior to 8, you should review the [Upgrading to CSLA 8](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%208.md) document, as most of its contents are relevant. This document only covers the changes from CSLA 8 to CSLA 9.
 
+## Release Notes
+
+You can find the full release notes and release information at the following links:
+
+* [Release notes](https://github.com/MarimerLLC/csla/blob/v9.0.0/releasenotes.md)
+* [GitHub release page](https://github.com/MarimerLLC/csla/releases/tag/v9.0.0)
+
 ## Platform Support
 
 CSLA 9 removes support for .NET 6, UWP, and Xamarin. If you are using these platforms you will need to stay on an older version of CSLA until you can upgrade to a newer platform.
@@ -89,6 +96,10 @@ CSLA 9 fixes the issue with transfering binary data between the client and serve
       .UseClientSideDataPortal(o => o
         .UseHttpProxy(o => o.DataPortalUrl = "https://server/api/DataPortal"))));
 ```
+
+## CslaClaimsPrincipal Removed
+
+Because CSLA can now directly serialize `ClaimsPrincipal` (see the MobileFormatter Custom Serializers section), there is no longer a need for the `CslaClaimsPrincipal` wrapper type. It has been removed, and you should now simply use the `ClaimsPrincipal` type directly.
 
 ## CriteriaBase Obsolete
 

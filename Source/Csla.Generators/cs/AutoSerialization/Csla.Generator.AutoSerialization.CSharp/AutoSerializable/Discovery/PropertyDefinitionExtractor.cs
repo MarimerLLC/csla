@@ -28,35 +28,34 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     {
       ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
 
-      propertyDefinition.PropertyName = GetPropertyName(extractionContext, propertyDeclaration);
-      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(extractionContext, propertyDeclaration);
+      propertyDefinition.PropertyName = GetPropertyName(propertyDeclaration);
+      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(propertyDeclaration);
       propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
       propertyDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type);
       propertyDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(propertyDeclaration.Type);
-      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, propertyDeclaration);
+      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(propertyDeclaration);
 
       return propertyDefinition;
     }
 
     #region Private Helper Methods
+
     /// <summary>
     /// Determines whether the field type is nullable.
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed.</param>
     /// <param name="propertyDeclaration">The PropertyDeclarationSyntax representing the field declaration.</param>
     /// <returns><c>true</c> if the field type is nullable; otherwise, <c>false</c>.</returns>
-    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
+    private static bool GetFieldTypeNullable(PropertyDeclarationSyntax propertyDeclaration)
     {
-      return propertyDeclaration.Type is NullableTypeSyntax nullableType;
+      return propertyDeclaration.Type is NullableTypeSyntax;
     }
 
     /// <summary>
     /// Extract the name of the property for which we are building information
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the property for which we are extracting information</returns>
-    private static string GetPropertyName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
+    private static string GetPropertyName(PropertyDeclarationSyntax propertyDeclaration)
     {
       return propertyDeclaration.Identifier.ValueText;
     }
@@ -64,10 +63,9 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Extract the type name of the property for which we are building information
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="propertyDeclaration">The PropertyDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The type name of the property for which we are extracting information</returns>
-    private static string GetPropertyTypeName(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
+    private static string GetPropertyTypeName(PropertyDeclarationSyntax propertyDeclaration)
     {
       return propertyDeclaration.Type.ToString();
     }

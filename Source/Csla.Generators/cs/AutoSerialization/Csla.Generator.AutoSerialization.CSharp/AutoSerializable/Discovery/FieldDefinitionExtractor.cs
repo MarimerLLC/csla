@@ -28,12 +28,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     {
       ExtractedFieldDefinition fieldDefinition = new ExtractedFieldDefinition();
 
-      fieldDefinition.FieldName = GetFieldName(extractionContext, fieldDeclaration);
-      fieldDefinition.TypeDefinition.TypeName = GetFieldTypeName(extractionContext, fieldDeclaration);
+      fieldDefinition.FieldName = GetFieldName(fieldDeclaration);
+      fieldDefinition.TypeDefinition.TypeName = GetFieldTypeName(fieldDeclaration);
       fieldDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(fieldDeclaration.Declaration.Type);
       fieldDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
       fieldDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(fieldDeclaration.Declaration.Type);
-      fieldDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(extractionContext, fieldDeclaration);
+      fieldDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(fieldDeclaration);
       return fieldDefinition;
     }
 
@@ -42,22 +42,20 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Determines whether the field type is nullable.
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed.</param>
     /// <param name="fieldDeclaration">The FieldDeclarationSyntax representing the field declaration.</param>
     /// <returns><c>true</c> if the field type is nullable; otherwise, <c>false</c>.</returns>
-    private static bool GetFieldTypeNullable(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
+    private static bool GetFieldTypeNullable(FieldDeclarationSyntax fieldDeclaration)
     {
-      return fieldDeclaration.Declaration.Type is NullableTypeSyntax nullableType;
+      return fieldDeclaration.Declaration.Type is NullableTypeSyntax;
     }
 
 
     /// <summary>
     /// Extract the name of the field for which we are building information
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="fieldDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the field for which we are extracting information</returns>
-    private static string GetFieldName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
+    private static string GetFieldName(FieldDeclarationSyntax fieldDeclaration)
     {
       return fieldDeclaration.Declaration.Variables[0].Identifier.ToString();
     }
@@ -65,10 +63,9 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Extract the type name of the field for which we are building information
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="fieldDeclaration">The FieldDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The type name of the field for which we are extracting information</returns>
-    private static string GetFieldTypeName(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
+    private static string GetFieldTypeName(FieldDeclarationSyntax fieldDeclaration)
     {
       return fieldDeclaration.Declaration.Type.ToString();
     }

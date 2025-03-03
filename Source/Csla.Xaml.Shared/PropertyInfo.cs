@@ -85,7 +85,7 @@ namespace Csla.Xaml
     /// business object.
     /// </summary>
     public static readonly BindableProperty BrokenRulesProperty =
-      BindableProperty.Create("BrokenRules", typeof(ObservableCollection<BrokenRule>), typeof(PropertyInfo), new ObservableCollection<BrokenRule>());
+      BindableProperty.Create(nameof(BrokenRules), typeof(ObservableCollection<BrokenRule>), typeof(PropertyInfo), new ObservableCollection<BrokenRule>());
     /// <summary>
     /// Gets the broken rules collection from the
     /// business object.
@@ -101,7 +101,7 @@ namespace Csla.Xaml
     /// business object.
     /// </summary>
     public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
-      "BrokenRules",
+      nameof(BrokenRules),
       typeof(ObservableCollection<BrokenRule>),
       typeof(PropertyInfo),
       null);
@@ -200,7 +200,7 @@ namespace Csla.Xaml
         if (_bindingPath != value)
         {
           _bindingPath = value;
-          OnPropertyChanged("Path");
+          OnPropertyChanged();
           SetSource();
         }
       }
@@ -266,7 +266,7 @@ namespace Csla.Xaml
       }
       HandleSourceEvents(oldSource, Source);
       UpdateState();
-      OnPropertyChanged("Value");
+      OnPropertyChanged(nameof(Value));
     }
 #else
     /// <summary>
@@ -274,7 +274,7 @@ namespace Csla.Xaml
     /// property to which this control is bound.
     /// </summary>
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
-      "Property",
+      nameof(Property),
       typeof(object),
       typeof(PropertyInfo),
       new PropertyMetadata(new object(), (o, e) =>
@@ -330,10 +330,11 @@ namespace Csla.Xaml
         FieldInfo fi = null;
         while (type != null)
         {
+          var name = $"{path}{_dependencyPropertySuffix}";
 #if NETFX_CORE
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
+          fi = type.GetField(name, BindingFlags.Instance | BindingFlags.Public);
 #else
-          fi = type.GetField($"{path}{_dependencyPropertySuffix}");
+          fi = type.GetField(name);
 #endif
 
           if (fi != null)
@@ -534,7 +535,7 @@ namespace Csla.Xaml
     {
       if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
       {
-        OnPropertyChanged("Value");
+        OnPropertyChanged(nameof(Value));
         UpdateState();
       }
     }
@@ -644,7 +645,7 @@ namespace Csla.Xaml
         if (value != _canRead)
         {
           _canRead = value;
-          OnPropertyChanged("CanRead");
+          OnPropertyChanged(nameof(CanRead));
         }
       }
     }
@@ -663,7 +664,7 @@ namespace Csla.Xaml
         if (value != _canWrite)
         {
           _canWrite = value;
-          OnPropertyChanged("CanWrite");
+          OnPropertyChanged(nameof(CanWrite));
         }
       }
     }
@@ -682,7 +683,7 @@ namespace Csla.Xaml
         if (value != _isBusy)
         {
           _isBusy = value;
-          OnPropertyChanged("IsBusy");
+          OnPropertyChanged(nameof(IsBusy));
         }
       }
     }
@@ -701,7 +702,7 @@ namespace Csla.Xaml
         if (value != _isValid)
         {
           _isValid = value;
-          OnPropertyChanged("IsValid");
+          OnPropertyChanged(nameof(IsValid));
         }
       }
     }
@@ -722,7 +723,7 @@ namespace Csla.Xaml
         if (value != _worst)
         {
           _worst = value;
-          OnPropertyChanged("RuleSeverity");
+          OnPropertyChanged(nameof(RuleSeverity));
         }
       }
     }
@@ -741,7 +742,7 @@ namespace Csla.Xaml
         if (value != _ruleDescription)
         {
           _ruleDescription = value;
-          OnPropertyChanged("RuleDescription");
+          OnPropertyChanged(nameof(RuleDescription));
         }
       }
     }
@@ -763,7 +764,7 @@ namespace Csla.Xaml
         if (!ReferenceEquals(_customTag, value))
         {
           _customTag = value;
-          OnPropertyChanged("CustomTag");
+          OnPropertyChanged(nameof(CustomTag));
         }
       }
     }

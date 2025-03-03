@@ -30,13 +30,13 @@ namespace Csla.Xaml
 #region Per-Type Dependency Properties
 
     private static readonly DependencyProperty CanCreateProperty =
-      DependencyProperty.Register("CanCreateObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(CanCreateObject), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty CanGetProperty =
-      DependencyProperty.Register("CanGetObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(CanGetObject), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty CanEditProperty =
-      DependencyProperty.Register("CanEditObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(CanEditObject), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty CanDeleteProperty =
-      DependencyProperty.Register("CanDeleteObject", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(CanDeleteObject), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
 
     /// <summary>
     /// Exposes the CanCreateObject property of the
@@ -111,15 +111,15 @@ namespace Csla.Xaml
 #region Per-Instance Dependency Properties
 
     private static readonly DependencyProperty IsDeletedProperty =
-      DependencyProperty.Register("IsDeleted", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(IsDeleted), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsDirtyProperty =
-      DependencyProperty.Register("IsDirty", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(IsDirty), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsNewProperty =
-      DependencyProperty.Register("IsNew", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(IsNew), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsSavableProperty =
-      DependencyProperty.Register("IsSavable", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(IsSavable), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
     private static readonly DependencyProperty IsValidProperty =
-      DependencyProperty.Register("IsValid", typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
+      DependencyProperty.Register(nameof(IsValid), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
 
     /// <summary>
     /// Exposes the IsDeleted property of the

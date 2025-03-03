@@ -229,7 +229,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private static void AppendScopeName(StringBuilder stringBuilder, string scope)
     {
       stringBuilder.Append(scope);
-      stringBuilder.Append(" ");
+      stringBuilder.Append(' ');
     }
 
     /// <summary>

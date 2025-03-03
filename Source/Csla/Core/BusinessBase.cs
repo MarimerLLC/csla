@@ -337,7 +337,7 @@ namespace Csla.Core
     /// Marks an object as being dirty, or changed.
     /// </summary>
     /// <param name="suppressEvent">
-    /// true to supress the PropertyChanged event that is otherwise
+    /// true to suppress the PropertyChanged event that is otherwise
     /// raised to indicate that the object's state has changed.
     /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]

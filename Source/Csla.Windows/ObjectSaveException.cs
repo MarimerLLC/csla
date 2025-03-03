@@ -19,7 +19,7 @@ namespace Csla.Windows
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    public ObjectSaveException() : base() { }
+    public ObjectSaveException() { }
 
     /// <summary>
     /// Creates an instance of the object.

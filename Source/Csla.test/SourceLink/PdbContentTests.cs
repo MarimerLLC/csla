@@ -1,11 +1,10 @@
 ﻿using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitDriven;
 
 namespace Csla.Test.SourceLink
 {
   [TestClass]
-  public class PdbContentTests :TestBase
+  public class PdbContentTests
   {
     private bool BufferContainsData(byte[] buffer, byte[] data)
     {

@@ -14,12 +14,11 @@ using Csla.Serialization.Mobile;
 using Csla.Test.ValidationRules;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitDriven;
 
 namespace Csla.Test.Serialization
 {
   [TestClass]
-  public class SerializationTests : TestBase
+  public class SerializationTests
   {
     private static TestDIContext _testDIContext;
 
@@ -96,14 +95,15 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
 
-      UnitTestContext context = GetContext();
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       nonSerializableEventHandler handler = new nonSerializableEventHandler();
       handler.Reg(root);
       root.Data = "something";
-      context.Assert.AreEqual("1", TestResults.GetResult("PropertyChangedFiredCount"));
+      string actual = TestResults.GetResult("PropertyChangedFiredCount");
+      Assert.AreEqual("1", actual);
       root.Data = "something else";
-      context.Assert.AreEqual("2", TestResults.GetResult("PropertyChangedFiredCount"));
+      string actual1 = TestResults.GetResult("PropertyChangedFiredCount");
+      Assert.AreEqual("2", actual1);
 
       //serialize an object with eventhandling objects that are nonserializable
       root = root.Clone();
@@ -113,8 +113,8 @@ namespace Csla.Test.Serialization
       //when the clone method performs serialization, the nonserializable 
       //object containing an event handler for the propertyChanged event
       //is lost
-      context.Assert.AreEqual("2", TestResults.GetResult("PropertyChangedFiredCount"));
-      context.Assert.Success();
+      string actual2 = TestResults.GetResult("PropertyChangedFiredCount");
+      Assert.AreEqual("2", actual2);
     }
 
     // TODO: fix test
@@ -124,16 +124,12 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
 
-      UnitTestContext context = GetContext();
       SerializationRoot root = dataPortal.Create();
 
       root = (SerializationRoot)root.Clone();
 
-      context.Assert.AreEqual(
-        "true",
-        TestResults.GetResult("Deserialized"),
-        "Deserialized not called");
-      context.Assert.Success();
+      string actual = TestResults.GetResult("Deserialized");
+      Assert.AreEqual("true", actual, "Deserialized not called");
     }
 
     // TODO: fix test
@@ -142,8 +138,6 @@ namespace Csla.Test.Serialization
     public void SerializableEvents()
     {
       IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
-
-      UnitTestContext context = GetContext();
 
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       TestEventSink handler = new TestEventSink();
@@ -160,17 +154,13 @@ namespace Csla.Test.Serialization
 
       root.Data = "abc";
 
-      context.Assert.AreEqual("abc", root.Data, "Data value not set");
+      Assert.AreEqual("abc", root.Data, "Data value not set");
 
-      context.Assert.AreEqual(
-        "OnIsDirtyChanged",
-        TestResults.GetResult("OnIsDirtyChanged"),
-        "Didn't call local handler");
+      string actual = TestResults.GetResult("OnIsDirtyChanged");
+      Assert.AreEqual("OnIsDirtyChanged", actual, "Didn't call local handler");
 
-      context.Assert.AreEqual(
-        "StaticOnIsDirtyChanged",
-        TestResults.GetResult("StaticOnIsDirtyChanged"),
-        "Didn't call static handler");
+      string actual1 = TestResults.GetResult("StaticOnIsDirtyChanged");
+      Assert.AreEqual("StaticOnIsDirtyChanged", actual1, "Didn't call static handler");
 
       Assert.AreEqual(
         "PublicStaticOnIsDirtyChanged",
@@ -193,28 +183,22 @@ namespace Csla.Test.Serialization
 
       root.Data = "xyz";
 
-      context.Assert.AreEqual("xyz", root.Data, "Data value not set");
+      Assert.AreEqual("xyz", root.Data, "Data value not set");
 
-      context.Assert.AreEqual("", TestResults.GetResult("OnIsDirtyChanged"),
-          "Called local handler after clone");
+      string actual2 = TestResults.GetResult("OnIsDirtyChanged");
+      Assert.AreEqual("", actual2, "Called local handler after clone");
 
-      context.Assert.AreEqual("", TestResults.GetResult("StaticOnIsDirtyChanged"),
-          "Called static handler after clone");
+      string actual3 = TestResults.GetResult("StaticOnIsDirtyChanged");
+      Assert.AreEqual("", actual3, "Called static handler after clone");
 
-      context.Assert.AreEqual(
-        "PublicStaticOnIsDirtyChanged",
-        TestResults.GetResult("PublicStaticOnIsDirtyChanged"),
-        "Didn't call public static handler after clone");
+      string actual4 = TestResults.GetResult("PublicStaticOnIsDirtyChanged");
+      Assert.AreEqual("PublicStaticOnIsDirtyChanged", actual4, "Didn't call public static handler after clone");
 
-      context.Assert.AreEqual(
-        "Test.OnIsDirtyChanged",
-        TestResults.GetResult("Test.OnIsDirtyChanged"),
-        "Didn't call serializable handler after clone");
+      string actual5 = TestResults.GetResult("Test.OnIsDirtyChanged");
+      Assert.AreEqual("Test.OnIsDirtyChanged", actual5, "Didn't call serializable handler after clone");
 
-      context.Assert.AreEqual("", TestResults.GetResult("Test.PrivateOnIsDirtyChanged"),
-          "Called serializable private handler after clone");
-
-      context.Assert.Success();
+      string actual6 = TestResults.GetResult("Test.PrivateOnIsDirtyChanged");
+      Assert.AreEqual("", actual6, "Called serializable private handler after clone");
     }
 
     [TestMethod]
@@ -223,20 +207,16 @@ namespace Csla.Test.Serialization
     {
       IDataPortal<HasRulesManager> dataPortal = _testDIContext.CreateDataPortal<HasRulesManager>();
 
-      UnitTestContext context = GetContext();
       var root = await dataPortal.CreateAsync(new HasRulesManager.Criteria());
       root.Name = "";
-      context.Assert.AreEqual(false, root.IsValid, "root should not start valid");
+      Assert.AreEqual(false, root.IsValid, "root should not start valid");
 
       root = root.Clone();
-      context.Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
+      Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
       root.Name = "something";
-      context.Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
+      Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
       root = root.Clone();
-      context.Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
-      context.Assert.Success();
-
-      context.Complete();
+      Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
     }
 
     [TestMethod]

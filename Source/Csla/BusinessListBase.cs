@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
@@ -24,7 +25,7 @@ namespace Csla
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public abstract class BusinessListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
@@ -145,8 +146,7 @@ namespace Csla
     /// A collection containing all child objects marked
     /// for deletion.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-      "Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected MobileList<C> DeletedList
     {
@@ -158,7 +158,7 @@ namespace Csla
       }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
+    [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList => (IEnumerable<IEditableBusinessObject>)DeletedList;
 
@@ -1203,8 +1203,7 @@ namespace Csla
     /// <summary>
     /// Event raised when an object has been saved.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design",
-      "CA1062:ValidateArgumentsOfPublicMethods")]
+    [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<SavedEventArgs>? Saved
     {
       add
@@ -1251,7 +1250,7 @@ namespace Csla
     /// </remarks>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
-    [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
+    [ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public IParent? Parent
     {

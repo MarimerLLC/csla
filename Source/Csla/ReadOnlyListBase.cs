@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
+using Csla.Server;
 
 namespace Csla
 {
@@ -27,7 +28,7 @@ namespace Csla
 #else
     ReadOnlyObservableBindingList<C>,
 #endif
-    Server.IDataPortalTarget,
+    IDataPortalTarget,
     IReadOnlyListBase<C>,
     IUseApplicationContext
     where T : ReadOnlyListBase<T, C>
@@ -206,49 +207,49 @@ namespace Csla
 
     #region IDataPortalTarget Members
 
-    void Server.IDataPortalTarget.CheckRules()
+    void IDataPortalTarget.CheckRules()
     { }
 
-    Task Server.IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
+    Task IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    Task Csla.Server.IDataPortalTarget.WaitForIdle(TimeSpan timeout) => WaitForIdle(timeout);
-    Task Csla.Server.IDataPortalTarget.WaitForIdle(CancellationToken ct) => WaitForIdle(ct);
+    Task IDataPortalTarget.WaitForIdle(TimeSpan timeout) => WaitForIdle(timeout);
+    Task IDataPortalTarget.WaitForIdle(CancellationToken ct) => WaitForIdle(ct);
 
-    void Server.IDataPortalTarget.MarkAsChild()
+    void IDataPortalTarget.MarkAsChild()
     { }
 
-    void Server.IDataPortalTarget.MarkNew()
+    void IDataPortalTarget.MarkNew()
     { }
 
-    void Server.IDataPortalTarget.MarkOld()
+    void IDataPortalTarget.MarkOld()
     { }
 
-    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
+    void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       DataPortal_OnDataPortalInvoke(e);
     }
 
-    void Server.IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
       DataPortal_OnDataPortalInvokeComplete(e);
     }
 
-    void Server.IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       DataPortal_OnDataPortalException(e, ex);
     }
 
-    void Server.IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
     {
       Child_OnDataPortalInvoke(e);
     }
 
-    void Server.IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    void IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
     {
       Child_OnDataPortalInvokeComplete(e);
     }
 
-    void Server.IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       Child_OnDataPortalException(e, ex);
     }

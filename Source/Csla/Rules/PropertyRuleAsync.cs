@@ -60,7 +60,6 @@ namespace Csla.Rules
     /// Initializes a new instance of the <see cref="PropertyRule"/> class.
     /// </summary>
     protected PropertyRuleAsync()
-      : base()
     {
       CanRunAsAffectedProperty = true;
       CanRunOnServer = true;

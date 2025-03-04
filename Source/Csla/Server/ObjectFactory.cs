@@ -99,7 +99,7 @@ namespace Csla.Server
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
 
-      var cslaOptions = ApplicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds).ToCancellationToken()).ConfigureAwait(false);
     }
 
@@ -309,7 +309,7 @@ namespace Csla.Server
     /// property setting.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="businessObject"/> is <see langword="null"/>.</exception>
-    protected IDisposable BypassPropertyChecks(Csla.Core.BusinessBase businessObject)
+    protected IDisposable BypassPropertyChecks(BusinessBase businessObject)
     {
       if (businessObject is null)
         throw new ArgumentNullException(nameof(businessObject));
@@ -324,7 +324,7 @@ namespace Csla.Server
     /// <param name="obj">Business object.</param>
     /// <param name="property">Property info object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="property"/> is <see langword="null"/>.</exception>
-    protected bool FieldExists(object obj, Csla.Core.IPropertyInfo property)
+    protected bool FieldExists(object obj, IPropertyInfo property)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

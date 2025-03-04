@@ -6,7 +6,7 @@ namespace Csla.Analyzers
   /// <summary>
   /// 
   /// </summary>
-  public static class EvaluateManagedBackingFieldsAnalayzerConstants
+  public static class EvaluateManagedBackingFieldsAnalyzerConstants
   {
     /// <summary>
     /// 

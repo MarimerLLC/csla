@@ -24,7 +24,7 @@ namespace Csla.Core
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public MobileList() : base() { }
+    public MobileList() { }
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>

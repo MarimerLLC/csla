@@ -8,6 +8,7 @@
 
 using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 using Csla.Properties;
 
@@ -18,7 +19,7 @@ namespace Csla.Serialization.Mobile
   /// data for a specific object.
   /// </summary>
 #if TESTING
-  [System.Diagnostics.DebuggerNonUserCode]
+  [DebuggerNonUserCode]
 #endif
   [Serializable]
   [DataContract]

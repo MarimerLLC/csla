@@ -22,9 +22,8 @@ namespace Csla.Core
     /// <inheritdoc cref="Csla.Core.IContextDictionary.GetValueOrNull(string)"/>
     public object? GetValueOrNull(string key)
     {
-      if (ContainsKey(key))
-        return this[key];
-      return null;
+      TryGetValue(key, out var result);
+      return result;
     }
 
     #region IMobileObject Members

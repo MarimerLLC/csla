@@ -24,14 +24,14 @@ namespace Csla
     /// Property is a reference to a lazy
     /// loaded object. Attempting to get
     /// or read the property value
-    /// prior to a set or load will result in 
+    /// prior to a set or load will result in
     /// an exception.
     /// </summary>
     LazyLoad=0x2,
     /// <summary>
-    /// Property is stored in a private field. Attempting 
-    /// to read or write the property in FieldManager 
-    /// (managed fields) will throw an exception. 
+    /// Property is stored in a private field. Attempting
+    /// to read or write the property in FieldManager
+    /// (managed fields) will throw an exception.
     /// NonGeneric ReadProperty/LoadProperty will call
     /// property get/set methods. 
     /// </summary>

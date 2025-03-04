@@ -107,7 +107,7 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Gets or sets a value indicating whether rule engine should cacade n-leves when property value is changed from OuputPropertyValues. 
+    /// Gets or sets a value indicating whether rule engine should cascade n-levels when property value is changed from OuputPropertyValues. 
     /// </summary>
     /// <value>
     ///   <c>true</c> if [cascade when changed]; otherwise, <c>false</c>.
@@ -466,7 +466,7 @@ namespace Csla.Rules
       {
         if (rule is IAuthorizationRule sync)
         {
-          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
           sync.Execute(context);
           result = context.HasPermission;
         }
@@ -620,13 +620,13 @@ namespace Csla.Rules
       {
         if (rule is IAuthorizationRule sync)
         {
-          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
           sync.Execute(context);
           result = context.HasPermission;
         }
         else if (rule is IAuthorizationRuleAsync nsync)
         {
-          var context = new AuthorizationContext(applicationContext, rule, this.Target, this.Target.GetType());
+          var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
           await nsync.ExecuteAsync(context, ct);
           result = context.HasPermission;
         }
@@ -810,7 +810,7 @@ namespace Csla.Rules
                   orderby r.Priority
                   select r;
       BrokenRules.ClearRules(null);
-      // Changed to cascade propertyrule to make async ObjectLevel rules rerun PropertLevel rules.
+      // Changed to cascade propertyRule to make async ObjectLevel rules rerun PropertyLevel rules.
       var firstResult = RunRules(rules, false, executionContext);
 
       // rerun property level rules for affected properties 
@@ -855,7 +855,7 @@ namespace Csla.Rules
       return CheckRules(property, RuleContextModes.PropertyChanged);
     }
 
-    private List<string> CheckRules(Csla.Core.IPropertyInfo property, RuleContextModes executionContext)
+    private List<string> CheckRules(IPropertyInfo property, RuleContextModes executionContext)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
@@ -1315,7 +1315,7 @@ namespace Csla.Rules
     #region Get All Broken Rules (tree)
 
     /// <summary>
-    /// Gets all nodes in tree that have IsValid = false (and all parents) 
+    /// Gets all nodes in tree that have IsValid = false (and all parents)
     /// </summary>
     /// <param name="root">The root.</param>
     /// <returns>BrukenRulesTree list</returns>
@@ -1337,14 +1337,14 @@ namespace Csla.Rules
       var list = new BrokenRulesTree();
       long counter = 1;
       long childBrokenRuleCount = 0;
-      AddNodeToBrukenRules(ref list, ref counter, null, root, errorsOnly, ref childBrokenRuleCount);
+      AddNodeToBrokenRules(ref list, ref counter, null, root, errorsOnly, ref childBrokenRuleCount);
 
       return list;
     }
 
-    private static void AddNodeToBrukenRules(ref BrokenRulesTree list, ref long counter, object? parentKey, object obj, bool errorsOnly, ref long childBrokenRuleCount)
+    private static void AddNodeToBrokenRules(ref BrokenRulesTree list, ref long counter, object? parentKey, object obj, bool errorsOnly, ref long childBrokenRuleCount)
     {
-      // is this a single editable object 
+      // is this a single editable object
       if (obj is BusinessBase bbase)
       {
         var nodeKey = counter++;
@@ -1356,7 +1356,7 @@ namespace Csla.Rules
         // get managed child properties 
         foreach (var child in ((IManageProperties)bo).GetChildren())
         {
-          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
+          AddNodeToBrokenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
         }
 
         // remove node if it has no child with broken rules. 
@@ -1383,7 +1383,7 @@ namespace Csla.Rules
 
         foreach (var child in (IEnumerable)collection)
         {
-          AddNodeToBrukenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
+          AddNodeToBrokenRules(ref list, ref counter, nodeKey, child, errorsOnly, ref myChildBrokenRuleCount);
         }
 
         // remove node if it has no child with broken rules. 

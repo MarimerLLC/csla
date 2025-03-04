@@ -16,17 +16,17 @@ namespace Csla
     /// <summary>
     /// Gets the resulting object.
     /// </summary>
-    object Object { get; }
+    object? Object { get; }
     /// <summary>
     /// Gets any resulting error information.
     /// </summary>
-    Exception Error { get; }
+    Exception? Error { get; }
     /// <summary>
     /// Gets the user state, pass through object
     /// </summary>
     /// <value>
     /// The user state.
     /// </value>
-    object UserState { get; }
+    object? UserState { get; }
   }
 }

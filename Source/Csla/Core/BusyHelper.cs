@@ -35,8 +35,12 @@ namespace Csla.Core
     /// <param name="methodName">The name of the calling method.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     /// <exception cref="TimeoutException">Thrown when the specified timeout is exceeded.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static async Task WaitForIdle(INotifyBusy source, TimeSpan timeout, [CallerMemberName] string methodName = "")
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       try
       {
         await WaitForIdle(source, timeout.ToCancellationToken(), methodName);
@@ -54,14 +58,18 @@ namespace Csla.Core
     /// <param name="ct">The cancellation token.</param>
     /// <param name="methodName">The name of the calling method.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static async Task WaitForIdle(INotifyBusy source, CancellationToken ct, [CallerMemberName] string methodName = "")
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       if (!source.IsBusy)
       {
         return;
       }
 
-      var tcs = new TaskCompletionSource<object>();
+      var tcs = new TaskCompletionSource<object?>();
       try
       {
         source.BusyChanged += ObserverForIsBusyChange;

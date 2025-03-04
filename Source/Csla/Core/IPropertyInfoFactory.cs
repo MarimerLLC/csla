@@ -24,11 +24,8 @@ namespace Csla.Core
     /// declaration.
     /// </param>
     /// <param name="name">Name of the property.</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -40,11 +37,8 @@ namespace Csla.Core
     /// <param name="friendlyName">
     /// Friendly display name for the property.
     /// </param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -58,11 +52,8 @@ namespace Csla.Core
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName, RelationshipTypes relationship);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -77,11 +68,8 @@ namespace Csla.Core
     /// <param name="defaultValue">
     /// Default value for the property.
     /// </param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName, T defaultValue);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName, T? defaultValue);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -98,12 +86,8 @@ namespace Csla.Core
     /// </param>
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship);
-
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName, T? defaultValue, RelationshipTypes relationship);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -113,11 +97,8 @@ namespace Csla.Core
     /// </param>
     /// <param name="name">Name of the property.</param>
     /// <param name="isSerializable">If property is serializable</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, bool isSerializable);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, bool isSerializable);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -130,11 +111,8 @@ namespace Csla.Core
     /// Friendly display name for the property.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName, bool isSerializable);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName, bool isSerializable);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -149,11 +127,8 @@ namespace Csla.Core
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName, RelationshipTypes relationship, bool isSerializable);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName, RelationshipTypes relationship, bool isSerializable);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -169,11 +144,8 @@ namespace Csla.Core
     /// Default value for the property.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName, T defaultValue, bool isSerializable);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName, T? defaultValue, bool isSerializable);
     /// <summary>
     /// Creates a new instance of PropertyInfo.
     /// </summary>
@@ -191,10 +163,7 @@ namespace Csla.Core
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
-    PropertyInfo<T> Create<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(Type containingType, string name, string friendlyName, T defaultValue, RelationshipTypes relationship, bool isSerializable);
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string? friendlyName, T? defaultValue, RelationshipTypes relationship, bool isSerializable);
   }
 }

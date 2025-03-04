@@ -23,6 +23,7 @@ namespace Csla.Server
     /// Name of the factory to create, typically
     /// an assembly qualified type name.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     Type GetFactoryType(string factoryName);
     /// <summary>
     /// Returns an ObjectFactory object.
@@ -31,6 +32,7 @@ namespace Csla.Server
     /// Name of the factory to create, typically
     /// an assembly qualified type name.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     object GetFactory(string factoryName);
   }
 }

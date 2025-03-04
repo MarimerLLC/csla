@@ -6,10 +6,13 @@
 // <summary>Context information provided to a business rule</summary>
 //-----------------------------------------------------------------------
 
+using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 using Csla.Core;
 using Csla.Properties;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Rules
 {
@@ -47,104 +50,53 @@ namespace Csla.Rules
   /// </summary>
   public class RuleContext : IRuleContext
   {
-    /// <summary>
-    /// Gets the rule object.
-    /// </summary>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public IBusinessRuleBase Rule { get; internal set; }
 
-    /// <summary>
-    /// Gets a reference to the target business object.
-    /// </summary>
-    public object Target { get; internal set; }
+    /// <inheritdoc />
+    public object? Target { get; internal set; }
 
-    /// <summary>
-    /// Gets a dictionary containing copies of property values from
-    /// the target business object.
-    /// </summary>
-    public Dictionary<IPropertyInfo, object> InputPropertyValues { get; internal set; }
+    /// <inheritdoc />
+    public Dictionary<IPropertyInfo, object?> InputPropertyValues { get; }
 
-    private LazySingleton<List<IPropertyInfo>> _dirtyProperties;
-    /// <summary>
-    /// Gets a list of dirty properties (value was updated).
-    /// </summary>
-    /// <value>
-    /// The dirty properties.
-    /// </value>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public List<IPropertyInfo> DirtyProperties
     {
-      get
-      {
-        if (!_dirtyProperties.IsValueCreated)
-          return null;
-        return _dirtyProperties.Value;
-      }
+      get;
     }
 
-    private readonly LazySingleton<Dictionary<IPropertyInfo, object>> _outputPropertyValues;
-    /// <summary>
-    /// Gets a dictionary containing copies of property values that
-    /// should be updated in the target object.
-    /// </summary>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public Dictionary<IPropertyInfo, object> OutputPropertyValues
+    public Dictionary<IPropertyInfo, object?> OutputPropertyValues
     {
-      get
-      {
-        if (!_outputPropertyValues.IsValueCreated)
-          return null;
-        return _outputPropertyValues.Value;
-      }
+      get;
     }
 
-    /// <summary>
-    /// Gets a reference to the list of results being returned
-    /// by this rule.
-    /// </summary>
-    private List<RuleResult> _results;
-    /// <summary>
-    /// Gets a list of RuleResult objects containing the
-    /// results of the rule.
-    /// </summary>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public List<RuleResult> Results
     {
-      get
-      {
-        if (_results == null)
-          _results = new List<RuleResult>();
-        return _results;
-      }
-      private set
-      {
-        _results = value;
-      }
+      get;
     }
 
     private readonly Action<IRuleContext> _completeHandler;
 
-    /// <summary>
-    /// Gets or sets the name of the origin property.
-    /// </summary>
-    /// <value>The name of the origin property.</value>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public string OriginPropertyName { get; internal set; }
+    public string OriginPropertyName { get; private set; }
 
-    /// <summary>
-    /// Gets the execution context.
-    /// </summary>
-    /// <value>The execution context.</value>
+    /// <inheritdoc />
     public RuleContextModes ExecuteContext { get; internal set; }
 
 
-    /// <summary>
-    /// Executes the inner rule from the outer rules context. 
-    /// Creates a chained context and if CanRunRule will execute the inner rule.  
-    /// </summary>
-    /// <param name="innerRule">The inner rule.</param>
+    /// <inheritdoc />
     public void ExecuteRule(IBusinessRuleBase innerRule)
     {
+      if (innerRule is null)
+        throw new ArgumentNullException(nameof(innerRule));
+
       var chainedContext = GetChainedContext(innerRule);
       if (BusinessRules.CanRunRule(ApplicationContext, innerRule, chainedContext.ExecuteContext))
       {
@@ -157,36 +109,21 @@ namespace Csla.Rules
       }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether this instance is cascade context as a result of AffectedProperties.
-    /// </summary>
-    /// <value>
-    /// 	<c>true</c> if this instance is cascade context; otherwise, <c>false</c>.
-    /// </value>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool IsCascadeContext
     {
       get { return (ExecuteContext & RuleContextModes.AsAffectedProperty) > 0; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether this instance is property changed context.
-    /// </summary>
-    /// <value>
-    /// 	<c>true</c> if this instance is property changed context; otherwise, <c>false</c>.
-    /// </value>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool IsPropertyChangedContext
     {
       get { return (ExecuteContext & RuleContextModes.PropertyChanged) > 0; }
     }
 
-    /// <summary>
-    /// Gets a value indicating whether this instance is check rules context.
-    /// </summary>
-    /// <value>
-    /// 	<c>true</c> if this instance is check rules context; otherwise, <c>false</c>.
-    /// </value>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public bool IsCheckRulesContext
     {
@@ -205,29 +142,31 @@ namespace Csla.Rules
       get { return (ExecuteContext & RuleContextModes.CheckObjectRules) > 0; }
     }
 
-    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler)
+    internal RuleContext(ApplicationContext applicationContext, IBusinessRuleBase rule, RuleContextModes executeContext, object? target, Action<IRuleContext> completeHandler)
+      : this(applicationContext, rule, executeContext, completeHandler, [], target)
     {
-      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      _completeHandler = completeHandler;
-      _outputPropertyValues = 
-        (LazySingleton<Dictionary<IPropertyInfo, object>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<Dictionary<IPropertyInfo, object>>));
-      _dirtyProperties = 
-        (LazySingleton<List<IPropertyInfo>>)ApplicationContext.CreateInstanceDI(typeof(LazySingleton<List<IPropertyInfo>>));
     }
 
-    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, RuleContextModes executeContext) 
-      : this(applicationContext, completeHandler)
+    internal RuleContext(ApplicationContext applicationContext, IBusinessRuleBase rule, RuleContextModes executeContext, Action<IRuleContext> completeHandler, Dictionary<IPropertyInfo, object?> inputPropertyValues, object? target)
+      : this(applicationContext, rule, executeContext, completeHandler, inputPropertyValues, target, [], [], [])
     {
-      ExecuteContext = executeContext;
     }
 
-    internal RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, LazySingleton<Dictionary<IPropertyInfo, object>> outputPropertyValues, LazySingleton<List<IPropertyInfo>> dirtyProperties, RuleContextModes executeContext)
+    internal RuleContext(ApplicationContext applicationContext, IBusinessRuleBase rule, RuleContextModes executeContext, Action<IRuleContext> completeHandler, Dictionary<IPropertyInfo, object?> inputPropertyValues, object? target, Dictionary<IPropertyInfo, object?> outputPropertyValues, List<IPropertyInfo> dirtyProperties, List<RuleResult> results)
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      Rule = rule ?? throw new ArgumentNullException(nameof(rule));
       ExecuteContext = executeContext;
-      _completeHandler = completeHandler;
-      _outputPropertyValues = outputPropertyValues;
-      _dirtyProperties = dirtyProperties;
+      _completeHandler = completeHandler ?? throw new ArgumentNullException(nameof(completeHandler));
+      InputPropertyValues = inputPropertyValues ?? throw new ArgumentNullException(nameof(inputPropertyValues));
+      Target = target;
+      OutputPropertyValues = outputPropertyValues ?? throw new ArgumentNullException(nameof(outputPropertyValues));
+      DirtyProperties = dirtyProperties ?? throw new ArgumentNullException(nameof(dirtyProperties));
+      Results = results ?? throw new ArgumentNullException(nameof(results));
+      string originPropertyName = "";
+      if (rule.PrimaryProperty != null)
+        originPropertyName = rule.PrimaryProperty.Name;
+      OriginPropertyName = originPropertyName;
     }
 
     /// <summary>
@@ -238,199 +177,157 @@ namespace Csla.Rules
     /// <param name="rule">Reference to the rule object.</param>
     /// <param name="target">Target business object.</param>
     /// <param name="inputPropertyValues">Input property values used by the rule.</param>
-    public RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, IBusinessRuleBase rule, object target, Dictionary<IPropertyInfo, object> inputPropertyValues)
-      : this(applicationContext, completeHandler)
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="completeHandler"/>, <paramref name="rule"/> or <paramref name="inputPropertyValues"/> is <see langword="null"/>.</exception>
+    public RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, IBusinessRuleBase rule, object? target, Dictionary<IPropertyInfo, object?> inputPropertyValues)
+      : this(applicationContext, rule, RuleContextModes.PropertyChanged, completeHandler, inputPropertyValues, target)
     {
-      Rule = rule;
-      if (rule.PrimaryProperty != null)
-        OriginPropertyName = rule.PrimaryProperty.Name;
-      Target = target;
-      InputPropertyValues = inputPropertyValues;
-      ExecuteContext = RuleContextModes.PropertyChanged;
     }
 
-    /// <summary>
-    /// Gets a new RuleContext object for a chained rule.
-    /// </summary>
-    /// <param name="rule">Chained rule that will use
-    /// this new context.</param>
-    /// <remarks>
-    /// The properties from the existing RuleContext will be
-    /// used to create the new context, with the exception
-    /// of the Rule property which is set using the supplied
-    /// IBusinessRule value.
-    /// </remarks>
+    /// <inheritdoc />
     public IRuleContext GetChainedContext(IBusinessRuleBase rule)
     {
-      var result = new RuleContext(ApplicationContext, _completeHandler, _outputPropertyValues, _dirtyProperties, ExecuteContext);
-      result.Rule = rule;
-      result.OriginPropertyName = OriginPropertyName;
-      result.InputPropertyValues = InputPropertyValues;
-      result.Results = Results;
+      if (rule is null)
+        throw new ArgumentNullException(nameof(rule));
 
+      object? ruleTarget = null;
       if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
-        result.Target = Target;
-      return result;
+        ruleTarget = Target;
+
+      return new RuleContext(ApplicationContext, rule, ExecuteContext, _completeHandler, InputPropertyValues, ruleTarget, OutputPropertyValues, DirtyProperties, Results)
+      {
+        OriginPropertyName = OriginPropertyName
+      };
     }
 
-    /// <summary>
-    /// Add a Error severity result to the Results list.
-    /// </summary>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
+    /// <inheritdoc />
     public void AddErrorResult(string description)
     {
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
+
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description, Rule.DisplayIndex));
     }
 
-    /// <summary>
-    /// Add a Error severity result to the Results list.
-    /// </summary>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
-    /// <param name="stopProcessing">True if no further rules should be processed
-    /// for the current property.</param>
+    /// <inheritdoc />
     public void AddErrorResult(string description, bool stopProcessing)
     {
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
+
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description, Rule.DisplayIndex) { StopProcessing = stopProcessing });
     }
 
-    /// <summary>
-    /// Add a Error severity result to the Results list.
-    /// This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. 
-    /// </summary>
-    /// <param name="property">Property to which the result applies.</param>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
-    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
+    /// <inheritdoc />
     public void AddErrorResult(IPropertyInfo property, string description)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       Results.Add(new RuleResult(Rule.RuleName, property, description, Rule.DisplayIndex));
     }
 
-    /// <summary>
-    /// Add a Warning severity result to the Results list.
-    /// </summary>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
+    /// <inheritdoc />
     public void AddWarningResult(string description)
     {
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
+
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description, Rule.DisplayIndex) { Severity = RuleSeverity.Warning });
     }
 
-    /// <summary>
-    /// Add a Warning severity result to the Results list.
-    /// </summary>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
-    /// <param name="stopProcessing">True if no further rules should be processed
-    /// for the current property.</param>
+    /// <inheritdoc />
     public void AddWarningResult(string description, bool stopProcessing)
     {
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
+
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description, Rule.DisplayIndex) { Severity = RuleSeverity.Warning, StopProcessing = stopProcessing });
     }
 
 
-    /// <summary>
-    /// Add a Warning severity result to the Results list.
-    /// This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. 
-    /// </summary>
-    /// <param name="property">Property to which the result applies.</param>
-    /// <param name="description">Human-readable description of  why the rule failed.</param>
-    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>    
+    /// <inheritdoc />
     public void AddWarningResult(IPropertyInfo property, string description)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       Results.Add(new RuleResult(Rule.RuleName, property, description, Rule.DisplayIndex) { Severity = RuleSeverity.Warning });
     }
 
-    /// <summary>
-    /// Add an Information severity result to the Results list.
-    /// </summary>
-    /// <param name="description">Human-readable description of
-    /// why the rule failed.</param>
+    /// <inheritdoc />
     public void AddInformationResult(string description)
     {
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
+
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description, Rule.DisplayIndex) { Severity = RuleSeverity.Information });
     }
 
-    /// <summary>
-    /// Add an Information severity result to the Results list.
-    /// </summary>
-    /// <param name="description">Human-readable description of why the rule failed.</param>
-    /// <param name="stopProcessing">True if no further rules should be processed for the current property.</param>
+    /// <inheritdoc />
     public void AddInformationResult(string description, bool stopProcessing)
     {
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
+
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, description, Rule.DisplayIndex) { Severity = RuleSeverity.Information, StopProcessing = stopProcessing });
     }
 
-    /// <summary>
-    /// Add an Information severity result to the Results list.
-    /// This method is only allowed on "object" level rules to allow an object level rule to set warning result on a field. 
-    /// </summary>
-    /// <param name="property">Property to which the result applies.</param>
-    /// <param name="description">Human-readable description of why the rule failed.</param>
-    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
+    /// <inheritdoc />
     public void AddInformationResult(IPropertyInfo property, string description)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+      if (string.IsNullOrWhiteSpace(description))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
       Results.Add(new RuleResult(Rule.RuleName, property, description, Rule.DisplayIndex) { Severity = RuleSeverity.Information });
     }
 
-    /// <summary>
-    /// Add a Success severity result to the Results list.
-    /// </summary>
-    /// <param name="stopProcessing">True if no further rules should be processed for the current property.</param>
+    /// <inheritdoc />
     public void AddSuccessResult(bool stopProcessing)
     {
       Results.Add(new RuleResult(Rule.RuleName, Rule.PrimaryProperty, Rule.DisplayIndex) { Severity = RuleSeverity.Success, StopProcessing = stopProcessing });
     }
 
-    /// <summary>
-    /// Add an outbound value to update the rule's primary 
-    /// property on the business object once the rule is complete.
-    /// </summary>
-    /// <param name="value">New property value.</param>
-    public void AddOutValue(object value)
+    /// <inheritdoc />
+    public void AddOutValue(object? value)
     {
-      _outputPropertyValues.Value.Add(Rule.PrimaryProperty, value);
+      if (Rule.PrimaryProperty is null)
+        throw new InvalidOperationException($"{nameof(Rule)}.{nameof(Rule.PrimaryProperty)} == null");
+      
+      OutputPropertyValues.Add(Rule.PrimaryProperty, value);
     }
 
-    /// <summary>
-    /// Add an outbound value to update a property on the business
-    /// object once the rule is complete.
-    /// </summary>
-    /// <param name="property">Property to update.</param>
-    /// <param name="value">New property value.</param>
-    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
-    public void AddOutValue(IPropertyInfo property, object value)
+    /// <inheritdoc />
+    public void AddOutValue(IPropertyInfo property, object? value)
     {
-      _outputPropertyValues.Value[property] = (value is null) ? property.DefaultValue : Utilities.CoerceValue(property.Type, value.GetType(), null, value);
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
+      OutputPropertyValues[property] = (value is null) ? property.DefaultValue : Utilities.CoerceValue(property.Type, value.GetType(), null, value);
     }
 
 
-    /// <summary>
-    /// Adds a property name as a dirty field (changed value).
-    /// </summary>
-    /// <param name="property">The property.</param>
-    /// <exception cref="System.ArgumentOutOfRangeException"></exception>
+    /// <inheritdoc />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void AddDirtyProperty(IPropertyInfo property)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
-      _dirtyProperties.Value.Add(property);
+      DirtyProperties.Add(property);
     }
 
-    /// <summary>
-    /// Indicates that the rule processing is complete, so
-    /// CSLA .NET will process the Results list. This method
-    /// must be invoked on the UI thread.
-    /// </summary>
+    /// <inheritdoc />
     public void Complete()
     {
       if (Results.Count == 0)
@@ -438,81 +335,47 @@ namespace Csla.Rules
       _completeHandler?.Invoke(this);
     }
 
-    /// <summary>
-    /// Gets the value.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="propertyInfo">The property info.</param>
-    public  T GetInputValue<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(PropertyInfo<T> propertyInfo)
+    /// <inheritdoc />
+    public  T? GetInputValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(PropertyInfo<T> propertyInfo)
     {
-      return (T)InputPropertyValues[propertyInfo];
+      return GetInputValue<T>((IPropertyInfo)propertyInfo);
     }
 
-    /// <summary>
-    /// Gets the value with explicit cast
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="propertyInfo">The generic property info.</param>
-    public T GetInputValue<T>(IPropertyInfo propertyInfo)
+    /// <inheritdoc />
+    public T? GetInputValue<T>(IPropertyInfo propertyInfo)
     {
-      return (T)InputPropertyValues[propertyInfo];
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      return (T?)InputPropertyValues[propertyInfo];
     }
 
-    /// <summary>
-    /// Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="propertyInfo">The generic property info.</param>
-    /// <param name="value">The value.</param>
-    /// <returns>true if value exists else false</returns>
-    public bool TryGetInputValue<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(PropertyInfo<T> propertyInfo, ref T value)
+    /// <inheritdoc />
+    public bool TryGetInputValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(PropertyInfo<T> propertyInfo, ref T? value)
     {
+      return TryGetInputValue<T>((IPropertyInfo)propertyInfo, ref value);
+    }
+
+    /// <inheritdoc />
+    public bool TryGetInputValue<T>(IPropertyInfo propertyInfo, ref T? value)
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if (!InputPropertyValues.TryGetValue(propertyInfo, out var propertyValue))
       {
         value = default(T);
         return false;
       }
 
-      value = (T)propertyValue;
+      value = (T?)propertyValue;
       return true;
     }
 
-    /// <summary>
-    /// Tries to get the value with explicit cast. Use this method on LazyLoaded properties to test if value has been provided or not.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="propertyInfo">The generic property info.</param>
-    /// <param name="value">The value.</param>
-    /// <returns>true if value exists else false</returns>
-    public bool TryGetInputValue<T>(IPropertyInfo propertyInfo, ref T value)
-    {
-      if (!InputPropertyValues.TryGetValue(propertyInfo, out var propertyValue))
-      {
-        value = default(T);
-        return false;
-      }
-
-      value = (T)propertyValue;
-      return true;
-    }
-
-    /// <summary>
-    /// Gets a reference to the current ApplicationContext.
-    /// </summary>
+    /// <inheritdoc />
     public ApplicationContext ApplicationContext { get; }
 
-    /// <summary>
-    /// Gets a data portal factory instance
-    /// </summary>
-    public IDataPortalFactory DataPortalFactory => 
-      (IDataPortalFactory)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortalFactory));
+    /// <inheritdoc />
+    public IDataPortalFactory DataPortalFactory => ApplicationContext.CurrentServiceProvider.GetRequiredService<IDataPortalFactory>();
   }
 }

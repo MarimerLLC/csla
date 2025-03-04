@@ -24,6 +24,7 @@ namespace Csla.Test.ValidationRules
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
+      _ = context;
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
@@ -445,7 +446,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
         new Dictionary<IPropertyInfo, object> { 
           { TwoPropertyRules.Value1Property, "a" },
           { TwoPropertyRules.Value2Property, "b" } 
@@ -453,7 +454,7 @@ namespace Csla.Test.ValidationRules
       ((IBusinessRule)rule).Execute(ctx);
       context.Assert.AreEqual(0, ctx.Results.Count);
 
-      ctx = new RuleContext(applicationContext, null, rule, root,
+      ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
         new Dictionary<IPropertyInfo, object> { 
           { TwoPropertyRules.Value1Property, "" },
           { TwoPropertyRules.Value2Property, "a" } 
@@ -905,7 +906,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -923,7 +924,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -941,7 +942,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -959,7 +960,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -977,7 +978,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -995,7 +996,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -1013,7 +1014,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -1022,6 +1023,13 @@ namespace Csla.Test.ValidationRules
       ctx.AddSuccessResult(false);
       Assert.IsTrue(true, "Must not fail.");
     }
+  }
 
+  internal static class RuleContextUtils
+  {
+    internal static void DoNothingCompleteHandler(IRuleContext context)
+    {
+      _ = context;
+    }
   }
 }

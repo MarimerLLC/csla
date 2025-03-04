@@ -21,8 +21,12 @@ namespace Csla.Reflection
     /// </summary>
     /// <typeparam name="T">Type of value</typeparam>
     /// <param name="expression">Expression</param>
+    /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <see langword="null"/>.</exception>
     public static string GetKey<T>(this Expression<T> expression)
     {
+      if (expression is null)
+        throw new ArgumentNullException(nameof(expression));
+
       var list = new List<string>();
       var member = expression.Body as MemberExpression;
       while (member != null)

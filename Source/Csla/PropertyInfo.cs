@@ -9,6 +9,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Csla.Properties;
 
 namespace Csla
 {
@@ -18,17 +19,14 @@ namespace Csla
   /// <typeparam name="T">
   /// Data type of the property.
   /// </typeparam>
-  public class PropertyInfo<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : Core.IPropertyInfo, IComparable
+  public class PropertyInfo<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : Core.IPropertyInfo, IComparable
   {
     /// <summary>
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="name">Name of the property.</param>
     /// <param name="isSerializable">If property is serializable</param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
     public PropertyInfo(string name, bool? isSerializable = null)
       : this(name, null, null, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
@@ -39,6 +37,7 @@ namespace Csla
     /// <param name="name">Name of the property.</param>
     /// <param name="relationship">Relationship with referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
     public PropertyInfo(string name, RelationshipTypes relationship, bool? isSerializable = null)
       : this(name, null, null, DataBindingFriendlyDefault(), relationship, isSerializable)
     { }
@@ -51,6 +50,7 @@ namespace Csla
     /// Default value for the property.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
     public PropertyInfo(string name, T defaultValue, bool? isSerializable = null)
       : this(name, null, null, defaultValue, RelationshipTypes.None, isSerializable)
     { }
@@ -63,7 +63,8 @@ namespace Csla
     /// Friendly display name for the property.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo(string name, string friendlyName, bool? isSerializable = null)
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
+    public PropertyInfo(string name, string? friendlyName, bool? isSerializable = null)
         : this(name, friendlyName, null, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
 
@@ -78,7 +79,8 @@ namespace Csla
     /// Factory to provide display name from attributes.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo(string name, string friendlyName, Type containingType, bool? isSerializable = null)
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
+    public PropertyInfo(string name, string? friendlyName, Type containingType, bool? isSerializable = null)
         : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
 
@@ -96,7 +98,8 @@ namespace Csla
     /// Default value for the property.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue, bool? isSerializable = null)
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
+    public PropertyInfo(string name, string? friendlyName, Type containingType, T defaultValue, bool? isSerializable = null)
         : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, isSerializable)
     { }
 
@@ -112,8 +115,8 @@ namespace Csla
     /// </param>
     /// <param name="relationship">Relationship with referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
-
-    public PropertyInfo(string name, string friendlyName, Type containingType, RelationshipTypes relationship, bool? isSerializable = null)
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
+    public PropertyInfo(string name, string? friendlyName, Type containingType, RelationshipTypes relationship, bool? isSerializable = null) 
       : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), relationship, isSerializable)
     { }
 
@@ -133,9 +136,10 @@ namespace Csla
     /// <param name="relationship">Relationship with
     /// referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
-    public PropertyInfo(string name, string friendlyName, Type containingType, T defaultValue, RelationshipTypes relationship, bool? isSerializable)
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
+    public PropertyInfo(string name, string? friendlyName, Type? containingType, T? defaultValue, RelationshipTypes relationship, bool? isSerializable = null)
     {
-      Name = name;
+      Name = name ?? throw new ArgumentNullException(nameof(name));
       _friendlyName = friendlyName;
       RelationshipType = relationship;
       if (containingType != null)
@@ -158,9 +162,9 @@ namespace Csla
       get { return typeof(T); }
     }
 
-    private readonly System.Reflection.PropertyInfo _propertyInfo;
+    private readonly System.Reflection.PropertyInfo? _propertyInfo;
 
-    private readonly string _friendlyName;
+    private readonly string? _friendlyName;
     /// <summary>
     /// Gets the friendly display name
     /// for the property.
@@ -177,7 +181,7 @@ namespace Csla
         string result = Name;
         if (!string.IsNullOrWhiteSpace(_friendlyName))
         {
-          result = _friendlyName;
+          result = _friendlyName!;
         }
         else if (_propertyInfo != null)
         {
@@ -185,7 +189,7 @@ namespace Csla
           if (display != null)
           {
             // DataAnnotations attribute.
-            result = display.GetName();
+            result = display.GetName() ?? Name;
           }
           else
           {
@@ -234,13 +238,14 @@ namespace Csla
     /// if the user is not authorized to 
     /// read the property.
     /// </remarks>
-    public virtual T DefaultValue { get; }
+    public virtual T? DefaultValue { get; }
 
-    object Core.IPropertyInfo.DefaultValue
+    object? Core.IPropertyInfo.DefaultValue
     {
       get { return DefaultValue; }
     }
 
+    /// <inheritdoc />
     Core.FieldManager.IFieldData Core.IPropertyInfo.NewFieldData(string name)
     {
       return NewFieldData(name);
@@ -254,8 +259,12 @@ namespace Csla
     /// <param name="name">
     /// Property name.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or consists only of white spaces.</exception>
     protected virtual Core.FieldManager.IFieldData NewFieldData(string name)
     {
+      if (string.IsNullOrEmpty(name))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(name)));
+
       return new Core.FieldManager.FieldData<T>(name, IsSerializable);
     }
 
@@ -285,13 +294,13 @@ namespace Csla
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    public System.Reflection.PropertyInfo GetPropertyInfo() => _propertyInfo;
+    public System.Reflection.PropertyInfo? GetPropertyInfo() => _propertyInfo;
 
     #region IComparable Members
 
-    int IComparable.CompareTo(object obj)
+    int IComparable.CompareTo(object? obj)
     {
-      return Name.CompareTo(((Core.IPropertyInfo)obj).Name);
+      return Name.CompareTo((obj as Core.IPropertyInfo)?.Name);
     }
 
     #endregion
@@ -300,13 +309,13 @@ namespace Csla
     /// Creates the CSLA Data Binding Friendly default for the given type T.
     /// </summary>
     /// <returns>Default value for T which is compatible with Data Binding</returns>
-    public static T DataBindingFriendlyDefault()
+    public static T? DataBindingFriendlyDefault()
     {
       // if T is string we need an empty string, not null, for data binding
       if (typeof(T) == typeof(string))
         return (T)(object)string.Empty;
 
-      return default(T);
+      return default;
     }
   }
 }

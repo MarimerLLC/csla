@@ -6,8 +6,10 @@
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
 
+using System.Runtime.Serialization;
 using System.Security.Principal;
 using Csla.Core;
+using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
@@ -109,21 +111,19 @@ namespace Csla.Channels.Grpc
 
     private async Task<ResponseMessage> InvokePortal(string operation, ByteString requestData)
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      DataPortalErrorInfo? errorData = null;
+      var result = new DataPortalResponse();
       try
       {
-        var request = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(requestData.ToByteArray());
-        result = await CallPortal(operation, request);
+        var request = Deserialize<object>(requestData.ToByteArray());
+        var callResult = await CallPortal(operation, request);
+        result.ObjectData = callResult.ObjectData;
       }
       catch (Exception ex)
       {
-        errorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
+        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
       }
-      var portalResult = _applicationContext.CreateInstanceDI<DataPortalResponse>();
-      portalResult.ErrorData = errorData;
-      portalResult.ObjectData = result.ObjectData;
-      var buffer = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(portalResult);
+
+      var buffer = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
       return new ResponseMessage { Body = ByteString.CopyFrom(buffer) };
     }
 
@@ -149,25 +149,25 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -197,25 +197,25 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -245,19 +245,19 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
         // unpack object
-        object? obj = GetCriteria(_applicationContext, request.ObjectData);
+        object obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
 
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Update(obj, context, true);
 
@@ -288,25 +288,25 @@ namespace Csla.Channels.Grpc
       if (request is null)
         throw new ArgumentNullException(nameof(request));
 
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          Deserialize<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
@@ -328,12 +328,9 @@ namespace Csla.Channels.Grpc
 
     #region Criteria
 
-    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
+    private static object GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
     {
-      object? criteria = null;
-      if (criteriaData != null)
-        criteria = applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(criteriaData);
-      return criteria;
+      return applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(criteriaData) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
     }
 
     #endregion Criteria
@@ -371,5 +368,16 @@ namespace Csla.Channels.Grpc
     }
 
     #endregion Extention Method for Requests
+
+    private T Deserialize<T>(byte[] data)
+    {
+      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
+      if (deserializedData is not T castedData)
+      {
+        throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T).FullName));
+      }
+
+      return castedData;
+    }
   }
 }

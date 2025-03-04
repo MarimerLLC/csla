@@ -32,10 +32,8 @@ namespace Csla.Test.RollBack
     }
 
     [Serializable]
-    protected class Criteria : ReadOnlyBase<Criteria>
+    protected class Criteria
     {
-      private static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
-
       public Criteria()
       {
         Data = "<new>";
@@ -48,8 +46,8 @@ namespace Csla.Test.RollBack
 
       public string Data
       {
-        get { return ReadProperty(DataProperty); }
-        set { LoadProperty(DataProperty, value); }
+        get;
+        set;
       }
     }
 

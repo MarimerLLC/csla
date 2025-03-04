@@ -24,6 +24,7 @@ namespace Csla.Core
     /// collection.
     /// </summary>
     /// <param name="child">Child object to be removed.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
     void RemoveChild(IEditableBusinessObject child);
     /// <summary>
     /// Used by BusinessListBase as a child object is 
@@ -31,7 +32,7 @@ namespace Csla.Core
     /// parent.
     /// </summary>
     /// <param name="parent">A reference to the parent collection object.</param>
-    void SetParent(IParent parent);
+    void SetParent(IParent? parent);
     /// <summary>
     /// Used by ObjectFactory to gain access to the
     /// list of deleted items contained in the collection.

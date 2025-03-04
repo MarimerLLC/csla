@@ -21,7 +21,20 @@ namespace Csla.Test.DataPortalChild
       get { return Parent; }
     }
 
-    public string Status { get; private set; }
+    public string Status { get; private set; } = "Random";
+
+    public string[] CreateValues { get; private set; }
+
+    [CreateChild]
+    private async Task CreateChild(string createValues, [Inject]IChildDataPortal<Child> childPortal)
+    {
+      CreateValues = [createValues];
+      for (int i = 0; i < 2; i++)
+      {
+        var child = await childPortal.CreateChildAsync(createValues);
+        Add(child);
+      }
+    }
 
     [FetchChild]
     protected void Child_Fetch()

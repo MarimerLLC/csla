@@ -13,7 +13,7 @@
     /// <value>
     /// The property.
     /// </value>
-    public IPropertyInfo Property { get; set; }
+    public IPropertyInfo Property { get; private set; }
 
     /// <summary>
     /// Constructor for AsyncLoadException
@@ -21,7 +21,8 @@
     /// <param name="property">the IPropertyInfo that desccribes the property</param>
     /// <param name="message">Clear text message for user</param>
     /// <param name="ex">the actual exception</param>
-    public AsyncLoadException(IPropertyInfo property, string message, Exception ex) : base(message, ex)
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
+    public AsyncLoadException(IPropertyInfo property, string? message, Exception? ex) : base(message, ex)
     {
       Property = property;
     }

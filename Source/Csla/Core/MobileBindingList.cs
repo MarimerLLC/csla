@@ -10,9 +10,7 @@ using System.ComponentModel;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
 using System.Diagnostics;
-#if NET8_0_OR_GREATER
 using System.Diagnostics.CodeAnalysis;
-#endif
 
 namespace Csla.Core
 {
@@ -27,17 +25,13 @@ namespace Csla.Core
   [DebuggerStepThrough]
 #endif
   [Serializable]
-  public class MobileBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : BindingList<T>, IMobileList
+  public class MobileBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindingList<T>, IMobileList
   {
     #region LoadListMode
 
     [NonSerialized]
     [NotUndoable]
-    private LoadListModeObject _loadListModeObject = null;
+    private LoadListModeObject? _loadListModeObject = null;
 
     /// <summary>
     /// By wrapping this property inside Using block
@@ -78,7 +72,7 @@ namespace Csla.Core
 
     [NonSerialized]
     [NotUndoable]
-    private Stack<bool> _oldRLCE;
+    private Stack<bool>? _oldRLCE;
 
     /// <summary>
     /// Sets the load list mode for the list
@@ -104,9 +98,10 @@ namespace Csla.Core
       /// Create instance of type
       /// </summary>
       /// <param name="target">List object</param>
+      /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
       public LoadListModeObject(IMobileList target)
       {
-        _target = target;
+        _target = target ?? throw new ArgumentNullException(nameof(target));
         _target.SetLoadListMode(true);
       }
 
@@ -168,7 +163,7 @@ namespace Csla.Core
       List<int> references = new List<int>();
       for (int x = 0; x < Count; x++)
       {
-        T child = this[x];
+        T? child = this[x];
         if (child != null)
         {
           SerializationInfo childInfo = formatter.SerializeObject(child);
@@ -223,10 +218,10 @@ namespace Csla.Core
 
         if (info.Values.TryGetValue("$list", out var value))
         {
-          List<int> references = (List<int>)value.Value;
+          List<int> references = (List<int>)value.Value!;
           foreach (int reference in references)
           {
-            T child = (T)formatter.GetObject(reference);
+            T child = (T)formatter.GetObject(reference)!;
             if (child is IBusinessBase bb)
             {
               var editLevelAdded = bb.EditLevelAdded;

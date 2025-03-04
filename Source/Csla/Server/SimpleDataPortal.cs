@@ -17,6 +17,11 @@ namespace Csla.Server
   /// </summary>
   public class SimpleDataPortal : IDataPortalServer
   {
+    private readonly ApplicationContext _applicationContext;
+    private readonly IDataPortalActivator _activator;
+    private readonly IDataPortalExceptionInspector _exceptionInspector;
+    private readonly Configuration.DataPortalOptions _dataPortalOptions;
+
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
@@ -24,37 +29,28 @@ namespace Csla.Server
     /// <param name="activator"></param>
     /// <param name="exceptionInspector"></param>
     /// <param name="dataPortalOptions"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="activator"/>, <paramref name="exceptionInspector"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public SimpleDataPortal(ApplicationContext applicationContext, IDataPortalActivator activator, IDataPortalExceptionInspector exceptionInspector, Configuration.DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext;
-      _activator = activator;
-      _exceptionInspector = exceptionInspector;
-      _dataPortalOptions = dataPortalOptions;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _activator = activator ?? throw new ArgumentNullException(nameof(activator));
+      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
+      _dataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
 
-    private ApplicationContext _applicationContext;
-    private IDataPortalActivator _activator;
-    private IDataPortalExceptionInspector _exceptionInspector;
-    private Configuration.DataPortalOptions _dataPortalOptions;
-
-    /// <summary>
-    /// Create a new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    public async Task<DataPortalResult> Create(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      DataPortalTarget obj = null;
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
+      DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
       try
       {
@@ -77,8 +73,10 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        object outval = null;
-        if (obj != null) outval = obj.Instance;
+        object? outval = null;
+        if (obj != null) 
+          outval = obj.Instance;
+        
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Create", ex),
@@ -86,36 +84,29 @@ namespace Csla.Server
       }
       finally
       {
-        object reference = null;
-        if (obj != null)
-          reference = obj.Instance;
-        _activator.FinalizeInstance(reference);
+        if (obj?.Instance is not null)
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
 
-    /// <summary>
-    /// Get an existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    public async Task<DataPortalResult> Fetch(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
         return await Execute(objectType, criteria, context, isSync);
       }
       
-      DataPortalTarget obj = null;
+      DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Fetch);
       try
       {
@@ -139,8 +130,9 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        object outval = null;
-        if (obj != null) outval = obj.Instance;
+        object? outval = null;
+        if (obj != null) 
+          outval = obj.Instance;
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(_exceptionInspector).InspectException(objectType, outval, criteria, "DataPortal.Fetch", ex),
@@ -148,20 +140,14 @@ namespace Csla.Server
       }
       finally
       {
-        object reference = null;
-        if (obj != null)
-          reference = obj.Instance;
-        _activator.FinalizeInstance(reference);
+        if (obj?.Instance is not null)
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
 
-    private async Task<DataPortalResult> Execute(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> Execute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      DataPortalTarget obj = null;
+      DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Execute);
       try
       {
@@ -185,7 +171,7 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        object outval = null;
+        object? outval = null;
         if (obj != null) outval = obj.Instance;
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
@@ -194,25 +180,21 @@ namespace Csla.Server
       }
       finally
       {
-        object reference = null;
-        if (obj != null)
-          reference = obj.Instance;
-        _activator.FinalizeInstance(reference);
+        if (obj?.Instance is not null)
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
 
-    /// <summary>
-    /// Update a business object.
-    /// </summary>
-    /// <param name="obj">Business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
     [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
       var lb = _applicationContext.CreateInstanceDI<DataPortalTarget>(obj);
@@ -247,10 +229,7 @@ namespace Csla.Server
       }
       finally
       {
-        object reference = null;
-        if (lb != null)
-          reference = lb.Instance;
-        _activator.FinalizeInstance(reference);
+        _activator.FinalizeInstance(lb.Instance);
       }
     }
 
@@ -279,8 +258,7 @@ namespace Csla.Server
         {
           // ignore exceptions from the exception handler
         }
-        object reference = null;
-        reference = obj.Instance ?? obj;
+        var reference = obj.Instance;
         throw DataPortal.NewDataPortalException(
               _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
               new DataPortalExceptionHandler(_exceptionInspector).InspectException(reference.GetType(), reference, null, "DataPortal.Execute", ex),
@@ -288,29 +266,15 @@ namespace Csla.Server
       }
       finally
       {
-        object reference = null;
-        if (obj != null)
-          reference = obj.Instance;
-        _activator.FinalizeInstance(reference);
+        _activator.FinalizeInstance(obj.Instance);
       }
     }
-    /// <summary>
-    /// Delete a business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+
+    /// <inheritdoc />
     [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
-    public async Task<DataPortalResult> Delete(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      DataPortalTarget obj = null;
+      DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Delete);
       try
       {
@@ -321,13 +285,13 @@ namespace Csla.Server
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
         obj.OnDataPortalInvokeComplete(eventArgs);
-        return new DataPortalResult {  ApplicationContext = _applicationContext };
+        return new DataPortalResult(_applicationContext);
       }
       catch (Exception ex)
       {
         try
         {
-          obj.OnDataPortalException(eventArgs, ex);
+          obj?.OnDataPortalException(eventArgs, ex);
         }
         catch
         {
@@ -340,10 +304,8 @@ namespace Csla.Server
       }
       finally
       {
-        object reference = null;
-        if (obj != null)
-          reference = obj.Instance;
-        _activator.FinalizeInstance(reference);
+        if (obj?.Instance is not null)
+          _activator.FinalizeInstance(obj.Instance);
       }
     }
   }

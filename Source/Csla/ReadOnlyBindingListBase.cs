@@ -22,11 +22,7 @@ namespace Csla
   [SuppressMessage(
     "Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyBindingListBase<T,
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    C> :
+  public abstract class ReadOnlyBindingListBase<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
     ReadOnlyBindingList<C>, IReadOnlyCollection,
     ICloneable, IDataPortalTarget, IUseApplicationContext
     where T : ReadOnlyBindingListBase<T, C>
@@ -35,12 +31,14 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
+
+    /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext
     {
       get => ApplicationContext;
       set
       {
-        ApplicationContext = value;
+        ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         Initialize();
       }
     }
@@ -48,7 +46,9 @@ namespace Csla
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. Necessary for derived classes
     protected ReadOnlyBindingListBase()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     { }
 
     #region Initialize
@@ -76,7 +76,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual object GetClone()
     {
-      return ObjectCloner.GetInstance(ApplicationContext).Clone(this);
+      return ObjectCloner.GetInstance(ApplicationContext).Clone(this)!;
     }
 
     /// <summary>

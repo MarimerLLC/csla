@@ -6,9 +6,11 @@
 // <summary>Object containing the serialization</summary>
 //-----------------------------------------------------------------------
 
+using System.Globalization;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile
 {
@@ -35,7 +37,7 @@ namespace Csla.Serialization.Mobile
       /// Field value.
       /// </summary>
       [DataMember]
-      public object Value { get; set; }
+      public object? Value { get; set; }
 
       /// <summary>
       /// If non-null, indicates that the value is a integer value representing the
@@ -43,7 +45,7 @@ namespace Csla.Serialization.Mobile
       /// to the enum type.
       /// </summary>
       [DataMember]
-      public string EnumTypeName { get; set; }
+      public string? EnumTypeName { get; set; }
 
       /// <summary>
       /// Indicates whether the field is dirty.
@@ -210,9 +212,19 @@ namespace Csla.Serialization.Mobile
       set { _values = value; }
     }
 
-    internal SerializationInfo(int referenceId)
+    /// <summary>
+    /// Initializes a new instance of <see cref="SerializationInfo"/>-object.
+    /// </summary>
+    /// <param name="referenceId">The reference number for this object.</param>
+    /// <param name="typeName">Assembly-qualified type name of the object being serialized.</param>
+    /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public SerializationInfo(int referenceId, string typeName)
     {
+      if (string.IsNullOrWhiteSpace(typeName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
+
       ReferenceId = referenceId;
+      TypeName = typeName;
     }
 
     /// <summary>
@@ -225,7 +237,7 @@ namespace Csla.Serialization.Mobile
     /// object being serialized.
     /// </summary>
     [DataMember]
-    public string TypeName { get; set; }
+    public string TypeName { get; private set; }
 
     /// <summary>
     /// Adds a value to the serialization stream.
@@ -236,7 +248,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="value">
     /// Value of the field.
     /// </param>
-    public void AddValue(string name, object value)
+    public void AddValue(string name, object? value)
     {
       AddValue(name, value, false);
     }
@@ -253,7 +265,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="isDirty">
     /// Flag indicating whether the value is dirty.
     /// </param>
-    public void AddValue(string name, object value, bool isDirty)
+    public void AddValue(string name, object? value, bool isDirty)
     {
       _values.Add(name, new FieldData { Value = value, IsDirty = isDirty });
     }
@@ -273,7 +285,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="enumTypeName">
     /// Name of the enumeration
     /// </param>
-    public void AddValue(string name, object value, bool isDirty, string enumTypeName)
+    public void AddValue(string name, object? value, bool isDirty, string? enumTypeName)
     {
       _values.Add(name, new FieldData { Value = value, IsDirty = isDirty, EnumTypeName = enumTypeName});
     }
@@ -287,21 +299,29 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    public T GetValue<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(string name)
+    public T? GetValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string name)
     {
       try
       {
         var value = _values[name].Value;
-        return (value != null ? Utilities.CoerceValue<T>(value.GetType(), null, value) : (T)value);
+        return value != null ? Utilities.CoerceValue<T?>(value.GetType(), null, value) : (T?)value;
       }
       catch (Exception ex)
       {
         throw new InvalidOperationException($"SerializationInfo.GetValue: {name}", ex);
       }
+    }
+
+    /// <summary>
+    /// Gets a value from the list of fields which is required to be not <see langword="null"/>.
+    /// </summary>
+    /// <typeparam name="T">Type to which the value should be coerced.</typeparam>
+    /// <param name="name">Name of the field.</param>
+    /// <returns>The value.</returns>
+    /// <exception cref="InvalidOperationException">Something went wrong or the returned value of <paramref name="name"/> would be <see langword="null"/>.</exception>
+    public T GetRequiredValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string name)
+    {
+      return GetValue<T>(name) ?? throw new InvalidOperationException($"SerializationInfo.GetValue: {name} => null");
     }
 
     /// <summary>
@@ -340,7 +360,10 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public SerializationInfo() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// Method called by MobileFormatter when an object
@@ -394,7 +417,7 @@ namespace Csla.Serialization.Mobile
     public void SetState(SerializationInfo info)
     {
       ReferenceId = info.GetValue<int>("SerializationInfo.ReferenceId");
-      TypeName = info.GetValue<string>("SerializationInfo.TypeName");
+      TypeName = info.GetValue<string>("SerializationInfo.TypeName") ?? throw new InvalidOperationException();
     }
 
     /// <summary>
@@ -413,14 +436,18 @@ namespace Csla.Serialization.Mobile
       foreach (string key in info.Children.Keys)
       {
         int referenceId = info.Children[key].ReferenceId;
-        object serialized = formatter.GetObject(referenceId);
+        var serialized = formatter.GetObject(referenceId);
         if (serialized is ChildData data)
         {
           _children.Add(key, data);
         }
+        else if(serialized is FieldData fieldData)
+        {
+          _values.Add(key, fieldData);
+        }
         else
         {
-          _values.Add(key, (FieldData)serialized);
+          throw new MobileFormatterException(string.Format(Resources.UnexpectedSerializationInfoObjectData, serialized?.GetType().ToString() ?? "<null>"));
         }
       }
     }

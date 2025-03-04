@@ -10,8 +10,12 @@
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="result">InterceptArgs object from the data portal</param>
+    /// <exception cref="ArgumentNullException"><paramref name="result"/> is <see langword="null"/>.</exception>
     public Activity(InterceptArgs result)
     {
+      if (result is null)
+        throw new ArgumentNullException(nameof(result));
+
       ObjectType = result.ObjectType;
       Operation = result.Operation;
       Runtime = result.Runtime;
@@ -35,6 +39,6 @@
     /// Gets the exception (if any) resulting from the
     /// call. Only valid upon call completion.
     /// </summary>
-    public Exception Exception { get; private set; }
+    public Exception? Exception { get; private set; }
   }
 }

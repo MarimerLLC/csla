@@ -6,6 +6,8 @@
 // <summary>Allows interception of DataPortal call</summary>
 //-----------------------------------------------------------------------
 
+using System.Xml;
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Server
@@ -16,37 +18,34 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalBroker : IDataPortalServer
   {
+    private readonly DataPortalSelector _dataPortalSelector;
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="dataPortalSelector"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="dataPortalSelector"/> is <see langword="null"/>.</exception>
     public DataPortalBroker(DataPortalSelector dataPortalSelector)
     {
-      _dataPortalSelector = dataPortalSelector;
+      _dataPortalSelector = dataPortalSelector ?? throw new ArgumentNullException(nameof(dataPortalSelector));
     }
 
-    private DataPortalSelector _dataPortalSelector;
     /// <summary>
     /// Gets or sets a reference to a implementation of
     /// IDataPortalServer to be used.
     /// </summary>
-    public static IDataPortalServer DataPortalServer { get; set; }
+    public static IDataPortalServer? DataPortalServer { get; set; }
 
-    /// <summary>
-    /// Create a new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public Task<DataPortalResult> Create(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       if (DataPortalServer != null)
       {
         return DataPortalServer.Create(objectType, criteria, context, isSync);
@@ -57,21 +56,16 @@ namespace Csla.Server
       }      
     }
 
-    /// <summary>
-    /// Get an existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public Task<DataPortalResult> Fetch(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       if (DataPortalServer != null)
       {
         return DataPortalServer.Fetch(objectType, criteria, context, isSync);
@@ -82,16 +76,14 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Update a business object.
-    /// </summary>
-    /// <param name="obj">Business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       if (DataPortalServer != null)
       {
         return DataPortalServer.Update(obj, context, isSync);
@@ -102,21 +94,16 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Delete a business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public Task<DataPortalResult> Delete(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       if (DataPortalServer != null)
       {
         return DataPortalServer.Delete(objectType, criteria, context, isSync);

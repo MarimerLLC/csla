@@ -1,4 +1,5 @@
-﻿using Csla.Properties;
+﻿#nullable disable
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile
 {

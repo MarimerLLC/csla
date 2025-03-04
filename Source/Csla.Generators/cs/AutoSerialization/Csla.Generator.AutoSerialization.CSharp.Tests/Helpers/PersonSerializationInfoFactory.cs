@@ -5,10 +5,11 @@
 // </copyright>
 // <summary>Factory for the creation of test SerializationInfo instances</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization.Mobile;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Csla.Generator.AutoSerialization.CSharp.TestObjects;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Generator.AutoSerialization.CSharp.Tests.Helpers
 {
@@ -19,7 +20,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests.Helpers
     {
       SerializationInfo serializationInfo;
 
-      serializationInfo = new SerializationInfo();
+      serializationInfo = new SerializationInfo(1, AssemblyNameTranslator.GetSerializationName(typeof(PersonPOCO), true));
       serializationInfo.AddValue("_middleName", "");
       serializationInfo.AddValue("PersonId", 5);
       serializationInfo.AddValue("FirstName", "");

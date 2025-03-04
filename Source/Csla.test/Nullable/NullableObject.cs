@@ -73,15 +73,10 @@ namespace Csla.Test.Nullable
       dataPortal.Delete(new Criteria(name));
     }
 
-    public NullableObject()
+    [Create]
+    private void DataPortal_Create(Criteria criteria)
     {
-      AddBusinessRules();
-    }
-
-    private void DataPortal_Create(object criteria)
-    {
-      Criteria crit = (Criteria)(criteria);
-      _name = crit._name;
+      _name = criteria._name;
       //Name = crit._name;
       TestResults.Add("NullableObject", "Created");
     }

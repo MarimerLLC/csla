@@ -18,20 +18,20 @@ namespace Csla.Server
     /// Gets the type of business object affected by
     /// the client request.
     /// </summary>
-    public Type ObjectType { get; private set; }
+    public Type ObjectType { get; }
     /// <summary>
     /// Gets a reference to the criteria or 
     /// business object passed from
     /// the client to the server.
     /// </summary>
-    public object RequestObject { get; private set; }
+    public object? RequestObject { get; }
     /// <summary>
     /// Gets the data portal operation requested
     /// by the client.
     /// </summary>
-    public DataPortalOperations Operation { get; private set; }
+    public DataPortalOperations Operation { get; }
 
-    internal AuthorizeRequest(Type objectType, object requestObject, DataPortalOperations operation)
+    internal AuthorizeRequest(Type objectType, object? requestObject, DataPortalOperations operation)
     {
       ObjectType = objectType;
       RequestObject = requestObject;

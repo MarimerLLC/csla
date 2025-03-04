@@ -74,10 +74,9 @@ namespace Csla.Data
       object target, bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
       foreach (string propertyName in source.Keys)
       {
-        if (!ignore.Contains(propertyName))
+        if (!ignoreList.Contains(propertyName))
         {
           try
           {
@@ -131,10 +130,9 @@ namespace Csla.Data
       bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
-        if (!ignore.Contains(propertyName))
+        if (!ignoreList.Contains(propertyName))
         {
           try
           {
@@ -212,10 +210,9 @@ namespace Csla.Data
       bool suppressExceptions,
       params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
-          if (!ignore.Contains(propertyName))
+          if (!ignoreList.Contains(propertyName))
           {
               try
               {

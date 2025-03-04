@@ -137,10 +137,9 @@ namespace Csla.Blazor
     {
       get
       {
-        List<BrokenRule> result = [];
         if (Model is Core.BusinessBase obj)
-          result = [.. obj.BrokenRulesCollection];
-        return result;
+          return [.. obj.BrokenRulesCollection];
+        return [];
       }
     }
 

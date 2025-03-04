@@ -23,10 +23,6 @@ namespace Csla.Test.LazyLoad
       get { return base.EditLevel; }
     }
 
-    public AChild()
-    {
-    }
-
     [Create]
     [CreateChild]
     private void Create()

@@ -12,10 +12,6 @@ namespace UnitDriven
 {
   public class Asserter
   {
-    public Asserter()
-    {
-    }
-
     public void IsNull<T>(T value)
     {
       Assert.IsNull(value);

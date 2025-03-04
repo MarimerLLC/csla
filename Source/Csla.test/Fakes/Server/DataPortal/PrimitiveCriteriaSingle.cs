@@ -37,9 +37,6 @@ namespace Csla.Test.DataPortalTest
 
     #endregion
 
-    public PrimitiveCriteriaSingle()
-    { }
-
     #region Data Access
 
     #region DataPortal_Create

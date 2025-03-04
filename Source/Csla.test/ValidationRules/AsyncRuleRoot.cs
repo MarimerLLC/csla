@@ -36,10 +36,6 @@ namespace Csla.Test.ValidationRules
       return dataPortal.Create();
     }
 
-    public AsyncRuleRoot()
-    {
-    }
-
     protected override void AddBusinessRules()
     {
       BusinessRules.AddRule(new Rules.CommonRules.Required(CustomerNumberProperty));

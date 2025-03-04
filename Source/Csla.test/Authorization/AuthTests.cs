@@ -715,10 +715,6 @@ namespace Csla.Test.Authorization
   [Serializable]
   public class RootList : BusinessListBase<RootList, ChildItem>
   {
-    public RootList()
-    {
-    }
-
     [Create]
     private void Create([Inject] IChildDataPortal<ChildItem> childDataPortal)
     {

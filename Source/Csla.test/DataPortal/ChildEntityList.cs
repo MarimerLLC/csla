@@ -11,10 +11,6 @@ namespace Csla.Test.DataBinding
   [Serializable]
   public class ChildEntityList : BusinessBindingListBase<ChildEntityList, ChildEntity>
   {
-    public ChildEntityList()
-    {
-    }
-
     #region "Criteria"
 
     [Serializable]

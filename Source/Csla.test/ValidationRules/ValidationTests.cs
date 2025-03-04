@@ -816,9 +816,6 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(Value1Property, value); }
     }
 
-    public DirtyAfterOutValueChangesProperty() 
-    { }
-
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();

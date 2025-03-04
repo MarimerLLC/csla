@@ -39,8 +39,6 @@ namespace Csla.Testing.Business.DataPortal
     public static PropertyInfo<string> CurrentCultureProperty =
       RegisterProperty<string>(new PropertyInfo<string>("CurrentCulture"));
 
-    public AsyncPortalWithCulture() { }
-
     [RunLocal]
     [Create]
     private void Create()

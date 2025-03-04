@@ -51,10 +51,6 @@ namespace Csla.Test.Basic
   [Serializable]
   public class TestCollection : BusinessBindingListBase<TestCollection, TestItem>
   {
-    public TestCollection()
-    {
-    }
-
     [Create]
     private void Create()
     {

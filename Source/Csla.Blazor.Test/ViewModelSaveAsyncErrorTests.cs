@@ -123,10 +123,6 @@ namespace Csla.Blazor.Test
 
     private class FakeBusy : Core.ITrackStatus
     {
-      public FakeBusy()
-      {
-      }
-
       public bool IsValid { get; set; }
 
       public bool IsSelfValid { get; set; }

@@ -30,9 +30,5 @@ namespace Csla.Test.Basic
         AProperty = "Executed";
       }
     }
-
-    public CommandObject()
-    {
-    }
   }
 }

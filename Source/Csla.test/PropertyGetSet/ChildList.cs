@@ -11,9 +11,6 @@ namespace Csla.Test.PropertyGetSet
   [Serializable]
   public class ChildList : BusinessListBase<ChildList, EditableGetSet>
   {
-    public ChildList()
-    { }
-
     public static ChildList NewObject(IDataPortal<ChildList> dataPortal)
     {
       return dataPortal.Create();

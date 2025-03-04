@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using Csla.Rules;
-using UnitDriven;
 using System.ComponentModel.DataAnnotations;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,7 +17,7 @@ namespace Csla.Test.DataAnnotations
   [System.Diagnostics.DebuggerNonUserCode]
 #endif
   [TestClass]
-  public class DataAnnotationsTests : TestBase
+  public class DataAnnotationsTests
   {
     private static TestDIContext _testDIContext;
 
@@ -31,8 +30,6 @@ namespace Csla.Test.DataAnnotations
     [TestMethod]
     public async Task SingleAttribute()
     {
-      var context = GetContext();
-
       var dp = _testDIContext.CreateDataPortal<Single>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
@@ -41,16 +38,11 @@ namespace Csla.Test.DataAnnotations
       Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
       Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
       Assert.AreEqual("Name value required", root.BrokenRulesCollection[0].Description, "Desc should match");
-      context.Assert.Success();
-
-      context.Complete();
     }
 
     [TestMethod]
     public async Task MultipleAttributes()
     {
-      var context = GetContext();
-
       var dp = _testDIContext.CreateDataPortal<Multiple>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
@@ -60,16 +52,11 @@ namespace Csla.Test.DataAnnotations
       Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
       root.Name = "xyz";
       Assert.AreEqual(2, root.BrokenRulesCollection.Count, "Should be 2 broken rules after edit");
-      context.Assert.Success();
-
-      context.Complete();
     }
 
     [TestMethod]
     public async Task CustomAttribute()
     {
-      var context = GetContext();
-
       var dp = _testDIContext.CreateDataPortal<Custom>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
@@ -78,9 +65,6 @@ namespace Csla.Test.DataAnnotations
       Assert.IsFalse(root.IsValid, "Obj shouldn't be valid");
       Assert.AreEqual(1, root.BrokenRulesCollection.Count, "Should be 1 broken rule");
       Assert.AreEqual("Name must be abc", root.BrokenRulesCollection[0].Description, "Desc should match");
-      context.Assert.Success();
-
-      context.Complete();
     }
 
     [TestMethod]

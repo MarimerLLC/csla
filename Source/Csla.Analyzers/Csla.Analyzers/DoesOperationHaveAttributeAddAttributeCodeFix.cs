@@ -78,7 +78,7 @@ namespace Csla.Analyzers
 
       if (!root.HasUsing(DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.CslaNamespace))
       {
-        newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
+        newRoot = ((CompilationUnitSyntax)newRoot).AddUsings(
           SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
             DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.CslaNamespace)));
         description = DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants.AddAttributeAndUsingDescription;

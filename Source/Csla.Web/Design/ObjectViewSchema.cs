@@ -61,7 +61,7 @@ namespace Csla.Web.Design
     public IDataSourceFieldSchema[] GetFields()
     {
       ITypeResolutionService typeService = null;
-      List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();
+      var result = new List<IDataSourceFieldSchema>();
 
       if (_designer != null)
       {

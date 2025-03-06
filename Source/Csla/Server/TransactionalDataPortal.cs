@@ -87,21 +87,15 @@ namespace Csla.Server
 
     private static IsolationLevel GetIsolationLevel(TransactionIsolationLevel transactionIsolationLevel)
     {
-      switch (transactionIsolationLevel)
+      return transactionIsolationLevel switch
       {
-        case TransactionIsolationLevel.Unspecified:
-          return IsolationLevel.Unspecified;
-        case TransactionIsolationLevel.Serializable:
-          return IsolationLevel.Serializable;
-        case TransactionIsolationLevel.RepeatableRead:
-          return IsolationLevel.RepeatableRead;
-        case TransactionIsolationLevel.ReadCommitted:
-          return IsolationLevel.ReadCommitted;
-        case TransactionIsolationLevel.ReadUncommitted:
-          return IsolationLevel.ReadUncommitted;
-        default:
-          return IsolationLevel.Unspecified;
-      }
+        TransactionIsolationLevel.Unspecified => IsolationLevel.Unspecified,
+        TransactionIsolationLevel.Serializable => IsolationLevel.Serializable,
+        TransactionIsolationLevel.RepeatableRead => IsolationLevel.RepeatableRead,
+        TransactionIsolationLevel.ReadCommitted => IsolationLevel.ReadCommitted,
+        TransactionIsolationLevel.ReadUncommitted => IsolationLevel.ReadUncommitted,
+        _ => IsolationLevel.Unspecified
+      };
     }
 
     /// <summary>

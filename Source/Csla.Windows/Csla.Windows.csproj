@@ -9,7 +9,6 @@
     <Product>CSLA .NET Windows.Forms</Product>
     <Description>UI helpers for using CSLA .NET business types with Windows Forms.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Windows Forms</Title>
@@ -18,10 +17,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 

@@ -11,6 +11,7 @@ using System.Data;
 using System.ComponentModel;
 using System.Reflection;
 using Csla.Properties;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Data
 {
@@ -106,8 +107,9 @@ namespace Csla.Data
       }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    private static void CopyData(DataTable dt, IList ds, List<string> columns)
+    [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+    private static void CopyData(
+      DataTable dt, IList ds, List<string> columns)
     {
       // load the data into the DataTable
       dt.BeginLoadData();
@@ -149,7 +151,7 @@ namespace Csla.Data
       else
       {
         // now handle lists/arrays/collections
-        if (innerSource is IEnumerable iEnumerable)
+        if (innerSource is IEnumerable)
         {
           Type childType = Utilities.GetChildItemType(
             innerSource.GetType());

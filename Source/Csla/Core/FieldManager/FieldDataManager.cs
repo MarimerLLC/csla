@@ -26,7 +26,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public class FieldDataManager : MobileObject, IUndoableObject, IUseApplicationContext
@@ -168,9 +168,9 @@ namespace Csla.Core.FieldManager
             _consolidatedLists.Add(type, cacheInstance);
           }
 #else
-          if (_consolidatedLists.ContainsKey(type))
+          if (_consolidatedLists.TryGetValue(type, out var list))
           {
-            result = _consolidatedLists[type];
+            result = list;
           }
           else
           {

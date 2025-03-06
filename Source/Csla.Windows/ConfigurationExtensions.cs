@@ -6,6 +6,7 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -37,7 +38,7 @@ namespace Csla.Configuration
       options?.Invoke(winFormsOptions);
 
       // use correct IContextManager
-      config.Services.AddSingleton<Core.IContextManager, Csla.Windows.ApplicationContextManager>();
+      config.Services.AddSingleton<Core.IContextManager, ApplicationContextManager>();
 
       // use correct mode for raising PropertyChanged events
       config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;

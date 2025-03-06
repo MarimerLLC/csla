@@ -64,7 +64,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the block start</param>
     private static void AppendBlockStart(IndentedTextWriter textWriter)
     {
-      textWriter.WriteLine("{");
+      textWriter.WriteLine('{');
       textWriter.Indent++;
     }
 
@@ -75,7 +75,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     private static void AppendBlockEnd(IndentedTextWriter textWriter)
     {
       textWriter.Indent--;
-      textWriter.WriteLine("}");
+      textWriter.WriteLine('}');
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
       {
         textWriter.Write("using ");
         textWriter.Write(requiredNamespace);
-        textWriter.WriteLine(";");
+        textWriter.WriteLine(';');
       }
 
       textWriter.WriteLine();
@@ -162,7 +162,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");
       textWriter.Write(typeDefinition.TypeKind);
-      textWriter.Write(" ");
+      textWriter.Write(' ');
       textWriter.Write(typeDefinition.TypeName);
       textWriter.Write(" : IMobileObject");
       textWriter.WriteLine();
@@ -274,7 +274,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
         textWriter.Write(memberDefinition.MemberName);
 
       }
-      textWriter.WriteLine(";");
+      textWriter.WriteLine(';');
 
       AppendBlockEnd(textWriter);
     }

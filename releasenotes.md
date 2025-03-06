@@ -4,13 +4,13 @@ CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other
 
 ## CSLA .NET version 7.0.7 release
 
-* #4262 Backport `LocalProxy` fix from #3633 to 7.0.7
+🛑 **MAUI** - Because CSLA 7 targets an old/obsolete version of .NET MAUI, v7.0.7 does not include MAUI support. If you are still targeting this old version of MAUI, you will need to continue using v7.0.6.
 
-## Change List
+### Change List
 
 [Changes in this release](https://github.com/MarimerLLC/csla/compare/v7.0.6...v7.0.7)
 
-## Contributors
+### Contributors
 
 * [@tkyle](https://github.com/tkyle)
 
@@ -18,11 +18,11 @@ CSLA 7 is a substantial update to CSLA .NET, adding support for .NET 7 and other
 
 * Addresses [CVE-2024-28698](https://github.com/advisories/GHSA-9xhh-3m78-gvgj) via [#4133](https://github.com/MarimerLLC/csla/issues/4133)
 
-## Change List
+### Change List
 
 [Changes in this release](https://github.com/MarimerLLC/csla/compare/v7.0.5...v7.0.6)
 
-## Contributors
+### Contributors
 
 * [@MaceySoftware](https://github.com/MaceySoftware)
 

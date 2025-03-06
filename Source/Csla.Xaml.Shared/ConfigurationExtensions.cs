@@ -38,7 +38,7 @@ public static class XamlConfigurationExtensions
     options?.Invoke(xamlOptions);
 
     // use correct IContextManager
-    config.Services.AddSingleton<Csla.Core.IContextManager, ApplicationContextManager>();
+    config.Services.AddSingleton<Core.IContextManager, ApplicationContextManager>();
 
     // use correct mode for raising PropertyChanged events
     config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;

@@ -21,7 +21,7 @@ namespace Csla.Windows
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="source">
-    /// BindingSource object to be mananaged.
+    /// BindingSource object to be managed.
     /// </param>
     public BindingSourceNode(BindingSource source)
     {

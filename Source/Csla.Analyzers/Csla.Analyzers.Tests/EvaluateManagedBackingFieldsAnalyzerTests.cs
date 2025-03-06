@@ -4,12 +4,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Analyzers.Tests
 {
   [TestClass]
-  public sealed class EvaluateManagedBackingFieldsAnalayzerTests
+  public sealed class EvaluateManagedBackingFieldsAnalyzerTests
   {
     [TestMethod]
     public void VerifySupportedDiagnostics()
     {
-      var analyzer = new EvaluateManagedBackingFieldsAnalayzer();
+      var analyzer = new EvaluateManagedBackingFieldsAnalyzer();
       var diagnostics = analyzer.SupportedDiagnostics;
       Assert.AreEqual(1, diagnostics.Length);
 
@@ -22,7 +22,7 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Category));
       Assert.AreEqual(DiagnosticSeverity.Error, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
-      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalayzer)),
+      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalyzer)),
         diagnostic.HelpLinkUri,
         nameof(DiagnosticDescriptor.HelpLinkUri));
     }
@@ -31,7 +31,7 @@ namespace Csla.Analyzers.Tests
     public async Task AnalyzeWhenClassIsNotStereotype()
     {
       var code = "public class ClassIsNotStereotype { }";
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -68,7 +68,7 @@ namespace Csla.Analyzers.Tests
           public string ExpressionData => string.Empty;
         }
         """;
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -113,7 +113,7 @@ namespace Csla.Analyzers.Tests
           public string ExpressionData => GetProperty(ExpressionDataProperty);
         }
         """;
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, [
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(code, [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields
@@ -142,7 +142,7 @@ namespace Csla.Analyzers.Tests
           public string ExpressionData => GetProperty(ExpressionDataProperty);
         }
         """;
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(code, []);
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(code, []);
     }
 
     [TestMethod]
@@ -175,7 +175,7 @@ namespace Csla.Analyzers.Tests
           public string ExpressionData => GetProperty(ExpressionDataProperty);
         }
         """;
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(
         code,
         [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
@@ -214,7 +214,7 @@ namespace Csla.Analyzers.Tests
           public string ExpressionData => GetProperty(ExpressionDataProperty);
         }
         """;
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(
         code,
         [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
@@ -253,7 +253,7 @@ namespace Csla.Analyzers.Tests
           public string ExpressionData => GetProperty(ExpressionDataProperty);
         }
         """;
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(
         code,
         [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
@@ -292,7 +292,7 @@ namespace Csla.Analyzers.Tests
           public string ExpressionData => ReadProperty(ExpressionDataProperty);
         }
         """;
-      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalayzer>(
+      await TestHelpers.RunAnalysisAsync<EvaluateManagedBackingFieldsAnalyzer>(
         code,
         [
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,

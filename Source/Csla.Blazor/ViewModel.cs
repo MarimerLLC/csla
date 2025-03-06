@@ -62,7 +62,7 @@ namespace Csla.Blazor
     /// Event raised when the Model object
     /// raises its ModelChildChanged event.
     /// </summary>
-    public event Action<object, Core.ChildChangedEventArgs> ModelChildChanged;
+    public event Action<object, ChildChangedEventArgs> ModelChildChanged;
     /// <summary>
     /// Event raised when the Model object
     /// raises its ModelCollectionChanged event.
@@ -78,7 +78,7 @@ namespace Csla.Blazor
     {
       if (ReferenceEquals(oldValue, newValue)) return;
 
-      if (ManageObjectLifetime && newValue is Core.ISupportUndo undo)
+      if (ManageObjectLifetime && newValue is ISupportUndo undo)
         undo.BeginEdit();
 
       _propertyInfoCache.Clear();
@@ -88,7 +88,7 @@ namespace Csla.Blazor
       {
         UnhookChangedEvents(oldValue);
 
-        if (oldValue is Core.INotifyBusy nb)
+        if (oldValue is INotifyBusy nb)
           nb.BusyChanged -= OnBusyChanged;
       }
 
@@ -97,7 +97,7 @@ namespace Csla.Blazor
       {
         HookChangedEvents(newValue);
 
-        if (newValue is Core.INotifyBusy nb)
+        if (newValue is INotifyBusy nb)
           nb.BusyChanged += OnBusyChanged;
       }
 
@@ -136,8 +136,7 @@ namespace Csla.Blazor
         cc.CollectionChanged += OnModelCollectionChanged;
     }
 
-
-    private void OnBusyChanged(object sender, Core.BusyChangedEventArgs e)
+    private void OnBusyChanged(object sender, BusyChangedEventArgs e)
     {
       // only set busy state for entire object. Ignore busy state based
       // on async rules being active
@@ -168,7 +167,7 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    protected virtual void OnModelChildChanged(object sender, Core.ChildChangedEventArgs e)
+    protected virtual void OnModelChildChanged(object sender, ChildChangedEventArgs e)
     {
       ModelChildChanged?.Invoke(this, e);
     }
@@ -253,7 +252,7 @@ namespace Csla.Blazor
       ViewModelErrorText = null;
       try
       {
-        if (Model is Core.ITrackStatus obj && !obj.IsSavable)
+        if (Model is ITrackStatus obj && !obj.IsSavable)
         {
           if (obj.IsBusy)
           {
@@ -275,16 +274,16 @@ namespace Csla.Blazor
 
         UnhookChangedEvents(Model);
 
-        var savable = Model as Core.ISavable;
+        var savable = Model as ISavable;
         if (ManageObjectLifetime)
         {
           //apply changes - must apply edit to Model not clone
-          if (Model is Core.ISupportUndo undoable)
+          if (Model is ISupportUndo undoable)
             undoable.ApplyEdit();
 
           // clone the object if possible
           if (Model is ICloneable clonable)
-            savable = (Core.ISavable)clonable.Clone();
+            savable = (ISavable)clonable.Clone();
         }
 
         IsBusy = true;
@@ -308,7 +307,7 @@ namespace Csla.Blazor
       }
       finally
       {
-        if (ManageObjectLifetime && Model is IUndoableObject udbl && udbl.EditLevel == 0 && Model is Core.ISupportUndo undo)
+        if (ManageObjectLifetime && Model is IUndoableObject udbl && udbl.EditLevel == 0 && Model is ISupportUndo undo)
           undo.BeginEdit();
 
         HookChangedEvents(Model);
@@ -323,13 +322,13 @@ namespace Csla.Blazor
     /// <summary>
     /// Override to provide custom Model save behavior.
     /// </summary>
-    protected virtual async Task<T> DoSaveAsync(Core.ISavable cloned)
+    protected virtual async Task<T> DoSaveAsync(ISavable cloned)
     {
       if (cloned != null)
       {
         var saved = (T)await cloned.SaveAsync();
-        if (Model is Core.IEditableBusinessObject editable)
-          await new Core.GraphMerger(ApplicationContext).MergeGraphAsync(editable, (Core.IEditableBusinessObject)saved);
+        if (Model is IEditableBusinessObject editable)
+          await new GraphMerger(ApplicationContext).MergeGraphAsync(editable, (IEditableBusinessObject)saved);
         else
           Model = saved;
       }
@@ -344,7 +343,7 @@ namespace Csla.Blazor
     {
       if (ManageObjectLifetime)
       {
-        if (Model is Core.ISupportUndo undo)
+        if (Model is ISupportUndo undo)
         {
           UnhookChangedEvents(Model);
           try

@@ -26,11 +26,8 @@ namespace Csla.Blazor.State
     /// </summary>
     public Session GetSession()
     {
-      Session result;
       var key = _sessionIdManager.GetSessionId();
-      if (!_sessions.ContainsKey(key))
-        _sessions.TryAdd(key, []);
-      result = _sessions[key];
+      var result = _sessions.GetOrAdd(key, []);
       result.Touch();
       return result;
     }

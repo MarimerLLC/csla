@@ -7,6 +7,7 @@
 // <summary>This exception is returned as BusinessException in DataPortalException when the </summary>
 //-----------------------------------------------------------------------
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Server
 {
@@ -14,7 +15,7 @@ namespace Csla.Server
   /// This exception is returned as BusinessException in DataPortalException when the
   /// serverside/inner exception is not serializable
   /// </summary>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
+  [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
   [Serializable]
   public class GenericBusinessException : Exception
   {

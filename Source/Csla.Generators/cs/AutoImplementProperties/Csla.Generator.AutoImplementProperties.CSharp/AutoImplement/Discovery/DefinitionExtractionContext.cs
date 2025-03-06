@@ -70,14 +70,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     #region Private Helper Methods
 
 
-
     /// <summary>
     /// Perform a recursive match on a namespace symbol by name
     /// </summary>
     /// <param name="namespaceSymbol">The symbol for which a match is being tested</param>
     /// <param name="desiredTypeNamespace">The desired namespace, including period separators if necessary</param>
     /// <returns>Boolean true if the namespace symbol matches that desired by name</returns>
-    private bool IsMatchingNamespaceSymbol(INamespaceSymbol namespaceSymbol, string desiredTypeNamespace)
+    private static bool IsMatchingNamespaceSymbol(INamespaceSymbol namespaceSymbol, string desiredTypeNamespace)
     {
       string endNamespace;
       string remainingNamespace = string.Empty;
@@ -118,7 +117,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <param name="desiredTypeName">The name of the attribute whose presence we are testing for</param>
     /// <param name="desiredTypeNamespace">The namespace of the attribute whose presence we are testing for</param>
     /// <returns>Boolean true if the symbol seems to represent the desired type by name and namespace</returns>
-    private bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, string desiredTypeName, string desiredTypeNamespace)
+    private static bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, string desiredTypeName, string desiredTypeNamespace)
     {
       INamespaceSymbol namespaceSymbol;
 

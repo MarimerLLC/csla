@@ -165,7 +165,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <param name="desiredAttributeTypeName">The name of the type of attribute of interest</param>
     /// <param name="desiredAttributeTypeNamespace">The namespace of the type of attribute of interest</param>
     /// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
-    private bool IsTypeDecoratedBy(INamedTypeSymbol typeSymbol, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
+    private static bool IsTypeDecoratedBy(INamedTypeSymbol typeSymbol, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
     {
       return typeSymbol.GetAttributes().Any(
         attr => IsMatchingTypeSymbol(attr.AttributeClass, desiredAttributeTypeName, desiredAttributeTypeNamespace));
@@ -222,7 +222,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <param name="desiredTypeName">The name of the attribute whose presence we are testing for</param>
     /// <param name="desiredTypeNamespace">The namespace of the attribute whose presence we are testing for</param>
     /// <returns>Boolean true if the symbol seems to represent the desired type by name and namespace</returns>
-    private bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, string desiredTypeName, string desiredTypeNamespace)
+    private static bool IsMatchingTypeSymbol(INamedTypeSymbol appliedAttributeSymbol, string desiredTypeName, string desiredTypeNamespace)
     {
       INamespaceSymbol namespaceSymbol;
 
@@ -241,7 +241,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <param name="namespaceSymbol">The symbol for which a match is being tested</param>
     /// <param name="desiredTypeNamespace">The desired namespace, including period separators if necessary</param>
     /// <returns>Boolean true if the namespace symbol matches that desired by name</returns>
-    private bool IsMatchingNamespaceSymbol(INamespaceSymbol namespaceSymbol, string desiredTypeNamespace)
+    private static bool IsMatchingNamespaceSymbol(INamespaceSymbol namespaceSymbol, string desiredTypeNamespace)
     {
       string endNamespace;
       string remainingNamespace = string.Empty;

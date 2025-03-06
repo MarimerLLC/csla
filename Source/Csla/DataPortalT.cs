@@ -154,7 +154,7 @@ namespace Csla
       return result.ReturnObject;
     }
 
-    private void HandleCreateDataPortalException(Server.DataPortalException ex)
+    private static void HandleCreateDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Create", ex);
     }
@@ -310,7 +310,7 @@ namespace Csla
       return result.ReturnObject;
     }
 
-    private void HandleFetchDataPortalException(Server.DataPortalException ex)
+    private static void HandleFetchDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Fetch", ex);
     }
@@ -538,12 +538,12 @@ namespace Csla
       return (T)result.ReturnObject;
     }
 
-    private void HandleUpdateDataPortalException(Server.DataPortalException ex)
+    private static void HandleUpdateDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Update", ex);
     }
 
-    private void HandleDataPortalException(string operation, Server.DataPortalException ex)
+    private static void HandleDataPortalException(string operation, Server.DataPortalException ex)
     {
       var result = ex.Result;
       var original = ex.InnerException;
@@ -629,7 +629,7 @@ namespace Csla
       }
     }
 
-    private void HandleDeleteDataPortalException(Server.DataPortalException ex)
+    private static void HandleDeleteDataPortalException(Server.DataPortalException ex)
     {
       HandleDataPortalException("Delete", ex);
     }

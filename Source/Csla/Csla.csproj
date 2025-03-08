@@ -25,6 +25,7 @@
       Slapping "Here we require dynamic code" means, that we opt-out of supporting NativeAOT for these methods which is undesirable.
     -->
     <NoWarn>$(NoWarn);IL2026;IL2055;IL2057;IL2060;IL2096;IL2111;IL3050</NoWarn>
+    <PolyGuard>true</PolyGuard>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,10 +36,11 @@
 
   <ItemGroup>
     <EmbeddedResource Remove="Properties\CslaPrivate.resx" />
-    </ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
+    <PackageReference Include="Polyfill" Version="7.21.0" PrivateAssets="true"/>
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
@@ -71,10 +73,6 @@
     <PackageReference Include="System.ComponentModel.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
-    <PackageReference Include="Polyfill" Version="7.4.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
@@ -104,10 +102,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-    <PackageReference Include="Polyfill" Version="7.4.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="8.0.5" />

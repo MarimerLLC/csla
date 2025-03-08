@@ -65,8 +65,7 @@ namespace Csla.Windows
     [Category("Csla")]
     public bool GetApplyAuthorization(Control source)
     {
-      ControlStatus result;
-      if (_sources.TryGetValue(source, out result))
+      if (_sources.TryGetValue(source, out var result))
         return result.ApplyAuthorization;
       else
         return false;
@@ -81,8 +80,7 @@ namespace Csla.Windows
     [Category("Csla")]
     public void SetApplyAuthorization(Control source, bool value)
     {
-      ControlStatus status;
-      if (_sources.TryGetValue(source, out status))
+      if (_sources.TryGetValue(source, out var status))
         status.ApplyAuthorization = value;
       else
         _sources.Add(

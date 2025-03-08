@@ -250,9 +250,8 @@ namespace Csla.Web.Mvc
                      select r;
         foreach (var item in errors)
         {
-          ModelState state;
           string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
-          if (bindingContext.ModelState.TryGetValue(mskey, out state))
+          if (bindingContext.ModelState.TryGetValue(mskey, out var state))
           {
             if (state.Errors.Any(e => e.ErrorMessage == item.Description))
               continue;

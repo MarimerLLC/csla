@@ -75,8 +75,7 @@ namespace Csla.Serialization.Mobile
     private DictionaryCheckResult GetKey(string value)
     {
       DictionaryCheckResult returnValue;
-      int key;
-      if (keywordsDictionary.TryGetValue(value, out key))
+      if (keywordsDictionary.TryGetValue(value, out var key))
       {
         returnValue = new DictionaryCheckResult(false, key);
       }

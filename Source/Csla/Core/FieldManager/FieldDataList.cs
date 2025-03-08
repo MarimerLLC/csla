@@ -34,8 +34,7 @@ namespace Csla.Core.FieldManager
       if (key is null)
         throw new ArgumentNullException(nameof(key));
 
-      int index;
-      if (_fieldIndex.TryGetValue(key, out index))
+      if (_fieldIndex.TryGetValue(key, out var index))
       {
         result = _fields[index];
         return true;

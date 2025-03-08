@@ -44,7 +44,7 @@ namespace Csla.Core
         }
       }
 
-      handlers = handlersInfo.Item2;
+      return handlersInfo.Item2;
 #else
       if (!_undoableFieldCache.TryGetValue(type, out var handlers))
       {
@@ -60,9 +60,9 @@ namespace Csla.Core
           }
         }
       }
-#endif
 
       return handlers;
+#endif
     }
 
     private static List<DynamicMemberHandle> BuildHandlers(Type type)

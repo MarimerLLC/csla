@@ -19,7 +19,10 @@ namespace Csla.DataPortalClient
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public PrimitiveCriteria() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// New instance of the criteria
@@ -80,7 +83,7 @@ namespace Csla.DataPortalClient
     /// </param>
     public void SetState(SerializationInfo info)
     {
-      _value = info.GetValue<object>("_value");
+      _value = info.GetValue<object>("_value")!;
     }
 
     /// <summary>

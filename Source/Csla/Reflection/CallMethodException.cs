@@ -21,7 +21,7 @@ namespace Csla.Reflection
   [Serializable]
   public class CallMethodException : Exception
   {
-    private string _innerStackTrace;
+    private string? _innerStackTrace;
 
     /// <summary>
     /// Get the stack trace from the original
@@ -43,9 +43,13 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="message">Message text describing the exception.</param>
     /// <param name="ex">Inner exception object.</param>
-    public CallMethodException(string message, Exception ex)
+    /// <exception cref="ArgumentNullException"><paramref name="ex"/> is <see langword="null"/>.</exception>
+    public CallMethodException(string? message, Exception ex)
       : base(message, ex)
     {
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
+
       _innerStackTrace = ex.StackTrace;
     }
   }

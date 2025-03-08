@@ -17,27 +17,13 @@ namespace Csla.Rules
   [Serializable]
   public partial class BrokenRule : MobileObject
   {
-    /// <summary>
-    /// Creates an instance of this type.
-    /// </summary>
-    public BrokenRule()
-    { }
-
     private string _ruleName;
     private string _description;
-    private string _property;
+    private string? _property;
     private RuleSeverity _severity;
-    private string _originProperty;
+    private string? _originProperty;
     private int _priority;
     private int _displayIndex;
-
-    /// <summary>
-    /// Gets a string representation for this object.
-    /// </summary>
-    public override string ToString()
-    {
-      return Description;
-    }
 
     /// <summary>
     /// Provides access to the name of the broken rule.
@@ -46,7 +32,6 @@ namespace Csla.Rules
     public string RuleName
     {
       get { return _ruleName; }
-      internal set { _ruleName = value; }
     }
 
     /// <summary>
@@ -56,17 +41,15 @@ namespace Csla.Rules
     public string Description
     {
       get { return _description; }
-      internal set { _description = value; }
     }
 
     /// <summary>
     /// Provides access to the property affected by the broken rule.
     /// </summary>
     /// <value>The property affected by the rule.</value>
-    public string Property
+    public string? Property
     {
       get { return _property; }
-      internal set { _property = value; }
     }
 
     /// <summary>
@@ -77,17 +60,15 @@ namespace Csla.Rules
     public RuleSeverity Severity
     {
       get { return _severity; }
-      internal set { _severity = value; }
     }
 
     /// <summary>
     /// Gets or sets the origin property.
     /// </summary>
     /// <value>The origin property.</value>
-    public string OriginProperty
+    public string? OriginProperty
     {
       get { return _originProperty; }
-      internal set { _originProperty = value; }
     }
 
     /// <summary>
@@ -96,7 +77,6 @@ namespace Csla.Rules
     public int Priority
     {
       get { return _priority; }
-      internal set { _priority = value; }
     }
 
     /// <summary>
@@ -106,7 +86,34 @@ namespace Csla.Rules
     public int DisplayIndex
     {
       get { return _displayIndex; }
-      internal set { _displayIndex = value; }
+    }
+
+    /// <summary>
+    /// Creates an instance of this type.
+    /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. Only necessary for serialization and fields will be set by the serializer
+    public BrokenRule()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
+    { }
+
+    internal BrokenRule(string ruleName, string description, string? property, RuleSeverity severity, string? originProperty, int priority, int displayIndex)
+    {
+      _ruleName = ruleName ?? throw new ArgumentNullException(nameof(ruleName));
+      _description = description ?? throw new ArgumentNullException(nameof(description));
+      _property = property;
+      _severity = severity;
+      _originProperty = originProperty;
+      _priority = priority;
+      _displayIndex = displayIndex;
+    }
+
+    /// <summary>
+    /// Gets a string representation for this object.
+    /// </summary>
+    public override string ToString()
+    {
+      return Description;
     }
 
     #region MobileObject overrides
@@ -146,8 +153,8 @@ namespace Csla.Rules
     /// </param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      _ruleName = info.GetValue<string>("_ruleName");
-      _description = info.GetValue<string>("_description");
+      _ruleName = info.GetValue<string>("_ruleName")!;
+      _description = info.GetValue<string>("_description")!;
       _property = info.GetValue<string>("_property");
       _severity = info.GetValue<RuleSeverity>("_severity");
       _originProperty = info.GetValue<string>("_originProperty");

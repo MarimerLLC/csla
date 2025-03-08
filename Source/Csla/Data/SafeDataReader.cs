@@ -7,11 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
+
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
 using System.Data.SqlClient;
-#endif
-#if NET8_0_OR_GREATER
-using System.Diagnostics.CodeAnalysis;
 #endif
 
 namespace Csla.Data
@@ -23,7 +22,7 @@ namespace Csla.Data
   public class SafeDataReader : IDataReader
   {
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
-    private SqlDataReader _sqlDataReader;
+    private SqlDataReader? _sqlDataReader;
 #endif
 
     /// <summary>
@@ -38,9 +37,10 @@ namespace Csla.Data
     /// the provided DataReader object.
     /// </summary>
     /// <param name="dataReader">The source DataReader object containing the data.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="dataReader"/> is <see langword="null"/>.</exception>
     public SafeDataReader(IDataReader dataReader)
     {
-      DataReader = dataReader;
+      DataReader = dataReader ?? throw new ArgumentNullException(nameof(dataReader));
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
       _sqlDataReader = DataReader as SqlDataReader;
 #endif
@@ -53,8 +53,12 @@ namespace Csla.Data
     /// Returns empty string for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public string GetString(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetString(DataReader.GetOrdinal(name));
     }
 
@@ -78,8 +82,12 @@ namespace Csla.Data
     /// Gets a value of type <see cref="System.Object" /> from the datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>
-    public object GetValue(string name)
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public object? GetValue(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetValue(DataReader.GetOrdinal(name));
     }
 
@@ -87,7 +95,9 @@ namespace Csla.Data
     /// Gets a value of type <see cref="System.Object" /> from the datareader.
     /// </summary>
     /// <param name="i">Ordinal column position of the value.</param>
-    public virtual object GetValue(int i)
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes). We are suppressing it because we do return null
+    public virtual object? GetValue(int i)
+#pragma warning restore CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
     {
       if (DataReader.IsDBNull(i))
         return null;
@@ -102,8 +112,12 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public int GetInt32(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetInt32(DataReader.GetOrdinal(name));
     }
 
@@ -129,8 +143,12 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public double GetDouble(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetDouble(DataReader.GetOrdinal(name));
     }
 
@@ -157,8 +175,12 @@ namespace Csla.Data
     /// See Chapter 5 for more details on the SmartDate class.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public SmartDate GetSmartDate(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetSmartDate(DataReader.GetOrdinal(name), true);
     }
 
@@ -187,8 +209,12 @@ namespace Csla.Data
     /// <param name="minIsEmpty">
     /// A flag indicating whether the min or max 
     /// value of a data means an empty date.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public SmartDate GetSmartDate(string name, bool minIsEmpty)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetSmartDate(DataReader.GetOrdinal(name), minIsEmpty);
     }
 
@@ -199,8 +225,7 @@ namespace Csla.Data
     /// <param name="minIsEmpty">
     /// A flag indicating whether the min or max 
     /// value of a data means an empty date.</param>
-    public virtual SmartDate GetSmartDate(
-      int i, bool minIsEmpty)
+    public virtual SmartDate GetSmartDate(int i, bool minIsEmpty)
     {
       if (DataReader.IsDBNull(i))
         return new SmartDate(minIsEmpty);
@@ -216,8 +241,12 @@ namespace Csla.Data
     /// Returns Guid.Empty for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public Guid GetGuid(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetGuid(DataReader.GetOrdinal(name));
     }
 
@@ -289,8 +318,12 @@ namespace Csla.Data
     /// Returns false for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public bool GetBoolean(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetBoolean(DataReader.GetOrdinal(name));
     }
 
@@ -316,8 +349,12 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public byte GetByte(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetByte(DataReader.GetOrdinal(name));
     }
 
@@ -347,9 +384,12 @@ namespace Csla.Data
     /// <param name="bufferOffset">Offset position within the buffer.</param>
     /// <param name="fieldOffset">Offset position within the field.</param>
     /// <param name="length">Length of data to read.</param>
-    public Int64 GetBytes(string name, Int64 fieldOffset,
-      byte[] buffer, int bufferOffset, int length)
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Int64 GetBytes(string name, Int64 fieldOffset, byte[] buffer, int bufferOffset, int length)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetBytes(DataReader.GetOrdinal(name), fieldOffset, buffer, bufferOffset, length);
     }
 
@@ -364,8 +404,7 @@ namespace Csla.Data
     /// <param name="bufferOffset">Offset position within the buffer.</param>
     /// <param name="fieldOffset">Offset position within the field.</param>
     /// <param name="length">Length of data to read.</param>
-    public virtual Int64 GetBytes(int i, Int64 fieldOffset,
-      byte[] buffer, int bufferOffset, int length)
+    public virtual Int64 GetBytes(int i, Int64 fieldOffset, byte[]? buffer, int bufferOffset, int length)
     {
       if (DataReader.IsDBNull(i))
         return 0;
@@ -380,8 +419,12 @@ namespace Csla.Data
     /// Returns Char.MinValue for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public char GetChar(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetChar(DataReader.GetOrdinal(name));
     }
 
@@ -415,9 +458,12 @@ namespace Csla.Data
     /// <param name="bufferOffset">Offset position within the buffer.</param>
     /// <param name="fieldOffset">Offset position within the field.</param>
     /// <param name="length">Length of data to read.</param>
-    public Int64 GetChars(string name, Int64 fieldOffset,
-      char[] buffer, int bufferOffset, int length)
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Int64 GetChars(string name, Int64 fieldOffset, char[] buffer, int bufferOffset, int length)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetChars(DataReader.GetOrdinal(name), fieldOffset, buffer, bufferOffset, length);
     }
 
@@ -432,8 +478,7 @@ namespace Csla.Data
     /// <param name="bufferOffset">Offset position within the buffer.</param>
     /// <param name="fieldOffset">Offset position within the field.</param>
     /// <param name="length">Length of data to read.</param>
-    public virtual Int64 GetChars(int i, Int64 fieldOffset,
-      char[] buffer, int bufferOffset, int length)
+    public virtual Int64 GetChars(int i, Int64 fieldOffset, char[]? buffer, int bufferOffset, int length)
     {
       if (DataReader.IsDBNull(i))
         return 0;
@@ -445,8 +490,12 @@ namespace Csla.Data
     /// Invokes the GetData method of the underlying datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public IDataReader GetData(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetData(DataReader.GetOrdinal(name));
     }
 
@@ -463,8 +512,12 @@ namespace Csla.Data
     /// Invokes the GetDataTypeName method of the underlying datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public string GetDataTypeName(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetDataTypeName(DataReader.GetOrdinal(name));
     }
 
@@ -484,8 +537,12 @@ namespace Csla.Data
     /// Returns DateTime.MinValue for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public virtual DateTime GetDateTime(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetDateTime(DataReader.GetOrdinal(name));
     }
 
@@ -511,8 +568,12 @@ namespace Csla.Data
     /// Returns DateTimeOffset.MinValue for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public virtual DateTimeOffset GetDateTimeOffset(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetDateTimeOffset(DataReader.GetOrdinal(name));
     }
 
@@ -538,8 +599,12 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public decimal GetDecimal(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetDecimal(DataReader.GetOrdinal(name));
     }
 
@@ -562,8 +627,12 @@ namespace Csla.Data
     /// Invokes the GetFieldType method of the underlying datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public Type GetFieldType(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetFieldType(DataReader.GetOrdinal(name));
     }
 
@@ -571,9 +640,7 @@ namespace Csla.Data
     /// Invokes the GetFieldType method of the underlying datareader.
     /// </summary>
     /// <param name="i">Ordinal column position of the value.</param>
-#if NET8_0_OR_GREATER
     [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties)]
-#endif
     public virtual Type GetFieldType(int i)
     {
       return DataReader.GetFieldType(i);
@@ -586,8 +653,12 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public float GetFloat(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetFloat(DataReader.GetOrdinal(name));
     }
 
@@ -613,8 +684,12 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public short GetInt16(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetInt16(DataReader.GetOrdinal(name));
     }
 
@@ -640,8 +715,12 @@ namespace Csla.Data
     /// Returns 0 for null.
     /// </remarks>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public Int64 GetInt64(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return GetInt64(DataReader.GetOrdinal(name));
     }
 
@@ -673,15 +752,19 @@ namespace Csla.Data
     /// Gets an ordinal value from the datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public int GetOrdinal(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       return DataReader.GetOrdinal(name);
     }
 
     /// <summary>
     /// Invokes the GetSchemaTable method of the underlying datareader.
     /// </summary>
-    public DataTable GetSchemaTable()
+    public DataTable? GetSchemaTable()
     {
       return DataReader.GetSchemaTable();
     }
@@ -721,8 +804,12 @@ namespace Csla.Data
     /// Invokes the IsDBNull method of the underlying datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public virtual bool IsDBNull(string name)
     {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
       int index = GetOrdinal(name);
       return IsDBNull(index);
     }
@@ -731,11 +818,17 @@ namespace Csla.Data
     /// Returns a value from the datareader.
     /// </summary>
     /// <param name="name">Name of the column containing the value.</param>
-    public object this[string name]
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public object? this[string name]
     {
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes). We are suppressing it because we do return null
       get
+#pragma warning restore CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
       {
-        object val = DataReader[name];
+        if (string.IsNullOrWhiteSpace(name))
+          throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+        object? val = DataReader[name];
         if (DBNull.Value.Equals(val))
           return null;
         else
@@ -747,9 +840,11 @@ namespace Csla.Data
     /// Returns a value from the datareader.
     /// </summary>
     /// <param name="i">Ordinal column position of the value.</param>
-    public virtual object this[int i]
+    public virtual object? this[int i]
     {
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes). We are suppressing it because we do return null
       get
+#pragma warning restore CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
       {
         if (DataReader.IsDBNull(i))
           return null;

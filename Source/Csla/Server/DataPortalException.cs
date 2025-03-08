@@ -42,12 +42,18 @@ namespace Csla.Server
     /// <param name="message">Text describing the exception.</param>
     /// <param name="ex">Inner exception.</param>
     /// <param name="result">The data portal result object.</param>
-    public DataPortalException(
-      string message, Exception ex, DataPortalResult result)
+    /// <exception cref="ArgumentNullException"><paramref name="ex"/> or <paramref name="result"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="message"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public DataPortalException(string message, Exception ex, DataPortalResult result)
       : base(message, ex)
     {
-      _innerStackTrace = ex.StackTrace;
-      Result = result;
+      if (string.IsNullOrWhiteSpace(message))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(message)), nameof(message));
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
+
+      Result = result ?? throw new ArgumentNullException(nameof(result));
+      _innerStackTrace = ex.StackTrace ?? "";
     }
   }
 }

@@ -27,30 +27,19 @@ namespace Csla.Serialization.Mobile
 #endif
   public sealed class MobileFormatter(ApplicationContext applicationContext) : ISerializationFormatter
   {
+    internal const string DefaultCtorObsoleteMessage = $"This ctor is only for internal usage to support {nameof(MobileFormatter)}. User another overload if available.";
+
     #region Serialize
 
-    /// <summary>
-    /// Serialize an object graph into XML.
-    /// </summary>
-    /// <param name="serializationStream">
-    /// Stream to which the serialized data
-    /// will be written.
-    /// </param>
-    /// <param name="graph">
-    /// Root object of the object graph
-    /// to serialize.
-    /// </param>
-    public void Serialize(Stream serializationStream, object graph)
+    /// <inheritdoc />
+    public void Serialize(Stream serializationStream, object? graph)
     {
       ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter(applicationContext);
       writer.Write(serializationStream, SerializeToDTO(graph));
     }
 
-    /// <summary>
-    /// Converts an object graph into a byte stream.
-    /// </summary>
-    /// <param name="graph">Object graph to be serialized.</param>
-    byte[] ISerializationFormatter.Serialize(object graph)
+    /// <inheritdoc />
+    byte[] ISerializationFormatter.Serialize(object? graph)
     {
       using var buffer = new MemoryStream();
       Serialize(buffer, graph);
@@ -65,7 +54,7 @@ namespace Csla.Serialization.Mobile
     /// Root object of the object graph
     /// to serialize.
     /// </param>
-    public List<SerializationInfo> SerializeAsDTO(object graph)
+    public List<SerializationInfo> SerializeAsDTO(object? graph)
     {
       _serializationReferences.Clear();
 
@@ -110,27 +99,26 @@ namespace Csla.Serialization.Mobile
     /// Serializes an object into a SerializationInfo object.
     /// </summary>
     /// <param name="obj">Object to be serialized.</param>
-    public SerializationInfo SerializeObject(object obj)
+    public SerializationInfo SerializeObject(object? obj)
     {
       var options = GetOptions();
-      SerializationInfo info;
+      SerializationInfo? info;
       if (obj == null)
       {
         NullPlaceholder nullPlaceholder = new NullPlaceholder();
 
-        info = new SerializationInfo(_serializationReferences.Count + 1);
+        var typeName = AssemblyNameTranslator.GetSerializationName(typeof(NullPlaceholder), options.UseStrongNamesCheck);
+        info = new SerializationInfo(_serializationReferences.Count + 1, typeName);
         _serializationReferences.Add(nullPlaceholder, info);
-
-        info.TypeName = AssemblyNameTranslator.GetSerializationName(typeof(NullPlaceholder), options.UseStrongNamesCheck);
       }
       else if (!_serializationReferences.TryGetValue(obj, out info))
       {
         if (obj is IMobileObject mobile)
         {
-          info = new SerializationInfo(_serializationReferences.Count + 1);
+          var typeName = AssemblyNameTranslator.GetSerializationName(obj.GetType(), options.UseStrongNamesCheck);
+          info = new SerializationInfo(_serializationReferences.Count + 1, typeName);
           _serializationReferences.Add(mobile, info);
 
-          info.TypeName = AssemblyNameTranslator.GetSerializationName(obj.GetType(), options.UseStrongNamesCheck);
           mobile.GetChildren(info, this);
           mobile.GetState(info);
         }
@@ -141,53 +129,49 @@ namespace Csla.Serialization.Mobile
             throw new InvalidOperationException(string.Format(Resources.MustImplementIMobileObject, obj.GetType().Name));
 
           var serializer = (IMobileSerializer)applicationContext.CreateInstanceDI(serializerType);
-          info = new SerializationInfo(_serializationReferences.Count + 1);
+          var typeName = AssemblyNameTranslator.GetSerializationName(obj.GetType(), options.UseStrongNamesCheck);
+          info = new SerializationInfo(_serializationReferences.Count + 1, typeName);
           _serializationReferences.Add(obj, info);
-          info.TypeName = AssemblyNameTranslator.GetSerializationName(obj.GetType(), options.UseStrongNamesCheck);
           try
           {
             serializer.Serialize(obj, info);
           }
           catch (Exception ex)
           {
-            throw new MobileFormatterException(
-              $"CustomSerializerType:{serializerType}; objectType:{obj.GetType()}", ex);
+            throw new MobileFormatterException($"CustomSerializerType:{serializerType}; objectType:{obj.GetType()}", ex);
           }
         }
       }
 
       if (info is null)
       {
-        throw new MobileFormatterException(
-          string.Format(Resources.MustImplementIMobileObject,
-          obj.GetType().Name));
+        throw new MobileFormatterException(string.Format(Resources.MustImplementIMobileObject, obj!.GetType().Name));
       }
+
       return info;
     }
 
     private Dictionary<object, SerializationInfo> _serializationReferences =
       new(new ReferenceComparer<object>());
 
-#endregion
+    #endregion
 
-#region Deserialize
+    #region Deserialize
 
-    private Dictionary<int, object> _deserializationReferences = [];
+    private Dictionary<int, object?> _deserializationReferences = [];
 
     private Dictionary<string, Type> _typeCache = [];
 
     private Type GetTypeFromCache(string typeName)
     {
-      Type result;
+      Type? result;
       if (!_typeCache.TryGetValue(typeName, out result))
       {
         result = MethodCaller.GetType(typeName);
 
         if (result == null)
         {
-          throw new MobileFormatterException(string.Format(
-            Resources.MobileFormatterUnableToDeserialize,
-            typeName));
+          throw new MobileFormatterException(string.Format(Resources.MobileFormatterUnableToDeserialize, typeName));
         }
         _typeCache.Add(typeName, result);
       }
@@ -202,7 +186,7 @@ namespace Csla.Serialization.Mobile
     /// Stream containing the serialized XML
     /// data.
     /// </param>
-    public object Deserialize(Stream serializationStream)
+    public object? Deserialize(Stream? serializationStream)
     {
       if (serializationStream == null)
         return null;
@@ -219,7 +203,7 @@ namespace Csla.Serialization.Mobile
     /// Stream containing the serialized XML
     /// data.
     /// </param>
-    object ISerializationFormatter.Deserialize(byte[] buffer)
+    object? ISerializationFormatter.Deserialize(byte[] buffer)
     {
       if (buffer.Length == 0)
         return null;
@@ -233,8 +217,11 @@ namespace Csla.Serialization.Mobile
     /// Deserialize an object from DTO graph.
     /// </summary>
     ///<param name="deserialized">DTO group to deserialize</param>
-    public object DeserializeAsDTO(List<SerializationInfo> deserialized)
+    ///<exception cref="ArgumentNullException"><paramref name="deserialized"/> is <see langword="null"/>.</exception>
+    public object? DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
+      if (deserialized is null)
+        throw new ArgumentNullException(nameof(deserialized));
 
       _deserializationReferences = [];
       foreach (SerializationInfo info in deserialized)
@@ -301,10 +288,10 @@ namespace Csla.Serialization.Mobile
     {
       foreach (SerializationInfo.FieldData fieldData in serializationInfo.Values.Values)
       {
-        if (!String.IsNullOrEmpty(fieldData.EnumTypeName))
+        if (!string.IsNullOrEmpty(fieldData.EnumTypeName))
         {
-          Type enumType = MethodCaller.GetType(fieldData.EnumTypeName);
-          fieldData.Value = Enum.ToObject(enumType, fieldData.Value);
+          Type enumType = MethodCaller.GetType(fieldData.EnumTypeName!);
+          fieldData.Value = Enum.ToObject(enumType, fieldData.Value ?? throw new MobileFormatterException(string.Format(Resources.DeserializationFailedDueToWrongData, enumType)));
         }
       }
     }
@@ -314,14 +301,14 @@ namespace Csla.Serialization.Mobile
     /// reference id within the serialization stream.
     /// </summary>
     /// <param name="referenceId">Id of object in stream.</param>
-    public object GetObject(int referenceId)
+    public object? GetObject(int referenceId)
     {
       return _deserializationReferences[referenceId];
     }
 
-#endregion
+    #endregion
 
-#region Helpers
+    #region Helpers
 
     /// <summary>
     /// Serializes the object into a byte array.
@@ -344,7 +331,7 @@ namespace Csla.Serialization.Mobile
     /// The object to be serialized, which must implement
     /// IMobileObject.
     /// </param>
-    public List<SerializationInfo> SerializeToDTO(object obj)
+    public List<SerializationInfo> SerializeToDTO(object? obj)
     {
       return SerializeAsDTO(obj);
     }
@@ -354,7 +341,8 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="serialized">DTO Graph to deserialize</param>
     /// <returns>Deserialized object</returns>
-    public object DeserializeFromDTO(List<SerializationInfo> serialized)
+    /// <exception cref="ArgumentNullException"><paramref name="serialized"/> is <see langword="null"/>.</exception>
+    public object? DeserializeFromDTO(List<SerializationInfo> serialized)
     {
       return DeserializeAsDTO(serialized);
     }
@@ -371,7 +359,7 @@ namespace Csla.Serialization.Mobile
     /// byte stream. The object must implement
     /// IMobileObject to be deserialized.
     /// </returns>
-    public object DeserializeFromByteArray(byte[] data)
+    public object? DeserializeFromByteArray(byte[]? data)
     {
       if (data == null)
         return null;
@@ -392,13 +380,14 @@ namespace Csla.Serialization.Mobile
     /// byte stream. The object must implement
     /// IMobileObject to be deserialized.
     /// </returns>
-    public object DeserializeFromSerializationInfo(List<SerializationInfo> data)
+    public object? DeserializeFromSerializationInfo(List<SerializationInfo>? data)
     {
       if (data == null)
         return null;
 
       return DeserializeAsDTO(data);
     }
+    
     #endregion
 
     /// <summary>

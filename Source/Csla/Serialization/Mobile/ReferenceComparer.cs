@@ -14,22 +14,18 @@ namespace Csla.Serialization.Mobile;
 /// <typeparam name="T">Type of objects to compare.</typeparam>
 public sealed class ReferenceComparer<T> : IEqualityComparer<T>
 {
-  /// <summary>
-  /// Determines if the two objects are reference-equal.
-  /// </summary>
-  /// <param name="x">First object.</param>
-  /// <param name="y">Second object.</param>
-  public bool Equals(T x, T y)
+  /// <inheritdoc />
+  public bool Equals(T? x, T? y)
   {
     return ReferenceEquals(x, y);
   }
 
-  /// <summary>
-  /// Gets the hash code value for the object.
-  /// </summary>
-  /// <param name="obj">Object reference.</param>
+  /// <inheritdoc />
   public int GetHashCode(T obj)
   {
+    if (obj == null)
+      throw new ArgumentNullException(nameof(obj));
+
     return obj.GetHashCode();
   }
 }

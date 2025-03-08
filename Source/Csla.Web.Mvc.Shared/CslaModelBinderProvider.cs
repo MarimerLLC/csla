@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 #if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
 namespace Csla.Web.Mvc
 {
@@ -29,9 +30,8 @@ namespace Csla.Web.Mvc
     /// <param name="context">Model binder provider context.</param>
     public IModelBinder? GetBinder(ModelBinderProviderContext context)
     {
-      if (typeof(Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType) ||
-          typeof(IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))
-        return new CslaModelBinder();
+      if (typeof(Core.IEditableCollection).IsAssignableFrom(context.Metadata.ModelType) || typeof(IBusinessBase).IsAssignableFrom(context.Metadata.ModelType))
+        return new BinderTypeModelBinder(typeof(CslaModelBinder));
       else
         return null;
     }

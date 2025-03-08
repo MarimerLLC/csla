@@ -18,6 +18,6 @@ namespace Csla.Core
     /// Event indicating that an exception occurred during
     /// an asynchronous operation.
     /// </summary>
-    event EventHandler<ErrorEventArgs> UnhandledAsyncException;
+    event EventHandler<ErrorEventArgs>? UnhandledAsyncException;
   }
 }

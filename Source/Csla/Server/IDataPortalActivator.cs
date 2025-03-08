@@ -22,34 +22,28 @@ namespace Csla.Server
     /// <param name="requestedType">Requested business type (class or interface).</param>
     /// <param name="parameters">Param array for the constructor</param>
     /// <returns>Business object instance.</returns>
-    object CreateInstance(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type requestedType, params object[] parameters);
+    /// <exception cref="ArgumentNullException"><paramref name="requestedType"/> or <paramref name="requestedType"/> is <see langword="null"/>.</exception>
+    object CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType, params object[] parameters);
     /// <summary>
     /// Initializes an existing business object instance.
     /// </summary>
     /// <param name="obj">Reference to the business object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     void InitializeInstance(object obj);
     /// <summary>
     /// Finalizes an existing business object instance. Called
     /// after a data portal operation is complete.
     /// </summary>
     /// <param name="obj">Reference to the business object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     void FinalizeInstance(object obj);
     /// <summary>
     /// Gets the actual business domain class type based on the
     /// requested type (which might be an interface).
     /// </summary>
     /// <param name="requestedType">Type requested from the data portal.</param>
-#if NET8_0_OR_GREATER
+    /// <exception cref="ArgumentNullException"><paramref name="requestedType"/> is <see langword="null"/>.</exception>
     [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-    Type ResolveType(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-     Type requestedType);
+    Type ResolveType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType);
   }
 }

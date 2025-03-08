@@ -40,7 +40,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="queryResult"/> is <see langword="null"/>.</exception>
     public LinqObservableCollection(System.Collections.ObjectModel.ObservableCollection<T> source, IEnumerable<T> queryResult)
       : this(source, queryResult?.ToList() ?? throw new ArgumentNullException(nameof(queryResult)))
-    { 
+    {
     }
 
     /// <summary>
@@ -52,12 +52,11 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="queryResult"/> is <see langword="null"/>.</exception>
     public LinqObservableCollection(System.Collections.ObjectModel.ObservableCollection<T> source, List<T> queryResult)
     {
-      QueryResult = queryResult ?? throw new ArgumentNullException(nameof(queryResult));
-      _baseCollection = source ?? throw new ArgumentNullException(nameof(source));
+      QueryResult = Guard.NotNull(queryResult);
+      _baseCollection = Guard.NotNull(source);
       _baseCollection.CollectionChanged += (_, e) =>
         {
-          if (e is null)
-            throw new ArgumentNullException(nameof(e));
+          Guard.NotNull(e);
 
           if (!_suppressEvents)
           {
@@ -115,8 +114,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       if (!_suppressEvents)
         CollectionChanged?.Invoke(this, e);
@@ -245,8 +243,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(T[] array, int arrayIndex)
     {
-      if (array is null)
-        throw new ArgumentNullException(nameof(array));
+      Guard.NotNull(array);
 
       QueryResult.CopyTo(array, arrayIndex);
     }
@@ -399,8 +396,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(Array array, int index)
     {
-      if (array is null)
-        throw new ArgumentNullException(nameof(array));
+      Guard.NotNull(array);
 
       ((IList)QueryResult).CopyTo(array, index);
     }
@@ -435,10 +431,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="queryResult"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public static LinqObservableCollection<C> ToSyncList<C>(this IEnumerable<C> queryResult, System.Collections.ObjectModel.ObservableCollection<C> source) where C: notnull
     {
-      if (queryResult is null)
-        throw new ArgumentNullException(nameof(queryResult));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(queryResult);
+      Guard.NotNull(source);
 
       return new LinqObservableCollection<C>(source, queryResult);
     }
@@ -450,10 +444,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="queryResult"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, IEnumerable<C> queryResult) where C : notnull
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (queryResult is null)
-        throw new ArgumentNullException(nameof(queryResult));
+      Guard.NotNull(source);
+      Guard.NotNull(queryResult);
 
       return new LinqObservableCollection<C>(source, queryResult);
     }
@@ -465,8 +457,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="expr"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, Expression<Func<C, bool>> expr) where C : notnull
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
       if (expr is null)
         throw new ArgumentNullException(nameof(expr));
 

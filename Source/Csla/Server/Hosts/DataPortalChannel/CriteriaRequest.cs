@@ -124,12 +124,12 @@ namespace Csla.Server.Hosts.DataPortalChannel
     public CriteriaRequest(ApplicationContext applicationContext, byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture, byte[] criteriaData)
     {
       ApplicationContext = applicationContext;
-      Principal = principal ?? throw new ArgumentNullException(nameof(principal));
-      ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
-      ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));
-      ClientUICulture = clientUICulture ?? throw new ArgumentNullException(nameof(clientUICulture));
+      Principal = Guard.NotNull(principal);
+      ClientContext = Guard.NotNull(clientContext);
+      ClientCulture = Guard.NotNull(clientCulture);
+      ClientUICulture = Guard.NotNull(clientUICulture);
       TypeName = string.Empty;
-      CriteriaData = criteriaData ?? throw new ArgumentNullException(nameof(criteriaData));
+      CriteriaData = Guard.NotNull(criteriaData);
     }
 
     /// <summary>

@@ -63,8 +63,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="returnObject"/> is <see langword="null"/>.</exception>
     public DataPortalResult(ApplicationContext applicationContext, object returnObject) : this(applicationContext, returnObject, null)
     {
-      if (returnObject is null)
-        throw new ArgumentNullException(nameof(returnObject));
+      Guard.NotNull(returnObject);
     }
 
     /// <summary>
@@ -80,7 +79,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public DataPortalResult(ApplicationContext applicationContext, object? returnObject, Exception? ex)
     {
-      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      ApplicationContext = Guard.NotNull(applicationContext);
       ReturnObject = returnObject;
       Error = ex;
     }

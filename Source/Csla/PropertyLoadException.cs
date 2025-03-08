@@ -40,8 +40,7 @@ namespace Csla
     {
       if (string.IsNullOrWhiteSpace(message))
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(message)), nameof(message));
-      if (ex is null)
-        throw new ArgumentNullException(nameof(ex));
+      Guard.NotNull(ex);
     }
   }
 }

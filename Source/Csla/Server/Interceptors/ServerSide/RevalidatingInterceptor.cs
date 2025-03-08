@@ -26,7 +26,7 @@ namespace Csla.Server.Interceptors.ServerSide
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public RevalidatingInterceptor(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _applicationContext = Guard.NotNull(applicationContext);
     }
 
     /// <summary>
@@ -43,8 +43,7 @@ namespace Csla.Server.Interceptors.ServerSide
         return;
       }
 
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       if (e.Parameter is not ITrackStatus checkableObject)
       {

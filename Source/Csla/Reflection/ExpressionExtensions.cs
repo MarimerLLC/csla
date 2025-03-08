@@ -24,8 +24,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="expression"/> is <see langword="null"/>.</exception>
     public static string GetKey<T>(this Expression<T> expression)
     {
-      if (expression is null)
-        throw new ArgumentNullException(nameof(expression));
+      Guard.NotNull(expression);
 
       var list = new List<string>();
       var member = expression.Body as MemberExpression;

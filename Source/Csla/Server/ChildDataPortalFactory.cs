@@ -27,7 +27,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public ChildDataPortalFactory(IServiceProvider serviceProvider)
     {
-        _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+        _serviceProvider = Guard.NotNull(serviceProvider);
     }
 
     /// <summary>

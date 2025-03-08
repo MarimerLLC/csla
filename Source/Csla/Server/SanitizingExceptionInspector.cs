@@ -31,9 +31,9 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="environment"/>, <paramref name="applicationContext"/> or <paramref name="logger"/> is <see langword="null"/>.</exception>
     public SanitizingExceptionInspector(IHostEnvironment environment, ApplicationContext applicationContext, ILogger<SanitizingExceptionInspector> logger)
     {
-      _hostEnvironment = environment ?? throw new ArgumentNullException(nameof(environment));
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+      _hostEnvironment = Guard.NotNull(environment);
+      _applicationContext = Guard.NotNull(applicationContext);
+      _logger = Guard.NotNull(logger);
     }
 
     /// <summary>
@@ -56,8 +56,7 @@ namespace Csla.Server
       if (_hostEnvironment.IsDevelopment())
         return;
       
-      if (ex is null)
-        throw new ArgumentNullException(nameof(ex));
+      Guard.NotNull(ex);
 
       // Sanitize in all remaining scenarios
       string identifier = Guid.NewGuid().ToString();

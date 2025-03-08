@@ -103,7 +103,7 @@ namespace Csla.Rules
 
     private RuleResult(string ruleName, IPropertyInfo? property, string description, int displayIndex, RuleSeverity severity)
     {
-      RuleName = ruleName ?? throw new ArgumentNullException(nameof(ruleName));
+      RuleName = Guard.NotNull(ruleName);
       PrimaryProperty = property;
       Description = description;
       DisplayIndex = displayIndex;

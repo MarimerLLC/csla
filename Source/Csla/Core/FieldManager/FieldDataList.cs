@@ -31,8 +31,7 @@ namespace Csla.Core.FieldManager
 
     public bool TryGetValue(string key, [NotNullWhen(true)] out IFieldData? result)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
+      Guard.NotNull(key);
 
       int index;
       if (_fieldIndex.TryGetValue(key, out index))
@@ -49,24 +48,21 @@ namespace Csla.Core.FieldManager
 
     public bool ContainsKey(string key)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
+      Guard.NotNull(key);
 
       return _fieldIndex.ContainsKey(key);
     }
 
     public IFieldData GetValue(string key)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
+      Guard.NotNull(key);
 
       return _fields[_fieldIndex[key]];
     }
 
     public void Add(string key, IFieldData value)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
+      Guard.NotNull(key);
 
       _fields.Add(value);
       _fieldIndex.Add(key, _fields.Count - 1);

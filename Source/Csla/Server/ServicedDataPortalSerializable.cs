@@ -29,7 +29,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> is <see langword="null"/>.</exception>
     public ServicedDataPortalSerializable(DataPortalBroker dataPortalBroker)
     {
-      portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
+      portal = Guard.NotNull(dataPortalBroker);
     }
 
     /// <summary>
@@ -53,12 +53,9 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       return portal.Create(objectType, criteria, context, isSync);
     }
@@ -81,12 +78,9 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       return portal.Fetch(objectType, criteria, context, isSync);
     }
@@ -108,10 +102,8 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
 
       return portal.Update(obj, context, isSync);
     }
@@ -133,12 +125,9 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       return portal.Delete(objectType, criteria, context, isSync);
     }

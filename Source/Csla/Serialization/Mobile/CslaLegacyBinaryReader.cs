@@ -29,8 +29,7 @@ namespace Csla.Serialization.Mobile
     /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> is <see langword="null"/>.</exception>
     public List<SerializationInfo> Read(Stream serializationStream)
     {
-      if (serializationStream is null)
-        throw new ArgumentNullException(nameof(serializationStream));
+      Guard.NotNull(serializationStream);
 
       var returnValue = new List<SerializationInfo>();
       keywordsDictionary.Clear();

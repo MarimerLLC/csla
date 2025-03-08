@@ -44,7 +44,7 @@ namespace Csla.Core.FieldManager
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
     public FieldData(string name, bool isSerializable)
     {
-      Name = name ?? throw new ArgumentNullException(nameof(name));
+      Name = Guard.NotNull(name);
       IsSerializable = isSerializable;
     }
 

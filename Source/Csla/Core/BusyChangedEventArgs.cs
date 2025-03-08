@@ -45,7 +45,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     public BusyChangedEventArgs(string propertyName, bool busy)
     {
-      PropertyName = propertyName ?? throw new ArgumentNullException(nameof(propertyName));
+      PropertyName = Guard.NotNull(propertyName);
       Busy = busy;
     }
   }

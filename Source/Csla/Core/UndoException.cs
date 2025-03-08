@@ -46,9 +46,8 @@ namespace Csla.Core
     public UndoException(string message, string typeName, string? parentTypeName, int currentEditLevel, int expectedEditLevel)
       : base(message)
     {
-      if (message is null)
-        throw new ArgumentNullException(nameof(message));
-      TypeName = typeName ?? throw new ArgumentNullException(nameof(typeName));
+      Guard.NotNull(message);
+      TypeName = Guard.NotNull(typeName);
       ParentTypeName = parentTypeName;
       CurrentEditLevel = currentEditLevel;
       ExpectedEditLevel = expectedEditLevel;
@@ -63,10 +62,8 @@ namespace Csla.Core
     public UndoException(string message, Exception ex)
       : base(message, ex)
     {
-      if (message is null)
-        throw new ArgumentNullException(nameof(message));
-      if (ex is null)
-        throw new ArgumentNullException(nameof(ex));
+      Guard.NotNull(message);
+      Guard.NotNull(ex);
     }
   }
 }

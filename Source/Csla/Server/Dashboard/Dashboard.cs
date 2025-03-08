@@ -134,8 +134,7 @@ namespace Csla.Server.Dashboard
     /// <inheritdoc />
     void IDashboard.InitializeCall(InterceptArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       LastCall = DateTimeOffset.Now;
       _initializeQueue.Enqueue(e);
@@ -144,8 +143,7 @@ namespace Csla.Server.Dashboard
     /// <inheritdoc />
     void IDashboard.CompleteCall(InterceptArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       _completeQueue.Enqueue(e);
     }

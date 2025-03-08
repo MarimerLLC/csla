@@ -50,7 +50,7 @@ namespace Csla.Reflection
       MemberName = memberName;
       _dynamicMemberSet = dynamicMemberSet;
       _dynamicMemberGet = dynamicMemberGet;
-      MemberType = memberType ?? throw new ArgumentNullException(nameof(memberType));
+      MemberType = Guard.NotNull(memberType);
     }
 
     public object? MemberGetOrNotSupportedException(object target)

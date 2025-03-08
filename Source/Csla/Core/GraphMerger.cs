@@ -34,10 +34,8 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void MergeGraph(IEditableBusinessObject target, IEditableBusinessObject source)
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(target);
+      Guard.NotNull(source);
 
       if (target is IManageProperties imp)
       {
@@ -165,10 +163,8 @@ namespace Csla.Core
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(target);
+      Guard.NotNull(source);
 
       var deleted = new List<C>();
       foreach (var item in target)
@@ -201,10 +197,8 @@ namespace Csla.Core
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(target);
+      Guard.NotNull(source);
 
       var deleted = new List<C>();
       foreach (var item in target)
@@ -237,10 +231,8 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public async Task MergeGraphAsync(IEditableBusinessObject target, IEditableBusinessObject source)
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(target);
+      Guard.NotNull(source);
 
       if (target is IManageProperties imp)
       {
@@ -359,10 +351,8 @@ namespace Csla.Core
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(target);
+      Guard.NotNull(source);
 
       var deleted = new List<C>();
       foreach (var item in target)
@@ -395,10 +385,8 @@ namespace Csla.Core
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(target);
+      Guard.NotNull(source);
 
       var deleted = new List<C>();
       foreach (var item in target)

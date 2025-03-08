@@ -40,9 +40,9 @@ namespace Csla.Rules
     internal BrokenRulesNode(object? parent, object node, BrokenRulesCollection brokenRules, object @object)
     {
       Parent = parent;
-      Node = node ?? throw new ArgumentNullException(nameof(node));
-      BrokenRules = brokenRules ?? throw new ArgumentNullException(nameof(brokenRules));
-      Object = @object ?? throw new ArgumentNullException(nameof(@object));
+      Node = Guard.NotNull(node);
+      BrokenRules = Guard.NotNull(brokenRules);
+      Object = Guard.NotNull(@object);
     }
   }
 }

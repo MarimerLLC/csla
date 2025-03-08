@@ -30,7 +30,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="exceptionInspector"/> is <see langword="null"/>.</exception>
     public DataPortalExceptionHandler(IDataPortalExceptionInspector exceptionInspector)
     {
-      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
+      _exceptionInspector = Guard.NotNull(exceptionInspector);
     }
 
     /// <summary>
@@ -44,14 +44,11 @@ namespace Csla.Server
     /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public Exception InspectException(Type objectType, object criteria, string methodName, Exception ex)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
       if (string.IsNullOrWhiteSpace(methodName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(methodName)), nameof(methodName));
-      if (ex is null)
-        throw new ArgumentNullException(nameof(ex));
+      Guard.NotNull(ex);
       if (ex is CallMethodException)
       {
         if (CallExceptionInspector(objectType, null, criteria, methodName, ex.InnerException!, out var handledException))

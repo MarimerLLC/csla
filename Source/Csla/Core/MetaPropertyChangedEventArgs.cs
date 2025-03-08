@@ -15,8 +15,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     public MetaPropertyChangedEventArgs(string propertyName) : base(propertyName)
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      Guard.NotNull(propertyName);
     }
   }
 }

@@ -40,7 +40,7 @@ public class SessionMessage : MobileObject
   /// <exception cref="ArgumentNullException"><paramref name="session"/> is <see langword="null"/>.</exception>
   public SessionMessage(Session session)
   {
-    Session = session ?? throw new ArgumentNullException(nameof(session));
+    Session = Guard.NotNull(session);
   }
 
   /// <summary>

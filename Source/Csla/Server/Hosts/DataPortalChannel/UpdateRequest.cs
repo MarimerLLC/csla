@@ -80,11 +80,11 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="objectData"/> is <see langword="null"/>.</exception>
     public UpdateRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture, byte[] objectData)
     {
-      Principal = principal ?? throw new ArgumentNullException(nameof(principal));
-      ClientContext = clientContext ?? throw new ArgumentNullException(nameof(clientContext));
-      ClientCulture = clientCulture ?? throw new ArgumentNullException(nameof(clientCulture));
-      ClientUICulture = clientUICulture ?? throw new ArgumentNullException(nameof(clientUICulture));
-      ObjectData = objectData ?? throw new ArgumentNullException(nameof(objectData));
+      Principal = Guard.NotNull(principal);
+      ClientContext = Guard.NotNull(clientContext);
+      ClientCulture = Guard.NotNull(clientCulture);
+      ClientUICulture = Guard.NotNull(clientUICulture);
+      ObjectData = Guard.NotNull(objectData);
     }
 
     /// <summary>

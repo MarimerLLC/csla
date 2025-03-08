@@ -169,8 +169,7 @@ namespace Csla.Core.FieldManager
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static PropertyInfoList GetRegisteredProperties([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
 
       // return a copy of the list to avoid
       // possible locking issues
@@ -187,10 +186,8 @@ namespace Csla.Core.FieldManager
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="propertyName"/> is <see langword="null"/>.</exception>
     public static IPropertyInfo? GetRegisteredProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, string propertyName)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      Guard.NotNull(objectType);
+      Guard.NotNull(propertyName);
 
       return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);
     }

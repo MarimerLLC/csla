@@ -13,8 +13,7 @@
     /// <exception cref="ArgumentNullException"><paramref name="result"/> is <see langword="null"/>.</exception>
     public Activity(InterceptArgs result)
     {
-      if (result is null)
-        throw new ArgumentNullException(nameof(result));
+      Guard.NotNull(result);
 
       ObjectType = result.ObjectType;
       Operation = result.Operation;

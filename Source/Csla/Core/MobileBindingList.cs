@@ -101,7 +101,7 @@ namespace Csla.Core
       /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
       public LoadListModeObject(IMobileList target)
       {
-        _target = target ?? throw new ArgumentNullException(nameof(target));
+        _target = Guard.NotNull(target);
         _target.SetLoadListMode(true);
       }
 

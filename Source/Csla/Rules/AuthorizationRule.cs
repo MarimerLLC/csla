@@ -39,7 +39,7 @@ namespace Csla.Rules
     public AuthorizationRule(AuthorizationActions action, IMemberInfo element)
       : this(action)
     {
-      _element = element ?? throw new ArgumentNullException(nameof(element));
+      _element = Guard.NotNull(element);
     }
     /// <summary>
     /// Authorization rule implementation.
@@ -132,10 +132,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected object? ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);

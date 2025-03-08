@@ -25,7 +25,7 @@ namespace Csla.DataPortalClient
     /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public DataPortalFactory(IServiceProvider serviceProvider)
     {
-      this._serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      this._serviceProvider = Guard.NotNull(serviceProvider);
     }
 
     private IServiceProvider _serviceProvider;

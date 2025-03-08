@@ -23,8 +23,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="interceptors"/> is <see langword="null"/>.</exception>
     public InterceptorManager(IEnumerable<IInterceptDataPortal> interceptors)
     {
-      if (interceptors is null)
-        throw new ArgumentNullException(nameof(interceptors));
+      Guard.NotNull(interceptors);
 
       _interceptors = new List<IInterceptDataPortal>(interceptors);
     }
@@ -32,8 +31,7 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task InitializeAsync(InterceptArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       foreach (IInterceptDataPortal interceptor in _interceptors)
       {
@@ -44,8 +42,7 @@ namespace Csla.Server
     /// <inheritdoc />
     public void Complete(InterceptArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       // Iterate backwards through interceptors, so that they appear to wrap one another, decorator-style
       for (int interceptorIndex = _interceptors.Count - 1; interceptorIndex > -1; interceptorIndex--)

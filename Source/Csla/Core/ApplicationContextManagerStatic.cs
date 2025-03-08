@@ -87,7 +87,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
     {
-      currentDefaultServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      currentDefaultServiceProvider = Guard.NotNull(serviceProvider);
     }
 
     /// <summary>
@@ -114,13 +114,13 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="scope"/> is <see langword="null"/>.</exception>
     public void SetServiceProvider(IServiceProvider scope)
     {
-      currentServiceProvider = scope ?? throw new ArgumentNullException(nameof(scope));
+      currentServiceProvider = Guard.NotNull(scope);
     }
 
     /// <inheritdoc />
     public void SetUser(IPrincipal principal)
     {
-      currentPrincipal = principal ?? throw new ArgumentNullException(nameof(principal));
+      currentPrincipal = Guard.NotNull(principal);
     }
 
     private static ApplicationContext? _applicationContext;

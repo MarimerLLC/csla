@@ -191,8 +191,7 @@ namespace Csla.Reflection
 
     private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
     {
-      if (objectType == null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
 
       DynamicCtorDelegate result = default!;
       var found = false;
@@ -422,8 +421,7 @@ namespace Csla.Reflection
     /// <exception cref="InvalidOperationException"><paramref name="property"/> not found on type of <paramref name="obj"/>.</exception>
     public static object? CallPropertyGetter(object obj, string property)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(property))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(property)), nameof(property));
 
@@ -453,8 +451,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static void CallPropertySetter(object obj, string property, object? value)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(property))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(property)), nameof(property));
 
@@ -490,8 +487,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? CallMethodIfImplemented(object obj, string method)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -515,8 +511,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? CallMethodIfImplemented(object obj, string method, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -553,8 +548,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static bool IsMethodImplemented(object obj, string method, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -577,8 +571,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? CallMethod(object obj, string method)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -603,8 +596,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? CallMethod(object obj, string method, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -644,10 +636,8 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
     public static object CallMethod(object obj, System.Reflection.MethodInfo info, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
+      Guard.NotNull(obj);
+      Guard.NotNull(info);
 
       return CallMethod(obj, info, true, parameters);
     }
@@ -656,8 +646,7 @@ namespace Csla.Reflection
     {
       if (ApplicationContext.UseReflectionFallback)
       {
-        if (parameters is null)
-          throw new ArgumentNullException(nameof(parameters));
+        Guard.NotNull(parameters);
 
         var infoParams = info.GetParameters();
         var infoParamsCount = infoParams.Length;
@@ -796,8 +785,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -821,8 +809,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method, params object?[]? parameters)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -948,10 +935,8 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static System.Reflection.MethodInfo? FindMethod(Type objectType, string method, Type[] types)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (types is null)
-        throw new ArgumentNullException(nameof(types));
+      Guard.NotNull(objectType);
+      Guard.NotNull(types);
       if (string.IsNullOrWhiteSpace(method))
       throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -993,8 +978,7 @@ namespace Csla.Reflection
         [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2075:UnrecognizedReflectionPattern", Justification = "We only walk BaseType chain in this method, so assumption will holds")]
         Type objectType, string method, int parameterCount)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -1096,8 +1080,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static PropertyDescriptor? GetPropertyDescriptor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type t, string propertyName)
     {
-      if (t is null)
-        throw new ArgumentNullException(nameof(t));
+      Guard.NotNull(t);
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
@@ -1121,8 +1104,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static PropertyInfo? GetProperty(Type objectType, string propertyName)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
@@ -1138,10 +1120,8 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="obj"/> is <see langword="null"/>.</exception>
     public static object? GetPropertyValue(object obj, PropertyInfo info)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
+      Guard.NotNull(obj);
+      Guard.NotNull(info);
 
       object? result;
       try
@@ -1169,10 +1149,8 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
     public static object? CallMethod(object obj, System.Reflection.MethodInfo info)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
+      Guard.NotNull(obj);
+      Guard.NotNull(info);
 
       object? result;
       try
@@ -1209,8 +1187,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static Task<object?> CallMethodTryAsync(object obj, string method, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -1229,8 +1206,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static Task<object?> CallMethodTryAsync(object obj, string method)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -1316,8 +1292,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static bool IsAsyncMethod(object obj, string method)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -1336,8 +1311,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static bool IsAsyncMethod(object obj, string method, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -1380,12 +1354,10 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static async Task<object?> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
-      if (typeParams is null)
-        throw new ArgumentNullException(nameof(typeParams));
+      Guard.NotNull(typeParams);
 
       var tcs = new TaskCompletionSource<object?>();
       try
@@ -1438,12 +1410,10 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
+      Guard.NotNull(target);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
-      if (typeParams is null)
-        throw new ArgumentNullException(nameof(typeParams));
+      Guard.NotNull(typeParams);
 
       var objectType = target.GetType();
       object? result;
@@ -1480,12 +1450,10 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? CallFactoryMethod(Type objectType, string method, params object?[] parameters)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      Guard.NotNull(parameters);
 
       object? returnValue;
       System.Reflection.MethodInfo? factory = objectType.GetMethod(method, factoryFlags, null, GetParameterTypes(parameters), null);
@@ -1536,8 +1504,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static System.Reflection.MethodInfo? GetNonPublicMethod(Type objectType, string method)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
@@ -1556,8 +1523,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static System.Reflection.MethodInfo? FindMethod(Type objType, string method, BindingFlags flags)
     {
-      if (objType is null)
-        throw new ArgumentNullException(nameof(objType));
+      Guard.NotNull(objType);
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 

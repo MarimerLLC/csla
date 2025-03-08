@@ -96,8 +96,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="range"/> is <see langword="null"/>.</exception>
     public void AddRange(IEnumerable<T> range)
     {
-      if (range is null)
-        throw new ArgumentNullException(nameof(range));
+      Guard.NotNull(range);
 
       foreach (var element in range)
         Add(element);
@@ -135,8 +134,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected void OnBusyChanged(string propertyName, bool busy)
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      Guard.NotNull(propertyName);
 
       OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
     }

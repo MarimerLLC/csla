@@ -25,8 +25,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="identifier"/> is <see langword="null"/>.</exception>
     public ServerException(string identifier) : base(Properties.Resources.SanitizedServerSideDataPortalException)
     {
-      if (identifier is null)
-        throw new ArgumentNullException(nameof(identifier));
+      Guard.NotNull(identifier);
 
       Data.Add(IdentifierKey, identifier);
     }
@@ -35,9 +34,9 @@ namespace Csla.Server
     /// The unique identifier for the request that failed
     /// Use this identifier to look for the exception details in server logs
     /// </summary>
-    public string RequestIdentifier 
-    { 
-      get 
+    public string RequestIdentifier
+    {
+      get
       {
         return Data[IdentifierKey] switch
         {

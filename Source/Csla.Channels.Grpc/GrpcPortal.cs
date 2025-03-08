@@ -50,8 +50,7 @@ namespace Csla.Channels.Grpc
     {
       if (request is null)
         throw new ArgumentNullException(nameof(request));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(context);
 
       var operation = request.Operation;
       if (operation.Contains("/"))

@@ -19,7 +19,7 @@ namespace Csla.Threading
 
     public ContextParams(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _applicationContext = Guard.NotNull(applicationContext);
       User = _applicationContext.User;
       ClientContext = _applicationContext.ClientContext;
       Culture = CultureInfo.CurrentCulture;

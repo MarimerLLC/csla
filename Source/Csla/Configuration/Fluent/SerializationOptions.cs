@@ -22,7 +22,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the CSLA .NET configuration options.
     /// </summary>
-    protected CslaOptions CslaOptions { get; } = cslaOptions ?? throw new ArgumentNullException(nameof(cslaOptions));
+    protected CslaOptions CslaOptions { get; } = Guard.NotNull(cslaOptions);
 
     /// <summary>
     /// Gets the current services collection.

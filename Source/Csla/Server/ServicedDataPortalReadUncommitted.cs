@@ -29,7 +29,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> is <see langword="null"/>.</exception>
     public ServicedDataPortalReadUncommitted(DataPortalBroker dataPortalBroker)
     {
-      portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
+      portal = Guard.NotNull(dataPortalBroker);
     }
 
     /// <summary>

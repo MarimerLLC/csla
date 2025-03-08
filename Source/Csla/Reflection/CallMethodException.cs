@@ -47,8 +47,7 @@ namespace Csla.Reflection
     public CallMethodException(string? message, Exception ex)
       : base(message, ex)
     {
-      if (ex is null)
-        throw new ArgumentNullException(nameof(ex));
+      Guard.NotNull(ex);
 
       _innerStackTrace = ex.StackTrace;
     }

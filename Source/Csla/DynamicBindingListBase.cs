@@ -391,8 +391,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected override void Child_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       for (int index = 0; index < Count; index++)
       {

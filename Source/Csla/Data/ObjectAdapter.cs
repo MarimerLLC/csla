@@ -35,8 +35,7 @@ namespace Csla.Data
     /// <exception cref="ArgumentNullException"><paramref name="ds"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void Fill(DataSet ds, object source)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
 
       string className = source.GetType().Name;
       Fill(ds, className, source);
@@ -56,13 +55,10 @@ namespace Csla.Data
     /// <exception cref="ArgumentException"><paramref name="tableName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public void Fill(DataSet ds, string tableName, object source)
     {
-      if (ds is null)
-        throw new ArgumentNullException(nameof(ds));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(ds);
+      Guard.NotNull(source);
       if (string.IsNullOrWhiteSpace(tableName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(tableName)), nameof(tableName));
-
 
       var dt = ds.Tables[tableName];
 
@@ -87,10 +83,8 @@ namespace Csla.Data
     /// <exception cref="ArgumentNullException"><paramref name="dt"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void Fill(DataTable dt, object source)
     {
-      if (dt is null)
-        throw new ArgumentNullException(nameof(dt));
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(dt);
+      Guard.NotNull(source);
 
       // get the list of columns from the source
       List<string> columns = GetColumns(source);

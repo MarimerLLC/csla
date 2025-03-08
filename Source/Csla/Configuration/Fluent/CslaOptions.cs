@@ -24,7 +24,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public CslaOptions(IServiceCollection services)
     {
-      Services = services ?? throw new ArgumentNullException(nameof(services));
+      Services = Guard.NotNull(services);
       DataPortalOptions = new DataPortalOptions(this);
       SerializationOptions = new SerializationOptions(this);
     }

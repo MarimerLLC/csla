@@ -26,7 +26,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ObjectFactory(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      ApplicationContext = Guard.NotNull(applicationContext);
     }
 
     /// <summary>
@@ -43,8 +43,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void SetIsReadOnly(object obj, bool value)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IReadOnlyBindingList list)
         list.IsReadOnly = value;
@@ -60,8 +59,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void CheckRules(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IDataPortalTarget target)
         target.CheckRules();
@@ -79,8 +77,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected async Task CheckRulesAsync(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IDataPortalTarget target)
         await target.CheckRulesAsync().ConfigureAwait(false);
@@ -96,8 +93,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected async Task WaitForIdle(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
       await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds).ToCancellationToken()).ConfigureAwait(false);
@@ -112,8 +108,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected async Task WaitForIdle(object obj, CancellationToken ct)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IDataPortalTarget target)
       {
@@ -139,8 +134,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void MarkOld(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IDataPortalTarget target)
         target.MarkOld();
@@ -158,8 +152,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void MarkNew(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IDataPortalTarget target)
         target.MarkNew();
@@ -177,8 +170,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected void MarkAsChild(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IDataPortalTarget target)
         target.MarkAsChild();
@@ -208,10 +200,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected void LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(object obj, PropertyInfo<P> propertyInfo, P? newValue)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         target.LoadProperty<P>(propertyInfo, newValue);
@@ -234,10 +224,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected void LoadProperty(object obj, IPropertyInfo propertyInfo, object? newValue)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         target.LoadProperty(propertyInfo, newValue);
@@ -260,10 +248,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected P? ReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(object obj, PropertyInfo<P> propertyInfo)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
@@ -282,10 +268,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected object? ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
@@ -311,8 +295,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="businessObject"/> is <see langword="null"/>.</exception>
     protected IDisposable BypassPropertyChecks(BusinessBase businessObject)
     {
-      if (businessObject is null)
-        throw new ArgumentNullException(nameof(businessObject));
+      Guard.NotNull(businessObject);
 
       return businessObject.BypassPropertyChecks;
     }
@@ -326,10 +309,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="property"/> is <see langword="null"/>.</exception>
     protected bool FieldExists(object obj, IPropertyInfo property)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(obj);
+      Guard.NotNull(property);
 
       if (obj is IManageProperties target)
         return target.FieldExists(property);
@@ -346,8 +327,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     protected Csla.Core.MobileList<C> GetDeletedList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       if (obj is IEditableCollection target)
         return (Csla.Core.MobileList<C>)target.GetDeletedList();

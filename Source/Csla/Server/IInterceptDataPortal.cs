@@ -83,7 +83,7 @@
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="result"/> is <see langword="null"/>.</exception>
     public InterceptArgs(Type objectType, object? parameter, DataPortalResult result, DataPortalOperations operation, bool isSync) : this(objectType, parameter, operation, isSync)
     {
-      Result = result ?? throw new ArgumentNullException(nameof(result));
+      Result = Guard.NotNull(result);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="exception"/> is <see langword="null"/>.</exception>
     public InterceptArgs(Type objectType, object? parameter, Exception exception, DataPortalOperations operation, bool isSync) : this(objectType, parameter, operation, isSync)
     {
-      Exception = exception ?? throw new ArgumentNullException(nameof(exception));
+      Exception = Guard.NotNull(exception);
     }
 
     /// <summary>
@@ -110,7 +110,7 @@
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public InterceptArgs(Type objectType, object? parameter, DataPortalOperations operation, bool isSync)
     {
-      ObjectType = objectType ?? throw new ArgumentNullException(nameof(objectType));
+      ObjectType = Guard.NotNull(objectType);
       Parameter = parameter;
       Operation = operation;
       IsSync = isSync;

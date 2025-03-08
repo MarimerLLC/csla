@@ -32,10 +32,10 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="simpleDataPortal"/>, <paramref name="factoryDataPortal"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortalSelector(ApplicationContext applicationContext, SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal, Configuration.DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      _simpleDataPortal = simpleDataPortal ?? throw new ArgumentNullException(nameof(simpleDataPortal));
-      _factoryDataPortal = factoryDataPortal ?? throw new ArgumentNullException(nameof(factoryDataPortal));
-      _dataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
+      _applicationContext = Guard.NotNull(applicationContext);
+      _simpleDataPortal = Guard.NotNull(simpleDataPortal);
+      _factoryDataPortal = Guard.NotNull(factoryDataPortal);
+      _dataPortalOptions = Guard.NotNull(dataPortalOptions);
     }
 
     /// <inheritdoc />

@@ -51,7 +51,7 @@ namespace Csla.Core
     /// <inheritdoc />
     public virtual void SetUser(IPrincipal principal)
     {
-      _principal.Value = principal ?? throw new ArgumentNullException(nameof(principal));
+      _principal.Value = Guard.NotNull(principal);
     }
 
     /// <summary>

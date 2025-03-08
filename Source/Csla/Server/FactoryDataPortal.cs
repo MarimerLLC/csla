@@ -34,10 +34,10 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="factoryLoader"/>, <paramref name="inspector"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector, DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      _factoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
-      _exceptionInspector = inspector ?? throw new ArgumentNullException(nameof(inspector));
-      _dataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
+      _applicationContext = Guard.NotNull(applicationContext);
+      _factoryLoader = Guard.NotNull(factoryLoader);
+      _exceptionInspector = Guard.NotNull(inspector);
+      _dataPortalOptions = Guard.NotNull(dataPortalOptions);
     }
 
     #region Method invokes
@@ -106,12 +106,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
       if (context.FactoryInfo is null)
         throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
 
@@ -136,12 +133,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
       if (context.FactoryInfo is null)
         throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
 
@@ -191,10 +185,8 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
       if (context.FactoryInfo is null)
         throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
 
@@ -224,12 +216,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
       if (context.FactoryInfo is null)
         throw new ArgumentException($"Internal: No {nameof(DataPortalContext.FactoryInfo)} provided for the {nameof(FactoryDataPortal)}. This is an internal bug.");
 

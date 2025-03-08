@@ -19,8 +19,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions Data(this CslaOptions config, Action<DataOptions>? options)
     {
-      if (config is null)
-        throw new ArgumentNullException(nameof(config));
+      Guard.NotNull(config);
 
       options?.Invoke(config.DataOptions);
       return config;

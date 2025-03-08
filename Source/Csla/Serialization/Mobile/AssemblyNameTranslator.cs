@@ -69,8 +69,7 @@ namespace Csla.Serialization.Mobile
     /// <exception cref="ArgumentNullException"><paramref name="type"/> is <see langword="null"/>.</exception>
     public static string GetSerializationName(Type type, bool useStrongName)
     {
-      if (type is null)
-        throw new ArgumentNullException(nameof(type));
+      Guard.NotNull(type);
 
       if (useStrongName)
       {

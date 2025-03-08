@@ -60,7 +60,7 @@ namespace Csla.Reflection
 
     private static System.Reflection.MethodInfo GetMethodInfo(Expression method)
     {
-      if (method == null) throw new ArgumentNullException(nameof(method));
+      Guard.NotNull(method);
 
       if (method is not LambdaExpression lambda)
         throw new ArgumentException("Not a lambda expression", nameof(method));
@@ -113,7 +113,7 @@ namespace Csla.Reflection
 
     private static MemberInfo GetMemberInfo(Expression member)
     {
-      if (member == null) throw new ArgumentNullException(nameof(member));
+      Guard.NotNull(member);
 
       if (member is not LambdaExpression lambda)
         throw new ArgumentException("Not a lambda expression", nameof(member));

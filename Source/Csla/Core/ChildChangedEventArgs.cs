@@ -71,7 +71,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="childObject"/> is <see langword="null"/>.</exception>
     public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs? propertyArgs)
     {
-      ChildObject = childObject ?? throw new ArgumentNullException(nameof(childObject));
+      ChildObject = Guard.NotNull(childObject);
       PropertyChangedArgs = propertyArgs;
     }
 

@@ -168,10 +168,8 @@ namespace Csla.Channels.Local
     /// <inheritdoc />
     public override async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(context);
 
       IServiceScope? _logicalServerScope = null;
       DataPortalResult result;
@@ -212,10 +210,8 @@ namespace Csla.Channels.Local
     /// <inheritdoc />
     public override async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(context);
 
       IServiceScope? _logicalServerScope = null;
       DataPortalResult result;
@@ -256,10 +252,8 @@ namespace Csla.Channels.Local
     /// <inheritdoc />
     public override async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
 
       IServiceScope? _logicalServerScope = null;
       DataPortalResult result;
@@ -300,10 +294,8 @@ namespace Csla.Channels.Local
     /// <inheritdoc />
     public override async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(context);
 
       IServiceScope? _logicalServerScope = null;
       DataPortalResult result;

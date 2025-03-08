@@ -27,7 +27,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalSelector"/> is <see langword="null"/>.</exception>
     public DataPortalBroker(DataPortalSelector dataPortalSelector)
     {
-      _dataPortalSelector = dataPortalSelector ?? throw new ArgumentNullException(nameof(dataPortalSelector));
+      _dataPortalSelector = Guard.NotNull(dataPortalSelector);
     }
 
     /// <summary>
@@ -39,12 +39,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       if (DataPortalServer != null)
       {
@@ -59,12 +56,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       if (DataPortalServer != null)
       {
@@ -79,10 +73,8 @@ namespace Csla.Server
     /// <inheritdoc />
     public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
 
       if (DataPortalServer != null)
       {
@@ -97,12 +89,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       if (DataPortalServer != null)
       {

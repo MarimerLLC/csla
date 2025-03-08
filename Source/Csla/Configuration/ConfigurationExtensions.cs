@@ -35,8 +35,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions>? options)
     {
-      if (services is null)
-        throw new ArgumentNullException(nameof(services));
+      Guard.NotNull(services);
 
       // ApplicationContext defaults
       services.AddScoped<Core.IContextManagerLocal, Core.ApplicationContextManagerAsyncLocal>();
@@ -92,8 +91,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddConsoleApp(this CslaOptions options, Action<ConsoleOptions>? config)
     {
-      if (options is null)
-        throw new ArgumentNullException(nameof(options));
+      Guard.NotNull(options);
 
       var consoleOptions = new ConsoleOptions();
       config?.Invoke(consoleOptions);

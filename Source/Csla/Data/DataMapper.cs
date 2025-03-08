@@ -77,12 +77,9 @@ namespace Csla.Data
     /// <exception cref="ArgumentException"></exception>
     public static void Map(System.Collections.IDictionary source, object target, bool suppressExceptions, params string[] ignoreList)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (ignoreList is null)
-        throw new ArgumentNullException(nameof(ignoreList));
+      Guard.NotNull(source);
+      Guard.NotNull(target);
+      Guard.NotNull(ignoreList);
 
       List<string> ignore = [.. ignoreList];
       foreach (string propertyName in source.Keys)
@@ -143,12 +140,9 @@ namespace Csla.Data
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
     public static void Map(object source, Dictionary<string, object?> target, bool suppressExceptions, params string[] ignoreList)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (ignoreList is null)
-        throw new ArgumentNullException(nameof(ignoreList));
+      Guard.NotNull(source);
+      Guard.NotNull(target);
+      Guard.NotNull(ignoreList);
 
       List<string> ignore = [.. ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
@@ -234,12 +228,9 @@ namespace Csla.Data
     /// <exception cref="ArgumentException"></exception>
     public static void Map(object source, object target, bool suppressExceptions, params string[] ignoreList)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (ignoreList is null)
-        throw new ArgumentNullException(nameof(ignoreList));
+      Guard.NotNull(source);
+      Guard.NotNull(target);
+      Guard.NotNull(ignoreList);
 
       List<string> ignore = [.. ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
@@ -296,12 +287,9 @@ namespace Csla.Data
     /// <exception cref="ArgumentException"></exception>
     public static void Map(object source, object target, DataMap map, bool suppressExceptions)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (map is null)
-        throw new ArgumentNullException(nameof(map));
+      Guard.NotNull(source);
+      Guard.NotNull(target);
+      Guard.NotNull(map);
 
       foreach (DataMap.MemberMapping mapping in map.GetMap())
       {
@@ -352,12 +340,9 @@ namespace Csla.Data
     /// <exception cref="NotSupportedException"><paramref name="target"/> is not based on a csla business object type.</exception>
     public static void Load(System.Collections.IDictionary source, object target, Func<string, object> nameMapper)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (nameMapper is null)
-        throw new ArgumentNullException(nameof(nameMapper));
+      Guard.NotNull(source);
+      Guard.NotNull(target);
+      Guard.NotNull(nameMapper);
 
       if (target is not IManageProperties validTarget)
         throw new NotSupportedException();
@@ -389,12 +374,9 @@ namespace Csla.Data
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="nameMapper"/> is <see langword="null"/>.</exception>
     public static void Load(object source, System.Collections.IDictionary target, Func<string, object> nameMapper)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
-      if (nameMapper is null)
-        throw new ArgumentNullException(nameof(nameMapper));
+      Guard.NotNull(source);
+      Guard.NotNull(target);
+      Guard.NotNull(nameMapper);
 
       if (source is not IManageProperties validSource)
         throw new NotSupportedException();
@@ -418,8 +400,7 @@ namespace Csla.Data
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static void SetPropertyValue(object target, string propertyName, object? value)
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
+      Guard.NotNull(target);
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
@@ -464,8 +445,7 @@ namespace Csla.Data
     /// <exception cref="ArgumentException"><paramref name="fieldName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static void SetFieldValue(object target, string fieldName, object? value)
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
+      Guard.NotNull(target);
       if (string.IsNullOrWhiteSpace(fieldName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(fieldName)), nameof(fieldName));
 
@@ -483,8 +463,7 @@ namespace Csla.Data
     /// <exception cref="ArgumentException"><paramref name="fieldName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? GetFieldValue(object target, string fieldName)
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
+      Guard.NotNull(target);
       if (string.IsNullOrWhiteSpace(fieldName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(fieldName)), nameof(fieldName));
 

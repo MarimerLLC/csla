@@ -77,10 +77,8 @@ namespace Csla.Core.FieldManager
 
     private PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string ?friendlyName, T? defaultValue, RelationshipTypes relationship, bool? isSerializable)
     {
-      if (containingType is null)
-        throw new ArgumentNullException(nameof(containingType));
-      if (name is null)
-        throw new ArgumentNullException(nameof(name));
+      Guard.NotNull(containingType);
+      Guard.NotNull(name);
 
       return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship, isSerializable);
     }

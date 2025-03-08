@@ -50,8 +50,8 @@ namespace Csla.Data
     /// <exception cref="ArgumentNullException"><paramref name="sourceType"/> or <paramref name="targetType"/> is <see langword="null"/>.</exception>
     public DataMap(Type sourceType, Type targetType)
     {
-      _sourceType = sourceType ?? throw new ArgumentNullException(nameof(sourceType));
-      _targetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
+      _sourceType = Guard.NotNull(sourceType);
+      _targetType = Guard.NotNull(targetType);
     }
 
     /// <summary>
@@ -67,8 +67,7 @@ namespace Csla.Data
     /// <exception cref="ArgumentNullException"><paramref name="sourceType"/>, <paramref name="targetType"/> or <paramref name="includedPropertyNames"/> is <see langword="null"/>.</exception>
     public DataMap(Type sourceType, Type targetType, IEnumerable<string> includedPropertyNames) : this(sourceType, targetType)
     {
-      if (includedPropertyNames is null)
-        throw new ArgumentNullException(nameof(includedPropertyNames));
+      Guard.NotNull(includedPropertyNames);
 
       foreach (var item in includedPropertyNames)
         AddPropertyMapping(item, item);

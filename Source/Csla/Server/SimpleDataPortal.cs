@@ -32,10 +32,10 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="activator"/>, <paramref name="exceptionInspector"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public SimpleDataPortal(ApplicationContext applicationContext, IDataPortalActivator activator, IDataPortalExceptionInspector exceptionInspector, Configuration.DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      _activator = activator ?? throw new ArgumentNullException(nameof(activator));
-      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
-      _dataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
+      _applicationContext = Guard.NotNull(applicationContext);
+      _activator = Guard.NotNull(activator);
+      _exceptionInspector = Guard.NotNull(exceptionInspector);
+      _dataPortalOptions = Guard.NotNull(dataPortalOptions);
     }
 
     /// <inheritdoc />
@@ -43,12 +43,9 @@ namespace Csla.Server
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(context, objectType, criteria, DataPortalOperations.Create);
@@ -94,12 +91,9 @@ namespace Csla.Server
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
     public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
@@ -190,10 +184,8 @@ namespace Csla.Server
     [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
 
       DataPortalOperations operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();

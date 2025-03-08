@@ -24,7 +24,7 @@ namespace Csla.Rules.CommonRules
     public IsInRole(AuthorizationActions action, List<string> roles)
       : base(action)
     {
-      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
+      _roles = Guard.NotNull(roles);
     }
 
     /// <summary>
@@ -36,8 +36,7 @@ namespace Csla.Rules.CommonRules
     public IsInRole(AuthorizationActions action, params string[] roles)
       : base(action)
     {
-      if (roles is null)
-        throw new ArgumentNullException(nameof(roles));
+      Guard.NotNull(roles);
 
       _roles = [..roles];
     }
@@ -52,7 +51,7 @@ namespace Csla.Rules.CommonRules
     public IsInRole(AuthorizationActions action, Core.IMemberInfo element, List<string> roles)
       : base(action, element)
     {
-      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
+      _roles = Guard.NotNull(roles);
     }
 
     /// <summary>
@@ -65,8 +64,7 @@ namespace Csla.Rules.CommonRules
     public IsInRole(AuthorizationActions action, Core.IMemberInfo element, params string[] roles)
       : base(action, element)
     {
-      if (roles is null)
-        throw new ArgumentNullException(nameof(roles));
+      Guard.NotNull(roles);
 
       _roles = [..roles];
     }
@@ -112,7 +110,7 @@ namespace Csla.Rules.CommonRules
     public IsNotInRole(AuthorizationActions action, List<string> roles)
       : base(action)
     {
-      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
+      _roles = Guard.NotNull(roles);
     }
 
     /// <summary>
@@ -124,8 +122,7 @@ namespace Csla.Rules.CommonRules
     public IsNotInRole(AuthorizationActions action, params string[] roles)
       : base(action)
     {
-      if (roles is null)
-        throw new ArgumentNullException(nameof(roles));
+      Guard.NotNull(roles);
       _roles = [..roles];
     }
 
@@ -139,9 +136,8 @@ namespace Csla.Rules.CommonRules
     public IsNotInRole(AuthorizationActions action, Core.IMemberInfo element, List<string> roles)
       : base(action, element)
     {
-      if (element is null)
-        throw new ArgumentNullException(nameof(element));
-      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
+      Guard.NotNull(element);
+      _roles = Guard.NotNull(roles);
     }
 
     /// <summary>
@@ -154,10 +150,8 @@ namespace Csla.Rules.CommonRules
     public IsNotInRole(AuthorizationActions action, Core.IMemberInfo element, params string[] roles)
       : base(action, element)
     {
-      if (element is null)
-        throw new ArgumentNullException(nameof(element));
-      if (roles is null)
-        throw new ArgumentNullException(nameof(roles));
+      Guard.NotNull(element);
+      Guard.NotNull(roles);
       _roles = [..roles];
     }
 

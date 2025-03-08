@@ -24,8 +24,7 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public object Deserialize(SerializationInfo info)
   {
-    if (info is null)
-      throw new ArgumentNullException(nameof(info));
+    Guard.NotNull(info);
 
     var state = info.GetValue<byte[]>("s") ?? throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(ClaimsPrincipal)));
     using var buffer = new MemoryStream(state);
@@ -37,10 +36,8 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public void Serialize(object obj, SerializationInfo info)
   {
-    if (obj is null)
-      throw new ArgumentNullException(nameof(obj));
-    if (info is null)
-      throw new ArgumentNullException(nameof(info));
+    Guard.NotNull(obj);
+    Guard.NotNull(info);
     if (obj is not ClaimsPrincipal principal)
       throw new ArgumentException($"{obj.GetType()} != {nameof(ClaimsPrincipal)}", nameof(obj));
 
@@ -64,8 +61,7 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public object Deserialize(SerializationInfo info)
   {
-    if (info is null)
-      throw new ArgumentNullException(nameof(info));
+    Guard.NotNull(info);
 
     var json = info.GetValue<string>("s") ?? throw new System.Runtime.Serialization.SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(ClaimsPrincipal)));
     var dto = JsonSerializer.Deserialize<PrincipalDto>(json);
@@ -89,10 +85,8 @@ internal class ClaimsPrincipalSerializer : IMobileSerializer
   /// <inheritdoc />
   public void Serialize(object obj, SerializationInfo info)
   {
-    if (obj is null)
-      throw new ArgumentNullException(nameof(obj));
-    if (info is null)
-      throw new ArgumentNullException(nameof(info));
+    Guard.NotNull(obj);
+    Guard.NotNull(info);
     if (obj is not ClaimsPrincipal principal)
       throw new ArgumentException($"{obj.GetType()} != {nameof(ClaimsPrincipal)}", nameof(obj));
 

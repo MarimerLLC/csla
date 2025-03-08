@@ -220,8 +220,7 @@ namespace Csla.Serialization.Mobile
     ///<exception cref="ArgumentNullException"><paramref name="deserialized"/> is <see langword="null"/>.</exception>
     public object? DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
-      if (deserialized is null)
-        throw new ArgumentNullException(nameof(deserialized));
+      Guard.NotNull(deserialized);
 
       _deserializationReferences = [];
       foreach (SerializationInfo info in deserialized)

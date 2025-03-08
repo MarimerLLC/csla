@@ -38,8 +38,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static async Task WaitForIdle(INotifyBusy source, TimeSpan timeout, [CallerMemberName] string methodName = "")
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
 
       try
       {
@@ -61,8 +60,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static async Task WaitForIdle(INotifyBusy source, CancellationToken ct, [CallerMemberName] string methodName = "")
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
 
       if (!source.IsBusy)
       {

@@ -29,8 +29,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
     public static bool IsNumeric(object value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       return double.TryParse(value.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.NumberFormatInfo.InvariantInfo, out var _);
     }
@@ -48,8 +47,7 @@ namespace Csla
     /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static object? CallByName(object target, string methodName, CallType callType, params object?[] args)
     {
-      if (target is null)
-        throw new ArgumentNullException(nameof(target));
+      Guard.NotNull(target);
       if (string.IsNullOrWhiteSpace(methodName))
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(methodName)), nameof(methodName));
 
@@ -84,8 +82,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="propertyType"/> is <see langword="null"/>.</exception>
     public static Type GetPropertyType(Type propertyType)
     {
-      if (propertyType is null)
-        throw new ArgumentNullException(nameof(propertyType));
+      Guard.NotNull(propertyType);
 
       if (propertyType.IsGenericType && (propertyType.GetGenericTypeDefinition() == typeof(Nullable<>)))
         return Nullable.GetUnderlyingType(propertyType) ?? throw new InvalidOperationException($"The underlying type of {propertyType} is an open type. But we expect to resolve a closed type.");
@@ -100,8 +97,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="listType"/> is <see langword="null"/>.</exception>
     public static Type? GetChildItemType(Type listType)
     {
-      if (listType is null)
-        throw new ArgumentNullException(nameof(listType));
+      Guard.NotNull(listType);
 
       Type? result = null;
       if (listType.IsArray)
@@ -165,18 +161,15 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="desiredType"/> or <paramref name="valueType"/> is <see langword="null"/>.</exception>
     public static object? CoerceValue([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type desiredType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
     {
-      if (desiredType is null)
-        throw new ArgumentNullException(nameof(desiredType));
-      if (valueType is null)
-        throw new ArgumentNullException(nameof(valueType));
+      Guard.NotNull(desiredType);
+      Guard.NotNull(valueType);
 
-      
       if (desiredType.IsAssignableFrom(valueType))
       {
         // types match, just return value
         return value;
       }
-      
+
       if (desiredType.IsGenericType)
       {
         if (desiredType.GetGenericTypeDefinition() == typeof(Nullable<>))
@@ -275,8 +268,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="valueType"/> is <see langword="null"/>.</exception>
     public static D? CoerceValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] D>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
     {
-      if (valueType is null)
-        throw new ArgumentNullException(nameof(valueType));
+      Guard.NotNull(valueType);
 
       return (D?)CoerceValue(typeof(D), valueType, oldValue, value);
     }

@@ -33,8 +33,7 @@ public class PocoSerializer<T> : IMobileSerializer
   /// <inheritdoc />
   public void Serialize(object obj, SerializationInfo info)
   {
-    if (obj is null)
-      throw new ArgumentNullException(nameof(obj));
+    Guard.NotNull(obj);
     if (!CanSerialize(obj.GetType()))
       throw new ArgumentException($"{obj.GetType()} != [SerializablePoco]", nameof(obj));
 

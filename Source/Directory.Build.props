@@ -20,5 +20,6 @@
    <NeutralLanguage>en-US</NeutralLanguage>
    <DefaultLanguage>en-US</DefaultLanguage>
    <AssemblyOriginatorKeyFile>$(SolutionDir)Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+   <PolyGuard>true</PolyGuard>
  </PropertyGroup>
 </Project>

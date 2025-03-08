@@ -52,7 +52,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException"><paramref name="errorData"/> is <see langword="null"/>.</exception>
     public DataPortalResponse(DataPortalErrorInfo errorData)
     {
-      ErrorData = errorData ?? throw new ArgumentNullException(nameof(errorData));
+      ErrorData = Guard.NotNull(errorData);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException"><paramref name="objectData"/> is <see langword="null"/>.</exception>
     public DataPortalResponse(byte[] objectData)
     {
-      ObjectData = objectData ?? throw new ArgumentNullException(nameof(objectData));
+      ObjectData = Guard.NotNull(objectData);
     }
 
     /// <summary>

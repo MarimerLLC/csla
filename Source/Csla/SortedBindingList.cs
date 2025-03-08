@@ -37,7 +37,7 @@ namespace Csla
 
       public ListItem(object key, int baseIndex)
       {
-        Key = key ?? throw new ArgumentNullException(nameof(key));
+        Key = Guard.NotNull(key);
         BaseIndex = baseIndex;
       }
 
@@ -90,8 +90,8 @@ namespace Csla
 
       public SortedEnumerator(IList<T> list, List<ListItem> sortIndex, ListSortDirection direction)
       {
-        _list = list ?? throw new ArgumentNullException(nameof(list));
-        _sortIndex = sortIndex ?? throw new ArgumentNullException(nameof(sortIndex));
+        _list = Guard.NotNull(list);
+        _sortIndex = Guard.NotNull(sortIndex);
         _sortOrder = direction;
         Reset();
       }
@@ -249,8 +249,7 @@ namespace Csla
       if (!SupportsBinding)
         return;
       
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       
       _bindingList!.AddIndex(property);
     }
@@ -355,8 +354,7 @@ namespace Csla
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public int Find(string propertyName, object key)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
+      Guard.NotNull(key);
 
       if (string.IsNullOrWhiteSpace(propertyName))
       {
@@ -396,10 +394,8 @@ namespace Csla
     {
       if (SupportsBinding)
       {
-        if (property is null)
-          throw new ArgumentNullException(nameof(property));
-        if (key is null)
-          throw new ArgumentNullException(nameof(key));
+        Guard.NotNull(property);
+        Guard.NotNull(key);
 
         var originalIndex = _bindingList!.Find(property, key);
         return originalIndex > -1 ? SortedIndex(originalIndex) : -1;
@@ -432,8 +428,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     protected void OnListChanged(ListChangedEventArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       ListChanged?.Invoke(this, e);
     }
@@ -449,8 +444,7 @@ namespace Csla
       if (!SupportsBinding)
         return;
 
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       _bindingList!.RemoveIndex(property);
     }
@@ -512,8 +506,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(T[] array, int arrayIndex)
     {
-      if (array is null)
-        throw new ArgumentNullException(nameof(array));
+      Guard.NotNull(array);
 
       int pos = arrayIndex;
       foreach (T child in this)
@@ -525,8 +518,7 @@ namespace Csla
 
     void ICollection.CopyTo(Array array, int index)
     {
-      if (array is null)
-        throw new ArgumentNullException(nameof(array));
+      Guard.NotNull(array);
 
       T[] tmp = new T[array.Length];
       CopyTo(tmp, index);
@@ -601,8 +593,7 @@ namespace Csla
 
     bool IList.Contains(object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       return Contains((T)value);
     }
@@ -622,8 +613,7 @@ namespace Csla
 
     int IList.IndexOf(object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       return IndexOf((T)value);
     }
@@ -645,8 +635,7 @@ namespace Csla
 
     void IList.Insert(int index, object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       Insert(index, (T)value);
     }
@@ -691,8 +680,7 @@ namespace Csla
 
     void IList.Remove(object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       Remove((T)value);
     }

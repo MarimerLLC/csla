@@ -28,8 +28,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions Serialization(this CslaOptions config, Action<SerializationOptions>? options)
     {
-      if (config is null)
-        throw new ArgumentNullException(nameof(config));
+      Guard.NotNull(config);
 
       options?.Invoke(config.SerializationOptions);
       return config;

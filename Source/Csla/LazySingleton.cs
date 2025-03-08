@@ -35,7 +35,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="delegate"/> is <see langword="null"/>.</exception>
     public LazySingleton(Func<T> @delegate)
     {
-      _delegate = @delegate ?? throw new ArgumentNullException(nameof(@delegate));
+      _delegate = Guard.NotNull(@delegate);
     }
 
     /// <summary>

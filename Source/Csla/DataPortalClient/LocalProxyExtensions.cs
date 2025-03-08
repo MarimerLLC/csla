@@ -35,8 +35,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalClientOptions UseLocalProxy(this DataPortalClientOptions config, Action<LocalProxyOptions>? options)
     {
-      if (config is null)
-        throw new ArgumentNullException(nameof(config));
+      Guard.NotNull(config);
 
       var proxyOptions = new LocalProxyOptions();
       options?.Invoke(proxyOptions);

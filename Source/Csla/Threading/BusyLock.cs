@@ -40,8 +40,7 @@ namespace Csla.Threading
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public static void WaitOne(INotifyBusy obj, TimeSpan timeout)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       BusyLocker locker = new BusyLocker(obj, timeout);
       locker.WaitOne();

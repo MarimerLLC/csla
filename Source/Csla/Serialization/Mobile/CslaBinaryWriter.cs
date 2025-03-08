@@ -18,17 +18,15 @@ namespace Csla.Serialization.Mobile
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaBinaryWriter(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _applicationContext = Guard.NotNull(applicationContext);
       keywordsDictionary = new Dictionary<string, int>();
     }
 
     /// <inheritdoc />
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
-      if (serializationStream is null)
-        throw new ArgumentNullException(nameof(serializationStream));
-      if (objectData is null)
-        throw new ArgumentNullException(nameof(objectData));
+      Guard.NotNull(serializationStream);
+      Guard.NotNull(objectData);
 
       keywordsDictionary.Clear();
       using var writer = new CslaNonClosingBinaryWriter(serializationStream);

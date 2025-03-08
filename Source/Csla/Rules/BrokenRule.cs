@@ -99,8 +99,8 @@ namespace Csla.Rules
 
     internal BrokenRule(string ruleName, string description, string? property, RuleSeverity severity, string? originProperty, int priority, int displayIndex)
     {
-      _ruleName = ruleName ?? throw new ArgumentNullException(nameof(ruleName));
-      _description = description ?? throw new ArgumentNullException(nameof(description));
+      _ruleName = Guard.NotNull(ruleName);
+      _description = Guard.NotNull(description);
       _property = property;
       _severity = severity;
       _originProperty = originProperty;

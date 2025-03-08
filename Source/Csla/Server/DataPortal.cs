@@ -70,18 +70,17 @@ namespace Csla.Server
       DataPortalExceptionHandler exceptionHandler,
       SecurityOptions securityOptions)
     {
-      if (options is null)
-        throw new ArgumentNullException(nameof(options));
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      _dashboard = dashboard ?? throw new ArgumentNullException(nameof(dashboard));
+      Guard.NotNull(options);
+      _applicationContext = Guard.NotNull(applicationContext);
+      _dashboard = Guard.NotNull(dashboard);
       _dataPortalOptions = options.DataPortalOptions;
-      _authorizer = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
-      _interceptorManager = interceptors ?? throw new ArgumentNullException(nameof(interceptors));
-      _factoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
-      _activator = activator ?? throw new ArgumentNullException(nameof(activator));
-      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
-      _dataPortalExceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
-      _securityOptions = securityOptions ?? throw new ArgumentNullException(nameof(securityOptions));
+      _authorizer = Guard.NotNull(authorizer);
+      _interceptorManager = Guard.NotNull(interceptors);
+      _factoryLoader = Guard.NotNull(factoryLoader);
+      _activator = Guard.NotNull(activator);
+      _exceptionInspector = Guard.NotNull(exceptionInspector);
+      _dataPortalExceptionHandler = Guard.NotNull(exceptionHandler);
+      _securityOptions = Guard.NotNull(securityOptions);
     }
 
     #region Data Access
@@ -119,12 +118,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       try
       {
@@ -201,12 +197,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
@@ -369,10 +362,8 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
 
       var objectType = obj.GetType();
       var operation = DataPortalOperations.Update;
@@ -489,12 +480,9 @@ namespace Csla.Server
     /// <inheritdoc />
     public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       try
       {

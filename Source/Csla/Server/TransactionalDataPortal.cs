@@ -32,8 +32,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> or <paramref name="transactionalAttribute"/> is <see langword="null"/>.</exception>
     public TransactionalDataPortal(DataPortalBroker dataPortalBroker, TransactionalAttribute transactionalAttribute)
     {
-      _portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
-      _transactionalAttribute = transactionalAttribute ?? throw new ArgumentNullException(nameof(transactionalAttribute));
+      _portal = Guard.NotNull(dataPortalBroker);
+      _transactionalAttribute = Guard.NotNull(transactionalAttribute);
     }
 
     /// <summary>
@@ -111,12 +111,9 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
@@ -142,10 +139,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
 
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Update(obj, context, isSync).ConfigureAwait(false);
@@ -171,12 +166,9 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
 
       using TransactionScope tr = CreateTransactionScope();
       var result = await _portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);

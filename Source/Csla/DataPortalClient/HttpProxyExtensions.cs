@@ -25,8 +25,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalClientOptions UseHttpProxy(this DataPortalClientOptions config, Action<HttpProxyOptions>? options)
     {
-      if (config is null)
-        throw new ArgumentNullException(nameof(config));
+      Guard.NotNull(config);
 
       var proxyOptions = new HttpProxyOptions();
       options?.Invoke(proxyOptions);

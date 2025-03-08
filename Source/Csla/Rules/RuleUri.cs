@@ -27,7 +27,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="ruleString"/> is <see langword="null"/>.</exception>
     /// <exception cref="UriFormatException"><paramref name="ruleString"/> is not a valid <see cref="Uri"/> format.</exception>
     public RuleUri(string ruleString)
-      : this(new Uri(ruleString ?? throw new ArgumentNullException(nameof(ruleString))))
+      : this(new Uri(Guard.NotNull(ruleString)))
     {
     }
 
@@ -39,7 +39,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentException"><paramref name="uri"/> scheme is not 'rule'.</exception>
     public RuleUri(Uri uri)
     {
-      _uri = uri ?? throw new ArgumentNullException(nameof(uri));
+      _uri = Guard.NotNull(uri);
       if (_uri.Scheme != "rule")
         throw new ArgumentException("RuleUri.Scheme");
     }
@@ -241,8 +241,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="uri"/> is <see langword="null"/>.</exception>
     public static string[] Parts(this Uri uri)
     {
-      if (uri is null)
-        throw new ArgumentNullException(nameof(uri));
+      Guard.NotNull(uri);
 
       return uri.Segments;
     }

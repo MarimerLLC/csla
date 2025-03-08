@@ -51,7 +51,7 @@ namespace Csla.Core
     /// <inheritdoc />
     public virtual void SetUser(IPrincipal principal)
     {
-      Thread.CurrentPrincipal = principal ?? throw new ArgumentNullException(nameof(principal));
+      Thread.CurrentPrincipal = Guard.NotNull(principal);
     }
 
     /// <summary>

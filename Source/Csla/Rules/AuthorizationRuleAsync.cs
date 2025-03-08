@@ -39,8 +39,9 @@ namespace Csla.Rules
     public AuthorizationRuleAsync(AuthorizationActions action, IMemberInfo element)
       : this(action)
     {
-      _element = element ?? throw new ArgumentNullException(nameof(element));
+      _element = Guard.NotNull(element);
     }
+
     /// <summary>
     /// Authorization rule implementation.
     /// </summary>
@@ -102,8 +103,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     async Task IAuthorizationRuleAsync.ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
     {
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(context);
 
       if (!_locked)
         _locked = true;
@@ -136,10 +136,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected object? ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);

@@ -25,7 +25,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortalClientOptions(DataPortalOptions dataPortalOptions)
     {
-      _parent = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
+      _parent = Guard.NotNull(dataPortalOptions);
     }
 
     /// <summary>

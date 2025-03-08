@@ -142,7 +142,7 @@ namespace Csla.Rules
 
       public RuleSetKey(Type type, string? ruleSet)
       {
-        Type = type ?? throw new ArgumentNullException(nameof(type));
+        Type = Guard.NotNull(type);
         RuleSet = ruleSet;
       }
 

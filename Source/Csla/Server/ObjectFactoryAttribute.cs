@@ -182,7 +182,7 @@ namespace Csla.Server
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType)
-      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))))
+      : this(GetAssemblyQualifiedName(Guard.NotNull(factoryType)))
     {
     }
 
@@ -197,7 +197,7 @@ namespace Csla.Server
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string fetchMethod)
-      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), fetchMethod)
+      : this(GetAssemblyQualifiedName(Guard.NotNull(factoryType)), fetchMethod)
     { }
 
     /// <summary>
@@ -214,7 +214,7 @@ namespace Csla.Server
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod)
-      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod)
+      : this(GetAssemblyQualifiedName(Guard.NotNull(factoryType)), createMethod, fetchMethod)
     { }
 
     /// <summary>
@@ -237,7 +237,7 @@ namespace Csla.Server
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
-      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod, updateMethod, deleteMethod)
+      : this(GetAssemblyQualifiedName(Guard.NotNull(factoryType)), createMethod, fetchMethod, updateMethod, deleteMethod)
     { }
 
     /// <summary>
@@ -263,7 +263,7 @@ namespace Csla.Server
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
     public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
-      : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod, updateMethod, deleteMethod, executeMethod)
+      : this(GetAssemblyQualifiedName(Guard.NotNull(factoryType)), createMethod, fetchMethod, updateMethod, deleteMethod, executeMethod)
     { }
 
     /// <summary>

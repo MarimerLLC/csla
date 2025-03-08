@@ -192,10 +192,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected void LoadProperty(object obj, IPropertyInfo propertyInfo, object? newValue)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         target.LoadProperty(propertyInfo, newValue);
@@ -217,10 +215,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     protected object? ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(obj);
+      Guard.NotNull(propertyInfo);
 
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);

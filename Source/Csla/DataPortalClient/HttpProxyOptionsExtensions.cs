@@ -25,8 +25,7 @@ namespace Csla.Channels.Http
     /// <returns>The options object.</returns>
     public static HttpProxyOptions WithDataPortalUrl(this HttpProxyOptions source, string dataPortalUrl)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
       if (string.IsNullOrEmpty(dataPortalUrl))
         throw new ArgumentException($"'{nameof(dataPortalUrl)}' cannot be null or empty.", nameof(dataPortalUrl));
 
@@ -42,8 +41,7 @@ namespace Csla.Channels.Http
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static HttpProxyOptions UseTextForSerialization(this HttpProxyOptions source)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
 
       source.UseTextSerialization = true;
       return source;
@@ -57,8 +55,7 @@ namespace Csla.Channels.Http
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static HttpProxyOptions UseDefaultForSerialization(this HttpProxyOptions source)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
 
       source.UseTextSerialization = false;
       return source;
@@ -73,10 +70,8 @@ namespace Csla.Channels.Http
     /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
     public static HttpProxyOptions WithHttpClientFactory(this HttpProxyOptions source, Func<IServiceProvider, HttpClient> factory)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
-      if (factory is null)
-        throw new ArgumentNullException(nameof(factory));
+      Guard.NotNull(source);
+      Guard.NotNull(factory);
 
       source.HttpClientFactory = factory;
       return source;
@@ -91,8 +86,7 @@ namespace Csla.Channels.Http
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static HttpProxyOptions WithTimeout(this HttpProxyOptions source, TimeSpan timeout)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
 
       source.Timeout = timeout;
       return source;
@@ -107,8 +101,7 @@ namespace Csla.Channels.Http
     /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public static HttpProxyOptions WithReadWriteTimeout(this HttpProxyOptions source, TimeSpan readwriteTimeout)
     {
-      if (source is null)
-        throw new ArgumentNullException(nameof(source));
+      Guard.NotNull(source);
 
       source.ReadWriteTimeout = readwriteTimeout;
       return source;

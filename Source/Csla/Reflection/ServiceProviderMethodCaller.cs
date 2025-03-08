@@ -51,8 +51,7 @@ namespace Csla.Reflection
     public ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
-      if (target == null)
-        throw new ArgumentNullException(nameof(target));
+      Guard.NotNull(target);
 
       var targetType = target.GetType();
       return FindDataPortalMethod<T>(targetType, criteria);
@@ -69,8 +68,7 @@ namespace Csla.Reflection
     public ServiceProviderMethodInfo FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
-      if (targetType == null)
-        throw new ArgumentNullException(nameof(targetType));
+      Guard.NotNull(targetType);
 
       return FindDataPortalMethod<T>(targetType, criteria, true)!;
     }
@@ -105,8 +103,7 @@ namespace Csla.Reflection
     private ServiceProviderMethodInfo? FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, bool throwOnError)
       where T : DataPortalOperationAttribute
     {
-      if (targetType == null)
-        throw new ArgumentNullException(nameof(targetType));
+      Guard.NotNull(targetType);
 
       var activator = _applicationContext.GetRequiredService<IDataPortalActivator>();
       targetType = activator.ResolveType(targetType);
@@ -500,8 +497,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="method"/> is <see langword="null"/>.</exception>
     public async Task<object?> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
       if (method == null)
         throw new ArgumentNullException(obj.GetType().FullName + ".<null>() " + Resources.MethodNotImplemented);
 

@@ -101,10 +101,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="ex"/> is <see langword="null"/>.</exception>
     public DataPortalErrorInfo(ApplicationContext applicationContext, Exception ex)
     {
-      if (applicationContext is null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (ex is null)
-        throw new ArgumentNullException(nameof(ex));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(ex);
 
       ApplicationContext = applicationContext;
       ExceptionTypeName = ex.GetType().FullName!;

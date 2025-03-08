@@ -171,8 +171,7 @@ namespace Csla
       if (!SupportsBinding)
         return;
 
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       _bindingList!.AddIndex(property);
     }
@@ -245,8 +244,7 @@ namespace Csla
       if (!SupportsSorting)
         throw new NotSupportedException(Resources.SortingNotSupported);
       
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       
       _bindingList!.ApplySort(property, direction);
     }
@@ -310,8 +308,7 @@ namespace Csla
     /// value.</param>
     public int Find(PropertyDescriptor property, object key)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       if (SupportsBinding)
         return FilteredIndex(_bindingList!.Find(property, key));
@@ -351,8 +348,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     protected void OnListChanged(ListChangedEventArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       ListChanged?.Invoke(this, e);
     }
@@ -367,8 +363,7 @@ namespace Csla
     {
       if (!SupportsBinding)
         return;
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       _bindingList!.RemoveIndex(property);
     }
@@ -458,8 +453,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(T[] array, int arrayIndex)
     {
-      if (array is null)
-        throw new ArgumentNullException(nameof(array));
+      Guard.NotNull(array);
 
       int pos = arrayIndex;
       foreach (T child in this)
@@ -472,8 +466,7 @@ namespace Csla
     /// <inheritdoc />
     void ICollection.CopyTo(Array array, int index)
     {
-      if (array is null)
-        throw new ArgumentNullException(nameof(array));
+      Guard.NotNull(array);
 
       T[] tmp = new T[array.Length];
       CopyTo(tmp, index);
@@ -524,8 +517,7 @@ namespace Csla
 
     int IList.Add(object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       Add((T)value);
       int index = FilteredIndex(SourceList.Count - 1);
@@ -565,8 +557,7 @@ namespace Csla
 
     bool IList.Contains(object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       return Contains((T)value);
     }
@@ -589,8 +580,7 @@ namespace Csla
 
     int IList.IndexOf(object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       return IndexOf((T)value);
     }
@@ -612,8 +602,7 @@ namespace Csla
 
     void IList.Insert(int index, object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       Insert(index, (T)value);
     }
@@ -661,8 +650,7 @@ namespace Csla
 
     void IList.Remove(object? value)
     {
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(value);
 
       Remove((T)value);
     }
@@ -740,7 +728,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
     public FilteredBindingList(IList<T> list)
     {
-      SourceList = list ?? throw new ArgumentNullException(nameof(list));
+      SourceList = Guard.NotNull(list);
 
       if (SourceList is IBindingList sourceList)
       {
@@ -813,7 +801,7 @@ namespace Csla
     public void ApplyFilter(string? propertyName, object filter)
     {
       FilterProperty = null;
-      _filter = filter ?? throw new ArgumentNullException(nameof(filter));
+      _filter = Guard.NotNull(filter);
 
       if (!string.IsNullOrEmpty(propertyName))
       {

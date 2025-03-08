@@ -21,7 +21,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public AddObjectAuthorizationRulesContext(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      ApplicationContext = Guard.NotNull(applicationContext);
     }
 
     /// <summary>

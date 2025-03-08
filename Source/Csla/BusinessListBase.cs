@@ -280,8 +280,7 @@ namespace Csla
     /// <inheritdoc />
     Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
-      if (child is null)
-        throw new ArgumentNullException(nameof(child));
+      Guard.NotNull(child);
 
       EditChildComplete(child);
       return Task.CompletedTask;
@@ -341,8 +340,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
     void IEditableCollection.RemoveChild(IEditableBusinessObject child)
     {
-      if (child is null)
-        throw new ArgumentNullException(nameof(child));
+      Guard.NotNull(child);
 
       Remove((C)child);
     }
@@ -360,8 +358,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
     Task IParent.RemoveChild(IEditableBusinessObject child)
     {
-      if (child is null)
-        throw new ArgumentNullException(nameof(child));
+      Guard.NotNull(child);
 
       Remove((C)child);
       return Task.CompletedTask;
@@ -660,8 +657,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected override void OnGetState(SerializationInfo info)
     {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
+      Guard.NotNull(info);
 
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       info.AddValue("Csla.BusinessListBase._editLevel", EditLevel);
@@ -680,8 +676,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected override void OnSetState(SerializationInfo info)
     {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
+      Guard.NotNull(info);
 
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       EditLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
@@ -703,10 +698,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="formatter"/> is <see langword="null"/>.</exception>
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-      if (formatter is null)
-        throw new ArgumentNullException(nameof(formatter));
+      Guard.NotNull(info);
+      Guard.NotNull(formatter);
 
       base.OnGetChildren(info, formatter);
       if (_deletedList != null)
@@ -730,10 +723,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="formatter"/> is <see langword="null"/>.</exception>
     protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-      if (formatter is null)
-        throw new ArgumentNullException(nameof(formatter));
+      Guard.NotNull(info);
+      Guard.NotNull(formatter);
 
       if (info.Children.TryGetValue("_deletedList", out var child))
       {
@@ -939,8 +930,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void Child_Update(params object?[] parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      Guard.NotNull(parameters);
 
       using (LoadListMode)
       {
@@ -967,8 +957,7 @@ namespace Csla
     [UpdateChild]
     protected virtual async Task Child_UpdateAsync(params object?[] parameters)
     {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      Guard.NotNull(parameters);
 
       using (LoadListMode)
       {

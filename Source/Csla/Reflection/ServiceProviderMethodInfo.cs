@@ -67,7 +67,7 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="methodInfo"/> is <see langword="null"/>.</exception>
     public ServiceProviderMethodInfo(System.Reflection.MethodInfo methodInfo)
     {
-      MethodInfo = methodInfo ?? throw new ArgumentNullException(nameof(methodInfo));
+      MethodInfo = Guard.NotNull(methodInfo);
     }
 
     /// <summary>

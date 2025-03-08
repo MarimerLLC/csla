@@ -23,7 +23,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ChildDataPortal(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _applicationContext = Guard.NotNull(applicationContext);
     }
 
     /// <summary>
@@ -38,8 +38,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
 
       return ExecuteWithAggregateExceptionHandling(
         () => DoCreateAsync(objectType).Result
@@ -56,8 +55,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public object Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
 
       return ExecuteWithAggregateExceptionHandling(
         () => DoCreateAsync(objectType, parameters).Result
@@ -129,8 +127,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public object Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
 
       return ExecuteWithAggregateExceptionHandling(
   () => DoFetchAsync(objectType).Result
@@ -147,8 +144,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public object Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(objectType);
 
       return ExecuteWithAggregateExceptionHandling(
   () => DoFetchAsync(objectType, parameters).Result
@@ -218,8 +214,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public void Update(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       _ = ExecuteWithAggregateExceptionHandling(() =>
         {
@@ -239,8 +234,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public void Update(object obj, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       _ = ExecuteWithAggregateExceptionHandling(() =>
         {
@@ -257,8 +251,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public Task UpdateAsync(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       return DoUpdateAsync(obj, false);
     }
@@ -273,8 +266,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public Task UpdateAsync(object obj, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       return DoUpdateAsync(obj, false, parameters);
     }
@@ -286,8 +278,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public void UpdateAll(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       DoUpdateAsync(obj, true).Wait();
     }
@@ -302,8 +293,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public void UpdateAll(object obj, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       DoUpdateAsync(obj, true, parameters).Wait();
     }
@@ -315,8 +305,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public Task UpdateAllAsync(object obj)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       return DoUpdateAsync(obj, true);
     }
@@ -331,8 +320,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public Task UpdateAllAsync(object obj, params object?[]? parameters)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(obj);
 
       return DoUpdateAsync(obj, true, parameters);
     }

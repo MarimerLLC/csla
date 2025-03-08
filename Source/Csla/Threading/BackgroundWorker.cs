@@ -25,7 +25,7 @@ namespace Csla.Threading
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public BackgroundWorker(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _applicationContext = Guard.NotNull(applicationContext);
       _myWorker.DoWork += InternalDoWork;
       _myWorker.RunWorkerCompleted += InternalRunWorkerCompleted;
       _myWorker.ProgressChanged += InternalProgressChanged;

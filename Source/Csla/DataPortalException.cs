@@ -69,7 +69,7 @@ namespace Csla
     public DataPortalException(DataPortalErrorInfo info)
       : base(info.Message)
     {
-      ErrorInfo = info ?? throw new ArgumentNullException(nameof(info));
+      ErrorInfo = Guard.NotNull(info);
     }
 
     /// <summary>

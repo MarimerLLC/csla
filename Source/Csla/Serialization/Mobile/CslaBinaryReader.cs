@@ -18,15 +18,14 @@ namespace Csla.Serialization.Mobile
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaBinaryReader(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _applicationContext = Guard.NotNull(applicationContext);
       keywordsDictionary = new Dictionary<int, string>();
     }
 
     /// <inheritdoc />
     public List<SerializationInfo> Read(Stream serializationStream)
     {
-      if (serializationStream is null)
-        throw new ArgumentNullException(nameof(serializationStream));
+      Guard.NotNull(serializationStream);
 
       var returnValue = new List<SerializationInfo>();
       keywordsDictionary.Clear();

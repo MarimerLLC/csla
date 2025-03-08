@@ -38,8 +38,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
     public BusinessRules(ApplicationContext applicationContext, IHostRules target)
     {
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      _target = target ?? throw new ArgumentNullException(nameof(target));
+      _applicationContext = Guard.NotNull(applicationContext);
+      _target = Guard.NotNull(target);
     }
 
     [NonSerialized]
@@ -175,8 +175,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="rule"/> is <see langword="null"/>.</exception>
     public void AddRule(IBusinessRuleBase rule)
     {
-      if (rule is null)
-        throw new ArgumentNullException(nameof(rule));
+      Guard.NotNull(rule);
       TypeRules.Rules.Add(rule);
     }
 
@@ -188,8 +187,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="rule"/> is <see langword="null"/>.</exception>
     public void AddRule(IBusinessRuleBase rule, string? ruleSet)
     {
-      if (rule is null)
-        throw new ArgumentNullException(nameof(rule));
+      Guard.NotNull(rule);
       var typeRules = BusinessRuleManager.GetRulesForType(_target.GetType(), ruleSet);
       typeRules.Rules.Add(rule);
     }
@@ -201,8 +199,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="rule"/> is <see langword="null"/>.</exception>
     public void AddRule(IAuthorizationRuleBase rule)
     {
-      if (rule is null)
-        throw new ArgumentNullException(nameof(rule));
+      Guard.NotNull(rule);
       EnsureUniqueRule(TypeAuthRules, rule);
       TypeAuthRules.Rules.Add(rule);
     }
@@ -243,10 +240,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="rule"/> is <see langword="null"/>.</exception>
     public static void AddRule(ApplicationContext? applicationContext, Type objectType, IAuthorizationRuleBase rule, string ruleSet)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (rule is null)
-        throw new ArgumentNullException(nameof(rule));
+      Guard.NotNull(objectType);
+      Guard.NotNull(rule);
 
       var typeRules = AuthorizationRuleManager.GetRulesForType(applicationContext, objectType, ruleSet);
       EnsureUniqueRule(typeRules, rule);
@@ -334,8 +329,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public bool GetPropertyBusy(IPropertyInfo property)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       return BusyProperties.Contains(property);
     }
 
@@ -348,10 +342,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(objectType);
       var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
       var realType = activator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
@@ -368,10 +360,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object?[]? criteria)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(objectType);
       var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
       var realType = activator.ResolveType(objectType);
       // no object specified so must use RuleSet from ApplicationContext
@@ -391,10 +381,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string? ruleSet)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(objectType);
       var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
       var realType = activator.ResolveType(objectType);
       return HasPermission(action, null, applicationContext, realType, null, ruleSet);
@@ -409,10 +397,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="obj"/> is <see langword="null"/>.</exception>
     public static bool HasPermission(ApplicationContext applicationContext, AuthorizationActions action, object obj)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(obj);
       return HasPermission(action, obj, applicationContext, obj.GetType(), null, applicationContext.RuleSet);
     }
 
@@ -454,10 +440,8 @@ namespace Csla.Rules
           action == AuthorizationActions.GetObject ||
           action == AuthorizationActions.EditObject)
         throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
-      if (element is null)
-        throw new ArgumentNullException(nameof(element));
-      if (applicationContext is null)
-        throw new ArgumentNullException(nameof(applicationContext));
+      Guard.NotNull(element);
+      Guard.NotNull(applicationContext);
 
       bool result = true;
       var rule =
@@ -487,10 +471,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, CancellationToken ct)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(objectType);
 
       var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
       var realType = activator.ResolveType(objectType);
@@ -511,10 +493,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object?[]? criteria, CancellationToken ct)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(objectType);
 
       var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
       var realType = activator.ResolveType(objectType);
@@ -537,10 +517,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
     public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string? ruleSet, CancellationToken ct)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(objectType);
       var activator = applicationContext.GetRequiredService<IDataPortalActivator>();
       var realType = activator.ResolveType(objectType);
       return HasPermissionAsync(action, null, applicationContext, realType, null, ruleSet, ct);
@@ -556,10 +534,8 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="obj"/> is <see langword="null"/>.</exception>
     public static Task<bool> HasPermissionAsync(ApplicationContext applicationContext, AuthorizationActions action, object obj, CancellationToken ct)
     {
-      if (applicationContext == null)
-        throw new ArgumentNullException(nameof(applicationContext));
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
+      Guard.NotNull(applicationContext);
+      Guard.NotNull(obj);
 
       return HasPermissionAsync(action, obj, applicationContext, obj.GetType(), null, applicationContext.RuleSet, ct);
     }
@@ -608,10 +584,8 @@ namespace Csla.Rules
 
       if (action == AuthorizationActions.CreateObject || action == AuthorizationActions.DeleteObject || action == AuthorizationActions.GetObject || action == AuthorizationActions.EditObject)
         throw new ArgumentOutOfRangeException($"{nameof(action)}, {action}");
-      if (element is null)
-        throw new ArgumentNullException(nameof(element));
-      if (applicationContext is null)
-        throw new ArgumentNullException(nameof(applicationContext));
+      Guard.NotNull(element);
+      Guard.NotNull(applicationContext);
 
       bool result = true;
       var rule =
@@ -648,8 +622,7 @@ namespace Csla.Rules
       // cannot cache result when suppressRuleChecking as HasPermission is then short circuited to return true.
       if (_suppressRuleChecking)
         return false;
-      if (element is null)
-        throw new ArgumentNullException(nameof(element));
+      Guard.NotNull(element);
 
       bool result = true;
       var rule =
@@ -857,8 +830,7 @@ namespace Csla.Rules
 
     private List<string> CheckRules(IPropertyInfo property, RuleContextModes executionContext)
     {
-      if (property == null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       if (_suppressRuleChecking)
         return new List<string>();
@@ -1332,8 +1304,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="root"/> is <see langword="null"/>.</exception>
     public static BrokenRulesTree GetAllBrokenRules(object root, bool errorsOnly)
     {
-      if (root is null)
-        throw new ArgumentNullException(nameof(root));
+      Guard.NotNull(root);
       var list = new BrokenRulesTree();
       long counter = 1;
       long childBrokenRuleCount = 0;

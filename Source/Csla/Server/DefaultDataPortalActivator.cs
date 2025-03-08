@@ -30,14 +30,12 @@ namespace Csla.Server
     /// <inheritdoc />
     public virtual object CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type requestedType, params object[] parameters)
     {
-      if (requestedType is null)
-        throw new ArgumentNullException(nameof(requestedType));
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
+      Guard.NotNull(requestedType);
+      Guard.NotNull(parameters);
 
       var realType = ResolveType(requestedType);
       object result = ActivatorUtilities.CreateInstance(ServiceProvider, realType, parameters);
-      
+
       if (result is IUseApplicationContext tmp)
       {
         tmp.ApplicationContext = ServiceProvider.GetRequiredService<ApplicationContext>();

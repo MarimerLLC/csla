@@ -35,8 +35,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions DataPortal(this CslaOptions config, Action<DataPortalOptions>? options)
     {
-      if (config is null)
-        throw new ArgumentNullException(nameof(config));
+      Guard.NotNull(config);
 
       options?.Invoke(config.DataPortalOptions);
       return config;
@@ -50,8 +49,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalOptions AddClientSideDataPortal(this DataPortalOptions config, Action<DataPortalClientOptions>? options)
     {
-      if (config is null)
-        throw new ArgumentNullException(nameof(config));
+      Guard.NotNull(config);
 
       options?.Invoke(config.DataPortalClientOptions);
       return config;
@@ -77,8 +75,7 @@ namespace Csla.Configuration
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalOptions AddServerSideDataPortal(this DataPortalOptions config, Action<DataPortalServerOptions>? options)
     {
-      if (config is null)
-        throw new ArgumentNullException(nameof(config));
+      Guard.NotNull(config);
 
       options?.Invoke(config.DataPortalServerOptions);
       return config;

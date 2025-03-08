@@ -22,7 +22,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the service collection.
     /// </summary>
-    public IServiceCollection Services{ get; } = services ?? throw new ArgumentNullException(nameof(services));
+    public IServiceCollection Services{ get; } = Guard.NotNull(services);
 
     /// <summary>
     /// Gets or sets a value containing the type of the

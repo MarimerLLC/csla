@@ -39,8 +39,7 @@ namespace Csla.Serialization.Mobile
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static ICslaWriter GetCslaWriter(ApplicationContext applicationContext)
     {
-      if (applicationContext is null)
-        throw new ArgumentNullException(nameof(applicationContext));
+      Guard.NotNull(applicationContext);
 
       return (ICslaWriter)applicationContext.CreateInstanceDI(WriterType);
     }
@@ -53,8 +52,7 @@ namespace Csla.Serialization.Mobile
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static ICslaReader GetCslaReader(ApplicationContext applicationContext)
     {
-      if (applicationContext is null)
-        throw new ArgumentNullException(nameof(applicationContext));
+      Guard.NotNull(applicationContext);
 
       return (ICslaReader)applicationContext.CreateInstanceDI(ReaderType);
     }

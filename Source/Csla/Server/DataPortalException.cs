@@ -49,10 +49,9 @@ namespace Csla.Server
     {
       if (string.IsNullOrWhiteSpace(message))
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(message)), nameof(message));
-      if (ex is null)
-        throw new ArgumentNullException(nameof(ex));
+      Guard.NotNull(ex);
 
-      Result = result ?? throw new ArgumentNullException(nameof(result));
+      Result = Guard.NotNull(result);
       _innerStackTrace = ex.StackTrace ?? "";
     }
   }

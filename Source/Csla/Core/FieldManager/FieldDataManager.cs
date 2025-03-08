@@ -52,10 +52,9 @@ namespace Csla.Core.FieldManager
 
     internal FieldDataManager(ApplicationContext applicationContext, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]Type businessObjectType)
     {
-      if (businessObjectType is null)
-        throw new ArgumentNullException(nameof(businessObjectType));
+      Guard.NotNull(businessObjectType);
 
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _applicationContext = Guard.NotNull(applicationContext);
       SetPropertyList(businessObjectType);
       _fieldData = new IFieldData[_propertyList.Count];
     }
@@ -239,8 +238,7 @@ namespace Csla.Core.FieldManager
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
     public IFieldData? GetFieldData(IPropertyInfo propertyInfo)
     {
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(propertyInfo);
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
         throw new InvalidOperationException(Resources.PropertyIsPrivateField);
@@ -409,8 +407,7 @@ namespace Csla.Core.FieldManager
     /// <exception cref="InvalidOperationException"><paramref name="propertyInfo"/> is not registered.</exception>
     public bool FieldExists(IPropertyInfo propertyInfo)
     {
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(propertyInfo);
 
       try
       {
@@ -434,8 +431,7 @@ namespace Csla.Core.FieldManager
     /// <exception cref="InvalidOperationException"><paramref name="propertyInfo"/> is not registered.</exception>
     public bool IsFieldDirty(IPropertyInfo propertyInfo)
     {
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(propertyInfo);
 
       try
       {

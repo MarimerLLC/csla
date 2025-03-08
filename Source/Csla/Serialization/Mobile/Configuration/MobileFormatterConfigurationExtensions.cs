@@ -37,8 +37,7 @@ public static class MobileFormatterConfigurationExtensions
   /// <exception cref="ArgumentNullException"> is <see langword="null"/>.</exception>
   public static SerializationOptions UseMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions>? options)
   {
-    if (config is null)
-      throw new ArgumentNullException(nameof(config));
+    Guard.NotNull(config);
     config.UseSerializationFormatter<MobileFormatter>();
     var mobileFormatterOptions = new MobileFormatterOptions();
 

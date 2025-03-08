@@ -94,8 +94,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public void ExecuteRule(IBusinessRuleBase innerRule)
     {
-      if (innerRule is null)
-        throw new ArgumentNullException(nameof(innerRule));
+      Guard.NotNull(innerRule);
 
       var chainedContext = GetChainedContext(innerRule);
       if (BusinessRules.CanRunRule(ApplicationContext, innerRule, chainedContext.ExecuteContext))
@@ -154,15 +153,15 @@ namespace Csla.Rules
 
     internal RuleContext(ApplicationContext applicationContext, IBusinessRuleBase rule, RuleContextModes executeContext, Action<IRuleContext> completeHandler, Dictionary<IPropertyInfo, object?> inputPropertyValues, object? target, Dictionary<IPropertyInfo, object?> outputPropertyValues, List<IPropertyInfo> dirtyProperties, List<RuleResult> results)
     {
-      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      Rule = rule ?? throw new ArgumentNullException(nameof(rule));
+      ApplicationContext = Guard.NotNull(applicationContext);
+      Rule = Guard.NotNull(rule);
       ExecuteContext = executeContext;
-      _completeHandler = completeHandler ?? throw new ArgumentNullException(nameof(completeHandler));
-      InputPropertyValues = inputPropertyValues ?? throw new ArgumentNullException(nameof(inputPropertyValues));
+      _completeHandler = Guard.NotNull(completeHandler);
+      InputPropertyValues = Guard.NotNull(inputPropertyValues);
       Target = target;
-      OutputPropertyValues = outputPropertyValues ?? throw new ArgumentNullException(nameof(outputPropertyValues));
-      DirtyProperties = dirtyProperties ?? throw new ArgumentNullException(nameof(dirtyProperties));
-      Results = results ?? throw new ArgumentNullException(nameof(results));
+      OutputPropertyValues = Guard.NotNull(outputPropertyValues);
+      DirtyProperties = Guard.NotNull(dirtyProperties);
+      Results = Guard.NotNull(results);
       string originPropertyName = "";
       if (rule.PrimaryProperty != null)
         originPropertyName = rule.PrimaryProperty.Name;
@@ -186,8 +185,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public IRuleContext GetChainedContext(IBusinessRuleBase rule)
     {
-      if (rule is null)
-        throw new ArgumentNullException(nameof(rule));
+      Guard.NotNull(rule);
 
       object? ruleTarget = null;
       if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
@@ -220,8 +218,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public void AddErrorResult(IPropertyInfo property, string description)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       if (string.IsNullOrWhiteSpace(description))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
       if (!Rule.AffectedProperties.Contains(property))
@@ -251,8 +248,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public void AddWarningResult(IPropertyInfo property, string description)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       if (string.IsNullOrWhiteSpace(description))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
       if (!Rule.AffectedProperties.Contains(property))
@@ -281,8 +277,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public void AddInformationResult(IPropertyInfo property, string description)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       if (string.IsNullOrWhiteSpace(description))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(description)), nameof(description));
       if (!Rule.AffectedProperties.Contains(property))
@@ -308,8 +303,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public void AddOutValue(IPropertyInfo property, object? value)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       OutputPropertyValues[property] = (value is null) ? property.DefaultValue : Utilities.CoerceValue(property.Type, value.GetType(), null, value);
     }
@@ -319,8 +313,7 @@ namespace Csla.Rules
     [EditorBrowsable(EditorBrowsableState.Never)]
     public void AddDirtyProperty(IPropertyInfo property)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       if (!Rule.AffectedProperties.Contains(property))
         throw new ArgumentOutOfRangeException(property.Name, string.Format(Resources.PropertyNotInAffectedPropertiesException, property.Name));
@@ -344,8 +337,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public T? GetInputValue<T>(IPropertyInfo propertyInfo)
     {
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(propertyInfo);
 
       return (T?)InputPropertyValues[propertyInfo];
     }
@@ -359,8 +351,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public bool TryGetInputValue<T>(IPropertyInfo propertyInfo, ref T? value)
     {
-      if (propertyInfo is null)
-        throw new ArgumentNullException(nameof(propertyInfo));
+      Guard.NotNull(propertyInfo);
 
       if (!InputPropertyValues.TryGetValue(propertyInfo, out var propertyValue))
       {

@@ -203,8 +203,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public BrokenRule? GetFirstBrokenRule(Core.IPropertyInfo property)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
 
       return GetFirstMessage(property.Name, RuleSeverity.Error);
     }
@@ -248,8 +247,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public BrokenRule? GetFirstMessage(Core.IPropertyInfo property)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       return this.OrderBy(c => c.Priority).FirstOrDefault(c => c.Property == property.Name);
     }
 
@@ -267,8 +265,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public BrokenRule? GetFirstMessage(Core.IPropertyInfo property, RuleSeverity severity)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
+      Guard.NotNull(property);
       return GetFirstMessage(property.Name, severity);
     }
 
@@ -325,8 +322,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="separator"/> is <see langword="null"/>.</exception>
     public string ToString(string separator)
     {
-      if (separator is null)
-        throw new ArgumentNullException(nameof(separator));
+      Guard.NotNull(separator);
 
       System.Text.StringBuilder result = new System.Text.StringBuilder();
       bool first = true;
@@ -355,8 +351,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="separator"/> is <see langword="null"/>.</exception>
     public string ToString(string separator, RuleSeverity severity)
     {
-      if (separator is null)
-        throw new ArgumentNullException(nameof(separator));
+      Guard.NotNull(separator);
       System.Text.StringBuilder result = new System.Text.StringBuilder();
       bool first = true;
       foreach (BrokenRule item in this)
@@ -389,8 +384,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public string ToString(string separator, RuleSeverity severity, string propertyName)
     {
-      if (separator is null)
-        throw new ArgumentNullException(nameof(separator));
+      Guard.NotNull(separator);
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
       System.Text.StringBuilder result = new System.Text.StringBuilder();
@@ -440,8 +434,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
     public void AddRange(List<BrokenRule> list)
     {
-      if (list is null)
-        throw new ArgumentNullException(nameof(list));
+      Guard.NotNull(list);
       foreach (var item in list)
         Add(item);
     }

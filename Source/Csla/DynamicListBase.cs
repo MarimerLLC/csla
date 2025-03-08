@@ -391,8 +391,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-      if (e is null)
-        throw new ArgumentNullException(nameof(e));
+      Guard.NotNull(e);
 
       // SL Data Grid's DataGridDataConnection object does not support replace action.  
       // It throws an exception when this occurs.
@@ -589,8 +588,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected override void OnGetState(SerializationInfo info)
     {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
+      Guard.NotNull(info);
 
       info.AddValue("Csla.Core.BusinessBase._identity", _identity);
       base.OnGetState(info);
@@ -606,8 +604,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected override void OnSetState(SerializationInfo info)
     {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
+      Guard.NotNull(info);
 
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);

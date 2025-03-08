@@ -35,8 +35,8 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="originalSender"/> or <paramref name="error"/> is <see langword="null"/>.</exception>
     public ErrorEventArgs(object originalSender, Exception error)
     {
-      OriginalSender = originalSender ?? throw new ArgumentNullException(nameof(originalSender));
-      Error = error ?? throw new ArgumentNullException(nameof(error));
+      OriginalSender = Guard.NotNull(originalSender);
+      Error = Guard.NotNull(error);
     }
   }
 }

@@ -30,14 +30,10 @@ namespace Csla.Rules
     public static void AddRule<T>(this BusinessRules businessRules, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity) 
       where T: BusinessBase
     {
-      if (businessRules is null)
-        throw new ArgumentNullException(nameof(businessRules));
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
-      if (ruleHandler is null)
-        throw new ArgumentNullException(nameof(ruleHandler));
-      if (message is null)
-        throw new ArgumentNullException(nameof(message));
+      Guard.NotNull(businessRules);
+      Guard.NotNull(primaryProperty);
+      Guard.NotNull(ruleHandler);
+      Guard.NotNull(message);
 
       var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
@@ -84,14 +80,10 @@ namespace Csla.Rules
     public static void AddRule<T>(this BusinessRules businessRules, string? ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, string message, RuleSeverity severity)
       where T : BusinessBase
     {
-      if (businessRules is null)
-        throw new ArgumentNullException(nameof(businessRules));
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
-      if (ruleHandler is null)
-        throw new ArgumentNullException(nameof(ruleHandler));
-      if (message is null)
-        throw new ArgumentNullException(nameof(message));
+      Guard.NotNull(businessRules);
+      Guard.NotNull(primaryProperty);
+      Guard.NotNull(ruleHandler);
+      Guard.NotNull(message);
 
       var rule = new CommonRules.Lambda(primaryProperty, o =>
       {
@@ -168,14 +160,10 @@ namespace Csla.Rules
     public static void AddRule<T>(this BusinessRules businessRules, string? ruleSet, IPropertyInfo primaryProperty, Func<T, bool> ruleHandler, Func<string> messageDelegate, RuleSeverity severity)
       where T : BusinessBase
     {
-      if (businessRules is null)
-        throw new ArgumentNullException(nameof(businessRules));
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
-      if (ruleHandler is null)
-        throw new ArgumentNullException(nameof(ruleHandler));
-      if (messageDelegate is null)
-        throw new ArgumentNullException(nameof(messageDelegate));
+      Guard.NotNull(businessRules);
+      Guard.NotNull(primaryProperty);
+      Guard.NotNull(ruleHandler);
+      Guard.NotNull(messageDelegate);
 
       var rule = new CommonRules.Lambda(primaryProperty, o =>
       {

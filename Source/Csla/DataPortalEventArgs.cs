@@ -68,7 +68,7 @@ namespace Csla
     {
       DataPortalContext = dataPortalContext;
       Operation = operation;
-      ObjectType = objectType ?? throw new ArgumentNullException(nameof(objectType));
+      ObjectType = Guard.NotNull(objectType);
       Object = obj;
     }
 
@@ -94,7 +94,7 @@ namespace Csla
     public DataPortalEventArgs(Server.DataPortalContext? dataPortalContext, Type objectType, object? obj, DataPortalOperations operation, Exception exception)
       : this(dataPortalContext, objectType, obj, operation)
     {
-      Exception = exception ?? throw new ArgumentNullException(nameof(exception));
+      Exception = Guard.NotNull(exception);
     }
   }
 }

@@ -116,12 +116,9 @@ namespace Csla.Channels.RabbitMq
     /// <inheritdoc />
     public override async Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
@@ -139,12 +136,9 @@ namespace Csla.Channels.RabbitMq
     /// <inheritdoc />
     public override async Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
@@ -162,10 +156,8 @@ namespace Csla.Channels.RabbitMq
     /// <inheritdoc />
     public override async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      if (obj is null)
-        throw new ArgumentNullException(nameof(obj));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(obj);
+      Guard.NotNull(context);
       if (isSync)
         throw new NotSupportedException("isSync == true");
 
@@ -183,12 +175,9 @@ namespace Csla.Channels.RabbitMq
     /// <inheritdoc />
     public override async Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      if (objectType is null)
-        throw new ArgumentNullException(nameof(objectType));
-      if (criteria is null)
-        throw new ArgumentNullException(nameof(criteria));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
+      Guard.NotNull(objectType);
+      Guard.NotNull(criteria);
+      Guard.NotNull(context);
       if (isSync)
         throw new NotSupportedException("isSync == true");
 

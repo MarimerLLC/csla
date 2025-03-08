@@ -61,7 +61,7 @@ namespace Csla.Rules.CommonRules
     public DataAnnotation(Core.IPropertyInfo? primaryProperty, System.ComponentModel.DataAnnotations.ValidationAttribute attribute)
       : base(primaryProperty)
     {
-      Attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
+      Attribute = Guard.NotNull(attribute);
       RuleUri.AddQueryParameter("a", attribute.GetType().FullName!);
       if (primaryProperty != null)
         InputProperties.Add(primaryProperty);
@@ -112,8 +112,7 @@ namespace Csla.Rules.CommonRules
     public Required(Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
+      Guard.NotNull(primaryProperty);
       InputProperties.Add(primaryProperty);
     }
 
@@ -142,9 +141,7 @@ namespace Csla.Rules.CommonRules
     public Required(Core.IPropertyInfo primaryProperty, Func<string> messageDelegate )
       : this(primaryProperty)
     {
-      if (messageDelegate is null)
-        throw new ArgumentNullException(nameof(messageDelegate));
-      MessageDelegate = messageDelegate;
+      MessageDelegate = Guard.NotNull(messageDelegate);
     }
 
     /// <summary>
@@ -190,8 +187,7 @@ namespace Csla.Rules.CommonRules
     public MaxLength(Core.IPropertyInfo primaryProperty, int max)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
+      Guard.NotNull(primaryProperty);
       Max = max;
       RuleUri.AddQueryParameter("max", max.ToString());
       InputProperties.Add(primaryProperty);
@@ -223,9 +219,7 @@ namespace Csla.Rules.CommonRules
     public MaxLength(Core.IPropertyInfo primaryProperty, int max, Func<string> messageDelegate)
       : this(primaryProperty, max)
     {
-      if (messageDelegate is null)
-        throw new ArgumentNullException(nameof(messageDelegate));
-      MessageDelegate = messageDelegate;
+      MessageDelegate = Guard.NotNull(messageDelegate);
     }
 
     /// <summary>
@@ -271,8 +265,7 @@ namespace Csla.Rules.CommonRules
     public MinLength(Core.IPropertyInfo primaryProperty, int min)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
+      Guard.NotNull(primaryProperty);
       Min = min;
       RuleUri.AddQueryParameter("min", min.ToString());
       InputProperties.Add(primaryProperty);
@@ -304,9 +297,7 @@ namespace Csla.Rules.CommonRules
     public MinLength(Core.IPropertyInfo primaryProperty, int min, Func<string> messageDelegate)
       : this(primaryProperty, min)
     {
-      if (messageDelegate is null)
-        throw new ArgumentNullException(nameof(messageDelegate));
-      MessageDelegate = messageDelegate;
+      MessageDelegate = Guard.NotNull(messageDelegate);
     }
 
     /// <summary>
@@ -356,10 +347,9 @@ namespace Csla.Rules.CommonRules
     /// <param name="min">Min value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="primaryProperty"/> or <paramref name="min"/> is <see langword="null"/>.</exception>
     public MinValue(Core.IPropertyInfo primaryProperty, T min) 
-      : base(primaryProperty) 
+      : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
+      Guard.NotNull(primaryProperty);
       if (min is null)
         throw new ArgumentNullException(nameof(min));
 
@@ -394,9 +384,7 @@ namespace Csla.Rules.CommonRules
     public MinValue(Core.IPropertyInfo primaryProperty, T min, Func<string> messageDelegate)
       : this(primaryProperty, min)
     {
-      if (messageDelegate is null)
-        throw new ArgumentNullException(nameof(messageDelegate));
-      MessageDelegate = messageDelegate;
+      MessageDelegate = Guard.NotNull(messageDelegate);
     }
 
     /// <summary>
@@ -470,8 +458,7 @@ namespace Csla.Rules.CommonRules
     public MaxValue(Core.IPropertyInfo primaryProperty, T max)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
+      Guard.NotNull(primaryProperty);
       if (max is null)
         throw new ArgumentNullException(nameof(max));
       
@@ -506,9 +493,7 @@ namespace Csla.Rules.CommonRules
     public MaxValue(Core.IPropertyInfo primaryProperty, T max, Func<string> messageDelegate)
       : this(primaryProperty, max)
     {
-      if (messageDelegate is null)
-        throw new ArgumentNullException(nameof(messageDelegate));
-      MessageDelegate = messageDelegate;
+      MessageDelegate = Guard.NotNull(messageDelegate);
     }
 
     /// <summary>
@@ -615,8 +600,7 @@ namespace Csla.Rules.CommonRules
     public RegExMatch(Core.IPropertyInfo primaryProperty, string expression)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
+      Guard.NotNull(primaryProperty);
       if (string.IsNullOrWhiteSpace(expression))
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(expression)), nameof(expression));
       Expression = expression;
@@ -652,9 +636,7 @@ namespace Csla.Rules.CommonRules
     public RegExMatch(Core.IPropertyInfo primaryProperty, string expression, Func<string> messageDelegate)
       : this(primaryProperty, expression)
     {
-      if (messageDelegate is null)
-        throw new ArgumentNullException(nameof(messageDelegate));
-      MessageDelegate = messageDelegate;
+      MessageDelegate = Guard.NotNull(messageDelegate);
     }
 
     /// <summary>
@@ -741,8 +723,7 @@ namespace Csla.Rules.CommonRules
     public InfoMessage(Core.IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
+      Guard.NotNull(primaryProperty);
       Priority = 1;
       DisplayIndex = 1;
     }
@@ -771,7 +752,7 @@ namespace Csla.Rules.CommonRules
     public InfoMessage(Core.IPropertyInfo primaryProperty, Func<string> messageDelegate)
       : this(primaryProperty)
     {
-      MessageDelegate = messageDelegate ?? throw new ArgumentNullException(nameof(messageDelegate));
+      MessageDelegate = Guard.NotNull(messageDelegate);
     }
 
     /// <summary>
@@ -798,7 +779,7 @@ namespace Csla.Rules.CommonRules
     /// <exception cref="ArgumentNullException"><paramref name="rule"/> is <see langword="null"/>.</exception>
     public Lambda(Action<IRuleContext> rule)
     {
-      Rule = rule ?? throw new ArgumentNullException(nameof(rule));
+      Rule = Guard.NotNull(rule);
       Initialize(rule);
     }
 
@@ -811,9 +792,8 @@ namespace Csla.Rules.CommonRules
     public Lambda(Core.IPropertyInfo primaryProperty, Action<IRuleContext> rule)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
-      Rule = rule ?? throw new ArgumentNullException(nameof(rule));
+      Guard.NotNull(primaryProperty);
+      Rule = Guard.NotNull(rule);
       Initialize(rule);
     }
 
@@ -831,10 +811,8 @@ namespace Csla.Rules.CommonRules
     /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="value"/> is <see langword="null"/>.</exception>
     public void AddQueryParameter(string key, string value)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
-      if (value is null)
-        throw new ArgumentNullException(nameof(value));
+      Guard.NotNull(key);
+      Guard.NotNull(value);
       RuleUri.AddQueryParameter(key, value);
     }
 
@@ -868,10 +846,8 @@ namespace Csla.Rules.CommonRules
     public Dependency(Core.IPropertyInfo primaryProperty, params Core.IPropertyInfo[] dependencyProperty)
       : base(primaryProperty)
     {
-      if (primaryProperty is null)
-        throw new ArgumentNullException(nameof(primaryProperty));
-      if (dependencyProperty is null)
-        throw new ArgumentNullException(nameof(dependencyProperty));
+      Guard.NotNull(primaryProperty);
+      Guard.NotNull(dependencyProperty);
       AffectedProperties.AddRange(dependencyProperty);
     }
   }

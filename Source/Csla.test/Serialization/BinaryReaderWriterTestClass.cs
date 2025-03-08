@@ -10,11 +10,6 @@
   [Serializable]
   public class BinaryReaderWriterTestClassList : BusinessListBase<BinaryReaderWriterTestClassList, BinaryReaderWriterTestClass>
   {
-    public BinaryReaderWriterTestClassList()
-    {
-
-    }
-
     public void Setup()
     {
     }

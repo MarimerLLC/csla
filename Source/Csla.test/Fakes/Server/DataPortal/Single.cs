@@ -31,9 +31,6 @@ namespace Csla.Test.DataPortalTest
       set { SetProperty(MethodCalledProperty, value); }
     }
 
-    public Single()
-    { }
-
     [Create]
     protected void DataPortal_Create()
     {

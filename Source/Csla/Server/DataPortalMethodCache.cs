@@ -28,8 +28,6 @@ namespace Csla.Server
     {
       var key = new MethodCacheKey(objectType.FullName!, methodName, MethodCaller.GetParameterTypes(parameters));
 
-      DataPortalMethodInfo result;
-
 #if NET8_0_OR_GREATER
       if (_cache.TryGetValue(key, out var methodInfo))
       {
@@ -51,7 +49,7 @@ namespace Csla.Server
       }
       
 #else
-      if (_cache.TryGetValue(key, out result)) 
+      if (_cache.TryGetValue(key, out DataPortalMethodInfo result)) 
         return result;
 
       lock (_cache)

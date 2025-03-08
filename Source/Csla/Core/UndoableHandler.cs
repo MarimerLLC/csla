@@ -27,8 +27,6 @@ namespace Csla.Core
 
     public static List<DynamicMemberHandle> GetCachedFieldHandlers(Type type)
     {
-      List<DynamicMemberHandle>? handlers;
-
 #if NET8_0_OR_GREATER
 
       if (!_undoableFieldCache.TryGetValue(type, out var handlersInfo))
@@ -48,7 +46,7 @@ namespace Csla.Core
 
       handlers = handlersInfo.Item2;
 #else
-      if (!_undoableFieldCache.TryGetValue(type, out handlers))
+      if (!_undoableFieldCache.TryGetValue(type, out var handlers))
       {
         var newHandlers = BuildHandlers(type);
 

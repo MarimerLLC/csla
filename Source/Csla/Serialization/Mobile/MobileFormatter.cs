@@ -164,8 +164,7 @@ namespace Csla.Serialization.Mobile
 
     private Type GetTypeFromCache(string typeName)
     {
-      Type? result;
-      if (!_typeCache.TryGetValue(typeName, out result))
+      if (!_typeCache.TryGetValue(typeName, out var result))
       {
         result = MethodCaller.GetType(typeName);
 

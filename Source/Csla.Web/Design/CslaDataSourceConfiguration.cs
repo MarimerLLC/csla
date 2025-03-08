@@ -44,10 +44,7 @@ namespace Csla.Web.Design
     /// <summary>
     /// Gets the type name entered by the user.
     /// </summary>
-    public string TypeName
-    {
-      get { return TypeComboBox.Text; }
-    }
+    public string TypeName => TypeComboBox.Text;
 
     private void DiscoverTypes()
     {

@@ -42,7 +42,7 @@ namespace Csla.Rules
     /// </summary>
     public virtual IPropertyInfo? PrimaryProperty
     {
-      get { return _primaryProperty; }
+      get => _primaryProperty;
       set
       {
         CanWriteProperty(nameof(PrimaryProperty));
@@ -79,7 +79,7 @@ namespace Csla.Rules
     /// </summary>
     public bool ProvideTargetWhenAsync
     {
-      get { return _provideTargetWhenAsync; }
+      get => _provideTargetWhenAsync;
       protected set
       {
         CanWriteProperty(nameof(ProvideTargetWhenAsync));
@@ -92,7 +92,7 @@ namespace Csla.Rules
     /// of the rule within the context of the business object
     /// where the rule is used.
     /// </summary>
-    public string RuleName { get { return RuleUri.ToString(); } }
+    public string RuleName => RuleUri.ToString();
 
     /// <summary>
     /// Sets or gets the rule:// URI object for this rule.
@@ -100,7 +100,7 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     protected RuleUri RuleUri
     {
-      get { return _ruleUri; }
+      get => _ruleUri;
       set
       {
         CanWriteProperty(nameof(RuleUri));
@@ -113,7 +113,7 @@ namespace Csla.Rules
     /// </summary>
     public int Priority
     {
-      get { return _priority; }
+      get => _priority;
       set
       {
         CanWriteProperty(nameof(Priority));
@@ -127,7 +127,7 @@ namespace Csla.Rules
     /// <value>The run in context.</value>
     public RunModes RunMode
     {
-      get { return _runMode; }
+      get => _runMode;
       set
       {
         CanWriteProperty(nameof(RunMode));
@@ -139,7 +139,7 @@ namespace Csla.Rules
     /// </summary>
     public int DisplayIndex
     {
-      get { return _displayIndex; }
+      get => _displayIndex;
       set
       {
         CanWriteProperty(nameof(DisplayIndex));

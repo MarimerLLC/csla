@@ -61,10 +61,7 @@ namespace Csla.Blazor.WebAssembly
     /// context manager is valid for use in
     /// the current environment.
     /// </summary>
-    public bool IsValid
-    {
-      get { return true; }
-    }
+    public bool IsValid => true;
 
     /// <summary>
     /// Gets a value indicating whether the current runtime

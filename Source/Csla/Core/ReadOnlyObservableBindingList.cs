@@ -67,14 +67,14 @@ namespace Csla.Core
     /// <value>True indicates that the list is readonly.</value>
     public bool IsReadOnly
     {
-      get { return _isReadOnly; }
-      protected set { _isReadOnly = value; }
+      get => _isReadOnly;
+      protected set => _isReadOnly = value;
     }
 
     bool IReadOnlyBindingList.IsReadOnly
     {
-      get { return IsReadOnly; }
-      set { IsReadOnly = value; }
+      get => IsReadOnly;
+      set => IsReadOnly = value;
     }
 
     /// <summary>

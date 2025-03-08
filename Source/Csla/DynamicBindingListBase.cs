@@ -90,10 +90,7 @@ namespace Csla
 
     private int _identity = -1;
 
-    int IBusinessObject.Identity
-    {
-      get { return _identity; }
-    }
+    int IBusinessObject.Identity => _identity;
 
     private void InitializeIdentity()
     {
@@ -371,10 +368,7 @@ namespace Csla
       return Task.CompletedTask;
     }
 
-    IParent? IParent.Parent
-    {
-      get { return null; }
-    }
+    IParent? IParent.Parent => null;
 
     #endregion
 

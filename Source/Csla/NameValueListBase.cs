@@ -219,10 +219,7 @@ namespace Csla
       /// <summary>
       /// The Value corresponding to the key/name.
       /// </summary>
-      public V Value
-      {
-        get { return _value; }
-      }
+      public V Value => _value;
 
       /// <summary>
       /// Creates an instance of the type.

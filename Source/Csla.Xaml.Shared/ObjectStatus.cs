@@ -44,7 +44,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool CanCreateObject
     {
-      get { return (bool)GetValue(CanCreateProperty); }
+      get => (bool)GetValue(CanCreateProperty);
       protected set
       {
         bool old = CanCreateObject;
@@ -61,7 +61,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool CanGetObject
     {
-      get { return (bool)GetValue(CanGetProperty); }
+      get => (bool)GetValue(CanGetProperty);
       protected set
       {
         bool old = CanGetObject;
@@ -78,7 +78,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool CanEditObject
     {
-      get { return (bool)GetValue(CanEditProperty); }
+      get => (bool)GetValue(CanEditProperty);
       protected set
       {
         bool old = CanEditObject;
@@ -95,7 +95,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool CanDeleteObject
     {
-      get { return (bool)GetValue(CanDeleteProperty); }
+      get => (bool)GetValue(CanDeleteProperty);
       protected set
       {
         bool old = CanDeleteObject;
@@ -127,7 +127,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsDeleted
     {
-      get { return (bool)GetValue(IsDeletedProperty); }
+      get => (bool)GetValue(IsDeletedProperty);
       protected set 
       {
         bool old = IsDeleted;
@@ -143,7 +143,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsDirty
     {
-      get { return (bool)GetValue(IsDirtyProperty); }
+      get => (bool)GetValue(IsDirtyProperty);
       protected set
       {
         bool old = IsDirty;
@@ -160,7 +160,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsNew
     {
-      get { return (bool)GetValue(IsNewProperty); }
+      get => (bool)GetValue(IsNewProperty);
       protected set
       {
         bool old = IsNew;
@@ -177,7 +177,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsSavable
     {
-      get { return (bool)GetValue(IsSavableProperty); }
+      get => (bool)GetValue(IsSavableProperty);
       protected set
       {
         bool old = IsSavable;
@@ -194,7 +194,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsValid
     {
-      get { return (bool)GetValue(IsValidProperty); }
+      get => (bool)GetValue(IsValidProperty);
       protected set
       {
         bool old = IsValid;

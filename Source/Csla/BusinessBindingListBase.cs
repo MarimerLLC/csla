@@ -73,10 +73,7 @@ namespace Csla
 
     private int _identity = -1;
 
-    int IBusinessObject.Identity
-    {
-      get { return _identity; }
-    }
+    int IBusinessObject.Identity => _identity;
 
     private void InitializeIdentity()
     {
@@ -275,10 +272,7 @@ namespace Csla
       return Task.CompletedTask;
     }
 
-    IParent? IParent.Parent
-    {
-      get { return Parent; }
-    }
+    IParent? IParent.Parent => Parent;
 
     /// <summary>
     /// Override this method to be notified when a child object's
@@ -460,13 +454,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected int EditLevel { get; private set; }
 
-    int IUndoableObject.EditLevel
-    {
-      get
-      {
-        return EditLevel;
-      }
-    }
+    int IUndoableObject.EditLevel => EditLevel;
 
     #endregion
 
@@ -712,10 +700,7 @@ namespace Csla
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public bool IsChild
-    {
-      get { return _isChild; }
-    }
+    public bool IsChild => _isChild;
 
     /// <summary>
     /// Marks the object as being a child object.
@@ -756,10 +741,7 @@ namespace Csla
     /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
-    bool ITrackStatus.IsSelfDirty
-    {
-      get { return IsDirty; }
-    }
+    bool ITrackStatus.IsSelfDirty => IsDirty;
 
     /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
@@ -786,19 +768,13 @@ namespace Csla
       }
     }
 
-    bool ITrackStatus.IsSelfValid
-    {
-      get { return IsSelfValid; }
-    }
+    bool ITrackStatus.IsSelfValid => IsSelfValid;
 
     /// <summary>
     /// Gets a value indicating whether this object is currently in
     /// a valid state (has no broken validation rules).
     /// </summary>
-    protected virtual bool IsSelfValid
-    {
-      get { return IsValid; }
-    }
+    protected virtual bool IsSelfValid => IsValid;
 
     /// <summary>
     /// Gets a value indicating whether this object is currently in
@@ -865,21 +841,9 @@ namespace Csla
 
     #region  ITrackStatus
 
-    bool ITrackStatus.IsNew
-    {
-      get
-      {
-        return false;
-      }
-    }
+    bool ITrackStatus.IsNew => false;
 
-    bool ITrackStatus.IsDeleted
-    {
-      get
-      {
-        return false;
-      }
-    }
+    bool ITrackStatus.IsDeleted => false;
 
     #endregion
 
@@ -1240,13 +1204,7 @@ namespace Csla
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public IParent? Parent
-    {
-      get
-      {
-        return _parent;
-      }
-    }
+    public IParent? Parent => _parent;
 
     /// <summary>
     /// Used by BusinessListBase as a child object is 

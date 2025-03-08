@@ -157,10 +157,7 @@ namespace Csla
     /// <summary>
     /// Gets the type of the property.
     /// </summary>
-    public Type Type
-    {
-      get { return typeof(T); }
-    }
+    public Type Type => typeof(T);
 
     private readonly System.Reflection.PropertyInfo? _propertyInfo;
 
@@ -240,10 +237,7 @@ namespace Csla
     /// </remarks>
     public virtual T? DefaultValue { get; }
 
-    object? Core.IPropertyInfo.DefaultValue
-    {
-      get { return DefaultValue; }
-    }
+    object? Core.IPropertyInfo.DefaultValue => DefaultValue;
 
     /// <inheritdoc />
     Core.FieldManager.IFieldData Core.IPropertyInfo.NewFieldData(string name)
@@ -288,7 +282,7 @@ namespace Csla
     /// Gets a value indicating whether this property
     /// references a child in the object graph.
     /// </summary>
-    public bool IsChild { get => typeof(Core.IBusinessObject).IsAssignableFrom(Type); }
+    public bool IsChild => typeof(Core.IBusinessObject).IsAssignableFrom(Type);
 
     /// <summary>
     /// Gets the System.Reflection.PropertyInfo object

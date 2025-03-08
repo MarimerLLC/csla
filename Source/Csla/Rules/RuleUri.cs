@@ -153,10 +153,7 @@ namespace Csla.Rules
     /// Gets the name of the property with which
     /// the rule is associated.
     /// </summary>
-    public string PropertyName
-    {
-      get { return _uri.Parts()[_uri.Parts().Length - 1]; }
-    }
+    public string PropertyName => _uri.Parts()[_uri.Parts().Length - 1];
 
     /// <summary>
     /// Gets a Dictionary containing the

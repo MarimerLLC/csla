@@ -78,10 +78,7 @@ namespace Csla.Xaml
     /// </summary>
     public Type ObjectType
     {
-      get 
-      { 
-        return _objectType; 
-      }
+      get => _objectType;
       set 
       { 
         _objectType = value;
@@ -97,10 +94,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool ManageObjectLifetime
     {
-      get
-      {
-        return _manageLifetime;
-      }
+      get => _manageLifetime;
       set
       {
         _manageLifetime = value;
@@ -121,10 +115,7 @@ namespace Csla.Xaml
     /// </remarks>
     public object DataChangedHandler
     {
-      get
-      {
-        return _dataChangedHandler;
-      }
+      get => _dataChangedHandler;
       set
       {
         _dataChangedHandler = value;
@@ -142,10 +133,7 @@ namespace Csla.Xaml
     /// </summary>
     public string FactoryMethod
     {
-      get
-      {
-        return _factoryMethod;
-      }
+      get => _factoryMethod;
       set
       {
         _factoryMethod = value;
@@ -157,13 +145,7 @@ namespace Csla.Xaml
     /// Get the list of parameters to pass
     /// to the factory method.
     /// </summary>
-    public IList FactoryParameters
-    {
-      get
-      {
-        return _factoryParameters;
-      }
-    }
+    public IList FactoryParameters => _factoryParameters;
 
     /// <summary>
     /// Gets or sets a value that indicates 
@@ -178,7 +160,7 @@ namespace Csla.Xaml
     /// </summary>
     public object ObjectInstance
     {
-      get { return Data; }
+      get => Data;
       set 
       {
         OnQueryFinished(value, null, null, null);
@@ -191,7 +173,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       protected set
       {
         _isBusy = value;
@@ -471,8 +453,8 @@ namespace Csla.Xaml
 
       public Type ObjectType
       {
-        get { return _objectType; }
-        set { _objectType = value; }
+        get => _objectType;
+        set => _objectType = value;
       }
 
       public Func<object[], Task<object>> Factory {  get; set; }
@@ -481,24 +463,25 @@ namespace Csla.Xaml
 
       public string FactoryMethod
       {
-        get { return _factoryMethod; }
-        set { _factoryMethod = value; }
+        get => _factoryMethod;
+        set => _factoryMethod = value;
       }
 
       private ObservableCollection<object> _factoryParameters;
 
       public ObservableCollection<object> FactoryParameters
       {
-        get { return _factoryParameters; }
-        set { _factoryParameters = 
-          new ObservableCollection<object>([..value]); }
+        get => _factoryParameters;
+        set =>
+          _factoryParameters = 
+            new ObservableCollection<object>([..value]);
       }
       private bool _manageLifetime;
 
       public bool ManageObjectLifetime
       {
-        get { return _manageLifetime; }
-        set { _manageLifetime = value; }
+        get => _manageLifetime;
+        set => _manageLifetime = value;
       }
 
     }

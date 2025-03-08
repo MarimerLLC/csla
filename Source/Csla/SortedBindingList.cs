@@ -96,15 +96,9 @@ namespace Csla
         Reset();
       }
 
-      public T Current
-      {
-        get { return _list[_sortIndex[_index].BaseIndex]; }
-      }
+      public T Current => _list[_sortIndex[_index].BaseIndex];
 
-      object IEnumerator.Current
-      {
-        get { return _list[_sortIndex[_index].BaseIndex]; }
-      }
+      object IEnumerator.Current => _list[_sortIndex[_index].BaseIndex];
 
       public bool MoveNext()
       {
@@ -477,10 +471,7 @@ namespace Csla
     /// Returns true since this object does raise the
     /// ListChanged event.
     /// </summary>
-    public bool SupportsChangeNotification
-    {
-      get { return true; }
-    }
+    public bool SupportsChangeNotification => true;
 
     /// <summary>
     /// Implemented by IList source object.
@@ -499,10 +490,7 @@ namespace Csla
     /// <summary>
     /// Returns true. Sorting is supported.
     /// </summary>
-    public bool SupportsSorting
-    {
-      get { return true; }
-    }
+    public bool SupportsSorting => true;
 
     /// <summary>
     /// Implemented by IList source object.
@@ -536,20 +524,11 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
-    public int Count
-    {
-      get { return SourceList.Count; }
-    }
+    public int Count => SourceList.Count;
 
-    bool ICollection.IsSynchronized
-    {
-      get { return false; }
-    }
+    bool ICollection.IsSynchronized => false;
 
-    object ICollection.SyncRoot
-    {
-      get { return SourceList; }
-    }
+    object ICollection.SyncRoot => SourceList;
 
     IEnumerator IEnumerable.GetEnumerator()
     {
@@ -651,29 +630,17 @@ namespace Csla
       Insert(index, (T)value);
     }
 
-    bool IList.IsFixedSize
-    {
-      get { return false; }
-    }
+    bool IList.IsFixedSize => false;
 
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
-    public bool IsReadOnly
-    {
-      get { return SourceList.IsReadOnly; }
-    }
+    public bool IsReadOnly => SourceList.IsReadOnly;
 
     object? IList.this[int index]
     {
-      get
-      {
-        return this[index];
-      }
-      set
-      {
-        this[index] = (T)(value ?? throw new ArgumentNullException(nameof(value)));
-      }
+      get => this[index];
+      set => this[index] = (T)(value ?? throw new ArgumentNullException(nameof(value)));
     }
 
     /// <summary>

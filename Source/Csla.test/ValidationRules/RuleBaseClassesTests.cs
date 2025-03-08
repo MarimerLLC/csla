@@ -47,7 +47,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
-    public void PropertyRuleDefaultCanXYZVaules()
+    public void PropertyRuleDefaultCanXYZValues()
     {
       var rule = new LessThan(RuleBaseClassesRoot.StartDateProperty, RuleBaseClassesRoot.EndDateProperty);
       Assert.IsFalse(rule.IsAsync);
@@ -57,7 +57,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
-    public void PropertyEditRuleDefaultCanXYZVaules()
+    public void PropertyEditRuleDefaultCanXYZValues()
     {
       var rule = new CalcSum(RuleBaseClassesRoot.NameProperty);
       Assert.IsFalse(rule.IsAsync);

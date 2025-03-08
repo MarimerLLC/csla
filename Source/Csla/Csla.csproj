@@ -25,7 +25,6 @@
       Slapping "Here we require dynamic code" means, that we opt-out of supporting NativeAOT for these methods which is undesirable.
     -->
     <NoWarn>$(NoWarn);IL2026;IL2055;IL2057;IL2060;IL2096;IL2111;IL3050</NoWarn>
-    <PolyGuard>true</PolyGuard>
   </PropertyGroup>
 
   <ItemGroup>

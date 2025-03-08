@@ -42,14 +42,14 @@ namespace Csla.Server
         }
 
         var method = GetMethodOfCaller(objectType, methodName, parameters);
-        
-        result = new DataPortalMethodInfo(method);
+
+        var result = new DataPortalMethodInfo(method);
         var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, result, OnAssemblyLoadContextUnload);
         _cache.Add(key, cacheInstance);
+        return result;
       }
-      
 #else
-      if (_cache.TryGetValue(key, out DataPortalMethodInfo result)) 
+      if (_cache.TryGetValue(key, out var result))
         return result;
 
       lock (_cache)
@@ -61,10 +61,10 @@ namespace Csla.Server
 
           _cache.Add(key, result);
         }
-      }      
-#endif
+      }
 
       return result;
+#endif
     }
 
     private static System.Reflection.MethodInfo GetMethodOfCaller([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string methodName, object[] parameters)

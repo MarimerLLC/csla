@@ -20,18 +20,18 @@ namespace Csla
     /// <summary>
     /// Object that DataPortal received as a result of current operation
     /// </summary>
-    public T Object { get; }
+    public T? Object { get; }
     /// <summary>
-    /// Error that occurred during the DataPotal call.
+    /// Error that occurred during the DataPortal call.
     /// This will be null if no errors occurred.
     /// </summary>
-    public Exception Error { get; }
+    public Exception? Error { get; }
 
     /// <summary>
     /// User defined information
     /// that was passed into data portal on initial request
     /// </summary>
-    public object UserState { get; }
+    public object? UserState { get; }
 
     /// <summary>
     /// Create new instance of data portal result
@@ -47,24 +47,24 @@ namespace Csla
     /// User defined information
     /// that was passed into data portal on initial request
     /// </param>
-    public DataPortalResult(T obj, Exception ex, object userState)
+    public DataPortalResult(T? obj, Exception? ex, object? userState)
     {
       Object = obj;
       Error = ex;
       UserState = userState;
     }
 
-    object IDataPortalResult.Object
+    object? IDataPortalResult.Object
     {
       get { return Object; }
     }
 
-    Exception IDataPortalResult.Error
+    Exception? IDataPortalResult.Error
     {
       get { return Error; }
     }
 
-    object IDataPortalResult.UserState
+    object? IDataPortalResult.UserState
     {
       get { return UserState; }
     }

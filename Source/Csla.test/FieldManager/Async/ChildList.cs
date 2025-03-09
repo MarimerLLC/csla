@@ -16,10 +16,6 @@ namespace Csla.Test.FieldManager.Async
       return childDataPortal.FetchChildAsync();
     }
 
-    public ChildList()
-    {
-    }
-
     public object MyParent
     {
       get { return Parent; }

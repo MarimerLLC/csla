@@ -27,7 +27,7 @@ namespace Csla.Security
     /// </summary>
     public string Username
     {
-      get { return ReadProperty(UsernameProperty); }
+      get { return ReadProperty(UsernameProperty)!; }
       private set { LoadProperty(UsernameProperty, value); }
     }
 
@@ -40,7 +40,7 @@ namespace Csla.Security
     /// </summary>
     public string Password
     {
-      get { return ReadProperty(PasswordProperty); }
+      get { return ReadProperty(PasswordProperty)!; }
       private set { LoadProperty(PasswordProperty, value); }
     }
 
@@ -53,10 +53,11 @@ namespace Csla.Security
     /// <param name="password">
     /// Password value.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="username"/> or <paramref name="password"/> is <see langword="null"/>.</exception>
     public UsernameCriteria(string username, string password)
     {
-      Username = username;
-      Password = password;
+      Username = username ?? throw new ArgumentNullException(nameof(username));
+      Password = password ?? throw new ArgumentNullException(nameof(password));
     }
 
     /// <summary>

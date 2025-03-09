@@ -20,6 +20,6 @@ namespace Csla.Blazor.State.Messages
     /// <summary>
     /// Gets or sets the serialized session data.
     /// </summary>
-    public byte[] SessionData { get; set; }
+    public byte[]? SessionData { get; set; }
   }
 }

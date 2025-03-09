@@ -29,7 +29,7 @@ namespace Csla.Rules
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
-    public ValidationException(string message)
+    public ValidationException(string? message)
       : base(message)
     {
 
@@ -40,7 +40,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="message">Message describing the exception.</param>
     /// <param name="innerException">Inner exception object.</param>
-   public ValidationException(string message, Exception innerException)
+   public ValidationException(string? message, Exception? innerException)
       : base(message, innerException)
     {
 

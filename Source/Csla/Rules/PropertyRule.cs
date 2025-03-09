@@ -1,4 +1,4 @@
-﻿﻿//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="PropertyRule.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -6,6 +6,7 @@
 // <summary>Base class used to create property level rule</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 
 namespace Csla.Rules
@@ -18,9 +19,16 @@ namespace Csla.Rules
     /// <summary>
     /// Gets or sets the error message (constant).
     /// </summary>
+    /// <exception cref="InvalidOperationException"><see cref="MessageDelegate"/> is <see langword="null"/>.</exception>
     public string MessageText
     {
-      get { return MessageDelegate.Invoke(); }
+      get 
+      {
+        if (MessageDelegate == null)
+          throw new InvalidOperationException($"{nameof(MessageDelegate)} == null");
+        
+        return MessageDelegate.Invoke(); 
+      }
       set { MessageDelegate = () => value; }
     }
 
@@ -28,7 +36,7 @@ namespace Csla.Rules
     /// Gets or sets the error message function for this rule.
     /// Use this for localizable messages from a resource file. 
     /// </summary>    
-    public Func<string> MessageDelegate { get; set; }
+    public Func<string>? MessageDelegate { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether this instance has message delegate.
@@ -36,6 +44,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance has message delegate; otherwise, <c>false</c>.
     /// </value>
+    [MemberNotNullWhen(true, nameof(MessageDelegate))]
     protected bool HasMessageDelegate
     {
       get { return MessageDelegate != null; }
@@ -53,7 +62,6 @@ namespace Csla.Rules
     /// Initializes a new instance of the <see cref="PropertyRule"/> class.
     /// </summary>
     protected PropertyRule()
-      : base()
     {
       CanRunAsAffectedProperty = true;
       CanRunOnServer = true;
@@ -64,7 +72,7 @@ namespace Csla.Rules
     /// Initializes a new instance of the <see cref="PropertyRule"/> class.
     /// </summary>
     /// <param name="propertyInfo">The property info.</param>
-    protected PropertyRule(IPropertyInfo propertyInfo) : base(propertyInfo)
+    protected PropertyRule(IPropertyInfo? propertyInfo) : base(propertyInfo)
     {
       CanRunAsAffectedProperty = true;
       CanRunOnServer = true;

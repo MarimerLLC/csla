@@ -17,14 +17,13 @@ namespace Csla.Core
   /// with the SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
-  public class ContextDictionary : ConcurrentDictionary<object, object>, IContextDictionary
+  public class ContextDictionary : ConcurrentDictionary<object, object?>, IContextDictionary
   {
     /// <inheritdoc cref="Csla.Core.IContextDictionary.GetValueOrNull(string)"/>
-    public object GetValueOrNull(string key)
+    public object? GetValueOrNull(string key)
     {
-      if (ContainsKey(key))
-        return this[key];
-      return null;
+      TryGetValue(key, out var result);
+      return result;
     }
 
     #region IMobileObject Members
@@ -33,7 +32,7 @@ namespace Csla.Core
     {
       foreach (string key in Keys)
       {
-        object value = this[key];
+        object? value = this[key];
         if (value is not IMobileObject)
           info.AddValue(key, value);
       }
@@ -43,7 +42,7 @@ namespace Csla.Core
     {
       foreach (string key in Keys)
       {
-        object value = this[key];
+        object? value = this[key];
         if (value is IMobileObject mobile)
         {
           SerializationInfo si = formatter.SerializeObject(mobile);
@@ -86,7 +85,7 @@ namespace Csla.Core
     }
 
     /// <inheritdoc cref="System.Collections.IDictionary.Add(object, object?)"/>
-    public void Add(object key, object value)
+    public void Add(object key, object? value)
     {
       bool added = TryAdd(key, value);
       if (!added)

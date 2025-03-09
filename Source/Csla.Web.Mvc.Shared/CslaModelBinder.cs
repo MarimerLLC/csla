@@ -21,8 +21,9 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public CslaModelBinder()
-      : base(null) { }
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    public CslaModelBinder(ApplicationContext applicationContext)
+      : base(applicationContext) { }
 
     /// <summary>
     /// Bind the form data to a new instance of an IBusinessBase object.
@@ -30,11 +31,12 @@ namespace Csla.Web.Mvc
     /// <param name="bindingContext">Binding context</param>
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
-      ApplicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
       if (bindingContext == null)
       {
         throw new ArgumentNullException(nameof(bindingContext));
       }
+
+      ApplicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
 
       bindingContext.Result = ModelBindingResult.Failed();
       var result = ApplicationContext.CreateInstanceDI(bindingContext.ModelType);
@@ -72,7 +74,7 @@ namespace Csla.Web.Mvc
     {
       var applicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
       var formKeys = bindingContext.ActionContext.HttpContext.Request.Form.Keys.Where(_ => _.StartsWith(bindingContext.ModelName));
-      var childType = Utilities.GetChildItemType(bindingContext.ModelType);
+      var childType = Utilities.GetChildItemType(bindingContext.ModelType) ?? throw new InvalidOperationException();
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);
       var list = (IList)result;
 
@@ -248,9 +250,8 @@ namespace Csla.Web.Mvc
                      select r;
         foreach (var item in errors)
         {
-          ModelState state;
           string mskey = CreateSubPropertyName(bindingContext.ModelName, item.Property ?? string.Empty);
-          if (bindingContext.ModelState.TryGetValue(mskey, out state))
+          if (bindingContext.ModelState.TryGetValue(mskey, out var state))
           {
             if (state.Errors.Any(e => e.ErrorMessage == item.Description))
               continue;

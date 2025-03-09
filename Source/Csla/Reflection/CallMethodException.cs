@@ -6,6 +6,8 @@
 // <summary>This exception is returned from the </summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Reflection
 {
   /// <summary>
@@ -15,11 +17,11 @@ namespace Csla.Reflection
   /// underlying business object method that was
   /// being invoked.
   /// </summary>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
+  [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
   [Serializable]
   public class CallMethodException : Exception
   {
-    private string _innerStackTrace;
+    private string? _innerStackTrace;
 
     /// <summary>
     /// Get the stack trace from the original
@@ -27,7 +29,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <value></value>
     /// <remarks></remarks>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
+    [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
     public override string StackTrace
     {
       get
@@ -41,9 +43,13 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="message">Message text describing the exception.</param>
     /// <param name="ex">Inner exception object.</param>
-    public CallMethodException(string message, Exception ex)
+    /// <exception cref="ArgumentNullException"><paramref name="ex"/> is <see langword="null"/>.</exception>
+    public CallMethodException(string? message, Exception ex)
       : base(message, ex)
     {
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
+
       _innerStackTrace = ex.StackTrace;
     }
   }

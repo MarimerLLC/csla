@@ -55,7 +55,7 @@ namespace Csla.Blazor.State
           httpContext.Response.Cookies.Append(sessionIdName, result);
       }
 
-      return result ?? throw new InvalidOperationException(Csla.Properties.Resources.SessionIdManagerIdMustBeNotNull);
+      return result ?? throw new InvalidOperationException(Properties.Resources.SessionIdManagerIdMustBeNotNull);
     }
   }
 }

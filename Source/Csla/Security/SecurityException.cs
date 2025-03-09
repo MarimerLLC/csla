@@ -16,18 +16,20 @@
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Exception text.</param>
-    public SecurityException(string message)
+    public SecurityException(string? message)
       : base(message)
-    { }
+    {
+    }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="message">Exception text.</param>
     /// <param name="innerException">Inner exception.</param>
-    public SecurityException(string message, Exception innerException)
+    public SecurityException(string? message, Exception? innerException)
       : base(message, innerException)
-    { }
+    {
+    }
   }
 }
 

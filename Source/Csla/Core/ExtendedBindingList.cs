@@ -7,13 +7,12 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 #if ANDROID || IOS
 using System.Collections.Specialized;
 #endif
-#if NET8_0_OR_GREATER
-using System.Diagnostics.CodeAnalysis;
-#endif
+
 
 namespace Csla.Core
 {
@@ -23,42 +22,40 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
-  public class ExtendedBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : MobileBindingList<T>,
+  public class ExtendedBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : MobileBindingList<T>,
     IExtendedBindingList,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
   {
     [NonSerialized]
-    private EventHandler<RemovingItemEventArgs> _nonSerializableHandlers;
-    private EventHandler<RemovingItemEventArgs> _serializableHandlers;
+    private EventHandler<RemovingItemEventArgs>? _nonSerializableHandlers;
+    private EventHandler<RemovingItemEventArgs>? _serializableHandlers;
 
     /// <summary>
     /// Implements a serialization-safe RemovingItem event.
     /// </summary>
-    public event EventHandler<RemovingItemEventArgs> RemovingItem
+    public event EventHandler<RemovingItemEventArgs>? RemovingItem
     {
       add
       {
+        if (value is null)
+          return;
+
         if (value.Method.IsPublic)
-          _serializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            Delegate.Combine(_serializableHandlers, value);
+          _serializableHandlers = (EventHandler<RemovingItemEventArgs>?)Delegate.Combine(_serializableHandlers, value);
         else
-          _nonSerializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            Delegate.Combine(_nonSerializableHandlers, value);
+          _nonSerializableHandlers = (EventHandler<RemovingItemEventArgs>?)Delegate.Combine(_nonSerializableHandlers, value);
       }
       remove
       {
+        if (value is null)
+          return;
+
         if (value.Method.IsPublic)
-          _serializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            Delegate.Remove(_serializableHandlers, value);
+          _serializableHandlers = (EventHandler<RemovingItemEventArgs>?)Delegate.Remove(_serializableHandlers, value);
         else
-          _nonSerializableHandlers = (EventHandler<RemovingItemEventArgs>)
-            Delegate.Remove(_nonSerializableHandlers, value);
+          _nonSerializableHandlers = (EventHandler<RemovingItemEventArgs>?)Delegate.Remove(_nonSerializableHandlers, value);
       }
     }
 
@@ -72,10 +69,8 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected void OnRemovingItem(T removedItem)
     {
-      _nonSerializableHandlers?.Invoke(this,
-        new RemovingItemEventArgs(removedItem));
-      _serializableHandlers?.Invoke(this,
-        new RemovingItemEventArgs(removedItem));
+      _nonSerializableHandlers?.Invoke(this, new RemovingItemEventArgs(removedItem));
+      _serializableHandlers?.Invoke(this, new RemovingItemEventArgs(removedItem));
     }
 
     /// <summary>
@@ -88,7 +83,8 @@ namespace Csla.Core
     /// </param>
     protected override void RemoveItem(int index)
     {
-      OnRemovingItem(this[index]);
+      var item = this[index];
+      OnRemovingItem(item);
       OnRemoveEventHooks(this[index]);
       base.RemoveItem(index);
     }
@@ -97,24 +93,28 @@ namespace Csla.Core
     /// Add a range of items to the list.
     /// </summary>
     /// <param name="range">List of items to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="range"/> is <see langword="null"/>.</exception>
     public void AddRange(IEnumerable<T> range)
     {
+      if (range is null)
+        throw new ArgumentNullException(nameof(range));
+
       foreach (var element in range)
         Add(element);
     }
 
     [NotUndoable]
     [NonSerialized]
-    private BusyChangedEventHandler _busyChanged = null;
+    private BusyChangedEventHandler? _busyChanged = null;
 
     /// <summary>
     /// Event indicating that the busy status of the
     /// object has changed.
     /// </summary>
-    public event BusyChangedEventHandler BusyChanged
+    public event BusyChangedEventHandler? BusyChanged
     {
-      add { _busyChanged = (BusyChangedEventHandler)Delegate.Combine(_busyChanged, value); }
-      remove { _busyChanged = (BusyChangedEventHandler)Delegate.Remove(_busyChanged, value); }
+      add { _busyChanged = (BusyChangedEventHandler?)Delegate.Combine(_busyChanged, value); }
+      remove { _busyChanged = (BusyChangedEventHandler?)Delegate.Remove(_busyChanged, value); }
     }
 
     /// <summary>
@@ -132,8 +132,12 @@ namespace Csla.Core
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
     /// <param name="busy">New busy value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected void OnBusyChanged(string propertyName, bool busy)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       OnBusyChanged(new BusyChangedEventArgs(propertyName, busy));
     }
 
@@ -184,16 +188,16 @@ namespace Csla.Core
 
     [NotUndoable]
     [NonSerialized]
-    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+    private EventHandler<ErrorEventArgs>? _unhandledAsyncException;
 
     /// <summary>
     /// Event indicating that an exception occurred during
     /// an async operation.
     /// </summary>
-    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    public event EventHandler<ErrorEventArgs>? UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value); }
+      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value); }
     }
 
     /// <summary>
@@ -216,7 +220,7 @@ namespace Csla.Core
       OnUnhandledAsyncException(new ErrorEventArgs(originalSender, error));
     }
 
-    void unhandled_UnhandledAsyncException(object sender, ErrorEventArgs e)
+    void unhandled_UnhandledAsyncException(object? sender, ErrorEventArgs e)
     {
       OnUnhandledAsyncException(e);
     }
@@ -283,22 +287,20 @@ namespace Csla.Core
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<ChildChangedEventArgs> _childChangedHandlers;
+    private EventHandler<ChildChangedEventArgs>? _childChangedHandlers;
 
     /// <summary>
     /// Event raised when a child object has been changed.
     /// </summary>
-    public event EventHandler<ChildChangedEventArgs> ChildChanged
+    public event EventHandler<ChildChangedEventArgs>? ChildChanged
     {
       add
       {
-        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
-          Delegate.Combine(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>?)Delegate.Combine(_childChangedHandlers, value);
       }
       remove
       {
-        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>)
-          Delegate.Remove(_childChangedHandlers, value);
+        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>?)Delegate.Remove(_childChangedHandlers, value);
       }
     }
 
@@ -351,8 +353,7 @@ namespace Csla.Core
     /// <summary>
     /// Creates a ChildChangedEventArgs and raises the event.
     /// </summary>
-    private void RaiseChildChanged(
-      object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+    private void RaiseChildChanged(object childObject, PropertyChangedEventArgs? propertyArgs, ListChangedEventArgs? listArgs)
     {
       ChildChangedEventArgs args = new ChildChangedEventArgs(childObject, propertyArgs, listArgs);
       OnChildChanged(args);
@@ -366,9 +367,9 @@ namespace Csla.Core
     /// <param name="sender">Object that raised the event.</param>
     /// <param name="e">Property changed args.</param>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected virtual void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void Child_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-      RaiseChildChanged(sender, e, null);
+      RaiseChildChanged(sender!, e, null);
     }
 
     /// <summary>
@@ -376,7 +377,7 @@ namespace Csla.Core
     /// a child object and echoes it up as
     /// a ChildChanged event.
     /// </summary>
-    private void Child_Changed(object sender, ChildChangedEventArgs e)
+    private void Child_Changed(object? sender, ChildChangedEventArgs e)
     {
       RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.ListChangedArgs);
     }
@@ -396,11 +397,7 @@ namespace Csla.Core
     /// Will be instanciated by a factory property on the ObservableBindingList implementation.
     /// </summary>
     /// <typeparam name="TC">The type of the C.</typeparam>
-    class SuppressListChangedEventsClass<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      TC> : IDisposable
+    class SuppressListChangedEventsClass<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] TC> : IDisposable
     {
       private readonly BindingList<TC> _businessObject;
       private readonly bool _initialRaiseListChangedEvents;

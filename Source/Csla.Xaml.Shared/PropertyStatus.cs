@@ -58,7 +58,6 @@ namespace Csla.Xaml
     /// Creates an instance of the object.
     /// </summary>
     public PropertyStatus()
-      : base()
     {
       BrokenRules = new ObservableCollection<BrokenRule>();
       DefaultStyleKey = typeof(PropertyStatus);
@@ -221,8 +220,9 @@ namespace Csla.Xaml
     protected object GetRealSource(object source, string bindingPath)
     {
       var firstProperty = string.Empty;
-      if (bindingPath.IndexOf('.') > 0)
-        firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+      var dotIndex = bindingPath.IndexOf('.');
+      if (dotIndex > 0)
+        firstProperty = bindingPath.Substring(0, dotIndex);
 
       if (source is ICollectionView icv && firstProperty != "CurrentItem")
         source = icv.CurrentItem;
@@ -231,7 +231,7 @@ namespace Csla.Xaml
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         return GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
-          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+          bindingPath.Substring(dotIndex + 1));
       }
       else
         return source;

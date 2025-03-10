@@ -8,7 +8,7 @@ namespace Csla.Analyzers
   internal sealed class EvaluateManagedBackingFieldsWalker
     : CSharpSyntaxWalker
   {
-    internal EvaluateManagedBackingFieldsWalker(SyntaxNode node, SemanticModel model, IFieldSymbol fieldSymbol)
+    internal EvaluateManagedBackingFieldsWalker(SyntaxNode? node, SemanticModel model, IFieldSymbol fieldSymbol)
     {
       (FieldSymbol, Model) = (fieldSymbol, model);
       Visit(node);
@@ -17,6 +17,10 @@ namespace Csla.Analyzers
     public override void VisitInvocationExpression(InvocationExpressionSyntax node)
     {
       var invocationSymbol = Model.GetSymbolInfo(node).Symbol as IMethodSymbol;
+      if (invocationSymbol is null)
+      {
+        return;
+      }
 
       if (invocationSymbol.IsPropertyInfoManagementMethod())
       {

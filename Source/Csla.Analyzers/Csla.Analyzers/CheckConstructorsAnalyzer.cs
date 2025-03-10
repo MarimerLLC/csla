@@ -56,9 +56,9 @@ namespace Csla.Analyzers
       var classNode = (ClassDeclarationSyntax)context.Node;
       var classSymbol = context.SemanticModel.GetDeclaredSymbol(classNode);
 
-      if (classSymbol.IsStereotype() && !(classSymbol?.IsAbstract).Value)
+      if (classSymbol.IsStereotype() && !classSymbol.IsAbstract)
       {
-        foreach (var constructor in classSymbol?.Constructors)
+        foreach (var constructor in classSymbol.Constructors)
         {
           if (!constructor.IsStatic)
           {
@@ -86,7 +86,7 @@ namespace Csla.Analyzers
 
         if (!hasPublicNoArgumentConstructor)
         {
-          var properties = new Dictionary<string, string>
+          var properties = new Dictionary<string, string?>
           {
             [PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor] = hasNonPublicNoArgumentConstructor.ToString()
           }.ToImmutableDictionary();

@@ -29,8 +29,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string ExceptionTypeName
     {
-      get { return GetProperty(ExceptionTypeNameProperty)!; }
-      private set { LoadProperty(ExceptionTypeNameProperty, value); }
+      get => GetProperty(ExceptionTypeNameProperty)!;
+      private set => LoadProperty(ExceptionTypeNameProperty, value);
     }
 
     /// <summary>
@@ -43,8 +43,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string Message
     {
-      get { return GetProperty(MessageProperty)!; }
-      private set { LoadProperty(MessageProperty, value); }
+      get => GetProperty(MessageProperty)!;
+      private set => LoadProperty(MessageProperty, value);
     }
 
     /// <summary>
@@ -57,8 +57,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string StackTrace
     {
-      get { return GetProperty(StackTraceProperty)!; }
-      private set { LoadProperty(StackTraceProperty, value); }
+      get => GetProperty(StackTraceProperty)!;
+      private set => LoadProperty(StackTraceProperty, value);
     }
 
     /// <summary>
@@ -71,8 +71,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string Source
     {
-      get { return GetProperty(SourceProperty)!; }
-      private set { LoadProperty(SourceProperty, value); }
+      get => GetProperty(SourceProperty)!;
+      private set => LoadProperty(SourceProperty, value);
     }
 
     /// <summary>
@@ -89,8 +89,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public DataPortalErrorInfo? InnerError
     {
-      get { return GetProperty(InnerErrorProperty); }
-      private set { LoadProperty(InnerErrorProperty, value); }
+      get => GetProperty(InnerErrorProperty);
+      private set => LoadProperty(InnerErrorProperty, value);
     }
 
     /// <summary>

@@ -73,16 +73,10 @@ namespace Csla.Core
     #region IDictionary Members
 
     /// <inheritdoc cref="System.Collections.IDictionary.IsReadOnly"/>
-    public bool IsReadOnly
-    {
-      get => false;
-    }
+    public bool IsReadOnly => false;
 
     /// <inheritdoc cref="System.Collections.IDictionary.IsFixedSize"/>
-    public bool IsFixedSize
-    {
-      get => false;
-    }
+    public bool IsFixedSize => false;
 
     /// <inheritdoc cref="System.Collections.IDictionary.Add(object, object?)"/>
     public void Add(object key, object? value)
@@ -109,17 +103,10 @@ namespace Csla.Core
     #region ICollection Members
 
     /// <inheritdoc cref="System.Collections.ICollection.SyncRoot"/>
-    public object SyncRoot
-    {
-      get => throw new NotSupportedException(Resources.SyncrootNotSupportedException);
-
-    }
+    public object SyncRoot => throw new NotSupportedException(Resources.SyncrootNotSupportedException);
 
     /// <inheritdoc cref="System.Collections.ICollection.IsSynchronized"/>
-    public bool IsSynchronized
-    {
-      get => false;
-    }
+    public bool IsSynchronized => false;
 
     #endregion
   }

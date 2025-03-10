@@ -30,10 +30,7 @@ namespace Csla.Core
     /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
-    public bool IsValid
-    {
-      get { return true; }
-    }
+    public bool IsValid => true;
 
     /// <summary>
     /// Gets the current user principal.

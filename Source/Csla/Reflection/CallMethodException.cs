@@ -30,13 +30,7 @@ namespace Csla.Reflection
     /// <value></value>
     /// <remarks></remarks>
     [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
-    public override string StackTrace
-    {
-      get
-      {
-        return $"{_innerStackTrace}{Environment.NewLine}{base.StackTrace}";
-      }
-    }
+    public override string StackTrace => $"{_innerStackTrace}{Environment.NewLine}{base.StackTrace}";
 
     /// <summary>
     /// Creates an instance of the type.

@@ -49,8 +49,8 @@ namespace Csla.Xaml
     /// </summary>
     public string DialogTitle
     {
-      get { return (string)GetValue(DialogTitleProperty); }
-      set { SetValue(DialogTitleProperty, value); }
+      get => (string)GetValue(DialogTitleProperty);
+      set => SetValue(DialogTitleProperty, value);
     }
 
     /// <summary>
@@ -71,8 +71,8 @@ namespace Csla.Xaml
     /// </summary>
     public string DialogFirstLine
     {
-      get { return (string)GetValue(DialogFirstLineProperty); }
-      set { SetValue(DialogFirstLineProperty, value); }
+      get => (string)GetValue(DialogFirstLineProperty);
+      set => SetValue(DialogFirstLineProperty, value);
     }
 
     /// <summary>
@@ -93,8 +93,8 @@ namespace Csla.Xaml
     /// </summary>
     public bool ShowExceptionDetail
     {
-      get { return (bool)GetValue(ShowExceptionDetailProperty); }
-      set { SetValue(ShowExceptionDetailProperty, value); }
+      get => (bool)GetValue(ShowExceptionDetailProperty);
+      set => SetValue(ShowExceptionDetailProperty, value);
     }
 
     /// <summary>
@@ -114,8 +114,8 @@ namespace Csla.Xaml
     /// </summary>
     public MessageBoxImage DialogIcon
     {
-      get { return (MessageBoxImage)GetValue(DialogIconProperty); }
-      set { SetValue(DialogIconProperty, value); }
+      get => (MessageBoxImage)GetValue(DialogIconProperty);
+      set => SetValue(DialogIconProperty, value);
     }
 
     internal void Register(object source)

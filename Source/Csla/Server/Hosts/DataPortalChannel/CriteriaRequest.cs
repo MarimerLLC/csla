@@ -29,8 +29,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value  is <see langword="null"/>.</exception>
     public string TypeName
     {
-      get { return GetProperty(TypeNameProperty)!; }
-      set { LoadProperty(TypeNameProperty, value ?? throw new ArgumentNullException(nameof(TypeName))); }
+      get => GetProperty(TypeNameProperty)!;
+      set => LoadProperty(TypeNameProperty, value ?? throw new ArgumentNullException(nameof(TypeName)));
     }
 
     /// <summary>
@@ -43,8 +43,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public byte[] CriteriaData
     {
-      get { return GetProperty(CriteriaDataProperty)!; }
-      set { LoadProperty(CriteriaDataProperty, value ?? throw new ArgumentNullException(nameof(CriteriaData))); }
+      get => GetProperty(CriteriaDataProperty)!;
+      set => LoadProperty(CriteriaDataProperty, value ?? throw new ArgumentNullException(nameof(CriteriaData)));
     }
 
     /// <summary>
@@ -58,8 +58,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] Principal
     {
-      get { return GetProperty(PrincipalProperty)!; }
-      set { LoadProperty(PrincipalProperty, value ?? throw new ArgumentNullException(nameof(Principal))); }
+      get => GetProperty(PrincipalProperty)!;
+      set => LoadProperty(PrincipalProperty, value ?? throw new ArgumentNullException(nameof(Principal)));
     }
 
     /// <summary>
@@ -73,8 +73,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public byte[] ClientContext
     {
-      get { return GetProperty(ClientContextProperty)!; }
-      set { LoadProperty(ClientContextProperty, value ?? throw new ArgumentNullException(nameof(ClientContext))); }
+      get => GetProperty(ClientContextProperty)!;
+      set => LoadProperty(ClientContextProperty, value ?? throw new ArgumentNullException(nameof(ClientContext)));
     }
 
     /// <summary>
@@ -90,8 +90,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientCulture
     {
-      get { return GetProperty(ClientCultureProperty)!; }
-      set { LoadProperty(ClientCultureProperty, value ?? throw new ArgumentNullException(nameof(ClientCulture))); }
+      get => GetProperty(ClientCultureProperty)!;
+      set => LoadProperty(ClientCultureProperty, value ?? throw new ArgumentNullException(nameof(ClientCulture)));
     }
 
     /// <summary>
@@ -107,8 +107,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public string ClientUICulture
     {
-      get { return GetProperty(ClientUICultureProperty)!; }
-      set { LoadProperty(ClientUICultureProperty, value ?? throw new ArgumentNullException(nameof(ClientUICulture))); }
+      get => GetProperty(ClientUICultureProperty)!;
+      set => LoadProperty(ClientUICultureProperty, value ?? throw new ArgumentNullException(nameof(ClientUICulture)));
     }
 
     /// <summary>

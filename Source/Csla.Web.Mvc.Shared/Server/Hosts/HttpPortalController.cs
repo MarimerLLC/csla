@@ -169,7 +169,7 @@ namespace Csla.Server.Hosts
           _portal = _applicationContext.CreateInstanceDI<HttpPortal>();
         return _portal;
       }
-      set { _portal = value; }
+      set => _portal = value;
     }
 
 #if NETSTANDARD2_0 || NET8_0_OR_GREATER 

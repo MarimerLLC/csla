@@ -33,7 +33,7 @@ namespace Csla.Core
     /// Gets a value indicating whether this object
     /// supports change notification.
     /// </summary>
-    protected virtual bool SupportsChangeNotificationCore { get { return _supportsChangeNotificationCore; } }
+    protected virtual bool SupportsChangeNotificationCore => _supportsChangeNotificationCore;
 
     #endregion
 
@@ -47,8 +47,8 @@ namespace Csla.Core
     /// </summary>
     public bool AllowEdit
     {
-      get { return _allowEdit; }
-      protected set { _allowEdit = value; }
+      get => _allowEdit;
+      protected set => _allowEdit = value;
     }
 
     /// <summary>
@@ -57,8 +57,8 @@ namespace Csla.Core
     /// </summary>
     public bool AllowNew
     {
-      get { return _allowNew; }
-      protected set { _allowNew = value; }
+      get => _allowNew;
+      protected set => _allowNew = value;
     }
 
     /// <summary>
@@ -67,8 +67,8 @@ namespace Csla.Core
     /// </summary>
     public bool AllowRemove
     {
-      get { return _allowRemove; }
-      protected set { _allowRemove = value; }
+      get => _allowRemove;
+      protected set => _allowRemove = value;
     }
 
     /// <summary>
@@ -77,8 +77,8 @@ namespace Csla.Core
     /// </summary>
     public bool RaiseListChangedEvents
     {
-      get { return _raiseListChangedEvents; }
-      set { _raiseListChangedEvents = value; }
+      get => _raiseListChangedEvents;
+      set => _raiseListChangedEvents = value;
     }
 
     /// <summary>
@@ -123,14 +123,8 @@ namespace Csla.Core
     /// </summary>
     public event EventHandler<RemovingItemEventArgs>? RemovingItem
     {
-      add
-      {
-        _removingItemHandler = (EventHandler<RemovingItemEventArgs>?)Delegate.Combine(_removingItemHandler, value);
-      }
-      remove
-      {
-        _removingItemHandler = (EventHandler<RemovingItemEventArgs>?)Delegate.Remove(_removingItemHandler, value);
-      }
+      add => _removingItemHandler = (EventHandler<RemovingItemEventArgs>?)Delegate.Combine(_removingItemHandler, value);
+      remove => _removingItemHandler = (EventHandler<RemovingItemEventArgs>?)Delegate.Remove(_removingItemHandler, value);
     }
 
     /// <summary>
@@ -194,8 +188,8 @@ namespace Csla.Core
     /// </summary>
     public event BusyChangedEventHandler? BusyChanged
     {
-      add { _busyChanged = (BusyChangedEventHandler?)Delegate.Combine(_busyChanged, value); }
-      remove { _busyChanged = (BusyChangedEventHandler?)Delegate.Remove(_busyChanged, value); }
+      add => _busyChanged = (BusyChangedEventHandler?)Delegate.Combine(_busyChanged, value);
+      remove => _busyChanged = (BusyChangedEventHandler?)Delegate.Remove(_busyChanged, value);
     }
 
     /// <summary>
@@ -224,10 +218,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsBusy
-    {
-      get { return false; }
-    }
+    public virtual bool IsBusy => false;
 
     /// <summary>
     /// Gets the busy status for this object.
@@ -235,10 +226,7 @@ namespace Csla.Core
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
-    public virtual bool IsSelfBusy
-    {
-      get { return IsBusy; }
-    }
+    public virtual bool IsSelfBusy => IsBusy;
 
     void busy_BusyChanged(object sender, BusyChangedEventArgs e)
     {
@@ -277,8 +265,8 @@ namespace Csla.Core
     /// </summary>
     public event EventHandler<ErrorEventArgs>? UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     /// <summary>
@@ -395,14 +383,8 @@ namespace Csla.Core
     /// </summary>
     public event EventHandler<ChildChangedEventArgs>? ChildChanged
     {
-      add
-      {
-        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>?)Delegate.Combine(_childChangedHandlers, value);
-      }
-      remove
-      {
-        _childChangedHandlers = (EventHandler<ChildChangedEventArgs>?)Delegate.Remove(_childChangedHandlers, value);
-      }
+      add => _childChangedHandlers = (EventHandler<ChildChangedEventArgs>?)Delegate.Combine(_childChangedHandlers, value);
+      remove => _childChangedHandlers = (EventHandler<ChildChangedEventArgs>?)Delegate.Remove(_childChangedHandlers, value);
     }
 
     /// <summary>
@@ -474,14 +456,8 @@ namespace Csla.Core
     /// </summary>
     public event EventHandler<AddedNewEventArgs<T>>? AddedNew
     {
-      add
-      {
-        _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>?)Delegate.Combine(_addedNewHandlers, value);
-      }
-      remove
-      {
-        _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>?)Delegate.Remove(_addedNewHandlers, value);
-      }
+      add => _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>?)Delegate.Combine(_addedNewHandlers, value);
+      remove => _addedNewHandlers = (EventHandler<AddedNewEventArgs<T>>?)Delegate.Remove(_addedNewHandlers, value);
     }
 
     /// <summary>
@@ -586,10 +562,7 @@ namespace Csla.Core
     /// Use this object to suppress ListChangedEvents for an entire code block.
     /// May be nested in multiple levels for the same object.
     /// </summary>
-    public IDisposable SuppressListChangedEvents
-    {
-      get { return new SuppressListChangedEventsClass<T>(this); }
-    }
+    public IDisposable SuppressListChangedEvents => new SuppressListChangedEventsClass<T>(this);
 
     /// <summary>
     /// Handles the suppressing of raising ChangedEvents when altering the content of an ObservableBindingList.

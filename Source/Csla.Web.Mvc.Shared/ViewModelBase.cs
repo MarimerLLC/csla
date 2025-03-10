@@ -20,8 +20,8 @@ namespace Csla.Web.Mvc
   {
     object? IViewModel.ModelObject
     {
-      get { return ModelObject; }
-      set { ModelObject = (T?)value; }
+      get => ModelObject;
+      set => ModelObject = (T?)value;
     }
 
     /// <summary>

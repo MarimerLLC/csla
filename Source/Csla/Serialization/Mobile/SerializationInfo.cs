@@ -197,8 +197,8 @@ namespace Csla.Serialization.Mobile
     [DataMember]
     public Dictionary<string, ChildData> Children
     {
-      get { return _children; }
-      set { _children = value; }
+      get => _children;
+      set => _children = value;
     }
 
     private Dictionary<string, FieldData> _values = [];
@@ -208,8 +208,8 @@ namespace Csla.Serialization.Mobile
     [DataMember]
     public Dictionary<string, FieldData> Values
     {
-      get { return _values; }
-      set { _values = value; }
+      get => _values;
+      set => _values = value;
     }
 
     /// <summary>

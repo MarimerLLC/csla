@@ -71,10 +71,7 @@ namespace Csla
 
     #region Identity
 
-    int IBusinessObject.Identity
-    {
-      get { return 0; }
-    }
+    int IBusinessObject.Identity => 0;
 
     #endregion
 

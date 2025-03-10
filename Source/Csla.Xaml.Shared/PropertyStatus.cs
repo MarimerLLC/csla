@@ -130,8 +130,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public object Property
     {
-      get { return GetValue(PropertyProperty); }
-      set { SetValue(PropertyProperty, value); }
+      get => GetValue(PropertyProperty);
+      set => SetValue(PropertyProperty, value);
     }
 
     /// <summary>
@@ -299,8 +299,8 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public ObservableCollection<BrokenRule> BrokenRules
     {
-      get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
-      private set { SetValue(BrokenRulesProperty, value); }
+      get => (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty);
+      private set => SetValue(BrokenRulesProperty, value);
     }
 
 #endregion
@@ -315,7 +315,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanRead
     {
-      get { return _canRead; }
+      get => _canRead;
       protected set
       {
         if (value != _canRead)
@@ -334,7 +334,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanWrite
     {
-      get { return _canWrite; }
+      get => _canWrite;
       protected set
       {
         if (value != _canWrite)
@@ -353,7 +353,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       private set
       {
         if (value != _isBusy)
@@ -372,7 +372,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsValid
     {
-      get { return _isValid; }
+      get => _isValid;
       private set
       {
         if (value != _isValid)
@@ -393,7 +393,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public RuleSeverity RuleSeverity
     {
-      get { return _worst; }
+      get => _worst;
       private set
       {
         if (value != _worst)
@@ -412,7 +412,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public string RuleDescription
     {
-      get { return _ruleDescription; }
+      get => _ruleDescription;
       private set
       {
         if (value != _ruleDescription)

@@ -89,10 +89,7 @@ namespace Csla
 
     private int _identity = -1;
 
-    int IBusinessObject.Identity
-    {
-      get { return _identity; }
-    }
+    int IBusinessObject.Identity => _identity;
 
     private void InitializeIdentity()
     {
@@ -404,13 +401,7 @@ namespace Csla
     /// Gets a value indicating whether this collection
     /// supports change notification (always returns true).
     /// </summary>
-    protected override bool SupportsChangeNotificationCore
-    {
-      get
-      {
-        return true;
-      }
-    }
+    protected override bool SupportsChangeNotificationCore => true;
 
     Task IParent.ApplyEditChild(IEditableBusinessObject child)
     {
@@ -431,10 +422,7 @@ namespace Csla
     }
 
 
-    IParent? IParent.Parent
-    {
-      get { return null; }
-    }
+    IParent? IParent.Parent => null;
 
     #endregion
 

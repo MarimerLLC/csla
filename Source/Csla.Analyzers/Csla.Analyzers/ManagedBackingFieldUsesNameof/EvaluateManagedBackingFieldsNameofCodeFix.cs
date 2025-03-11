@@ -34,10 +34,19 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+      if (root is null)
+      {
+        return;
+      }
       var diagnostic = context.Diagnostics.First();
       var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-      var argumentSyntax = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<ArgumentSyntax>().First();
+      var parentToken = root.FindToken(diagnosticSpan.Start).Parent;
+      if (parentToken is null)
+      {
+        return;
+      }
+      var argumentSyntax = parentToken.AncestorsAndSelf().OfType<ArgumentSyntax>().First();
 
       context.RegisterCodeFix(
         CodeAction.Create(
@@ -58,6 +67,11 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
       var nameofExpression = SyntaxFactory.ParseExpression($"nameof({propertyName})");
 
       var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
+      if (root is null)
+      {
+        return document;
+      }
+
       var newRoot = root.ReplaceNode(argumentSyntax.Expression, nameofExpression);
 
       return document.WithSyntaxRoot(newRoot);

@@ -18,7 +18,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// <summary>
     /// The namespace in which the type resides
     /// </summary>
-    public string Namespace { get; set; }
+    public required string Namespace { get; init; }
 
     /// <summary>
     /// The scope of the class
@@ -28,32 +28,32 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// <summary>
     /// The name of the type, excluding any namespace
     /// </summary>
-    public string TypeName { get; set; }
+    public required string TypeName { get; init; }
 
     /// <summary>
     /// The name of the kind of type being represented
     /// </summary>
-    public string TypeKind { get; set; }
+    public required string TypeKind { get; init; }
 
     /// <summary>
     /// The fully qualified name of the type, including namespace
     /// </summary>
-    public string FullyQualifiedName { get; set; }
+    public string FullyQualifiedName { get; set; } = string.Empty;
 
     /// <summary>
     /// The container definitions for this type
     /// </summary>
-    public IList<ExtractedContainerDefinition> ContainerDefinitions { get; private set; } = new List<ExtractedContainerDefinition>();
+    public IList<ExtractedContainerDefinition> ContainerDefinitions { get; private set; } = [];
 
     /// <summary>
     /// The properties to be included in serialization
     /// </summary>
-    public IList<ExtractedPropertyDefinition> Properties { get; private set; } = new List<ExtractedPropertyDefinition>();
+    public IList<ExtractedPropertyDefinition> Properties { get; private set; } = [];
 
     /// <summary>
     /// The fields to be included in serialization
     /// </summary>
-    public IList<ExtractedFieldDefinition> Fields { get; private set; } = new List<ExtractedFieldDefinition>();
+    public IList<ExtractedFieldDefinition> Fields { get; private set; } = [];
 
   }
 

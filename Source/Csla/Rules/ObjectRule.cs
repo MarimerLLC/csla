@@ -29,10 +29,7 @@ namespace Csla.Rules
     /// </summary>
     public override IPropertyInfo? PrimaryProperty
     {
-      get
-      {
-        return null;
-      }
+      get => null;
       set
       {
         if (value != null)
@@ -50,7 +47,7 @@ namespace Csla.Rules
     /// </value>
     public bool CanRunInCheckRules
     {
-      get { return (RunMode & RunModes.DenyCheckRules) == 0; }
+      get => (RunMode & RunModes.DenyCheckRules) == 0;
       set
       {
         if (value && !CanRunInCheckRules)

@@ -58,8 +58,8 @@ namespace Csla
     /// </summary>
     public ClaimsPrincipal Principal
     {
-      get { return (ClaimsPrincipal)User; }
-      set { User = value; }
+      get => (ClaimsPrincipal)User;
+      set => User = value;
     }
 
     /// <summary>
@@ -75,8 +75,8 @@ namespace Csla
     [AllowNull]
     public IPrincipal User
     {
-      get { return ContextManager.GetUser(); }
-      set { ContextManager.SetUser(value ?? new ClaimsPrincipal(new ClaimsIdentity())); }
+      get => ContextManager.GetUser();
+      set => ContextManager.SetUser(value ?? new ClaimsPrincipal(new ClaimsIdentity()));
     }
 
     /// <summary>
@@ -266,10 +266,7 @@ namespace Csla
         var ruleSet = (string?)ClientContext.GetValueOrNull("__ruleSet");
         return string.IsNullOrEmpty(ruleSet) ? DefaultRuleSet : ruleSet!;
       }
-      set
-      {
-        ClientContext["__ruleSet"] = value;
-      }
+      set => ClientContext["__ruleSet"] = value;
     }
 
     #endregion

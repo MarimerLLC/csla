@@ -292,24 +292,12 @@ namespace Csla.Data
     /// <summary>
     /// Returns the depth property value from the datareader.
     /// </summary>
-    public int Depth
-    {
-      get
-      {
-        return DataReader.Depth;
-      }
-    }
+    public int Depth => DataReader.Depth;
 
     /// <summary>
     /// Returns the FieldCount property from the datareader.
     /// </summary>
-    public int FieldCount
-    {
-      get
-      {
-        return DataReader.FieldCount;
-      }
-    }
+    public int FieldCount => DataReader.FieldCount;
 
     /// <summary>
     /// Gets a boolean value from the datareader.
@@ -783,13 +771,7 @@ namespace Csla.Data
     /// <summary>
     /// Returns the IsClosed property value from the datareader.
     /// </summary>
-    public bool IsClosed
-    {
-      get
-      {
-        return DataReader.IsClosed;
-      }
-    }
+    public bool IsClosed => DataReader.IsClosed;
 
     /// <summary>
     /// Invokes the IsDBNull method of the underlying datareader.
@@ -855,15 +837,9 @@ namespace Csla.Data
     /// <summary>
     /// Returns the RecordsAffected property value from the underlying datareader.
     /// </summary>
-    public int RecordsAffected
-    {
-      get
-      {
-        return DataReader.RecordsAffected;
-      }
-    }
+    public int RecordsAffected => DataReader.RecordsAffected;
 
-#region IDisposable Support
+    #region IDisposable Support
 
     private bool _disposedValue; // To detect redundant calls
 

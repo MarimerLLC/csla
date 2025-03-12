@@ -21,7 +21,7 @@ namespace Csla
     /// </summary>
     public string? RoutingTag
     {
-      get { return _routingTag; }
+      get => _routingTag;
       set
       {
         if (!string.IsNullOrWhiteSpace(value))

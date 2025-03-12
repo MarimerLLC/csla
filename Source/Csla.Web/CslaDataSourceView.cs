@@ -240,35 +240,20 @@ namespace Csla.Web
     /// Gets a value indicating whether the data source supports
     /// paging of the data.
     /// </summary>
-    public override bool CanPage
-    {
-      get 
-      {
-        return TypeSupportsPaging;
-      }
-    }
+    public override bool CanPage => TypeSupportsPaging;
 
     /// <summary>
     /// Gets a value indicating whether the data source can
     /// retrieve the total number of rows of data. Always
     /// returns true.
     /// </summary>
-    public override bool CanRetrieveTotalRowCount
-    {
-      get { return true; }
-    }
+    public override bool CanRetrieveTotalRowCount => true;
 
     /// <summary>
     /// Gets a alue indicating whether the data source supports
     /// sorting of the data. Always returns false.
     /// </summary>
-    public override bool CanSort
-    {
-      get 
-      {
-        return TypeSupportsSorting;
-      }
-    }
+    public override bool CanSort => TypeSupportsSorting;
 
     #endregion
 

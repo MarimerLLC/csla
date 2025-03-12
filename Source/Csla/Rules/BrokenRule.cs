@@ -29,64 +29,43 @@ namespace Csla.Rules
     /// Provides access to the name of the broken rule.
     /// </summary>
     /// <value>The name of the rule.</value>
-    public string RuleName
-    {
-      get { return _ruleName; }
-    }
+    public string RuleName => _ruleName;
 
     /// <summary>
     /// Provides access to the description of the broken rule.
     /// </summary>
     /// <value>The description of the rule.</value>
-    public string Description
-    {
-      get { return _description; }
-    }
+    public string Description => _description;
 
     /// <summary>
     /// Provides access to the property affected by the broken rule.
     /// </summary>
     /// <value>The property affected by the rule.</value>
-    public string? Property
-    {
-      get { return _property; }
-    }
+    public string? Property => _property;
 
     /// <summary>
     /// Gets the severity of the broken rule.
     /// </summary>
     /// <value></value>
     /// <remarks></remarks>
-    public RuleSeverity Severity
-    {
-      get { return _severity; }
-    }
+    public RuleSeverity Severity => _severity;
 
     /// <summary>
     /// Gets or sets the origin property.
     /// </summary>
     /// <value>The origin property.</value>
-    public string? OriginProperty
-    {
-      get { return _originProperty; }
-    }
+    public string? OriginProperty => _originProperty;
 
     /// <summary>
     /// Gets or sets the broken rule priority.
     /// </summary>
-    public int Priority
-    {
-      get { return _priority; }
-    }
+    public int Priority => _priority;
 
     /// <summary>
     /// Gets or sets the DisplayIndex property.
     /// </summary>
     /// <value>The DisplayIndex property.</value>
-    public int DisplayIndex
-    {
-      get { return _displayIndex; }
-    }
+    public int DisplayIndex => _displayIndex;
 
     /// <summary>
     /// Creates an instance of this type.

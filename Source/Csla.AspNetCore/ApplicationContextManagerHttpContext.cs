@@ -175,10 +175,7 @@ namespace Csla.AspNetCore
     /// <exception cref="InvalidOperationException">The underlying <see cref="HttpContext"/> is <see langword="null"/>.</exception>
     public virtual ApplicationContext? ApplicationContext
     {
-      get
-      {
-        return (ApplicationContext?)HttpContext?.Items[_applicationContextName];
-      }
+      get => (ApplicationContext?)HttpContext?.Items[_applicationContextName];
       set
       {
         ThrowIfHttpContextIsNull();

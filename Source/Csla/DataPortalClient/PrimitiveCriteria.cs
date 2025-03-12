@@ -39,8 +39,8 @@ namespace Csla.DataPortalClient
     /// </summary>
     public object Value
     {
-      get { return _value; }
-      private set { _value = value; }
+      get => _value;
+      private set => _value = value;
     }
 
     #region IMobileObject Members

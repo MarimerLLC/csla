@@ -487,11 +487,9 @@ namespace Csla.Core
       if (property is null)
         throw new ArgumentNullException(nameof(property));
 
-      var result = true;
-
       VerifyAuthorizationCache();
 
-      if (!_readResultCache!.TryGetValue(property.Name, out result))
+      if (!_readResultCache!.TryGetValue(property.Name, out var result))
       {
         result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, property);
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ReadProperty, property))
@@ -567,11 +565,9 @@ namespace Csla.Core
       if (property is null)
         throw new ArgumentNullException(nameof(property));
 
-      bool result = true;
-
       VerifyAuthorizationCache();
 
-      if (!_writeResultCache!.TryGetValue(property.Name, out result))
+      if (!_writeResultCache!.TryGetValue(property.Name, out var result))
       {
         result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.WriteProperty, property);
         if (BusinessRules.CachePermissionResult(AuthorizationActions.WriteProperty, property))
@@ -671,11 +667,9 @@ namespace Csla.Core
       if (method is null)
         throw new ArgumentNullException(nameof(method));
 
-      bool result = true;
-
       VerifyAuthorizationCache();
 
-      if (!_executeResultCache!.TryGetValue(method.Name, out result))
+      if (!_executeResultCache!.TryGetValue(method.Name, out var result))
       {
         result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ExecuteMethod, method);
         if (BusinessRules.CachePermissionResult(AuthorizationActions.ExecuteMethod, method))

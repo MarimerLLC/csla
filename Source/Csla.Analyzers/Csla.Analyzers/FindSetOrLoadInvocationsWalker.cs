@@ -8,7 +8,7 @@ namespace Csla.Analyzers
   internal sealed class FindSetOrLoadInvocationsWalker
     : CSharpSyntaxWalker
   {
-    internal FindSetOrLoadInvocationsWalker(SyntaxNode node, SemanticModel model)
+    internal FindSetOrLoadInvocationsWalker(SyntaxNode? node, SemanticModel model)
     {
       Model = model;
       Visit(node);
@@ -17,15 +17,14 @@ namespace Csla.Analyzers
     public override void VisitInvocationExpression(InvocationExpressionSyntax node)
     {
       var symbol = Model.GetSymbolInfo(node);
-      var methodSymbol = symbol.Symbol as IMethodSymbol;
 
-      if (methodSymbol.IsPropertyInfoManagementMethod())
+      if (symbol.Symbol is IMethodSymbol methodSymbol && methodSymbol.IsPropertyInfoManagementMethod())
       {
         Invocation = node;
       }
     }
 
-    internal InvocationExpressionSyntax Invocation { get; private set; }
+    internal InvocationExpressionSyntax? Invocation { get; private set; }
     private SemanticModel Model { get; }
   }
 }

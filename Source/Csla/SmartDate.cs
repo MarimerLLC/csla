@@ -706,9 +706,6 @@ namespace Csla
 
     private static bool TryStringToDate(string? value, EmptyValue emptyValue, ref DateTime result)
     {
-      
-      DateTime tmp;
-
       // call custom parser if set...
       var tmpValue = _customParser?.Invoke(value);
       // i f custom parser returned a value then parsing succeeded
@@ -723,7 +720,7 @@ namespace Csla
         result = emptyValue == EmptyValue.MinDate ? DateTime.MinValue : DateTime.MaxValue;
         return true;
       }
-      if (DateTime.TryParse(value, out tmp))
+      if (DateTime.TryParse(value, out var tmp))
       {
         result = tmp;
         return true;

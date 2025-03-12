@@ -35,21 +35,32 @@ namespace Csla.Analyzers
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+      if (root is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var methodNode = root.FindNode(diagnostic.Location.SourceSpan) as MethodDeclarationSyntax;
+      if (methodNode is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
       await AddCodeFixAsync(context, root, diagnostic, methodNode);
     }
 
-    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root,
-      Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
+    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root, Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
     {
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var contextParameter = methodSymbol.Parameters[0];
 
       var newRoot = root;
@@ -60,10 +71,18 @@ namespace Csla.Analyzers
           return model.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
             invocationSymbol.Name == "Complete" && SymbolEqualityComparer.Default.Equals(invocationSymbol.ContainingType, contextParameter.Type);
         })
-        .Select(invocation => invocation.FindParent<ExpressionStatementSyntax>());
+        .Select(invocation => invocation.FindParent<ExpressionStatementSyntax>())
+        .Where(i => i is not null)
+        .Select(s => s!)
+        ;
 
-      newRoot = newRoot.RemoveNodes(completeInvocations, SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepDirectives)
-        .WithAdditionalAnnotations(Formatter.Annotation);
+      newRoot = newRoot.RemoveNodes(completeInvocations, SyntaxRemoveOptions.KeepExteriorTrivia | SyntaxRemoveOptions.KeepDirectives);
+      if (newRoot is null)
+      {
+        return;
+      }
+      
+      newRoot = newRoot.WithAdditionalAnnotations(Formatter.Annotation);
 
       context.RegisterCodeFix(
         CodeAction.Create(

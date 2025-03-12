@@ -223,11 +223,9 @@ namespace Csla
       if (property is null)
         throw new ArgumentNullException(nameof(property));
 
-      bool result = true;
-
       VerifyAuthorizationCache();
 
-      if (!_readResultCache!.TryGetValue(property.Name, out result))
+      if (!_readResultCache!.TryGetValue(property.Name, out var result))
       {
         result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, property);
         // store value in cache
@@ -334,11 +332,9 @@ namespace Csla
       if (method is null)
         throw new ArgumentNullException(nameof(method));
 
-      bool result = true;
-
       VerifyAuthorizationCache();
 
-      if (!_executeResultCache!.TryGetValue(method.Name, out result))
+      if (!_executeResultCache!.TryGetValue(method.Name, out var result))
       {
         result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ExecuteMethod, method);
         _executeResultCache.AddOrUpdate(method.Name, result, (_, _) => { return result; });

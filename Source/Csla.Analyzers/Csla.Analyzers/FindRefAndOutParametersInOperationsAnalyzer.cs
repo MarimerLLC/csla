@@ -46,14 +46,17 @@ namespace Csla.Analyzers
       if (!methodNode.ContainsDiagnostics)
       {
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+        if (methodSymbol is null)
+        {
+          return;
+        }
         var typeSymbol = methodSymbol.ContainingType;
 
         if (typeSymbol.IsBusinessBase() && methodSymbol.IsDataPortalOperation())
         {
           foreach(var parameterSymbol in methodSymbol.Parameters)
           {
-            if(parameterSymbol.RefKind == RefKind.Out ||
-              parameterSymbol.RefKind == RefKind.Ref)
+            if(parameterSymbol.RefKind == RefKind.Out || parameterSymbol.RefKind == RefKind.Ref)
             {
               context.ReportDiagnostic(Diagnostic.Create(
                 incorrectParameterRule, parameterSymbol.Locations[0]));

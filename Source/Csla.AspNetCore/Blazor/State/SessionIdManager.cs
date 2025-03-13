@@ -16,7 +16,6 @@ namespace Csla.Blazor.State
   /// for state management using a
   /// browser cookie and Guid value.
   /// </summary>
-  /// <param name="httpContextAccessor"></param>
   public class SessionIdManager(IHttpContextAccessor httpContextAccessor) : ISessionIdManager
   {
     private readonly IHttpContextAccessor HttpContextAccessor = httpContextAccessor;

@@ -29,7 +29,6 @@ namespace Csla.AspNetCore.Blazor
     /// </summary>
     /// <param name="hca">IHttpContextAccessor service</param>
     /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
-    /// <param name="activeCircuitState"></param>
     /// <exception cref="ArgumentNullException"><paramref name="hca"/>, <paramref name="authenticationStateProvider"/> or <paramref name="activeCircuitState"/> is <see langword="null"/>.</exception>
     public ApplicationContextManagerBlazor(IHttpContextAccessor hca, AuthenticationStateProvider authenticationStateProvider, ActiveCircuitState activeCircuitState)
     {
@@ -189,7 +188,6 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Gets the client context.
     /// </summary>
-    /// <param name="executionLocation"></param>
     /// <exception cref="InvalidOperationException"><see cref="ApplicationContext"/> is <see langword="null"/>.</exception>
     public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
@@ -213,8 +211,6 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Sets the client context.
     /// </summary>
-    /// <param name="clientContext"></param>
-    /// <param name="executionLocation"></param>
     /// <exception cref="InvalidOperationException"><see cref="ApplicationContext"/> is <see langword="null"/>.</exception>
     public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
@@ -227,7 +223,6 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Dispose this object's resources.
     /// </summary>
-    /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
     {
       if (!disposedValue)

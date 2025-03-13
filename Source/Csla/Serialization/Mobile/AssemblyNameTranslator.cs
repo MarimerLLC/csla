@@ -93,7 +93,6 @@ namespace Csla.Serialization.Mobile
     /// translating the assembly name codes to the platform-
     /// specific assembly name.
     /// </summary>
-    /// <param name="typeName"></param>
     public static string GetAssemblyQualifiedName(string typeName)
     {
       var result = typeName;

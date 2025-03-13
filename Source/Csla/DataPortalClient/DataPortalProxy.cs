@@ -21,7 +21,6 @@ namespace Csla.DataPortalClient
   /// </summary>
   public abstract class DataPortalProxy : IDataPortalProxy
   {
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     protected DataPortalProxy(ApplicationContext applicationContext)
     {

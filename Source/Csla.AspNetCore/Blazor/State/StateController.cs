@@ -20,8 +20,6 @@ namespace Csla.AspNetCore.Blazor.State
   /// Gets and puts the current user session data
   /// from the Blazor wasm client components.
   /// </summary>
-  /// <param name="applicationContext"></param>
-  /// <param name="sessionManager"></param>
   public class StateController(ApplicationContext applicationContext, ISessionManager sessionManager) : ControllerBase
   {
     /// <summary>
@@ -65,7 +63,6 @@ namespace Csla.AspNetCore.Blazor.State
     /// Sets the current user session data from a
     /// serialized format.
     /// </summary>
-    /// <param name="updatedSessionData"></param>
     [HttpPut]
     public virtual void Put(byte[] updatedSessionData)
     {

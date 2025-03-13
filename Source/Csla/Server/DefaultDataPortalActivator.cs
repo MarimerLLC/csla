@@ -18,7 +18,6 @@ namespace Csla.Server
   /// <remarks>
   /// Creates an instance of the type.
   /// </remarks>
-  /// <param name="serviceProvider"></param>
   /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
   public class DefaultDataPortalActivator(IServiceProvider serviceProvider) : IDataPortalActivator
   {

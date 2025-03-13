@@ -44,8 +44,6 @@ namespace Csla.Configuration
     /// <summary>
     /// Configure the data portal server to use the RabbitMq channel.
     /// </summary>
-    /// <param name="config"></param>
-    /// <param name="options"></param>
     /// <exception cref="ArgumentNullException"></exception>
     public static DataPortalServerOptions UseRabbitMqPortal(this DataPortalServerOptions config, Action<RabbitMqPortalOptions>? options)
     {

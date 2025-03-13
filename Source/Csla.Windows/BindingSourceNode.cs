@@ -149,7 +149,6 @@ namespace Csla.Windows
     /// <summary>
     /// Cancels changes to the business object.
     /// </summary>
-    /// <param name="businessObject"></param>
     public void Cancel(object businessObject)
     {
       SetEvents(false);

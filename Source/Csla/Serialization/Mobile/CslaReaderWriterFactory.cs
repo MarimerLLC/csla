@@ -35,7 +35,6 @@ namespace Csla.Serialization.Mobile
     /// Get an instance of the writer that is used to write data to serialization stream
     /// </summary>
     /// <returns>Instance of the writer that is used to write data to serialization stream</returns>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static ICslaWriter GetCslaWriter(ApplicationContext applicationContext)
     {
@@ -49,7 +48,6 @@ namespace Csla.Serialization.Mobile
     /// Get an instance of the reader that is used to read data to serialization stream
     /// </summary>
     /// <returns>Instance of the reader that is used to read data to serialization stream</returns>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static ICslaReader GetCslaReader(ApplicationContext applicationContext)
     {

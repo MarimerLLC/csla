@@ -18,7 +18,6 @@ namespace Csla.AspNetCore.Blazor
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="activeCircuitState"></param>
     public ActiveCircuitHandler(ActiveCircuitState activeCircuitState)
     {
       _activeCircuitState = activeCircuitState;

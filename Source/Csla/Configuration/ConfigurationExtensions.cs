@@ -75,7 +75,6 @@ namespace Csla.Configuration
     /// <summary>
     /// Add CSLA .NET services for use by console applications.
     /// </summary>
-    /// <param name="options"></param>
     /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddConsoleApp(this CslaOptions options)
     {
@@ -85,8 +84,6 @@ namespace Csla.Configuration
     /// <summary>
     /// Add CSLA .NET services for use by console applications.
     /// </summary>
-    /// <param name="options"></param>
-    /// <param name="config"></param>
     /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddConsoleApp(this CslaOptions options, Action<ConsoleOptions>? config)
     {

@@ -14,7 +14,6 @@
     /// the context has been set, and before
     /// authorization.
     /// </summary>
-    /// <param name="e"></param>
     /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     Task InitializeAsync(InterceptArgs e);
     /// <summary>
@@ -22,7 +21,6 @@
     /// data portal invocation for success
     /// and exception scenarios.
     /// </summary>
-    /// <param name="e"></param>
     /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     void Complete(InterceptArgs e);
   }
@@ -75,11 +73,6 @@
     /// <summary>
     /// Initializes a new instance of <see cref="InterceptArgs"/>-object.
     /// </summary>
-    /// <param name="objectType"></param>
-    /// <param name="parameter"></param>
-    /// <param name="result"></param>
-    /// <param name="operation"></param>
-    /// <param name="isSync"></param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="result"/> is <see langword="null"/>.</exception>
     public InterceptArgs(Type objectType, object? parameter, DataPortalResult result, DataPortalOperations operation, bool isSync) : this(objectType, parameter, operation, isSync)
     {
@@ -89,11 +82,6 @@
     /// <summary>
     /// Initializes a new instance of <see cref="InterceptArgs"/>-object.
     /// </summary>
-    /// <param name="objectType"></param>
-    /// <param name="parameter"></param>
-    /// <param name="exception"></param>
-    /// <param name="operation"></param>
-    /// <param name="isSync"></param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="exception"/> is <see langword="null"/>.</exception>
     public InterceptArgs(Type objectType, object? parameter, Exception exception, DataPortalOperations operation, bool isSync) : this(objectType, parameter, operation, isSync)
     {
@@ -103,10 +91,6 @@
     /// <summary>
     /// Initializes a new instance of <see cref="InterceptArgs"/>-object.
     /// </summary>
-    /// <param name="objectType"></param>
-    /// <param name="parameter"></param>
-    /// <param name="operation"></param>
-    /// <param name="isSync"></param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public InterceptArgs(Type objectType, object? parameter, DataPortalOperations operation, bool isSync)
     {

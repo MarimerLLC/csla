@@ -29,7 +29,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     public ViewModel(ApplicationContext applicationContext)
     {
       ApplicationContext = applicationContext;
@@ -107,7 +106,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Unhooks changed event handlers from the model.
     /// </summary>
-    /// <param name="model"></param>
     protected void UnhookChangedEvents(T model)
     {
       if (model is INotifyPropertyChanged npc)
@@ -123,7 +121,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Hooks changed events on the model.
     /// </summary>
-    /// <param name="model"></param>
     private void HookChangedEvents(T model)
     {
       if (model is INotifyPropertyChanged npc)
@@ -155,8 +152,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Raises the ModelPropertyChanged event.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     protected virtual void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
       ModelPropertyChanged?.Invoke(this, e);
@@ -165,8 +160,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Raises the ModelChildChanged event.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     protected virtual void OnModelChildChanged(object sender, ChildChangedEventArgs e)
     {
       ModelChildChanged?.Invoke(this, e);
@@ -175,8 +168,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Raises the ModelCollectionChanged event.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
     protected virtual void OnModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
       ModelCollectionChanged?.Invoke(this, e);

@@ -13,7 +13,6 @@ namespace Csla.Windows
   /// <summary>
   /// ApplicationContextManager for Windows Forms applications
   /// </summary>
-  /// <param name="securityOptions"></param>
   public class ApplicationContextManager(SecurityOptions securityOptions) : Csla.Core.ApplicationContextManager
   {
     private static IPrincipal _principal;

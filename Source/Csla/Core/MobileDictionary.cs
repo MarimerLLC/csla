@@ -105,7 +105,6 @@ namespace Csla.Core
     /// <summary>
     /// Add property values to the serialization stream.
     /// </summary>
-    /// <param name="info"></param>
     protected virtual void GetState(SerializationInfo info)
     { }
 
@@ -146,7 +145,6 @@ namespace Csla.Core
     /// <summary>
     /// Set property values from serialization stream.
     /// </summary>
-    /// <param name="info"></param>
     protected virtual void SetState(SerializationInfo info)
     { }
 

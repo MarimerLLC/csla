@@ -26,9 +26,6 @@ namespace Csla.Server
     /// Creates an instance of the type
     /// </summary>
     /// <param name="applicationContext">ApplicationContext</param>
-    /// <param name="activator"></param>
-    /// <param name="exceptionInspector"></param>
-    /// <param name="dataPortalOptions"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="activator"/>, <paramref name="exceptionInspector"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public SimpleDataPortal(ApplicationContext applicationContext, IDataPortalActivator activator, IDataPortalExceptionInspector exceptionInspector, Configuration.DataPortalOptions dataPortalOptions)
     {

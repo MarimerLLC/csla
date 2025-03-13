@@ -3192,11 +3192,8 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Load a property from an async method. 
+    /// Load a property from an async method.
     /// </summary>
-    /// <typeparam name="R"></typeparam>
-    /// <param name="property"></param>
-    /// <param name="factory"></param>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
     protected void LoadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] R>(PropertyInfo<R> property, Task<R> factory)
     {

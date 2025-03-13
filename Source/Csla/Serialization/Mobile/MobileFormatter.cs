@@ -16,12 +16,11 @@ namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// Serializes and deserializes objects
-  /// at the field level. 
+  /// at the field level.
   /// </summary>
   /// <remarks>
   /// Creates an instance of the type.
   /// </remarks>
-  /// <param name="applicationContext"></param>
 #if TESTING
   [DebuggerStepThrough]
 #endif

@@ -54,7 +54,6 @@ public static class XamlConfigurationExtensions
   /// <summary>
   /// Initializes CSLA for use by Xaml apps.
   /// </summary>
-  /// <param name="host"></param>
   public static IHost UseCsla(this IHost host)
   {
     // create instance of ApplicationContext so the

@@ -13,7 +13,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
   [Generator]
   public class IncrementalSerializationPartialsGenerator : IIncrementalGenerator
   {
-    /// <param name="context"></param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
       // Register a syntax receiver to collect information during the initial parsing phase

@@ -36,7 +36,6 @@ public class SessionMessage : MobileObject
   /// <summary>
   /// Initializes a new instance of <see cref="SessionMessage"/>.
   /// </summary>
-  /// <param name="session"></param>
   /// <exception cref="ArgumentNullException"><paramref name="session"/> is <see langword="null"/>.</exception>
   public SessionMessage(Session session)
   {

@@ -20,10 +20,6 @@ namespace Csla.Server
   {
     private readonly DataPortalSelector _dataPortalSelector;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="dataPortalSelector"></param>
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalSelector"/> is <see langword="null"/>.</exception>
     public DataPortalBroker(DataPortalSelector dataPortalSelector)
     {

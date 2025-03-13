@@ -130,7 +130,6 @@ namespace Csla.Blazor.WebAssembly
     /// <summary>
     /// Gets the client context.
     /// </summary>
-    /// <param name="executionLocation"></param>
     public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       IContextDictionary clientContext;
@@ -153,7 +152,6 @@ namespace Csla.Blazor.WebAssembly
     /// Sets the client context.
     /// </summary>
     /// <param name="clientContext">Client context.</param>
-    /// <param name="executionLocation"></param>
     public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
@@ -164,7 +162,6 @@ namespace Csla.Blazor.WebAssembly
     /// <summary>
     /// Dispose this object's resources.
     /// </summary>
-    /// <param name="disposing"></param>
     protected virtual void Dispose(bool disposing)
     {
       if (!disposedValue)

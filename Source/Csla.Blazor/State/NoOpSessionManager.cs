@@ -44,7 +44,6 @@ namespace Csla.Blazor.State
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <param name="timeout"></param>
     /// <exception cref="NotSupportedException"></exception>
     public Task<Session> RetrieveSession(TimeSpan timeout)
     { throw new NotSupportedException(); }
@@ -67,7 +66,6 @@ namespace Csla.Blazor.State
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <param name="timeout"></param>
     /// <exception cref="NotSupportedException"></exception>
     public Task SendSession(TimeSpan timeout)
     { throw new NotSupportedException(); }

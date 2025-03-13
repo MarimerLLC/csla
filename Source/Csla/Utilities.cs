@@ -296,7 +296,6 @@ namespace Csla
     /// <summary>
     /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <param name="obj">Object containing method.</param>
     /// <param name="methodName">Name of the method.</param>
@@ -313,7 +312,6 @@ namespace Csla
     /// <summary>
     /// Throws an exception if a synchronous data portal call is trying to invoke an asynchronous method on the client.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <param name="obj">Object containing method.</param>
     /// <param name="methodName">Name of the method.</param>

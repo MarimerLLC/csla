@@ -25,10 +25,6 @@ namespace Csla.Server
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="simpleDataPortal"></param>
-    /// <param name="factoryDataPortal"></param>
-    /// <param name="dataPortalOptions"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="simpleDataPortal"/>, <paramref name="factoryDataPortal"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortalSelector(ApplicationContext applicationContext, SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal, Configuration.DataPortalOptions dataPortalOptions)
     {

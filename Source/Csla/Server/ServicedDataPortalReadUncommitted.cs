@@ -25,7 +25,6 @@ namespace Csla.Server
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="dataPortalBroker"></param>
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> is <see langword="null"/>.</exception>
     public ServicedDataPortalReadUncommitted(DataPortalBroker dataPortalBroker)
     {

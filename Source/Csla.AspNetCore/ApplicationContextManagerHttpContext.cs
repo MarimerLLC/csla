@@ -37,8 +37,6 @@ namespace Csla.AspNetCore
     /// with the required IServiceProvider.
     /// </summary>
     /// <param name="httpContextAccessor">HttpContext accessor</param>
-    /// <param name="runtimeInfo"></param>
-    /// <param name="activeCircuitState"></param>
     /// <exception cref="ArgumentNullException"><paramref name="httpContextAccessor"/>, <paramref name="runtimeInfo"/> or <paramref name="activeCircuitState"/> is <see langword="null"/>.</exception>
     public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor, IRuntimeInfo runtimeInfo, Blazor.ActiveCircuitState activeCircuitState)
     {
@@ -54,7 +52,6 @@ namespace Csla.AspNetCore
     /// with the required IServiceProvider.
     /// </summary>
     /// <param name="httpContextAccessor">HttpContext accessor</param>
-    /// <param name="runtimeInfo"></param>
     public ApplicationContextManagerHttpContext(IHttpContextAccessor httpContextAccessor, IRuntimeInfo runtimeInfo)
     {
       HttpContext = httpContextAccessor.HttpContext;
@@ -149,7 +146,6 @@ namespace Csla.AspNetCore
     /// <summary>
     /// Gets the client context.
     /// </summary>
-    /// <param name="executionLocation"></param>
     public IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return (IContextDictionary?)HttpContext?.Items[_clientContextName];
@@ -159,7 +155,6 @@ namespace Csla.AspNetCore
     /// Sets the client context.
     /// </summary>
     /// <param name="clientContext">Client context.</param>
-    /// <param name="executionLocation"></param>
     /// <exception cref="InvalidOperationException">The underlying <see cref="HttpContext"/> is <see langword="null"/>.</exception>
     public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {

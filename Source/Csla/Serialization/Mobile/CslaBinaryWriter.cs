@@ -14,7 +14,6 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Create new instance of CslaBinaryWriter class
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaBinaryWriter(ApplicationContext applicationContext)
     {

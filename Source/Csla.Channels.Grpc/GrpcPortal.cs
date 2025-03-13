@@ -32,7 +32,6 @@ namespace Csla.Channels.Grpc
     /// Creates an instance of the type
     /// </summary>
     /// <param name="dataPortal">Data portal server service</param>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="dataPortal"/> is <see langword="null"/>.</exception>
     public GrpcPortal(IDataPortalServer dataPortal, ApplicationContext applicationContext)
     {

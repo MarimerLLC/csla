@@ -14,7 +14,6 @@ namespace Csla.Xaml
   /// <summary>
   /// ApplicationContextManager for WPF applications
   /// </summary>
-  /// <param name="securityOptions"></param>
   public class ApplicationContextManager(SecurityOptions securityOptions) : Csla.Core.ApplicationContextManager
   {
     private static IPrincipal _principal = null;

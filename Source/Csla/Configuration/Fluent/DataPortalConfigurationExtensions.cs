@@ -30,8 +30,6 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaDataPortalConfiguration
     /// </summary>
-    /// <param name="config"></param>
-    /// <param name="options"></param>
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions DataPortal(this CslaOptions config, Action<DataPortalOptions>? options)
     {
@@ -45,8 +43,6 @@ namespace Csla.Configuration
     /// <summary>
     /// Extension method for CslaDataPortalConfiguration
     /// </summary>
-    /// <param name="config"></param>
-    /// <param name="options"></param>
     /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static DataPortalOptions AddClientSideDataPortal(this DataPortalOptions config, Action<DataPortalClientOptions>? options)
     {

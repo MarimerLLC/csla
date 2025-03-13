@@ -18,9 +18,6 @@ namespace Csla.Core.TypeConverters
     /// Determines if a value can be converted
     /// to a SmartDate.
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="sourceType"></param>
-    /// <remarks></remarks>
     public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
     {
       if (sourceType == typeof(string))
@@ -37,10 +34,6 @@ namespace Csla.Core.TypeConverters
     /// <summary>
     /// Converts values to a SmartDate.
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="culture"></param>
-    /// <param name="value"></param>
-    /// <remarks></remarks>
     public override object? ConvertFrom(ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object value)
     {
       if (value is string s)
@@ -60,9 +53,6 @@ namespace Csla.Core.TypeConverters
     /// Determines if a SmartDate can be
     /// convert to a value.
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="destinationType"></param>
-    /// <remarks></remarks>
     public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
     {
       if (destinationType == typeof(string))
@@ -79,11 +69,6 @@ namespace Csla.Core.TypeConverters
     /// <summary>
     /// Converts a SmartDate to a value.
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="culture"></param>
-    /// <param name="value"></param>
-    /// <param name="destinationType"></param>
-    /// <remarks></remarks>
     public override object? ConvertTo(ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType)
     {
       if (value is SmartDate sd)

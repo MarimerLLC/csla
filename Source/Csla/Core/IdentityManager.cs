@@ -51,8 +51,6 @@ namespace Csla.Core
     /// That ensures that new object get a unique identity within the collection.
     /// </summary>
     /// <typeparam name="T">Item type of the list</typeparam>
-    /// <param name="parent"></param>
-    /// <param name="items"></param>
     internal static void EnsureNextIdentityValueIsUnique<T>(IParent parent, IReadOnlyCollection<T> items) where T: IBusinessObject
     {
       // No items means we do not have to worry about any identity duplicates

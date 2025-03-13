@@ -30,7 +30,6 @@ namespace Csla
     /// <summary>
     /// Creates a new instance of the type
     /// </summary>
-    /// <param name="applicationContextAccessor"></param>
     public ApplicationContext(ApplicationContextAccessor applicationContextAccessor)
     {
       ApplicationContextAccessor = applicationContextAccessor;

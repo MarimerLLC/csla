@@ -23,7 +23,6 @@ namespace Csla.Channels.Http
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="httpClient">HttpClient instance</param>
     /// <param name="options">Options for HttpProxy</param>
     /// <param name="dataPortalOptions">Data portal options</param>

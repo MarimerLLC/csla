@@ -62,15 +62,9 @@ namespace Csla
         Reset();
       }
 
-      public T Current
-      {
-        get { return _list[_filterIndex[_index].BaseIndex]; }
-      }
+      public T Current => _list[_filterIndex[_index].BaseIndex];
 
-      object IEnumerator.Current
-      {
-        get { return _list[_filterIndex[_index].BaseIndex]; }
-      }
+      object IEnumerator.Current => _list[_filterIndex[_index].BaseIndex];
 
       public bool MoveNext()
       {
@@ -416,10 +410,7 @@ namespace Csla
     /// Returns True since this object does raise the
     /// ListChanged event.
     /// </summary>
-    public bool SupportsChangeNotification
-    {
-      get { return true; }
-    }
+    public bool SupportsChangeNotification => true;
 
     /// <summary>
     /// Implemented by IList source object.
@@ -494,15 +485,9 @@ namespace Csla
       }
     }
 
-    bool ICollection.IsSynchronized
-    {
-      get { return false; }
-    }
+    bool ICollection.IsSynchronized => false;
 
-    object ICollection.SyncRoot
-    {
-      get { return SourceList; }
-    }
+    object ICollection.SyncRoot => SourceList;
 
     IEnumerator IEnumerable.GetEnumerator()
     {
@@ -618,30 +603,18 @@ namespace Csla
       Insert(index, (T)value);
     }
 
-    bool IList.IsFixedSize
-    {
-      get { return false; }
-    }
+    bool IList.IsFixedSize => false;
 
     /// <summary>
     /// Gets a value indicating whether the list
     /// is read-only.
     /// </summary>
-    public bool IsReadOnly
-    {
-      get { return SourceList.IsReadOnly; }
-    }
+    public bool IsReadOnly => SourceList.IsReadOnly;
 
     object? IList.this[int index]
     {
-      get
-      {
-        return this[index];
-      }
-      set
-      {
-        this[index] = (T)(value ?? throw new ArgumentNullException(nameof(value)));
-      }
+      get => this[index];
+      set => this[index] = (T)(value ?? throw new ArgumentNullException(nameof(value)));
     }
 
     /// <summary>

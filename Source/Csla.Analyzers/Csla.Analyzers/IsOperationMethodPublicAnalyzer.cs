@@ -51,6 +51,10 @@ namespace Csla.Analyzers
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation() &&
@@ -63,7 +67,7 @@ namespace Csla.Analyzers
         }
         else
         {
-          var properties = new Dictionary<string, string>
+          var properties = new Dictionary<string, string?>
           {
             [IsOperationMethodPublicAnalyzerConstants.IsSealed] = typeSymbol.IsSealed.ToString()
           };

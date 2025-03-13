@@ -61,20 +61,18 @@ namespace Csla.Analyzers
 
           if (invocationSymbol?.Name == Constants.SaveMethodNames.Save)
           {
-            CheckForCondition(context, invocationNode,
-              expressionStatementNode, saveResultIsNotAssignedRule);
+            CheckForCondition(context, invocationNode, expressionStatementNode, saveResultIsNotAssignedRule);
           }
           else if (invocationSymbol?.Name == Constants.SaveMethodNames.SaveAsync)
           {
-            CheckForCondition(context, invocationNode,
-              expressionStatementNode, saveAsyncResultIsNotAssignedRule);
+            CheckForCondition(context, invocationNode, expressionStatementNode, saveAsyncResultIsNotAssignedRule);
           }
         }
       }
     }
 
     private static void CheckForCondition(SyntaxNodeAnalysisContext context, InvocationExpressionSyntax invocationNode,
-      ExpressionStatementSyntax expressionStatementParent, DiagnosticDescriptor descriptor)
+      ExpressionStatementSyntax? expressionStatementParent, DiagnosticDescriptor descriptor)
     {
       // Make sure the invocation's containing type is not the same as the class that contains it
       if ((invocationNode.DescendantNodesAndTokens().Any(_ => _.IsKind(SyntaxKind.DotToken)) &&

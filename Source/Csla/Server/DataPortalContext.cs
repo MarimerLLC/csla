@@ -60,8 +60,8 @@ namespace Csla.Server
     /// </summary>
     public TransactionalTypes TransactionalType
     {
-      get { return _transactionalType; }
-      internal set { _transactionalType = value; }
+      get => _transactionalType;
+      internal set => _transactionalType = value;
     }
 
     /// <summary>
@@ -72,8 +72,8 @@ namespace Csla.Server
     /// </summary>
     public ObjectFactoryAttribute? FactoryInfo
     {
-      get { return _factoryInfo; }
-      internal set { _factoryInfo = value; }
+      get => _factoryInfo;
+      internal set => _factoryInfo = value;
     }
 
     private ApplicationContext _applicationContext;

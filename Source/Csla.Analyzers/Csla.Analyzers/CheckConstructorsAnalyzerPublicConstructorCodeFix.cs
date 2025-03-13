@@ -35,11 +35,18 @@ namespace Csla.Analyzers
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-
+      if (root is null)
+      {
+        return;
+      }
       context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var classNode = root.FindNode(diagnostic.Location.SourceSpan) as ClassDeclarationSyntax;
+      if (classNode is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
@@ -51,14 +58,16 @@ namespace Csla.Analyzers
         if (context.Document.SupportsSemanticModel)
         {
           var model = await context.Document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
-          AddCodeFixWithUpdatingNonPublicConstructor(
-            context, root, diagnostic, classNode, model);
+          if (model is null)
+          {
+            return;
+          }
+          AddCodeFixWithUpdatingNonPublicConstructor(context, root, diagnostic, classNode, model);
         }
       }
       else
       {
-        AddCodeFixWithNewPublicConstructor(
-          context, root, diagnostic, classNode);
+        AddCodeFixWithNewPublicConstructor(context, root, diagnostic, classNode);
       }
     }
 

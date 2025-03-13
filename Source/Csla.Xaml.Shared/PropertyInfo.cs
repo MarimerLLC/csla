@@ -92,8 +92,8 @@ namespace Csla.Xaml
     /// </summary>
     public ObservableCollection<BrokenRule> BrokenRules
     {
-      get { return (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty); }
-      set { SetValue(BrokenRulesProperty, value); }
+      get => (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty);
+      set => SetValue(BrokenRulesProperty, value);
     }
 #else
     /// <summary>
@@ -194,7 +194,7 @@ namespace Csla.Xaml
     /// </summary>
     public string Path
     {
-      get { return _bindingPath; }
+      get => _bindingPath;
       set
       {
         if (_bindingPath != value)
@@ -642,7 +642,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanRead
     {
-      get { return _canRead; }
+      get => _canRead;
       protected set
       {
         if (value != _canRead)
@@ -661,7 +661,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanWrite
     {
-      get { return _canWrite; }
+      get => _canWrite;
       protected set
       {
         if (value != _canWrite)
@@ -680,7 +680,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       private set
       {
         if (value != _isBusy)
@@ -699,7 +699,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsValid
     {
-      get { return _isValid; }
+      get => _isValid;
       private set
       {
         if (value != _isValid)
@@ -720,7 +720,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public RuleSeverity RuleSeverity
     {
-      get { return _worst; }
+      get => _worst;
       private set
       {
         if (value != _worst)
@@ -739,7 +739,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public string RuleDescription
     {
-      get { return _ruleDescription; }
+      get => _ruleDescription;
       private set
       {
         if (value != _ruleDescription)
@@ -758,10 +758,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public object CustomTag
     {
-      get
-      {
-        return _customTag;
-      }
+      get => _customTag;
       set
       {
         if (!ReferenceEquals(_customTag, value))

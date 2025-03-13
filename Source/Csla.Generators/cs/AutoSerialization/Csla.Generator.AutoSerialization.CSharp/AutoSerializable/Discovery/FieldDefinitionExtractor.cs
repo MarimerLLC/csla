@@ -26,14 +26,18 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>A readonly list of ExtractedFieldDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedFieldDefinition ExtractFieldDefinition(DefinitionExtractionContext extractionContext, FieldDeclarationSyntax fieldDeclaration)
     {
-      ExtractedFieldDefinition fieldDefinition = new ExtractedFieldDefinition();
-
-      fieldDefinition.FieldName = GetFieldName(fieldDeclaration);
-      fieldDefinition.TypeDefinition.TypeName = GetFieldTypeName(fieldDeclaration);
-      fieldDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(fieldDeclaration.Declaration.Type);
-      fieldDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type);
-      fieldDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(fieldDeclaration.Declaration.Type);
-      fieldDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(fieldDeclaration);
+      var fieldDefinition = new ExtractedFieldDefinition
+      {
+        FieldName = GetFieldName(fieldDeclaration),
+        TypeDefinition = new ExtractedMemberTypeDefinition
+        {
+          TypeName = GetFieldTypeName(fieldDeclaration),
+          TypeNamespace = extractionContext.GetTypeNamespace(fieldDeclaration.Declaration.Type),
+          IsAutoSerializable = extractionContext.IsTypeAutoSerializable(fieldDeclaration.Declaration.Type),
+          ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(fieldDeclaration.Declaration.Type),
+          Nullable = GetFieldTypeNullable(fieldDeclaration)
+        }
+      };
       return fieldDefinition;
     }
 

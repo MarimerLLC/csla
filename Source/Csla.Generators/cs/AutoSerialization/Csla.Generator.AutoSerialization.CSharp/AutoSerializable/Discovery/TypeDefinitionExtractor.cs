@@ -27,19 +27,20 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>ExtractedTypeDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedTypeDefinition ExtractTypeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      ExtractedTypeDefinition definition = new ExtractedTypeDefinition();
       StringBuilder fullyQualifiedNameBuilder = new StringBuilder();
 
-      definition.TypeName = GetTypeName(targetTypeDeclaration);
-      definition.TypeKind = GetTypeKind(targetTypeDeclaration);
-      definition.Namespace = GetNamespace(targetTypeDeclaration);
-      definition.Scope = GetScopeDefinition(targetTypeDeclaration);
+      var definition = new ExtractedTypeDefinition
+      {
+        TypeName = GetTypeName(targetTypeDeclaration),
+        TypeKind = GetTypeKind(targetTypeDeclaration),
+        Namespace = GetNamespace(targetTypeDeclaration),
+        Scope = GetScopeDefinition(targetTypeDeclaration),
+      };
 
       foreach (ExtractedContainerDefinition containerDefinition in ContainerDefinitionsExtractor.GetContainerDefinitions(extractionContext, targetTypeDeclaration))
       {
         definition.ContainerDefinitions.Add(containerDefinition);
-        fullyQualifiedNameBuilder.Append(containerDefinition.Name);
-        fullyQualifiedNameBuilder.Append('.');
+        fullyQualifiedNameBuilder.Append(containerDefinition.Name).Append('.');
       }
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
@@ -73,13 +74,11 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
 
       // Get the containing syntax node for the type declaration
       // (could be a nested type, for example)
-      SyntaxNode potentialNamespaceParent = targetTypeDeclaration.Parent;
+      SyntaxNode? potentialNamespaceParent = targetTypeDeclaration.Parent;
     
       // Keep moving "out" of nested classes etc until we get to a namespace
       // or until we run out of parents
-      while (potentialNamespaceParent != null &&
-             potentialNamespaceParent is not NamespaceDeclarationSyntax
-             && potentialNamespaceParent is not FileScopedNamespaceDeclarationSyntax)
+      while (potentialNamespaceParent != null && potentialNamespaceParent is not NamespaceDeclarationSyntax && potentialNamespaceParent is not FileScopedNamespaceDeclarationSyntax)
       {
         potentialNamespaceParent = potentialNamespaceParent.Parent;
       }

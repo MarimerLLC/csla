@@ -58,7 +58,6 @@ namespace Csla.Xaml
     /// Creates an instance of the object.
     /// </summary>
     public PropertyStatus()
-      : base()
     {
       BrokenRules = new ObservableCollection<BrokenRule>();
       DefaultStyleKey = typeof(PropertyStatus);
@@ -131,8 +130,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public object Property
     {
-      get { return GetValue(PropertyProperty); }
-      set { SetValue(PropertyProperty, value); }
+      get => GetValue(PropertyProperty);
+      set => SetValue(PropertyProperty, value);
     }
 
     /// <summary>
@@ -221,8 +220,9 @@ namespace Csla.Xaml
     protected object GetRealSource(object source, string bindingPath)
     {
       var firstProperty = string.Empty;
-      if (bindingPath.IndexOf('.') > 0)
-        firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+      var dotIndex = bindingPath.IndexOf('.');
+      if (dotIndex > 0)
+        firstProperty = bindingPath.Substring(0, dotIndex);
 
       if (source is ICollectionView icv && firstProperty != "CurrentItem")
         source = icv.CurrentItem;
@@ -231,7 +231,7 @@ namespace Csla.Xaml
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         return GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
-          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+          bindingPath.Substring(dotIndex + 1));
       }
       else
         return source;
@@ -299,8 +299,8 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public ObservableCollection<BrokenRule> BrokenRules
     {
-      get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
-      private set { SetValue(BrokenRulesProperty, value); }
+      get => (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty);
+      private set => SetValue(BrokenRulesProperty, value);
     }
 
 #endregion
@@ -315,7 +315,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanRead
     {
-      get { return _canRead; }
+      get => _canRead;
       protected set
       {
         if (value != _canRead)
@@ -334,7 +334,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanWrite
     {
-      get { return _canWrite; }
+      get => _canWrite;
       protected set
       {
         if (value != _canWrite)
@@ -353,7 +353,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       private set
       {
         if (value != _isBusy)
@@ -372,7 +372,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsValid
     {
-      get { return _isValid; }
+      get => _isValid;
       private set
       {
         if (value != _isValid)
@@ -393,7 +393,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public RuleSeverity RuleSeverity
     {
-      get { return _worst; }
+      get => _worst;
       private set
       {
         if (value != _worst)
@@ -412,7 +412,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public string RuleDescription
     {
-      get { return _ruleDescription; }
+      get => _ruleDescription;
       private set
       {
         if (value != _ruleDescription)

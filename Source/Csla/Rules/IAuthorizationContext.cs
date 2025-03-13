@@ -22,7 +22,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a reference to the target business object.
     /// </summary>
-    object Target { get; }
+    object? Target { get; }
 
     /// <summary>
     /// Gets the type of the target business class.
@@ -39,7 +39,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets an object which is the criteria specified in the data portal call, if any.
     /// </summary>
-    object[] Criteria { get; }
+    object?[]? Criteria { get; }
 
     /// <summary>
     /// Gets a reference to the current ApplicationContext.

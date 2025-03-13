@@ -7,6 +7,7 @@
 // <summary>This exception is returned as BusinessException in DataPortalException when the </summary>
 //-----------------------------------------------------------------------
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Server
 {
@@ -14,7 +15,7 @@ namespace Csla.Server
   /// This exception is returned as BusinessException in DataPortalException when the
   /// serverside/inner exception is not serializable
   /// </summary>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
+  [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
   [Serializable]
   public class GenericBusinessException : Exception
   {
@@ -43,7 +44,7 @@ namespace Csla.Server
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GenericBusinessException"/> class.
-    /// Reads information for a NonSerializable excpeption into GenericBusinessException
+    /// Reads information for a NonSerializable exception into GenericBusinessException
     /// </summary>
     /// <param name="wrappedException">The wrapped exception.</param>
     public GenericBusinessException(Exception wrappedException)
@@ -52,7 +53,7 @@ namespace Csla.Server
       Source = wrappedException.Source;
       HelpLink = wrappedException.HelpLink;
       Data = wrappedException.Data;
-      StackTrace = wrappedException.StackTrace;
+      StackTrace = wrappedException.StackTrace ?? "<No stack trace available>";
       TypeName = wrappedException.GetType().ToString();
     }
 
@@ -67,7 +68,7 @@ namespace Csla.Server
       Source = wrappedException.Source;
       HelpLink = wrappedException.HelpLink;
       Data = wrappedException.Data;
-      StackTrace = wrappedException.StackTrace;
+      StackTrace = wrappedException.StackTrace ?? "<No stack trace available>";
       TypeName = wrappedException.GetType().ToString();
     }
 

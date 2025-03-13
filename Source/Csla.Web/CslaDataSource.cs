@@ -78,8 +78,8 @@ namespace Csla.Web
     /// <value>Obsolete - do not use.</value>
     public string TypeAssemblyName
     {
-      get { return ((CslaDataSourceView)GetView("Default")).TypeAssemblyName; }
-      set { ((CslaDataSourceView)GetView("Default")).TypeAssemblyName = value; }
+      get => ((CslaDataSourceView)GetView("Default")).TypeAssemblyName;
+      set => ((CslaDataSourceView)GetView("Default")).TypeAssemblyName = value;
     }
 
     /// <summary>
@@ -90,8 +90,8 @@ namespace Csla.Web
     /// including assembly name.</value>
     public string TypeName
     {
-      get { return ((CslaDataSourceView)GetView("Default")).TypeName; }
-      set { ((CslaDataSourceView)GetView("Default")).TypeName = value; }
+      get => ((CslaDataSourceView)GetView("Default")).TypeName;
+      set => ((CslaDataSourceView)GetView("Default")).TypeName = value;
     }
 
     /// <summary>
@@ -105,8 +105,8 @@ namespace Csla.Web
     /// </remarks>
     public bool TypeSupportsPaging
     {
-      get { return ((CslaDataSourceView)GetView("Default")).TypeSupportsPaging; }
-      set { ((CslaDataSourceView)GetView("Default")).TypeSupportsPaging = value; }
+      get => ((CslaDataSourceView)GetView("Default")).TypeSupportsPaging;
+      set => ((CslaDataSourceView)GetView("Default")).TypeSupportsPaging = value;
     }
 
     /// <summary>
@@ -115,8 +115,8 @@ namespace Csla.Web
     /// </summary>
     public bool TypeSupportsSorting
     {
-      get { return ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting; }
-      set { ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting = value; }
+      get => ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting;
+      set => ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting = value;
     }
 
     private static Dictionary<string,Type> _typeCache = [];
@@ -138,7 +138,7 @@ namespace Csla.Web
         // explicit assembly name provided
         result = Type.GetType($"{typeName}, {typeAssemblyName}", true, true);
       }
-      else if (typeName.IndexOf(",") > 0)
+      else if (typeName.Contains(','))
       {
         // assembly qualified type name provided
         result = Type.GetType(typeName, true, true);

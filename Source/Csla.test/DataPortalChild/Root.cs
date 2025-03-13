@@ -48,6 +48,14 @@ namespace Csla.Test.DataPortalChild
       LoadProperty(ChildListProperty, childListDataPortal.CreateChild());
     }
 
+    [Create]
+    private void Create(string createValue, [Inject] IChildDataPortal<Child> childDataPortal, [Inject] IChildDataPortal<ChildList> childListDataPortal)
+    {
+      LoadProperty(ChildProperty, childDataPortal.CreateChild(createValue));
+      LoadProperty(ChildListProperty, childListDataPortal.CreateChild(createValue));
+    }
+
+
     [Fetch]
     protected void DataPortal_Fetch([Inject] IChildDataPortal<Child> childDataPortal, [Inject] IChildDataPortal<ChildList> childListDataPortal)
     {

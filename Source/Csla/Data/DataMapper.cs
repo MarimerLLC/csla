@@ -34,6 +34,8 @@ namespace Csla.Data
     /// The key names in the dictionary must match the property names on the target
     /// object. Target properties may not be readonly or indexed.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
     public static void Map(System.Collections.IDictionary source, object target)
     {
       Map(source, target, false);
@@ -51,6 +53,8 @@ namespace Csla.Data
     /// The key names in the dictionary must match the property names on the target
     /// object. Target properties may not be readonly or indexed.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
     public static void Map(System.Collections.IDictionary source, object target, params string[] ignoreList)
     {
       Map(source, target, false, ignoreList);
@@ -62,19 +66,25 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">A name/value dictionary containing the source values.</param>
     /// <param name="target">An object with properties to be set from the dictionary.</param>
-    /// <param name="ignoreList">A list of property names to ignore. 
+    /// <param name="ignoreList">A list of property names to ignore.
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     /// <remarks>
     /// The key names in the dictionary must match the property names on the target
     /// object. Target properties may not be readonly or indexed.
     /// </remarks>
-    public static void Map(
-      System.Collections.IDictionary source,
-      object target, bool suppressExceptions,
-      params string[] ignoreList)
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
+    public static void Map(System.Collections.IDictionary source, object target, bool suppressExceptions, params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (ignoreList is null)
+        throw new ArgumentNullException(nameof(ignoreList));
+
+      List<string> ignore = [.. ignoreList];
       foreach (string propertyName in source.Keys)
       {
         if (!ignore.Contains(propertyName))
@@ -101,7 +111,9 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object with properties to be loaded into the dictionary.</param>
     /// <param name="target">A name/value dictionary containing the source values.</param>
-    public static void Map(object source, Dictionary<string, object> target)
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
+    public static void Map(object source, Dictionary<string, object?> target)
     {
       Map(source, target, false);
     }
@@ -113,7 +125,9 @@ namespace Csla.Data
     /// <param name="target">A name/value dictionary containing the source values.</param>
     /// <param name="ignoreList">A list of property names to ignore. 
     /// These properties will not be set on the target object.</param>
-    public static void Map(object source, Dictionary<string, object> target, params string[] ignoreList)
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
+    public static void Map(object source, Dictionary<string, object?> target, params string[] ignoreList)
     {
       Map(source, target, false, ignoreList);
     }
@@ -123,15 +137,20 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object with properties to be loaded into the dictionary.</param>
     /// <param name="target">A name/value dictionary containing the source values.</param>
-    /// <param name="ignoreList">A list of property names to ignore. 
+    /// <param name="ignoreList">A list of property names to ignore.
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
-    public static void Map(
-      object source, Dictionary<string, object> target,
-      bool suppressExceptions,
-      params string[] ignoreList)
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
+    public static void Map(object source, Dictionary<string, object?> target, bool suppressExceptions, params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (ignoreList is null)
+        throw new ArgumentNullException(nameof(ignoreList));
+
+      List<string> ignore = [.. ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
         if (!ignore.Contains(propertyName))
@@ -164,6 +183,8 @@ namespace Csla.Data
     /// on the target object. Source properties may not be indexed. 
     /// Target properties may not be readonly or indexed.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
     public static void Map(object source, object target)
     {
       Map(source, target, false);
@@ -182,6 +203,8 @@ namespace Csla.Data
     /// on the target object. Source properties may not be indexed. 
     /// Target properties may not be readonly or indexed.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
     public static void Map(object source, object target, params string[] ignoreList)
     {
       Map(source, target, false, ignoreList);
@@ -193,13 +216,13 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object containing the source values.</param>
     /// <param name="target">An object with properties to be set from the dictionary.</param>
-    /// <param name="ignoreList">A list of property names to ignore. 
+    /// <param name="ignoreList">A list of property names to ignore.
     /// These properties will not be set on the target object.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     /// <remarks>
     /// <para>
     /// The property names and types of the source object must match the property names and types
-    /// on the target object. Source properties may not be indexed. 
+    /// on the target object. Source properties may not be indexed.
     /// Target properties may not be readonly or indexed.
     /// </para><para>
     /// Properties to copy are determined based on the source object. Any properties
@@ -207,27 +230,33 @@ namespace Csla.Data
     /// to false are ignored.
     /// </para>
     /// </remarks>
-    public static void Map(
-      object source, object target,
-      bool suppressExceptions,
-      params string[] ignoreList)
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
+    public static void Map(object source, object target, bool suppressExceptions, params string[] ignoreList)
     {
-      List<string> ignore = [..ignoreList];
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (ignoreList is null)
+        throw new ArgumentNullException(nameof(ignoreList));
+
+      List<string> ignore = [.. ignoreList];
       foreach (var propertyName in GetPropertyNames(source.GetType()))
       {
-          if (!ignore.Contains(propertyName))
+        if (!ignore.Contains(propertyName))
+        {
+          try
           {
-              try
-              {
-                  object value = MethodCaller.CallPropertyGetter(source, propertyName);
-                  SetPropertyValue(target, propertyName, value);
-              }
-              catch (Exception ex)
-              {
-                  if (!suppressExceptions)
-                      throw new ArgumentException($"{Resources.PropertyCopyFailed} ({propertyName})", ex);
-              }
+            object? value = MethodCaller.CallPropertyGetter(source, propertyName);
+            SetPropertyValue(target, propertyName, value);
           }
+          catch (Exception ex)
+          {
+            if (!suppressExceptions)
+              throw new ArgumentException($"{Resources.PropertyCopyFailed} ({propertyName})", ex);
+          }
+        }
       }
     }
 
@@ -243,6 +272,8 @@ namespace Csla.Data
     /// on the target object. Source properties may not be indexed. 
     /// Target properties may not be readonly or indexed.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="map"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
     public static void Map(object source, object target, DataMap map)
     {
       Map(source, target, map, false);
@@ -254,20 +285,29 @@ namespace Csla.Data
     /// </summary>
     /// <param name="source">An object containing the source values.</param>
     /// <param name="target">An object with properties to be set from the dictionary.</param>
-    /// <param name="suppressExceptions">If true, any exceptions will be supressed.</param>
+    /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     /// <param name="map">A DataMap object containing the mappings to use during the copy process.</param>
     /// <remarks>
     /// The property names and types of the source object must match the property names and types
-    /// on the target object. Source properties may not be indexed. 
+    /// on the target object. Source properties may not be indexed.
     /// Target properties may not be readonly or indexed.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="map"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"></exception>
     public static void Map(object source, object target, DataMap map, bool suppressExceptions)
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (map is null)
+        throw new ArgumentNullException(nameof(map));
+
       foreach (DataMap.MemberMapping mapping in map.GetMap())
       {
         try
         {
-          object value = mapping.FromMemberHandle.DynamicMemberGet(source);
+          object? value = mapping.FromMemberHandle.MemberGetOrNotSupportedException(source);
           SetValueWithCoercion(target, mapping.ToMemberHandle, value);
         }
         catch (Exception ex)
@@ -278,19 +318,16 @@ namespace Csla.Data
       }
     }
 
-      private static IList<string> GetPropertyNames(
-#if NET8_0_OR_GREATER
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-        Type sourceType)
-      {
+    private static IList<string> GetPropertyNames([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type sourceType)
+    {
       List<string> result = [];
-        PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
-        foreach (PropertyDescriptor item in props)
-            if (item.IsBrowsable)
-                result.Add(item.Name);
-        return result;
+      PropertyDescriptorCollection props = TypeDescriptor.GetProperties(sourceType);
+      foreach (PropertyDescriptor item in props)
+        if (item.IsBrowsable)
+          result.Add(item.Name);
+      return result;
     }
+
     #endregion
 
     #region  Load from IDictionary
@@ -311,8 +348,17 @@ namespace Csla.Data
     /// property names into key values for the
     /// source dictionary.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="nameMapper"/> is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><paramref name="target"/> is not based on a csla business object type.</exception>
     public static void Load(System.Collections.IDictionary source, object target, Func<string, object> nameMapper)
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (nameMapper is null)
+        throw new ArgumentNullException(nameof(nameMapper));
+
       if (target is not IManageProperties validTarget)
         throw new NotSupportedException();
       var propertyList = validTarget.GetManagedProperties();
@@ -320,9 +366,9 @@ namespace Csla.Data
         validTarget.LoadProperty(p, source[nameMapper(p.Name)]);
     }
 
-#endregion
+    #endregion
 
-#region  Load to IDictionary
+    #region  Load to IDictionary
 
     /// <summary>
     /// Copies values from the source into the
@@ -340,8 +386,16 @@ namespace Csla.Data
     /// property names into key values for the
     /// target dictionary.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="nameMapper"/> is <see langword="null"/>.</exception>
     public static void Load(object source, System.Collections.IDictionary target, Func<string, object> nameMapper)
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (nameMapper is null)
+        throw new ArgumentNullException(nameof(nameMapper));
+
       if (source is not IManageProperties validSource)
         throw new NotSupportedException();
       var propertyList = validSource.GetManagedProperties();
@@ -349,9 +403,9 @@ namespace Csla.Data
         target[nameMapper(p.Name)] = validSource.ReadProperty(p);
     }
 
-#endregion
+    #endregion
 
-#region SetValue
+    #region SetValue
 
     /// <summary>
     /// Sets an object's property with the specified value,
@@ -360,16 +414,22 @@ namespace Csla.Data
     /// <param name="target">Object containing the property to set.</param>
     /// <param name="propertyName">Name of the property to set.</param>
     /// <param name="value">Value to set into the property.</param>
-    public static void SetPropertyValue(
-      object target, string propertyName, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static void SetPropertyValue(object target, string propertyName, object? value)
     {
-        DynamicMemberHandle handle = MethodCaller.GetCachedProperty(target.GetType(), propertyName);
-        SetValueWithCoercion(target, handle, value);   
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
+      DynamicMemberHandle handle = MethodCaller.GetCachedProperty(target.GetType(), propertyName);
+      SetValueWithCoercion(target, handle, value);
     }
 
-    private static void SetValueWithCoercion(object target, DynamicMemberHandle handle, object value)
+    private static void SetValueWithCoercion(object target, DynamicMemberHandle handle, object? value)
     {
-      var oldValue = handle.DynamicMemberGet(target);
+      var oldValue = handle.MemberGetOrNotSupportedException(target);
 
       Type pType = handle.MemberType;
 
@@ -390,7 +450,7 @@ namespace Csla.Data
         Type vType = Utilities.GetPropertyType(value.GetType());
         value = Utilities.CoerceValue(pType, vType, oldValue, value);
       }
-      handle.DynamicMemberSet(target, value);
+      handle.MemberSetOrNotSupportedException(target, value);
     }
 
     /// <summary>
@@ -400,11 +460,17 @@ namespace Csla.Data
     /// <param name="target">Object containing the field to set.</param>
     /// <param name="fieldName">Name of the field (public or non-public) to set.</param>
     /// <param name="value">Value to set into the field.</param>
-    public static void SetFieldValue(
-      object target, string fieldName, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="fieldName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static void SetFieldValue(object target, string fieldName, object? value)
     {
-        DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
-        SetValueWithCoercion(target, handle, value);
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (string.IsNullOrWhiteSpace(fieldName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(fieldName)), nameof(fieldName));
+
+      DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
+      SetValueWithCoercion(target, handle, value);
     }
 
     /// <summary>
@@ -413,13 +479,19 @@ namespace Csla.Data
     /// <param name="target">Object whose field value to get.</param>
     /// <param name="fieldName">The name of the field.</param>
     /// <returns>The value of the field.</returns>
-    public static object GetFieldValue(
-      object target, string fieldName)
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="fieldName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? GetFieldValue(object target, string fieldName)
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (string.IsNullOrWhiteSpace(fieldName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(fieldName)), nameof(fieldName));
+
       DynamicMemberHandle handle = MethodCaller.GetCachedField(target.GetType(), fieldName);
-      return handle.DynamicMemberGet.Invoke(target);
+      return handle.MemberGetOrNotSupportedException(target);
     }
 
-#endregion
+    #endregion
   }
 }

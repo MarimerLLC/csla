@@ -24,13 +24,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       var criteria = new PrimitiveCriteria(1);
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       var sut = new RevalidatingInterceptor(applicationContext);
-      var args = new InterceptArgs
-      {
-        ObjectType = typeof(Root),
-        Operation = DataPortalOperations.Update,
-        Parameter = criteria,
-        IsSync = true
-      };
+      var args = CreateUpdateArgsOfRoot(criteria);
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
@@ -46,13 +40,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
-      var args = new InterceptArgs
-      {
-        ObjectType = typeof(Root),
-        Operation = DataPortalOperations.Update,
-        Parameter = rootObject,
-        IsSync = true
-      };
+      var args = CreateUpdateArgsOfRoot(rootObject);
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
@@ -70,13 +58,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       childObject.Data = "Test child data";
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       var sut = new RevalidatingInterceptor(applicationContext);
-      var args = new InterceptArgs
-      {
-        ObjectType = typeof(Root),
-        Operation = DataPortalOperations.Update,
-        Parameter = rootObject,
-        IsSync = true
-      };
+      var args = CreateUpdateArgsOfRoot(rootObject);
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
@@ -96,13 +78,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       grandChildObject.Data = "Test grandchild data";
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       var sut = new RevalidatingInterceptor(applicationContext);
-      var args = new InterceptArgs
-      {
-        ObjectType = typeof(Root),
-        Operation = DataPortalOperations.Update,
-        Parameter = rootObject,
-        IsSync = true
-      };
+      var args = CreateUpdateArgsOfRoot(rootObject);
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
@@ -118,13 +94,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       Root rootObject = dataPortal.Create(new Root.Criteria(""));
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       var sut = new RevalidatingInterceptor(applicationContext);
-      var args = new InterceptArgs
-      {
-        ObjectType = typeof(Root),
-        Operation = DataPortalOperations.Update,
-        Parameter = rootObject,
-        IsSync = true
-      };
+      var args = CreateUpdateArgsOfRoot(rootObject);
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
@@ -141,13 +111,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       rootObject.Children.AddNew();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       var sut = new RevalidatingInterceptor(applicationContext);
-      var args = new InterceptArgs
-      {
-        ObjectType = typeof(Root),
-        Operation = DataPortalOperations.Update,
-        Parameter = rootObject,
-        IsSync = true
-      };
+      var args = CreateUpdateArgsOfRoot(rootObject);
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
@@ -166,18 +130,14 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       childObject.GrandChildren.AddNew();
       ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
       var sut = new RevalidatingInterceptor(applicationContext);
-      var args = new InterceptArgs
-      {
-        ObjectType = typeof(Root),
-        Operation = DataPortalOperations.Update,
-        Parameter = rootObject,
-        IsSync = true
-      };
+      var args = CreateUpdateArgsOfRoot(rootObject);
       applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
       applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act and Assert
       await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
     }
+
+    private static InterceptArgs CreateUpdateArgsOfRoot(object parameter) => new InterceptArgs(typeof(Root), parameter, DataPortalOperations.Update, true);
   }
 }

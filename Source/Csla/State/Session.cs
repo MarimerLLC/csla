@@ -16,7 +16,7 @@ namespace Csla.State
   /// serializable via MobileFormatter.
   /// </summary>
   [Serializable]
-  public class Session : MobileDictionary<string, object>, INotifyPropertyChanged
+  public class Session : MobileDictionary<string, object?>, INotifyPropertyChanged
   {
     /// <summary>
     /// Gets or sets a value indicating the last
@@ -32,13 +32,19 @@ namespace Csla.State
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     /// Raise PropertyChanged event.
     /// </summary>
     /// <param name="propertyName"></param>
-    protected virtual void OnPropertyChanged(string propertyName) 
-      => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
   }
 }

@@ -22,8 +22,12 @@ namespace Csla.Server
     /// Constructor.
     /// </summary>
     /// <param name="identifier">The unique identifier for this exception</param>
+    /// <exception cref="ArgumentNullException"><paramref name="identifier"/> is <see langword="null"/>.</exception>
     public ServerException(string identifier) : base(Properties.Resources.SanitizedServerSideDataPortalException)
     {
+      if (identifier is null)
+        throw new ArgumentNullException(nameof(identifier));
+
       Data.Add(IdentifierKey, identifier);
     }
 
@@ -32,9 +36,15 @@ namespace Csla.Server
     /// Use this identifier to look for the exception details in server logs
     /// </summary>
     public string RequestIdentifier 
-    { get 
+    { 
+      get 
       {
-        return Data[IdentifierKey].ToString();
+        return Data[IdentifierKey] switch
+        {
+          string x => x,
+          null => string.Empty,
+          object x => x.ToString() ?? string.Empty
+        };
       }
     }
 

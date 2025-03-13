@@ -6,6 +6,7 @@
 // <summary>Parses a rule:// URI to provide</summary>
 //-----------------------------------------------------------------------
 
+using System;
 using System.Text;
 
 namespace Csla.Rules
@@ -23,17 +24,22 @@ namespace Csla.Rules
     /// by parsing the provided rule:// URI.
     /// </summary>
     /// <param name="ruleString">The rule:// URI.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ruleString"/> is <see langword="null"/>.</exception>
+    /// <exception cref="UriFormatException"><paramref name="ruleString"/> is not a valid <see cref="Uri"/> format.</exception>
     public RuleUri(string ruleString)
-      : this(new Uri(ruleString))
-    { }
+      : this(new Uri(ruleString ?? throw new ArgumentNullException(nameof(ruleString))))
+    {
+    }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="uri">The rule:// URI.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="uri"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="uri"/> scheme is not 'rule'.</exception>
     public RuleUri(Uri uri)
     {
-      _uri = uri;
+      _uri = uri ?? throw new ArgumentNullException(nameof(uri));
       if (_uri.Scheme != "rule")
         throw new ArgumentException("RuleUri.Scheme");
     }
@@ -43,9 +49,9 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="rule">Rule object.</param>
     /// <param name="property">Property to which rule applies.</param>
-    public RuleUri(IBusinessRuleBase rule, Core.IPropertyInfo property)
-      : this(GetTypeName(rule), ((property == null) ? "(object)" : property.Name))
-      //: this(rule.GetType().FullName, ((property == null) ? "null" : property.Name))
+    /// <exception cref="ArgumentNullException"><paramref name="rule"/> is <see langword="null"/>.</exception>
+    public RuleUri(IBusinessRuleBase rule, Core.IPropertyInfo? property)
+      : this(GetTypeName(rule ?? throw new ArgumentNullException(nameof(rule))), property?.Name ?? "(object)")
     { }
 
     /// <summary>
@@ -53,13 +59,19 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="typeName">Name of the rule type.</param>
     /// <param name="propertyName">Name of the business object property or the string literal "null".</param>
+    /// <exception cref="ArgumentException"><paramref name="typeName"/> or <paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public RuleUri(string typeName, string propertyName)
     {
+      if (string.IsNullOrWhiteSpace(typeName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
       var hostName = EncodeString(typeName).Replace(".-", ".");
       if (hostName.Length > 63)
       {
         var tmp = hostName;
-        hostName = null;
+        hostName = "";
         for (int i = 0; i < tmp.Length - 1; i += 63)
           hostName = hostName + tmp.Substring(i, ((i + 63 <= tmp.Length) ? 63 : tmp.Length - i)) + "/";
         hostName = hostName.Substring(0, hostName.Length - 1);
@@ -90,8 +102,11 @@ namespace Csla.Rules
     /// <param name="ruleString">
     /// Text representation of a rule:// URI.</param>
     /// <returns>A populated RuleDescription object.</returns>
+    /// <exception cref="ArgumentException"><paramref name="ruleString"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static RuleUri Parse(string ruleString)
     {
+      if (string.IsNullOrWhiteSpace(ruleString))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(ruleString)), nameof(ruleString));
       return new RuleUri(ruleString);
     }
 
@@ -138,21 +153,18 @@ namespace Csla.Rules
     /// Gets the name of the property with which
     /// the rule is associated.
     /// </summary>
-    public string PropertyName
-    {
-      get { return _uri.Parts()[_uri.Parts().Length - 1]; }
-    }
+    public string PropertyName => _uri.Parts()[_uri.Parts().Length - 1];
 
     /// <summary>
     /// Gets a Dictionary containing the
     /// name/value arguments provided to
     /// the rule method.
     /// </summary>
-    public Dictionary<string, string> Arguments
+    public Dictionary<string, string>? Arguments
     {
       get
       {
-        Dictionary<string, string> result = null;
+        Dictionary<string, string>? result = null;
         string args = _uri.Query;
         if (!(string.IsNullOrEmpty(args)))
         {
@@ -188,7 +200,7 @@ namespace Csla.Rules
     {
       if (!type.IsGenericType)
       {
-        return type.FullName;
+        return type.FullName!;
       }
       else // generic type
       {
@@ -223,8 +235,12 @@ namespace Csla.Rules
     /// <returns>
     /// Returns the Segments property. 
     /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="uri"/> is <see langword="null"/>.</exception>
     public static string[] Parts(this Uri uri)
     {
+      if (uri is null)
+        throw new ArgumentNullException(nameof(uri));
+
       return uri.Segments;
     }
   }

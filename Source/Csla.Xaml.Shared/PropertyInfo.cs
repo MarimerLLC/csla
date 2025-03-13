@@ -92,8 +92,8 @@ namespace Csla.Xaml
     /// </summary>
     public ObservableCollection<BrokenRule> BrokenRules
     {
-      get { return (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty); }
-      set { SetValue(BrokenRulesProperty, value); }
+      get => (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty);
+      set => SetValue(BrokenRulesProperty, value);
     }
 #else
     /// <summary>
@@ -194,7 +194,7 @@ namespace Csla.Xaml
     /// </summary>
     public string Path
     {
-      get { return _bindingPath; }
+      get => _bindingPath;
       set
       {
         if (_bindingPath != value)
@@ -252,9 +252,10 @@ namespace Csla.Xaml
         {
           while (BindingPath.Contains(".") && Source != null)
           {
-            var refName = BindingPath.Substring(0, BindingPath.IndexOf("."));
+            var dotIndex = BindingPath.IndexOf('.');
+            var refName = BindingPath.Substring(0, dotIndex);
             _sources.Add(new SourceReference(this, Source, refName));
-            BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
+            BindingPath = BindingPath.Substring(dotIndex + 1);
             Source = MethodCaller.CallPropertyGetter(Source, refName);
           }
         }
@@ -416,7 +417,7 @@ namespace Csla.Xaml
         }
       }
 
-      if (BindingPath.IndexOf('.') > 0)
+      if (BindingPath.Contains('.'))
         BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
 
       if (isDataLoaded)
@@ -460,18 +461,19 @@ namespace Csla.Xaml
     {
       if (source is ICollectionView icv)
         source = icv.CurrentItem;
-      if (source != null && bindingPath.IndexOf('.') > 0)
+      var dotIndex = bindingPath.IndexOf('.');
+      if (source != null && dotIndex > 0)
       {
-        var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+        var firstProperty = bindingPath.Substring(0, dotIndex);
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         if (p != null)
         {
          source = GetRealSource(
           MethodCaller.GetPropertyValue(source, p),
-          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+          bindingPath.Substring(dotIndex + 1));
         }
       }
-        
+
       return source;
     }
 
@@ -484,15 +486,16 @@ namespace Csla.Xaml
     {
       if (source != null)
       {
-        if (bindingPath.IndexOf('.') > 0)
+        var dotIndex = bindingPath.IndexOf('.');
+        if (dotIndex > 0)
         {
-          var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+          var firstProperty = bindingPath.Substring(0, dotIndex);
           var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
 
           if (p != null)
             return new PropertyPath(firstProperty);
           else
-            return GetRelativePath(source, bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+            return GetRelativePath(source, bindingPath.Substring(dotIndex + 1));
         }
         else
           return new PropertyPath(bindingPath);
@@ -639,7 +642,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanRead
     {
-      get { return _canRead; }
+      get => _canRead;
       protected set
       {
         if (value != _canRead)
@@ -658,7 +661,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanWrite
     {
-      get { return _canWrite; }
+      get => _canWrite;
       protected set
       {
         if (value != _canWrite)
@@ -677,7 +680,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       private set
       {
         if (value != _isBusy)
@@ -696,7 +699,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsValid
     {
-      get { return _isValid; }
+      get => _isValid;
       private set
       {
         if (value != _isValid)
@@ -717,7 +720,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public RuleSeverity RuleSeverity
     {
-      get { return _worst; }
+      get => _worst;
       private set
       {
         if (value != _worst)
@@ -736,7 +739,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public string RuleDescription
     {
-      get { return _ruleDescription; }
+      get => _ruleDescription;
       private set
       {
         if (value != _ruleDescription)
@@ -755,10 +758,7 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public object CustomTag
     {
-      get
-      {
-        return _customTag;
-      }
+      get => _customTag;
       set
       {
         if (!ReferenceEquals(_customTag, value))

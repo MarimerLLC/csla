@@ -11,17 +11,17 @@ namespace Csla.Analyzers
   /// 
   /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
-  public sealed class EvaluateManagedBackingFieldsAnalayzer
+  public sealed class EvaluateManagedBackingFieldsAnalyzer
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor mustBePublicStaticAndReadonlyRule =
       new(
         Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields,
-        EvaluateManagedBackingFieldsAnalayzerConstants.Title,
-        EvaluateManagedBackingFieldsAnalayzerConstants.Message,
+        EvaluateManagedBackingFieldsAnalyzerConstants.Title,
+        EvaluateManagedBackingFieldsAnalyzerConstants.Message,
         Constants.Categories.Usage, DiagnosticSeverity.Error, true,
         helpLinkUri: HelpUrlBuilder.Build(
-          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalayzer)));
+          Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields, nameof(EvaluateManagedBackingFieldsAnalyzer)));
 
     /// <summary>
     /// 
@@ -57,10 +57,8 @@ namespace Csla.Analyzers
             {
               foreach (var classMember in classSymbol.GetMembers())
               {
-                if (classMember.Kind == SymbolKind.Property)
+                if (classMember.Kind == SymbolKind.Property && classMember is IPropertySymbol classProperty)
                 {
-                  var classProperty = classMember as IPropertySymbol;
-
                   if (!classProperty.IsIndexer)
                   {
                     if (DetermineIfPropertyUsesField(context, fieldSymbol, classProperty))
@@ -92,9 +90,7 @@ namespace Csla.Analyzers
       }
     }
 
-    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, 
-      IFieldSymbol fieldSymbol, IPropertySymbol classProperty, 
-      Func<PropertyDeclarationSyntax, SyntaxNode> propertyBody)
+    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, IFieldSymbol fieldSymbol, IPropertySymbol classProperty, Func<PropertyDeclarationSyntax, SyntaxNode?> propertyBody)
     {
       var root = context.Node.SyntaxTree.GetRoot();
       var rootSpan = root.FullSpan;
@@ -116,8 +112,7 @@ namespace Csla.Analyzers
       return false;
     }
 
-    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context,
-      IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
+    private static bool DetermineIfPropertyUsesField(SyntaxNodeAnalysisContext context, IFieldSymbol fieldSymbol, IPropertySymbol classProperty)
     {
       if (classProperty.GetMethod != null)
       {

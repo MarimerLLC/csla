@@ -11,7 +11,10 @@ using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
 using Csla.Properties;
+using Csla.Reflection;
+using Csla.Server;
 using Csla.Server.Dashboard;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Server
 {
@@ -54,6 +57,7 @@ namespace Csla.Server
     /// <param name="interceptors"></param>
     /// <param name="exceptionHandler"></param>
     /// <param name="securityOptions"></param>
+    /// <exception cref="ArgumentNullException">Any parameter is <see langword="null"/>.</exception>
     public DataPortal(
       ApplicationContext applicationContext,
       IDashboard dashboard,
@@ -66,16 +70,18 @@ namespace Csla.Server
       DataPortalExceptionHandler exceptionHandler,
       SecurityOptions securityOptions)
     {
-      _applicationContext = applicationContext;
-      _dashboard = dashboard;
+      if (options is null)
+        throw new ArgumentNullException(nameof(options));
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _dashboard = dashboard ?? throw new ArgumentNullException(nameof(dashboard));
       _dataPortalOptions = options.DataPortalOptions;
-      _authorizer = authorizer;
-      _interceptorManager = interceptors;
-      _factoryLoader = factoryLoader;
-      _activator = activator;
-      _exceptionInspector = exceptionInspector;
-      _dataPortalExceptionHandler = exceptionHandler;
-      _securityOptions = securityOptions;
+      _authorizer = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
+      _interceptorManager = interceptors ?? throw new ArgumentNullException(nameof(interceptors));
+      _factoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
+      _activator = activator ?? throw new ArgumentNullException(nameof(activator));
+      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
+      _dataPortalExceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
+      _securityOptions = securityOptions ?? throw new ArgumentNullException(nameof(securityOptions));
     }
 
     #region Data Access
@@ -99,51 +105,38 @@ namespace Csla.Server
     }
 #endif
 
-    private Reflection.ServiceProviderMethodCaller serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller? serviceProviderMethodCaller;
     private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
       get
       {
         if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = (Reflection.ServiceProviderMethodCaller)_applicationContext.CreateInstanceDI(typeof(Reflection.ServiceProviderMethodCaller));
+          serviceProviderMethodCaller = _applicationContext.CreateInstanceDI<Reflection.ServiceProviderMethodCaller>();
         return serviceProviderMethodCaller;
       }
     }
 
-    /// <summary>
-    /// Create a new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Create(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       try
       {
         SetContext(context);
 
         await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Create), CancellationToken.None);
 
-        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Create, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs(objectType, criteria, DataPortalOperations.Create, isSync));
+
+        var method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<CreateAttribute>(objectType, criteria);
 
         DataPortalResult result;
-        DataPortalMethodInfo method;
-
-        Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
-        if (criteria is EmptyCriteria)
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, null);
-        else
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<CreateAttribute>(objectType, GetCriteriaArray(criteria));
-        serviceProviderMethodInfo.PrepForInvocation();
-        method = serviceProviderMethodInfo.DataPortalMethodInfo;
-
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
@@ -177,35 +170,26 @@ namespace Csla.Server
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Create, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, result, DataPortalOperations.Create, isSync));
         return result;
       }
       catch (DataPortalException ex)
       {
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Create, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, ex, DataPortalOperations.Create, isSync));
         throw;
-      }
-      catch (AggregateException ex)
-      {
-        Exception error = null;
-        if (ex.InnerExceptions.Count > 0)
-          error = ex.InnerExceptions[0].InnerException;
-        else
-          error = ex;
-        var fex = NewDataPortalException(
-            _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
-            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Create", error),
-            null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Create, IsSync = isSync });
-        throw fex;
       }
       catch (Exception ex)
       {
+        if (ex is AggregateException aggregateEx && aggregateEx.InnerExceptions.Count > 0)
+        {
+            ex = aggregateEx.InnerExceptions[0].InnerException ?? aggregateEx;
+        }
+
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
             _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Create", ex),
             null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Create, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Create, isSync));
         throw fex;
       }
       finally
@@ -214,21 +198,16 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Get an existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Fetch(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
       {
         return await Execute(objectType, criteria, context, isSync);
@@ -240,20 +219,11 @@ namespace Csla.Server
 
         await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Fetch), CancellationToken.None);
 
-        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Fetch, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs(objectType, criteria, DataPortalOperations.Fetch, isSync));
+
+        var method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<FetchAttribute>(objectType, criteria);
 
         DataPortalResult result;
-        DataPortalMethodInfo method;
-
-        Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
-        if (criteria is EmptyCriteria)
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, null);
-        else
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<FetchAttribute>(objectType, GetCriteriaArray(criteria));
-
-        serviceProviderMethodInfo.PrepForInvocation();
-        method = serviceProviderMethodInfo.DataPortalMethodInfo;
-
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
@@ -286,35 +256,26 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Fetch, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, result, DataPortalOperations.Fetch, isSync));
         return result;
       }
       catch (DataPortalException ex)
       {
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, ex, DataPortalOperations.Fetch, isSync));
         throw;
-      }
-      catch (AggregateException ex)
-      {
-        Exception error = null;
-        if (ex.InnerExceptions.Count > 0)
-          error = ex.InnerExceptions[0].InnerException;
-        else
-          error = ex;
-        var fex = NewDataPortalException(
-            _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
-            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Fetch", error),
-            null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
-        throw fex;
       }
       catch (Exception ex)
       {
+        if (ex is AggregateException aggregateException && aggregateException.InnerExceptions.Count > 0)
+        {
+          ex = aggregateException.InnerExceptions[0].InnerException ?? ex;
+        }
+
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
             _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Fetch", ex),
             null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Fetch, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Fetch, isSync));
         throw fex;
       }
       finally
@@ -332,11 +293,7 @@ namespace Csla.Server
     /// <see cref="Server.DataPortalContext" /> object passed to the server.
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    private async Task<DataPortalResult> Execute(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> Execute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
@@ -344,20 +301,11 @@ namespace Csla.Server
 
         await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Execute), CancellationToken.None);
 
-        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs(objectType, criteria, DataPortalOperations.Execute, isSync));
+
+        var method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<ExecuteAttribute>(objectType, criteria);
 
         DataPortalResult result;
-        DataPortalMethodInfo method;
-
-        Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
-        if (criteria is EmptyCriteria)
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
-        else
-          serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, GetCriteriaArray(criteria));
-
-        serviceProviderMethodInfo.PrepForInvocation();
-        method = serviceProviderMethodInfo.DataPortalMethodInfo;
-
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
@@ -390,35 +338,26 @@ namespace Csla.Server
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, result, DataPortalOperations.Execute, isSync));
         return result;
       }
       catch (DataPortalException ex)
       {
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, ex, DataPortalOperations.Execute, isSync));
         throw;
-      }
-      catch (AggregateException ex)
-      {
-        Exception error = null;
-        if (ex.InnerExceptions.Count > 0)
-          error = ex.InnerExceptions[0].InnerException;
-        else
-          error = ex;
-        var fex = NewDataPortalException(
-            _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
-            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", error),
-            null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Execute, IsSync = isSync });
-        throw fex;
       }
       catch (Exception ex)
       {
+        if (ex is AggregateException aggregateException && aggregateException.InnerExceptions.Count > 0)
+        {
+          ex = aggregateException.InnerExceptions[0].InnerException ?? ex;
+        }
+
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
             _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Execute", ex),
             null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Execute, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Execute, isSync));
         throw fex;
       }
       finally
@@ -427,40 +366,34 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Update a business object.
-    /// </summary>
-    /// <param name="obj">Business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+    /// <inheritdoc />
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      Type objectType = null;
-      DataPortalOperations operation = DataPortalOperations.Update;
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
+      var objectType = obj.GetType();
+      var operation = DataPortalOperations.Update;
       try
       {
         SetContext(context);
-
-        objectType = obj.GetType();
 
         if (obj is Core.ICommandObject)
           operation = DataPortalOperations.Execute;
 
         await AuthorizeRequestAsync(new AuthorizeRequest(objectType, obj, operation), CancellationToken.None);
 
-        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = obj, Operation = operation, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs(objectType, obj, operation, isSync));
 
-        DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
           string methodName;
-          var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(IObjectFactoryLoader)) as IObjectFactoryLoader;
-          var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
+          var factoryLoader = _applicationContext.CurrentServiceProvider.GetRequiredService<IObjectFactoryLoader>();
+          var factoryType = factoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
           if (obj is Core.BusinessBase bbase)
           {
             if (bbase.IsDeleted)
@@ -476,27 +409,23 @@ namespace Csla.Server
         }
         else
         {
-          Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
           if (obj is Core.BusinessBase bbase)
           {
             if (bbase.IsDeleted)
-              serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteSelfAttribute>(objectType, null);
+              method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<DeleteSelfAttribute>(objectType);
+            else if (bbase.IsNew)
+              method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<InsertAttribute>(objectType);
             else
-              if (bbase.IsNew)
-              serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<InsertAttribute>(objectType, null);
-            else
-              serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
+              method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<UpdateAttribute>(objectType);
           }
           else if (obj is Core.ICommandObject)
-            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<ExecuteAttribute>(objectType, null);
+            method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<ExecuteAttribute>(objectType);
           else
-            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<UpdateAttribute>(objectType, null);
-
-          serviceProviderMethodInfo.PrepForInvocation();
-          method = serviceProviderMethodInfo.DataPortalMethodInfo;
+            method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<UpdateAttribute>(objectType);
         }
 
         context.TransactionalType = method.TransactionalAttribute.TransactionType;
+        DataPortalResult result;
         IDataPortalServer portal;
         switch (method.TransactionalAttribute.TransactionType)
         {
@@ -529,35 +458,26 @@ namespace Csla.Server
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
         }
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Result = result, Operation = operation, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, obj, result, operation, isSync));
         return result;
       }
       catch (DataPortalException ex)
       {
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = ex, Operation = operation, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, obj, ex, operation, isSync));
         throw;
-      }
-      catch (AggregateException ex)
-      {
-        Exception error = null;
-        if (ex.InnerExceptions.Count > 0)
-          error = ex.InnerExceptions[0].InnerException;
-        else
-          error = ex;
-        var fex = NewDataPortalException(
-            _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
-            _dataPortalExceptionHandler.InspectException(obj.GetType(), obj, null, "DataPortal.Update", error),
-            obj, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
-        throw fex;
       }
       catch (Exception ex)
       {
+        if (ex is AggregateException aggregateException && aggregateException.InnerExceptions.Count > 0)
+        {
+          ex = aggregateException.InnerExceptions[0].InnerException ?? ex;
+        }
+
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
             _dataPortalExceptionHandler.InspectException(obj.GetType(), obj, null, "DataPortal.Update", ex),
             obj, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = obj, Exception = fex, Operation = operation, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, obj, fex, operation, isSync));
         throw fex;
       }
       finally
@@ -566,48 +486,37 @@ namespace Csla.Server
       }
     }
 
-    /// <summary>
-    /// Delete a business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Delete(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       try
       {
         SetContext(context);
 
         await AuthorizeRequestAsync(new AuthorizeRequest(objectType, criteria, DataPortalOperations.Delete), CancellationToken.None);
 
-        await InitializeAsync(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Operation = DataPortalOperations.Delete, IsSync = isSync });
+        await InitializeAsync(new InterceptArgs(objectType, criteria, DataPortalOperations.Delete, isSync));
 
         DataPortalResult result;
         DataPortalMethodInfo method;
         var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (factoryInfo != null)
         {
-          var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(IObjectFactoryLoader)) as IObjectFactoryLoader;
-          var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
+          var factoryLoader = _applicationContext.CurrentServiceProvider.GetRequiredService<IObjectFactoryLoader>();
+          var factoryType = factoryLoader.GetFactoryType(factoryInfo.FactoryTypeName);
           string methodName = factoryInfo.DeleteMethodName;
           method = DataPortalMethodCache.GetMethodInfo(factoryType, methodName, criteria);
         }
         else
         {
-          Reflection.ServiceProviderMethodInfo serviceProviderMethodInfo;
-          if (criteria is EmptyCriteria)
-            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, null);
-          else
-            serviceProviderMethodInfo = ServiceProviderMethodCaller.FindDataPortalMethod<DeleteAttribute>(objectType, GetCriteriaArray(criteria));
-          serviceProviderMethodInfo.PrepForInvocation();
-          method = serviceProviderMethodInfo.DataPortalMethodInfo;
+          method = ServiceProviderMethodCaller.GetDataPortalMethodInfoFor<DeleteAttribute>(objectType, criteria);
         }
 
         IDataPortalServer portal;
@@ -642,35 +551,26 @@ namespace Csla.Server
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
         }
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Result = result, Operation = DataPortalOperations.Delete, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, result, DataPortalOperations.Delete, isSync));
         return result;
       }
       catch (DataPortalException ex)
       {
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = ex, Operation = DataPortalOperations.Delete, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, ex, DataPortalOperations.Delete, isSync));
         throw;
-      }
-      catch (AggregateException ex)
-      {
-        Exception error = null;
-        if (ex.InnerExceptions.Count > 0)
-          error = ex.InnerExceptions[0].InnerException;
-        else
-          error = ex;
-        var fex = NewDataPortalException(
-            _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
-            _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Delete", error),
-            null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Delete, IsSync = isSync });
-        throw fex;
       }
       catch (Exception ex)
       {
+        if (ex is AggregateException aggregateException && aggregateException.InnerExceptions.Count > 0)
+        {
+          ex = aggregateException.InnerExceptions[0].InnerException ?? ex;
+        }
+
         var fex = NewDataPortalException(
             _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
             _dataPortalExceptionHandler.InspectException(objectType, criteria, "DataPortal.Delete", ex),
             null, _dataPortalOptions);
-        Complete(new InterceptArgs { ObjectType = objectType, Parameter = criteria, Exception = fex, Operation = DataPortalOperations.Delete, IsSync = isSync });
+        Complete(new InterceptArgs(objectType, criteria, fex, DataPortalOperations.Delete, isSync));
         throw fex;
       }
       finally
@@ -733,10 +633,7 @@ namespace Csla.Server
         // When using platform-supplied security, Principal must be null
         if (context.Principal != null)
         {
-          Security.SecurityException ex =
-            new Security.SecurityException(Resources.NoPrincipalAllowedException);
-          //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-          throw ex;
+          throw new Security.SecurityException(Resources.NoPrincipalAllowedException);
         }
         if (_securityOptions.AuthenticationType == "Windows")
         {
@@ -749,11 +646,7 @@ namespace Csla.Server
         // We expect some Principal object to be available
         if (context.Principal == null)
         {
-          Security.SecurityException ex =
-            new Security.SecurityException(
-              Resources.BusinessPrincipalException + " Nothing");
-          //ex.Action = System.Security.Permissions.SecurityAction.Deny;
-          throw ex;
+          throw new Security.SecurityException(Resources.BusinessPrincipalException + " Nothing");
         }
         _applicationContext.User = context.Principal;
       }
@@ -786,15 +679,13 @@ namespace Csla.Server
       await _authorizer.AuthorizeAsync(clientRequest, ct);
     }
 
-    internal static DataPortalException NewDataPortalException(
-      ApplicationContext applicationContext, string message, Exception innerException, object businessObject, DataPortalOptions dataPortalOptions)
+    [DoesNotReturn]
+    internal static DataPortalException NewDataPortalException(ApplicationContext applicationContext, string message, Exception innerException, object? businessObject, DataPortalOptions dataPortalOptions)
     {
       if (!dataPortalOptions.DataPortalServerOptions.DataPortalReturnObjectOnException)
         businessObject = null;
 
-      throw new DataPortalException(
-        message,
-        innerException, new DataPortalResult(applicationContext, businessObject));
+      throw new DataPortalException(message, innerException, new DataPortalResult(applicationContext, businessObject, null));
     }
 
     /// <summary>
@@ -802,7 +693,7 @@ namespace Csla.Server
     /// serializable criteria value.
     /// </summary>
     /// <param name="criteria">Params array</param>
-    public static object GetCriteriaFromArray(params object[] criteria)
+    public static object GetCriteriaFromArray(params object?[]? criteria)
     {
       var clength = 0;
       if (criteria != null)
@@ -816,17 +707,17 @@ namespace Csla.Server
       else if (clength == 0)
         return EmptyCriteria.Instance;
       else if (clength == 1)
-        return criteria[0];
+        return criteria[0]!;
       else
-        return new Core.MobileList<object>(criteria);
+        return new Core.MobileList<object?>(criteria);
     }
 
     /// <summary>
     /// Converts a single serializable criteria value
     /// into an array of type object.
     /// </summary>
-    /// <param name="criteria">Single serializble criteria value</param>
-    public static object[] GetCriteriaArray(object criteria)
+    /// <param name="criteria">Single serializable criteria value</param>
+    public static object?[]? GetCriteriaArray(object? criteria)
     {
       if (criteria == null)
         return null;

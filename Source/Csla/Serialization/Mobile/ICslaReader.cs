@@ -12,6 +12,7 @@
     /// </summary>
     /// <param name="serializationStream">Stream to read the data from, typically MemoryStream</param>
     /// <returns>List of <see cref="SerializationInfo"/> objects</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> is <see langword="null"/>.</exception>
     List<SerializationInfo> Read(Stream serializationStream);
   }
 }

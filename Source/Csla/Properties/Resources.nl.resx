@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -284,9 +289,9 @@
     <value>{0} komt niet overeen met de regular expression</value>
     <comment>{0} does not match regular expression</comment>
   </data>
-  <data name="EditLevelMismatchException" xml:space="preserve">
-    <value>Edit level mismatch in {0}</value>
-    <comment>Edit level mismatch in {0}</comment>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>Laden van het type '{0}' mislukt</value>
+    <comment>Failed to load type '{0}'</comment>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>De volgende factory methode bestaat niet:{0}</value>
@@ -296,8 +301,12 @@
     <value>{0} moet minstens uit {1} karakters bestaan</value>
     <comment>{0} must be at least {1} characters</comment>
   </data>
-  <data name="TypeLoadException" xml:space="preserve">
-    <value>Laden van het type '{0}' mislukt</value>
-    <comment>Failed to load type '{0}'</comment>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Edit level mismatch in {0}</value>
+    <comment>Edit level mismatch in {0}</comment>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

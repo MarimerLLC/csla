@@ -13,17 +13,18 @@ namespace Csla.Rules.CommonRules
   /// </summary>
   public class IsInRole : AuthorizationRule
   {
-    private List<string> _roles;
+    private readonly List<string> _roles;
 
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="roles">List of allowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsInRole(AuthorizationActions action, List<string> roles)
       : base(action)
     {
-      _roles = roles;
+      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
     }
 
     /// <summary>
@@ -31,9 +32,13 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="roles">List of allowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsInRole(AuthorizationActions action, params string[] roles)
       : base(action)
     {
+      if (roles is null)
+        throw new ArgumentNullException(nameof(roles));
+
       _roles = [..roles];
     }
 
@@ -43,10 +48,11 @@ namespace Csla.Rules.CommonRules
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Member to be authorized.</param>
     /// <param name="roles">List of allowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="element"/> or <paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsInRole(AuthorizationActions action, Core.IMemberInfo element, List<string> roles)
       : base(action, element)
     {
-      _roles = roles;
+      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
     }
 
     /// <summary>
@@ -55,9 +61,13 @@ namespace Csla.Rules.CommonRules
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Member to be authorized.</param>
     /// <param name="roles">List of allowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="element"/> or <paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsInRole(AuthorizationActions action, Core.IMemberInfo element, params string[] roles)
       : base(action, element)
     {
+      if (roles is null)
+        throw new ArgumentNullException(nameof(roles));
+
       _roles = [..roles];
     }
 
@@ -91,17 +101,18 @@ namespace Csla.Rules.CommonRules
   /// </summary>
   public class IsNotInRole : AuthorizationRule
   {
-    private List<string> _roles;
+    private readonly List<string> _roles;
 
     /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="roles">List of disallowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsNotInRole(AuthorizationActions action, List<string> roles)
       : base(action)
     {
-      _roles = roles;
+      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
     }
 
     /// <summary>
@@ -109,9 +120,12 @@ namespace Csla.Rules.CommonRules
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="roles">List of disallowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsNotInRole(AuthorizationActions action, params string[] roles)
       : base(action)
     {
+      if (roles is null)
+        throw new ArgumentNullException(nameof(roles));
       _roles = [..roles];
     }
 
@@ -121,10 +135,13 @@ namespace Csla.Rules.CommonRules
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Member to be authorized.</param>
     /// <param name="roles">List of disallowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="element"/> or <paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsNotInRole(AuthorizationActions action, Core.IMemberInfo element, List<string> roles)
       : base(action, element)
     {
-      _roles = roles;
+      if (element is null)
+        throw new ArgumentNullException(nameof(element));
+      _roles = roles ?? throw new ArgumentNullException(nameof(roles));
     }
 
     /// <summary>
@@ -133,9 +150,14 @@ namespace Csla.Rules.CommonRules
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Member to be authorized.</param>
     /// <param name="roles">List of disallowed roles.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="element"/> or <paramref name="roles"/> is <see langword="null"/>.</exception>
     public IsNotInRole(AuthorizationActions action, Core.IMemberInfo element, params string[] roles)
       : base(action, element)
     {
+      if (element is null)
+        throw new ArgumentNullException(nameof(element));
+      if (roles is null)
+        throw new ArgumentNullException(nameof(roles));
       _roles = [..roles];
     }
 

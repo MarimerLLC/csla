@@ -13,16 +13,7 @@ namespace Csla.Server
   /// </summary>
   public class NullAuthorizer : IAuthorizeDataPortal
   {
-    /// <summary>
-    /// Checks authorization rules for the request.
-    /// </summary>
-    /// <param name="clientRequest">
-    /// Client request information.
-    /// </param>
-    /// <param name="ct">
-    /// The cancellation token.
-    /// </param>
-    /// <returns>A task representing the asynchronous operation.</returns>
+    /// <inheritdoc />
     public Task AuthorizeAsync(AuthorizeRequest clientRequest, CancellationToken ct)
     {
       return Task.CompletedTask;

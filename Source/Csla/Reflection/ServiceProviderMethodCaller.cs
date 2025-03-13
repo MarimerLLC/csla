@@ -16,6 +16,7 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Server;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
 
 namespace Csla.Reflection
 {
@@ -29,13 +30,15 @@ namespace Csla.Reflection
     private static readonly BindingFlags _factoryBindingAttr = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
 #if NET8_0_OR_GREATER
-    private static readonly ConcurrentDictionary<string, Tuple<string, ServiceProviderMethodInfo>> _methodCache = [];
+    private static readonly ConcurrentDictionary<string, Tuple<string?, ServiceProviderMethodInfo>?> _methodCache = [];
 #else
-    private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo> _methodCache = [];
+    private static readonly ConcurrentDictionary<string, ServiceProviderMethodInfo?> _methodCache = [];
 #endif
 
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
-    private ApplicationContext _applicationContext;
+    private ApplicationContext _applicationContext = default!;
+
+    /// <inheritdoc />
+    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(Core.IUseApplicationContext.ApplicationContext)); }
 
     /// <summary>
     /// Find a method based on data portal criteria
@@ -44,7 +47,8 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="target">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
-    public ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object[] criteria)
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
       if (target == null)
@@ -59,14 +63,46 @@ namespace Csla.Reflection
     /// and providing any remaining parameters with
     /// values from an IServiceProvider
     /// </summary>
+    /// <param name="targetType">Object with methods</param>
+    /// <param name="criteria">Data portal criteria values</param>
+    /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria)
+      where T : DataPortalOperationAttribute
+    {
+      if (targetType == null)
+        throw new ArgumentNullException(nameof(targetType));
+
+      return FindDataPortalMethod<T>(targetType, criteria, true)!;
+    }
+
+    /// <summary>
+    /// Find a method based on data portal criteria
+    /// and providing any remaining parameters with
+    /// values from an IServiceProvider
+    /// </summary>
+    /// <typeparam name="T">Type of attribute to look for</typeparam>
+    /// <param name="targetType">Type of domain object</param>
+    /// <param name="criteria">Data portal criteria values</param>
+    /// <param name="dataPortalMethod">The maybe found method.</param>
+    /// <returns><see langword="true"/> if a method with the provided attribute was found. Otherwise <see langword="false"/>.</returns>
+    public bool TryFindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
+      where T : DataPortalOperationAttribute
+    {
+      dataPortalMethod = FindDataPortalMethod<T>(targetType, criteria, false);
+      return dataPortalMethod != null;
+    }
+
+    /// <summary>
+    /// Find a method based on data portal criteria
+    /// and providing any remaining parameters with
+    /// values from an IServiceProvider
+    /// </summary>
     /// <param name="targetType">Type of domain object</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="throwOnError">Throw exceptions on error</param>
-    public ServiceProviderMethodInfo FindDataPortalMethod<T>(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type targetType, object[] criteria, bool throwOnError = true)
+    /// <returns>The <see cref="ServiceProviderMethodInfo"/> of the data portal method if found. Does not return <see langword="null"/> if <paramref name="throwOnError"/> is <see langword="true"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
+    private ServiceProviderMethodInfo? FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, bool throwOnError)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)
@@ -85,7 +121,7 @@ namespace Csla.Reflection
         var cachedMethod = unloadableCachedMethodInfo?.Item2;
 
 #else
-      if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo cachedMethod))
+      if (_methodCache.TryGetValue(cacheKey, out ServiceProviderMethodInfo? cachedMethod))
       {
 #endif
         if (!throwOnError || cachedMethod != null)
@@ -160,20 +196,22 @@ namespace Csla.Reflection
         }
       }
 
-      ScoredMethodInfo result = null;
+      ScoredMethodInfo? result = null;
 
       if (candidates.Any())
       {
         // scan candidate methods for matching criteria parameters
         int criteriaLength = 0;
         if (criteria != null)
+        {
           if (criteria.GetType().Equals(typeof(object[])))
             criteriaLength = criteria.GetLength(0);
           else
             criteriaLength = 1;
+        }
 
         var matches = new List<ScoredMethodInfo>();
-        if (criteriaLength > 0)
+        if (criteriaLength > 0 && criteria is not null)
         {
           foreach (var item in candidates)
           {
@@ -274,7 +312,7 @@ namespace Csla.Reflection
             {
               if (throwOnError)
               {
-                throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}. Matches: {string.Join(", ", matches.Select(m => $"{m.MethodInfo.DeclaringType.FullName}[{m.MethodInfo}]"))}");
+                throw new AmbiguousMatchException($"{targetType.FullName}.[{typeOfOperation.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}. Matches: {string.Join(", ", matches.Select(m => $"{m.MethodInfo.DeclaringType?.FullName}[{m.MethodInfo}]"))}");
               }
               else
               {
@@ -287,10 +325,10 @@ namespace Csla.Reflection
         }
       }
 
-      ServiceProviderMethodInfo resultingMethod = null;
+      ServiceProviderMethodInfo? resultingMethod = null;
       if (result != null)
       {
-        resultingMethod = new ServiceProviderMethodInfo { MethodInfo = result.MethodInfo };
+        resultingMethod = new ServiceProviderMethodInfo(result.MethodInfo);
       }
       else
       {
@@ -332,7 +370,7 @@ namespace Csla.Reflection
       return resultingMethod;
     }
 
-    private static int CalculateParameterScore(ParameterInfo methodParam, object c)
+    private static int CalculateParameterScore(ParameterInfo methodParam, object? c)
     {
       if (c == null)
       {
@@ -364,12 +402,12 @@ namespace Csla.Reflection
       return 0;
     }
 
-    private static string GetCacheKeyName(Type targetType, Type operationType, object[] criteria)
+    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria)
     {
       return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}";
     }
 
-    private static string GetCriteriaTypeNames(object[] criteria)
+    private static string GetCriteriaTypeNames(object?[]? criteria)
     {
       var result = new System.Text.StringBuilder();
       result.Append('(');
@@ -402,7 +440,7 @@ namespace Csla.Reflection
     {
       if (type.IsArray)
       {
-        return $"{GetTypeName(type.GetElementType())}[]";
+        return $"{GetTypeName(type.GetElementType()!)}[]";
       }
 
       if (!type.IsGenericType)
@@ -459,15 +497,18 @@ namespace Csla.Reflection
     /// <param name="obj">Target object</param>
     /// <param name="method">Method to invoke</param>
     /// <param name="parameters">Criteria params array</param>
-    public async Task<object> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="method"/> is <see langword="null"/>.</exception>
+    public async Task<object?> CallMethodTryAsync(object obj, ServiceProviderMethodInfo method, object?[]? parameters)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
       if (method == null)
         throw new ArgumentNullException(obj.GetType().FullName + ".<null>() " + Resources.MethodNotImplemented);
 
       var info = method.MethodInfo;
       method.PrepForInvocation();
 
-      object[] plist;
+      object?[] plist;
 
       if (method.TakesParamArray)
       {
@@ -475,13 +516,13 @@ namespace Csla.Reflection
       }
       else
       {
-        plist = new object[method.Parameters.Length];
+        plist = new object[method.Parameters!.Length];
         int index = 0;
         int criteriaIndex = 0;
         var service = _applicationContext.CurrentServiceProvider;
         foreach (var item in method.Parameters)
         {
-          if (method.IsInjected[index])
+          if (method.IsInjected![index])
           {
             if (service == null)
             {
@@ -492,7 +533,7 @@ namespace Csla.Reflection
           }
           else
           {
-            if (parameters.GetType().Equals(typeof(object[])))
+            if (parameters is not null && parameters.GetType().Equals(typeof(object[])))
             {
               if (parameters.Length - 1 < criteriaIndex)
                 plist[index] = null;
@@ -511,22 +552,22 @@ namespace Csla.Reflection
       {
         if (method.IsAsyncTask)
         {
-          await ((Task)method.DynamicMethod(obj, plist)).ConfigureAwait(false);
+          await ((Task)method.DynamicMethod!(obj, plist)).ConfigureAwait(false);
           return null;
         }
         else if (method.IsAsyncTaskObject)
         {
-          return await ((Task<object>)method.DynamicMethod(obj, plist)).ConfigureAwait(false);
+          return await ((Task<object>)method.DynamicMethod!(obj, plist)).ConfigureAwait(false);
         }
         else
         {
-          var result = method.DynamicMethod(obj, plist);
+          var result = method.DynamicMethod!(obj, plist);
           return result;
         }
       }
       catch (Exception ex)
       {
-        Exception inner = null;
+        Exception? inner;
         if (ex.InnerException == null)
           inner = ex;
         else
@@ -544,8 +585,13 @@ namespace Csla.Reflection
 
     private class ScoredMethodInfo
     {
+#if NET8_0_OR_GREATER
+      public required int Score { get; set; }
+      public required System.Reflection.MethodInfo MethodInfo { get; set; }
+#else
       public int Score { get; set; }
-      public System.Reflection.MethodInfo MethodInfo { get; set; }
+      public System.Reflection.MethodInfo MethodInfo { get; set; } = default!;
+#endif
     }
   }
 }

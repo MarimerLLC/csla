@@ -23,7 +23,7 @@ namespace Csla.Server
     /// Factory class must have a parameterless 
     /// default constructor.
     /// </remarks>
-    public string FactoryTypeName { get; private set; }
+    public string FactoryTypeName { get; }
     /// <summary>
     /// Name of the method to call for a create operation.
     /// </summary>
@@ -31,7 +31,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string CreateMethodName { get; private set; }
+    public string CreateMethodName { get; }
     /// <summary>
     /// Name of the method to call for a fetch operation.
     /// </summary>
@@ -39,7 +39,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string FetchMethodName { get; private set; }
+    public string FetchMethodName { get; }
     /// <summary>
     /// Name of the method to call for a update operation.
     /// </summary>
@@ -47,7 +47,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string UpdateMethodName { get; private set; }
+    public string UpdateMethodName { get; }
     /// <summary>
     /// Name of the method to call for a delete operation.
     /// </summary>
@@ -55,7 +55,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string DeleteMethodName { get; private set; }
+    public string DeleteMethodName { get; }
     /// <summary>
     /// Name of the method to call for a execute operation.
     /// </summary>
@@ -63,7 +63,7 @@ namespace Csla.Server
     /// The appropriate overload of this method will be
     /// invoked based on the parameters passed from the client.
     /// </remarks>
-    public string ExecuteMethodName { get; private set; }
+    public string ExecuteMethodName { get; }
 
     /// <summary>
     /// Creates an instance of the attribute.
@@ -75,14 +75,21 @@ namespace Csla.Server
     /// The default names for the factory methods are
     /// Create(), Fetch(), Update() and Delete().
     /// </remarks>
-    public MobileFactoryAttribute(string factoryType)
+    public MobileFactoryAttribute(string factoryType) : this(factoryType, "Fetch")
     {
-      FactoryTypeName = factoryType;
-      CreateMethodName = "Create";
-      FetchMethodName = "Fetch";
-      UpdateMethodName = "Update";
-      DeleteMethodName = "Delete";
-      ExecuteMethodName = "Execute";
+    }
+
+    /// <summary>
+    /// Creates an instance of the attribute.
+    /// </summary>
+    /// <param name="factoryType">
+    /// Assembly qualified type name of the factory object.
+    /// </param>
+    /// <param name="fetchMethod">
+    /// Name of the method to call for a fetch operation.
+    /// </param>
+    public MobileFactoryAttribute(string factoryType, string fetchMethod) : this(factoryType,  "Create", fetchMethod)
+    {
     }
 
     /// <summary>
@@ -96,33 +103,8 @@ namespace Csla.Server
     /// <param name="fetchMethod">
     /// Name of the method to call for a fetch operation.
     /// </param>
-    public MobileFactoryAttribute(string factoryType, string createMethod, string fetchMethod)
+    public MobileFactoryAttribute(string factoryType, string createMethod, string fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
     {
-      FactoryTypeName = factoryType;
-      CreateMethodName = createMethod;
-      FetchMethodName = fetchMethod;
-      UpdateMethodName = "Update";
-      DeleteMethodName = "Delete";
-      ExecuteMethodName = "Execute";
-    }
-
-    /// <summary>
-    /// Creates an instance of the attribute.
-    /// </summary>
-    /// <param name="factoryType">
-    /// Assembly qualified type name of the factory object.
-    /// </param>
-    /// <param name="fetchMethod">
-    /// Name of the method to call for a fetch operation.
-    /// </param>
-    public MobileFactoryAttribute(string factoryType, string fetchMethod)
-    {
-      FactoryTypeName = factoryType;
-      FetchMethodName = fetchMethod;
-      CreateMethodName = "Create";
-      UpdateMethodName = "Update";
-      DeleteMethodName = "Delete";
-      ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -140,15 +122,8 @@ namespace Csla.Server
     /// Name of the method to call for a update operation.</param>
     /// <param name="deleteMethod">
     /// Name of the method to call for a delete operation.</param>
-    public MobileFactoryAttribute(
-      string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
+    public MobileFactoryAttribute(string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
     {
-      FactoryTypeName = factoryType;
-      CreateMethodName = createMethod;
-      FetchMethodName = fetchMethod;
-      UpdateMethodName = updateMethod;
-      DeleteMethodName = deleteMethod;
-      ExecuteMethodName = "Execute";
     }
 
     /// <summary>
@@ -168,8 +143,7 @@ namespace Csla.Server
     /// Name of the method to call for a delete operation.</param>
     /// <param name="executeMethod">
     /// Name of the method to call for a execute operation.</param>
-    public MobileFactoryAttribute(
-      string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
+    public MobileFactoryAttribute(string factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
     {
       FactoryTypeName = factoryType;
       CreateMethodName = createMethod;

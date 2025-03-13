@@ -61,7 +61,7 @@ namespace Csla.Web.Design
     public IDataSourceFieldSchema[] GetFields()
     {
       ITypeResolutionService typeService = null;
-      List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();
+      var result = new List<IDataSourceFieldSchema>();
 
       if (_designer != null)
       {
@@ -95,12 +95,6 @@ namespace Csla.Web.Design
     /// <summary>
     /// Returns the name of the schema.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return "Default";
-      }
-    }
+    public string Name => "Default";
   }
 }

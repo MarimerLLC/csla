@@ -18,9 +18,16 @@ namespace Csla.Rules
     /// <summary>
     /// Gets or sets the error message (constant).
     /// </summary>
+    /// <exception cref="InvalidOperationException"><see cref="MessageDelegate"/> is <see langword="null"/>.</exception>
     public string MessageText
     {
-      get { return MessageDelegate.Invoke(); }
+      get 
+      {
+        if (MessageDelegate == null)
+          throw new InvalidOperationException($"{nameof(MessageDelegate)} == null");
+
+        return MessageDelegate.Invoke(); 
+      }
       set { MessageDelegate = () => value; }
     }
 
@@ -28,7 +35,7 @@ namespace Csla.Rules
     /// Gets or sets the error message function for this rule.
     /// Use this for localizable messages from a resource file. 
     /// </summary>    
-    public Func<string> MessageDelegate { get; set; }
+    public Func<string>? MessageDelegate { get; set; }
 
     /// <summary>
     /// Gets a value indicating whether this instance has message delegate.
@@ -36,10 +43,7 @@ namespace Csla.Rules
     /// <value>
     /// 	<c>true</c> if this instance has message delegate; otherwise, <c>false</c>.
     /// </value>
-    protected bool HasMessageDelegate
-    {
-      get { return MessageDelegate != null; }
-    }
+    protected bool HasMessageDelegate => MessageDelegate != null;
 
     /// <summary>
     /// Gets the error message text.
@@ -53,7 +57,6 @@ namespace Csla.Rules
     /// Initializes a new instance of the <see cref="PropertyRule"/> class.
     /// </summary>
     protected PropertyRuleAsync()
-      : base()
     {
       CanRunAsAffectedProperty = true;
       CanRunOnServer = true;
@@ -64,7 +67,7 @@ namespace Csla.Rules
     /// Initializes a new instance of the <see cref="PropertyRule"/> class.
     /// </summary>
     /// <param name="propertyInfo">The property info.</param>
-    protected PropertyRuleAsync(IPropertyInfo propertyInfo) : base(propertyInfo)
+    protected PropertyRuleAsync(IPropertyInfo? propertyInfo) : base(propertyInfo)
     {
       CanRunAsAffectedProperty = true;
       CanRunOnServer = true;
@@ -79,7 +82,7 @@ namespace Csla.Rules
     /// </value>
     public bool CanRunAsAffectedProperty
     {
-      get { return (RunMode & RunModes.DenyAsAffectedProperty) == 0; }
+      get => (RunMode & RunModes.DenyAsAffectedProperty) == 0;
       set
       {
         if (value && !CanRunAsAffectedProperty)
@@ -101,7 +104,7 @@ namespace Csla.Rules
     /// </value>
     public bool CanRunOnServer
     {
-      get { return (RunMode & RunModes.DenyOnServerSidePortal) == 0; }
+      get => (RunMode & RunModes.DenyOnServerSidePortal) == 0;
       set
       {
         if (value && !CanRunOnServer)
@@ -123,7 +126,7 @@ namespace Csla.Rules
     /// </value>
     public bool CanRunInCheckRules
     {
-      get { return (RunMode & RunModes.DenyCheckRules) == 0; }
+      get => (RunMode & RunModes.DenyCheckRules) == 0;
       set
       {
         if (value && !CanRunInCheckRules)

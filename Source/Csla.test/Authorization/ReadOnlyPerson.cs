@@ -6,6 +6,8 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.TestHelpers;
+
 namespace Csla.Test.Authorization
 {
 #if TESTING
@@ -17,17 +19,20 @@ namespace Csla.Test.Authorization
     private bool _authorizationCheckDisabled;
     protected override bool IsCanReadPropertyAuthorizationCheckDisabled => _authorizationCheckDisabled;
 
-    private ReadOnlyPerson() 
+    public static ReadOnlyPerson GetReadOnlyPerson(TestDIContext serviceProvider)
+    {
+      return serviceProvider.CreateDataPortal<ReadOnlyPerson>().Create();
+    }
+
+    [Create, RunLocal]
+    private void Create()
     {
       LoadProperty(FirstNameProperty, "John");
       LoadProperty(LastNameProperty, "Doe");
       LoadProperty(MiddleNameProperty, "A");
       LoadProperty(PlaceOfBirthProperty, "New York");
     }
-    public static ReadOnlyPerson GetReadOnlyPerson()
-    {
-      return new ReadOnlyPerson();
-    }
+
     private static PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(new PropertyInfo<string>("FirstName"));
     public string FirstName
     {

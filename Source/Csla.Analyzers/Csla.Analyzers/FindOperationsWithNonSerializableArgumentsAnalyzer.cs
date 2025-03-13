@@ -25,8 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
-      ImmutableArray.Create(shouldUseSerializableTypesRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldUseSerializableTypesRule];
 
     /// <summary>
     /// 

@@ -5,9 +5,6 @@
   /// </summary>
   public readonly struct DataPortalOperationQualification
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public DataPortalOperationQualification(bool byNamingConvention, bool byAttribute) =>
       (ByNamingConvention, ByAttribute) = (byNamingConvention, byAttribute);
 

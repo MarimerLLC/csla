@@ -18,9 +18,6 @@ namespace Csla.Analyzers
   public sealed class AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFix
     : CodeFixProvider
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds =>
       ImmutableArray.Create(AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance);
     /// <summary>

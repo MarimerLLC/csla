@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class FindRefAndOutParametersInOperationsAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.FindRefAndOutParametersInOperations_Title), Resources.ResourceManager, typeof(Resources));
 
     /// <summary>

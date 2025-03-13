@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Title), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
@@ -23,9 +20,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static string UpdateToAsyncEquivalentsDescription => Resources.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_UpdateToAsyncEquivalentsDescription;
   }
 }

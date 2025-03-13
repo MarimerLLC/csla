@@ -5,9 +5,6 @@
   /// </summary>
   public static class EvaluateManagedBackingFieldsNameofAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public const string Title = "Evaluate Managed Backing Fields using nameof";
     /// <summary>
     /// 
@@ -24,9 +21,6 @@
   /// </summary>
   public static class EvaluateManagedBackingFieldsCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public const string FixManagedBackingFieldDescription = "Refactor managed backing field to nameof";
   }
 }

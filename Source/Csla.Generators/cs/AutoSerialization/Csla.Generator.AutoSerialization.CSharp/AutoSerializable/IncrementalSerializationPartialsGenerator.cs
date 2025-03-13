@@ -13,9 +13,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
   [Generator]
   public class IncrementalSerializationPartialsGenerator : IIncrementalGenerator
   {
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="context"></param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

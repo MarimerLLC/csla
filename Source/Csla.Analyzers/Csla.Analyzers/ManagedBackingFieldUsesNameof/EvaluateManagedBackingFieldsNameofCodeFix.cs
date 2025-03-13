@@ -17,9 +17,6 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
   public sealed class EvaluateManagedBackingFieldsNameofCodeFix
     : CodeFixProvider
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFieldsNameof);
 
 

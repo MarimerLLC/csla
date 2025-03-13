@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class IsOperationMethodPublicAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.IsOperationMethodPublic_Title), Resources.ResourceManager, typeof(Resources));
 
     /// <summary>
@@ -28,9 +25,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class IsOperationMethodPublicAnalyzerMakeNonPublicCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static string InternalDescription => Resources.IsOperationMethodPublic_InternalDescription;
     /// <summary>
     /// 

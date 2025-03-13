@@ -5,9 +5,6 @@
   /// </summary>
   public readonly struct CslaOperationQualification
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public CslaOperationQualification(bool byNamingConvention, bool byAttribute) =>
       (ByNamingConvention, ByAttribute) = (byNamingConvention, byAttribute);
 

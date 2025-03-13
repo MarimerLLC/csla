@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class DoesOperationHaveAttributeAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.DoesOperationHaveAttribute_Title), Resources.ResourceManager, typeof(Resources));
 
     /// <summary>
@@ -24,9 +21,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static string AddAttributeAndUsingDescription => Resources.Shared_AddAttributeAndUsingDescription;
     /// <summary>
     /// 

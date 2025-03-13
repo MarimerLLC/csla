@@ -18,9 +18,6 @@ namespace Csla.Analyzers
   public sealed class IsCompleteCalledInAsynchronousBusinessRuleRemoveCallCodeFix
     : CodeFixProvider
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds =>
       ImmutableArray.Create(Constants.AnalyzerIdentifiers.CompleteInExecuteAsync);
 

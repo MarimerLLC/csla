@@ -12,9 +12,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
   /// </summary>
   public static class TrackingNames
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public const string ExtractClasses = nameof(ExtractClasses);
     /// <summary>
     /// 

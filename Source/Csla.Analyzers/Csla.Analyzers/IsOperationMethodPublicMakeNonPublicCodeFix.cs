@@ -16,9 +16,6 @@ namespace Csla.Analyzers
   public sealed class IsOperationMethodPublicMakeNonPublicCodeFix
     : CodeFixProvider
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.IsOperationMethodPublic);
 
     /// <summary>

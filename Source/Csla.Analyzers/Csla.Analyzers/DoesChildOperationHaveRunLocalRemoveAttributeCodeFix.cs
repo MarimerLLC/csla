@@ -17,9 +17,6 @@ namespace Csla.Analyzers
   public sealed class DoesChildOperationHaveRunLocalRemoveAttributeCodeFix
     : CodeFixProvider
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal);
 
     /// <summary>

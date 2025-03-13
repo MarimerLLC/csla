@@ -5,9 +5,6 @@
   /// </summary>
   public static class CslaMemberConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static class Properties
     {
       /// <summary>

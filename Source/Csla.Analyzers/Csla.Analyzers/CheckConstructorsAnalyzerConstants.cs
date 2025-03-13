@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class PublicNoArgumentConstructorIsMissingConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public const string HasNonPublicNoArgumentConstructor = "HasNonPublicNoArgumentConstructor";
     /// <summary>
     /// 
@@ -27,9 +24,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class ConstructorHasParametersConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.ConstructorHasParameters_Title), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
@@ -42,9 +36,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class FindBusinessObjectCreationConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.FindBusinessObjectCreationConstants_Title), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
@@ -57,9 +48,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class CheckConstructorsAnalyzerPublicConstructorCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static string AddPublicConstructorDescription => Resources.CheckConstructorsAnalyzerPublicConstructor_AddPublicConstructorDescription;
     /// <summary>
     /// 

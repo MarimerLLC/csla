@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class FindSaveAssignmentIssueAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.FindSaveAssignmentIssue_Title), Resources.ResourceManager, typeof(Resources));
 
     /// <summary>
@@ -24,9 +21,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class FindSaveAsyncAssignmentIssueAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.FindSaveAsyncAssignmentIssue_Title), Resources.ResourceManager, typeof(Resources));
 
     /// <summary>
@@ -40,9 +34,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static string AddAssignmentDescription => Resources.FindSaveAssignmentIssue_AddAssignmentDescription;
   }
 }

@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class ObjectAuthorizationRulesAttributeAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString AttributeMissingTitle = new(nameof(Resources.ObjectAuthorizationRulesAttribute_AttributeMissingTitle), Resources.ResourceManager, typeof(Resources));
     /// <summary>
     /// 
@@ -39,9 +36,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class ObjectAuthorizationRulesAttributeAnalyzerAddAttributeCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static string AddAttributeAndUsingDescription => Resources.Shared_AddAttributeAndUsingDescription;
     /// <summary>
     /// 

@@ -8,9 +8,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class FindOperationsWithNonSerializableArgumentsConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.FindOperationsWithNonSerializableArguments_Title), Resources.ResourceManager, typeof(Resources));
 
     /// <summary>

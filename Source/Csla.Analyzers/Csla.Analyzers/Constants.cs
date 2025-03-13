@@ -5,9 +5,6 @@
   /// </summary>
   public static class Constants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static class AnalyzerIdentifiers
     {
       /// <summary>

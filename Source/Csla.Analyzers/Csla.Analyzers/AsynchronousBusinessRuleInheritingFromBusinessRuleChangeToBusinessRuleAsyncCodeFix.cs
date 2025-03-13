@@ -10,9 +10,6 @@ using static Csla.Analyzers.Constants;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFix

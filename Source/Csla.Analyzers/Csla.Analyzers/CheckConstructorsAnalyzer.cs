@@ -7,9 +7,6 @@ using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class CheckConstructorsAnalyzer
     : DiagnosticAnalyzer
@@ -29,18 +26,12 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.ConstructorHasParameters, nameof(CheckConstructorsAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
     [
         publicNoArgumentConstructorIsMissingRule,
         constructorHasParametersRule
     ];
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override void Initialize(AnalysisContext context)
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);

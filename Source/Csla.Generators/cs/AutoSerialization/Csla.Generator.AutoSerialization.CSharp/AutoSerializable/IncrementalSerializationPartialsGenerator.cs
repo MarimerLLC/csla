@@ -7,9 +7,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [Generator]
   public class IncrementalSerializationPartialsGenerator : IIncrementalGenerator
   {

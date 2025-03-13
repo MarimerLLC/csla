@@ -3,9 +3,6 @@ using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class ObjectAuthorizationRulesAttributeAnalyzerConstants
   {
     public static readonly LocalizableResourceString AttributeMissingTitle = new(nameof(Resources.ObjectAuthorizationRulesAttribute_AttributeMissingTitle), Resources.ResourceManager, typeof(Resources));
@@ -21,9 +18,6 @@ namespace Csla.Analyzers
     public static readonly LocalizableResourceString RulesStaticMessage = new(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesStaticMessage), Resources.ResourceManager, typeof(Resources));
   }
 
-  /// <summary>
-  /// 
-  /// </summary>
   public static class ObjectAuthorizationRulesAttributeAnalyzerAddAttributeCodeFixConstants
   {
     public static string AddAttributeAndUsingDescription => Resources.Shared_AddAttributeAndUsingDescription;

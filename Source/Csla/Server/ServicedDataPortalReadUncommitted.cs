@@ -22,9 +22,6 @@ namespace Csla.Server
   {
     private DataPortalBroker portal { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> is <see langword="null"/>.</exception>
     public ServicedDataPortalReadUncommitted(DataPortalBroker dataPortalBroker)
     {

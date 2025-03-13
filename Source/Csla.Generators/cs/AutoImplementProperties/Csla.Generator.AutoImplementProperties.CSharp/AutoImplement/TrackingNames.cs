@@ -7,9 +7,6 @@
 //-----------------------------------------------------------------------
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class TrackingNames
   {
     public const string ExtractClasses = nameof(ExtractClasses);

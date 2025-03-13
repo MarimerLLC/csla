@@ -89,9 +89,6 @@ namespace Csla.Test.AppContext
       TestResults.Add("Root", "Fetched");
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     [Update]
     protected void DataPortal_Update()
     {
@@ -112,9 +109,6 @@ namespace Csla.Test.AppContext
       }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="criteria"></param>
     [Delete]
     protected void DataPortal_Delete(object criteria)

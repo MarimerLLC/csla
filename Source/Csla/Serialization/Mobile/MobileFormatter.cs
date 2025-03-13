@@ -393,7 +393,6 @@ namespace Csla.Serialization.Mobile
     /// Determines whether the specified type can be serialized as a child.
     /// </summary>
     /// <param name="type">The type to check.</param>
-    /// <returns></returns>
     public bool IsTypeSerializable(Type type)
     {
       if (typeof(IMobileObject).IsAssignableFrom(type))

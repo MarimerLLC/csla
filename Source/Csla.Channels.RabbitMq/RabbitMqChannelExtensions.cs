@@ -46,7 +46,6 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config"></param>
     /// <param name="options"></param>
-    /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
     public static DataPortalServerOptions UseRabbitMqPortal(this DataPortalServerOptions config, Action<RabbitMqPortalOptions>? options)
     {

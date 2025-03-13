@@ -153,7 +153,6 @@ namespace RuleTutorial.Testing.Common
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
-    /// <returns></returns>
     public T GetOutputPropertyValue<T>(PropertyInfo<T> propertyInfo)
     {
       return (T)RuleContext.OutputPropertyValues[propertyInfo];

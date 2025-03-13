@@ -13,13 +13,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
   public static class TrackingNames
   {
     public const string ExtractClasses = nameof(ExtractClasses);
-    /// <summary>
-    /// 
-    /// </summary>
+
     public const string SelectCompilation = nameof(SelectCompilation);
-    /// <summary>
-    /// 
-    /// </summary>
+
     public const string Combine = nameof(Combine);
 
   }

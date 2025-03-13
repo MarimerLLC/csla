@@ -33,7 +33,6 @@ namespace Csla.Serialization.Mobile
     /// Deserialize the object from the SerializationInfo
     /// </summary>
     /// <param name="info">SerializationInfo instance</param>
-    /// <returns></returns>
     /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     object Deserialize(SerializationInfo info);
   }

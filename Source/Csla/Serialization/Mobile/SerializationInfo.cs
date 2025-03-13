@@ -459,7 +459,6 @@ namespace Csla.Serialization.Mobile
     /// (non-complex) serializable type by MobileFormatter.
     /// </summary>
     /// <param name="type">Type to evaluate</param>
-    /// <returns></returns>
     public static bool IsNativeType(Type type)
     {
       bool result;

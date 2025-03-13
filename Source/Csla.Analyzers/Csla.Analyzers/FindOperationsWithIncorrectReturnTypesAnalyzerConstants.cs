@@ -22,13 +22,9 @@ namespace Csla.Analyzers
   public static class FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFixConstants
   {
     public static string ChangeReturnTypeToTaskDescription => Resources.FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToTaskDescription;
-    /// <summary>
-    /// 
-    /// </summary>
+
     public static string ChangeReturnTypeToVoidDescription => Resources.FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCode_ChangeReturnTypeToVoidDescription;
-    /// <summary>
-    /// 
-    /// </summary>
+
     public static readonly string SystemThreadingTasksNamespace = typeof(Task).Namespace;
   }
 }

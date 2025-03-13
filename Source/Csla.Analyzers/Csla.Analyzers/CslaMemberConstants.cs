@@ -270,9 +270,7 @@
     /// 
     /// </summary>
     public const string AssemblyName = "Csla";
-    /// <summary>
-    /// 
-    /// </summary>
+
     public const string SerializableAttribute = "SerializableAttribute";
   }
 }

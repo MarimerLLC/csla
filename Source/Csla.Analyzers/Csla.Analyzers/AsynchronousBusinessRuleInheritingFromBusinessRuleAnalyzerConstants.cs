@@ -9,9 +9,7 @@ namespace Csla.Analyzers
   public static class AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants
   {
     public static readonly LocalizableResourceString Title = new(nameof(Resources.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Title), Resources.ResourceManager, typeof(Resources));
-    /// <summary>
-    /// 
-    /// </summary>
+
     public static readonly LocalizableResourceString Message = new(nameof(Resources.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Message), Resources.ResourceManager, typeof(Resources));
   }
 

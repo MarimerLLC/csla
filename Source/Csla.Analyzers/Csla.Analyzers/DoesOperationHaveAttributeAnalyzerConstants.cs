@@ -22,13 +22,9 @@ namespace Csla.Analyzers
   public static class DoesOperationHaveAttributeAnalyzerAddAttributeCodeFixConstants
   {
     public static string AddAttributeAndUsingDescription => Resources.Shared_AddAttributeAndUsingDescription;
-    /// <summary>
-    /// 
-    /// </summary>
+
     public static string AddAttributeDescription => Resources.Shared_AddAttributeDescription;
-    /// <summary>
-    /// 
-    /// </summary>
+
     public const string CslaNamespace = "Csla";
   }
 }

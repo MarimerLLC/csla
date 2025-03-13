@@ -21,7 +21,7 @@ namespace Csla.Rules
     /// </summary>
     public override bool IsAsync
     {
-      get { return _isAsync; }
+      get => _isAsync;
       protected set
       {
         CanWriteProperty("IsAsync");

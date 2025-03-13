@@ -71,8 +71,8 @@ namespace Csla.Rules
     /// <value>True to suppress all rule method invocation.</value>
     public bool SuppressRuleChecking
     {
-      get { return _suppressRuleChecking; }
-      set { _suppressRuleChecking = value; }
+      get => _suppressRuleChecking;
+      set => _suppressRuleChecking = value;
     }
 
     private int _processThroughPriority;
@@ -82,8 +82,8 @@ namespace Csla.Rules
     /// </summary>
     public int ProcessThroughPriority
     {
-      get { return _processThroughPriority; }
-      set { _processThroughPriority = value; }
+      get => _processThroughPriority;
+      set => _processThroughPriority = value;
     }
 
     private string? _ruleSet = null;
@@ -93,7 +93,7 @@ namespace Csla.Rules
     /// </summary>
     public string RuleSet
     {
-      get { return string.IsNullOrEmpty(_ruleSet) ? ApplicationContext.DefaultRuleSet : _ruleSet!; }
+      get => string.IsNullOrEmpty(_ruleSet) ? ApplicationContext.DefaultRuleSet : _ruleSet!;
       set
       {
         _typeRules = null;
@@ -114,8 +114,8 @@ namespace Csla.Rules
     /// </value>
     public bool CascadeOnDirtyProperties
     {
-      get { return _cascadeOnDirtyProperties; }
-      set { _cascadeOnDirtyProperties = value; }
+      get => _cascadeOnDirtyProperties;
+      set => _cascadeOnDirtyProperties = value;
     }
 
     [NonSerialized]
@@ -163,10 +163,7 @@ namespace Csla.Rules
       _target = target;
     }
 
-    internal object Target
-    {
-      get { return _target; }
-    }
+    internal object Target => _target;
 
     /// <summary>
     /// Associates a business rule with the business object.
@@ -269,10 +266,7 @@ namespace Csla.Rules
     /// any currently broken rules, which would
     /// mean the object is not valid.
     /// </summary>
-    public bool IsValid
-    {
-      get { return BrokenRules.ErrorCount == 0; }
-    }
+    public bool IsValid => BrokenRules.ErrorCount == 0;
 
     /// <summary>
     /// Gets the broken rules list.
@@ -290,8 +284,8 @@ namespace Csla.Rules
     /// </summary>
     public bool RunningRules
     {
-      get { return _runningRules; }
-      private set { _runningRules = value; }
+      get => _runningRules;
+      private set => _runningRules = value;
     }
 
     [NonSerialized]
@@ -315,7 +309,7 @@ namespace Csla.Rules
     /// </summary>
     public bool RunningAsyncRules
     {
-      get { return _isBusy; }
+      get => _isBusy;
       set
       {
         _isBusy = value;
@@ -1415,9 +1409,6 @@ namespace Csla.Rules
       public List<string> DirtyProperties { get; }
     }
 
-    object IBusinessRules.Target
-    {
-      get { return Target; }
-    }
+    object IBusinessRules.Target => Target;
   }
 }

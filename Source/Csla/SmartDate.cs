@@ -381,10 +381,7 @@ namespace Csla
           _format = _defaultFormat;
         return _format;
       }
-      set
-      {
-        _format = value;
-      }
+      set => _format = value;
     }
 
     /// <summary>
@@ -405,8 +402,8 @@ namespace Csla
     [AllowNull]
     public string Text
     {
-      get { return DateToString(Date, FormatString, _emptyValue); }
-      set { Date = StringToDate(value, _emptyValue); }
+      get => DateToString(Date, FormatString, _emptyValue);
+      set => Date = StringToDate(value, _emptyValue);
     }
 
 #endregion
@@ -568,12 +565,9 @@ namespace Csla
     /// date is only important for comparison operations. This allows you to
     /// compare an empty date with a real date and get a meaningful result.
     /// </remarks>
-    public bool EmptyIsMin
-    {
-      get { return (_emptyValue == EmptyValue.MinDate); }
-    }
+    public bool EmptyIsMin => (_emptyValue == EmptyValue.MinDate);
 
-#endregion
+    #endregion
 
 #region Conversion Functions
 
@@ -588,8 +582,8 @@ namespace Csla
     /// </value>
     public static Func<string?, DateTime?>? CustomParser
     {
-      get { return _customParser; }
-      set { _customParser = value; }
+      get => _customParser;
+      set => _customParser = value;
     }
 
 

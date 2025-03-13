@@ -68,29 +68,17 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected bool BindingEdit
     {
-      get
-      {
-        return _bindingEdit;
-      }
-      set
-      {
-        _bindingEdit = value;
-      }
+      get => _bindingEdit;
+      set => _bindingEdit = value;
     }
 
-    int IUndoableObject.EditLevel
-    {
-      get { return EditLevel; }
-    }
+    int IUndoableObject.EditLevel => EditLevel;
 
     /// <summary>
     /// Returns the current edit level of the object.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected int EditLevel
-    {
-      get { return _stateStack.Count; }
-    }
+    protected int EditLevel => _stateStack.Count;
 
     void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {

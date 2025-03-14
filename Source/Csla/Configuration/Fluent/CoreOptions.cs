@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="HttpProxyOptions.cs" company="Marimer LLC">
+// <copyright file="CoreOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -9,7 +9,7 @@
 namespace Csla.Configuration
 {
   /// <summary>
-  /// Options for data binding
+  /// Internal core CSLA options.
   /// </summary>
   public class CoreOptions;
 }

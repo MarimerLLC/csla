@@ -1158,7 +1158,8 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-      BusinessRules.AddDataAnnotations();
+      if (ApplicationContext.Options.ScanDataAnnotations)
+        BusinessRules.AddDataAnnotations();
     }
 
     /// <summary>

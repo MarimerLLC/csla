@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using Csla.Server;
 using System.Diagnostics.CodeAnalysis;
+using Csla.Configuration;
 
 namespace Csla
 {
@@ -26,11 +27,18 @@ namespace Csla
     /// Creates a new instance of the type
     /// </summary>
     /// <param name="applicationContextAccessor"></param>
-    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor)
+    /// <param name="options"></param>
+    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor, CslaOptions options)
     {
       ApplicationContextAccessor = applicationContextAccessor;
       ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
+      Options = options;
     }
+
+    /// <summary>
+    /// Holds configuration options for the CSLA framework.
+    /// </summary>
+    public CslaOptions Options { get; private set; }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
 
@@ -196,8 +204,7 @@ namespace Csla
       {
         if (!_propertyChangedModeSet)
         {
-          var options = GetRequiredService<Configuration.CslaOptions>();
-          _propertyChangedMode = options.BindingOptions.PropertyChangedMode;
+          _propertyChangedMode = Options.BindingOptions.PropertyChangedMode;
           _propertyChangedModeSet = true;
         }
         return _propertyChangedMode;

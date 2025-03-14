@@ -252,7 +252,7 @@ namespace Csla.Rules
 
     private static void EnsureUniqueRule(AuthorizationRuleManager mgr, IAuthorizationRuleBase rule)
     {
-      IAuthorizationRuleBase? oldRule = null;
+      IAuthorizationRuleBase? oldRule;
       if (rule.Element != null)
         oldRule = mgr.Rules.FirstOrDefault(c => c.Element != null && c.Element.Name == rule.Element.Name && c.Action == rule.Action);
       else

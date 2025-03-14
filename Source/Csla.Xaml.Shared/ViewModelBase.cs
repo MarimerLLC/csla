@@ -500,7 +500,7 @@ namespace Csla.Xaml
     /// <param name="factory">Factory method to invoke</param>
     public virtual async Task<T> RefreshAsync<F>(Func<Task<T>> factory)
     {
-      T result = default;
+      T result;
       try
       {
         IsBusy = true;

@@ -14,7 +14,6 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Creates new instance of <see cref="CslaBinaryReader"/>
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaBinaryReader(ApplicationContext applicationContext)
     {

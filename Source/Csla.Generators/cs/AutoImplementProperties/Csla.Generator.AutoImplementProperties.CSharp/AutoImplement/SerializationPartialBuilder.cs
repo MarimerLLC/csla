@@ -156,7 +156,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
     /// <param name="propertyDefinition">The definition of the member we are writing for</param>
-    /// <param name="typeDefinition"></param>
     private void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, ExtractedTypeDefinition typeDefinition)
     {
       var getter = GetGetterMethod(typeDefinition);

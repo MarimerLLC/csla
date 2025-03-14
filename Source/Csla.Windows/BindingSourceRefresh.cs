@@ -111,7 +111,6 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="source">Control being extended.</param>
     /// <param name="value">New value of property.</param>
-    /// <remarks></remarks>
     [Category("Csla")]
     public void SetReadValuesOnChange(
       BindingSource source, bool value)

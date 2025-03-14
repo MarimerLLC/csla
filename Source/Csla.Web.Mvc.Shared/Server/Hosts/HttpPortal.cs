@@ -27,7 +27,6 @@ namespace Csla.Server.Hosts
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="dataPortal">Data portal server service</param>
     public HttpPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal)
     {

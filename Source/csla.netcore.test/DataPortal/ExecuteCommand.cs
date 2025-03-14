@@ -33,7 +33,6 @@ namespace Csla.Test.DataPortal
     /// <summary>
     /// Execute with parameters (like a Fetch operation)
     /// </summary>
-    /// <param name="text"></param>
     [Execute]
     private void Execute(string text)
     {

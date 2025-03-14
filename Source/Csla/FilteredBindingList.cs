@@ -756,7 +756,6 @@ namespace Csla
     /// </summary>
     /// <value>A descriptor for the property on which
     /// the items in the collection will be filtered.</value>
-    /// <remarks></remarks>
     public PropertyDescriptor? FilterProperty { get; private set; }
 
     /// <summary>

@@ -27,10 +27,6 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="factoryLoader"></param>
-    /// <param name="inspector"></param>
-    /// <param name="dataPortalOptions"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="factoryLoader"/>, <paramref name="inspector"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public FactoryDataPortal(ApplicationContext applicationContext, IObjectFactoryLoader factoryLoader, IDataPortalExceptionInspector inspector, DataPortalOptions dataPortalOptions)
     {

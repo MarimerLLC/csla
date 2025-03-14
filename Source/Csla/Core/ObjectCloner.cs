@@ -22,7 +22,6 @@ namespace Csla.Core
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ObjectCloner(ApplicationContext applicationContext)
     {
@@ -32,7 +31,6 @@ namespace Csla.Core
     /// <summary>
     /// Gets an instance of ObjectCloner.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static ObjectCloner GetInstance(ApplicationContext applicationContext)
     {

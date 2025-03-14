@@ -47,16 +47,6 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="dashboard"></param>
-    /// <param name="options"></param>
-    /// <param name="activator"></param>
-    /// <param name="authorizer"></param>
-    /// <param name="exceptionInspector"></param>
-    /// <param name="factoryLoader"></param>
-    /// <param name="interceptors"></param>
-    /// <param name="exceptionHandler"></param>
-    /// <param name="securityOptions"></param>
     /// <exception cref="ArgumentNullException">Any parameter is <see langword="null"/>.</exception>
     public DataPortal(
       ApplicationContext applicationContext,

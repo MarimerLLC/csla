@@ -150,7 +150,6 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    /// <value></value>
     protected override string GetMessage()
     {
       return HasMessageDelegate ? MessageText : Properties.Resources.StringRequiredRule;
@@ -231,7 +230,6 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    /// <value></value>
     protected override string GetMessage()
     {
         return HasMessageDelegate ? MessageText : Properties.Resources.StringMaxLengthRule;
@@ -312,7 +310,6 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    /// <value></value>
     protected override string GetMessage()
     {
       return HasMessageDelegate ? MessageText : Properties.Resources.StringMinLengthRule;
@@ -402,7 +399,6 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    /// <value></value>
     protected override string GetMessage()
     {
       return HasMessageDelegate ? MessageText : Properties.Resources.MinValueRule;
@@ -514,7 +510,6 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    /// <value></value>
     protected override string GetMessage()
     {
       return HasMessageDelegate ? MessageText : Properties.Resources.MaxValueRule;
@@ -660,7 +655,6 @@ namespace Csla.Rules.CommonRules
     /// <summary>
     /// Gets the error message.
     /// </summary>
-    /// <value></value>
     protected override string GetMessage()
     {
       return HasMessageDelegate ? MessageText : Properties.Resources.RegExMatchRule;

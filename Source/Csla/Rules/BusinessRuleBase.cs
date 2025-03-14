@@ -150,7 +150,6 @@ namespace Csla.Rules
     /// <summary>
     /// Allows or blocks changing a property value.
     /// </summary>
-    /// <param name="argument"></param>
     protected void CanWriteProperty(string argument)
     {
       if (PropertiesLocked) 

@@ -24,7 +24,6 @@ namespace Csla.Channels.Grpc
     /// Creates an instance of the object, initializing
     /// it to use the supplied GrpcChannel object and URL.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="channel">GrpcChannel instance</param>
     /// <param name="options">Proxy options</param>
     /// <param name="dataPortalOptions">Data portal options</param>

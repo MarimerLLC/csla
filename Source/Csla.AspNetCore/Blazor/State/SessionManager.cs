@@ -15,7 +15,6 @@ namespace Csla.Blazor.State
   /// Manages all user session data for a given
   /// root DI container.
   /// </summary>
-  /// <param name="sessionIdManager"></param>
   public class SessionManager(ISessionIdManager sessionIdManager) : ISessionManager
   {
     private readonly ConcurrentDictionary<string, Session> _sessions = [];
@@ -50,8 +49,6 @@ namespace Csla.Blazor.State
     /// Replace the contents of oldSession with the items
     /// in newSession.
     /// </summary>
-    /// <param name="newSession"></param>
-    /// <param name="oldSession"></param>
     private static void Replace(Session newSession, Session oldSession)
     {
       oldSession.Clear();

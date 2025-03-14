@@ -39,7 +39,6 @@ namespace Csla.Core
     /// <summary>
     /// Gets the client context dictionary.
     /// </summary>
-    /// <param name="executionLocation"></param>
     public IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return currentClientContext;
@@ -74,7 +73,6 @@ namespace Csla.Core
     /// Sets the client context dictionary.
     /// </summary>
     /// <param name="clientContext">Context dictionary</param>
-    /// <param name="executionLocation"></param>
     public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       currentClientContext = clientContext;

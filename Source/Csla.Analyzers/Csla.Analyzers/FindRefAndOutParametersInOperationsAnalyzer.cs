@@ -7,9 +7,6 @@ using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class FindRefAndOutParametersInOperationsAnalyzer
     : DiagnosticAnalyzer
@@ -23,15 +20,11 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation, nameof(FindRefAndOutParametersInOperationsAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(incorrectParameterRule);
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     public override void Initialize(AnalysisContext context)
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);

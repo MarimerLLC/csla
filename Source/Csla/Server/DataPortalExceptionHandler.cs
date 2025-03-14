@@ -26,7 +26,6 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="exceptionInspector"></param>
     /// <exception cref="ArgumentNullException"><paramref name="exceptionInspector"/> is <see langword="null"/>.</exception>
     public DataPortalExceptionHandler(IDataPortalExceptionInspector exceptionInspector)
     {

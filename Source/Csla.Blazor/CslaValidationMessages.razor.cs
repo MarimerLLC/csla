@@ -127,8 +127,6 @@ namespace Csla.Blazor
     /// <summary>
     /// On field changed method
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="eventArgs"></param>
     protected void OnFieldChanged(object sender, FieldChangedEventArgs eventArgs)
     {
       if (eventArgs.FieldIdentifier.Equals(_fieldIdentifier))
@@ -141,8 +139,6 @@ namespace Csla.Blazor
     /// <summary>
     /// On validation state changed method
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="eventArgs"></param>
     protected void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs eventArgs)
     {
       IEnumerable<string> messages;

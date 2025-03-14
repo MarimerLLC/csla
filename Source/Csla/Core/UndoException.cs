@@ -13,7 +13,6 @@ namespace Csla.Core
   /// use of the n-level undo feature in
   /// CSLA .NET.
   /// </summary>
-  /// <remarks></remarks>
   [Serializable]
   public class UndoException : Exception
   {

@@ -2,6 +2,7 @@
  <PropertyGroup>
    <LangVersion>latest</LangVersion>
    <ImplicitUsings>enable</ImplicitUsings>
+   <NoWarn>CS1573;CS1591</NoWarn>
  </PropertyGroup>
  
  <!-- Common Package Settings -->

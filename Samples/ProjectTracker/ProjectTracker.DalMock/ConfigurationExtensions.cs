@@ -13,7 +13,6 @@ namespace ProjectTracker.Configuration
     /// Add the services for ProjectTracker.Dal that
     /// use Entity Framework
     /// </summary>
-    /// <param name="services"></param>
     public static void AddDalMock(this IServiceCollection services)
     {
       services.AddTransient<IAssignmentDal, AssignmentDal>();

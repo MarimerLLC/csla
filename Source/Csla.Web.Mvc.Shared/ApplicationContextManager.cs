@@ -73,7 +73,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Gets the client context.
     /// </summary>
-    /// <param name="executionLocation"></param>
     public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return (IContextDictionary)HttpContext.Current.Items[_clientContextName];
@@ -82,8 +81,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Sets the client context.
     /// </summary>
-    /// <param name="clientContext">Client context.</param>
-    /// <param name="executionLocation"></param>
     public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       HttpContext.Current.Items[_clientContextName] = clientContext;

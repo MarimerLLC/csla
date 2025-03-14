@@ -401,7 +401,6 @@ namespace Csla
     /// The new value for the item at the specified index. 
     /// The value can be null for reference types.
     /// </param>
-    /// <remarks></remarks>
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void SetItem(int index, C item)
     {

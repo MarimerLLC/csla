@@ -35,7 +35,6 @@ namespace Csla.Test.DataPortal
     ///// <summary>
     ///// Execute with parameters (like a Fetch operation)
     ///// </summary>
-    ///// <param name="text"></param>
     //[Execute]
     //public ExecuteCommandViaFactory Execute(string text)
     //{

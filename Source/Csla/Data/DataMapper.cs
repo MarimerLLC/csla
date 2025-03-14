@@ -18,7 +18,6 @@ namespace Csla.Data
   /// Map data from a source into a target object
   /// by copying public property values.
   /// </summary>
-  /// <remarks></remarks>
   public static class DataMapper
   {
 

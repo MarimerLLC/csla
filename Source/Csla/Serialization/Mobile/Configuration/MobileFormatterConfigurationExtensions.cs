@@ -20,8 +20,6 @@ public static class MobileFormatterConfigurationExtensions
   /// <summary>
   /// Sets the serialization formatter type used by CSLA .NET
   /// </summary>
-  /// <param name="config"></param>
-  /// <returns></returns>
   /// <exception cref="ArgumentNullException"> is <see langword="null"/>.</exception>
   public static SerializationOptions UseMobileFormatter(this SerializationOptions config)
   {
@@ -31,9 +29,6 @@ public static class MobileFormatterConfigurationExtensions
   /// <summary>
   /// Sets the serialization formatter type used by CSLA .NET
   /// </summary>
-  /// <param name="config"></param>
-  /// <param name="options"></param>
-  /// <returns></returns>
   /// <exception cref="ArgumentNullException"> is <see langword="null"/>.</exception>
   public static SerializationOptions UseMobileFormatter(this SerializationOptions config, Action<MobileFormatterOptions>? options)
   {

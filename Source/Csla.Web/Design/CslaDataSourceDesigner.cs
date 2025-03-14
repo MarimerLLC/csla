@@ -65,8 +65,6 @@ namespace Csla.Web.Design
     /// <summary>
     /// Refreshes the schema for the data.
     /// </summary>
-    /// <param name="preferSilent"></param>
-    /// <remarks></remarks>
     public override void RefreshSchema(bool preferSilent)
     {
       OnSchemaRefreshed(EventArgs.Empty);

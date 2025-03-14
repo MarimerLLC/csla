@@ -21,8 +21,6 @@ namespace Csla.Core
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// 
     public GraphMerger(ApplicationContext applicationContext)
       : base(applicationContext) { }
 

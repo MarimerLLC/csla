@@ -33,7 +33,6 @@ namespace Csla.Reflection
   /// Delegate for getting a value.
   /// </summary>
   /// <param name="target">Target object.</param>
-  /// <returns></returns>
   public delegate object? DynamicMemberGetDelegate(object target);
   /// <summary>
   /// Delegate for setting a value.

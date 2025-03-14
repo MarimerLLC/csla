@@ -463,7 +463,6 @@ namespace Csla.Core
     /// <summary>
     /// Raises the AddedNew event.
     /// </summary>
-    /// <param name="item"></param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public virtual void OnAddedNew(T item)
     {

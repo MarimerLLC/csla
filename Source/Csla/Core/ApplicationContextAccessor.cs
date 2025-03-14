@@ -19,15 +19,12 @@ namespace Csla.Core
   {
     private readonly IContextManager? _contextManager;
     private readonly IContextManager _localContextManager;
-    
+
     internal IServiceProvider ServiceProvider { get; }
-    
+
     /// <summary>
     /// Creates a new instance of the type.
     /// </summary>
-    /// <param name="contextManagerList"></param>
-    /// <param name="localContextManager"></param>
-    /// <param name="serviceProvider"></param>
     /// <exception cref="ArgumentNullException"><paramref name="contextManagerList"/>, <paramref name="localContextManager"/> or <paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public ApplicationContextAccessor(
       IEnumerable<IContextManager> contextManagerList, 

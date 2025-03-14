@@ -37,7 +37,6 @@ namespace Csla.State
     /// <summary>
     /// Raise PropertyChanged event.
     /// </summary>
-    /// <param name="propertyName"></param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected virtual void OnPropertyChanged(string propertyName)
     {

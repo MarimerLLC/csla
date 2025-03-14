@@ -26,7 +26,6 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Creates a new instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     public Controller(ApplicationContext applicationContext)
     {
       ApplicationContext = applicationContext;

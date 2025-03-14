@@ -55,9 +55,6 @@ namespace Csla.Rules
     /// <summary>
     /// Creates a AuthorizationContext instance for unit testing.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="rule">The rule.</param>
-    /// <param name="target">The target.</param>
     /// <param name="targetType">Type of the target.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="rule"/> or <paramref name="targetType"/> is <see langword="null"/>.</exception>
     public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object? target, Type targetType) : this(applicationContext, rule, target, targetType, null)
@@ -67,11 +64,7 @@ namespace Csla.Rules
     /// <summary>
     /// Creates a AuthorizationContext instance for unit testing.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="rule">The rule.</param>
-    /// <param name="target">The target.</param>
     /// <param name="targetType">Type of the target.</param>
-    /// <param name="criteria">The criteria.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="rule"/> or <paramref name="targetType"/> is <see langword="null"/>.</exception>
     internal AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object? target, Type targetType, object?[]? criteria)
     {

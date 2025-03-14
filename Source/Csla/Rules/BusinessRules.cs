@@ -33,7 +33,6 @@ namespace Csla.Rules
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="target">Target business object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
     public BusinessRules(ApplicationContext applicationContext, IHostRules target)
@@ -336,7 +335,6 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-type authorization rules.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="objectType"/> is <see langword="null"/>.</exception>
@@ -355,7 +353,6 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-type authorization rules.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     /// <param name="criteria">The criteria object provided.</param>
@@ -375,7 +372,6 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-type authorization rules.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="objectType">Type of business object.</param>
     /// <param name="ruleSet">The rule set.</param>
@@ -397,7 +393,6 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-instance authorization rules.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="obj">Business object instance.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="obj"/> is <see langword="null"/>.</exception>
@@ -434,7 +429,6 @@ namespace Csla.Rules
     /// <summary>
     /// Checks per-property authorization rules.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="action">Authorization action.</param>
     /// <param name="element">Property or method to check.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="element"/> is <see langword="null"/>.</exception>
@@ -872,9 +866,6 @@ namespace Csla.Rules
     /// <summary>
     /// Determines whether this rule can run the specified context mode.
     /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="rule">The rule.</param>
-    /// <param name="contextMode">The context mode.</param>
     /// <returns>
     /// 	<c>true</c> if this instance [can run rule] the specified context mode; otherwise, <c>false</c>.
     /// </returns>

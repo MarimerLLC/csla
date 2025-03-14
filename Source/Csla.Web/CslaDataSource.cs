@@ -128,7 +128,6 @@ namespace Csla.Web
     /// <param name="typeAssemblyName">Optional assembly name.</param>
     /// <param name="typeName">Full type name of the class,
     /// including assembly name.</param>
-    /// <remarks></remarks>
     internal static Type GetType(
       string typeAssemblyName, string typeName)
     {

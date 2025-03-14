@@ -48,7 +48,6 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Initializes a new instance of <see cref="DataPortalResponse"/>-object.
     /// </summary>
-    /// <param name="errorData"></param>
     /// <exception cref="ArgumentNullException"><paramref name="errorData"/> is <see langword="null"/>.</exception>
     public DataPortalResponse(DataPortalErrorInfo errorData)
     {
@@ -58,7 +57,6 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Initializes a new instance of <see cref="DataPortalResponse"/>-object.
     /// </summary>
-    /// <param name="objectData"></param>
     /// <exception cref="ArgumentNullException"><paramref name="objectData"/> is <see langword="null"/>.</exception>
     public DataPortalResponse(byte[] objectData)
     {

@@ -46,8 +46,6 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the severity of the broken rule.
     /// </summary>
-    /// <value></value>
-    /// <remarks></remarks>
     public RuleSeverity Severity => _severity;
 
     /// <summary>

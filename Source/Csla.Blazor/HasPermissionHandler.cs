@@ -20,7 +20,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     public CslaPermissionsHandler(ApplicationContext applicationContext)
     {
       _applicationContext = applicationContext;
@@ -29,8 +28,6 @@ namespace Csla.Blazor
     /// <summary>
     /// Handle requirements
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="requirement"></param>
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, CslaPermissionRequirement requirement)
     {
       if (await Rules.BusinessRules.HasPermissionAsync(_applicationContext, requirement.Action, requirement.ObjectType, CancellationToken.None))

@@ -20,7 +20,6 @@
     /// Overwrite the Dispose method of the base class
     /// in order to keep the stream open
     /// </summary>
-    /// <param name="disposing"></param>
     protected override void Dispose(bool disposing)
     {
       // do nothing to keep the stream from closing

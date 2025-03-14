@@ -13,9 +13,6 @@ namespace Csla.Channels.RabbitMq;
 /// <summary>
 /// Factory used to get an instance of RabbitMqPortal
 /// </summary>
-/// <param name="applicationContext"></param>
-/// <param name="dataPortal"></param>
-/// <param name="rabbitMqPortalOptions"></param>
 public class RabbitMqPortalFactory(ApplicationContext applicationContext, IDataPortalServer dataPortal, RabbitMqPortalOptions rabbitMqPortalOptions)
   : IRabbitMqPortalFactory
 {

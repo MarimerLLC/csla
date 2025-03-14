@@ -24,7 +24,6 @@ namespace Csla.Core.FieldManager
   /// Manages properties and property data for
   /// a business object.
   /// </summary>
-  /// <remarks></remarks>
 #if TESTING
   [DebuggerStepThrough]
 #endif

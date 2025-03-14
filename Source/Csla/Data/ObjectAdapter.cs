@@ -50,7 +50,6 @@ namespace Csla.Data
     /// DataTable will be inserted if it doesn't already exist in the DataSet.
     /// </remarks>
     /// <param name="ds">A reference to the DataSet to be filled.</param>
-    /// <param name="tableName"></param>
     /// <param name="source">A reference to the object or collection acting as a data source.</param>
     /// <exception cref="ArgumentNullException"><paramref name="ds"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="tableName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>

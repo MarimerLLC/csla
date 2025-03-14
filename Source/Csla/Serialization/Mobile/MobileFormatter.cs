@@ -16,12 +16,11 @@ namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// Serializes and deserializes objects
-  /// at the field level. 
+  /// at the field level.
   /// </summary>
   /// <remarks>
   /// Creates an instance of the type.
   /// </remarks>
-  /// <param name="applicationContext"></param>
 #if TESTING
   [DebuggerStepThrough]
 #endif
@@ -393,7 +392,6 @@ namespace Csla.Serialization.Mobile
     /// Determines whether the specified type can be serialized as a child.
     /// </summary>
     /// <param name="type">The type to check.</param>
-    /// <returns></returns>
     public bool IsTypeSerializable(Type type)
     {
       if (typeof(IMobileObject).IsAssignableFrom(type))

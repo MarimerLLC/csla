@@ -67,7 +67,6 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// Handles new DataPortal Create calls
     /// </summary>
-    /// <param name="criteria"></param>
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = criteria as Criteria;
@@ -79,7 +78,6 @@ namespace Csla.Test.AppContext
     /// <summary>
     /// Handles DataPortal fetch calls
     /// </summary>
-    /// <param name="criteria"></param>
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = criteria as Criteria;
@@ -89,9 +87,6 @@ namespace Csla.Test.AppContext
       TestResults.Add("Root", "Fetched");
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     [Update]
     protected void DataPortal_Update()
     {
@@ -112,10 +107,6 @@ namespace Csla.Test.AppContext
       }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="criteria"></param>
     [Delete]
     protected void DataPortal_Delete(object criteria)
     {

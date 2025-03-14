@@ -7,9 +7,6 @@ using static Csla.Analyzers.Extensions.ITypeSymbolExtensions;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class EvaluatePropertiesForSimplicityAnalyzer
     : DiagnosticAnalyzer
@@ -22,14 +19,10 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule, nameof(EvaluatePropertiesForSimplicityAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(onlyUseCslaPropertyMethodsInGetSetRule);
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     public override void Initialize(AnalysisContext context)
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
@@ -243,9 +236,7 @@ namespace Csla.Analyzers
           accessor.GetLocation()));
       }
     }
-    /// <summary>
-    /// 
-    /// </summary>
+
     public static IEnumerable<FieldDeclarationSyntax> GetFieldDeclarations(PropertyDeclarationSyntax propertyDeclaration, SemanticModel semanticModel)
     {
       var classDeclaration = propertyDeclaration.FirstAncestorOrSelf<ClassDeclarationSyntax>();

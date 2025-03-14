@@ -48,7 +48,6 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public DataPortalResult(ApplicationContext applicationContext) : this(applicationContext, null, null)
     {
@@ -57,7 +56,6 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="returnObject"/> is <see langword="null"/>.</exception>
@@ -70,7 +68,6 @@ namespace Csla.Server
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="applicationContext"></param>
     /// <param name="returnObject">Object to return as part
     /// of the result.</param>
     /// <param name="ex">

@@ -8,9 +8,6 @@ using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class FindBusinessObjectCreationAnalyzer
     : DiagnosticAnalyzer
@@ -23,15 +20,11 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.FindBusinessObjectCreation, nameof(FindBusinessObjectCreationAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
       ImmutableArray.Create(objectCreatedRule);
 
-    /// <summary>
-    /// 
-    /// </summary>
+
     public override void Initialize(AnalysisContext context)
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);

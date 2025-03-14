@@ -2867,7 +2867,6 @@ namespace Csla.Core
     /// <summary>
     /// Check if old and new values are different.
     /// </summary>
-    /// <typeparam name="P"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <param name="oldValue">The old value.</param>
@@ -3192,11 +3191,8 @@ namespace Csla.Core
     }
 
     /// <summary>
-    /// Load a property from an async method. 
+    /// Load a property from an async method.
     /// </summary>
-    /// <typeparam name="R"></typeparam>
-    /// <param name="property"></param>
-    /// <param name="factory"></param>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
     protected void LoadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] R>(PropertyInfo<R> property, Task<R> factory)
     {

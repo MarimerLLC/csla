@@ -20,36 +20,30 @@ namespace Csla.Blazor.State
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public Session GetCachedSession()
     { throw new NotSupportedException(); }
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public Session GetSession()
     { throw new NotSupportedException(); }
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public void PurgeSessions(TimeSpan expiration)
     { throw new NotSupportedException(); }
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public Task<Session> RetrieveSession()
     { throw new NotSupportedException(); }
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <param name="timeout"></param>
-    /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public Task<Session> RetrieveSession(TimeSpan timeout)
     { throw new NotSupportedException(); }
@@ -66,15 +60,12 @@ namespace Csla.Blazor.State
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public Task SendSession()
     { throw new NotSupportedException(); }
     /// <summary>
     /// Not supported
     /// </summary>
-    /// <param name="timeout"></param>
-    /// <returns></returns>
     /// <exception cref="NotSupportedException"></exception>
     public Task SendSession(TimeSpan timeout)
     { throw new NotSupportedException(); }

@@ -692,7 +692,6 @@ namespace Csla.Xaml
     /// <summary>
     /// Unhooks changed event handlers from the model.
     /// </summary>
-    /// <param name="model"></param>
     protected void UnhookChangedEvents(T model)
     {
       if (model is INotifyPropertyChanged npc)
@@ -708,7 +707,6 @@ namespace Csla.Xaml
     /// <summary>
     /// Hooks changed events on the model.
     /// </summary>
-    /// <param name="model"></param>
     private void HookChangedEvents(T model)
     {
       if (model is INotifyPropertyChanged npc)

@@ -66,7 +66,6 @@ namespace Csla
     /// to use this new object.
     /// </remarks>
     /// <param name="obj">A reference to the business object to be updated.</param>
-    /// <param name="parameters"></param>
     /// <returns>A reference to the updated business object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     void UpdateChild(T obj, params object?[]? parameters);

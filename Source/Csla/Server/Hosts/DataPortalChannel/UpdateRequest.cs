@@ -72,11 +72,6 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Initializes a new instance of <see cref="UpdateRequest"/>-object.
     /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="clientContext"></param>
-    /// <param name="clientCulture"></param>
-    /// <param name="clientUICulture"></param>
-    /// <param name="objectData"></param>
     /// <exception cref="ArgumentNullException"><paramref name="principal"/>, <paramref name="clientContext"/>, <paramref name="clientCulture"/>, <paramref name="clientUICulture"/> or <paramref name="objectData"/> is <see langword="null"/>.</exception>
     public UpdateRequest(byte[] principal, byte[] clientContext, string clientCulture, string clientUICulture, byte[] objectData)
     {

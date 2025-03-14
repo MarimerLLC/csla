@@ -38,9 +38,7 @@ namespace Csla
     /// Creates an instance of the type
     /// </summary>
     /// <param name="applicationContext">ApplicationContext</param>
-    /// <param name="proxy"></param>
     /// <param name="dataPortalCache">Data portal cache service</param>
-    /// <param name="dataPortalOptions"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="proxy"/>, <paramref name="dataPortalCache"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortal(ApplicationContext applicationContext, IDataPortalProxy proxy, IDataPortalCache dataPortalCache, DataPortalOptions dataPortalOptions)
     {

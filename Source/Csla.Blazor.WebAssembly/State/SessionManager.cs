@@ -20,9 +20,6 @@ namespace Csla.Blazor.WebAssembly.State
   /// Manages all user session data for a given
   /// root DI container.
   /// </summary>
-  /// <param name="applicationContext"></param>
-  /// <param name="httpClient"></param>
-  /// <param name="options"></param>
   public class SessionManager(
     ApplicationContext applicationContext, HttpClient httpClient, BlazorWebAssemblyConfigurationOptions options) : ISessionManager
   {

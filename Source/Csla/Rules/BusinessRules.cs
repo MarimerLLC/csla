@@ -1120,6 +1120,8 @@ namespace Csla.Rules
         }
         catch (Exception ex)
         {
+          // since RunAsyncRule is not awaited 
+          // exceptions raised in RunAsyncRule will not be caught
           context.AddErrorResult($"{rule.RuleName}:{ex.Message}");
           if (rule.IsAsync)
             context.Complete();

@@ -93,6 +93,7 @@ namespace Csla.Test.ValidationRules
       {
         await Task.Delay(0);
         context.AddOutValue("abc");
+        throw new Exception("Lost"); // This exception has no visibility outside of BusinessRules.RunAsyncRule
       }
     }
 

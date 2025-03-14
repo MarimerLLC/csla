@@ -17,7 +17,6 @@ namespace Csla.Web
     /// Gets or sets the number of rows affected
     /// while handling this event.
     /// </summary>
-    /// <value></value>
     /// <remarks>
     /// The code handling the event should set this
     /// value to indicate the number of rows affected

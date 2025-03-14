@@ -2867,7 +2867,6 @@ namespace Csla.Core
     /// <summary>
     /// Check if old and new values are different.
     /// </summary>
-    /// <typeparam name="P"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
     /// <param name="newValue">The new value.</param>
     /// <param name="oldValue">The old value.</param>

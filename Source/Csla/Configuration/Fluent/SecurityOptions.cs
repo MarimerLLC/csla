@@ -28,7 +28,6 @@ namespace Csla.Configuration
     /// Gets or sets the authentication type being used by the
     /// CSLA .NET framework.
     /// </summary>
-    /// <value></value>
     public string AuthenticationType { get; set; } = "Csla";
   }
 }

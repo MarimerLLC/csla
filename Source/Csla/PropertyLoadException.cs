@@ -12,7 +12,6 @@ namespace Csla
   /// Exception indicating a failure to
   /// set a property's field.
   /// </summary>
-  /// <remarks></remarks>
   [Serializable]
   public class PropertyLoadException : Exception
   {

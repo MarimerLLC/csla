@@ -35,7 +35,6 @@ namespace Csla.Configuration
     /// Sets the type of the IDashboard to be 
     /// used by the data portal. 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public DataPortalServerOptions RegisterDashboard<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : Server.Dashboard.IDashboard
     {
       DashboardType = typeof(T);
@@ -55,7 +54,6 @@ namespace Csla.Configuration
     /// Sets the type of the IDataPortalAuthorizer to be 
     /// used by the data portal. 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public DataPortalServerOptions RegisterAuthorizerProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : IAuthorizeDataPortal
     {
       AuthorizerProviderType = typeof(T);
@@ -125,7 +123,6 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the type of the Activator.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public DataPortalServerOptions RegisterActivator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T: IDataPortalActivator
     {
       ActivatorType = typeof(T);
@@ -147,7 +144,6 @@ namespace Csla.Configuration
     /// the FactoryDataPortal model. Type must implement
     /// <see cref="IObjectFactoryLoader"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public DataPortalServerOptions RegisterObjectFactoryLoader<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T: IObjectFactoryLoader
     {
       ObjectFactoryLoaderType = typeof(T);

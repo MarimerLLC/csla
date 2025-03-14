@@ -151,7 +151,6 @@ namespace RuleTutorial.Testing.Common
     /// <summary>
     /// Gets the output property value.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     /// <param name="propertyInfo">The property info.</param>
     public T GetOutputPropertyValue<T>(PropertyInfo<T> propertyInfo)
     {

@@ -71,7 +71,6 @@ namespace Csla.Threading
     /// <summary>
     /// Gets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> is running an asynchronous operation.
     /// </summary>
-    /// <value></value>
     /// <returns>true, if the <see cref="T:System.ComponentModel.BackgroundWorker"/> is running an asynchronous operation; otherwise, false.
     /// </returns>
     public bool IsBusy => _myWorker.IsBusy;
@@ -79,7 +78,6 @@ namespace Csla.Threading
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> can report progress updates.
     /// </summary>
-    /// <value></value>
     /// <returns>true if the <see cref="T:System.ComponentModel.BackgroundWorker"/> supports progress updates; otherwise false. The default is false.
     /// </returns>
     public bool WorkerReportsProgress
@@ -91,7 +89,6 @@ namespace Csla.Threading
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> supports asynchronous cancellation.
     /// </summary>
-    /// <value></value>
     /// <returns>true if the <see cref="T:System.ComponentModel.BackgroundWorker"/> supports cancellation; otherwise false. The default is false.
     /// </returns>
     public bool WorkerSupportsCancellation
@@ -117,7 +114,6 @@ namespace Csla.Threading
     /// <summary>
     /// Gets a value indicating whether the application has requested cancellation of a background operation.
     /// </summary>
-    /// <value></value>
     /// <returns>true if the application has requested cancellation of a background operation; otherwise, false. The default is false.
     /// </returns>
     public bool CancellationPending => _myWorker.CancellationPending;

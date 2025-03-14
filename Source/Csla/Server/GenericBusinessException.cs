@@ -22,7 +22,6 @@ namespace Csla.Server
     /// <summary>
     /// Gets a string representation of the immediate frames on the call stack.
     /// </summary>
-    /// <value></value>
     /// <returns>A string that describes the immediate frames of the call stack.</returns>
     /// <PermissionSet>
     /// 	<IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" PathDiscovery="*AllFiles*"/>
@@ -32,7 +31,6 @@ namespace Csla.Server
     /// <summary>
     /// Gets a collection of key/value pairs that provide additional user-defined information about the exception.
     /// </summary>
-    /// <value></value>
     /// <returns>An object that implements the <see cref="T:System.Collections.IDictionary"/> interface and contains a collection of user-defined key/value pairs. The default is an empty collection.</returns>
     public override IDictionary Data { get; }
 

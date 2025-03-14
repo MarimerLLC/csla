@@ -28,7 +28,6 @@ namespace cslalighttest.Serialization
     /// <summary>
     /// For constructing test mockreadonly objects
     /// </summary>
-    /// <param name="id"></param>
     public MockReadOnly(int id)
     {
       SetProperty<int>(IdProperty, id);

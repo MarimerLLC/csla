@@ -1426,7 +1426,7 @@ namespace Csla
 
       try
       {
-        P? oldValue = default(P);
+        P? oldValue;
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {
@@ -1484,7 +1484,7 @@ namespace Csla
 
       try
       {
-        P? oldValue = default(P);
+        P? oldValue;
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {

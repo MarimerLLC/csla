@@ -10,12 +10,11 @@ using Csla.Configuration;
 using Csla.TestHelpers;
 using Csla.Testing.Business.BusyStatus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitDriven;
 
 namespace Csla.Test.DataPortal;
 
 [TestClass]
-public class AutoCloneOnUpdateTests : TestBase
+public class AutoCloneOnUpdateTests
 {
   private static TestDIContext _testDIContext;
   private static TestDIContext _noCloneOnUpdateDIContext;

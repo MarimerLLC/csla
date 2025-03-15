@@ -832,7 +832,7 @@ namespace Csla
       if (IsFiltered)
       {
         int listIndex;
-        int filteredIndex = -1;
+        int filteredIndex;
         T newItem;
         object newKey;
         switch (e.ListChangedType)

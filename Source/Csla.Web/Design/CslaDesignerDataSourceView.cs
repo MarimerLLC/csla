@@ -108,8 +108,7 @@ namespace Csla.Web.Design
       Type result;
       try
       {
-        ITypeResolutionService typeService = null;
-        typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
+        var typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
         result = typeService.GetType(_owner.DataSourceControl.TypeName, true, false);
       }
       catch

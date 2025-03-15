@@ -325,7 +325,7 @@ namespace Csla.Reflection
         }
       }
 
-      ServiceProviderMethodInfo? resultingMethod = null;
+      ServiceProviderMethodInfo? resultingMethod;
       if (result != null)
       {
         resultingMethod = new ServiceProviderMethodInfo(result.MethodInfo);

@@ -436,14 +436,13 @@ namespace Csla.Core.FieldManager
 
       try
       {
-        bool result = false;
+        bool result;
         var field = _fieldData[propertyInfo.Index];
         if (field != null)
           result = field.IsDirty;
         else
           result = false;
         return result;
-
       }
       catch (IndexOutOfRangeException ex)
       {
@@ -556,7 +555,7 @@ namespace Csla.Core.FieldManager
             string.Format(Resources.EditLevelMismatchException, "UndoChanges"),
             GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
-        IFieldData[]? state = null;
+        IFieldData[]? state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;

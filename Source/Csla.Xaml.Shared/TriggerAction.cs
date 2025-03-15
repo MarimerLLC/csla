@@ -64,7 +64,7 @@ namespace Csla.Xaml
       }
       else if (pCount == 2)
       {
-        object parameterValue = null;
+        object parameterValue;
         if (RebindParameterDynamically)
           parameterValue = GetMethodParameter();
         else

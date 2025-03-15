@@ -47,6 +47,10 @@ namespace Csla.Analyzers
       if (!methodNode.ContainsDiagnostics)
       {
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+        if (methodSymbol is null)
+        {
+          return;
+        }
         var typeSymbol = methodSymbol.ContainingType;
 
         if (typeSymbol.IsBusinessRule() && 

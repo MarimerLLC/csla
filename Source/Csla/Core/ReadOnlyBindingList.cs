@@ -24,19 +24,12 @@ namespace Csla.Core
   [SuppressMessage("Microsoft.Naming", 
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    C> :
+  public abstract class ReadOnlyBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
     ExtendedBindingList<C>, IBusinessObject, IReadOnlyBindingList
   {
     #region Identity
 
-    int IBusinessObject.Identity
-    {
-      get { return 0; }
-    }
+    int IBusinessObject.Identity => 0;
 
     #endregion
 
@@ -52,8 +45,8 @@ namespace Csla.Core
     /// <value>True indicates that the list is readonly.</value>
     public bool IsReadOnly
     {
-      get { return IsReadOnlyCore; }
-      protected set { IsReadOnlyCore = value; }
+      get => IsReadOnlyCore;
+      protected set => IsReadOnlyCore = value;
     }
 
     /// <summary>
@@ -62,14 +55,14 @@ namespace Csla.Core
     /// </summary>
     protected virtual bool IsReadOnlyCore
     {
-      get { return _isReadOnly; }
-      set { _isReadOnly = value; }
+      get => _isReadOnly;
+      set => _isReadOnly = value;
     }
 
     bool IReadOnlyBindingList.IsReadOnly
     {
-      get { return IsReadOnly; }
-      set { IsReadOnly = value; }
+      get => IsReadOnly;
+      set => IsReadOnly = value;
     }
 
     /// <summary>
@@ -125,7 +118,7 @@ namespace Csla.Core
     protected override object AddNewCore()
     {
       if (!IsReadOnly)
-        return base.AddNewCore();
+        return base.AddNewCore()!;
       else
         throw new NotSupportedException(Resources.InsertInvalidException);
     }

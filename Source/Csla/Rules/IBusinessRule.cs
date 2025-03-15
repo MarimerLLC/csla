@@ -57,7 +57,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the primary property affected by this rule.
     /// </summary>
-    Core.IPropertyInfo PrimaryProperty { get; }
+    Core.IPropertyInfo? PrimaryProperty { get; }
     /// <summary>
     /// Gets a unique rule:// URI for the specific instance
     /// of the rule within the context of the business object

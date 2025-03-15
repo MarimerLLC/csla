@@ -6,19 +6,20 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Csla.Core.FieldManager
 {
   [Serializable]
-#if (ANDROID || IOS)
+#if ANDROID || IOS
   internal class FieldDataList : Csla.Core.MobileObject, Csla.Serialization.Mobile.ISerializationNotification
 #else
   internal class FieldDataList : ISerializable
 #endif
   {
     [NonSerialized]
-    private Dictionary<string, int> _fieldIndex = [];
+    private readonly Dictionary<string, int> _fieldIndex = [];
 #if ANDROID || IOS
     private Csla.Core.MobileBindingList<IFieldData> _fields = new Csla.Core.MobileBindingList<IFieldData>();
 #else
@@ -28,10 +29,12 @@ namespace Csla.Core.FieldManager
     public FieldDataList()
     { /* required due to serialization ctor */ }
 
-    public bool TryGetValue(string key, out IFieldData result)
+    public bool TryGetValue(string key, [NotNullWhen(true)] out IFieldData? result)
     {
-      int index;
-      if (_fieldIndex.TryGetValue(key, out index))
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
+      if (_fieldIndex.TryGetValue(key, out var index))
       {
         result = _fields[index];
         return true;
@@ -45,21 +48,30 @@ namespace Csla.Core.FieldManager
 
     public bool ContainsKey(string key)
     {
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
       return _fieldIndex.ContainsKey(key);
     }
 
     public IFieldData GetValue(string key)
     {
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
       return _fields[_fieldIndex[key]];
     }
 
     public void Add(string key, IFieldData value)
     {
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
       _fields.Add(value);
       _fieldIndex.Add(key, _fields.Count - 1);
     }
 
-    internal string FindPropertyName(object value)
+    internal string? FindPropertyName(object value)
     {
       foreach (var item in _fields)
         if (ReferenceEquals(item.Value, value))
@@ -87,7 +99,7 @@ namespace Csla.Core.FieldManager
       RebuildIndex();
     }
 
-        private void RebuildIndex()
+    private void RebuildIndex()
     {
       var position = 0;
       foreach (IFieldData item in _fields)
@@ -103,7 +115,7 @@ namespace Csla.Core.FieldManager
 
     protected FieldDataList(SerializationInfo info, StreamingContext context)
     {
-      _fields = (List<IFieldData>)(info.GetValue("Fields", typeof(List<IFieldData>)));
+      _fields = (List<IFieldData>)info.GetValue("Fields", typeof(List<IFieldData>))!;
       RebuildIndex();
     }
 

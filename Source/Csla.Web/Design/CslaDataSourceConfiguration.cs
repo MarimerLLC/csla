@@ -44,10 +44,7 @@ namespace Csla.Web.Design
     /// <summary>
     /// Gets the type name entered by the user.
     /// </summary>
-    public string TypeName
-    {
-      get { return TypeComboBox.Text; }
-    }
+    public string TypeName => TypeComboBox.Text;
 
     private void DiscoverTypes()
     {
@@ -70,12 +67,12 @@ namespace Csla.Web.Design
           // adds the types to the list
           foreach (Type type in types)
           {
-            if (type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) != "Csla" &&
+            if (type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(',')) != "Csla" &&
               typeof(Core.IBusinessObject).IsAssignableFrom(type))
             {
               string name = type.AssemblyQualifiedName;
               if (name.Substring(name.Length - 19, 19) == "PublicKeyToken=null")
-                name = name.Substring(0, name.IndexOf(",", name.IndexOf(",") + 1));
+                name = name.Substring(0, name.IndexOf(',', name.IndexOf(',') + 1));
               TypeComboBox.Items.Add(name);
             }
           }

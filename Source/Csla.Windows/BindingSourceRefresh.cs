@@ -100,8 +100,7 @@ namespace Csla.Windows
     [Category("Csla")]
     public bool GetReadValuesOnChange(BindingSource source)
     {
-      bool result;
-      if (_sources.TryGetValue(source, out result))
+      if (_sources.TryGetValue(source, out var result))
         return result;
       else
         return false;

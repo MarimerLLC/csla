@@ -64,7 +64,7 @@ namespace Csla.Xaml
       }
       else if (pCount == 2)
       {
-        object parameterValue = null;
+        object parameterValue;
         if (RebindParameterDynamically)
           parameterValue = GetMethodParameter();
         else
@@ -162,8 +162,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public FrameworkElement TargetControl
     {
-      get { return (FrameworkElement)GetValue(TargetControlProperty); }
-      set { SetValue(TargetControlProperty, value); }
+      get => (FrameworkElement)GetValue(TargetControlProperty);
+      set => SetValue(TargetControlProperty, value);
     }
 
     /// <summary>
@@ -184,8 +184,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public string TriggerEvent
     {
-      get { return (string)GetValue(TriggerEventProperty); }
-      set { SetValue(TriggerEventProperty, value); }
+      get => (string)GetValue(TriggerEventProperty);
+      set => SetValue(TriggerEventProperty, value);
     }
 
     /// <summary>
@@ -202,8 +202,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public string MethodName
     {
-      get { return (string)GetValue(MethodNameProperty); }
-      set { SetValue(MethodNameProperty, value); }
+      get => (string)GetValue(MethodNameProperty);
+      set => SetValue(MethodNameProperty, value);
     }
 
     /// <summary>
@@ -220,8 +220,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public object MethodParameter
     {
-      get { return GetValue(MethodParameterProperty); }
-      set { SetValue(MethodParameterProperty, value); }
+      get => GetValue(MethodParameterProperty);
+      set => SetValue(MethodParameterProperty, value);
     }
 
     /// <summary>
@@ -240,8 +240,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public bool RebindParameterDynamically
     {
-      get { return (bool)GetValue(RebindParameterDynamicallyProperty); }
-      set { SetValue(RebindParameterDynamicallyProperty, value); }
+      get => (bool)GetValue(RebindParameterDynamicallyProperty);
+      set => SetValue(RebindParameterDynamicallyProperty, value);
     }
 
 #endregion

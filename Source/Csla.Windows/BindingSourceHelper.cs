@@ -9,60 +9,54 @@
 using System.ComponentModel;
 using Csla.Properties;
 
-namespace Csla.Windows
+namespace Csla.Windows;
+
+/// <summary>
+/// Helper methods for dealing with BindingSource
+/// objects and data binding.
+/// </summary>
+public static class BindingSourceHelper
 {
+  private static BindingSourceNode _rootSourceNode;
+
   /// <summary>
-  /// Helper methods for dealing with BindingSource
-  /// objects and data binding.
+  /// Sets up BindingSourceNode objects for all
+  /// BindingSource objects related to the provided
+  /// root source.
   /// </summary>
-  public static class BindingSourceHelper
+  /// <param name="container">
+  /// Container for the components.
+  /// </param>
+  /// <param name="rootSource">
+  /// Root BindingSource object.
+  /// </param>
+  public static BindingSourceNode InitializeBindingSourceTree(
+    IContainer container, BindingSource rootSource)
   {
-    private static BindingSourceNode _rootSourceNode;
+    if (rootSource == null)
+      throw new ApplicationException(Resources.BindingSourceNotProvided);
 
-    /// <summary>
-    /// Sets up BindingSourceNode objects for all
-    /// BindingSource objects related to the provided
-    /// root source.
-    /// </summary>
-    /// <param name="container">
-    /// Container for the components.
-    /// </param>
-    /// <param name="rootSource">
-    /// Root BindingSource object.
-    /// </param>
-    public static BindingSourceNode InitializeBindingSourceTree(
-      IContainer container, BindingSource rootSource)
+    _rootSourceNode = new BindingSourceNode(rootSource);
+    _rootSourceNode.Children.AddRange(GetChildBindingSources(container, rootSource, _rootSourceNode));
+
+    return _rootSourceNode;
+  }
+
+  private static IEnumerable<BindingSourceNode> GetChildBindingSources(
+    IContainer container, BindingSource parent, BindingSourceNode parentNode)
+  {
+    foreach (Component component in container.Components)
     {
-      if (rootSource == null)
-        throw new ApplicationException(Resources.BindingSourceNotProvided);
-
-      _rootSourceNode = new BindingSourceNode(rootSource);
-      _rootSourceNode.Children.AddRange(GetChildBindingSources(container, rootSource, _rootSourceNode));
-
-      return _rootSourceNode;
-    }
-
-    private static List<BindingSourceNode> GetChildBindingSources(
-      IContainer container, BindingSource parent, BindingSourceNode parentNode)
-    {
-      List<BindingSourceNode> children = new List<BindingSourceNode>();
-
-      foreach (Component component in container.Components)
+      if (component is BindingSource {DataSource: not null} source &&
+          source.DataSource.Equals(parent))
       {
-        if (component is BindingSource temp)
+        var childNode = new BindingSourceNode(source)
         {
-          if (temp.DataSource != null && temp.DataSource.Equals(parent))
-          {
-            BindingSourceNode childNode = new BindingSourceNode(temp);
-            children.Add(childNode);
-            childNode.Children.AddRange(GetChildBindingSources(container, temp, childNode));
-            childNode.Parent = parentNode;
-          }
-        }
+          Parent = parentNode
+        };
+        childNode.Children.AddRange(GetChildBindingSources(container, source, childNode));
+        yield return childNode;
       }
-
-      return children;
     }
-
   }
 }

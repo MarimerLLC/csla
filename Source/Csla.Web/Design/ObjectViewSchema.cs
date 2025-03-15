@@ -60,16 +60,14 @@ namespace Csla.Web.Design
     /// </remarks>
     public IDataSourceFieldSchema[] GetFields()
     {
-      ITypeResolutionService typeService = null;
-      List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();
+      var result = new List<IDataSourceFieldSchema>();
 
       if (_designer != null)
       {
-        Type objectType = null;
         try
         {
-          typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
-          objectType = typeService.GetType(_typeName, true, false);
+          var typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
+          var objectType = typeService.GetType(_typeName, true, false);
 
           if (typeof(IEnumerable).IsAssignableFrom(objectType))
           {
@@ -95,12 +93,6 @@ namespace Csla.Web.Design
     /// <summary>
     /// Returns the name of the schema.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return "Default";
-      }
-    }
+    public string Name => "Default";
   }
 }

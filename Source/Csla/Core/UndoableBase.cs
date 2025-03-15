@@ -9,8 +9,8 @@
 using System.ComponentModel;
 using Csla.Properties;
 using Csla.Reflection;
-using Csla.Serialization.Mobile;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
 
 namespace Csla.Core
 {
@@ -28,8 +28,9 @@ namespace Csla.Core
     [NotUndoable]
     private bool _bindingEdit;
     [NotUndoable]
-    private ApplicationContext _applicationContext;
+    private ApplicationContext _applicationContext = default!;
 
+    /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
 
     /// <summary>
@@ -40,7 +41,7 @@ namespace Csla.Core
       get => _applicationContext;
       set
       {
-        _applicationContext = value;
+        _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         OnApplicationContextSet();
       }
     }
@@ -57,7 +58,6 @@ namespace Csla.Core
     /// </summary>
     protected UndoableBase()
     {
-
     }
 
     /// <summary>
@@ -68,29 +68,17 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Never)]
     protected bool BindingEdit
     {
-      get
-      {
-        return _bindingEdit;
-      }
-      set
-      {
-        _bindingEdit = value;
-      }
+      get => _bindingEdit;
+      set => _bindingEdit = value;
     }
 
-    int IUndoableObject.EditLevel
-    {
-      get { return EditLevel; }
-    }
+    int IUndoableObject.EditLevel => EditLevel;
 
     /// <summary>
     /// Returns the current edit level of the object.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    protected int EditLevel
-    {
-      get { return _stateStack.Count; }
-    }
+    protected int EditLevel => _stateStack.Count;
 
     void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
@@ -137,21 +125,20 @@ namespace Csla.Core
     {
       CopyingState();
 
-      Type currentType = GetType();
-      var state = new MobileDictionary<string, object>();
+      Type? currentType = GetType();
+      var state = new MobileDictionary<string, object?>();
 
       if (EditLevel + 1 > parentEditLevel)
         throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), GetType().Name, null, EditLevel, parentEditLevel - 1);
 
       do
       {
-        var currentTypeName = currentType.FullName;
+        var currentTypeName = currentType.FullName!;
         // get the list of fields in this type
-        List<DynamicMemberHandle> handlers =
-          UndoableHandler.GetCachedFieldHandlers(currentType);
+        List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
         foreach (var h in handlers)
         {
-          var value = h.DynamicMemberGet(this);
+          var value = h.MemberGetOrNotSupportedException(this);
           var fieldName = GetFieldName(currentTypeName, h.MemberName);
 
           if (typeof(IUndoableObject).IsAssignableFrom(h.MemberType))
@@ -183,7 +170,7 @@ namespace Csla.Core
         }
 
         currentType = currentType.BaseType;
-      } while (currentType != typeof(UndoableBase));
+      } while (currentType is not null && currentType != typeof(UndoableBase));
 
       // serialize the state and stack it
       using (MemoryStream buffer = new MemoryStream())
@@ -236,26 +223,26 @@ namespace Csla.Core
         if (EditLevel - 1 != parentEditLevel)
           throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), GetType().Name, null, EditLevel, parentEditLevel + 1);
 
-        MobileDictionary<string, object> state;
+        MobileDictionary<string, object?> state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
-          state = (MobileDictionary<string, object>)formatter.Deserialize(buffer);
+          state = (MobileDictionary<string, object?>)(formatter.Deserialize(buffer) ?? throw new InvalidOperationException());
         }
 
-        Type currentType = GetType();
+        Type? currentType = GetType();
 
         do
         {
-          var currentTypeName = currentType.FullName;
+          var currentTypeName = currentType.FullName!;
 
           // get the list of fields in this type
           List<DynamicMemberHandle> handlers = UndoableHandler.GetCachedFieldHandlers(currentType);
           foreach (var h in handlers)
           {
             // the field is undoable, so restore its value
-            var value = h.DynamicMemberGet(this);
+            var value = h.MemberGetOrNotSupportedException(this);
             var fieldName = GetFieldName(currentTypeName, h.MemberName);
 
             if (typeof(IUndoableObject).IsAssignableFrom(h.MemberType))
@@ -266,33 +253,33 @@ namespace Csla.Core
               if (state.Contains(fieldName))
               {
                 // previous value was empty - restore to empty
-                h.DynamicMemberSet(this, null);
+                h.MemberSetOrNotSupportedException(this, null);
               }
               else
               {
                 // make sure the variable has a value
                 // this is a child object, cascade the call.
-                ((IUndoableObject) value)?.UndoChanges(EditLevel, BindingEdit);
+                ((IUndoableObject?) value)?.UndoChanges(EditLevel, BindingEdit);
               }
             }
             else if (value is IMobileObject && state[fieldName] != null)
             {
               // this is a mobile object, deserialize the value
-              using MemoryStream buffer = new MemoryStream((byte[])state[fieldName]);
+              using MemoryStream buffer = new MemoryStream((byte[])state[fieldName]!);
               buffer.Position = 0;
               var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
               var obj = formatter.Deserialize(buffer);
-              h.DynamicMemberSet(this, obj);
+              h.MemberSetOrNotSupportedException(this, obj);
             }
             else
             {
               // this is a regular field, restore its value
-              h.DynamicMemberSet(this, state[fieldName]);
+              h.MemberSetOrNotSupportedException(this, state[fieldName]);
             }
           }
 
           currentType = currentType.BaseType;
-        } while (currentType != typeof(UndoableBase));
+        } while (currentType is not null && currentType != typeof(UndoableBase));
       }
       UndoChangesComplete();
     }
@@ -335,7 +322,7 @@ namespace Csla.Core
       if (EditLevel > 0)
       {
         _stateStack.Pop();
-        Type currentType = GetType();
+        Type? currentType = GetType();
 
         do
         {
@@ -346,15 +333,15 @@ namespace Csla.Core
             // the field is undoable so see if it is a child object
             if (typeof(IUndoableObject).IsAssignableFrom(h.MemberType))
             {
-              object value = h.DynamicMemberGet(this);
+              object? value = h.MemberGetOrNotSupportedException(this);
               // make sure the variable has a value
               // it is a child object so cascade the call
-              ((IUndoableObject) value)?.AcceptChanges(EditLevel, BindingEdit);
+              ((IUndoableObject?)value)?.AcceptChanges(EditLevel, BindingEdit);
             }
           }
 
           currentType = currentType.BaseType;
-        } while (currentType != typeof(UndoableBase));
+        } while (currentType is not null && currentType != typeof(UndoableBase));
       }
       AcceptChangesComplete();
     }
@@ -426,7 +413,7 @@ namespace Csla.Core
         _bindingEdit = info.GetValue<bool>("_bindingEdit");
         if (info.Values.ContainsKey("_stateStack"))
         {
-          var stackArray = info.GetValue<byte[][]>("_stateStack");
+          var stackArray = (IEnumerable<byte[]>)info.GetRequiredValue<byte[][]>("_stateStack");
           _stateStack.Clear();
           foreach (var item in stackArray.Reverse())
             _stateStack.Push(item);

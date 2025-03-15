@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.TestHelpers;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -185,6 +186,15 @@ namespace Csla.Test.DataPortalChild
 
       Assert.AreEqual("root", root.ChildList[0].RootData, "Parent data is not correct after Save in the list");
       Assert.AreEqual("root", root.Child.RootData, "Parent data is not correct after Save in one child");
+    }
+
+    [TestMethod]
+    public async Task CreateChildMustCanHandleNullValueAsCriteria()
+    {
+      var childPortal = _testDIContext.CreateChildDataPortal<ChildList>();
+
+      var instance = await childPortal.CreateChildAsync(null);
+      instance.Should().NotBeNull();
     }
 
     private Child NewChild()

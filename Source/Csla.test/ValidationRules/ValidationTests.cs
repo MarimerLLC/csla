@@ -9,19 +9,22 @@
 using System.ComponentModel;
 using Csla.Core;
 using Csla.Rules;
+using UnitDriven;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
 {
   [TestClass]
-  public class ValidationTests
+  public class ValidationTests : TestBase
   {
+
     private static TestDIContext _testDIContext;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
+      _ = context;
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
@@ -35,28 +38,31 @@ namespace Csla.Test.ValidationRules
     public async Task TestValidationRulesWithPrivateMember()
     {
       //works now because we are calling ValidationRules.CheckRules() in DataPortal_Create
+      UnitTestContext context = GetContext();
       var root = await CreateHasRulesManagerAsync();
-      Assert.AreEqual("<new>", root.Name);
-      Assert.AreEqual(true, root.IsValid, "should be valid on create");
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
       root.BeginEdit();
       root.Name = "";
       root.CancelEdit();
 
-      Assert.AreEqual("<new>", root.Name);
-      Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid, "should be valid after CancelEdit");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
       root.BeginEdit();
       root.Name = "";
       root.ApplyEdit();
 
-      Assert.AreEqual("", root.Name);
-      Assert.AreEqual(false, root.IsValid);
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-      string actual = root.BrokenRulesCollection[0].Description;
-      Assert.AreEqual("Name required", actual);
+      context.Assert.AreEqual("", root.Name);
+      context.Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+      context.Assert.Success();
+
+      context.Complete();
     }
 
     [TestMethod]
@@ -92,77 +98,78 @@ namespace Csla.Test.ValidationRules
     public async Task TestValidationAfterEditCycle()
     {
       //should work since ValidationRules.CheckRules() is called in DataPortal_Create
+      UnitTestContext context = GetContext();
       var root = await CreateHasRulesManagerAsync();
-      Assert.AreEqual("<new>", root.Name);
-      Assert.AreEqual(true, root.IsValid, "should be valid on create");
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid, "should be valid on create");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
       bool validationComplete = false;
       root.ValidationComplete += (_, _) => { validationComplete = true; };
 
       root.BeginEdit();
       root.Name = "";
-      Assert.AreEqual("", root.Name);
-      Assert.AreEqual(false, root.IsValid);
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-      string actual = root.BrokenRulesCollection[0].Description;
-      Assert.AreEqual("Name required", actual);
-      Assert.IsTrue(validationComplete, "ValidationComplete should have run");
+      context.Assert.AreEqual("", root.Name);
+      context.Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
+      context.Assert.IsTrue(validationComplete, "ValidationComplete should have run");
       root.BeginEdit();
       root.Name = "Begin 1";
-      Assert.AreEqual("Begin 1", root.Name);
-      Assert.AreEqual(true, root.IsValid);
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Begin 1", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
       root.BeginEdit();
       root.Name = "Begin 2";
-      Assert.AreEqual("Begin 2", root.Name);
-      Assert.AreEqual(true, root.IsValid);
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Begin 2", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
       root.BeginEdit();
       root.Name = "Begin 3";
-      Assert.AreEqual("Begin 3", root.Name);
-      Assert.AreEqual(true, root.IsValid);
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Begin 3", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
 
       HasRulesManager hrmClone = root.Clone();
 
       //Test validation rule cancels for both clone and cloned
       root.CancelEdit();
-      Assert.AreEqual("Begin 2", root.Name);
-      Assert.AreEqual(true, root.IsValid);
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Begin 2", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
       hrmClone.CancelEdit();
-      Assert.AreEqual("Begin 2", hrmClone.Name);
-      Assert.AreEqual(true, hrmClone.IsValid);
-      Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Begin 2", hrmClone.Name);
+      context.Assert.AreEqual(true, hrmClone.IsValid);
+      context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
       root.CancelEdit();
-      Assert.AreEqual("Begin 1", root.Name);
-      Assert.AreEqual(true, root.IsValid);
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Begin 1", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
       hrmClone.CancelEdit();
-      Assert.AreEqual("Begin 1", hrmClone.Name);
-      Assert.AreEqual(true, hrmClone.IsValid);
-      Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Begin 1", hrmClone.Name);
+      context.Assert.AreEqual(true, hrmClone.IsValid);
+      context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
       root.CancelEdit();
-      Assert.AreEqual("", root.Name);
-      Assert.AreEqual(false, root.IsValid);
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
-      string actual1 = root.BrokenRulesCollection[0].Description;
-      Assert.AreEqual("Name required", actual1);
+      context.Assert.AreEqual("", root.Name);
+      context.Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", root.BrokenRulesCollection[0].Description);
       hrmClone.CancelEdit();
-      Assert.AreEqual("", hrmClone.Name);
-      Assert.AreEqual(false, hrmClone.IsValid);
-      Assert.AreEqual(1, hrmClone.BrokenRulesCollection.Count);
-      string actual2 = hrmClone.BrokenRulesCollection[0].Description;
-      Assert.AreEqual("Name required", actual2);
+      context.Assert.AreEqual("", hrmClone.Name);
+      context.Assert.AreEqual(false, hrmClone.IsValid);
+      context.Assert.AreEqual(1, hrmClone.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("Name required", hrmClone.BrokenRulesCollection[0].Description);
       root.CancelEdit();
-      Assert.AreEqual("<new>", root.Name);
-      Assert.AreEqual(true, root.IsValid);
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("<new>", root.Name);
+      context.Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
       hrmClone.CancelEdit();
-      Assert.AreEqual("<new>", hrmClone.Name);
-      Assert.AreEqual(true, hrmClone.IsValid);
-      Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+      context.Assert.AreEqual("<new>", hrmClone.Name);
+      context.Assert.AreEqual(true, hrmClone.IsValid);
+      context.Assert.AreEqual(0, hrmClone.BrokenRulesCollection.Count);
+      context.Assert.Success();
+
+      context.Complete();
     }
 
     [TestMethod]
@@ -200,81 +207,99 @@ namespace Csla.Test.ValidationRules
 
     public async Task BreakLengthRule()
     {
+      UnitTestContext context = GetContext();
       var root = await CreateHasRulesManagerAsync();
       root.Name = "12345678901";
-      Assert.AreEqual(false, root.IsValid, "should not be valid");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual(false, root.IsValid, "should not be valid");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
       //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description);
       Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
       root.Name = "1234567890";
-      Assert.AreEqual(true, root.IsValid, "should be valid");
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual(true, root.IsValid, "should be valid");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
+
     public async Task BreakLengthRuleAndClone()
     {
+      UnitTestContext context = GetContext();
       var root = await CreateHasRulesManagerAsync();
       root.Name = "12345678901";
-      Assert.AreEqual(false, root.IsValid, "should not be valid before clone");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual(false, root.IsValid, "should not be valid before clone");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
       //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
       Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
       root = root.Clone();
-      Assert.AreEqual(false, root.IsValid, "should not be valid after clone");
-      Assert.AreEqual(1, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual(false, root.IsValid, "should not be valid after clone");
+      context.Assert.AreEqual(1, root.BrokenRulesCollection.Count);
       //Assert.AreEqual("Name too long", root.GetBrokenRulesCollection[0].Description;
-      string actual = root.BrokenRulesCollection[0].Description;
-      Assert.AreEqual("Name can not exceed 10 characters", actual);
+      context.Assert.AreEqual("Name can not exceed 10 characters", root.BrokenRulesCollection[0].Description);
 
       root.Name = "1234567890";
-      Assert.AreEqual(true, root.IsValid, "Should be valid");
-      Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.AreEqual(true, root.IsValid, "Should be valid");
+      context.Assert.AreEqual(0, root.BrokenRulesCollection.Count);
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void RegExSSN()
     {
+      UnitTestContext context = GetContext();
+
       HasRegEx root = CreateWithoutCriteria<HasRegEx>();
 
       root.Ssn = "555-55-5555";
       root.Ssn2 = "555-55-5555";
-      Assert.IsTrue(root.IsValid, "Ssn should be valid");
+      context.Assert.IsTrue(root.IsValid, "Ssn should be valid");
 
       root.Ssn = "555-55-5555d";
-      Assert.IsFalse(root.IsValid, "Ssn should not be valid");
+      context.Assert.IsFalse(root.IsValid, "Ssn should not be valid");
 
       root.Ssn = "555-55-5555";
       root.Ssn2 = "555-55-5555d";
-      Assert.IsFalse(root.IsValid, "Ssn should not be valid");
+      context.Assert.IsFalse(root.IsValid, "Ssn should not be valid");
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void MergeBrokenRules()
     {
+      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<BrokenRulesMergeRoot>();
       root.Validate();
       BrokenRulesCollection list = root.BrokenRulesCollection;
-      Assert.AreEqual(2, list.Count, "Should have 2 broken rules");
-      string actual = list[0].RuleName;
-      Assert.AreEqual("rule://csla.test.validationrules.brokenrulesmergeroot-rulebroken/Test1", actual);
+      context.Assert.AreEqual(2, list.Count, "Should have 2 broken rules");
+      context.Assert.AreEqual("rule://csla.test.validationrules.brokenrulesmergeroot-rulebroken/Test1", list[0].RuleName);
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void BusinessRuleDisplayIndex()
     {
+      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<RuleDisplayIndex>();
       root.Validate();
       BrokenRulesCollection list = root.BrokenRulesCollection;
-      int actual = list[0].DisplayIndex;
-      Assert.AreEqual(2, actual, "Should have DisplayIndex");
+      context.Assert.AreEqual(2, list[0].DisplayIndex, "Should have DisplayIndex");
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public async Task VerifyUndoableStateStackOnClone()
     {
+      using UnitTestContext context = GetContext();
       var root = await CreateHasRulesManager2Async();
       string expected = root.Name;
       root.BeginEdit();
@@ -283,21 +308,28 @@ namespace Csla.Test.ValidationRules
       rootClone.CancelEdit();
 
       string actual = rootClone.Name;
-      Assert.AreEqual(expected, actual);
-      rootClone.ApplyEdit();
+      context.Assert.AreEqual(expected, actual);
+      context.Assert.Try(rootClone.ApplyEdit);
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public async Task ListChangedEventTrigger()
     {
+      UnitTestContext context = GetContext();
       var root = await CreateWithoutCriteriaAsync<HasChildren>();
-      Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(false, root.IsValid);
       root.BeginEdit();
       root.ChildList.Add(CreateChildWithoutCriteria<Child>());
-      Assert.AreEqual(true, root.IsValid);
+      context.Assert.AreEqual(true, root.IsValid);
 
       root.CancelEdit();
-      Assert.AreEqual(false, root.IsValid);
+      context.Assert.AreEqual(false, root.IsValid);
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     // TODO: fix test
@@ -305,111 +337,133 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void RuleThrowsException()
     {
+      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<HasBadRule>();
       root.Validate();
-      Assert.IsFalse(root.IsValid);
-      int actual = root.GetBrokenRules().Count;
-      Assert.AreEqual(1, actual);
+      context.Assert.IsFalse(root.IsValid);
+      context.Assert.AreEqual(1, root.GetBrokenRules().Count);
 #if WINDOWS_PHONE
       context.Assert.AreEqual("rule://csla.test.validationrules.hasbadrule-badrule/null:InvalidOperationException", root.GetBrokenRules()[0].Description);
 #else
-      string actual1 = root.GetBrokenRules()[0].Description;
-      Assert.AreEqual("rule://csla.test.validationrules.hasbadrule-badrule/(object):Operation is not valid due to the current state of the object.", actual1);
+      context.Assert.AreEqual("rule://csla.test.validationrules.hasbadrule-badrule/(object):Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
 #endif
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void PrivateField()
     {
+      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<HasPrivateFields>();
       root.Validate();
-      Assert.IsFalse(root.IsValid);
+      context.Assert.IsFalse(root.IsValid);
       root.Name = "abc";
-      Assert.IsTrue(root.IsValid);
+      context.Assert.IsTrue(root.IsValid);
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void MinMaxValue()
     {
+      var context = GetContext();
       var root = CreateWithoutCriteria<UsesCommonRules>();
-      Assert.AreEqual(1, root.Data);
+      context.Assert.AreEqual(1, root.Data);
 
-      Assert.IsFalse(root.IsValid);
-      Assert.IsTrue(root.BrokenRulesCollection[0].Description.Length > 0);
+      context.Assert.IsFalse(root.IsValid);
+      context.Assert.IsTrue(root.BrokenRulesCollection[0].Description.Length > 0);
+
 
       root.Data = 0;
-      Assert.IsFalse(root.IsValid);
+      context.Assert.IsFalse(root.IsValid);
 
       root.Data = 20;
-      Assert.IsFalse(root.IsValid);
+      context.Assert.IsFalse(root.IsValid);
 
       root.Data = 15;
-      Assert.IsTrue(root.IsValid);
+      context.Assert.IsTrue(root.IsValid);
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void MinMaxNullableValue()
     {
+      var context = GetContext();
       var root = CreateWithoutCriteria<MinMaxNullableRules>();
-      Assert.IsNull(root.DataNullable);
+      context.Assert.IsNull(root.DataNullable);
 
-      Assert.IsFalse(root.IsValid);
-      Assert.IsTrue(root.BrokenRulesCollection[0].Description.Length > 0);
+      context.Assert.IsFalse(root.IsValid);
+      context.Assert.IsTrue(root.BrokenRulesCollection[0].Description.Length > 0);
 
 
       root.DataNullable = 0;
-      Assert.IsFalse(root.IsValid);
+      context.Assert.IsFalse(root.IsValid);
 
       root.DataNullable = 20;
-      Assert.IsFalse(root.IsValid);
+      context.Assert.IsFalse(root.IsValid);
 
       root.DataNullable = 15;
-      Assert.IsTrue(root.IsValid);
+      context.Assert.IsTrue(root.IsValid);
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void MinMaxLength()
     {
+      var context = GetContext();
 
       var root = CreateWithoutCriteria<UsesCommonRules>();
       root.Data = 15;
-      Assert.IsTrue(root.IsValid, "Should start valid");
+      context.Assert.IsTrue(root.IsValid, "Should start valid");
 
       root.MinCheck = "a";
-      Assert.IsFalse(root.IsValid, "Min too short");
+      context.Assert.IsFalse(root.IsValid, "Min too short");
 
       root.MinCheck = "123456";
-      Assert.IsTrue(root.IsValid, "Min OK");
+      context.Assert.IsTrue(root.IsValid, "Min OK");
 
       root.MaxCheck = "a";
-      Assert.IsTrue(root.IsValid, "Max OK");
+      context.Assert.IsTrue(root.IsValid, "Max OK");
 
       root.MaxCheck = "123456";
-      Assert.IsFalse(root.IsValid, "Max too long");
+      context.Assert.IsFalse(root.IsValid, "Max too long");
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void TwoRules()
     {
+      var context = GetContext();
+
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
-        new Dictionary<IPropertyInfo, object> {
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
+        new Dictionary<IPropertyInfo, object> { 
           { TwoPropertyRules.Value1Property, "a" },
-          { TwoPropertyRules.Value2Property, "b" }
+          { TwoPropertyRules.Value2Property, "b" } 
         });
       ((IBusinessRule)rule).Execute(ctx);
-      Assert.AreEqual(0, ctx.Results.Count);
+      context.Assert.AreEqual(0, ctx.Results.Count);
 
-      ctx = new RuleContext(applicationContext, null, rule, root,
-        new Dictionary<IPropertyInfo, object> {
+      ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
+        new Dictionary<IPropertyInfo, object> { 
           { TwoPropertyRules.Value1Property, "" },
-          { TwoPropertyRules.Value2Property, "a" }
+          { TwoPropertyRules.Value2Property, "a" } 
         });
       ((IBusinessRule)rule).Execute(ctx);
-      Assert.AreEqual(1, ctx.Results.Count);
+      context.Assert.AreEqual(1, ctx.Results.Count);
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     // TODO: fix test
@@ -417,18 +471,30 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void CanHaveRuleOnLazyField()
     {
-      var root = new HasLazyField();
-      root.CheckRules();
+      var context = GetContext();
 
-      var rootEI = (IDataErrorInfo) root;
-      var broken = rootEI[HasLazyField.Value1Property.Name];
+      context.Assert.Try(() =>
+        {
+          var root = new HasLazyField();
+          root.CheckRules();
 
-      Assert.AreEqual("PrimaryProperty does not exist.", broken);
-      var value = root.Value1; // intializes field
+          string broken;
 
-      root.CheckRules();
-      broken = rootEI[HasLazyField.Value1Property.Name];
-      Assert.AreEqual("PrimaryProperty has value.", broken);
+          var rootEI = (IDataErrorInfo)root;
+          broken = rootEI[HasLazyField.Value1Property.Name];
+
+          context.Assert.AreEqual("PrimaryProperty does not exist.", broken);
+          var value = root.Value1;  // intializes field
+          
+          root.CheckRules();
+          broken = rootEI[HasLazyField.Value1Property.Name];
+          context.Assert.AreEqual("PrimaryProperty has value.", broken);
+
+          context.Assert.Success();
+        });
+
+      context.Complete();
+
     }
 
     [TestMethod]
@@ -436,13 +502,16 @@ namespace Csla.Test.ValidationRules
     {
       IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testDIContext.CreateDataPortal<DirtyAfterOutValueChangesProperty>();
 
+      var context = GetContext();
 
       var root = dataPortal.Fetch();
-      Assert.IsFalse(root.IsDirty);
-      Assert.AreEqual("csla rocks", root.Value1);
+      context.Assert.IsFalse(root.IsDirty);
+      context.Assert.AreEqual("csla rocks", root.Value1);
       root.CheckRules();
-      Assert.IsTrue(root.IsDirty);
-      Assert.AreEqual("CSLA ROCKS", root.Value1);
+      context.Assert.IsTrue(root.IsDirty);
+      context.Assert.AreEqual("CSLA ROCKS", root.Value1);
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
@@ -450,25 +519,32 @@ namespace Csla.Test.ValidationRules
     {
       IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testDIContext.CreateDataPortal<DirtyAfterOutValueChangesProperty>();
 
+      var context = GetContext();
+
       var root = dataPortal.Fetch("CSLA ROCKS");
-      Assert.IsFalse(root.IsDirty);
-      Assert.AreEqual("CSLA ROCKS", root.Value1);
+      context.Assert.IsFalse(root.IsDirty);
+      context.Assert.AreEqual("CSLA ROCKS", root.Value1);
       root.CheckRules();
-      Assert.IsFalse(root.IsDirty);
-      Assert.AreEqual("CSLA ROCKS", root.Value1);
+      context.Assert.IsFalse(root.IsDirty);
+      context.Assert.AreEqual("CSLA ROCKS", root.Value1);
+      context.Assert.Success();
+      context.Complete();
     }
 
     [TestMethod]
     public void BrokenRulesPriority()
     {
+      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<BrokenRulesPriority>();
       root.Name = "z";
       root.Validate();
       Csla.Rules.BrokenRulesCollection list = root.BrokenRulesCollection;
 
-      int actual = list[0].Priority;
-      Assert.AreEqual(1, actual, "Priority of Broken rule.");
+      context.Assert.AreEqual(1, list[0].Priority, "Priority of Broken rule.");
       Assert.AreEqual("Check capitalization", root.BrokenRulesCollection.GetFirstBrokenRule("Name").Description, "'Check capitalization' should be broken (GetFirstBrokenRule)");
+
+      context.Assert.Success();
+      context.Complete();
     }
 
     private T CreateWithoutCriteria<T>()
@@ -741,9 +817,6 @@ namespace Csla.Test.ValidationRules
       set { SetProperty(Value1Property, value); }
     }
 
-    public DirtyAfterOutValueChangesProperty() 
-    { }
-
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
@@ -830,7 +903,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -848,7 +921,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -866,7 +939,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -884,7 +957,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -902,7 +975,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -920,7 +993,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -938,7 +1011,7 @@ namespace Csla.Test.ValidationRules
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
       var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var ctx = new RuleContext(applicationContext, null, rule, root,
+      var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
                                                  {TwoPropertyRules.Value1Property, "a"},
@@ -947,6 +1020,13 @@ namespace Csla.Test.ValidationRules
       ctx.AddSuccessResult(false);
       Assert.IsTrue(true, "Must not fail.");
     }
+  }
 
+  internal static class RuleContextUtils
+  {
+    internal static void DoNothingCompleteHandler(IRuleContext context)
+    {
+      _ = context;
+    }
   }
 }

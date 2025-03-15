@@ -27,7 +27,7 @@ namespace Csla.Analyzers
     /// 
     /// </summary>
     /// <returns></returns>
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
     /// <summary>
     /// 
     /// </summary>
@@ -36,21 +36,31 @@ namespace Csla.Analyzers
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-
+      if (root is null)
+      {
+        return;
+      }
       context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var methodNode = root.FindNode(diagnostic.Location.SourceSpan) as MethodDeclarationSyntax;
+      if (methodNode is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
       await AddCodeFixAsync(context, root, diagnostic, methodNode);
     }
 
-    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root,
-      Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
+    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root, Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
     {
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       var newRoot = root;
@@ -91,13 +101,17 @@ namespace Csla.Analyzers
           AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFixConstants.UpdateToAsyncEquivalentsDescription), diagnostic);
     }
 
-    private static BaseListSyntax GetBaseTypes(TypeDeclarationSyntax typeNode)
+    private static BaseListSyntax? GetBaseTypes(TypeDeclarationSyntax typeNode)
     {
       var currentBaseList = typeNode.BaseList;
+      if (currentBaseList is null)
+      {
+        return null;
+      }
 
       var list = new SeparatedSyntaxList<BaseTypeSyntax>();
 
-      foreach (var baseTypeNode in typeNode.BaseList.DescendantNodes().OfType<SimpleBaseTypeSyntax>())
+      foreach (var baseTypeNode in typeNode.BaseList!.DescendantNodes().OfType<SimpleBaseTypeSyntax>())
       {
         var baseTypeNodeIdentifier = baseTypeNode.DescendantNodes().OfType<IdentifierNameSyntax>().Single();
 

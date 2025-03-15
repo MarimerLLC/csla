@@ -12,8 +12,11 @@ namespace Csla.Core
     /// Property changed event args
     /// </summary>
     /// <param name="propertyName">Name of changed property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     public MetaPropertyChangedEventArgs(string propertyName) : base(propertyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
     }
   }
 }

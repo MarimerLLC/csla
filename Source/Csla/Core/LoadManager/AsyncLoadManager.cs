@@ -13,8 +13,8 @@ namespace Csla.Core.LoadManager
 {
   internal class AsyncLoadManager : INotifyBusy
   {
-    private IManageProperties _target;
-    private Action<IPropertyInfo> _onPropertyChanged;
+    private readonly IManageProperties _target;
+    private readonly Action<IPropertyInfo> _onPropertyChanged;
 
     public AsyncLoadManager(IManageProperties target, Action<IPropertyInfo> onPropertyChanged)
     {
@@ -83,7 +83,7 @@ namespace Csla.Core.LoadManager
 
     #region INotifyPropertyBusy Members
 
-    public event BusyChangedEventHandler BusyChanged;
+    public event BusyChangedEventHandler? BusyChanged;
     protected void OnPropertyBusy(string propertyName, bool busy)
     {
       BusyChanged?.Invoke(this, new BusyChangedEventArgs(propertyName, busy));
@@ -93,15 +93,9 @@ namespace Csla.Core.LoadManager
 
     #region INotifyBusy Members
 
-    bool INotifyBusy.IsBusy
-    {
-      get { return (this as INotifyBusy).IsSelfBusy; }
-    }
+    bool INotifyBusy.IsBusy => (this as INotifyBusy).IsSelfBusy;
 
-    bool INotifyBusy.IsSelfBusy
-    {
-      get { return IsLoading; }
-    }
+    bool INotifyBusy.IsSelfBusy => IsLoading;
 
     #endregion
 
@@ -109,12 +103,12 @@ namespace Csla.Core.LoadManager
 
     [NotUndoable]
     [NonSerialized]
-    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+    private EventHandler<ErrorEventArgs>? _unhandledAsyncException;
 
-    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    public event EventHandler<ErrorEventArgs>? UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     protected virtual void OnUnhandledAsyncException(ErrorEventArgs error)

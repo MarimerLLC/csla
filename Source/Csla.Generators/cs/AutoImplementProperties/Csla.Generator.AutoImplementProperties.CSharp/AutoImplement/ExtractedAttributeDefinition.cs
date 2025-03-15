@@ -6,12 +6,12 @@ public class ExtractedAttributeDefinition : IEquatable<ExtractedAttributeDefinit
   /// <summary>
   /// The name of the attribute.
   /// </summary>
-  public string AttributeName { get; set; }
+  public string AttributeName { get; set; } = string.Empty;
 
   /// <summary>
   /// The namespace of the attribute.
   /// </summary>
-  public string AttributeNamespace { get; set; }
+  public string AttributeNamespace { get; set; } = string.Empty;
 
   /// <summary>
   /// A list of arguments passed to the attribute's constructor.
@@ -27,9 +27,9 @@ public class ExtractedAttributeDefinition : IEquatable<ExtractedAttributeDefinit
   /// </summary>
   /// <param name="other">The object to compare with the current object.</param>
   /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-  public bool Equals(ExtractedAttributeDefinition other)
+  public bool Equals(ExtractedAttributeDefinition? other)
   {
-    if (ReferenceEquals(null, other))
+    if (other is null)
       return false;
     if (ReferenceEquals(this, other))
       return true;
@@ -42,9 +42,9 @@ public class ExtractedAttributeDefinition : IEquatable<ExtractedAttributeDefinit
   /// </summary>
   /// <param name="obj">The object to compare with the current object.</param>
   /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-  public override bool Equals(object obj)
+  public override bool Equals(object? obj)
   {
-    if (ReferenceEquals(null, obj))
+    if (obj is null)
       return false;
     if (ReferenceEquals(this, obj))
       return true;

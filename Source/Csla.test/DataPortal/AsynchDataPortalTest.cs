@@ -9,7 +9,6 @@
 using Csla.Test.Basic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Globalization;
-using UnitDriven;
 using Csla.Testing.Business.DataPortal;
 using Single = Csla.Test.DataPortalTest.Single;
 using Csla.Test.DataPortalTest;
@@ -19,7 +18,7 @@ using cslalighttest.CslaDataProvider;
 namespace Csla.Test.DataPortal
 {
   [TestClass]
-  public class AsynchDataPortalTest : TestBase
+  public class AsynchDataPortalTest
   {
     private CultureInfo CurrentCulture;
     private CultureInfo CurrentUICulture;
@@ -208,30 +207,23 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task SaveAsyncWithException()
     {
-      var context = GetContext();
-      await context.Assert.Try(async () =>
+      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+
+      var result = await dataPortal.CreateAsync(555);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(555, result.Id);
+      Assert.IsTrue(result.IsNew);
+      Assert.IsTrue(result.IsDirty);
+
+      try
       {
-        IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
-
-        var result = await dataPortal.CreateAsync(555);
-        Assert.IsNotNull(result);
-        Assert.AreEqual(555, result.Id);
-        Assert.IsTrue(result.IsNew);
-        Assert.IsTrue(result.IsDirty);
-        
-        try
-        {
-          result = await result.SaveAsync();
-          Assert.Fail("Expected exception not thrown");
-        }
-        catch (Exception ex)
-        {
-          context.Assert.IsTrue(ex.GetType() == typeof(DataPortalException));
-        }
-
-        context.Assert.Success();
-      });
-      context.Complete();
+        result = await result.SaveAsync();
+        Assert.Fail("Expected exception not thrown");
+      }
+      catch (Exception ex)
+      {
+        Assert.IsTrue(ex.GetType() == typeof(DataPortalException));
+      }
     }
 
 #endif

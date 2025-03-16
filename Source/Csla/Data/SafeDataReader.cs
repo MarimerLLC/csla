@@ -810,7 +810,7 @@ namespace Csla.Data
         if (string.IsNullOrWhiteSpace(name))
           throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
 
-        object? val = DataReader[name];
+        object val = DataReader[name];
         if (DBNull.Value.Equals(val))
           return null;
         else

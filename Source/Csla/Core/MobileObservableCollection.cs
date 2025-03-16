@@ -136,7 +136,7 @@ namespace Csla.Core
       List<int> references = new List<int>();
       for (int x = 0; x < Count; x++)
       {
-        T? child = this[x];
+        T child = this[x];
         if (child != null)
         {
           SerializationInfo childInfo = formatter.SerializeObject(child);

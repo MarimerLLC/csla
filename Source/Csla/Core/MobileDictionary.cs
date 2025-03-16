@@ -131,7 +131,7 @@ namespace Csla.Core
         }
         else
         {
-          V? value = this[key];
+          V value = this[key];
           info.AddValue(_valuePrefix + count, value);
         }
         count++;

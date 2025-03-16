@@ -221,7 +221,7 @@ namespace Csla.Server.Hosts
       var requestBuffer = new MemoryStream(requestArray);
 
       var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-      DataPortalResponse? result = new DataPortalResponse();
+      DataPortalResponse result = new DataPortalResponse();
       try
       {
         var request = await DeserializeRequestBody(requestBuffer, serializer);

@@ -757,7 +757,6 @@ namespace Csla.Data
       return DataReader.GetSchemaTable();
     }
 
-
     /// <summary>
     /// Invokes the GetValues method of the underlying datareader.
     /// </summary>
@@ -846,13 +845,12 @@ namespace Csla.Data
     /// <summary>
     /// Disposes the object.
     /// </summary>
-    /// <param name="disposing">True if called by
-    /// the public Dispose method.</param>
-    protected virtual void Dispose(bool disposing)
+    public void Dispose()
     {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
       if (!_disposedValue)
       {
-        if (disposing)
+        if (true)
         {
           // free unmanaged resources when explicitly called
           DataReader.Dispose();
@@ -863,25 +861,6 @@ namespace Csla.Data
       _disposedValue = true;
     }
 
-    /// <summary>
-    /// Disposes the object.
-    /// </summary>
-    public void Dispose()
-    {
-      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-      Dispose(true);
-      GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Object finalizer.
-    /// </summary>
-    ~SafeDataReader()
-    {
-      Dispose(false);
-    }
-
 #endregion
-
   }
 }

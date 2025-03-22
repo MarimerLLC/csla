@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using UnitDriven;
 using System.Security.Claims;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Test.BypassPropertyChecks
 {
   [TestClass]
-  public class BypassPropertyChecksTests : TestBase
+  public class BypassPropertyChecksTests
   {
     private static ClaimsPrincipal GetPrincipal(params string[] roles)
     {
@@ -40,7 +39,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
       testObj.PropertyChanged += (_, _) =>
@@ -48,22 +46,22 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadIdByPass(1);
-      context.Assert.AreEqual(1, testObj.ReadIdByPass());
-      context.Assert.AreEqual(false, propertyChangedFired);
-      context.Assert.AreEqual(false, testObj.IsDirty);
+      int actual = testObj.ReadIdByPass();
+      Assert.AreEqual(1, actual);
+      Assert.AreEqual(false, propertyChangedFired);
+      Assert.AreEqual(false, testObj.IsDirty);
 
       testObj.LoadIdByNestedPass(3);
-      context.Assert.AreEqual(3, testObj.ReadIdByPass());
-      context.Assert.AreEqual(false, propertyChangedFired);
-      context.Assert.AreEqual(false, testObj.IsDirty);
+      int actual1 = testObj.ReadIdByPass();
+      Assert.AreEqual(3, actual1);
+      Assert.AreEqual(false, propertyChangedFired);
+      Assert.AreEqual(false, testObj.IsDirty);
 
       testObj.LoadId(2);
-      context.Assert.AreEqual(true, propertyChangedFired);
-      context.Assert.AreEqual(2, testObj.ReadId());
-      context.Assert.AreEqual(true, testObj.IsDirty);
-
-      context.Assert.Success();
-      context.Complete();
+      Assert.AreEqual(true, propertyChangedFired);
+      int actual2 = testObj.ReadId();
+      Assert.AreEqual(2, actual2);
+      Assert.AreEqual(true, testObj.IsDirty);
     }
 
     // TODO: fix test
@@ -75,7 +73,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
 
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -84,16 +81,15 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId2ByPass(1);
-      context.Assert.AreEqual(1, testObj.ReadId2ByPass());
-      context.Assert.AreEqual(false, propertyChangedFired);
-      context.Assert.AreEqual(false, testObj.IsDirty);
+      int actual = testObj.ReadId2ByPass();
+      Assert.AreEqual(1, actual);
+      Assert.AreEqual(false, propertyChangedFired);
+      Assert.AreEqual(false, testObj.IsDirty);
       testObj.LoadId2(2);
-      context.Assert.AreEqual(1, testObj.ReadId2ByPass()); // still one becuase set failed
-      context.Assert.AreEqual(true, testObj.IsDirty);
-      context.Assert.Success();
-      context.Complete();
+      int actual1 = testObj.ReadId2ByPass();
+      Assert.AreEqual(1, actual1); // still one becuase set failed
+      Assert.AreEqual(true, testObj.IsDirty);
     }
-
 
     // TODO: fix test
     [Ignore]
@@ -103,7 +99,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
 
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -112,11 +107,10 @@ namespace Csla.Test.BypassPropertyChecks
           propertyChangedFired = true;
         };
       testObj.LoadId2ByPass(1);
-      context.Assert.AreEqual(1, testObj.ReadId2ByPass());
-      context.Assert.AreEqual(false, propertyChangedFired);
-      context.Assert.AreEqual(false, testObj.IsDirty);
-      context.Assert.Success();
-      context.Complete();
+      int actual = testObj.ReadId2ByPass();
+      Assert.AreEqual(1, actual);
+      Assert.AreEqual(false, propertyChangedFired);
+      Assert.AreEqual(false, testObj.IsDirty);
     }
 
     // TODO: fix test
@@ -127,7 +121,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = customDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
       testObj.PropertyChanged += (_, _) =>
@@ -135,11 +128,10 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId(1);
-      context.Assert.AreEqual(1, testObj.ReadId());
-      context.Assert.AreEqual(true, propertyChangedFired);
-      context.Assert.AreEqual(true, testObj.IsDirty);
-      context.Assert.Success();
-      context.Complete();
+      int actual = testObj.ReadId();
+      Assert.AreEqual(1, actual);
+      Assert.AreEqual(true, propertyChangedFired);
+      Assert.AreEqual(true, testObj.IsDirty);
     }
 
     // TODO: fix test
@@ -151,7 +143,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       BypassBusinessBase testObj = dataPortal.Fetch();
       bool propertyChangedFired = false;
       testObj.PropertyChanged += (_, _) =>
@@ -159,11 +150,10 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId2(1);
-      context.Assert.AreEqual(1, testObj.ReadId2ByPass());
-      context.Assert.AreEqual(true, propertyChangedFired);
-      context.Assert.AreEqual(true, testObj.IsDirty);
-      context.Assert.Success();
-      context.Complete();
+      int actual = testObj.ReadId2ByPass();
+      Assert.AreEqual(1, actual);
+      Assert.AreEqual(true, propertyChangedFired);
+      Assert.AreEqual(true, testObj.IsDirty);
     }
 
     // TODO: fix test
@@ -174,7 +164,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
       testObj.PropertyChanged += (_, _) =>
@@ -182,15 +171,13 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId2ByPass(1);
-      context.Assert.AreEqual(false, testObj.IsDirty);
-      context.Assert.AreEqual(1, testObj.ReadId2ByPass());
-      context.Assert.AreEqual(0, testObj.ReadId2()); // 0 becuase we cannot read
-      context.Assert.AreEqual(false, propertyChangedFired);
-      context.Assert.Success();
-      context.Complete();
+      Assert.AreEqual(false, testObj.IsDirty);
+      int actual = testObj.ReadId2ByPass();
+      Assert.AreEqual(1, actual);
+      int actual1 = testObj.ReadId2();
+      Assert.AreEqual(0, actual1); // 0 becuase we cannot read
+      Assert.AreEqual(false, propertyChangedFired);
     }
-
-
 
     // TODO: fix test
     [Ignore]
@@ -200,7 +187,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
 
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -209,11 +195,10 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId4ByPass(1);
-      context.Assert.AreEqual(false, testObj.IsDirty);
-      context.Assert.AreEqual(1, testObj.ReadId4ByPass());
-      context.Assert.AreEqual(false, propertyChangedFired);
-      context.Assert.Success();
-      context.Complete();
+      Assert.AreEqual(false, testObj.IsDirty);
+      int actual = testObj.ReadId4ByPass();
+      Assert.AreEqual(1, actual);
+      Assert.AreEqual(false, propertyChangedFired);
     }
 
     // TODO: fix test
@@ -224,7 +209,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
       testObj.PropertyChanged += (_, _) =>
@@ -232,11 +216,10 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId3(1);
-      context.Assert.AreEqual(true, testObj.IsDirty);
-      context.Assert.AreEqual(1, testObj.ReadId3());
-      context.Assert.AreEqual(true, propertyChangedFired);
-      context.Assert.Success();
-      context.Complete();
+      Assert.AreEqual(true, testObj.IsDirty);
+      int actual = testObj.ReadId3();
+      Assert.AreEqual(1, actual);
+      Assert.AreEqual(true, propertyChangedFired);
     }
 
     // TODO: fix test
@@ -248,7 +231,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
 
-      UnitTestContext context = GetContext();
       BypassBusinessBase testObj = dataPortal.Fetch();
       bool propertyChangedFired = false;
       testObj.PropertyChanged += (_, _) =>
@@ -256,11 +238,10 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId4(1);
-       context.Assert.AreEqual(true, testObj.IsDirty);
-      context.Assert.AreEqual(1, testObj.ReadId4ByPass());
-      context.Assert.AreEqual(true, propertyChangedFired);
-      context.Assert.Success();
-      context.Complete();
+       Assert.AreEqual(true, testObj.IsDirty);
+       int actual = testObj.ReadId4ByPass();
+       Assert.AreEqual(1, actual);
+      Assert.AreEqual(true, propertyChangedFired);
     }
 
     // TODO: fix test
@@ -271,7 +252,6 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
       
-      UnitTestContext context = GetContext();
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
       testObj.PropertyChanged += (_, _) =>
@@ -279,12 +259,12 @@ namespace Csla.Test.BypassPropertyChecks
         propertyChangedFired = true;
       };
       testObj.LoadId4ByPass(1);
-      context.Assert.AreEqual(false, testObj.IsDirty);
-      context.Assert.AreEqual(1, testObj.ReadId4ByPass());
-      context.Assert.AreEqual(0, testObj.ReadId4()); // 0 becuase we cannot read
-      context.Assert.AreEqual(false, propertyChangedFired);
-      context.Assert.Success();
-      context.Complete();
+      Assert.AreEqual(false, testObj.IsDirty);
+      int actual = testObj.ReadId4ByPass();
+      Assert.AreEqual(1, actual);
+      int actual1 = testObj.ReadId4();
+      Assert.AreEqual(0, actual1); // 0 becuase we cannot read
+      Assert.AreEqual(false, propertyChangedFired);
     }
 
     // TODO: fix test
@@ -295,13 +275,10 @@ namespace Csla.Test.BypassPropertyChecks
       TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
       IDataPortal<BypassBusinessBaseUsingFactory> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBaseUsingFactory>();
 
-      UnitTestContext context = GetContext();
-
       BypassBusinessBaseUsingFactory obj = BypassBusinessBaseUsingFactory.GetObject(dataPortal);
-      context.Assert.AreEqual(false, obj.IsDirty);
-      context.Assert.AreEqual(7, obj.ReadId2ByPass());
-      context.Assert.Success();
-      context.Complete();
+      Assert.AreEqual(false, obj.IsDirty);
+      int actual = obj.ReadId2ByPass();
+      Assert.AreEqual(7, actual);
     }
   }
 }

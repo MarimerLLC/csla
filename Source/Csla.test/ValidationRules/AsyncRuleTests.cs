@@ -6,7 +6,6 @@
 // <summary>This only works on Silverlight because when run through NUnit it is not running</summary>
 //-----------------------------------------------------------------------
 
-using UnitDriven;
 using Csla.TestHelpers;
 using FluentAssertions.Execution;
 using FluentAssertions;
@@ -18,7 +17,7 @@ namespace Csla.Test.ValidationRules
   [System.Diagnostics.DebuggerStepThrough]
 #endif
   [TestClass]
-  public class AsyncRuleTests : TestBase
+  public class AsyncRuleTests
   {
     private static TestDIContext _testDIContext;
 
@@ -39,18 +38,14 @@ namespace Csla.Test.ValidationRules
     {
       IDataPortal<HasAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasAsyncRule>();
 
-      UnitTestContext context = GetContext();
-
       HasAsyncRule har = dataPortal.Create();
-      context.Assert.IsTrue(har.IsValid, "IsValid 1");
+      Assert.IsTrue(har.IsValid, "IsValid 1");
 
       har.ValidationComplete += (_, _) =>
       {
-        context.Assert.IsTrue(har.IsValid, "IsValid 2");
-        context.Assert.Success();
+        Assert.IsTrue(har.IsValid, "IsValid 2");
       };
       har.Name = "success";
-      context.Complete();
     }
 
     [TestMethod]
@@ -58,19 +53,15 @@ namespace Csla.Test.ValidationRules
     {
       IDataPortal<HasAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasAsyncRule>();
 
-      UnitTestContext context = GetContext();
-
       HasAsyncRule har = dataPortal.Create();
-      context.Assert.IsTrue(har.IsValid, "IsValid 1");
+      Assert.IsTrue(har.IsValid, "IsValid 1");
 
       har.ValidationComplete += (_, _) =>
       {
-        context.Assert.IsFalse(har.IsValid, "IsValid 2");
-        context.Assert.AreEqual(1, har.BrokenRulesCollection.Count);
-        context.Assert.Success();
+        Assert.IsFalse(har.IsValid, "IsValid 2");
+        Assert.AreEqual(1, har.BrokenRulesCollection.Count);
       };
       har.Name = "error";
-      context.Complete();
     }
 
     [TestMethod]
@@ -78,77 +69,61 @@ namespace Csla.Test.ValidationRules
     {
       IDataPortal<HasInvalidAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasInvalidAsyncRule>();
 
-      UnitTestContext context = GetContext();
       var root = dataPortal.Create();
       root.ValidationComplete += (_, _) =>
         {
-          context.Assert.IsFalse(root.IsValid);
-          context.Assert.AreEqual(1, root.GetBrokenRules().Count);
-          context.Assert.AreEqual("Operation is not valid due to the current state of the object.", root.GetBrokenRules()[0].Description);
-          context.Assert.Success();
+          Assert.IsFalse(root.IsValid);
+          int actual = root.GetBrokenRules().Count;
+          Assert.AreEqual(1, actual);
+          string actual1 = root.GetBrokenRules()[0].Description;
+          Assert.AreEqual("Operation is not valid due to the current state of the object.", actual1);
         };
       root.Validate();
-      context.Complete();
     }
 
     [Ignore] // frequently times out on appveyor server
     [TestMethod]
     public void ValidateMultipleObjectsSimultaneously()
     {
-      UnitTestContext context = GetContext();
-
-      context.Assert.Try(() =>
+      int iterations = 20;
+      int completed = 0;
+      for (int x = 0; x < iterations; x++)
+      {
+        HasAsyncRule har = new HasAsyncRule();
+        har.ValidationComplete += (_, _) =>
         {
-          int iterations = 20;
-          int completed = 0;
-          for (int x = 0; x < iterations; x++)
-          {
-            HasAsyncRule har = new HasAsyncRule();
-            har.ValidationComplete += (_, _) =>
-            {
-              context.Assert.AreEqual("error", har.Name);
-              context.Assert.AreEqual(1, har.BrokenRulesCollection.Count);
-              System.Diagnostics.Debug.WriteLine(har.BrokenRulesCollection.Count);
-              completed++;
-              if (completed == iterations)
-                context.Assert.Success();
-            };
+          Assert.AreEqual("error", har.Name);
+          Assert.AreEqual(1, har.BrokenRulesCollection.Count);
+          System.Diagnostics.Debug.WriteLine(har.BrokenRulesCollection.Count);
+          completed++;
+          Assert.AreEqual(completed, iterations);
+        };
 
-            // set this to error so we can verify that all 6 rules get run for
-            // each object. This is essentially the only way to communicate back
-            // with the object except byref properties.
-            har.Name = "error";
-          }
-        });
-
-      context.Complete();
+        // set this to error so we can verify that all 6 rules get run for
+        // each object. This is essentially the only way to communicate back
+        // with the object except byref properties.
+        har.Name = "error";
+      }
     }
-
 
     [TestMethod]
     public void TestAsyncRulesAndSyncRulesValid()
     {
       IDataPortal<AsyncRuleRoot> dataPortal = _testDIContext.CreateDataPortal<AsyncRuleRoot>();
 
-      UnitTestContext context = GetContext();
-
       var har = dataPortal.Create();
-      context.Assert.IsTrue(string.IsNullOrEmpty(har.CustomerNumber));
-      context.Assert.IsTrue(string.IsNullOrEmpty(har.CustomerName));
-      context.Assert.IsFalse(har.IsValid, "IsValid 1");
-
+      Assert.IsTrue(string.IsNullOrEmpty(har.CustomerNumber));
+      Assert.IsTrue(string.IsNullOrEmpty(har.CustomerName));
+      Assert.IsFalse(har.IsValid, "IsValid 1");
 
       har.ValidationComplete += (_, _) =>
       {
-        context.Assert.IsFalse(string.IsNullOrEmpty(har.CustomerNumber));
-        context.Assert.IsFalse(string.IsNullOrEmpty(har.CustomerName));
+        Assert.IsFalse(string.IsNullOrEmpty(har.CustomerNumber));
+        Assert.IsFalse(string.IsNullOrEmpty(har.CustomerName));
 
-        context.Assert.IsTrue(har.IsValid, "IsValid 2");
-        context.Assert.Success();
+        Assert.IsTrue(har.IsValid, "IsValid 2");
       };
       har.CustomerNumber = "123456";
-
-      context.Complete();
     }
 
     [TestMethod]

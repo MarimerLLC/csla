@@ -21,13 +21,13 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<string> FixableDiagnosticIds =>
-      ImmutableArray.Create(AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance);
+    public override ImmutableArray<string> FixableDiagnosticIds => [AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance];
+
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
     /// <summary>
     /// 
     /// </summary>

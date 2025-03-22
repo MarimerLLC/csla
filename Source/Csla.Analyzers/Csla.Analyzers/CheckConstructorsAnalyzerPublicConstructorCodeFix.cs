@@ -21,13 +21,12 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<string> FixableDiagnosticIds => 
-      ImmutableArray.Create(Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing);
+    public override ImmutableArray<string> FixableDiagnosticIds => [Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing];
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     /// <summary>
     /// 

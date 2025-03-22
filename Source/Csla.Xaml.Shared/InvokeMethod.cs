@@ -45,8 +45,7 @@ namespace Csla.Xaml
     /// <param name="ctrl">Attached control</param>
     public static object GetTarget(UIElement ctrl)
     {
-      object result = null;
-      result = ctrl.GetValue(TargetProperty);
+      var result = ctrl.GetValue(TargetProperty);
       if (result == null)
       {
         if (ctrl is FrameworkElement fe)

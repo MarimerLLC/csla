@@ -132,7 +132,7 @@ namespace Csla.Web
     internal static Type GetType(
       string typeAssemblyName, string typeName)
     {
-      Type result = null;
+      Type result;
       if (!string.IsNullOrEmpty(typeAssemblyName))
       {
         // explicit assembly name provided

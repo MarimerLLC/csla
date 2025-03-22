@@ -25,7 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(operationAttributeRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [operationAttributeRule];
 
     /// <summary>
     /// 

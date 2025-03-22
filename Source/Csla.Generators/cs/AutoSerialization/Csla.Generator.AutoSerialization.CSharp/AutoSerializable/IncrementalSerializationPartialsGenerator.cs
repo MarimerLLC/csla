@@ -30,7 +30,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
                 {
                   return TypeDefinitionExtractor.ExtractTypeDefinition(new DefinitionExtractionContext(ctx.SemanticModel), typeDeclarationSyntax);
                 }
-                return null;
+                return default!;
               })
           .Where(static m => m is not null);
 

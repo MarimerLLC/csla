@@ -18,12 +18,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// <summary>
     /// The name of the field
     /// </summary>
-    public string FieldName { get; set; }
+    public required string FieldName { get; init; }
 
     /// <summary>
     /// The definition of the type of this field
     /// </summary>
-    public ExtractedMemberTypeDefinition TypeDefinition { get; } = new();
+    public required ExtractedMemberTypeDefinition TypeDefinition { get; init; }
 
     /// <summary>
     /// The member name for the field

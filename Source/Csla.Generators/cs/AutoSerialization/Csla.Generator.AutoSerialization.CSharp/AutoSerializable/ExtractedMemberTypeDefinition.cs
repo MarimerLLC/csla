@@ -18,12 +18,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// <summary>
     /// The name of the type
     /// </summary>
-    public string TypeName { get; set; }
+    public required string TypeName { get; init; }
 
     /// <summary>
     /// The namespace in which the type is defined
     /// </summary>
-    public string TypeNamespace { get; set; }
+    public required string TypeNamespace { get; init; }
 
     /// <summary>
     /// Whether the type is marked as AutoSerializable

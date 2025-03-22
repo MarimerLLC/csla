@@ -34,7 +34,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.TestObjects
 
     public void SetState(SerializationInfo info)
     {
-      Email = info.GetValue<string>("Email");
+      Email = info.GetValue<string>("Email")!;
     }
   }
 }

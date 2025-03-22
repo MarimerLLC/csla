@@ -328,14 +328,13 @@ namespace Csla.Xaml
         var path = sourceBinding.ParentBinding.Path.Path;
 
         var type = control.GetType();
-        FieldInfo fi = null;
         while (type != null)
         {
           var name = $"{path}{_dependencyPropertySuffix}";
 #if NETFX_CORE
-          fi = type.GetField(name, BindingFlags.Instance | BindingFlags.Public);
+          var fi = type.GetField(name, BindingFlags.Instance | BindingFlags.Public);
 #else
-          fi = type.GetField(name);
+          var fi = type.GetField(name);
 #endif
 
           if (fi != null)

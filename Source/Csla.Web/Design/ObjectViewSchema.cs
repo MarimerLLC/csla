@@ -60,16 +60,14 @@ namespace Csla.Web.Design
     /// </remarks>
     public IDataSourceFieldSchema[] GetFields()
     {
-      ITypeResolutionService typeService = null;
       var result = new List<IDataSourceFieldSchema>();
 
       if (_designer != null)
       {
-        Type objectType = null;
         try
         {
-          typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
-          objectType = typeService.GetType(_typeName, true, false);
+          var typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
+          var objectType = typeService.GetType(_typeName, true, false);
 
           if (typeof(IEnumerable).IsAssignableFrom(objectType))
           {

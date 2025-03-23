@@ -55,8 +55,8 @@ namespace Csla.Blazor.State
     private static void Replace(Session newSession, Session oldSession)
     {
       oldSession.Clear();
-      foreach (var key in newSession.Keys)
-        oldSession.Add(key, newSession[key]);
+      foreach (var (key, value) in newSession)
+        oldSession.Add(key, value);
     }
 
     /// <summary>

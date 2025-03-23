@@ -32,7 +32,6 @@ namespace Csla.Reflection
         if (parameters == null)
         {
           inParams = [null];
-
         }
         else
         {

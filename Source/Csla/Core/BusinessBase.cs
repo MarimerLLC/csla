@@ -2084,7 +2084,7 @@ namespace Csla.Core
         throw new InvalidOperationException(Resources.PropertyGetNotAllowed);
       }
 
-      P? result = default;
+      P? result;
       IFieldData? data = FieldManager.GetFieldData(propertyInfo);
       if (data != null)
       {
@@ -2710,7 +2710,7 @@ namespace Csla.Core
 
       try
       {
-        P? oldValue = default(P);
+        P? oldValue;
         var fieldData = FieldManager.GetFieldData(propertyInfo);
         if (fieldData == null)
         {

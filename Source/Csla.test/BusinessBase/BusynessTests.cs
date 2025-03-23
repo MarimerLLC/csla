@@ -6,7 +6,6 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using Csla;
-using UnitDriven;
 using Csla.TestHelpers;
 using Csla.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -14,9 +13,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace cslalighttest.BusyStatus
 {
   [TestClass]
-  public class BusynessTests : TestBase
+  public class BusynessTests
   {
-
     private static TestDIContext _testDIContext;
 
     [ClassInitialize]
@@ -28,7 +26,6 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void IsBusyWhenHavingTheSameInvocationsOfMarkBusyAndMarkIdleItShouldBeInAnIdleStateAgain()
     {
-      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<ObjectBusy>();
       root.IdealStateSubMethod();
       Assert.IsFalse(root.IsBusy);
@@ -37,7 +34,6 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void IsBusyWhenHavingTheInvocationsOfMarkBusyAndMarkIdleItShouldNotBeInAnIdleStateAgain()
     {
-      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<ObjectBusy>();
 
       root.NonIdealStateMethod();
@@ -47,7 +43,6 @@ namespace cslalighttest.BusyStatus
     [TestMethod]
     public void IsBusyWhenHavingTheInvocationsOFMarkIdleItShoulBeInIdleState()
     {
-      UnitTestContext context = GetContext();
       var root = CreateWithoutCriteria<ObjectBusy>();
 
       root.IsBusyShouldNotGoInMinus();

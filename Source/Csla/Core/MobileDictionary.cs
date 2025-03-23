@@ -112,7 +112,7 @@ namespace Csla.Core
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       int count = 0;
-      foreach (var key in Keys)
+      foreach (var (key, value) in this)
       {
         if (_keyIsMobile)
         {
@@ -131,7 +131,6 @@ namespace Csla.Core
         }
         else
         {
-          V value = this[key];
           info.AddValue(_valuePrefix + count, value);
         }
         count++;

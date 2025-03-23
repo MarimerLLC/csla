@@ -31,21 +31,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       _semanticModel = semanticModel;
     }
 
-
-    /// <summary>
-    /// Get the namespace of the type represented by a type declaration
-    /// </summary>
-    /// <param name="typeDeclarationSyntax">The type declaration syntax representing the type to be tested</param>
-    /// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
-    public string GetTypeNamespace(TypeDeclarationSyntax typeDeclarationSyntax)
-    {
-      INamedTypeSymbol typeSymbol;
-
-      typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
-      return typeSymbol.ContainingNamespace.ToString();
-    }
-
     /// <summary>
     /// Get the namespace of the type represented by a type declaration
     /// </summary>

@@ -70,7 +70,7 @@ namespace Csla.Analyzers
           var properties = new Dictionary<string, string?>
           {
             [IsOperationMethodPublicAnalyzerConstants.IsSealed] = typeSymbol.IsSealed.ToString()
-          }.ToImmutableDictionary();
+          };
 
           context.ReportDiagnostic(Diagnostic.Create(makeNonPublicRule,
             methodNode.Identifier.GetLocation(), properties));

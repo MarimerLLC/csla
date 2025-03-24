@@ -37,7 +37,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
                 {
                   return TypeDefinitionExtractor.ExtractTypeDefinition(new DefinitionExtractionContext(ctx.SemanticModel, false, true), typeDeclarationSyntax);
                 }
-                return null;
+                return default!;
               })
           .Where(static m => m is not null).WithTrackingName(TrackingNames.ExtractClasses);
 

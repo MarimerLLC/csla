@@ -25,6 +25,8 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Generators</Title>
     <PackageTags>CSLA;Roslyn;Generator</PackageTags>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
    <ItemGroup>
@@ -44,6 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Polyfill" Version="7.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Backport.System.Threading.Lock" Version="3.1.4" />
     <Using Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" Alias="Lock" Include="System.Threading.Lock" />
     <Using Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" Alias="Lock" Include="Backport.System.Threading.Lock" />

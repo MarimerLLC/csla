@@ -207,16 +207,6 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
-    private static void EmitCastToReference(ILGenerator il, Type type)
-    {
-      if (type.IsValueType)
-        il.Emit(OpCodes.Unbox_Any, type);
-      else
-        il.Emit(OpCodes.Castclass, type);
-    }
-#endif
-
     private static void ThrowIfDeclaringTypeIsNull(MemberInfo info, string typeKind)
     {
       if (info.DeclaringType is null)

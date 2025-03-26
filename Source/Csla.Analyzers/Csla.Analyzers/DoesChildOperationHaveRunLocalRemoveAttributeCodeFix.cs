@@ -20,12 +20,12 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal);
+    public override ImmutableArray<string> FixableDiagnosticIds => [Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal];
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     /// <summary>
     /// 
@@ -33,18 +33,25 @@ namespace Csla.Analyzers
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+      if (root is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var methodNode = root.FindNode(diagnostic.Location.SourceSpan) as MethodDeclarationSyntax;
+      if (methodNode is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
       await AddCodeFixAsync(context, root, diagnostic, methodNode);
     }
 
-    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root,
-      Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
+    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root, Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
     {
       var newRoot = root;
 
@@ -55,7 +62,16 @@ namespace Csla.Analyzers
       {
         foreach (var attribute in methodSymbol.GetAttributes().Where(_ => _.AttributeClass.IsRunLocalAttribute()))
         {
+          if (attribute.ApplicationSyntaxReference is null)
+          {
+            continue;
+          }
+
           newRoot = newRoot.RemoveNode(await attribute.ApplicationSyntaxReference.GetSyntaxAsync(), SyntaxRemoveOptions.KeepNoTrivia);
+          if (newRoot is null)
+          {
+            return;
+          }
         }
       }
 
@@ -72,6 +88,10 @@ namespace Csla.Analyzers
       foreach(var attributeListToRemove in attributeListsToRemove)
       {
         newRoot = newRoot.RemoveNode(attributeListToRemove, SyntaxRemoveOptions.KeepEndOfLine);
+        if (newRoot is null)
+        {
+          return;
+        }
       }
 
       context.RegisterCodeFix(

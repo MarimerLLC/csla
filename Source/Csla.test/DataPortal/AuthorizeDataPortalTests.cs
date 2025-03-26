@@ -148,7 +148,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Create(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
+      await dp.Create(typeof(TestBO), EmptyCriteria.Instance, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 
@@ -162,7 +162,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Fetch(typeof(TestBO), null, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
+      await dp.Fetch(typeof(TestBO), EmptyCriteria.Instance, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
 

@@ -27,8 +27,8 @@ namespace Csla.Web
     /// <value>A reference to a CSLA .NET business object.</value>
     public object BusinessObject
     {
-      get { return _businessObject; }
-      set { _businessObject = value; }
+      get => _businessObject;
+      set => _businessObject = value;
     }
 
     /// <summary>

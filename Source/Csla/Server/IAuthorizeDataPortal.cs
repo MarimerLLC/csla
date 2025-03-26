@@ -24,6 +24,7 @@ namespace Csla.Server
     /// <param name="ct">
     /// The cancellation token.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="clientRequest"/> is <see langword="null"/>.</exception>
     Task AuthorizeAsync(AuthorizeRequest clientRequest, CancellationToken ct);
   }
 }

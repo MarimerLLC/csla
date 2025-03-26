@@ -21,9 +21,10 @@ namespace Csla.Configuration
     /// Creates an instance of the type
     /// </summary>
     /// <param name="services">Services collection</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public CslaOptions(IServiceCollection services)
     {
-      Services = services;
+      Services = services ?? throw new ArgumentNullException(nameof(services));
       DataPortalOptions = new DataPortalOptions(this);
       SerializationOptions = new SerializationOptions(this);
     }
@@ -32,6 +33,22 @@ namespace Csla.Configuration
     /// Gets a reference to the current services collection.
     /// </summary>
     public IServiceCollection Services { get; }
+
+    /// <summary>
+    /// Sets the type for the IContextManager to 
+    /// be used by ApplicationContext.
+    /// </summary>
+    public CslaOptions UseContextManager<T>() where T : IContextManager
+    {
+      ContextManagerType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
+    /// Gets the type for the IContextManager 
+    /// used by ApplicationContext.
+    /// </summary>
+    public Type? ContextManagerType { get; private set; }
 
     /// <summary>
     /// Sets a value indicating whether CSLA
@@ -54,11 +71,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
-    public CslaOptions RegisterPropertyInfoFactory<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
-#endif
-      T>() where T : IPropertyInfoFactory
+    public CslaOptions RegisterPropertyInfoFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>() where T : IPropertyInfoFactory
     {
       Core.FieldManager.PropertyInfoFactory.FactoryType = typeof(T);
       return this;

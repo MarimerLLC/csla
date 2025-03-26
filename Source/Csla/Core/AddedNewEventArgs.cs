@@ -26,16 +26,14 @@ namespace Csla.Core
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
-    public AddedNewEventArgs() { }
-
-    /// <summary>
-    /// Creates a new instance of the object.
-    /// </summary>
     /// <param name="newObject">
     /// The newly added object.
     /// </param>
     public AddedNewEventArgs(T newObject)
     {
+      if (newObject is null)
+        throw new ArgumentNullException(nameof(newObject));
+
       NewObject = newObject;
     }
   }

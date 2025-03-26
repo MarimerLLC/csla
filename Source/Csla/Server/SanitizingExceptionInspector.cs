@@ -15,10 +15,9 @@ namespace Csla.Server
   /// Sanitizing implementation of exception inspector, for hiding 
   /// sensitive information in exception details.
   /// </summary>
-  /// <remarks>Only sanitizes exceptions from remote dataportals</remarks>
+  /// <remarks>Only sanitizes exceptions from remote data portals</remarks>
   public class SanitizingExceptionInspector : IDataPortalExceptionInspector
   {
-
     private readonly IHostEnvironment _hostEnvironment;
     private readonly ApplicationContext _applicationContext;
     private readonly ILogger _logger;
@@ -29,11 +28,12 @@ namespace Csla.Server
     /// <param name="environment">The host environment in which we are operating</param>
     /// <param name="applicationContext">The context of the current request</param>
     /// <param name="logger">The logger to which to log exceptions</param>
+    /// <exception cref="ArgumentNullException"><paramref name="environment"/>, <paramref name="applicationContext"/> or <paramref name="logger"/> is <see langword="null"/>.</exception>
     public SanitizingExceptionInspector(IHostEnvironment environment, ApplicationContext applicationContext, ILogger<SanitizingExceptionInspector> logger)
     {
-      _hostEnvironment = environment;
-      _applicationContext = applicationContext;
-      _logger = logger;
+      _hostEnvironment = environment ?? throw new ArgumentNullException(nameof(environment));
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace Csla.Server
     /// <param name="criteria">The criteria.</param>
     /// <param name="methodName">Name of the method.</param>
     /// <param name="ex">The exception.</param>
-    public void InspectException(Type objectType, object businessObject, object criteria, string methodName, Exception ex)
+    public void InspectException(Type objectType, object? businessObject, object? criteria, string methodName, Exception ex)
     {
       // Shortcut if we are not running on the server-side of a remote data portal operation
       if (_applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server ||
@@ -55,6 +55,9 @@ namespace Csla.Server
       // Shortcut if we are running in development (max. developer productivity)
       if (_hostEnvironment.IsDevelopment())
         return;
+      
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
 
       // Sanitize in all remaining scenarios
       string identifier = Guid.NewGuid().ToString();

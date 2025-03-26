@@ -18,9 +18,6 @@ namespace Csla.Test.EditableRootList
       set { SetProperty(DataProperty, value); }
     }
 
-    public ERitem()
-    { }
-
     [Create]
     private void Create()
     {

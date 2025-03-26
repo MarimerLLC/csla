@@ -22,23 +22,26 @@ namespace Csla
     IList<T>,
     IList,
     INotifyCollectionChanged
+    where T: notnull
   {
     /// <summary>
     /// Event raised when the underlying source list is changed.
     /// </summary>
-    public event NotifyCollectionChangedEventHandler CollectionChanged;
+    public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
     private System.Collections.ObjectModel.ObservableCollection<T> _baseCollection;
     private bool _suppressEvents = false;
-        /// <summary>
+    /// <summary>
     /// Creates a new instance of the observable
     /// view.
     /// </summary>
     /// <param name="source">Source list containing/managing all items.</param>
     /// <param name="queryResult">Filtered query result over source list.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="queryResult"/> is <see langword="null"/>.</exception>
     public LinqObservableCollection(System.Collections.ObjectModel.ObservableCollection<T> source, IEnumerable<T> queryResult)
-      : this(source, queryResult.ToList())
-    { }
+      : this(source, queryResult?.ToList() ?? throw new ArgumentNullException(nameof(queryResult)))
+    { 
+    }
 
     /// <summary>
     /// Creates a new instance of the observable
@@ -46,30 +49,33 @@ namespace Csla
     /// </summary>
     /// <param name="source">Source list containing/managing all items.</param>
     /// <param name="queryResult">Filtered query result over source list.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="queryResult"/> is <see langword="null"/>.</exception>
     public LinqObservableCollection(System.Collections.ObjectModel.ObservableCollection<T> source, List<T> queryResult)
     {
-      QueryResult = queryResult;
-      _baseCollection = source;
+      QueryResult = queryResult ?? throw new ArgumentNullException(nameof(queryResult));
+      _baseCollection = source ?? throw new ArgumentNullException(nameof(source));
       _baseCollection.CollectionChanged += (_, e) =>
         {
+          if (e is null)
+            throw new ArgumentNullException(nameof(e));
+
           if (!_suppressEvents)
           {
-            NotifyCollectionChangedEventArgs newE = null;
+            NotifyCollectionChangedEventArgs? newE = null;
             T item;
             int index;
             switch (e.Action)
             {
               case NotifyCollectionChangedAction.Add:
-                item = (T)e.NewItems[0];
+                item = (T)e.NewItems![0]!;
                 index = e.NewStartingIndex;
                 if (index > QueryResult.Count)
                   index = QueryResult.Count;
                 QueryResult.Insert(index, item);
-                newE = new NotifyCollectionChangedEventArgs(
-                  e.Action, item, QueryResult.IndexOf(item));
+                newE = new NotifyCollectionChangedEventArgs(e.Action, item, QueryResult.IndexOf(item));
                 break;
               case NotifyCollectionChangedAction.Remove:
-                item = (T)e.OldItems[0];
+                item = (T)e.OldItems![0]!;
                 index = QueryResult.IndexOf(item);
                 if (index > -1)
                 {
@@ -78,13 +84,11 @@ namespace Csla
                 }
                 break;
               case NotifyCollectionChangedAction.Replace:
-                index = QueryResult.IndexOf((T)e.OldItems[0]);
+                index = QueryResult.IndexOf((T)e.OldItems![0]!);
                 if (index > -1)
                 {
-                  QueryResult[index] = (T)e.NewItems[0];
-                  newE = new NotifyCollectionChangedEventArgs(
-                    e.Action,
-                    e.NewItems, e.OldItems, index);
+                  QueryResult[index] = (T)e.NewItems![0]!;
+                  newE = new NotifyCollectionChangedEventArgs(e.Action,e.NewItems, e.OldItems, index);
                 }
                 break;
               case NotifyCollectionChangedAction.Reset:
@@ -97,6 +101,7 @@ namespace Csla
               default:
                 break;
             }
+
             if (newE != null)
               OnCollectionChanged(newE);
           }
@@ -107,10 +112,14 @@ namespace Csla
     /// Raises the CollectionChanged event.
     /// </summary>
     /// <param name="e">EventArgs for event.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
     {
-      if (!_suppressEvents && CollectionChanged != null)
-        CollectionChanged(this, e);
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
+      if (!_suppressEvents)
+        CollectionChanged?.Invoke(this, e);
     }
 
     /// <summary>
@@ -118,10 +127,7 @@ namespace Csla
     /// a BusinessListBase) object that
     /// contains/manages all data items.
     /// </summary>
-    public IList<T> Source
-    {
-      get { return _baseCollection; }
-    }
+    public IList<T> Source => _baseCollection;
 
     /// <summary>
     /// Gets the query result object used to
@@ -133,8 +139,12 @@ namespace Csla
     /// Gets the positional index of the item.
     /// </summary>
     /// <param name="item">Item to find.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public int IndexOf(T item)
     {
+      if(item is null) 
+        throw new ArgumentNullException(nameof(item));
+
       return QueryResult.IndexOf(item);
     }
 
@@ -143,8 +153,12 @@ namespace Csla
     /// </summary>
     /// <param name="index">Location to insert item.</param>
     /// <param name="item">Item to insert.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public void Insert(int index, T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       _baseCollection.Insert(index, item);
     }
 
@@ -164,14 +178,11 @@ namespace Csla
     /// <param name="index">Index location.</param>
     public T this[int index]
     {
-      get
-      {
-        return QueryResult[index];
-      }
+      get => QueryResult[index];
       set
       {
         var idx = _baseCollection.IndexOf(QueryResult[index]);
-        _baseCollection[idx] = value;
+        _baseCollection[idx] = value ?? throw new ArgumentNullException(nameof(value));
       }
     }
 
@@ -179,8 +190,12 @@ namespace Csla
     /// Adds an item to the end of the list.
     /// </summary>
     /// <param name="item">Item to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public void Add(T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       _baseCollection.Add(item);
     }
 
@@ -199,8 +214,7 @@ namespace Csla
         _baseCollection.Remove(item);
       _suppressEvents = false;
       QueryResult.Clear();
-      OnCollectionChanged(
-        new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+      OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
     }
 
     /// <summary>
@@ -208,8 +222,12 @@ namespace Csla
     /// contains the specified item.
     /// </summary>
     /// <param name="item">Item to find.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Contains(T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       return QueryResult.Contains(item);
     }
 
@@ -218,18 +236,19 @@ namespace Csla
     /// </summary>
     /// <param name="array">Target array.</param>
     /// <param name="arrayIndex">Index in array where copying begins.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(T[] array, int arrayIndex)
     {
+      if (array is null)
+        throw new ArgumentNullException(nameof(array));
+
       QueryResult.CopyTo(array, arrayIndex);
     }
 
     /// <summary>
     /// Gets the number of items in the list.
     /// </summary>
-    public int Count
-    {
-      get { return QueryResult.Count; }
-    }
+    public int Count => QueryResult.Count;
 
     /// <summary>
     /// Gets a value indicating whether the source
@@ -250,8 +269,12 @@ namespace Csla
     /// Removes specified item from the list.
     /// </summary>
     /// <param name="item">Item to remove.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Remove(T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       return _baseCollection.Remove(item);
     }
 
@@ -275,8 +298,12 @@ namespace Csla
     /// Adds an item to the end of the list.
     /// </summary>
     /// <param name="value">Item to add.</param>
-    public int Add(object value)
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    public int Add(object? value)
     {
+      if (value == null) 
+        throw new ArgumentNullException(nameof(value));
+
       return ((IList)_baseCollection).Add(value);
     }
 
@@ -285,8 +312,12 @@ namespace Csla
     /// contains the specified item.
     /// </summary>
     /// <param name="value">Item to find.</param>
-    public bool Contains(object value)
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    public bool Contains(object? value)
     {
+      if (value == null)
+        throw new ArgumentNullException(nameof(value));
+
       return QueryResult.Contains((T)value);
     }
 
@@ -294,8 +325,12 @@ namespace Csla
     /// Gets the positional index of the item.
     /// </summary>
     /// <param name="value">Item to find.</param>
-    public int IndexOf(object value)
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    public int IndexOf(object? value)
     {
+      if (value == null)
+        throw new ArgumentNullException(nameof(value));
+
       return QueryResult.IndexOf((T)value);
     }
 
@@ -304,8 +339,12 @@ namespace Csla
     /// </summary>
     /// <param name="index">Location to insert item.</param>
     /// <param name="value">Item to insert.</param>
-    public void Insert(int index, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    public void Insert(int index, object? value)
     {
+      if (value == null)
+        throw new ArgumentNullException(nameof(value));
+
       _baseCollection.Insert(index, (T)value);
     }
 
@@ -313,30 +352,25 @@ namespace Csla
     /// Gets a value indicating whether the source
     /// list has a fixed size.
     /// </summary>
-    public bool IsFixedSize
-    {
-      get { return ((IList)_baseCollection).IsFixedSize; }
-    }
+    public bool IsFixedSize => ((IList)_baseCollection).IsFixedSize;
 
     /// <summary>
     /// Removes specified item from the list.
     /// </summary>
     /// <param name="value">Item to remove.</param>
-    public void Remove(object value)
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    public void Remove(object? value)
     {
+      if (value == null)
+        throw new ArgumentNullException(nameof(value));
+
       _baseCollection.Remove((T)value);
     }
 
-    object IList.this[int index]
+    object? IList.this[int index]
     {
-      get
-      {
-        return this[index];
-      }
-      set
-      {
-        this[index] = (T)value;
-      }
+      get => this[index];
+      set => this[index] = (T)(value ?? throw new ArgumentNullException(nameof(value)));
     }
 
     /// <summary>
@@ -344,8 +378,12 @@ namespace Csla
     /// </summary>
     /// <param name="array">Target array.</param>
     /// <param name="index">Index in array where copying begins.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(Array array, int index)
     {
+      if (array is null)
+        throw new ArgumentNullException(nameof(array));
+
       ((IList)QueryResult).CopyTo(array, index);
     }
 
@@ -353,18 +391,12 @@ namespace Csla
     /// Gets a value indicating whether the source list
     /// is synchronized.
     /// </summary>
-    public bool IsSynchronized
-    {
-      get { return ((IList)_baseCollection).IsSynchronized; }
-    }
+    public bool IsSynchronized => ((IList)_baseCollection).IsSynchronized;
 
     /// <summary>
     /// Gets the SyncRoot from the source list.
     /// </summary>
-    public object SyncRoot
-    {
-      get { return ((IList)_baseCollection).SyncRoot; }
-    }
+    public object SyncRoot => ((IList)_baseCollection).SyncRoot;
   }
 
   /// <summary>
@@ -376,8 +408,14 @@ namespace Csla
     /// Gets a LinqObservableCollection that is a live view
     /// of the original list based on the query result.
     /// </summary>
-    public static LinqObservableCollection<C> ToSyncList<C>(this IEnumerable<C> queryResult, System.Collections.ObjectModel.ObservableCollection<C> source)
+    /// <exception cref="ArgumentNullException"><paramref name="queryResult"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
+    public static LinqObservableCollection<C> ToSyncList<C>(this IEnumerable<C> queryResult, System.Collections.ObjectModel.ObservableCollection<C> source) where C: notnull
     {
+      if (queryResult is null)
+        throw new ArgumentNullException(nameof(queryResult));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       return new LinqObservableCollection<C>(source, queryResult);
     }
 
@@ -385,8 +423,14 @@ namespace Csla
     /// Gets a LinqObservableCollection that is a live view
     /// of the original list based on the query result.
     /// </summary>
-    public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, IEnumerable<C> queryResult)
+    /// <exception cref="ArgumentNullException"><paramref name="queryResult"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
+    public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, IEnumerable<C> queryResult) where C : notnull
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (queryResult is null)
+        throw new ArgumentNullException(nameof(queryResult));
+
       return new LinqObservableCollection<C>(source, queryResult);
     }
 
@@ -394,8 +438,14 @@ namespace Csla
     /// Gets a LinqObservableCollection that is a live view
     /// of the original list based on the query result.
     /// </summary>
-    public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, Expression<Func<C, bool>> expr)
+    /// <exception cref="ArgumentNullException"><paramref name="expr"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
+    public static LinqObservableCollection<C> ToSyncList<C>(this System.Collections.ObjectModel.ObservableCollection<C> source, Expression<Func<C, bool>> expr) where C : notnull
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (expr is null)
+        throw new ArgumentNullException(nameof(expr));
+
       IEnumerable<C> sourceEnum = source.AsEnumerable<C>();
       var output = sourceEnum.Where<C>(expr.Compile());
       return new LinqObservableCollection<C>(source, output.ToList());

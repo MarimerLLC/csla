@@ -25,7 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(onlyUseCslaPropertyMethodsInGetSetRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [onlyUseCslaPropertyMethodsInGetSetRule];
 
     /// <summary>
     /// 
@@ -44,6 +44,10 @@ namespace Csla.Analyzers
       if(!propertyNode.ContainsDiagnostics)
       {
         var propertySymbol = context.SemanticModel.GetDeclaredSymbol(propertyNode);
+        if (propertySymbol is null)
+        {
+          return;
+        }
         var classSymbol = propertySymbol.ContainingType;
 
         var fields = GetFieldDeclarations(propertyNode,context.SemanticModel);
@@ -124,6 +128,10 @@ namespace Csla.Analyzers
 
       if (getterWalkerBody.Invocation != null)
       {
+        if (getterBody is null)
+        {
+          return;
+        }
         var getterStatements = getterBody.Statements;
 
         if (getterStatements.Count != 1)
@@ -134,7 +142,7 @@ namespace Csla.Analyzers
         }
         else
         {
-          if (!(getterStatements[0] is ReturnStatementSyntax returnNode))
+          if (getterStatements[0] is not ReturnStatementSyntax returnNode)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               onlyUseCslaPropertyMethodsInGetSetRule,
@@ -155,7 +163,7 @@ namespace Csla.Analyzers
       }
       else if (getterWalkerExpression.Invocation != null)
       {
-        if (!(getterExpression.Expression is InvocationExpressionSyntax invocation) || invocation != getterWalkerExpression.Invocation)
+        if (getterExpression is not null && (getterExpression.Expression is not InvocationExpressionSyntax invocation || invocation != getterWalkerExpression.Invocation))
         {
           context.ReportDiagnostic(Diagnostic.Create(
             onlyUseCslaPropertyMethodsInGetSetRule,
@@ -186,6 +194,10 @@ namespace Csla.Analyzers
 
       if (setterWalkerBody.Invocation != null)
       {
+        if (setterBody is null)
+        {
+          return;
+        }
         var setterStatements = setterBody.Statements;
 
         if (setterStatements.Count != 1)
@@ -196,7 +208,7 @@ namespace Csla.Analyzers
         }
         else
         {
-          if (!(setterStatements[0] is ExpressionStatementSyntax expressionNode))
+          if (setterStatements[0] is not ExpressionStatementSyntax expressionNode)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               onlyUseCslaPropertyMethodsInGetSetRule,
@@ -217,7 +229,7 @@ namespace Csla.Analyzers
       }
       else if (setterWalkerExpression.Invocation != null)
       {
-        if (!(setterExpression.Expression is InvocationExpressionSyntax invocation) || invocation != setterWalkerExpression.Invocation)
+        if (setterExpression is not null && (setterExpression.Expression is not InvocationExpressionSyntax invocation || invocation != setterWalkerExpression.Invocation))
         {
           context.ReportDiagnostic(Diagnostic.Create(
             onlyUseCslaPropertyMethodsInGetSetRule,
@@ -234,7 +246,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public static IEnumerable<FieldDeclarationSyntax> GetFieldDeclarations(PropertyDeclarationSyntax propertyDeclaration,SemanticModel semanticModel)
+    public static IEnumerable<FieldDeclarationSyntax> GetFieldDeclarations(PropertyDeclarationSyntax propertyDeclaration, SemanticModel semanticModel)
     {
       var classDeclaration = propertyDeclaration.FirstAncestorOrSelf<ClassDeclarationSyntax>();
       var propertyType = semanticModel.GetTypeInfo(propertyDeclaration.Type).Type;
@@ -245,15 +257,13 @@ namespace Csla.Analyzers
       }
 
       // Find all field declarations in the class
-      var fieldDeclarations = classDeclaration.Members
-          .OfType<FieldDeclarationSyntax>();
+      var fieldDeclarations = classDeclaration.Members.OfType<FieldDeclarationSyntax>();
 
       // Filter for static fields
-      return fieldDeclarations
-          .Where(field => FilterField(field,propertyDeclaration, propertyType,semanticModel));
+      return fieldDeclarations.Where(field => FilterField(field,propertyDeclaration, propertyType, semanticModel));
     }
 
-    private static bool FilterField(FieldDeclarationSyntax fieldDeclaration, PropertyDeclarationSyntax propertyDeclaration, ITypeSymbol propertyType,SemanticModel semanticModel)
+    private static bool FilterField(FieldDeclarationSyntax fieldDeclaration, PropertyDeclarationSyntax propertyDeclaration, ITypeSymbol? propertyType, SemanticModel semanticModel)
     {
       var fieldType = semanticModel.GetTypeInfo(fieldDeclaration.Declaration.Type).Type;
       if (fieldType != null && fieldType.OriginalDefinition.ToString() == "Csla.PropertyInfo<T>")
@@ -262,7 +272,8 @@ namespace Csla.Analyzers
         if (SymbolEqualityComparer.Default.Equals(typeArgument, propertyType))
         {
           var initializer = fieldDeclaration.Declaration.Variables
-            .Select(a => a.Initializer.Value)
+            .Where(a => a.Initializer != null)
+            .Select(a => a.Initializer!.Value)
             .OfType<InvocationExpressionSyntax>().Select(w=>w.ArgumentList.Arguments.FirstOrDefault()?.Expression);
           var lambda = initializer
             .OfType<SimpleLambdaExpressionSyntax>()

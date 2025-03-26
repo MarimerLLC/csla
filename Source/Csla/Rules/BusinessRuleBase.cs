@@ -17,7 +17,7 @@ namespace Csla.Rules
   /// </summary>
   public abstract class BusinessRuleBase : IBusinessRuleBase
   {
-    private IPropertyInfo _primaryProperty;
+    private IPropertyInfo? _primaryProperty;
     private RunModes _runMode;
     private bool _provideTargetWhenAsync;
     private int _priority;
@@ -40,9 +40,9 @@ namespace Csla.Rules
     /// <summary>
     /// Gets or sets the primary property affected by this rule.
     /// </summary>
-    public virtual IPropertyInfo PrimaryProperty
+    public virtual IPropertyInfo? PrimaryProperty
     {
-      get { return _primaryProperty; }
+      get => _primaryProperty;
       set
       {
         CanWriteProperty(nameof(PrimaryProperty));
@@ -79,7 +79,7 @@ namespace Csla.Rules
     /// </summary>
     public bool ProvideTargetWhenAsync
     {
-      get { return _provideTargetWhenAsync; }
+      get => _provideTargetWhenAsync;
       protected set
       {
         CanWriteProperty(nameof(ProvideTargetWhenAsync));
@@ -92,18 +92,19 @@ namespace Csla.Rules
     /// of the rule within the context of the business object
     /// where the rule is used.
     /// </summary>
-    public string RuleName { get { return RuleUri.ToString(); } }
+    public string RuleName => RuleUri.ToString();
 
     /// <summary>
     /// Sets or gets the rule:// URI object for this rule.
     /// </summary>
+    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     protected RuleUri RuleUri
     {
-      get { return _ruleUri; }
+      get => _ruleUri;
       set
       {
         CanWriteProperty(nameof(RuleUri));
-        _ruleUri = value;
+        _ruleUri = value ?? throw new ArgumentNullException(nameof(RuleUri));
       }
     }
 
@@ -112,7 +113,7 @@ namespace Csla.Rules
     /// </summary>
     public int Priority
     {
-      get { return _priority; }
+      get => _priority;
       set
       {
         CanWriteProperty(nameof(Priority));
@@ -126,7 +127,7 @@ namespace Csla.Rules
     /// <value>The run in context.</value>
     public RunModes RunMode
     {
-      get { return _runMode; }
+      get => _runMode;
       set
       {
         CanWriteProperty(nameof(RunMode));
@@ -138,7 +139,7 @@ namespace Csla.Rules
     /// </summary>
     public int DisplayIndex
     {
-      get { return _displayIndex; }
+      get => _displayIndex;
       set
       {
         CanWriteProperty(nameof(DisplayIndex));
@@ -161,12 +162,12 @@ namespace Csla.Rules
     /// to a specfic property.
     /// </summary>
     /// <param name="primaryProperty">Primary property for this rule.</param>
-    protected BusinessRuleBase(IPropertyInfo primaryProperty)
+    protected BusinessRuleBase(IPropertyInfo? primaryProperty)
     {
       AffectedProperties = [];
       InputProperties = [];
       PrimaryProperty = primaryProperty;
-      RuleUri = new RuleUri(this, primaryProperty);
+      _ruleUri = new RuleUri(this, primaryProperty);
       RunMode = RunModes.Default;
     }
 
@@ -188,8 +189,14 @@ namespace Csla.Rules
     /// Loading values does not cause validation rules to be
     /// invoked.
     /// </remarks>
-    protected void LoadProperty(object obj, IPropertyInfo propertyInfo, object newValue)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected void LoadProperty(object obj, IPropertyInfo propertyInfo, object? newValue)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if (obj is IManageProperties target)
         target.LoadProperty(propertyInfo, newValue);
       else
@@ -207,8 +214,14 @@ namespace Csla.Rules
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>
-    protected object ReadProperty(object obj, IPropertyInfo propertyInfo)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected object? ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
       else

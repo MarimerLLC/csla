@@ -18,6 +18,6 @@ namespace Csla.Core
     /// Event indictating that a child object
     /// has changed.
     /// </summary>
-    event EventHandler<ChildChangedEventArgs> ChildChanged;
+    event EventHandler<ChildChangedEventArgs>? ChildChanged;
   }
 }

@@ -39,7 +39,7 @@ namespace Csla.Server.Dashboard
     /// </summary>
     public int RecentActivityCount { get; set; } = 100;
 
-    private void ProcessCompleteQueue(object state)
+    private void ProcessCompleteQueue(object? state)
     {
       if (_completeQueue.IsEmpty)
         return;
@@ -47,7 +47,7 @@ namespace Csla.Server.Dashboard
       _timerComplete.Change(Timeout.Infinite, Timeout.Infinite);
       try
       {
-        while (_completeQueue.TryDequeue(out InterceptArgs result))
+        while (_completeQueue.TryDequeue(out InterceptArgs? result))
         {
           if (result.Exception != null)
             Interlocked.Add(ref _failedCalls, 1);
@@ -65,7 +65,7 @@ namespace Csla.Server.Dashboard
       }
     }
 
-    private void ProcessInitializeQueue(object state)
+    private void ProcessInitializeQueue(object? state)
     {
       if (_initializeQueue.IsEmpty)
         return;
@@ -98,30 +98,21 @@ namespace Csla.Server.Dashboard
     /// Gets the total number of times the data portal
     /// has been invoked
     /// </summary>
-    public long TotalCalls
-    {
-      get { return Interlocked.Read(ref _totalCalls); }
-    }
+    public long TotalCalls => Interlocked.Read(ref _totalCalls);
 
     private long _completedCalls;
     /// <summary>
     /// Gets the number of times data portal
     /// calls have successfully completed
     /// </summary>
-    public long CompletedCalls
-    {
-      get { return Interlocked.Read(ref _completedCalls); }
-    }
+    public long CompletedCalls => Interlocked.Read(ref _completedCalls);
 
     private long _failedCalls;
     /// <summary>
     /// Gets the number of times data portal
     /// calls have failed
     /// </summary>
-    public long FailedCalls
-    {
-      get { return Interlocked.Read(ref _failedCalls); }
-    }
+    public long FailedCalls => Interlocked.Read(ref _failedCalls);
 
     /// <summary>
     /// Gets the items in the recent activity queue.
@@ -131,14 +122,22 @@ namespace Csla.Server.Dashboard
       return _recentActivity.ToList();
     }
 
+    /// <inheritdoc />
     void IDashboard.InitializeCall(InterceptArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       LastCall = DateTimeOffset.Now;
       _initializeQueue.Enqueue(e);
     }
 
+    /// <inheritdoc />
     void IDashboard.CompleteCall(InterceptArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       _completeQueue.Enqueue(e);
     }
 

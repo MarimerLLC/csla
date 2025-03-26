@@ -46,12 +46,14 @@ namespace Csla.Server.Dashboard
     /// has been inititalized.
     /// </summary>
     /// <param name="e">Interceptor arguments</param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     void InitializeCall(InterceptArgs e);
     /// <summary>
     /// Called by the data portal to indicate a call
     /// has been completed.
     /// </summary>
     /// <param name="e">Interceptor arguments</param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     void CompleteCall(InterceptArgs e);
   }
 }

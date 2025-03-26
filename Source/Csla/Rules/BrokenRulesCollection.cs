@@ -50,7 +50,7 @@ namespace Csla.Rules
       }
     }
 
-    internal void ClearRules(Core.IPropertyInfo property)
+    internal void ClearRules(Core.IPropertyInfo? property)
     {
       lock (_syncRoot)
       {
@@ -98,22 +98,12 @@ namespace Csla.Rules
           var resultDescription = result.Description;
 
           if(string.IsNullOrEmpty(resultDescription))
-            throw new ArgumentException(string.Format(Resources.RuleMessageRequired,
-                                                      resultRuleName));
+            throw new ArgumentException(string.Format(Resources.RuleMessageRequired, resultRuleName));
 
           var resultPrimaryProperty = result.PrimaryProperty;
           var resultDisplayIndex = result.DisplayIndex;
 
-          BrokenRule broken = new BrokenRule
-          {
-            RuleName = resultRuleName,
-            Description = resultDescription,
-            Property = resultPrimaryProperty?.Name,
-            Severity = result.Severity,
-            OriginProperty = originPropertyName,
-            Priority = priority,
-            DisplayIndex = resultDisplayIndex
-          };
+          BrokenRule broken = new BrokenRule(resultRuleName, resultDescription, resultPrimaryProperty?.Name, result.Severity, originPropertyName, priority, resultDisplayIndex);
 
           Add(broken);
         }
@@ -210,8 +200,12 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or null if 
     /// there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstBrokenRule(Core.IPropertyInfo property)
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
+    public BrokenRule? GetFirstBrokenRule(Core.IPropertyInfo property)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
       return GetFirstMessage(property.Name, RuleSeverity.Error);
     }
 
@@ -229,8 +223,11 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or null if 
     /// there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstBrokenRule(string property)
+    /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public BrokenRule? GetFirstBrokenRule(string property)
     {
+      if (string.IsNullOrWhiteSpace(property))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(property)), nameof(property));
       return GetFirstMessage(property, RuleSeverity.Error);
     }
 
@@ -248,8 +245,11 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or Nothing
     /// (null in C#) if there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstMessage(Core.IPropertyInfo property)
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
+    public BrokenRule? GetFirstMessage(Core.IPropertyInfo property)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
       return this.OrderBy(c => c.Priority).FirstOrDefault(c => c.Property == property.Name);
     }
 
@@ -264,8 +264,11 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or Nothing
     /// (null in C#) if there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstMessage(Core.IPropertyInfo property, RuleSeverity severity)
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
+    public BrokenRule? GetFirstMessage(Core.IPropertyInfo property, RuleSeverity severity)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
       return GetFirstMessage(property.Name, severity);
     }
 
@@ -280,8 +283,11 @@ namespace Csla.Rules
     /// The first BrokenRule object corresponding to the specified property, or Nothing
     /// (null in C#) if there are no rules defined for the property.
     /// </returns>
-    public BrokenRule GetFirstMessage(string property, RuleSeverity severity)
+    /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public BrokenRule? GetFirstMessage(string property, RuleSeverity severity)
     {
+      if (string.IsNullOrWhiteSpace(property))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(property)), nameof(property));
       return this.OrderBy(c => c.Priority).FirstOrDefault(c => c.Property == property && c.Severity == severity);
     }
 
@@ -316,8 +322,12 @@ namespace Csla.Rules
     /// String to place between each broken rule description.
     /// </param>
     /// <returns>The text of all broken rule descriptions.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="separator"/> is <see langword="null"/>.</exception>
     public string ToString(string separator)
     {
+      if (separator is null)
+        throw new ArgumentNullException(nameof(separator));
+
       System.Text.StringBuilder result = new System.Text.StringBuilder();
       bool first = true;
       foreach (BrokenRule item in this)
@@ -342,8 +352,11 @@ namespace Csla.Rules
     /// include in the result.</param>
     /// <returns>The text of all broken rule descriptions
     /// matching the specified severtiy.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="separator"/> is <see langword="null"/>.</exception>
     public string ToString(string separator, RuleSeverity severity)
     {
+      if (separator is null)
+        throw new ArgumentNullException(nameof(separator));
       System.Text.StringBuilder result = new System.Text.StringBuilder();
       bool first = true;
       foreach (BrokenRule item in this)
@@ -372,8 +385,14 @@ namespace Csla.Rules
     /// <param name="propertyName">Property name</param>
     /// <returns>The text of all broken rule descriptions
     /// matching the specified severtiy.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="separator"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public string ToString(string separator, RuleSeverity severity, string propertyName)
     {
+      if (separator is null)
+        throw new ArgumentNullException(nameof(separator));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
       System.Text.StringBuilder result = new System.Text.StringBuilder();
       bool first = true;
       foreach (BrokenRule item in this.Where(r => r.Property == propertyName))
@@ -418,8 +437,11 @@ namespace Csla.Rules
     /// Merges a list of items into the collection.
     /// </summary>
     /// <param name="list">List of items to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
     public void AddRange(List<BrokenRule> list)
     {
+      if (list is null)
+        throw new ArgumentNullException(nameof(list));
       foreach (var item in list)
         Add(item);
     }

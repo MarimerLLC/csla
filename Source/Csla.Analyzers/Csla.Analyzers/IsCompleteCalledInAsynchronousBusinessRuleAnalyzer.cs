@@ -26,8 +26,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(completeCalledInAsyncBusinessRuleRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [completeCalledInAsyncBusinessRuleRule];
 
     /// <summary>
     /// 
@@ -46,6 +45,10 @@ namespace Csla.Analyzers
       if (!methodNode.ContainsDiagnostics)
       {
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+        if (methodSymbol is null)
+        {
+          return;
+        }
         var typeSymbol = methodSymbol.ContainingType;
 
         if (typeSymbol.IsBusinessRule() && methodSymbol.Name == "ExecuteAsync" &&

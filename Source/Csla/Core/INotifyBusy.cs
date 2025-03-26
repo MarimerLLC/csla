@@ -18,7 +18,7 @@ namespace Csla.Core
     /// Event raised when the object's busy
     /// status changes.
     /// </summary>
-    event BusyChangedEventHandler BusyChanged;
+    event BusyChangedEventHandler? BusyChanged;
 
     /// <summary>
     /// Gets a value indicating whether the object,

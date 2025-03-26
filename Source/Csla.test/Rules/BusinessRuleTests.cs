@@ -8,6 +8,7 @@
 using System.ComponentModel.DataAnnotations;
 using Csla.Configuration;
 using Csla.TestHelpers;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -36,7 +37,7 @@ namespace Csla.Test.BizRules
       var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule>>();
       var obj = portal.Create();
       obj.Name = "";
-      Assert.IsFalse(obj.IsValid);
+      obj.IsValid.Should().BeFalse();
     }
 
     [TestMethod]
@@ -45,31 +46,14 @@ namespace Csla.Test.BizRules
       var options = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();
       options.ScanForDataAnnotations(false);
 
-      var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule2>>();
+      var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule>>();
       var obj = portal.Create();
       obj.Name = "";
-      Assert.IsTrue(obj.IsValid);
+      obj.IsValid.Should().BeTrue();
     }
   }
 
   public class TestBusinessRule : BusinessBase<TestBusinessRule>
-  {
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-    [Required]
-    public string Name
-    {
-      get => GetProperty(NameProperty);
-      set => SetProperty(NameProperty, value);
-    }
-
-    [Create]
-    private void Create()
-    {
-      BusinessRules.CheckRules();
-    }
-  }
-
-  public class TestBusinessRule2 : BusinessBase<TestBusinessRule2>
   {
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]

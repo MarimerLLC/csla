@@ -38,7 +38,7 @@ namespace Csla
     /// <summary>
     /// Holds configuration options for the CSLA framework.
     /// </summary>
-    public CslaOptions Options { get; private set; }
+    public CslaOptions Options { get; }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
 

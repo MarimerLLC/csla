@@ -46,7 +46,8 @@ namespace Csla.Test.BizRules
       var options = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();
       options.ScanForDataAnnotations(false);
 
-      var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule>>();
+      // use different type to avoid caching
+      var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule2>>();
       var obj = portal.Create();
       obj.Name = "";
       obj.IsValid.Should().BeTrue();
@@ -54,6 +55,23 @@ namespace Csla.Test.BizRules
   }
 
   public class TestBusinessRule : BusinessBase<TestBusinessRule>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    [Required]
+    public string Name
+    {
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  public class TestBusinessRule2 : BusinessBase<TestBusinessRule2>
   {
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]

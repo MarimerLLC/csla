@@ -42,7 +42,8 @@ namespace Csla.Test.Basic
       return result;
     }
 
-    public RootListChild()
+    [Create]
+    private void Create()
     {
       MarkAsChild();
     }

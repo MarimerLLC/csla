@@ -64,6 +64,8 @@ namespace Csla.Core
     /// </summary>
     protected override void OnApplicationContextSet()
     {
+      if (ApplicationContext == null)
+        throw new InvalidOperationException("ApplicationContext == null");
       InitializeIdentity();
       Initialize();
       InitializeBusinessRules();
@@ -1158,7 +1160,8 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-      BusinessRules.AddDataAnnotations();
+      if (ApplicationContext.Options.ScanDataAnnotations)
+        BusinessRules.AddDataAnnotations();
     }
 
     /// <summary>

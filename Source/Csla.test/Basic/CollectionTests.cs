@@ -42,7 +42,8 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void RootListGetRuleDescriptions()
     {
-      RootList list = new RootList();
+      var portal = _testDIContext.CreateDataPortal<RootList>();
+      var list = portal.Create();
       RootListChild child = list.AddNew();
       string[] rules = child.GetRuleDescriptions();
     }

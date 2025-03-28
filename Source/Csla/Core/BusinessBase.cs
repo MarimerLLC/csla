@@ -64,6 +64,8 @@ namespace Csla.Core
     /// </summary>
     protected override void OnApplicationContextSet()
     {
+      if (ApplicationContext == null)
+        throw new InvalidOperationException("ApplicationContext == null");
       InitializeIdentity();
       Initialize();
       InitializeBusinessRules();

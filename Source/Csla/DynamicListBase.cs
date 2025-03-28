@@ -58,20 +58,22 @@ namespace Csla
     where T : IEditableBusinessObject, IUndoableObject, ISavable, IMobileObject, IBusinessObject
   {
     /// <summary>
-    /// Creates an instance of the type.
-    /// </summary>
-    public DynamicListBase()
-    {
-      InitializeIdentity();
-      Initialize();
-      AllowNew = true;
-    }
-
-    /// <summary>
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => ApplicationContext; set => ApplicationContext = value; }
+    ApplicationContext IUseApplicationContext.ApplicationContext 
+    { 
+      get => ApplicationContext;
+      set 
+      { 
+        ApplicationContext = value;
+        if (ApplicationContext == null)
+          throw new InvalidOperationException("ApplicationContext == null");
+        InitializeIdentity();
+        Initialize();
+        AllowNew = true;
+      }
+    }
 
     #region Initialize
 

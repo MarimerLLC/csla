@@ -1242,9 +1242,9 @@ namespace Csla.Core
     /// Await this method to ensure business object is not busy.
     /// </summary>
     /// <param name="timeout">Timeout duration</param>
-    public Task WaitForIdle(TimeSpan timeout)
+    public async Task WaitForIdle(TimeSpan timeout)
     {
-      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
+      await BusyHelper.WaitForIdleAsTimeout(WaitForIdle, GetType(), nameof(WaitForIdle), timeout);
     }
 
     /// <summary>

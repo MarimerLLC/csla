@@ -12,7 +12,6 @@ using Csla.Properties;
 
 namespace Csla
 {
-
   /// <summary>
   /// Provides a sorted view into an existing IList(Of T).
   /// </summary>
@@ -26,7 +25,6 @@ namespace Csla
     ICancelAddNew
     where T : notnull
   {
-
     #region ListItem class
 
     private class ListItem : IComparable<ListItem>
@@ -74,7 +72,6 @@ namespace Csla
       {
         return Key.ToString()!;
       }
-
     }
 
     #endregion
@@ -132,42 +129,9 @@ namespace Csla
           _index = _sortIndex.Count;
       }
 
-      #region IDisposable Support
-
-      private bool _disposedValue = false; // To detect redundant calls.
-
-      // IDisposable
-      protected virtual void Dispose(bool disposing)
-      {
-        if (!_disposedValue)
-        {
-          if (disposing)
-          {
-            // free unmanaged resources when explicitly called
-          }
-          // free shared unmanaged resources
-        }
-        _disposedValue = true;
-      }
-
-      // this code added to correctly implement the disposable pattern.
       public void Dispose()
       {
-        // Do not change this code.  Put cleanup code in Dispose(bool disposing) above.
-        Dispose(true);
-        GC.SuppressFinalize(this);
       }
-
-      /// <summary>
-      /// Allows an <see cref="T:System.Object"/> to attempt to free resources and perform other cleanup operations before the <see cref="T:System.Object"/> is reclaimed by garbage collection.
-      /// </summary>
-      ~SortedEnumerator()
-      {
-        Dispose(false);
-      }
-
-      #endregion
-
     }
 
     #endregion
@@ -242,10 +206,10 @@ namespace Csla
     {
       if (!SupportsBinding)
         return;
-      
+
       if (property is null)
         throw new ArgumentNullException(nameof(property));
-      
+
       _bindingList!.AddIndex(property);
     }
 
@@ -356,7 +320,7 @@ namespace Csla
       {
         if (!SupportsBinding)
           return -1;
-        
+
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
       }
 
@@ -708,7 +672,7 @@ namespace Csla
       {
         if (value is null)
           throw new ArgumentNullException(nameof(value));
-        
+
         if (IsSorted)
           SourceList[OriginalIndex(index)] = value;
         else
@@ -875,7 +839,6 @@ namespace Csla
       return result;
     }
 
-
     #region ICancelAddNew Members
 
     void ICancelAddNew.CancelNew(int itemIndex)
@@ -910,6 +873,5 @@ namespace Csla
     }
 
     #endregion
-
   }
 }

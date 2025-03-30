@@ -33,9 +33,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
     public string GetTypeNamespace(TypeDeclarationSyntax typeDeclarationSyntax)
     {
-      INamedTypeSymbol typeSymbol;
-
-      typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
+      var typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
@@ -47,7 +45,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
     public string GetTypeNamespace(TypeSyntax typeSyntax)
     {
-      INamedTypeSymbol typeSymbol;
+      INamedTypeSymbol? typeSymbol;
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
       {
         typeSyntax = nullableTypeSyntax.ElementType;
@@ -141,14 +139,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
     private bool IsPropertyDecoratedWith(PropertyDeclarationSyntax propertyDeclaration, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
     {
-      INamedTypeSymbol appliedAttributeSymbol;
-
       foreach (AttributeSyntax attributeSyntax in propertyDeclaration.AttributeLists.SelectMany(al => al.Attributes))
       {
-        appliedAttributeSymbol = _semanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
-        if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
+        if (_semanticModel.GetTypeInfo(attributeSyntax).Type is INamedTypeSymbol appliedAttributeSymbol)
         {
-          return true;
+          if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
+          {
+            return true;
+          }
         }
       }
       return false;

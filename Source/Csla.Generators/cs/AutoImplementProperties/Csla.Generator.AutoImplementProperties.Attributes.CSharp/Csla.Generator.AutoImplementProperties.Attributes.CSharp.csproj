@@ -17,6 +17,8 @@
     <OutputPath>..\..\..\..\..\bin\packages\</OutputPath>
     <DelaySign>false</DelaySign>
     <SignAssembly>true</SignAssembly>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

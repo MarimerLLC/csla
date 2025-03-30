@@ -19,12 +19,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <summary>
     /// The name of the property
     /// </summary>
-    public string PropertyName { get; set; }
+    public required string PropertyName { get; init; }
 
     /// <summary>
     /// The definition of the type of this property
     /// </summary>
-    public ExtractedMemberTypeDefinition TypeDefinition { get; } = new();
+    public required ExtractedMemberTypeDefinition TypeDefinition { get; init; }
 
     /// <summary>
     /// The member name for the field
@@ -49,7 +49,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <summary>
     /// The modifiers for this property
     /// </summary>
-    public string[] Modifiers { get; internal set; }
+    public string[] Modifiers { get; internal set; } = [];
 
     /// <summary>
     /// Gets or sets a value indicating whether this property is partial.
@@ -59,14 +59,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <summary>
     /// The modifiers for the setter of this property
     /// </summary>
-    public string[] SetterModifiers { get; internal set; }
+    public string[] SetterModifiers { get; internal set; } = [];
 
     /// <summary>
     /// Determines whether the specified object is equal to the current object.
     /// </summary>
     /// <param name="obj">The object to compare with the current object.</param>
     /// <returns>True if the specified object is equal to the current object; otherwise, false.</returns>
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
       return Equals(obj as ExtractedPropertyDefinition);
     }
@@ -76,7 +76,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="other">The ExtractedPropertyDefinition to compare with the current ExtractedPropertyDefinition.</param>
     /// <returns>True if the specified ExtractedPropertyDefinition is equal to the current ExtractedPropertyDefinition; otherwise, false.</returns>
-    public bool Equals(ExtractedPropertyDefinition other)
+    public bool Equals(ExtractedPropertyDefinition? other)
     {
       if (other == null)
         return false;

@@ -33,12 +33,10 @@ namespace Csla
       ApplicationContextAccessor = applicationContextAccessor;
       ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
       Options = options;
+      PropertyChangedMode = Options.BindingOptions.PropertyChangedMode;
     }
 
-    /// <summary>
-    /// Holds configuration options for the CSLA framework.
-    /// </summary>
-    public CslaOptions Options { get; }
+    internal CslaOptions Options { get; }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
 
@@ -191,25 +189,11 @@ namespace Csla
       Server
     }
 
-    private PropertyChangedModes _propertyChangedMode;
-    private bool _propertyChangedModeSet;
-
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public PropertyChangedModes PropertyChangedMode
-    {
-      get
-      {
-        if (!_propertyChangedModeSet)
-        {
-          _propertyChangedMode = Options.BindingOptions.PropertyChangedMode;
-          _propertyChangedModeSet = true;
-        }
-        return _propertyChangedMode;
-      }
-    }
+    public PropertyChangedModes PropertyChangedMode { get; }
 
     /// <summary>
     /// Enum representing the way in which CSLA .NET

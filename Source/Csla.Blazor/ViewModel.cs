@@ -233,7 +233,8 @@ namespace Csla.Blazor
     {
       try
       {
-        await SaveAsync(BusyTimeout.ToCancellationToken());
+        using var cts = BusyTimeout.ToCancellationTokenSource();
+        await SaveAsync(cts.Token);
       }
       catch (TaskCanceledException tcex)
       {

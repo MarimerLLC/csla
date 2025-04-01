@@ -367,12 +367,14 @@ namespace Csla.Test.Basic
       TestResults.Reinitialise();
 
       bool changed = false;
-      var obj = new RootList();
+      var portal = _testDIContext.CreateDataPortal<RootList>();
+      var childPortal = _testDIContext.CreateDataPortal<RootListChild>();
+      var obj = portal.Create();
       obj.ListChanged += (_, _) =>
       {
         changed = true;
       };
-      var child = new RootListChild(); // object is marked as child
+      var child = childPortal.Create(); // object is marked as child
 
       Assert.IsTrue(obj.RaiseListChangedEvents);
       using (obj.SuppressListChangedEvents)

@@ -461,7 +461,7 @@ namespace Csla.Serialization.Mobile
     public static bool IsNativeType(Type type)
     {
       bool result;
-      if (type is IMobileObject)
+      if (type.IsAssignableTo(typeof(IMobileObject)))
         result = false;
       else if (type.IsPrimitive || type.IsEnum)
         result = true;

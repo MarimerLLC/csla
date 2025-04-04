@@ -100,7 +100,8 @@ namespace Csla.Server
         throw new ArgumentNullException(nameof(obj));
 
       var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
-      await WaitForIdle(obj, TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds).ToCancellationToken()).ConfigureAwait(false);
+      using var cts = TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds).ToCancellationTokenSource();
+      await WaitForIdle(obj, cts.Token).ConfigureAwait(false);
     }
 
     /// <summary>

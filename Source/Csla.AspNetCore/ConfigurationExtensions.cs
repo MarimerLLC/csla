@@ -51,6 +51,7 @@ namespace Csla.Configuration
       config.Services.AddMvcCore(opt => opt.ModelBinderProviders.Insert(0, new CslaModelBinderProvider()));
 #endif
       config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerHttpContext));
+      config.Services.AddHttpContextAccessor();
       return config;
     }
   }

@@ -18,12 +18,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// <summary>
     /// The name of the container, such as the class name or namespace name
     /// </summary>
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
     /// <summary>
     /// The full definition of the container for use in source generation
     /// </summary>
-    public string FullDefinition { get; set; }
+    public required string FullDefinition { get; init; }
 
   }
 }

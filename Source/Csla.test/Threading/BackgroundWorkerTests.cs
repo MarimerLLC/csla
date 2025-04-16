@@ -75,9 +75,9 @@
 //      {
 //        BackgroundWorker target = new BackgroundWorker();
 
-//        context.Assert.IsFalse(target.WorkerReportsProgress, "WorkerReportsProgress is false by default");
-//        context.Assert.IsFalse(target.WorkerSupportsCancellation, "WorkerSupportsCancellation is false by default");
-//        context.Assert.Success();
+//        Assert.IsFalse(target.WorkerReportsProgress, "WorkerReportsProgress is false by default");
+//        Assert.IsFalse(target.WorkerSupportsCancellation, "WorkerSupportsCancellation is false by default");
+//        Assert.Success();
 //      }
 
 //    }
@@ -110,21 +110,21 @@
 //          target.DoWork += (o, e) =>
 //          {
 //            doWorkCalled = true;
-//            context.Assert.IsFalse(Thread.CurrentThread.ManagedThreadId == UIThreadid);
+//            Assert.IsFalse(Thread.CurrentThread.ManagedThreadId == UIThreadid);
 
 //            // make sure that user, clientcontext, globalcontext, currentCulture and currentUIculture are sent 
-//            context.Assert.IsTrue(Csla.ApplicationContext.User is ClaimsPrincipal);
-//            context.Assert.AreEqual("TEST", TestResults.GetResult("BWTEST"));
-//            context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentCulture.Name.ToUpper());
-//            context.Assert.AreEqual("FR", Thread.CurrentThread.CurrentUICulture.Name.ToUpper());
+//            Assert.IsTrue(Csla.ApplicationContext.User is ClaimsPrincipal);
+//            Assert.AreEqual("TEST", TestResults.GetResult("BWTEST"));
+//            Assert.AreEqual("FR", Thread.CurrentThread.CurrentCulture.Name.ToUpper());
+//            Assert.AreEqual("FR", Thread.CurrentThread.CurrentUICulture.Name.ToUpper());
 //          };
 //          target.RunWorkerCompleted += (o, e) =>
 //          {
 //            // assert that this callback comes on the "UI" thread 
-//            context.Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
-//            context.Assert.IsNull(e.Error);
-//            context.Assert.IsTrue(doWorkCalled, "Do work has been called");
-//            context.Assert.Success();
+//            Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
+//            Assert.IsNull(e.Error);
+//            Assert.IsTrue(doWorkCalled, "Do work has been called");
+//            Assert.Success();
 //          };
 //          target.RunWorkerAsync(null);
 
@@ -168,15 +168,15 @@
 //          target.WorkerReportsProgress = true;
 //          target.ProgressChanged += (o, e) =>
 //                                      {
-//                                        context.Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
+//                                        Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
 //                                        numTimesProgressCalled++;
 //                                      };
 //          target.RunWorkerCompleted += (o, e) =>
 //                                          {
-//                                            context.Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
-//                                            context.Assert.IsNull(e.Error);
-//                                            context.Assert.IsTrue(numTimesProgressCalled == 10,"ReportProgress has been called 10 times");
-//                                            context.Assert.Success();
+//                                            Assert.IsTrue(Thread.CurrentThread.ManagedThreadId == UIThreadid);
+//                                            Assert.IsNull(e.Error);
+//                                            Assert.IsTrue(numTimesProgressCalled == 10,"ReportProgress has been called 10 times");
+//                                            Assert.Success();
 //                                          };
 //          target.RunWorkerAsync(null);
 
@@ -218,8 +218,8 @@
 //      target.RunWorkerCompleted += (o, e) =>
 //      {
 //        //  target does not support ReportProgress we shold get a System.InvalidOperationException from DoWork
-//        context.Assert.IsTrue(e.Error is System.InvalidOperationException);
-//        context.Assert.Success();
+//        Assert.IsTrue(e.Error is System.InvalidOperationException);
+//        Assert.Success();
 //      };
 //      target.RunWorkerAsync(null);
 //      context.Complete();
@@ -252,9 +252,9 @@
 //      target.RunWorkerCompleted += (o, e) =>
 //      {
 //        //  target does not support ReportProgress we shold get a System.InvalidOperationException from DoWork
-//        context.Assert.IsNull(e.Error);
-//        context.Assert.IsTrue(e.Cancelled);
-//        context.Assert.Success();
+//        Assert.IsNull(e.Error);
+//        Assert.IsTrue(e.Cancelled);
+//        Assert.Success();
 //      };
 //      target.RunWorkerAsync(null);
 //      target.CancelAsync();
@@ -287,7 +287,7 @@
 //        }
 //        catch (InvalidOperationException ex)
 //        {
-//          context.Assert.Fail(ex);
+//          Assert.Fail(ex);
 //        }
 //        context.Complete();
 //      }

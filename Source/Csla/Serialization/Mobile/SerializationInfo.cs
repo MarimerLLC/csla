@@ -392,15 +392,13 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      foreach (string key in _children.Keys)
+      foreach (var (key, value) in _children)
       {
-        ChildData value = _children[key];
         SerializationInfo si = formatter.SerializeObject(value);
         info.AddChild(key, si.ReferenceId);
       }
-      foreach (string key in _values.Keys)
+      foreach (var (key, value)  in _values)
       {
-        FieldData value = _values[key];
         SerializationInfo si = formatter.SerializeObject(value);
         info.AddChild(key, si.ReferenceId);
       }
@@ -433,9 +431,9 @@ namespace Csla.Serialization.Mobile
     /// </param>
     public void SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      foreach (string key in info.Children.Keys)
+      foreach (var (key, value) in info.Children)
       {
-        int referenceId = info.Children[key].ReferenceId;
+        int referenceId = value.ReferenceId;
         var serialized = formatter.GetObject(referenceId);
         if (serialized is ChildData data)
         {

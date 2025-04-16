@@ -22,19 +22,17 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>The definitions of all of the containers of the type for which generation is being performed</returns>
     public static IReadOnlyList<ExtractedContainerDefinition> GetContainerDefinitions(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      NamespaceDeclarationSyntax namespaceDeclaration;
-      TypeDeclarationSyntax containingTypeDeclaration;
-      List<ExtractedContainerDefinition> containers = new List<ExtractedContainerDefinition>();
+      List<ExtractedContainerDefinition> containers = [];
 
       // Iterate through the containing types should the target type be nested inside other types
-      containingTypeDeclaration = targetTypeDeclaration;
+      var containingTypeDeclaration = targetTypeDeclaration;
       while (containingTypeDeclaration.Parent is TypeDeclarationSyntax syntax)
       {
         containingTypeDeclaration = syntax;
         containers.Add(GetContainerDefinition(containingTypeDeclaration));
       }
 
-      namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
+      var namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
       if (namespaceDeclaration is not null)
       {
         containers.Add(GetContainerDefinition(namespaceDeclaration));

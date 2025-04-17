@@ -24,14 +24,8 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.EvaluateManagedBackingFieldsNameof, nameof(EvaluateManagedBackingFieldsNameofAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldUseNameofRule];
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="context"></param>
     public override void Initialize(AnalysisContext context)
     {

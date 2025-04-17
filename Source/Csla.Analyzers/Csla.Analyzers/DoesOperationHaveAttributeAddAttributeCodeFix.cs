@@ -34,19 +34,10 @@ namespace Csla.Analyzers
       { CslaMemberConstants.Operations.ChildExecute, CslaMemberConstants.OperationAttributes.ExecuteChild }
     }.ToImmutableDictionary();
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<string> FixableDiagnosticIds => [Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute];
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);

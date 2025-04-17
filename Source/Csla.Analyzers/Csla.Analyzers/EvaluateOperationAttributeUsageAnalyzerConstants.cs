@@ -8,14 +8,8 @@ namespace Csla.Analyzers
   /// </summary>
   public static class EvaluateOperationAttributeUsageAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.EvaluateOperationAttributeUsage_Title), Resources.ResourceManager, typeof(Resources));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Message = new(nameof(Resources.EvaluateOperationAttributeUsage_Message), Resources.ResourceManager, typeof(Resources));
   }
 }

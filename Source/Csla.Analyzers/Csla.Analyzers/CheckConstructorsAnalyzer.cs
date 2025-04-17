@@ -29,18 +29,12 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.ConstructorHasParameters, nameof(CheckConstructorsAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
     [
         publicNoArgumentConstructorIsMissingRule,
         constructorHasParametersRule
     ];
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="context"></param>
     public override void Initialize(AnalysisContext context)
     {

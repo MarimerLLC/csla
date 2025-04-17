@@ -8,13 +8,7 @@ namespace Csla.Analyzers
   /// </summary>
   public static class EvaluateManagedBackingFieldsAnalyzerConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.EvaluateManagedBackingFields_Title), Resources.ResourceManager, typeof(Resources));
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Message = new(nameof(Resources.EvaluateManagedBackingFields_Message), Resources.ResourceManager, typeof(Resources));
   }
 
@@ -23,9 +17,6 @@ namespace Csla.Analyzers
   /// </summary>
   public static class EvaluateManagedBackingFieldsCodeFixConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static string FixManagedBackingFieldDescription => Resources.EvaluateManagedBackingFields_FixManagedBackingFieldDescription;
   }
 }

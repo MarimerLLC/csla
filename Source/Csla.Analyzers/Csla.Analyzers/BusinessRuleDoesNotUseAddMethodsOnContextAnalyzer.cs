@@ -23,14 +23,8 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.BusinessRuleContextUsage, nameof(BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [usesAddMethodsOnContextRule];
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="context"></param>
     public override void Initialize(AnalysisContext context)
     {

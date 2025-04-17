@@ -8,14 +8,8 @@ namespace Csla.Analyzers
   /// </summary>
   public static class OnlyUseCslaPropertyMethodsInGetSetRuleConstants
   {
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Title = new(nameof(Resources.OnlyUseCslaPropertyMethodsInGetSetRule_Title), Resources.ResourceManager, typeof(Resources));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public static readonly LocalizableResourceString Message = new(nameof(Resources.OnlyUseCslaPropertyMethodsInGetSetRule_Message), Resources.ResourceManager, typeof(Resources));
   }
 }

@@ -23,14 +23,8 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance, nameof(AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [inheritsFromBusinessRuleRule];
 
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="context"></param>
     public override void Initialize(AnalysisContext context)
     {

@@ -7,9 +7,6 @@ using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class FindOperationsWithIncorrectReturnTypesAnalyzer
     : DiagnosticAnalyzer

@@ -3,9 +3,6 @@ using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class BusinessRuleDoesNotUseAddMethodsOnContextAnalyzerConstants
   {
     public static readonly LocalizableResourceString Title = new(nameof(Resources.BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer_Title), Resources.ResourceManager, typeof(Resources));

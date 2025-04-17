@@ -3,9 +3,6 @@ using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class EvaluateOperationAttributeUsageAnalyzerConstants
   {
     public static readonly LocalizableResourceString Title = new(nameof(Resources.EvaluateOperationAttributeUsage_Title), Resources.ResourceManager, typeof(Resources));

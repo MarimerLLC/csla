@@ -1,8 +1,5 @@
 ﻿namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class CslaMemberConstants
   {
     public static class Properties

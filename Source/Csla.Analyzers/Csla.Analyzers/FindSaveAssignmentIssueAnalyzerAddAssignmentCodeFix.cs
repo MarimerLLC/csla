@@ -8,9 +8,6 @@ using Microsoft.CodeAnalysis.CodeActions;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFix

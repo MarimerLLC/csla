@@ -9,9 +9,6 @@ using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFix

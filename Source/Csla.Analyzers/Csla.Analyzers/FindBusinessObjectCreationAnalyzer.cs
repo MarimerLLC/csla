@@ -8,9 +8,6 @@ using static Csla.Analyzers.Extensions.SyntaxNodeExtensions;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class FindBusinessObjectCreationAnalyzer
     : DiagnosticAnalyzer

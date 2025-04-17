@@ -3,9 +3,6 @@ using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class OnlyUseCslaPropertyMethodsInGetSetRuleConstants
   {
     public static readonly LocalizableResourceString Title = new(nameof(Resources.OnlyUseCslaPropertyMethodsInGetSetRule_Title), Resources.ResourceManager, typeof(Resources));

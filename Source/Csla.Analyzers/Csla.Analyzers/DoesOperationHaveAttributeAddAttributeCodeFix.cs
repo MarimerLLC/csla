@@ -9,9 +9,6 @@ using Csla.Analyzers.Extensions;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class DoesOperationHaveAttributeAddAttributeCodeFix

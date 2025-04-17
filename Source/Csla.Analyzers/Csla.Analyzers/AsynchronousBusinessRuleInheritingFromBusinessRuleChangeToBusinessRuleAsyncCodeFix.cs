@@ -10,9 +10,6 @@ using static Csla.Analyzers.Constants;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class AsynchronousBusinessRuleInheritingFromBusinessRuleChangeToBusinessRuleAsyncCodeFix
@@ -20,10 +17,8 @@ namespace Csla.Analyzers
   {
     public override ImmutableArray<string> FixableDiagnosticIds => [AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance];
 
-    /// <returns></returns>
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
-    /// <param name="context"></param>
-    /// <returns></returns>
+
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);

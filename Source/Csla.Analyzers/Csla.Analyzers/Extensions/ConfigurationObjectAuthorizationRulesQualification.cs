@@ -1,8 +1,5 @@
 ﻿namespace Csla.Analyzers.Extensions
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public readonly struct CslaOperationQualification
   {
     public CslaOperationQualification(bool byNamingConvention, bool byAttribute) =>

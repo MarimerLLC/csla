@@ -3,9 +3,6 @@ using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class FindOperationsWithNonSerializableArgumentsConstants
   {
     public static readonly LocalizableResourceString Title = new(nameof(Resources.FindOperationsWithNonSerializableArguments_Title), Resources.ResourceManager, typeof(Resources));

@@ -9,9 +9,6 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [ExportCodeFixProvider(LanguageNames.CSharp)]
   [Shared]
   public sealed class EvaluateManagedBackingFieldsNameofCodeFix

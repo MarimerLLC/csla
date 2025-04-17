@@ -1,8 +1,5 @@
 ﻿namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public static class Constants
   {
     public static class AnalyzerIdentifiers

@@ -1,8 +1,5 @@
 ﻿namespace Csla.Analyzers.Extensions
 {
-  /// <summary>
-  /// 
-  /// </summary>
   public readonly struct DataPortalOperationQualification
   {
     public DataPortalOperationQualification(bool byNamingConvention, bool byAttribute) =>

@@ -7,9 +7,6 @@ using System.Collections.Immutable;
 
 namespace Csla.Analyzers
 {
-  /// <summary>
-  /// 
-  /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class FindOperationsWithIncorrectReturnTypesAnalyzer
     : DiagnosticAnalyzer
@@ -22,14 +19,8 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes, nameof(FindOperationsWithIncorrectReturnTypesAnalyzer)));
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldOnlyReturnVoidOrTaskRule];
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override void Initialize(AnalysisContext context)
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);

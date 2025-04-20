@@ -13,8 +13,6 @@ namespace Csla.Testing.Business.BusyStatus
   [Serializable]
   public class ItemWithAsynchRule : BusinessBase<ItemWithAsynchRule>
   {
-    public ItemWithAsynchRule() { }
-
     private static PropertyInfo<string> IdProperty = RegisterProperty<string>(c => c.Id);
 
     public string Id

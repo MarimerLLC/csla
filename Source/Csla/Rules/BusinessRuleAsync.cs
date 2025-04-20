@@ -20,7 +20,7 @@ namespace Csla.Rules
     /// </summary>
     public override bool IsAsync
     {
-      get { return true; }
+      get => true;
       protected set { }
     }
 
@@ -37,7 +37,7 @@ namespace Csla.Rules
     /// to a specfic property.
     /// </summary>
     /// <param name="primaryProperty">Primary property for this rule.</param>
-    protected BusinessRuleAsync(Core.IPropertyInfo primaryProperty)
+    protected BusinessRuleAsync(Core.IPropertyInfo? primaryProperty)
       : base(primaryProperty)
     { }
 

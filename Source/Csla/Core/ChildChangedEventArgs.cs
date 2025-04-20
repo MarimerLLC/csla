@@ -19,26 +19,26 @@ namespace Csla.Core
     /// <summary>
     /// Gets a reference to the changed child object.
     /// </summary>
-    public object ChildObject { get; private set; }
+    public object ChildObject { get; }
     /// <summary>
     /// Gets the PropertyChangedEventArgs object from the
     /// child's PropertyChanged event, if the child is
     /// not a collection or list.
     /// </summary>
-    public PropertyChangedEventArgs PropertyChangedArgs { get; private set; }
+    public PropertyChangedEventArgs? PropertyChangedArgs { get; }
     /// <summary>
     /// Gets the NotifyCollectionChangedEventArgs object from the
     /// child's CollectionChanged event, if the child is an
     /// ObservableCollection.
     /// </summary>
-    public NotifyCollectionChangedEventArgs CollectionChangedArgs { get; private set; }
+    public NotifyCollectionChangedEventArgs? CollectionChangedArgs { get; }
 
     /// <summary>
     /// Gets the ListChangedEventArgs object from the
     /// child's ListChanged event, if the child is a
     /// collection or list.
     /// </summary>
-    public ListChangedEventArgs ListChangedArgs { get; private set; }
+    public ListChangedEventArgs? ListChangedArgs { get; }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -52,7 +52,8 @@ namespace Csla.Core
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>
-    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, ListChangedEventArgs listArgs)
+    /// <exception cref="ArgumentNullException"><paramref name="childObject"/> is <see langword="null"/>.</exception>
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs? propertyArgs, ListChangedEventArgs? listArgs)
       : this(childObject, propertyArgs)
     {
       ListChangedArgs = listArgs;
@@ -67,9 +68,10 @@ namespace Csla.Core
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>
-    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs)
+    /// <exception cref="ArgumentNullException"><paramref name="childObject"/> is <see langword="null"/>.</exception>
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs? propertyArgs)
     {
-      ChildObject = childObject;
+      ChildObject = childObject ?? throw new ArgumentNullException(nameof(childObject));
       PropertyChangedArgs = propertyArgs;
     }
 
@@ -85,7 +87,8 @@ namespace Csla.Core
     /// <param name="propertyArgs">
     /// PropertyChangedEventArgs object or null.
     /// </param>
-    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs propertyArgs, NotifyCollectionChangedEventArgs listArgs)
+    /// <exception cref="ArgumentNullException"><paramref name="childObject"/> is <see langword="null"/>.</exception>
+    public ChildChangedEventArgs(object childObject, PropertyChangedEventArgs? propertyArgs, NotifyCollectionChangedEventArgs? listArgs)
       : this(childObject, propertyArgs)
     {
       CollectionChangedArgs = listArgs;

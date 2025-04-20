@@ -28,19 +28,19 @@ namespace Csla.Reflection
   /// <param name="args">
   /// Parameters passed to method.
   /// </param>
-  public delegate object DynamicMethodDelegate(object target, object[] args);
+  public delegate object DynamicMethodDelegate(object target, object?[] args);
   /// <summary>
   /// Delegate for getting a value.
   /// </summary>
   /// <param name="target">Target object.</param>
   /// <returns></returns>
-  public delegate object DynamicMemberGetDelegate(object target);
+  public delegate object? DynamicMemberGetDelegate(object target);
   /// <summary>
   /// Delegate for setting a value.
   /// </summary>
   /// <param name="target">Target object.</param>
   /// <param name="arg">Argument value.</param>
-  public delegate void DynamicMemberSetDelegate(object target, object arg);
+  public delegate void DynamicMemberSetDelegate(object target, object? arg);
 
   internal static class DynamicMethodHandlerFactory
   {
@@ -50,9 +50,10 @@ namespace Csla.Reflection
         throw new ArgumentNullException(nameof(constructor));
       if (constructor.GetParameters().Length > 0)
         throw new NotSupportedException(Resources.ConstructorsWithParametersNotSupported);
+      ThrowIfDeclaringTypeIsNull(constructor, nameof(constructor));
 
       Expression body = Expression.New(constructor);
-      if (constructor.DeclaringType.IsValueType)
+      if (constructor.DeclaringType!.IsValueType)
       {
         body = Expression.Convert(body, typeof(object));
       }
@@ -64,6 +65,7 @@ namespace Csla.Reflection
     {
       if (method == null)
         throw new ArgumentNullException(nameof(method));
+      ThrowIfDeclaringTypeIsNull(method, nameof(method));
 
       ParameterInfo[] pi = method.GetParameters();
       var targetExpression = Expression.Parameter(typeof(object));
@@ -80,7 +82,7 @@ namespace Csla.Reflection
             pi[x].ParameterType);
       }
 
-      Expression instance = Expression.Convert(targetExpression, method.DeclaringType);
+      Expression instance = Expression.Convert(targetExpression, method.DeclaringType!);
       Expression body = pi.Length > 0
         ? Expression.Call(instance, method, callParametrs)
         : Expression.Call(instance, method);
@@ -107,16 +109,18 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-    public static DynamicMemberGetDelegate CreatePropertyGetter(PropertyInfo property)
+    public static DynamicMemberGetDelegate? CreatePropertyGetter(PropertyInfo property)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
 
       if (!property.CanRead) return null;
 
+      ThrowIfDeclaringTypeIsNull(property, nameof(property));
+
       var target = Expression.Parameter(typeof(object));
       Expression body = Expression.Property(
-        Expression.Convert(target, property.DeclaringType),
+        Expression.Convert(target, property.DeclaringType!),
         property);
 
       if (property.PropertyType.IsValueType)
@@ -131,19 +135,21 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-    public static DynamicMemberSetDelegate CreatePropertySetter(PropertyInfo property)
+    public static DynamicMemberSetDelegate? CreatePropertySetter(PropertyInfo property)
     {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
 
       if (!property.CanWrite) return null;
 
+      ThrowIfDeclaringTypeIsNull(property, nameof(property));
+
       var target = Expression.Parameter(typeof(object));
       var val = Expression.Parameter(typeof(object));
 
       Expression body = Expression.Assign(
         Expression.Property(
-          Expression.Convert(target, property.DeclaringType),
+          Expression.Convert(target, property.DeclaringType!),
           property),
         Expression.Convert(val, property.PropertyType));
 
@@ -159,10 +165,11 @@ namespace Csla.Reflection
     {
       if (field == null)
         throw new ArgumentNullException(nameof(field));
+      ThrowIfDeclaringTypeIsNull(field, nameof(field));
 
       var target = Expression.Parameter(typeof(object));
       Expression body = Expression.Field(
-        Expression.Convert(target, field.DeclaringType),
+        Expression.Convert(target, field.DeclaringType!),
         field);
 
       if (field.FieldType.IsValueType)
@@ -180,14 +187,15 @@ namespace Csla.Reflection
     public static DynamicMemberSetDelegate CreateFieldSetter(FieldInfo field)
     {
       if (field == null)
-        throw new ArgumentNullException("property");
+        throw new ArgumentNullException(nameof(field));
+      ThrowIfDeclaringTypeIsNull(field, nameof(field));
 
       var target = Expression.Parameter(typeof(object));
       var val = Expression.Parameter(typeof(object));
 
       Expression body = Expression.Assign(
         Expression.Field(
-          Expression.Convert(target, field.DeclaringType),
+          Expression.Convert(target, field.DeclaringType!),
           field),
         Expression.Convert(val, field.FieldType));
 
@@ -199,15 +207,11 @@ namespace Csla.Reflection
       return lambda.Compile();
     }
 
-#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
-    private static void EmitCastToReference(ILGenerator il, Type type)
+    private static void ThrowIfDeclaringTypeIsNull(MemberInfo info, string typeKind)
     {
-      if (type.IsValueType)
-        il.Emit(OpCodes.Unbox_Any, type);
-      else
-        il.Emit(OpCodes.Castclass, type);
+      if (info.DeclaringType is null)
+        throw new NotSupportedException(string.Format(Resources.MemberInfoDeclaringTypeMustBeNotNull, typeKind));
     }
-#endif
   }
 }
 #endif

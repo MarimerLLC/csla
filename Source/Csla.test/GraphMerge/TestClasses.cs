@@ -5,13 +5,7 @@ namespace Csla.Test.GraphMerge
   [Serializable]
   public class Foo : BusinessBase<Foo>
   {
-    public Foo()
-    {
-      ChildList = new FooList();
-    }
-
-    public static readonly PropertyInfo<string> NameProperty = 
-      RegisterProperty<string>(c => c.Name);
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(c => c.Name);
     public string Name
     {
       get { return GetProperty(NameProperty); }
@@ -78,6 +72,13 @@ namespace Csla.Test.GraphMerge
 
     [Create]
     private void Create([Inject] IChildDataPortal<FooList> childDataPortal)
+    {
+      LoadProperty(ChildListProperty, childDataPortal.CreateChild());
+      BusinessRules.CheckRules();
+    }
+
+    [CreateChild]
+    private void CreateChild([Inject] IChildDataPortal<FooList> childDataPortal)
     {
       LoadProperty(ChildListProperty, childDataPortal.CreateChild());
       BusinessRules.CheckRules();

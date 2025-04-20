@@ -18,12 +18,12 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields);
+    public override ImmutableArray<string> FixableDiagnosticIds => [Constants.AnalyzerIdentifiers.EvaluateManagedBackingFields];
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     /// <summary>
     /// 
@@ -31,6 +31,10 @@ namespace Csla.Analyzers
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+      if (root is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
 

@@ -12,7 +12,6 @@ using Csla.Properties;
 
 namespace Csla
 {
-
   /// <summary>
   /// Provides a sorted view into an existing IList(Of T).
   /// </summary>
@@ -20,16 +19,12 @@ namespace Csla
   /// Type of child object contained by
   /// the original list or collection.
   /// </typeparam>
-  public class SortedBindingList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> :
+  public class SortedBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]T> :
     IList<T>,
     IBindingList,
     ICancelAddNew
+    where T : notnull
   {
-
     #region ListItem class
 
     private class ListItem : IComparable<ListItem>
@@ -40,12 +35,15 @@ namespace Csla
 
       public ListItem(object key, int baseIndex)
       {
-        Key = key;
+        Key = key ?? throw new ArgumentNullException(nameof(key));
         BaseIndex = baseIndex;
       }
 
-      public int CompareTo(ListItem other)
+      public int CompareTo(ListItem? other)
       {
+        if (other == null) 
+          return 1;
+
         object target = other.Key;
 
         if (Key is IComparable comparable)
@@ -66,15 +64,14 @@ namespace Csla
           else if (target == null)
             return 1;
 
-          return Key.ToString().CompareTo(target.ToString());
+          return Key.ToString()!.CompareTo(target.ToString());
         }
       }
 
       public override string ToString()
       {
-        return Key.ToString();
+        return Key.ToString()!;
       }
-
     }
 
     #endregion
@@ -83,31 +80,22 @@ namespace Csla
 
     private class SortedEnumerator : IEnumerator<T>
     {
-      private IList<T> _list;
-      private List<ListItem> _sortIndex;
-      private ListSortDirection _sortOrder;
+      private readonly IList<T> _list;
+      private readonly List<ListItem> _sortIndex;
+      private readonly ListSortDirection _sortOrder;
       private int _index;
 
-      public SortedEnumerator(
-        IList<T> list,
-        List<ListItem> sortIndex,
-        ListSortDirection direction)
+      public SortedEnumerator(IList<T> list, List<ListItem> sortIndex, ListSortDirection direction)
       {
-        _list = list;
-        _sortIndex = sortIndex;
+        _list = list ?? throw new ArgumentNullException(nameof(list));
+        _sortIndex = sortIndex ?? throw new ArgumentNullException(nameof(sortIndex));
         _sortOrder = direction;
         Reset();
       }
 
-      public T Current
-      {
-        get { return _list[_sortIndex[_index].BaseIndex]; }
-      }
+      public T Current => _list[_sortIndex[_index].BaseIndex];
 
-      Object IEnumerator.Current
-      {
-        get { return _list[_sortIndex[_index].BaseIndex]; }
-      }
+      object IEnumerator.Current => _list[_sortIndex[_index].BaseIndex];
 
       public bool MoveNext()
       {
@@ -141,42 +129,9 @@ namespace Csla
           _index = _sortIndex.Count;
       }
 
-      #region IDisposable Support
-
-      private bool _disposedValue = false; // To detect redundant calls.
-
-      // IDisposable
-      protected virtual void Dispose(bool disposing)
-      {
-        if (!_disposedValue)
-        {
-          if (disposing)
-          {
-            // free unmanaged resources when explicitly called
-          }
-          // free shared unmanaged resources
-        }
-        _disposedValue = true;
-      }
-
-      // this code added to correctly implement the disposable pattern.
       public void Dispose()
       {
-        // Do not change this code.  Put cleanup code in Dispose(bool disposing) above.
-        Dispose(true);
-        GC.SuppressFinalize(this);
       }
-
-      /// <summary>
-      /// Allows an <see cref="T:System.Object"/> to attempt to free resources and perform other cleanup operations before the <see cref="T:System.Object"/> is reclaimed by garbage collection.
-      /// </summary>
-      ~SortedEnumerator()
-      {
-        Dispose(false);
-      }
-
-      #endregion
-
     }
 
     #endregion
@@ -200,7 +155,7 @@ namespace Csla
       {
         foreach (T obj in SourceList)
         {
-          _sortIndex.Add(new ListItem(SortProperty.GetValue(obj), index));
+          _sortIndex.Add(new ListItem(SortProperty.GetValue(obj) ?? throw new InvalidOperationException(), index));
           index++;
         }
       }
@@ -209,7 +164,6 @@ namespace Csla
       IsSorted = true;
 
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
-
     }
 
     private void UndoSort()
@@ -220,7 +174,6 @@ namespace Csla
       IsSorted = false;
 
       OnListChanged(new ListChangedEventArgs(ListChangedType.Reset, 0));
-
     }
 
     #endregion
@@ -248,26 +201,30 @@ namespace Csla
     /// </summary>
     /// <param name="property">Property on which
     /// to build the index.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public void AddIndex(PropertyDescriptor property)
     {
-      if (_supportsBinding)
-        _bindingList.AddIndex(property);
+      if (!SupportsBinding)
+        return;
+
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
+      _bindingList!.AddIndex(property);
     }
 
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
-    public object AddNew()
+    public object? AddNew()
     {
-      object result;
-      if (_supportsBinding)
+      object? result;
+      if (SupportsBinding)
       {
         _initiatedLocally = true;
-        result = _bindingList.AddNew();
+        result = _bindingList!.AddNew();
         _initiatedLocally = false;
-        OnListChanged(
-          new ListChangedEventArgs(
-          ListChangedType.ItemAdded, _bindingList.Count - 1));
+        OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, _bindingList!.Count - 1));
       }
       else
         result = null;
@@ -282,8 +239,8 @@ namespace Csla
     {
       get
       {
-        if (_supportsBinding)
-          return _bindingList.AllowEdit;
+        if (SupportsBinding)
+          return _bindingList!.AllowEdit;
         else
           return false;
       }
@@ -296,8 +253,8 @@ namespace Csla
     {
       get
       {
-        if (_supportsBinding)
-          return _bindingList.AllowNew;
+        if (SupportsBinding)
+          return _bindingList!.AllowNew;
         else
           return false;
       }
@@ -310,8 +267,8 @@ namespace Csla
     {
       get
       {
-        if (_supportsBinding)
-          return _bindingList.AllowRemove;
+        if (SupportsBinding)
+          return _bindingList!.AllowRemove;
         else
           return false;
       }
@@ -322,9 +279,15 @@ namespace Csla
     /// </summary>
     /// <param name="propertyName">The text name of the property on which to sort.</param>
     /// <param name="direction">The direction to sort the data.</param>
-    public void ApplySort(string propertyName, ListSortDirection direction)
+    public void ApplySort(string? propertyName, ListSortDirection direction)
     {
-      SortProperty = GetPropertyDescriptor(propertyName);
+      PropertyDescriptor? newSortProperty = null;
+      if (!string.IsNullOrWhiteSpace(propertyName))
+      {
+        newSortProperty = GetPropertyDescriptor(propertyName!);
+      }
+
+      SortProperty = newSortProperty;
 
       ApplySort(SortProperty, direction);
     }
@@ -334,8 +297,7 @@ namespace Csla
     /// </summary>
     /// <param name="property">A PropertyDescriptor for the property on which to sort.</param>
     /// <param name="direction">The direction to sort the data.</param>
-    public void ApplySort(
-      PropertyDescriptor property, ListSortDirection direction)
+    public void ApplySort(PropertyDescriptor? property, ListSortDirection direction)
     {
       SortProperty = property;
       SortDirection = direction;
@@ -347,36 +309,38 @@ namespace Csla
     /// </summary>
     /// <param name="propertyName">Name of the property to search</param>
     /// <param name="key">Value to find</param>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public int Find(string propertyName, object key)
     {
-      PropertyDescriptor findProperty = GetPropertyDescriptor(propertyName);
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
+      if (string.IsNullOrWhiteSpace(propertyName))
+      {
+        if (!SupportsBinding)
+          return -1;
+
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+      }
+
+      var findProperty = GetPropertyDescriptor(propertyName)!;
 
       return Find(findProperty, key);
-
     }
 
     private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
-      PropertyDescriptor property = null;
-
-      if (!String.IsNullOrEmpty(propertyName))
-      {
         Type itemType = typeof(T);
         foreach (PropertyDescriptor prop in TypeDescriptor.GetProperties(itemType))
         {
           if (prop.Name == propertyName)
           {
-            property = prop;
-            break;
+            return prop;
           }
         }
 
-        // throw exception if propertyDescriptor could not be found
-        if (property == null)
-          throw new ArgumentException(string.Format(Resources.SortedBindingListPropertyNameNotFound, propertyName), propertyName);
-      }
-
-      return property;
+        throw new ArgumentException(string.Format(Resources.SortedBindingListPropertyNameNotFound, propertyName), propertyName);
     }
 
     /// <summary>
@@ -385,11 +349,17 @@ namespace Csla
     /// <param name="key">Key value for which to search.</param>
     /// <param name="property">Property to search for the key
     /// value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="key"/> is <see langword="null"/>.</exception>
     public int Find(PropertyDescriptor property, object key)
     {
-      if (_supportsBinding)
+      if (SupportsBinding)
       {
-        var originalIndex = _bindingList.Find(property, key);
+        if (property is null)
+          throw new ArgumentNullException(nameof(property));
+        if (key is null)
+          throw new ArgumentNullException(nameof(key));
+
+        var originalIndex = _bindingList!.Find(property, key);
         return originalIndex > -1 ? SortedIndex(originalIndex) : -1;
       }
       else
@@ -411,14 +381,18 @@ namespace Csla
     /// is changed to indicate that the view's data has changed. See
     /// Chapter 5 for details.
     /// </remarks>
-    public event ListChangedEventHandler ListChanged;
+    public event ListChangedEventHandler? ListChanged;
 
     /// <summary>
     /// Raises the <see cref="ListChanged"/> event.
     /// </summary>
     /// <param name="e">Event arguments.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     protected void OnListChanged(ListChangedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       ListChanged?.Invoke(this, e);
     }
 
@@ -427,10 +401,16 @@ namespace Csla
     /// </summary>
     /// <param name="property">Property for which the
     /// index should be removed.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public void RemoveIndex(PropertyDescriptor property)
     {
-      if (_supportsBinding)
-        _bindingList.RemoveIndex(property);
+      if (!SupportsBinding)
+        return;
+
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
+      _bindingList!.RemoveIndex(property);
     }
 
     /// <summary>
@@ -449,16 +429,13 @@ namespace Csla
     /// <summary>
     /// Returns the PropertyDescriptor of the current sort.
     /// </summary>
-    public PropertyDescriptor SortProperty { get; private set; }
+    public PropertyDescriptor? SortProperty { get; private set; }
 
     /// <summary>
     /// Returns true since this object does raise the
     /// ListChanged event.
     /// </summary>
-    public bool SupportsChangeNotification
-    {
-      get { return true; }
-    }
+    public bool SupportsChangeNotification => true;
 
     /// <summary>
     /// Implemented by IList source object.
@@ -467,8 +444,8 @@ namespace Csla
     {
       get
       {
-        if (_supportsBinding)
-          return _bindingList.SupportsSearching;
+        if (SupportsBinding)
+          return _bindingList!.SupportsSearching;
         else
           return false;
       }
@@ -477,18 +454,19 @@ namespace Csla
     /// <summary>
     /// Returns true. Sorting is supported.
     /// </summary>
-    public bool SupportsSorting
-    {
-      get { return true; }
-    }
+    public bool SupportsSorting => true;
 
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
     /// <param name="array">Array to receive the data.</param>
     /// <param name="arrayIndex">Starting array index.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(T[] array, int arrayIndex)
     {
+      if (array is null)
+        throw new ArgumentNullException(nameof(array));
+
       int pos = arrayIndex;
       foreach (T child in this)
       {
@@ -499,6 +477,9 @@ namespace Csla
 
     void ICollection.CopyTo(Array array, int index)
     {
+      if (array is null)
+        throw new ArgumentNullException(nameof(array));
+
       T[] tmp = new T[array.Length];
       CopyTo(tmp, index);
       Array.Copy(tmp, 0, array, index, array.Length);
@@ -507,20 +488,11 @@ namespace Csla
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
-    public int Count
-    {
-      get { return SourceList.Count; }
-    }
+    public int Count => SourceList.Count;
 
-    bool ICollection.IsSynchronized
-    {
-      get { return false; }
-    }
+    bool ICollection.IsSynchronized => false;
 
-    object ICollection.SyncRoot
-    {
-      get { return SourceList; }
-    }
+    object ICollection.SyncRoot => SourceList;
 
     IEnumerator IEnumerable.GetEnumerator()
     {
@@ -531,13 +503,20 @@ namespace Csla
     /// Implemented by IList source object.
     /// </summary>
     /// <param name="item">Item to add to the list.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public void Add(T item)
     {
+      if(item is null) 
+        throw new ArgumentNullException(nameof(item));
+
       SourceList.Add(item);
     }
 
-    int IList.Add(object value)
+    int IList.Add(object? value)
     {
+      if(value is null) 
+        throw new ArgumentNullException(nameof(value));
+
       Add((T)value);
       return SortedIndex(SourceList.Count - 1);
     }
@@ -554,13 +533,20 @@ namespace Csla
     /// Implemented by IList source object.
     /// </summary>
     /// <param name="item">Item for which to search.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Contains(T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       return SourceList.Contains(item);
     }
 
-    bool IList.Contains(object value)
+    bool IList.Contains(object? value)
     {
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
+
       return Contains((T)value);
     }
 
@@ -568,13 +554,20 @@ namespace Csla
     /// Implemented by IList source object.
     /// </summary>
     /// <param name="item">Item for which to search.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public int IndexOf(T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       return SortedIndex(SourceList.IndexOf(item));
     }
 
-    int IList.IndexOf(object value)
+    int IList.IndexOf(object? value)
     {
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
+
       return IndexOf((T)value);
     }
 
@@ -584,52 +577,54 @@ namespace Csla
     /// <param name="index">Index at
     /// which to insert the item.</param>
     /// <param name="item">Item to insert.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public void Insert(int index, T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       SourceList.Insert(index, item);
     }
 
-    void IList.Insert(int index, object value)
+    void IList.Insert(int index, object? value)
     {
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
+
       Insert(index, (T)value);
     }
 
-    bool IList.IsFixedSize
-    {
-      get { return false; }
-    }
+    bool IList.IsFixedSize => false;
 
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
-    public bool IsReadOnly
-    {
-      get { return SourceList.IsReadOnly; }
-    }
+    public bool IsReadOnly => SourceList.IsReadOnly;
 
-    object IList.this[int index]
+    object? IList.this[int index]
     {
-      get
-      {
-        return this[index];
-      }
-      set
-      {
-        this[index] = (T)value;
-      }
+      get => this[index];
+      set => this[index] = (T)(value ?? throw new ArgumentNullException(nameof(value)));
     }
 
     /// <summary>
     /// Implemented by IList source object.
     /// </summary>
     /// <param name="item">Item to be removed.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Remove(T item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       return SourceList.Remove(item);
     }
 
-    void IList.Remove(object value)
+    void IList.Remove(object? value)
     {
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
+
       Remove((T)value);
     }
 
@@ -663,6 +658,7 @@ namespace Csla
     /// honoring the sort order of the items.
     /// </summary>
     /// <param name="index">The index of the item in the sorted list.</param>
+    /// <exception cref="ArgumentNullException">value is <see langword="null"/>.</exception>
     public T this[int index]
     {
       get
@@ -674,6 +670,9 @@ namespace Csla
       }
       set
       {
+        if (value is null)
+          throw new ArgumentNullException(nameof(value));
+
         if (IsSorted)
           SourceList[OriginalIndex(index)] = value;
         else
@@ -694,30 +693,31 @@ namespace Csla
 
     #endregion
 
-    private bool _supportsBinding;
-    private IBindingList _bindingList;
+    [MemberNotNullWhen(true, nameof(_bindingList))]
+    private bool SupportsBinding { get; }
+    private IBindingList? _bindingList;
     private bool _initiatedLocally;
 
-    private List<ListItem> _sortIndex = [];
+    private readonly List<ListItem> _sortIndex = [];
 
     /// <summary>
     /// Creates a new view based on the provided IList object.
     /// </summary>
     /// <param name="list">The IList (collection) containing the data.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="list"/> is <see langword="null"/>.</exception>
     public SortedBindingList(IList<T> list)
     {
-      SourceList = list;
+      SourceList = list ?? throw new ArgumentNullException(nameof(list));
 
       if (SourceList is IBindingList sourceList)
       {
-        _supportsBinding = true;
+        SupportsBinding = true;
         _bindingList = sourceList;
-        _bindingList.ListChanged += SourceChanged;
+        _bindingList!.ListChanged += SourceChanged;
       }
     }
 
-    private void SourceChanged(
-      object sender, ListChangedEventArgs e)
+    private void SourceChanged(object? sender, ListChangedEventArgs e)
     {
       if (IsSorted)
       {
@@ -729,21 +729,16 @@ namespace Csla
             {
               object newKey;
               if (SortProperty != null)
-                newKey = SortProperty.GetValue(newItem);
+                newKey = SortProperty.GetValue(newItem) ?? throw new InvalidOperationException();
               else
                 newKey = newItem;
 
               if (SortDirection == ListSortDirection.Ascending)
-                _sortIndex.Add(
-                  new ListItem(newKey, e.NewIndex));
+                _sortIndex.Add(new ListItem(newKey, e.NewIndex));
               else
-                _sortIndex.Insert(0,
-                  new ListItem(newKey, e.NewIndex));
+                _sortIndex.Insert(0, new ListItem(newKey, e.NewIndex));
               if (!_initiatedLocally)
-                OnListChanged(
-                  new ListChangedEventArgs(
-                  ListChangedType.ItemAdded,
-                  SortedIndex(e.NewIndex)));
+                OnListChanged(new ListChangedEventArgs(ListChangedType.ItemAdded, SortedIndex(e.NewIndex)));
             }
             else
               DoSort();
@@ -752,15 +747,13 @@ namespace Csla
           case ListChangedType.ItemChanged:
             // an item changed - just relay the event with
             // a translated index value
-            OnListChanged(
-              new ListChangedEventArgs(
-              ListChangedType.ItemChanged, SortedIndex(e.NewIndex), e.PropertyDescriptor));
+            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, SortedIndex(e.NewIndex), e.PropertyDescriptor));
             break;
 
           case ListChangedType.ItemDeleted:
             var internalIndex = InternalIndex(e.NewIndex);
             var sortedIndex = internalIndex;
-            if ((IsSorted) && (SortDirection == ListSortDirection.Descending))
+            if (IsSorted && (SortDirection == ListSortDirection.Descending))
               sortedIndex = _sortIndex.Count - 1 - internalIndex;
 
             // remove from internal list 
@@ -771,9 +764,7 @@ namespace Csla
               if (item.BaseIndex > e.NewIndex)
                 item.BaseIndex -= 1;
 
-            OnListChanged(
-               new ListChangedEventArgs(
-              ListChangedType.ItemDeleted, sortedIndex, e.PropertyDescriptor));
+            OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, sortedIndex, e.PropertyDescriptor));
             break;
 
           default:
@@ -848,7 +839,6 @@ namespace Csla
       return result;
     }
 
-
     #region ICancelAddNew Members
 
     void ICancelAddNew.CancelNew(int itemIndex)
@@ -883,6 +873,5 @@ namespace Csla
     }
 
     #endregion
-
   }
 }

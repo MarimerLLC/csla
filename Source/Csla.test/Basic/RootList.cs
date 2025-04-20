@@ -11,7 +11,9 @@ namespace Csla.Test.Basic
   [Serializable]
   public class RootList : BusinessBindingListBase<RootList, RootListChild>
   {
-    public RootList()
+
+    [Create, RunLocal]
+    private void Create()
     {
       AllowEdit = true;
       AllowNew = true;

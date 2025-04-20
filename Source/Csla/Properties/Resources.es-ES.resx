@@ -44,6 +44,11 @@
     that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
     
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
@@ -226,20 +231,17 @@
   <data name="MinValueRule" xml:space="preserve">
     <value>{0} no puede ser menor que {1}</value>
   </data>
-  <data name="RegExMatchRule" xml:space="preserve">
-    <value>{0} no coincide con una expresión regular</value>
-  </data>
   <data name="StringMaxLengthRule" xml:space="preserve">
     <value>{0} no puede exceder {1} carácteres</value>
   </data>
   <data name="StringRequiredRule" xml:space="preserve">
     <value>{0} es requerido</value>
   </data>
-  <data name="EditLevelMismatchException" xml:space="preserve">
-    <value>Discrepancia en el nivel de edición en {0}</value>
+  <data name="RegExMatchRule" xml:space="preserve">
+    <value>{0} no coincide con una expresión regular</value>
   </data>
-  <data name="MethodExecuteNotAllowed" xml:space="preserve">
-    <value>Ejecución de método no permitida</value>
+  <data name="TypeLoadException" xml:space="preserve">
+    <value>Ocurrió un error al cargar el tipo '{0}'</value>
   </data>
   <data name="NoSuchFactoryMethod" xml:space="preserve">
     <value>No existe tal método de creación (factory):{0}</value>
@@ -247,32 +249,53 @@
   <data name="StringMinLengthRule" xml:space="preserve">
     <value>{0} no puede ser inferior a {1} carácteres</value>
   </data>
-  <data name="TypeLoadException" xml:space="preserve">
-    <value>Ocurrió un error al cargar el tipo '{0}'</value>
+  <data name="EditLevelMismatchException" xml:space="preserve">
+    <value>Discrepancia en el nivel de edición en {0}</value>
+  </data>
+  <data name="MethodExecuteNotAllowed" xml:space="preserve">
+    <value>Ejecución de método no permitida</value>
+  </data>
+  <data name="FilterRequiredException" xml:space="preserve">
+    <value>Se requieren un parámetro de filtro y un proveedor de filtro</value>
+  </data>
+  <data name="PropertyLoadException" xml:space="preserve">
+    <value>La carga o asignación de la propiedad {0} falló ({1})</value>
+  </data>
+  <data name="UserNotAuthorizedException" xml:space="preserve">
+    <value>Usuario no autorizado a {0} en el tipo de objeto {1}</value>
+  </data>
+  <data name="DatabaseNameNotFound" xml:space="preserve">
+    <value>Nombre de base de datos no encontrado en el archivo de configuración ({0})</value>
+  </data>
+  <data name="PropertyNotRegistered" xml:space="preserve">
+    <value>Una o más propiedades no están registradas para este tipo</value>
+  </data>
+  <data name="FactoryTypeNotFoundException" xml:space="preserve">
+    <value>El tipo o ensamblado de factory no pudo ser cargado ({0})</value>
+  </data>
+  <data name="CannotSerializeCollectionsNotOfIMobileObject" xml:space="preserve">
+    <value>No se pueden serializar colecciones que no sean de tipo IMobileObject</value>
+  </data>
+  <data name="BusyObjectsMayNotBeMarkedBusy" xml:space="preserve">
+    <value>Los objetos que están marcados como 'busy' no pueden ser marcados como 'busy' de nuevo</value>
   </data>
   <data name="BusyObjectsMayNotBeSaved" xml:space="preserve">
     <value>Los objetos marcados como Busy no pueden ser guardados</value>
   </data>
-  <data name="DefaultConstructor" xml:space="preserve">
-    <value>Constructor por defecto</value>
+  <data name="MobileFormatterUnableToDeserialize" xml:space="preserve">
+    <value>El tipo '{0}' no pudo ser deserializado, compruebe que el ensamblado conteniendo esta clase tiene el mismo nombre en Cliente y Servidor y que es referenciado por su aplicación de servidorby your server application</value>
   </data>
-  <data name="MemberNotFoundException" xml:space="preserve">
-    <value>Miembro no encontrado en el objeto ({0})</value>
+  <data name="MustImplementIMobileObject" xml:space="preserve">
+    <value>El tipo {0} debe implementar IMobileObject</value>
+  </data>
+  <data name="ObjectNotSerializableFormatted" xml:space="preserve">
+    <value>Objeto no serializable ({0})</value>
   </data>
   <data name="AuthenticationProviderDoesNotImplementIAuthorizeDataPortal" xml:space="preserve">
     <value>El Proveedor de Autenticación de Csla especificado, no implementa IAuthorizeDataPortal</value>
   </data>
   <data name="AuthorizationProviderNameNotSpecified" xml:space="preserve">
     <value>No se especificó el nombre del Proveedor de Autenticación de Csla en la configuración de la aplicación</value>
-  </data>
-  <data name="BindingSourceNotProvided" xml:space="preserve">
-    <value>No se ha establecido un origen de datos raíz.</value>
-  </data>
-  <data name="BusyObjectsMayNotBeMarkedBusy" xml:space="preserve">
-    <value>Los objetos que están marcados como 'busy' no pueden ser marcados como 'busy' de nuevo</value>
-  </data>
-  <data name="CannotSerializeCollectionsNotOfIMobileObject" xml:space="preserve">
-    <value>No se pueden serializar colecciones que no sean de tipo IMobileObject</value>
   </data>
   <data name="ClientQueryIsInvalid" xml:space="preserve">
     <value>La consulta de cliente no es válida:</value>
@@ -286,8 +309,8 @@
   <data name="CslaAuthenticationProviderNotSet" xml:space="preserve">
     <value>'No se estableció el Proveedor de Autenticación de Csla especificado!</value>
   </data>
-  <data name="DatabaseNameNotFound" xml:space="preserve">
-    <value>Nombre de base de datos no encontrado en el archivo de configuración ({0})</value>
+  <data name="DefaultConstructor" xml:space="preserve">
+    <value>Constructor por defecto</value>
   </data>
   <data name="DeleteMethodNameNotSpecified" xml:space="preserve">
     <value>El nombre del método Delete no se especificó en el atributo MobileFactory</value>
@@ -295,38 +318,11 @@
   <data name="ExceptionOccurredDuringSaveOperation" xml:space="preserve">
     <value>Ocurrió una excepción durante la operación de guardado</value>
   </data>
-  <data name="FactoryTypeNotFoundException" xml:space="preserve">
-    <value>El tipo o ensamblado de factory no pudo ser cargado ({0})</value>
-  </data>
   <data name="FetchMethodNameNotSpecified" xml:space="preserve">
     <value>Fetch method name not specified in MobileFactory attribute</value>
   </data>
-  <data name="FilterRequiredException" xml:space="preserve">
-    <value>Se requieren un parámetro de filtro y un proveedor de filtro</value>
-  </data>
-  <data name="IManagePropertiesRequiredException" xml:space="preserve">
-    <value>El objeto de destino debe implementar IManageProperties</value>
-  </data>
-  <data name="MobileFormatterUnableToDeserialize" xml:space="preserve">
-    <value>El tipo '{0}' no pudo ser deserializado, compruebe que el ensamblado conteniendo esta clase tiene el mismo nombre en Cliente y Servidor y que es referenciado por su aplicación de servidorby your server application</value>
-  </data>
-  <data name="MustImplementIMobileObject" xml:space="preserve">
-    <value>El tipo {0} debe implementar IMobileObject</value>
-  </data>
-  <data name="ObjectNotSerializableFormatted" xml:space="preserve">
-    <value>Objeto no serializable ({0})</value>
-  </data>
   <data name="ObjectTypeCouldNotBeLoaded" xml:space="preserve">
     <value>El tipo de objeto o ensamblado no pudo ser cargado ({0})</value>
-  </data>
-  <data name="PropertyLoadException" xml:space="preserve">
-    <value>La carga o asignación de la propiedad {0} falló ({1})</value>
-  </data>
-  <data name="PropertyNotRegistered" xml:space="preserve">
-    <value>Una o más propiedades no están registradas para este tipo</value>
-  </data>
-  <data name="PropertyRegisterNotAllowed" xml:space="preserve">
-    <value>No se puede registrar la propiedad {0} después de que el tipo contenedor haya sido instanciado</value>
   </data>
   <data name="SortingNotSupported" xml:space="preserve">
     <value>Ordenación no soportada</value>
@@ -334,7 +330,20 @@
   <data name="UpdateMethodNameNotSpecified" xml:space="preserve">
     <value>El nombre del método Update no se especificó en el atributo MobileFactory</value>
   </data>
-  <data name="UserNotAuthorizedException" xml:space="preserve">
-    <value>Usuario no autorizado a {0} en el tipo de objeto {1}</value>
+  <data name="BindingSourceNotProvided" xml:space="preserve">
+    <value>No se ha establecido un origen de datos raíz.</value>
+  </data>
+  <data name="MemberNotFoundException" xml:space="preserve">
+    <value>Miembro no encontrado en el objeto ({0})</value>
+  </data>
+  <data name="IManagePropertiesRequiredException" xml:space="preserve">
+    <value>El objeto de destino debe implementar IManageProperties</value>
+  </data>
+  <data name="PropertyRegisterNotAllowed" xml:space="preserve">
+    <value>No se puede registrar la propiedad {0} después de que el tipo contenedor haya sido instanciado</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UnexpectedSerializationInfoObjectData" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

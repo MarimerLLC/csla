@@ -6,7 +6,6 @@
 // <summary>Defines interface for a client-side cache service</summary>
 //-----------------------------------------------------------------------
 
-#nullable enable
 namespace Csla.DataPortalClient
 {
   /// <summary>
@@ -35,4 +34,3 @@ namespace Csla.DataPortalClient
       Func<Task<Server.DataPortalResult>> portal);
   }
 }
-#nullable disable

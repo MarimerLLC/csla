@@ -23,6 +23,11 @@ namespace Csla
   public class ApplicationContext
   {
     /// <summary>
+    /// For internal usage ONLY. Is only intended to be used in situations where an application context dependency is required but actually not used.
+    /// </summary>
+    internal static Lazy<ApplicationContext> DummyApplicationContext { get; } = new Lazy<ApplicationContext>(() => new ApplicationContext());
+
+    /// <summary>
     /// Creates a new instance of the type
     /// </summary>
     /// <param name="applicationContextAccessor"></param>
@@ -30,6 +35,12 @@ namespace Csla
     {
       ApplicationContextAccessor = applicationContextAccessor;
       ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
+    }
+
+#pragma warning disable CS8618 // Ctor to create a dummy instance which is required but is not used in the used contextt
+    private ApplicationContext()
+#pragma warning restore CS8618 // 
+    {
     }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
@@ -47,8 +58,8 @@ namespace Csla
     /// </summary>
     public ClaimsPrincipal Principal
     {
-      get { return (ClaimsPrincipal)User; }
-      set { User = value; }
+      get => (ClaimsPrincipal)User;
+      set => User = value;
     }
 
     /// <summary>
@@ -61,10 +72,11 @@ namespace Csla
     /// is used, otherwise the current Thread.CurrentPrincipal
     /// value is used.
     /// </remarks>
+    [AllowNull]
     public IPrincipal User
     {
-      get { return ContextManager.GetUser(); }
-      set { ContextManager.SetUser(value ?? new ClaimsPrincipal(new ClaimsIdentity())); }
+      get => ContextManager.GetUser();
+      set => ContextManager.SetUser(value ?? new ClaimsPrincipal(new ClaimsIdentity()));
     }
 
     /// <summary>
@@ -84,7 +96,7 @@ namespace Csla
     {
       get
       {
-        IContextDictionary ctx = ContextManager.GetLocalContext();
+        IContextDictionary? ctx = ContextManager.GetLocalContext();
         if (ctx == null)
         {
           ctx = new ContextDictionary();
@@ -121,7 +133,7 @@ namespace Csla
       {
         lock (_syncContext)
         {
-          IContextDictionary ctx = ContextManager.GetClientContext(ExecutionLocation);
+          IContextDictionary? ctx = ContextManager.GetClientContext(ExecutionLocation);
           if (ctx == null)
           {
             ctx = new ContextDictionary();
@@ -132,7 +144,7 @@ namespace Csla
       }
     }
 
-    internal void SetContext(IContextDictionary clientContext)
+    internal void SetContext(IContextDictionary? clientContext)
     {
       lock (_syncContext)
         ContextManager.SetClientContext(clientContext, ExecutionLocation);
@@ -251,13 +263,10 @@ namespace Csla
     {
       get
       {
-        var ruleSet = (string)ClientContext.GetValueOrNull("__ruleSet");
-        return string.IsNullOrEmpty(ruleSet) ? DefaultRuleSet : ruleSet;
+        var ruleSet = (string?)ClientContext.GetValueOrNull("__ruleSet");
+        return string.IsNullOrEmpty(ruleSet) ? DefaultRuleSet : ruleSet!;
       }
-      set
-      {
-        ClientContext["__ruleSet"] = value;
-      }
+      set => ClientContext["__ruleSet"] = value;
     }
 
     #endregion
@@ -289,7 +298,7 @@ namespace Csla
     {
       get
       {
-        object location = LocalContext.GetValueOrNull("__logicalExecutionLocation");
+        object? location = LocalContext.GetValueOrNull("__logicalExecutionLocation");
         if (location != null)
           return (LogicalExecutionLocations)location;
         else
@@ -326,10 +335,8 @@ namespace Csla
     /// <typeparam name="T">Type of service/object to create.</typeparam>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     public T GetRequiredService<T>()
+      where T: notnull
     {
-      if (CurrentServiceProvider == null)
-        throw new NullReferenceException(nameof(CurrentServiceProvider));
-
       try
       {
         var result = CurrentServiceProvider.GetRequiredService<T>();
@@ -368,11 +375,7 @@ namespace Csla
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstanceDI<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>(params object[] parameters)
+    public T CreateInstanceDI<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]T>(params object[] parameters)
     {
       return (T)CreateInstanceDI(typeof(T), parameters);
     }
@@ -383,11 +386,7 @@ namespace Csla
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Manually passed in parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public object CreateInstanceDI(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, params object[] parameters)
+    public object CreateInstanceDI([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]Type objectType, params object[] parameters)
     {
       try
       {
@@ -420,11 +419,7 @@ namespace Csla
     /// <typeparam name="T">Type of object to create.</typeparam>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public T CreateInstance<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      T>(params object[] parameters)
+    public T CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object[] parameters)
     {
       return (T)CreateInstance(typeof(T), parameters);
     }
@@ -435,14 +430,9 @@ namespace Csla
     /// <param name="objectType">Type of object to create</param>
     /// <param name="parameters">Parameters for constructor</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public object CreateInstance(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, params object[] parameters)
+    public object CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object[] parameters)
     {
-      object result;
-      result = Activator.CreateInstance(objectType, parameters);
+      object result = Activator.CreateInstance(objectType, parameters) ?? throw new InvalidOperationException("Internal: Nullable types can not be instantiated.");
       if (result is IUseApplicationContext tmp)
       {
         tmp.ApplicationContext = this;
@@ -461,6 +451,5 @@ namespace Csla
       var gt = genericType.MakeGenericType(paramTypes);
       return CreateInstance(gt);
     }
-
   }
 }

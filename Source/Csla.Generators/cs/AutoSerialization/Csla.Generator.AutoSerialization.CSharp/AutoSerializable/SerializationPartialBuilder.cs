@@ -121,6 +121,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
 
       requiredNamespaces.Remove(typeDefinition.Namespace);
 
+      requiredNamespaces.Remove("");
+
       return requiredNamespaces;
     }
 
@@ -361,7 +363,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
       textWriter.Write(memberDefinition.TypeDefinition.TypeName);
       textWriter.Write(">(nameof(");
       textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine("));");
+      textWriter.Write("))");
+      if (nullable)
+      {
+        textWriter.Write('!');
+      }
+      textWriter.WriteLine(';');
     }
 
     /// <summary>

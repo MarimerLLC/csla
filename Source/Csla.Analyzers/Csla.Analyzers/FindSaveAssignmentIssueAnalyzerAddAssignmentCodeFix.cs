@@ -19,12 +19,12 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue);
+    public override ImmutableArray<string> FixableDiagnosticIds => [Constants.AnalyzerIdentifiers.FindSaveAssignmentIssue];
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     /// <summary>
     /// 
@@ -32,14 +32,21 @@ namespace Csla.Analyzers
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+      if (root is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var invocationNode = root.FindNode(diagnostic.Location.SourceSpan) as InvocationExpressionSyntax;
 
-      var invocationIdentifier = ((invocationNode.Expression as MemberAccessExpressionSyntax)
-        .Expression as IdentifierNameSyntax).Identifier;
+      if (invocationNode?.Expression is not MemberAccessExpressionSyntax memberAccessExpressionSyntax || memberAccessExpressionSyntax.Expression is not IdentifierNameSyntax identifierNameSyntax)
+      {
+        return;
+      }
+      var invocationIdentifier = identifierNameSyntax.Identifier;
       var leadingTrivia = invocationIdentifier.HasLeadingTrivia ? 
         invocationIdentifier.LeadingTrivia : new SyntaxTriviaList();
 

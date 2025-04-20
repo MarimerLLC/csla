@@ -26,14 +26,18 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedPropertyDefinition ExtractPropertyDefinition(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
-      ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition();
-
-      propertyDefinition.PropertyName = GetPropertyName(propertyDeclaration);
-      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(propertyDeclaration);
-      propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
-      propertyDefinition.TypeDefinition.IsAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type);
-      propertyDefinition.TypeDefinition.ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(propertyDeclaration.Type);
-      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(propertyDeclaration);
+      ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition
+      {
+        PropertyName = GetPropertyName(propertyDeclaration),
+        TypeDefinition = new ExtractedMemberTypeDefinition
+        {
+          TypeName = GetPropertyTypeName(propertyDeclaration),
+          TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type),
+          IsAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type),
+          ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(propertyDeclaration.Type),
+          Nullable = GetFieldTypeNullable(propertyDeclaration)
+        }
+      };
 
       return propertyDefinition;
     }

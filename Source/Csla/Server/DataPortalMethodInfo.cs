@@ -10,35 +10,22 @@ namespace Csla.Server
 {
   internal class DataPortalMethodInfo
   {
-    public bool RunLocal { get; private set; }
+    public bool RunLocal { get; }
 #if !(ANDROID || IOS) 
-    public TransactionalAttribute TransactionalAttribute { get; private set; }
+    public TransactionalAttribute TransactionalAttribute { get; }
 #else
     public TransactionalTypes TransactionalType { get; private set; }
 #endif
 
-    public DataPortalMethodInfo()
+
+    public DataPortalMethodInfo(System.Reflection.MethodInfo info)
     {
+      RunLocal = IsRunLocal(info);
 #if !(ANDROID || IOS) 
-      TransactionalAttribute = new TransactionalAttribute(TransactionalTypes.Manual);
+      TransactionalAttribute = GetTransactionalAttribute(info);
 #else
       TransactionalType = TransactionalTypes.Manual;
 #endif
-
-    }
-
-    public DataPortalMethodInfo(System.Reflection.MethodInfo info)
-      : this()
-    {
-      if (info != null)
-      {
-        RunLocal = IsRunLocal(info);
-#if !(ANDROID || IOS) 
-        TransactionalAttribute = GetTransactionalAttribute(info);
-#else
-        TransactionalType = TransactionalTypes.Manual;
-#endif
-      }
     }
 
     private static bool IsRunLocal(System.Reflection.MethodInfo method)
@@ -53,9 +40,7 @@ namespace Csla.Server
       TransactionalAttribute result;
       if (IsTransactionalMethod(method))
       {
-        result =
-          (TransactionalAttribute)Attribute.GetCustomAttribute(
-          method, typeof(TransactionalAttribute));
+        result = (TransactionalAttribute)Attribute.GetCustomAttribute(method, typeof(TransactionalAttribute))!;
       }
       else
         result = new TransactionalAttribute(TransactionalTypes.Manual);

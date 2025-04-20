@@ -5,8 +5,6 @@
 // </copyright>
 // <summary>Defines the interface for an application </summary>
 //-----------------------------------------------------------------------
-#nullable enable
-
 using System.Security.Principal;
 
 namespace Csla.Core
@@ -38,6 +36,7 @@ namespace Csla.Core
     /// Sets the current principal.
     /// </summary>
     /// <param name="principal">Principal object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="principal"/> is <see langword="null"/>.</exception>
     void SetUser(IPrincipal principal);
     /// <summary>
     /// Gets the local context.

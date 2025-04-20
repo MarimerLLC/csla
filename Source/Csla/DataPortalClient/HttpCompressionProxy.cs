@@ -17,9 +17,7 @@ namespace Csla.Channels.Http
   /// Implements a data portal proxy to relay data portal
   /// calls to a remote application server by using http.
   /// </summary>
-#if NET8_0_OR_GREATER
   [UnsupportedOSPlatform("browser")]
-#endif
   public class HttpCompressionProxy : HttpProxy
   {
     /// <summary>
@@ -37,7 +35,7 @@ namespace Csla.Channels.Http
     /// Gets an HttpClientHandler for use
     /// in initializing the HttpClient instance.
     /// </summary>
-    protected override HttpClientHandler GetHttpClientHandler()
+    protected override HttpClientHandler? GetHttpClientHandler()
     {
       var result = new HttpClientHandler();
       if (!Options.UseTextSerialization)

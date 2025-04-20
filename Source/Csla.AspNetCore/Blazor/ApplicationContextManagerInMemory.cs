@@ -110,10 +110,7 @@ namespace Csla.AspNetCore.Blazor
     /// context manager is valid for use in
     /// the current environment.
     /// </summary>
-    public bool IsValid
-    {
-      get { return ActiveCircuitState.CircuitExists; }
-    }
+    public bool IsValid => ActiveCircuitState.CircuitExists;
 
     /// <summary>
     /// Gets a value indicating whether the context manager
@@ -129,13 +126,11 @@ namespace Csla.AspNetCore.Blazor
       return CurrentPrincipal;
     }
 
-    /// <summary>
-    /// Attempts to set the current principal on the registered
-    /// IHostEnvironmentAuthenticationStateProvider service.
-    /// </summary>
-    /// <param name="principal">Principal object.</param>
+    /// <inheritdoc />
     public virtual void SetUser(IPrincipal principal)
     {
+      ArgumentNullException.ThrowIfNull(principal);
+      
       if (!ReferenceEquals(CurrentPrincipal, principal))
       {
         if (ActiveCircuitState.CircuitExists)
@@ -151,7 +146,11 @@ namespace Csla.AspNetCore.Blazor
         }
         else if (HttpContext is not null)
         {
-          HttpContext.User = (ClaimsPrincipal)principal;
+          if (principal is not ClaimsPrincipal claimsPrincipal)
+          {
+            throw new ArgumentException("typeof(principal) != ClaimsPrincipal");
+          }
+          HttpContext.User = claimsPrincipal;
         }
         else
         {

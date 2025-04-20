@@ -6,18 +6,16 @@ namespace Csla.Analyzers.Extensions
 {
   internal static class SyntaxNodeExtensions
   {
-    internal static bool HasUsing(this SyntaxNode @this, string qualifiedName)
+    internal static bool HasUsing(this SyntaxNode? @this, string qualifiedName)
     {
       if (@this == null)
       {
         return false;
       }
 
-      if (@this.IsKind(SyntaxKind.UsingDirective))
+      if (@this.IsKind(SyntaxKind.UsingDirective) && @this is UsingDirectiveSyntax usingNode)
       {
-        var usingNode = @this as UsingDirectiveSyntax;
-
-        if (usingNode.Name.ToFullString() == qualifiedName)
+        if (usingNode.Name?.ToFullString() == qualifiedName)
         {
           return true;
         }
@@ -26,7 +24,7 @@ namespace Csla.Analyzers.Extensions
       return @this.ChildNodes().Any(_ => _.HasUsing(qualifiedName));
     }
 
-    internal static T FindParent<T>(this SyntaxNode @this)
+    internal static T? FindParent<T>(this SyntaxNode @this)
       where T : SyntaxNode
     {
       var parentNode = @this.Parent;

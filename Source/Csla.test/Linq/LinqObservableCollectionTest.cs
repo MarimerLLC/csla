@@ -448,10 +448,6 @@ namespace Csla.Test.Linq
   [Serializable]
   public class TestList : BusinessListBase<TestList, TestItem>
   {
-    public TestList()
-    {
-    }
-
     public static TestList NewTestList(IDataPortal<TestList> dataPortal)
     {
       return dataPortal.Create();

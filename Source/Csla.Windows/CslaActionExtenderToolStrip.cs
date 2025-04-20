@@ -71,7 +71,7 @@ namespace Csla.Windows
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
     public object DataSource
     {
-      get { return _dataSource; }
+      get => _dataSource;
       set
       {
         if (value != null)

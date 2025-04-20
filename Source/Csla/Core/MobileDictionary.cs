@@ -18,15 +18,7 @@ namespace Csla.Core
   /// <typeparam name="K">Key value: any primitive or IMobileObject type.</typeparam>
   /// <typeparam name="V">Value: any primitive or IMobileObject type.</typeparam>
   [Serializable]
-  public class MobileDictionary<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    K,
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    V> : Dictionary<K, V>, IMobileObject
+  public class MobileDictionary<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] K, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] V> : Dictionary<K, V>, IMobileObject where K: notnull
   {
     private bool _keyIsMobile;
     private bool _valueIsMobile;
@@ -71,6 +63,7 @@ namespace Csla.Core
     /// are copied to the new dictionary.
     /// </summary>
     /// <param name="dict">Source dictionary.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="dict"/> is <see langword="null"/>.</exception>
     public MobileDictionary(Dictionary<K, V> dict)
       : base(dict)
     {
@@ -83,8 +76,12 @@ namespace Csla.Core
     /// value.
     /// </summary>
     /// <param name="key">Key value</param>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool Contains(K key)
     {
+      if (key is null)
+        throw new ArgumentNullException(nameof(key));
+
       return ContainsKey(key);
     }
 
@@ -115,7 +112,7 @@ namespace Csla.Core
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
     {
       int count = 0;
-      foreach (var key in Keys)
+      foreach (var (key, value) in this)
       {
         if (_keyIsMobile)
         {
@@ -134,7 +131,6 @@ namespace Csla.Core
         }
         else
         {
-          V value = this[key];
           info.AddValue(_valuePrefix + count, value);
         }
         count++;
@@ -161,15 +157,15 @@ namespace Csla.Core
       {
         K key;
         if (_keyIsMobile)
-          key = (K)formatter.GetObject(info.Children[_keyPrefix + index].ReferenceId);
+          key = (K)(formatter.GetObject(info.Children[_keyPrefix + index].ReferenceId) ?? throw new InvalidOperationException());
         else
-          key = info.GetValue<K>(_keyPrefix + index);
+          key = info.GetValue<K>(_keyPrefix + index)!;
 
         V value;
         if (_valueIsMobile)
-          value = (V)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId);
+          value = (V)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId)!;
         else
-          value = info.GetValue<V>(_valuePrefix + index);
+          value = info.GetValue<V>(_valuePrefix + index)!;
 
         Add(key, value);
       }

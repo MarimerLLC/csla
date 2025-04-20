@@ -30,10 +30,7 @@ namespace Csla.Web
     /// context manager is valid for use in
     /// the current environment.
     /// </summary>
-    public bool IsValid
-    {
-      get { return HttpContext.Current != null; }
-    }
+    public bool IsValid => HttpContext.Current != null;
 
     /// <summary>
     /// Gets a value indicating whether the current runtime
@@ -55,13 +52,10 @@ namespace Csla.Web
       return result;
     }
 
-    /// <summary>
-    /// Sets the current principal.
-    /// </summary>
-    /// <param name="principal">Principal object.</param>
+    /// <inheritdoc />
     public void SetUser(System.Security.Principal.IPrincipal principal)
     {
-      HttpContext.Current.User = principal;
+      HttpContext.Current.User = principal ?? throw new ArgumentNullException(nameof(principal));
     }
 
     /// <summary>
@@ -107,14 +101,8 @@ namespace Csla.Web
     /// </summary>
     public ApplicationContext ApplicationContext
     {
-      get
-      {
-        return (ApplicationContext)HttpContext.Current.Items[_applicationContextName];
-      }
-      set
-      {
-        HttpContext.Current.Items[_applicationContextName] = value;
-      }
+      get => (ApplicationContext)HttpContext.Current.Items[_applicationContextName];
+      set => HttpContext.Current.Items[_applicationContextName] = value;
     }
   }
 }

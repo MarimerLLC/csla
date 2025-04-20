@@ -33,23 +33,4 @@ namespace Csla.Analyzers
     /// </summary>
     public static readonly LocalizableResourceString RulesStaticMessage = new(nameof(Resources.ObjectAuthorizationRulesAttribute_RulesStaticMessage), Resources.ResourceManager, typeof(Resources));
   }
-
-  /// <summary>
-  /// 
-  /// </summary>
-  public static class ObjectAuthorizationRulesAttributeAnalyzerAddAttributeCodeFixConstants
-  {
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string AddAttributeAndUsingDescription => Resources.Shared_AddAttributeAndUsingDescription;
-    /// <summary>
-    /// 
-    /// </summary>
-    public static string AddAttributeDescription => Resources.Shared_AddAttributeDescription;
-    /// <summary>
-    /// 
-    /// </summary>
-    public const string CslaNamespace = "Csla";
-  }
 }

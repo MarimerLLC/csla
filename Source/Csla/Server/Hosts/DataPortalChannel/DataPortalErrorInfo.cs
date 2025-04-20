@@ -6,6 +6,8 @@
 // <summary>Message containing details about any</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization.Mobile;
+
 using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Server.Hosts.DataPortalChannel
@@ -27,8 +29,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string ExceptionTypeName
     {
-      get { return GetProperty(ExceptionTypeNameProperty); }
-      private set { LoadProperty(ExceptionTypeNameProperty, value); }
+      get => GetProperty(ExceptionTypeNameProperty)!;
+      private set => LoadProperty(ExceptionTypeNameProperty, value);
     }
 
     /// <summary>
@@ -41,8 +43,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string Message
     {
-      get { return GetProperty(MessageProperty); }
-      private set { LoadProperty(MessageProperty, value); }
+      get => GetProperty(MessageProperty)!;
+      private set => LoadProperty(MessageProperty, value);
     }
 
     /// <summary>
@@ -55,8 +57,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string StackTrace
     {
-      get { return GetProperty(StackTraceProperty); }
-      private set { LoadProperty(StackTraceProperty, value); }
+      get => GetProperty(StackTraceProperty)!;
+      private set => LoadProperty(StackTraceProperty, value);
     }
 
     /// <summary>
@@ -69,22 +71,8 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// </summary>
     public string Source
     {
-      get { return GetProperty(SourceProperty); }
-      private set { LoadProperty(SourceProperty, value); }
-    }
-
-    /// <summary>
-    /// TargetSiteName of the exception object.
-    /// </summary>
-    public static readonly PropertyInfo<string> TargetSiteNameProperty = RegisterProperty<string>(c => c.TargetSiteName);
-
-    /// <summary>
-    /// TargetSiteName of the exception object.
-    /// </summary>
-    public string TargetSiteName
-    {
-      get { return GetProperty(TargetSiteNameProperty); }
-      private set { LoadProperty(TargetSiteNameProperty, value); }
+      get => GetProperty(SourceProperty)!;
+      private set => LoadProperty(SourceProperty, value);
     }
 
     /// <summary>
@@ -92,33 +80,37 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// about any inner exception of the original
     /// exception.
     /// </summary>
-    public static readonly PropertyInfo<DataPortalErrorInfo> InnerErrorProperty = RegisterProperty<DataPortalErrorInfo>(c => c.InnerError);
+    public static readonly PropertyInfo<DataPortalErrorInfo?> InnerErrorProperty = RegisterProperty<DataPortalErrorInfo?>(nameof(InnerError));
 
     /// <summary>
     /// HttpErrorInfo object containing information
     /// about any inner exception of the original
     /// exception.
     /// </summary>
-    public DataPortalErrorInfo InnerError
+    public DataPortalErrorInfo? InnerError
     {
-      get { return GetProperty(InnerErrorProperty); }
-      private set { LoadProperty(InnerErrorProperty, value); }
+      get => GetProperty(InnerErrorProperty);
+      private set => LoadProperty(InnerErrorProperty, value);
     }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext">Current ApplicationContext</param>
-    /// <param name="ex">
-    /// The Exception to encapusulate.
-    /// </param>
+    /// <param name="ex">The Exception to encapsulate.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="ex"/> is <see langword="null"/>.</exception>
     public DataPortalErrorInfo(ApplicationContext applicationContext, Exception ex)
     {
+      if (applicationContext is null)
+        throw new ArgumentNullException(nameof(applicationContext));
+      if (ex is null)
+        throw new ArgumentNullException(nameof(ex));
+
       ApplicationContext = applicationContext;
-      ExceptionTypeName = ex.GetType().FullName;
+      ExceptionTypeName = ex.GetType().FullName!;
       Message = ex.Message;
-      StackTrace = ex.StackTrace;
-      Source = ex.Source;
+      StackTrace = ex.StackTrace ?? string.Empty;
+      Source = ex.Source ?? string.Empty;
       if (ex.InnerException != null)
         InnerError = ApplicationContext.CreateInstance<DataPortalErrorInfo>(ApplicationContext, ex.InnerException);
     }
@@ -126,6 +118,7 @@ namespace Csla.Server.Hosts.DataPortalChannel
     /// <summary>
     /// Creates an empty instance of the type.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
     public DataPortalErrorInfo()
     { }
   }

@@ -29,7 +29,7 @@ namespace Csla.Reflection
       }
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
       if (obj is MethodCacheKey key &&
           key.TypeName == TypeName &&

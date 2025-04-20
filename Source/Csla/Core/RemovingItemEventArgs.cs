@@ -18,7 +18,7 @@ namespace Csla.Core
     /// Gets a reference to the item that was
     /// removed from the list.
     /// </summary>
-    public object RemovingItem { get; }
+    public object? RemovingItem { get; }
 
     /// <summary>
     /// Create an instance of the object.
@@ -27,7 +27,7 @@ namespace Csla.Core
     /// A reference to the item that was 
     /// removed from the list.
     /// </param>
-    public RemovingItemEventArgs(object removingItem)
+    public RemovingItemEventArgs(object? removingItem)
     {
       RemovingItem = removingItem;
     }

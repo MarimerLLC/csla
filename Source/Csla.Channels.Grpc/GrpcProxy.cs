@@ -46,6 +46,9 @@ namespace Csla.Channels.Grpc
     private static GrpcChannel? _defaultChannel;
     private string? _versionRoutingTag;
 
+    /// <inheritdoc />
+    public override string DataPortalUrl { get; }
+
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
     /// </summary>
@@ -91,7 +94,7 @@ namespace Csla.Channels.Grpc
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialized response from server</returns>
-    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync)
     {
       ByteString outbound = ByteString.CopyFrom(serialized);
       var request = new RequestMessage
@@ -112,8 +115,8 @@ namespace Csla.Channels.Grpc
       return await GetGrpcClient().InvokeAsync(request);
     }
 
-    private static string CreateOperationTag(string operation, string? versionToken, string routingToken)
-    {
+   private static string CreateOperationTag(string operation, string? versionToken, string? routingToken)
+   {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
         return $"{operation}/{routingToken}-{versionToken}";
       return operation;

@@ -25,15 +25,16 @@ namespace Csla.DataPortalClient
     /// 
     /// </summary>
     /// <param name="applicationContext"></param>
-    public DataPortalProxy(ApplicationContext applicationContext)
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    protected DataPortalProxy(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    protected ApplicationContext ApplicationContext { get; set; }
+    protected ApplicationContext ApplicationContext { get; }
 
     /// <summary>
     /// Gets a value indicating whether the data portal
@@ -46,53 +47,39 @@ namespace Csla.DataPortalClient
     /// Gets the URL address for the data portal server
     /// used by this proxy instance.
     /// </summary>
-    public string DataPortalUrl { get; protected set; }
+    public abstract string DataPortalUrl { get; }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to create a
-    /// new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Create(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async virtual Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
-        var request = GetBaseCriteriaRequest();
-        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (criteria is not IMobileObject)
-        {
-          criteria = new PrimitiveCriteria(criteria);
-        }
-        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
+        var request = GetBaseCriteriaRequest(criteria);
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
+        
         request = ConvertRequest(request);
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
         serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
 
-        if (response.ErrorData == null)
+        if (!response.HasError)
         {
           var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -111,53 +98,38 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to load an
-    /// existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Fetch(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async virtual Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
-        var request = GetBaseCriteriaRequest();
-        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (criteria is not IMobileObject)
-        {
-          criteria = new PrimitiveCriteria(criteria);
-        }
-        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
+        var request = GetBaseCriteriaRequest(criteria);
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "fetch", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
-        if (response.ErrorData == null)
+        if (!response.HasError)
         {
           var obj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, obj, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -176,43 +148,36 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to update a
-    /// business object.
-    /// </summary>
-    /// <param name="obj">The business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async virtual Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
-        var request = GetBaseUpdateCriteriaRequest();
-        request.ObjectData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(obj);
+        var request = GetBaseUpdateCriteriaRequest(obj);
+        
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "update", GetRoutingToken(obj.GetType()), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
-        if (response.ErrorData == null)
+        if (!response.HasError)
         {
           var newobj = ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(response.ObjectData);
           result = new DataPortalResult(ApplicationContext, newobj, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -231,52 +196,37 @@ namespace Csla.DataPortalClient
       return result;
     }
 
-    /// <summary>
-    /// Called by <see cref="DataPortal" /> to delete a
-    /// business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async virtual Task<DataPortalResult> Delete(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async virtual Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
       DataPortalResult result;
       try
       {
-        var request = GetBaseCriteriaRequest();
-        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName);
-        if (criteria is not IMobileObject)
-        {
-          criteria = new PrimitiveCriteria(criteria);
-        }
-        request.CriteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
+        var request = GetBaseCriteriaRequest(criteria);
+        request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
 
         serialized = await CallDataPortalServer(serialized, "delete", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
 
-        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized);
+        var response = (DataPortalResponse)ApplicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(serialized)!;
         response = ConvertResponse(response);
         if (response.ErrorData == null)
         {
           result = new DataPortalResult(ApplicationContext, null, null);
         }
-        else if (response.ErrorData != null)
+        else
         {
           var ex = new DataPortalException(response.ErrorData);
           result = new DataPortalResult(ApplicationContext, null, ex);
-        }
-        else
-        {
-          throw new DataPortalException("null response", null);
         }
       }
       catch (Exception ex)
@@ -334,11 +284,11 @@ namespace Csla.DataPortalClient
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialized response from server</returns>
-    protected abstract Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync);
+    protected abstract Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync);
 
-    private static string GetRoutingToken(Type objectType)
-    {
-      string result = null;
+   private static string? GetRoutingToken(Type objectType)
+   {
+      string? result = null;
       var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);
       if (list.Length > 0)
         result = ((DataPortalServerRoutingTagAttribute)list[0]).RoutingTag;
@@ -368,41 +318,38 @@ namespace Csla.DataPortalClient
 
     }
 
-    internal bool ExecutionIsNotOnLogicalOrPhysicalServer
-    {
-      get
-      {
-        return ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server
-          && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server;
-      }
-    }
+    internal bool ExecutionIsNotOnLogicalOrPhysicalServer =>
+      ApplicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server
+      && ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server;
 
     #region Criteria
 
-    private CriteriaRequest GetBaseCriteriaRequest()
+    private CriteriaRequest GetBaseCriteriaRequest(object criteria)
     {
-      var result = ApplicationContext.CreateInstanceDI<CriteriaRequest>();
-      var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
-      result.CriteriaData = null;
-      result.ClientContext = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ApplicationContext.ClientContext);
-      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>()
-          .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
-      result.ClientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
-      result.ClientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
-      return result;
+      if (criteria is not IMobileObject)
+        criteria = new PrimitiveCriteria(criteria);
+      
+      var criteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
+
+      return CreateRequest<CriteriaRequest>(criteriaData); 
     }
 
-    private UpdateRequest GetBaseUpdateCriteriaRequest()
+    private UpdateRequest GetBaseUpdateCriteriaRequest(object obj)
     {
-      var result = ApplicationContext.CreateInstanceDI<UpdateRequest>();
+      return CreateRequest<UpdateRequest>(ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(obj));
+    }
+
+    private T CreateRequest<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(object payload)
+    {
       var securityOptions = ApplicationContext.GetRequiredService<SecurityOptions>();
-      result.ObjectData = null;
-      result.ClientContext = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(ApplicationContext.ClientContext);
-      result.Principal = ApplicationContext.GetRequiredService<ISerializationFormatter>()
-          .Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
-      result.ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
-      result.ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
-      return result;
+
+      var serializer = ApplicationContext.GetRequiredService<ISerializationFormatter>();
+      var clientContext = serializer.Serialize(ApplicationContext.ClientContext);
+      var principal = serializer.Serialize(securityOptions.FlowSecurityPrincipalFromClient ? ApplicationContext.User : null);
+      var clientCulture = System.Globalization.CultureInfo.CurrentCulture.Name;
+      var clientUICulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+
+      return ApplicationContext.CreateInstanceDI<T>(principal, clientContext, clientCulture, clientUICulture, payload);
     }
 
     #endregion Criteria

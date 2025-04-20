@@ -106,7 +106,7 @@ namespace Csla.Xaml
     private void UnHookDataContextEvents(object oldValue)
     {
       // unhook any old event handling
-      object oldContext = null;
+      object oldContext;
 
       if (oldValue is not DataSourceProvider provider)
       {
@@ -128,7 +128,7 @@ namespace Csla.Xaml
     private void HookDataContextEvents(object newValue)
     {
       // hook any new event
-      object newContext = null;
+      object newContext;
 
       if (newValue is not DataSourceProvider provider)
       {

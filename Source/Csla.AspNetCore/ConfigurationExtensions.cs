@@ -47,6 +47,7 @@ namespace Csla.Configuration
       config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
 #endif
       config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerHttpContext));
+      config.Services.AddHttpContextAccessor();
       return config;
     }
   }

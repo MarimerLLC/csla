@@ -249,12 +249,12 @@ namespace Csla.Analyzers
     public static IEnumerable<FieldDeclarationSyntax> GetFieldDeclarations(PropertyDeclarationSyntax propertyDeclaration, SemanticModel semanticModel)
     {
       var classDeclaration = propertyDeclaration.FirstAncestorOrSelf<ClassDeclarationSyntax>();
-      var propertyType = semanticModel.GetTypeInfo(propertyDeclaration.Type).Type;
-      // Check if the classDeclaration is null
-      if (classDeclaration == null)
+      if (classDeclaration is null)
       {
-        throw new ArgumentNullException(nameof(classDeclaration));
+        return [];
       }
+
+      var propertyType = semanticModel.GetTypeInfo(propertyDeclaration.Type).Type;
 
       // Find all field declarations in the class
       var fieldDeclarations = classDeclaration.Members.OfType<FieldDeclarationSyntax>();

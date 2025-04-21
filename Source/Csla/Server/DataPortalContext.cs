@@ -90,7 +90,7 @@ namespace Csla.Server
     public DataPortalContext(ApplicationContext applicationContext, bool isRemotePortal)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      Principal = GetPrincipal(applicationContext, isRemotePortal);
+      Principal = DataPortalContext.GetPrincipal(applicationContext, isRemotePortal);
       IsRemotePortal = isRemotePortal;
       ClientCulture = Thread.CurrentThread.CurrentCulture.Name;
       ClientUICulture = Thread.CurrentThread.CurrentUICulture.Name;
@@ -126,7 +126,7 @@ namespace Csla.Server
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
     { }
 
-    private IPrincipal? GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
+    private static IPrincipal? GetPrincipal(ApplicationContext applicationContext, bool isRemotePortal)
     {
       var securityOptions = applicationContext.GetRequiredService<SecurityOptions>();
       if (isRemotePortal && !securityOptions.FlowSecurityPrincipalFromClient)

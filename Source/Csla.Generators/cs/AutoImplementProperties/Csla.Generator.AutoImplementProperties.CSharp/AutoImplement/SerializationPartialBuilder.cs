@@ -53,7 +53,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// Append the start of a code block, indenting the writer
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the block start</param>
-    private void AppendBlockStart(IndentedTextWriter textWriter)
+    private static void AppendBlockStart(IndentedTextWriter textWriter)
     {
       textWriter.WriteLine('{');
       textWriter.Indent++;
@@ -63,7 +63,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// Append the end of a code block, having first unindented the writer
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the block end</param>
-    private void AppendBlockEnd(IndentedTextWriter textWriter)
+    private static void AppendBlockEnd(IndentedTextWriter textWriter)
     {
       textWriter.Indent--;
       textWriter.WriteLine('}');
@@ -75,7 +75,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the usings</param>
     /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendUsingStatements(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+    private static void AppendUsingStatements(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
     {
       HashSet<string> requiredNamespaces;
 
@@ -96,7 +96,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="typeDefinition">The definition of the type for which generation is being performed</param>
     /// <returns>A hashset of all of the namespaces required for generation</returns>
-    private HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
+    private static HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
     {
       HashSet<string> requiredNamespaces = ["System", "Csla"];
 
@@ -119,7 +119,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the type definition</param>
     /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendTypeDefinition(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+    private static void AppendTypeDefinition(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
     {
       if (!string.IsNullOrWhiteSpace(typeDefinition.Namespace))
       {
@@ -140,9 +140,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
     /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendProperties(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+    private static void AppendProperties(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
     {
-
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
         AppendSerializeChildFragment(textWriter, propertyDefinition, typeDefinition);
@@ -155,7 +154,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
     /// <param name="propertyDefinition">The definition of the member we are writing for</param>
     /// <param name="typeDefinition"></param>
-    private void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, ExtractedTypeDefinition typeDefinition)
+    private static void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, ExtractedTypeDefinition typeDefinition)
     {
       var getter = GetGetterMethod(typeDefinition);
       var setter = GetSetterMethod(typeDefinition);
@@ -188,7 +187,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       AppendBlockEnd(textWriter);
     }
 
-    private string GetGetterMethod(ExtractedTypeDefinition typeDefinition)
+    private static string GetGetterMethod(ExtractedTypeDefinition typeDefinition)
     {
       if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
       {
@@ -204,7 +203,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       }
       return string.Empty;
     }
-    private string GetSetterMethod(ExtractedTypeDefinition typeDefinition)
+    private static string GetSetterMethod(ExtractedTypeDefinition typeDefinition)
     {
       if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
       {

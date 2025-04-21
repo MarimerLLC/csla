@@ -79,7 +79,7 @@ namespace Csla.Server
       return option;
     }
 
-    private IsolationLevel GetIsolationLevel(TransactionIsolationLevel transactionIsolationLevel)
+    private static IsolationLevel GetIsolationLevel(TransactionIsolationLevel transactionIsolationLevel)
     {
       return transactionIsolationLevel switch
       {

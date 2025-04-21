@@ -177,7 +177,7 @@ namespace Csla.Windows
       status.CanRead = canRead;
     }
 
-    private void ApplyWriteRules(
+    private static void ApplyWriteRules(
       Control ctl, Binding binding,
       bool canWrite)
     {
@@ -214,7 +214,7 @@ namespace Csla.Windows
       e.Value = GetEmptyValue(e.DesiredType);
     }
 
-    private object GetEmptyValue(Type desiredType)
+    private static object GetEmptyValue(Type desiredType)
     {
       object result = null;
       if (desiredType.IsValueType)

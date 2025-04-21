@@ -286,8 +286,8 @@ namespace Csla.DataPortalClient
     /// <returns>Serialized response from server</returns>
     protected abstract Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync);
 
-    private string? GetRoutingToken(Type objectType)
-    {
+   private static string? GetRoutingToken(Type objectType)
+   {
       string? result = null;
       var list = objectType.GetCustomAttributes(typeof(DataPortalServerRoutingTagAttribute), false);
       if (list.Length > 0)

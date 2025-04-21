@@ -108,7 +108,7 @@ namespace Csla.Data
 
     #region DataCopyIList
 
-    private IList GetIList(object source)
+    private static IList GetIList(object source)
     {
       if (source is IListSource listSource)
         return listSource.GetList();
@@ -126,7 +126,7 @@ namespace Csla.Data
     }
 
     [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    private void CopyData(DataTable dt, IList ds, List<string> columns)
+    private static void CopyData(DataTable dt, IList ds, List<string> columns)
     {
       // load the data into the DataTable
       dt.BeginLoadData();
@@ -157,7 +157,7 @@ namespace Csla.Data
 
     #region GetColumns
 
-    private List<string> GetColumns(object source)
+    private static List<string> GetColumns(object source)
     {
       List<string> result;
       // first handle DataSet/DataTable
@@ -186,7 +186,7 @@ namespace Csla.Data
       return result;
     }
 
-    private List<string> ScanDataView(DataView ds)
+    private static List<string> ScanDataView(DataView ds)
     {
       List<string> result = [];
       for (int field = 0; field < ds.Table!.Columns.Count; field++)
@@ -194,8 +194,8 @@ namespace Csla.Data
       return result;
     }
 
-    private List<string> ScanObject(Type? sourceType)
-    {
+   private static List<string> ScanObject(Type? sourceType)
+   {
       List<string> result = [];
 
       if (sourceType != null)

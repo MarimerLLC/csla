@@ -1236,7 +1236,7 @@ namespace Csla.Core
     /// <param name="timeout">Timeout duration</param>
     public Task WaitForIdle(TimeSpan timeout)
     {
-      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
+      return BusyHelper.WaitForIdleAsTimeout(WaitForIdle, GetType(), nameof(WaitForIdle), timeout);
     }
 
     /// <summary>

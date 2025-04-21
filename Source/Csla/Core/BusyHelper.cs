@@ -15,11 +15,12 @@ namespace Csla.Core
   /// </summary>
   public static class BusyHelper 
   {
-    internal static async Task WaitForIdleAsTimeout(Func<Task> operation, Type source, string methodName, TimeSpan timeout)
+    internal static async Task WaitForIdleAsTimeout(Func<CancellationToken, Task> operation, Type source, string methodName, TimeSpan timeout)
     {
       try
       {
-        await operation();
+        using var cts = timeout.ToCancellationTokenSource();
+        await operation(cts.Token);
       }
       catch (TaskCanceledException tcex)
       {
@@ -43,7 +44,8 @@ namespace Csla.Core
 
       try
       {
-        await WaitForIdle(source, timeout.ToCancellationToken(), methodName);
+        using var cts = timeout.ToCancellationTokenSource();
+        await WaitForIdle(source, cts.Token, methodName);
       }
       catch (TaskCanceledException tcex)
       {

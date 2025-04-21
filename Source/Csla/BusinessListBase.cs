@@ -62,6 +62,8 @@ namespace Csla
       set
       {
         ApplicationContext = value;
+        if (ApplicationContext == null)
+          throw new InvalidOperationException("ApplicationContext == null");
         InitializeIdentity();
         Initialize();
         AllowNew = true;

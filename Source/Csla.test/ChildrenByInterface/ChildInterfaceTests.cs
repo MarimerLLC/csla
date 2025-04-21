@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ChildrenByInterface
@@ -13,15 +14,33 @@ namespace Csla.Test.ChildrenByInterface
   [TestClass]
   public class ChildInterfaceTests
   {
+    private static TestDIContext _testDIContext;
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
     [TestMethod]
     public void AddItems()
     {
-      ItemList list =
+      var portal = _testDIContext.CreateDataPortal<ItemList>();
+      var child1Portal = _testDIContext.CreateDataPortal<Item1>();
+      var child2Portal = _testDIContext.CreateDataPortal<Item2>();
+      var list = portal.Create();
+      list.AddRange(
       [
-        new Item1(),
-        new Item2()
+        child1Portal.Create(),
+        child2Portal.Create()
 
-      ];
+      ]);
 
       Assert.IsTrue(list[0] is Item1, "First element should be Item1");
       Assert.IsTrue(list[1] is Item2, "Second element should be Item2");
@@ -42,6 +61,11 @@ namespace Csla.Test.ChildrenByInterface
     {
       return 0;
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 
   [Serializable]
@@ -56,8 +80,22 @@ namespace Csla.Test.ChildrenByInterface
     {
       return 0;
     }
+
+    [Create]
+    private void Create()
+    {
+    }
   }
 
   [Serializable]
-  public class ItemList : BusinessBindingListBase<ItemList, IItem>;
+  public class ItemList : BusinessBindingListBase<ItemList, IItem>
+  {
+    [Create]
+    private void Create()
+    {
+      AllowNew = true;
+      AllowEdit = true;
+      AllowRemove = true;
+    }
+  }
 }

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel;
 using Csla.Server;
 using System.Diagnostics.CodeAnalysis;
+using Csla.Configuration;
 
 namespace Csla
 {
@@ -26,11 +27,16 @@ namespace Csla
     /// Creates a new instance of the type
     /// </summary>
     /// <param name="applicationContextAccessor"></param>
-    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor)
+    /// <param name="options"></param>
+    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor, CslaOptions options)
     {
       ApplicationContextAccessor = applicationContextAccessor;
       ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
+      Options = options;
+      PropertyChangedMode = Options.BindingOptions.PropertyChangedMode;
     }
+
+    internal CslaOptions Options { get; }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
 
@@ -183,26 +189,11 @@ namespace Csla
       Server
     }
 
-    private PropertyChangedModes _propertyChangedMode;
-    private bool _propertyChangedModeSet;
-
     /// <summary>
     /// Gets or sets a value specifying how CSLA .NET should
     /// raise PropertyChanged events.
     /// </summary>
-    public PropertyChangedModes PropertyChangedMode
-    {
-      get
-      {
-        if (!_propertyChangedModeSet)
-        {
-          var options = GetRequiredService<Configuration.CslaOptions>();
-          _propertyChangedMode = options.BindingOptions.PropertyChangedMode;
-          _propertyChangedModeSet = true;
-        }
-        return _propertyChangedMode;
-      }
-    }
+    public PropertyChangedModes PropertyChangedMode { get; }
 
     /// <summary>
     /// Enum representing the way in which CSLA .NET

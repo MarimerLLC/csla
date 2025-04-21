@@ -384,7 +384,8 @@ namespace Csla.Test.Basic
     public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
     {
       bool changed = false;
-      var obj = new RootList();
+      var portal = _testDIContext.CreateDataPortal<RootList>();
+      var obj = portal.Create();
       obj.ListChanged += (_, _) =>
       {
         changed = true;

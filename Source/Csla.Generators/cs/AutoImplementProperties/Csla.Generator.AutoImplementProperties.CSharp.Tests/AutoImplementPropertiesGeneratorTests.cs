@@ -142,5 +142,25 @@ namespace Csla.Generator.Tests
 
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
+
+    [TestMethod("Property with nested generic type must be generated correctly.")]
+    public async Task MyTestMethod()
+    {
+      var source = """
+        using Csla;
+        using Csla.Core;
+
+        namespace Test;
+
+        public class GenericType<T>;
+
+        [CslaImplementProperties]
+        public partial class BOTest : BusinessBase<BOTest>
+        {
+          public partial GenericType<MobileDictionary<string, int>> Name { get; private set; }
+        }
+        """;
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
   }
 }

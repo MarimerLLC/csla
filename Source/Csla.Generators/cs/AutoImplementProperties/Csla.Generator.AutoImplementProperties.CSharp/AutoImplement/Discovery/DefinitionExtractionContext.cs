@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Helper for definition extraction, used to optimise symbo, recognition</summary>
 //-----------------------------------------------------------------------
+using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -59,13 +60,86 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       }
       else
       {
-        
         typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       }
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
 
+    public string GetFullyQualifiedType(TypeSyntax typeSyntax)
+    {
+      INamedTypeSymbol typeSymbol;
+      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
+      {
+        typeSyntax = nullableTypeSyntax.ElementType;
+      }
+
+      if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+      }
+      else
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      }
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
+
+      var typeString = typeSymbol.ToString();
+#pragma warning disable IDE0066 // Convert switch statement to expression, This is more readable than the switch-expression
+      switch (typeString)
+      {
+        case "string":
+        case "string[]":
+        case "bool":
+        case "bool[]":
+        case "bool?":
+        case "byte":
+        case "byte[]":
+        case "byte?":
+        case "sbyte":
+        case "sbyte[]":
+        case "sbyte?":
+        case "char":
+        case "char[]":
+        case "char?":
+        case "decimal":
+        case "decimal[]":
+        case "decimal?":
+        case "double":
+        case "double[]":
+        case "double?":
+        case "float":
+        case "float[]":
+        case "float?":
+        case "int":
+        case "int[]":
+        case "int?":
+        case "uint":
+        case "uint[]":
+        case "uint?":
+        case "long":
+        case "long[]":
+        case "long?":
+        case "ulong":
+        case "ulong[]":
+        case "ulong?":
+        case "short":
+        case "short[]":
+        case "short?":
+        case "ushort":
+        case "ushort[]":
+        case "ushort?":
+        case "object":
+        case "object[]":
+          return typeString;
+      }
+#pragma warning restore IDE0066 // Convert switch statement to expression
+
+      return typeSymbol.ToDisplayString(FullyQualifiedFormat);
+    }
+
+    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 
     #region Private Helper Methods
 
@@ -155,6 +229,5 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     }
 
     #endregion
-
   }
 }

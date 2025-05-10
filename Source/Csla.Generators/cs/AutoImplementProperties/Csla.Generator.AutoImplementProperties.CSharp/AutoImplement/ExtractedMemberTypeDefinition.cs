@@ -6,19 +6,14 @@
   public class ExtractedMemberTypeDefinition : IEquatable<ExtractedMemberTypeDefinition>
   {
     /// <summary>
-    /// The name of the type
-    /// </summary>
-    public string TypeName { get; set; }
-
-    /// <summary>
-    /// The namespace in which the type is defined
-    /// </summary>
-    public string TypeNamespace { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether the type is nullable.
     /// </summary>
-    public bool Nullable { get; internal set; }
+    public bool Nullable { get; set; }
+
+    /// <summary>
+    /// The globally fully qualified type name.
+    /// </summary>
+    public string FullyQualifiedType { get; set; }
 
     /// <summary>
     /// Determines whether the current <see cref="ExtractedMemberTypeDefinition"/> object is equal to another object of the same type.
@@ -30,9 +25,7 @@
       if (other == null)
         return false;
 
-      return TypeName == other.TypeName &&
-             TypeNamespace == other.TypeNamespace &&
-             Nullable == other.Nullable;
+      return FullyQualifiedType == other.FullyQualifiedType && Nullable == other.Nullable;
     }
 
     /// <summary>
@@ -48,13 +41,14 @@
 
       return false;
     }
+
     /// <summary>
     /// Calculates the hash code for the <see cref="ExtractedMemberTypeDefinition"/> object.
     /// </summary>
     /// <returns>The calculated hash code.</returns>
     public override int GetHashCode()
     {
-      return HashCode.Combine(TypeName, TypeNamespace, Nullable);
+      return HashCode.Combine(FullyQualifiedType, Nullable);
     }
   }
 }

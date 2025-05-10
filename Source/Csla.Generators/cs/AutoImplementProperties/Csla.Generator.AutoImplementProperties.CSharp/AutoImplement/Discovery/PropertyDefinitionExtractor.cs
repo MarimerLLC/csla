@@ -39,9 +39,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       };
       propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration, extractionContext));
 
-      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(propertyDeclaration);
-      propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
       propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(propertyDeclaration);
+      propertyDefinition.TypeDefinition.FullyQualifiedType = extractionContext.GetFullyQualifiedType(propertyDeclaration.Type);
 
       return propertyDefinition;
     }

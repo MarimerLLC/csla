@@ -85,57 +85,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
         return string.Empty;
 
-      var typeString = typeSymbol.ToString();
-#pragma warning disable IDE0066 // Convert switch statement to expression, This is more readable than the switch-expression
-      switch (typeString)
-      {
-        case "string":
-        case "string[]":
-        case "bool":
-        case "bool[]":
-        case "bool?":
-        case "byte":
-        case "byte[]":
-        case "byte?":
-        case "sbyte":
-        case "sbyte[]":
-        case "sbyte?":
-        case "char":
-        case "char[]":
-        case "char?":
-        case "decimal":
-        case "decimal[]":
-        case "decimal?":
-        case "double":
-        case "double[]":
-        case "double?":
-        case "float":
-        case "float[]":
-        case "float?":
-        case "int":
-        case "int[]":
-        case "int?":
-        case "uint":
-        case "uint[]":
-        case "uint?":
-        case "long":
-        case "long[]":
-        case "long?":
-        case "ulong":
-        case "ulong[]":
-        case "ulong?":
-        case "short":
-        case "short[]":
-        case "short?":
-        case "ushort":
-        case "ushort[]":
-        case "ushort?":
-        case "object":
-        case "object[]":
-          return typeString;
-      }
-#pragma warning restore IDE0066 // Convert switch statement to expression
-
       return typeSymbol.ToDisplayString(FullyQualifiedFormat);
     }
 

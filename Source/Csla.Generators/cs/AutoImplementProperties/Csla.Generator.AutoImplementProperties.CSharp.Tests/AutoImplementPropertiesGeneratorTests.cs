@@ -144,7 +144,7 @@ namespace Csla.Generator.Tests
     }
 
     [TestMethod("Property with nested generic type must be generated correctly.")]
-    public async Task MyTestMethod()
+    public async Task Case07()
     {
       var source = """
         using Csla;

@@ -1160,7 +1160,8 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-      if (ApplicationContext.Options.ScanDataAnnotations)
+      var options = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
+      if (options.ScanDataAnnotations)
         BusinessRules.AddDataAnnotations();
     }
 

@@ -31,11 +31,9 @@ namespace Csla
     {
       ApplicationContextAccessor = applicationContextAccessor;
       ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
-      Options = GetRequiredService<CslaOptions>();
-      PropertyChangedMode = Options.BindingOptions.PropertyChangedMode;
+      var options = GetRequiredService<CslaOptions>();
+      PropertyChangedMode = options.BindingOptions.PropertyChangedMode;
     }
-
-    internal CslaOptions Options { get; }
 
     internal ApplicationContextAccessor ApplicationContextAccessor { get; set; }
 

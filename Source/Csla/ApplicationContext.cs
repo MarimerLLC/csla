@@ -27,12 +27,11 @@ namespace Csla
     /// Creates a new instance of the type
     /// </summary>
     /// <param name="applicationContextAccessor"></param>
-    /// <param name="options"></param>
-    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor, CslaOptions options)
+    public ApplicationContext(ApplicationContextAccessor applicationContextAccessor)
     {
       ApplicationContextAccessor = applicationContextAccessor;
       ApplicationContextAccessor.GetContextManager().ApplicationContext = this;
-      Options = options;
+      Options = GetRequiredService<CslaOptions>();
       PropertyChangedMode = Options.BindingOptions.PropertyChangedMode;
     }
 

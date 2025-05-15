@@ -238,10 +238,10 @@ namespace Csla.Analyzers
     {
       var classDeclaration = propertyDeclaration.FirstAncestorOrSelf<ClassDeclarationSyntax>();
       var propertyType = semanticModel.GetTypeInfo(propertyDeclaration.Type).Type;
-      // Check if the classDeclaration is null
-      if (classDeclaration == null)
+      
+      if (classDeclaration is null)
       {
-        throw new ArgumentNullException(nameof(classDeclaration));
+        return [];
       }
 
       // Find all field declarations in the class

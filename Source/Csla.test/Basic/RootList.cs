@@ -11,18 +11,19 @@ namespace Csla.Test.Basic
   [Serializable]
   public class RootList : BusinessBindingListBase<RootList, RootListChild>
   {
-    public RootList()
-    {
-      AllowEdit = true;
-      AllowNew = true;
-      AllowRemove = true;
-    }
-
     protected override object AddNewCore()
     {
       RootListChild child = new RootListChild();
       Add(child);
       return child;
+    }
+
+    [Create]
+    private void Create()
+    {
+      AllowNew = true;
+      AllowEdit = true;
+      AllowRemove = true;
     }
   }
 

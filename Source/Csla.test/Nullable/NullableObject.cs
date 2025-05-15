@@ -73,11 +73,7 @@ namespace Csla.Test.Nullable
       dataPortal.Delete(new Criteria(name));
     }
 
-    public NullableObject()
-    {
-      AddBusinessRules();
-    }
-
+    [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -86,6 +82,7 @@ namespace Csla.Test.Nullable
       TestResults.Add("NullableObject", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

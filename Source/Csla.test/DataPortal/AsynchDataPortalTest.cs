@@ -99,6 +99,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void CreateAsync_WithException()
     {
+#pragma warning disable MSTEST0040 // Do not assert inside 'async void' contexts
       var lck = new AutoResetEvent(false);
       new Action(async () =>
       {
@@ -119,6 +120,7 @@ namespace Csla.Test.DataPortal
         }
       }).Invoke();
       lck.WaitOne();
+#pragma warning restore MSTEST0040 // Do not assert inside 'async void' contexts
     }
 
     [TestMethod]
@@ -166,6 +168,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FetchAsync_WithException()
     {
+#pragma warning disable MSTEST0040 // Do not assert inside 'async void' contexts
       var lck = new AutoResetEvent(false);
       new Action(async () =>
       {
@@ -186,6 +189,7 @@ namespace Csla.Test.DataPortal
         }
       }).Invoke();
       lck.WaitOne();
+#pragma warning restore MSTEST0040 // Do not assert inside 'async void' contexts
     }
 
     [TestMethod]
@@ -226,6 +230,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task SaveAsyncWithException()
     {
+#pragma warning disable MSTEST0040 // Do not assert inside 'async void' contexts
       var context = GetContext();
       await context.Assert.Try(async () =>
       {
@@ -257,6 +262,7 @@ namespace Csla.Test.DataPortal
         context.Assert.Success();
       });
       context.Complete();
+#pragma warning restore MSTEST0040 // Do not assert inside 'async void' contexts
     }
 
 #endif
@@ -287,6 +293,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void ExecuteAsyncWithException()
     {
+#pragma warning disable MSTEST0040 // Do not assert inside 'async void' contexts
       var lck = new AutoResetEvent(false);
       new Action(async () =>
       {
@@ -308,6 +315,7 @@ namespace Csla.Test.DataPortal
         }
       }).Invoke();
       lck.WaitOne();
+#pragma warning restore MSTEST0040 // Do not assert inside 'async void' contexts
     }
     #endregion
 

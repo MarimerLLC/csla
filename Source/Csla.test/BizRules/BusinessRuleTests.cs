@@ -41,6 +41,7 @@ namespace Csla.Test.BizRules
     }
 
     [TestMethod]
+    [TestCategory("SkipOnCIServer")]
     public void DisableDataAnnotationsScan()
     {
       var options = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();

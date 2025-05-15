@@ -65,7 +65,7 @@ namespace Csla.Configuration
     }
 
     /// <summary>
-    /// Indicates whether the data annotations scan is disabled.
+    /// Indicates whether the data annotations scan is enabled.
     /// </summary>
     public bool ScanDataAnnotations { get; private set; } = true;
 

@@ -110,16 +110,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     {
       HashSet<string> requiredNamespaces = ["System", "Csla.Serialization.Mobile"];
 
-      foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
-      {
-        requiredNamespaces.Add(fieldDefinition.TypeDefinition.TypeNamespace);
-      }
-
-      foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
-      {
-        requiredNamespaces.Add(propertyDefinition.TypeDefinition.TypeNamespace);
-      }
-
       requiredNamespaces.Remove(typeDefinition.Namespace);
 
       return requiredNamespaces;
@@ -181,14 +171,16 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
 
       foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
       {
-        if (!IsChildToExpose(fieldDefinition)) continue;
+        if (!IsChildToExpose(fieldDefinition))
+          continue;
 
         AppendSerializeChildFragment(textWriter, fieldDefinition);
       }
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
-        if (!IsChildToExpose(propertyDefinition)) continue;
+        if (!IsChildToExpose(propertyDefinition))
+          continue;
 
         AppendSerializeChildFragment(textWriter, propertyDefinition);
       }
@@ -234,14 +226,16 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
 
       foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
       {
-        if (!IsChildToExpose(fieldDefinition)) continue;
+        if (!IsChildToExpose(fieldDefinition))
+          continue;
 
         AppendDeserializeChildFragment(textWriter, fieldDefinition);
       }
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
-        if (!IsChildToExpose(propertyDefinition)) continue;
+        if (!IsChildToExpose(propertyDefinition))
+          continue;
 
         AppendDeserializeChildFragment(textWriter, propertyDefinition);
       }
@@ -268,7 +262,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
       textWriter.WriteLine();
       textWriter.Write(memberDefinition.MemberName);
       textWriter.Write(" = formatter.GetObject(childData.ReferenceId) as ");
-      textWriter.Write(memberDefinition.TypeDefinition.TypeName.Replace("?", ""));
+      textWriter.Write(memberDefinition.TypeDefinition.GloballyFullyQualifiedType);
       if (!memberDefinition.TypeDefinition.Nullable && nullable)
       {
         textWriter.Write(" ?? ");
@@ -292,14 +286,16 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
 
       foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
       {
-        if (IsChildToExpose(fieldDefinition)) continue;
+        if (IsChildToExpose(fieldDefinition))
+          continue;
 
         AppendGetMemberStateFragment(textWriter, fieldDefinition);
       }
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
-        if (IsChildToExpose(propertyDefinition)) continue;
+        if (IsChildToExpose(propertyDefinition))
+          continue;
 
         AppendGetMemberStateFragment(textWriter, propertyDefinition);
       }
@@ -334,14 +330,16 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
 
       foreach (ExtractedFieldDefinition fieldDefinition in typeDefinition.Fields)
       {
-        if (IsChildToExpose(fieldDefinition)) continue;
+        if (IsChildToExpose(fieldDefinition))
+          continue;
 
         AppendSetMemberStateMethod(textWriter, fieldDefinition);
       }
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
-        if (IsChildToExpose(propertyDefinition)) continue;
+        if (IsChildToExpose(propertyDefinition))
+          continue;
 
         AppendSetMemberStateMethod(textWriter, propertyDefinition);
       }
@@ -359,7 +357,11 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     {
       textWriter.Write(memberDefinition.MemberName);
       textWriter.Write(" = info.GetValue<");
-      textWriter.Write(memberDefinition.TypeDefinition.TypeName);
+      textWriter.Write(memberDefinition.TypeDefinition.GloballyFullyQualifiedType);
+      if (memberDefinition.TypeDefinition.Nullable)
+      {
+        textWriter.Write('?');
+      }
       textWriter.Write(">(nameof(");
       textWriter.Write(memberDefinition.MemberName);
       textWriter.WriteLine("));");

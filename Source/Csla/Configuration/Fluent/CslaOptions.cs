@@ -85,7 +85,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Configures the scanning for data annotations based on the provided flag.
     /// </summary>
-    /// <param name="flag">Indicates whether to disable the scanning for data annotations.</param>
+    /// <param name="flag">True to scan for data annotations, false to disable scanning. (default: true)</param>
     /// <returns>Returns the current instance of CoreOptions.</returns>
     public CslaOptions ScanForDataAnnotations(bool flag)
     {

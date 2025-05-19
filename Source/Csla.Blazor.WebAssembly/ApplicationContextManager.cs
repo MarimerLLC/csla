@@ -32,7 +32,6 @@ namespace Csla.Blazor.WebAssembly
     }
 
     private Task<AuthenticationState> AuthenticationState { get; set; }
-    private ClaimsPrincipal _currentPrincipal;
     private bool disposedValue;
 
     /// <summary>
@@ -52,7 +51,6 @@ namespace Csla.Blazor.WebAssembly
 
     private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
     {
-      _currentPrincipal = null;
       AuthenticationState = task;
     }
 
@@ -72,23 +70,23 @@ namespace Csla.Blazor.WebAssembly
     /// </summary>
     public bool IsStatefulContext => true;
 
+    private static readonly IPrincipal _anonymous = new ClaimsPrincipal(new ClaimsIdentity());
+
     /// <summary>
     /// Gets the current principal.
     /// </summary>
     public IPrincipal GetUser()
     {
-      if (_currentPrincipal == null)
-      {
-        if (AuthenticationState.IsCompleted && AuthenticationState.Result != null)
-          _currentPrincipal = AuthenticationState.Result.User;
-        else
-          _currentPrincipal = new ClaimsPrincipal();
-      }
-      return _currentPrincipal;
+      IPrincipal result;
+      if (AuthenticationState.IsCompleted && AuthenticationState.Result != null)
+        result = AuthenticationState.Result.User;
+      else
+        result = _anonymous;
+      return result;
     }
 
     /// <summary>
-    /// Sets the current principal ONLY IN APPLICATIONCONTEXT.
+    /// NOT SUPPORTED:
     /// To set the value correctly, use your specific
     /// ApplicationContextStateProvider implementation.
     /// </summary>

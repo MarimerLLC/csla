@@ -1403,7 +1403,30 @@ namespace Csla.Core
         FieldManager.SetPropertyList(GetType());
       InitializeBusinessRules();
       FieldDataDeserialized();
+      OnDeserialized();
     }
+
+    Task ISerializationNotification.DeserializedAsync()
+    {
+      return OnDeserializedAsync();
+    }
+
+    /// <summary>
+    /// Invoked after the object has been deserialized.
+    /// </summary>
+    /// <remarks>This method is called to allow derived classes to perform any necessary  initialization or
+    /// state restoration after deserialization is complete. Override this method to implement custom
+    /// post-deserialization logic.</remarks>
+    protected virtual void OnDeserialized()
+    { }
+
+    /// <summary>
+    /// Invoked after the object has been deserialized asynchronously.
+    /// </summary>
+    /// <remarks>This method is called to allow derived classes to perform any necessary  initialization or
+    /// state restoration after deserialization is complete. Override this method to implement custom
+    /// post-deserialization logic.</remarks>
+    protected virtual Task OnDeserializedAsync() => Task.CompletedTask;
 
     #endregion
 

@@ -279,7 +279,17 @@ namespace Csla.Core
       // don't rehook events here, because the MobileFormatter has
       // created new objects and so the lists will auto-subscribe
       // the events;
+      OnDeserialized();
     }
+
+    /// <summary>
+    /// Invoked after the object has been deserialized.
+    /// </summary>
+    protected virtual void OnDeserialized()
+    {
+      // do nothing by default
+    }
+
 
     [NonSerialized]
     [NotUndoable]

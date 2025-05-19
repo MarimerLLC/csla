@@ -1302,14 +1302,18 @@ namespace Csla.Rules
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
+      SyncRoot = LockFactory.Create();
+      OnDeserialized();
     }
 
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
+    /// <summary>
+    /// Invoked after the object has been deserialized.
+    /// </summary>
+    protected virtual void OnDeserialized()
     {
-      SyncRoot = LockFactory.Create();
+      // do nothing by default
     }
+
 
     #endregion
 

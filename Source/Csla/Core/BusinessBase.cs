@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Csla.Configuration;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
 using Csla.Properties;
@@ -1159,7 +1160,9 @@ namespace Csla.Core
     /// </remarks>
     protected virtual void AddBusinessRules()
     {
-      BusinessRules.AddDataAnnotations();
+      var options = ApplicationContext.GetRequiredService<CslaOptions>();
+      if (options.ScanDataAnnotations)
+        BusinessRules.AddDataAnnotations();
     }
 
     /// <summary>

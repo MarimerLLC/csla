@@ -78,6 +78,22 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Indicates whether the data annotations scan is enabled.
+    /// </summary>
+    public bool ScanDataAnnotations { get; private set; } = true;
+
+    /// <summary>
+    /// Configures the scanning for data annotations based on the provided flag.
+    /// </summary>
+    /// <param name="flag">Indicates whether to disable the scanning for data annotations.</param>
+    /// <returns>Returns the current instance of CoreOptions.</returns>
+    public CslaOptions ScanForDataAnnotations(bool flag)
+    {
+      ScanDataAnnotations = flag;
+      return this;
+    }
+
+    /// <summary>
     /// Gets the SecurityOptions instance.
     /// </summary>
     internal SecurityOptions SecurityOptions { get; } = new();

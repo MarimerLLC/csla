@@ -369,5 +369,26 @@ namespace Csla.Analyzers.Tests
         """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
     }
+    [TestMethod]
+    public async Task SkipWhenDeclaringTypeIsAnInterface()
+    {
+      var code =
+        """
+        using Csla;
+        
+        public class A : IFoo
+        {
+          public string City { get; set; }
+        }
+
+        public interface IFoo
+        {
+          public string City { get; set; }
+        }
+
+        """;
+
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
+    }
   }
 }

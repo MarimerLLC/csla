@@ -1236,7 +1236,7 @@ namespace Csla.Core
     /// <param name="timeout">Timeout duration</param>
     public Task WaitForIdle(TimeSpan timeout)
     {
-      return BusyHelper.WaitForIdleAsTimeout(() => WaitForIdle(timeout.ToCancellationToken()), GetType(), nameof(WaitForIdle), timeout);
+      return BusyHelper.WaitForIdleAsTimeout(WaitForIdle, GetType(), nameof(WaitForIdle), timeout);
     }
 
     /// <summary>
@@ -3835,17 +3835,16 @@ namespace Csla.Core
       /// </summary>
       public void Dispose()
       {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-      }
-
-      /// <summary>
-      /// Disposes the object.
-      /// </summary>
-      /// <param name="dispose">Dispose flag.</param>
-      protected virtual void Dispose(bool dispose)
-      {
-        DeRef();
+        lock (_lock)
+        {
+          RefCount -= 1;
+          if (RefCount == 0 && _businessObject is not null)
+          {
+            _businessObject._bypassPropertyChecks = false;
+            _businessObject._bypassPropertyChecksObject = null;
+            _businessObject = null;
+          }
+        }
       }
 
       /// <summary>
@@ -3876,21 +3875,6 @@ namespace Csla.Core
       private void AddRef()
       {
         RefCount += 1;
-      }
-
-      private void DeRef()
-      {
-
-        lock (_lock)
-        {
-          RefCount -= 1;
-          if (RefCount == 0 && _businessObject is not null)
-          {
-            _businessObject._bypassPropertyChecks = false;
-            _businessObject._bypassPropertyChecksObject = null;
-            _businessObject = null;
-          }
-        }
       }
 
       #endregion

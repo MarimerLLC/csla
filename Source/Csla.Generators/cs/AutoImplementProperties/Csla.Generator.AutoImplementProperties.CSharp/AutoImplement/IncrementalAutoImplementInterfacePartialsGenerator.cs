@@ -37,7 +37,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
                 {
                   return TypeDefinitionExtractor.ExtractTypeDefinitionForInterfaces(new DefinitionExtractionContext(ctx.SemanticModel, true, false), typeDeclarationSyntax);
                 }
-                return null;
+                return default!;
               })
           .Where(static m => m is not null).WithTrackingName(TrackingNames.ExtractClasses);
 

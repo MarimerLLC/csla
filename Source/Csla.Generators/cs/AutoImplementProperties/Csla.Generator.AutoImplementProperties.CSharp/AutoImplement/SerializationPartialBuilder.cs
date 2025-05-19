@@ -16,8 +16,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
   /// </summary>
   internal class SerializationPartialBuilder(bool nullable)
   {
-
-
     /// <summary>
     /// Build the text of a partial type that implements the properties of the target type
     /// </summary>

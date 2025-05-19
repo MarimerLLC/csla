@@ -24,5 +24,10 @@ namespace Csla.Serialization.Mobile
     /// deserialized.
     /// </remarks>
     void Deserialized();
+    /// <summary>
+    /// Method called on an object after deserialization is complete.
+    /// </summary>
+    /// <returns>A task representing the asynchronous operation.</returns>
+    Task DeserializedAsync();
   }
 }

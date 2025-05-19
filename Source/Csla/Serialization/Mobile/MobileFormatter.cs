@@ -32,17 +32,17 @@ namespace Csla.Serialization.Mobile
     #region Serialize
 
     /// <inheritdoc />
-    public void Serialize(Stream serializationStream, object? graph)
+    public async Task Serialize(Stream serializationStream, object? graph)
     {
       ICslaWriter writer = CslaReaderWriterFactory.GetCslaWriter(applicationContext);
-      writer.Write(serializationStream, SerializeToDTO(graph));
+      writer.Write(serializationStream, await SerializeToDTO(graph));
     }
 
     /// <inheritdoc />
-    byte[] ISerializationFormatter.Serialize(object? graph)
+    async Task<byte[]> ISerializationFormatter.Serialize(object? graph)
     {
       using var buffer = new MemoryStream();
-      Serialize(buffer, graph);
+      await Serialize(buffer, graph);
       buffer.Position = 0;
       return buffer.ToArray();
     }
@@ -54,16 +54,16 @@ namespace Csla.Serialization.Mobile
     /// Root object of the object graph
     /// to serialize.
     /// </param>
-    public List<SerializationInfo> SerializeAsDTO(object? graph)
+    public Task<List<SerializationInfo>> SerializeAsDTO(object? graph)
     {
       _serializationReferences.Clear();
 
       SerializeObject(graph);
 
       ConvertEnumsToIntegers();
-      List<SerializationInfo> serialized = _serializationReferences.Values.ToList();
+      List<SerializationInfo> serialized = [.. _serializationReferences.Values];
 
-      return serialized;
+      return Task.FromResult(serialized);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ namespace Csla.Serialization.Mobile
     /// Serializes an object into a SerializationInfo object.
     /// </summary>
     /// <param name="obj">Object to be serialized.</param>
-    public SerializationInfo SerializeObject(object? obj)
+    public Task<SerializationInfo> SerializeObject(object? obj)
     {
       var options = GetOptions();
       SerializationInfo? info;
@@ -148,7 +148,7 @@ namespace Csla.Serialization.Mobile
         throw new MobileFormatterException(string.Format(Resources.MustImplementIMobileObject, obj!.GetType().Name));
       }
 
-      return info;
+      return Task.FromResult(info);
     }
 
     private Dictionary<object, SerializationInfo> _serializationReferences =
@@ -160,7 +160,7 @@ namespace Csla.Serialization.Mobile
 
     private Dictionary<int, object?> _deserializationReferences = [];
 
-    private Dictionary<string, Type> _typeCache = [];
+    private readonly Dictionary<string, Type> _typeCache = [];
 
     private Type GetTypeFromCache(string typeName)
     {
@@ -185,10 +185,10 @@ namespace Csla.Serialization.Mobile
     /// Stream containing the serialized XML
     /// data.
     /// </param>
-    public object? Deserialize(Stream? serializationStream)
+    public Task<object?> Deserialize(Stream? serializationStream)
     {
       if (serializationStream == null)
-        return null;
+        return Task.FromResult<object?>(null);
 
       ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(applicationContext);
       var data = reader.Read(serializationStream);
@@ -202,10 +202,10 @@ namespace Csla.Serialization.Mobile
     /// Stream containing the serialized XML
     /// data.
     /// </param>
-    object? ISerializationFormatter.Deserialize(byte[] buffer)
+    Task<object?> ISerializationFormatter.Deserialize(byte[] buffer)
     {
       if (buffer.Length == 0)
-        return null;
+        return Task.FromResult<object?>(null);
       using var serializationStream = new MemoryStream(buffer);
       ICslaReader reader = CslaReaderWriterFactory.GetCslaReader(applicationContext);
       var data = reader.Read(serializationStream);
@@ -217,7 +217,7 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     ///<param name="deserialized">DTO group to deserialize</param>
     ///<exception cref="ArgumentNullException"><paramref name="deserialized"/> is <see langword="null"/>.</exception>
-    public object? DeserializeAsDTO(List<SerializationInfo> deserialized)
+    public async Task<object?> DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
       if (deserialized is null)
         throw new ArgumentNullException(nameof(deserialized));
@@ -273,7 +273,10 @@ namespace Csla.Serialization.Mobile
       foreach (SerializationInfo info in deserialized)
       {
         if (_deserializationReferences[info.ReferenceId] is ISerializationNotification notifiable)
+        {
           notifiable.Deserialized();
+          await notifiable.DeserializedAsync();
+        }
       }
       return (_deserializationReferences.Count > 0 ? _deserializationReferences[1] : null);
     }
@@ -300,9 +303,9 @@ namespace Csla.Serialization.Mobile
     /// reference id within the serialization stream.
     /// </summary>
     /// <param name="referenceId">Id of object in stream.</param>
-    public object? GetObject(int referenceId)
+    public Task<object?> GetObject(int referenceId)
     {
-      return _deserializationReferences[referenceId];
+      return Task.FromResult(_deserializationReferences[referenceId]);
     }
 
     #endregion
@@ -316,10 +319,10 @@ namespace Csla.Serialization.Mobile
     /// The object to be serialized, which must implement
     /// IMobileObject.
     /// </param>
-    public byte[] SerializeToByteArray(object obj)
+    public async Task<byte[]> SerializeToByteArray(object obj)
     {
       using var buffer = new MemoryStream();
-      Serialize(buffer, obj);
+      await Serialize(buffer, obj);
       return buffer.ToArray();
     }
 
@@ -330,7 +333,7 @@ namespace Csla.Serialization.Mobile
     /// The object to be serialized, which must implement
     /// IMobileObject.
     /// </param>
-    public List<SerializationInfo> SerializeToDTO(object? obj)
+    public Task<List<SerializationInfo>> SerializeToDTO(object? obj)
     {
       return SerializeAsDTO(obj);
     }
@@ -341,7 +344,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="serialized">DTO Graph to deserialize</param>
     /// <returns>Deserialized object</returns>
     /// <exception cref="ArgumentNullException"><paramref name="serialized"/> is <see langword="null"/>.</exception>
-    public object? DeserializeFromDTO(List<SerializationInfo> serialized)
+    public Task<object?> DeserializeFromDTO(List<SerializationInfo> serialized)
     {
       return DeserializeAsDTO(serialized);
     }
@@ -358,10 +361,10 @@ namespace Csla.Serialization.Mobile
     /// byte stream. The object must implement
     /// IMobileObject to be deserialized.
     /// </returns>
-    public object? DeserializeFromByteArray(byte[]? data)
+    public Task<object?> DeserializeFromByteArray(byte[]? data)
     {
       if (data == null)
-        return null;
+        return Task.FromResult<object?>(null);
 
       using var buffer = new MemoryStream(data);
       return Deserialize(buffer);
@@ -379,12 +382,12 @@ namespace Csla.Serialization.Mobile
     /// byte stream. The object must implement
     /// IMobileObject to be deserialized.
     /// </returns>
-    public object? DeserializeFromSerializationInfo(List<SerializationInfo>? data)
+    public Task<object?> DeserializeFromSerializationInfo(List<SerializationInfo>? data)
     {
       if (data == null)
-        return null;
+        return Task.FromResult<object?>(null);
 
-      return DeserializeAsDTO(data);
+      return Task.FromResult<object?>(DeserializeAsDTO(data));
     }
     
     #endregion

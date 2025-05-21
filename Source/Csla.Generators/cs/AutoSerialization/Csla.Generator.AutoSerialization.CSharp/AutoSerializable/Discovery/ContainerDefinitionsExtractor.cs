@@ -5,9 +5,9 @@
 // </copyright>
 // <summary>Extract the definitions of the containers of a type</summary>
 //-----------------------------------------------------------------------
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Text;
 
 namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
 {
@@ -22,19 +22,17 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>The definitions of all of the containers of the type for which generation is being performed</returns>
     public static IReadOnlyList<ExtractedContainerDefinition> GetContainerDefinitions(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      NamespaceDeclarationSyntax namespaceDeclaration;
-      TypeDeclarationSyntax containingTypeDeclaration;
       List<ExtractedContainerDefinition> containers = new List<ExtractedContainerDefinition>();
 
       // Iterate through the containing types should the target type be nested inside other types
-      containingTypeDeclaration = targetTypeDeclaration;
+      var containingTypeDeclaration = targetTypeDeclaration;
       while (containingTypeDeclaration.Parent is TypeDeclarationSyntax syntax)
       {
         containingTypeDeclaration = syntax;
         containers.Add(GetContainerDefinition(containingTypeDeclaration));
       }
 
-      namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
+      var namespaceDeclaration = containingTypeDeclaration.Parent as BaseNamespaceDeclarationSyntax;
       if (namespaceDeclaration is not null)
       {
         containers.Add(GetContainerDefinition(namespaceDeclaration));
@@ -69,7 +67,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       return containerDefinition;
     }
 
-    private static ExtractedContainerDefinition GetContainerDefinition(NamespaceDeclarationSyntax namespaceDeclarationSyntax)
+    private static ExtractedContainerDefinition GetContainerDefinition(BaseNamespaceDeclarationSyntax namespaceDeclarationSyntax)
     {
       StringBuilder containerDefinitionBuilder = new StringBuilder();
       ExtractedContainerDefinition containerDefinition;

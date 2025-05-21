@@ -512,15 +512,18 @@ namespace Csla
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
-    }
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
       if (_fieldManager != null)
         FieldManager.SetPropertyList(GetType());
       InitializeBusinessRules();
+      OnDeserialized();
+    }
+
+    /// <summary>
+    /// Invoked after the object has been deserialized.
+    /// </summary>
+    protected virtual void OnDeserialized()
+    {
+      // do nothing by default
     }
 
 

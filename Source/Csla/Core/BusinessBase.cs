@@ -1424,6 +1424,15 @@ namespace Csla.Core
         FieldManager.SetPropertyList(GetType());
       InitializeBusinessRules();
       FieldDataDeserialized();
+      OnDeserialized();
+    }
+
+    /// <summary>
+    /// Invoked after the object has been deserialized.
+    /// </summary>
+    protected virtual void OnDeserialized()
+    {
+      // do nothing by default
     }
 
     #endregion

@@ -1166,20 +1166,24 @@ namespace Csla.Rules
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public void AddDataAnnotations()
     {
-      Type metadataType;
-#if !NETSTANDARD2_0 || NET8_0_OR_GREATER
-      // add data annotations from metadata class if specified
-      var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
-      if (classAttList.Length > 0)
+      var options = _applicationContext.GetRequiredService<Configuration.CslaOptions>();
+      if (options.ScanDataAnnotations)
       {
-        metadataType = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)classAttList[0]).MetadataClassType;
-        AddDataAnnotationsFromType(metadataType);
-      }
+        Type metadataType;
+#if !NETSTANDARD2_0 || NET8_0_OR_GREATER
+        // add data annotations from metadata class if specified
+        var classAttList = _target.GetType().GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.MetadataTypeAttribute), true);
+        if (classAttList.Length > 0)
+        {
+          metadataType = ((System.ComponentModel.DataAnnotations.MetadataTypeAttribute)classAttList[0]).MetadataClassType;
+          AddDataAnnotationsFromType(metadataType);
+        }
 #endif
 
-      // attributes on class
-      metadataType = _target.GetType();
-      AddDataAnnotationsFromType(metadataType);
+        // attributes on class
+        metadataType = _target.GetType();
+        AddDataAnnotationsFromType(metadataType);
+      }
     }
 
     /// <summary>

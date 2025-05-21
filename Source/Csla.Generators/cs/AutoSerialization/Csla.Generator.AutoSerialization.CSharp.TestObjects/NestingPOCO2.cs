@@ -26,16 +26,16 @@ namespace Csla.Generator.AutoSerialization.CSharp.TestObjects
     protected internal partial class NestedPOCO
     {
 
-      public string Value { get; set; } = string.Empty;
+      public string? Value { get; set; } = string.Empty;
 
     }
 
-    public string GetValue()
+    public string? GetValue()
     {
       return _poco.Value;
     }
 
-    public void SetValue(string value)
+    public void SetValue(string? value)
     {
       _poco.Value = value;
     }

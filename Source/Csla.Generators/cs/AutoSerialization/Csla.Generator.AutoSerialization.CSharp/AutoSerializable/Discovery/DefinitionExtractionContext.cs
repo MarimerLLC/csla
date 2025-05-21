@@ -42,7 +42,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       INamedTypeSymbol typeSymbol;
 
       typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
 
@@ -54,14 +55,15 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     public string GetTypeNamespace(TypeSyntax typeSyntax)
     {
       INamedTypeSymbol typeSymbol;
-      
+
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
       {
         typeSyntax = nullableTypeSyntax.ElementType;
       }
 
       typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
 
@@ -88,7 +90,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       INamedTypeSymbol typeSymbol;
 
       typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
-      if (typeSymbol is null) return false;
+      if (typeSymbol is null)
+        return false;
       return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
     }
 
@@ -103,7 +106,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       INamedTypeSymbol typeSymbol;
 
       typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
-      if (typeSymbol is null) return false;
+      if (typeSymbol is null)
+        return false;
 
       foreach (ITypeSymbol interfaceSymbol in typeSymbol.AllInterfaces)
       {
@@ -155,6 +159,30 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     {
       return IsFieldDecoratedWith(fieldDeclaration, _autoDoNotSerializeAttributeName, _cslaNamespace);
     }
+
+    public string GetFullyQualifiedType(TypeSyntax typeSyntax)
+    {
+      INamedTypeSymbol typeSymbol;
+      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
+      {
+        typeSyntax = nullableTypeSyntax.ElementType;
+      }
+
+      if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+      }
+      else
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      }
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
+
+      return typeSymbol.ToDisplayString(FullyQualifiedFormat);
+    }
+
+    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 
     #region Private Helper Methods
 
@@ -227,11 +255,13 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       INamespaceSymbol namespaceSymbol;
 
       // Match on the type name
-      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
+      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase))
+        return false;
 
       // Match on the namespace of the type
       namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
-      if (namespaceSymbol is null) return false;
+      if (namespaceSymbol is null)
+        return false;
       return IsMatchingNamespaceSymbol(namespaceSymbol, desiredTypeNamespace);
     }
 
@@ -254,7 +284,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
         endNamespace = desiredTypeNamespace.Substring(separatorPosition + 1);
         remainingNamespace = desiredTypeNamespace.Substring(0, separatorPosition);
       }
-      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase))
+        return false;
 
       if (string.IsNullOrWhiteSpace(remainingNamespace))
       {

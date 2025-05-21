@@ -5,14 +5,8 @@
 // </copyright>
 // <summary>Tests of serialization behaviour on the AutoSerializable class NestingPOCO</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Serialization.Mobile;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Generator.AutoSerialization.CSharp.TestObjects;
-using Microsoft.Extensions.DependencyInjection;
-using Csla.Configuration;
+using Csla.Serialization.Mobile;
 using Csla.TestHelpers;
 
 namespace Csla.Generator.AutoSerialization.CSharp.Tests
@@ -24,7 +18,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
   [TestClass]
   public class NestingPOCOTests
   {
-    private static TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext = default!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
@@ -39,7 +33,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "Testy";
       NestingPOCO poco = new NestingPOCO();
       poco.SetValue("Testy");
@@ -59,7 +53,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       NestingPOCO poco = new NestingPOCO();
       poco.SetValue(null);
       NestingPOCO deserializedPOCO;
@@ -90,7 +84,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       {
         formatter.Serialize(serializationStream, valueToSerialize);
         serializationStream.Seek(0, System.IO.SeekOrigin.Begin);
-        deserializedValue = formatter.Deserialize(serializationStream) as NestingPOCO;
+        deserializedValue = (NestingPOCO)formatter.Deserialize(serializationStream);
       }
 
       return deserializedValue;

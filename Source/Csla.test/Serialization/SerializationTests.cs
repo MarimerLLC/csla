@@ -651,6 +651,16 @@ namespace Csla.Test.Serialization
       var clone = obj.Clone();
       Assert.AreEqual(obj.TimeOnly, clone.TimeOnly);
     }
+
+    [TestMethod]
+    public void NotifyOnDeserializationTest()
+    {
+      var portal = _testDIContext.CreateDataPortal<NotifyOnDeserialization>();
+      var obj = portal.Create();
+      obj.Data = "test data";
+      var clone = obj.Clone();
+      Assert.AreEqual("OnDeserialized", TestResults.GetResult("OnDeserialized"));
+    }
   }
 
   [Serializable]
@@ -712,4 +722,22 @@ namespace Csla.Test.Serialization
     { }
   }
 
+  [Serializable]
+  public class NotifyOnDeserialization : BusinessBase<NotifyOnDeserialization>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+    [Create]
+    private void Create()
+    { }
+    protected override void OnDeserialized()
+    {
+      base.OnDeserialized();
+      TestResults.AddOrOverwrite("OnDeserialized", "OnDeserialized");
+    }
+  }
 }

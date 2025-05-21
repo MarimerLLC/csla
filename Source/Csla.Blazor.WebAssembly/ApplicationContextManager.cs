@@ -75,7 +75,7 @@ public class ApplicationContextManager : IContextManager, IDisposable
   public IPrincipal GetUser()
   {
     IPrincipal result;
-    if (AuthenticationState.IsCompleted && AuthenticationState.Result != null)
+    if (AuthenticationState.IsCompletedSuccessfully && AuthenticationState.Result != null)
       result = AuthenticationState.Result.User;
     else
       result = _anonymous;
@@ -83,7 +83,7 @@ public class ApplicationContextManager : IContextManager, IDisposable
   }
 
   /// <summary>
-  /// Sets the current principal ONLY IN APPLICATIONCONTEXT.
+  /// NOT SUPPORTED: 
   /// To set the value correctly, use your specific
   /// ApplicationContextStateProvider implementation.
   /// </summary>

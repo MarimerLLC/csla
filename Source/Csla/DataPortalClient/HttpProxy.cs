@@ -265,12 +265,12 @@ namespace Csla.Channels.Http
         {
           if (readWriteTimeout > TimeSpan.Zero)
           {
-            httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+            httpWebRequest.ReadWriteTimeout = (int)readWriteTimeout.TotalMilliseconds;
           }
         }
         if (timeout > TimeSpan.Zero)
         {
-          req.Timeout = timeout.Milliseconds;
+          req.Timeout = (int)timeout.TotalMilliseconds;
         }
         return req;
       }

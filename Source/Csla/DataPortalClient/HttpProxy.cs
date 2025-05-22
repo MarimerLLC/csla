@@ -5,14 +5,14 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using Csla.Configuration;
-using Csla.DataPortalClient;
-using Csla.Properties;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Versioning;
 using System.Text;
+using Csla.Configuration;
+using Csla.DataPortalClient;
+using Csla.Properties;
 
 namespace Csla.Channels.Http
 {
@@ -260,12 +260,12 @@ namespace Csla.Channels.Http
         {
           if (readWriteTimeout > TimeSpan.Zero)
           {
-            httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+            httpWebRequest.ReadWriteTimeout = (int)readWriteTimeout.TotalMilliseconds;
           }
         }
         if (timeout > TimeSpan.Zero)
         {
-          req.Timeout = timeout.Milliseconds;
+          req.Timeout = (int)timeout.TotalMilliseconds;
         }
         return req;
       }

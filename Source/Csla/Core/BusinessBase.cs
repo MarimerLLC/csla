@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using Csla.Configuration;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
 using Csla.Properties;

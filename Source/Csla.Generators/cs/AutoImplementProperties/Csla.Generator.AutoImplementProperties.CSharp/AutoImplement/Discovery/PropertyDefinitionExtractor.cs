@@ -38,9 +38,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         Partial = IsPartial(propertyDeclaration),
         TypeDefinition = new ExtractedMemberTypeDefinition
         {
-          TypeName = GetPropertyTypeName(propertyDeclaration),
-          TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type),
-          Nullable = GetFieldTypeNullable(propertyDeclaration)
+          Nullable = GetFieldTypeNullable(propertyDeclaration),
+          FullyQualifiedType = extractionContext.GetFullyQualifiedType(propertyDeclaration.Type)
         }
       };
       propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration, extractionContext));

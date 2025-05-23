@@ -145,11 +145,13 @@ namespace cslalighttest.BusyStatus
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].ValidationComplete += async (_, _) =>
       {
+#pragma warning disable MSTEST0040 // Do not assert inside 'async void' contexts
         Assert.IsFalse(items.IsBusy);
         Assert.IsTrue(items.IsSavable);
         items = await items.SaveAsync();
         string actual = items[0].OperationResult;
         Assert.AreEqual("DataPortal_Update", actual);
+#pragma warning restore MSTEST0040 // Do not assert inside 'async void' contexts
       };
 
       items[0].RuleField = "some value";

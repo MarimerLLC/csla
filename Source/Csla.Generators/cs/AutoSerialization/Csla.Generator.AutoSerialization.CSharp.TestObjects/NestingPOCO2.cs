@@ -9,7 +9,6 @@ using Csla.Serialization;
 
 namespace Csla.Generator.AutoSerialization.CSharp.TestObjects
 {
-
   /// <summary>
   /// A second class including a private nested class for which automatic serialization code is to be generated
   /// This checks for naming clashes, as its child class is named the same as the one in NestingPOCO
@@ -18,7 +17,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.TestObjects
   [AutoSerializable]
   public partial class NestingPOCO2
   {
-
     [AutoSerialized]
     private NestedPOCO _poco = new NestedPOCO() { Value = "Hello" };
 
@@ -26,19 +24,18 @@ namespace Csla.Generator.AutoSerialization.CSharp.TestObjects
     protected internal partial class NestedPOCO
     {
 
-      public string Value { get; set; } = string.Empty;
+      public string? Value { get; set; } = string.Empty;
 
     }
 
-    public string GetValue()
+    public string? GetValue()
     {
       return _poco.Value;
     }
 
-    public void SetValue(string value)
+    public void SetValue(string? value)
     {
       _poco.Value = value;
     }
-
   }
 }

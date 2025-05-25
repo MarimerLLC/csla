@@ -14,17 +14,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
   /// </summary>
   public class ExtractedMemberTypeDefinition
   {
-
-    /// <summary>
-    /// The name of the type
-    /// </summary>
-    public required string TypeName { get; init; }
-
-    /// <summary>
-    /// The namespace in which the type is defined
-    /// </summary>
-    public required string TypeNamespace { get; init; }
-
     /// <summary>
     /// Whether the type is marked as AutoSerializable
     /// </summary>
@@ -39,5 +28,10 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
     /// Gets or sets a value indicating whether the type is nullable.
     /// </summary>
     public bool Nullable { get; internal set; }
+
+    /// <summary>
+    /// The globally fully qualified type name.
+    /// </summary>
+    public required string GloballyFullyQualifiedType { get; init; }
   }
 }

@@ -31,11 +31,10 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
         PropertyName = GetPropertyName(propertyDeclaration),
         TypeDefinition = new ExtractedMemberTypeDefinition
         {
-          TypeName = GetPropertyTypeName(propertyDeclaration),
-          TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type),
           IsAutoSerializable = extractionContext.IsTypeAutoSerializable(propertyDeclaration.Type),
           ImplementsIMobileObject = extractionContext.DoesTypeImplementIMobileObject(propertyDeclaration.Type),
-          Nullable = GetFieldTypeNullable(propertyDeclaration)
+          Nullable = GetFieldTypeNullable(propertyDeclaration),
+          GloballyFullyQualifiedType = extractionContext.GetFullyQualifiedType(propertyDeclaration.Type)
         }
       };
 

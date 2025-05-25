@@ -1,5 +1,4 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 namespace Csla.Generator.Tests
@@ -160,6 +159,46 @@ namespace Csla.Generator.Tests
           public partial GenericType<MobileDictionary<string, int>> Name { get; private set; }
         }
         """;
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    public static IEnumerable<object[]> Case08TestData()
+    {
+      var nonNullableBuiltInTypes = new string[] { "bool", "byte", "sbyte", "char", "decimal", "double", "float", "int", "uint", "long", "ulong", "short", "ushort" };
+
+      foreach (var item in nonNullableBuiltInTypes)
+      {
+        yield return new object[] { item, false };
+        yield return new object[] { $"{item}?", false };
+        yield return new object[] { $"{item}[]", true };
+        yield return new object[] { $"{item}[]?", false };
+      }
+
+      var nullableBuiltInTypes = new string[] { "string", "object" };
+
+      foreach (var item in nullableBuiltInTypes)
+      {
+        yield return new object[] { item, true };
+        yield return new object[] { $"{item}?", false };
+        yield return new object[] { $"{item}[]", true };
+        yield return new object[] { $"{item}[]?", false };
+      }
+    }
+
+    [DataTestMethod]
+    [DynamicData(nameof(Case08TestData))]
+    public async Task Case08(string type, bool isNullable)
+    {
+      var source = $$"""
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class BusinessBaseTestClass : Csla.BusinessBase<BusinessBaseTestClass>
+        {
+          public partial {{type}} Name { get; private set; }
+        }
+        """;
+
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
   }

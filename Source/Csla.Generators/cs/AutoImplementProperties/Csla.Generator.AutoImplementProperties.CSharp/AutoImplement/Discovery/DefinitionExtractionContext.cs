@@ -5,7 +5,6 @@
 // </copyright>
 // <summary>Helper for definition extraction, used to optimise symbo, recognition</summary>
 //-----------------------------------------------------------------------
-using System.Reflection.Metadata;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -37,7 +36,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       INamedTypeSymbol typeSymbol;
 
       typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
 
@@ -47,26 +47,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <param name="typeSyntax">The type syntax representing the type to be tested</param>
     /// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
     public string GetTypeNamespace(TypeSyntax typeSyntax)
-    {
-      INamedTypeSymbol typeSymbol;
-      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
-      {
-        typeSyntax = nullableTypeSyntax.ElementType;
-      }
-      
-      if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
-      {
-        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
-      }
-      else
-      {
-        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
-      }
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
-      return typeSymbol.ContainingNamespace.ToString();
-    }
-
-    public string GetFullyQualifiedType(TypeSyntax typeSyntax)
     {
       INamedTypeSymbol typeSymbol;
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
@@ -84,8 +64,42 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       }
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
         return string.Empty;
+      return typeSymbol.ContainingNamespace.ToString();
+    }
 
-      return typeSymbol.ToDisplayString(FullyQualifiedFormat);
+    public string GetFullyQualifiedType(TypeSyntax typeSyntax)
+    {
+      bool isNullable = false;
+      INamedTypeSymbol? typeSymbol;
+      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
+      {
+        typeSyntax = nullableTypeSyntax.ElementType;
+        isNullable = true;
+      }
+
+      bool isArray = false;
+      if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+        isArray = true;
+      }
+      else
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      }
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
+
+      var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);
+      if (isArray && fullyQualified[fullyQualified.Length - 1] != ']')
+      {
+        fullyQualified += "[]";
+      }
+      if (isNullable && fullyQualified[fullyQualified.Length - 1] != '?')
+      {
+        fullyQualified += '?';
+      }
+      return fullyQualified;
     }
 
     private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
@@ -113,7 +127,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         endNamespace = desiredTypeNamespace.Substring(separatorPosition + 1);
         remainingNamespace = desiredTypeNamespace.Substring(0, separatorPosition);
       }
-      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase))
+        return false;
 
       if (string.IsNullOrWhiteSpace(remainingNamespace))
       {
@@ -146,11 +161,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       INamespaceSymbol namespaceSymbol;
 
       // Match on the type name
-      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
+      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase))
+        return false;
 
       // Match on the namespace of the type
       namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
-      if (namespaceSymbol is null) return false;
+      if (namespaceSymbol is null)
+        return false;
       return IsMatchingNamespaceSymbol(namespaceSymbol, desiredTypeNamespace);
     }
 

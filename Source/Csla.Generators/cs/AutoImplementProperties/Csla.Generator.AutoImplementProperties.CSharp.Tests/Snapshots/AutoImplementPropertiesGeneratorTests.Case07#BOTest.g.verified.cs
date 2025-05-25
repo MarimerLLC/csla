@@ -11,7 +11,7 @@ public partial class BOTest
 	public static readonly PropertyInfo<global::Test.GenericType<global::Csla.Core.MobileDictionary<string, int>>> NameProperty = RegisterProperty<global::Test.GenericType<global::Csla.Core.MobileDictionary<string, int>>>(nameof(Name));
 	public partial global::Test.GenericType<global::Csla.Core.MobileDictionary<string, int>> Name
 	{
-		get => GetProperty(NameProperty);
+		get => GetProperty(NameProperty)!;
 		private set => SetProperty(NameProperty, value);
 	}
 }

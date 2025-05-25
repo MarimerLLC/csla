@@ -11,7 +11,7 @@ public partial class ReadOnlyPOCO
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
 	public partial string Name
 	{
-		get => GetProperty(NameProperty);
+		get => GetProperty(NameProperty)!;
 		private set => LoadProperty(NameProperty, value);
 	}
 }

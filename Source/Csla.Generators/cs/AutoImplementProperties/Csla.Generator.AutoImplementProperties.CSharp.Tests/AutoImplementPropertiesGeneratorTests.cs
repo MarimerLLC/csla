@@ -168,26 +168,26 @@ namespace Csla.Generator.Tests
 
       foreach (var item in nonNullableBuiltInTypes)
       {
-        yield return new object[] { item, false };
-        yield return new object[] { $"{item}?", false };
-        yield return new object[] { $"{item}[]", true };
-        yield return new object[] { $"{item}[]?", false };
+        yield return new object[] { item };
+        yield return new object[] { $"{item}?" };
+        yield return new object[] { $"{item}[]" };
+        yield return new object[] { $"{item}[]?" };
       }
 
       var nullableBuiltInTypes = new string[] { "string", "object" };
 
       foreach (var item in nullableBuiltInTypes)
       {
-        yield return new object[] { item, true };
-        yield return new object[] { $"{item}?", false };
-        yield return new object[] { $"{item}[]", true };
-        yield return new object[] { $"{item}[]?", false };
+        yield return new object[] { item };
+        yield return new object[] { $"{item}?" };
+        yield return new object[] { $"{item}[]" };
+        yield return new object[] { $"{item}[]?" };
       }
     }
 
     [DataTestMethod]
     [DynamicData(nameof(Case08TestData))]
-    public async Task Case08(string type, bool isNullable)
+    public async Task Case08(string type)
     {
       var source = $$"""
         namespace Test;

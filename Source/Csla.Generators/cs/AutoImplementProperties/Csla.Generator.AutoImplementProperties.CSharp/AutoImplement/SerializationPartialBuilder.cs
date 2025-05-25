@@ -163,7 +163,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       AppendBlockStart(textWriter);
       if (propertyDefinition.Getter)
       {
-        textWriter.WriteLine($"get => {getter}({propertyDefinition.PropertyName}Property);");
+        textWriter.Write($"get => {getter}({propertyDefinition.PropertyName}Property)");
+        if (!propertyDefinition.TypeDefinition.Nullable)
+        {
+          textWriter.Write('!');
+        }
+
+        textWriter.WriteLine(';');
       }
 
       if (propertyDefinition.Setter)

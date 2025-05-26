@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using System.Web.UI.Design;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Data;
-using System.ComponentModel;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {
@@ -21,11 +21,12 @@ namespace Csla.Web.Design
   public class CslaDesignerDataSourceView : DesignerDataSourceView
   {
 
-    private CslaDataSourceDesigner _owner = null;
+    private readonly CslaDataSourceDesigner _owner;
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="owner"/> or <paramref name="viewName"/> is <see langword="null"/>.</exception>
     public CslaDesignerDataSourceView(CslaDataSourceDesigner owner, string viewName)
       : base(owner, viewName)
     {
@@ -54,7 +55,7 @@ namespace Csla.Web.Design
       // create sample data
       for (int index = 1; index <= minimumRows; index++)
       {
-        object[] values = new object[result.Columns.Count];
+        object?[] values = new object[result.Columns.Count];
         int colIndex = 0;
         foreach (DataColumn col in result.Columns)
         {
@@ -94,7 +95,7 @@ namespace Csla.Web.Design
     /// </remarks>
     public override IDataSourceViewSchema Schema =>
       new ObjectSchema(
-        _owner, 
+        _owner,
         _owner.DataSourceControl.TypeName).GetViews()[0];
 
     /// <summary>

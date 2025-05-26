@@ -6,8 +6,8 @@
 // <summary>Contains schema information for a single</summary>
 //-----------------------------------------------------------------------
 
-using System.Web.UI.Design;
 using System.ComponentModel;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {
@@ -23,13 +23,14 @@ namespace Csla.Web.Design
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// <param name="field">The PropertyInfo object
-    /// describing the property.</param>
+    /// <param name="field">The PropertyInfo object describing the property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="field"/> is <see langword="null"/>.</exception>
     public ObjectFieldInfo(PropertyDescriptor field)
     {
-      DataObjectFieldAttribute attribute =
-        (DataObjectFieldAttribute)
-        field.Attributes[typeof(DataObjectFieldAttribute)];
+      if (field is null)
+        throw new ArgumentNullException(nameof(field));
+
+      DataObjectFieldAttribute attribute = (DataObjectFieldAttribute)field.Attributes[typeof(DataObjectFieldAttribute)];
       if (attribute != null)
       {
         IsUnique = attribute.PrimaryKey;

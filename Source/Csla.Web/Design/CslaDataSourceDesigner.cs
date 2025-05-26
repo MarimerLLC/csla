@@ -6,9 +6,9 @@
 // <summary>Implements designer support for CslaDataSource.</summary>
 //-----------------------------------------------------------------------
 
+using System.ComponentModel;
 using System.Web.UI;
 using System.Web.UI.Design;
-using System.ComponentModel;
 using System.Windows.Forms.Design;
 
 namespace Csla.Web.Design
@@ -19,8 +19,8 @@ namespace Csla.Web.Design
   public class CslaDataSourceDesigner : DataSourceDesigner
   {
 
-    private DataSourceControl _control = null;
-    private CslaDesignerDataSourceView _view = null;
+    private DataSourceControl _control = default!;
+    private CslaDesignerDataSourceView? _view = null;
 
     /// <summary>
     /// Initialize the designer component.
@@ -44,10 +44,7 @@ namespace Csla.Web.Design
     /// </remarks>
     public override DesignerDataSourceView GetView(string viewName)
     {
-      if (_view == null)
-      {
-        _view = new CslaDesignerDataSourceView(this, "Default");
-      }
+      _view ??= new CslaDesignerDataSourceView(this, "Default");
       return _view;
     }
 

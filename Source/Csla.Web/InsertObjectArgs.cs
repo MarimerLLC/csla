@@ -37,9 +37,10 @@ namespace Csla.Web
     /// <summary>
     /// Create an instance of the object.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="values"/> is <see langword="null"/>.</exception>
     public InsertObjectArgs(System.Collections.IDictionary values)
     {
-      Values = values;
+      Values = values ?? throw new ArgumentNullException(nameof(values));
     }
 
   }

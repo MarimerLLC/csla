@@ -6,9 +6,9 @@
 // <summary>A Web Forms data binding control designed to support</summary>
 //-----------------------------------------------------------------------
 
-using System.Web.UI;
 using System.ComponentModel;
 using System.Reflection;
+using System.Web.UI;
 using Csla.Properties;
 
 namespace Csla.Web
@@ -24,8 +24,7 @@ namespace Csla.Web
   [ToolboxData("<{0}:CslaDataSource runat=\"server\"></{0}:CslaDataSource>")]
   public class CslaDataSource : DataSourceControl
   {
-
-    private CslaDataSourceView _defaultView;
+    private CslaDataSourceView? _defaultView;
 
     /// <summary>
     /// Event raised when an object is to be created and
@@ -34,7 +33,7 @@ namespace Csla.Web
     /// <remarks>Handle this event in a page and set
     /// e.BusinessObject to the populated business object.
     /// </remarks>
-    public event EventHandler<SelectObjectArgs> SelectObject;
+    public event EventHandler<SelectObjectArgs>? SelectObject;
 
     /// <summary>
     /// Event raised when an object is to be populated with data
@@ -43,7 +42,7 @@ namespace Csla.Web
     /// <remarks>Handle this event in a page to create an
     /// instance of the object, load the object with data and
     /// insert the object into the database.</remarks>
-    public event EventHandler<InsertObjectArgs> InsertObject;
+    public event EventHandler<InsertObjectArgs>? InsertObject;
 
     /// <summary>
     /// Event raised when an object is to be updated.
@@ -51,14 +50,14 @@ namespace Csla.Web
     /// <remarks>Handle this event in a page to update an
     /// existing instance of an object with new data and then
     /// save the object into the database.</remarks>
-    public event EventHandler<UpdateObjectArgs> UpdateObject;
+    public event EventHandler<UpdateObjectArgs>? UpdateObject;
 
     /// <summary>
     /// Event raised when an object is to be deleted.
     /// </summary>
     /// <remarks>Handle this event in a page to delete
     /// an object from the database.</remarks>
-    public event EventHandler<DeleteObjectArgs> DeleteObject;
+    public event EventHandler<DeleteObjectArgs>? DeleteObject;
 
     /// <summary>
     /// Returns the default view for this data control.
@@ -119,7 +118,7 @@ namespace Csla.Web
       set => ((CslaDataSourceView)GetView("Default")).TypeSupportsSorting = value;
     }
 
-    private static Dictionary<string,Type> _typeCache = [];
+    private static Dictionary<string, Type> _typeCache = [];
 
     /// <summary>
     /// Returns a <see cref="Type">Type</see> object based on the
@@ -129,8 +128,7 @@ namespace Csla.Web
     /// <param name="typeName">Full type name of the class,
     /// including assembly name.</param>
     /// <remarks></remarks>
-    internal static Type GetType(
-      string typeAssemblyName, string typeName)
+    internal static Type GetType(string typeAssemblyName, string typeName)
     {
       Type result;
       if (!string.IsNullOrEmpty(typeAssemblyName))

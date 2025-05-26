@@ -5,8 +5,8 @@
 // </copyright>
 // <summary>Application context manager that uses HttpContext</summary>
 //-----------------------------------------------------------------------
-using Csla.Core;
 using System.Web;
+using Csla.Core;
 
 namespace Csla.Web
 {
@@ -16,14 +16,15 @@ namespace Csla.Web
   /// </summary>
   public class ApplicationContextManager : IContextManager
   {
+    private const string _applicationContextName = "Csla.ApplicationContext";
+    private const string _localContextName = "Csla.LocalContext";
+    private const string _clientContextName = "Csla.ClientContext";
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     public ApplicationContextManager()
     { }
-
-    private const string _localContextName = "Csla.LocalContext";
-    private const string _clientContextName = "Csla.ClientContext";
 
     /// <summary>
     /// Gets a value indicating whether this
@@ -61,16 +62,16 @@ namespace Csla.Web
     /// <summary>
     /// Gets the local context.
     /// </summary>
-    public IContextDictionary GetLocalContext()
+    public IContextDictionary? GetLocalContext()
     {
-      return (IContextDictionary)HttpContext.Current.Items[_localContextName];
+      return (IContextDictionary?)HttpContext.Current.Items[_localContextName];
     }
 
     /// <summary>
     /// Sets the local context.
     /// </summary>
     /// <param name="localContext">Local context.</param>
-    public void SetLocalContext(IContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary? localContext)
     {
       HttpContext.Current.Items[_localContextName] = localContext;
     }
@@ -79,9 +80,9 @@ namespace Csla.Web
     /// Gets the client context.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      return (IContextDictionary)HttpContext.Current.Items[_clientContextName];
+      return (IContextDictionary?)HttpContext.Current.Items[_clientContextName];
     }
 
     /// <summary>
@@ -89,20 +90,18 @@ namespace Csla.Web
     /// </summary>
     /// <param name="clientContext">Client context.</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       HttpContext.Current.Items[_clientContextName] = clientContext;
     }
 
-    private const string _applicationContextName = "Csla.ApplicationContext";
-
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext
+    public ApplicationContext? ApplicationContext
     {
       get => (ApplicationContext)HttpContext.Current.Items[_applicationContextName];
-      set => HttpContext.Current.Items[_applicationContextName] = value;
+      set => HttpContext.Current.Items[_applicationContextName] = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
     }
   }
 }

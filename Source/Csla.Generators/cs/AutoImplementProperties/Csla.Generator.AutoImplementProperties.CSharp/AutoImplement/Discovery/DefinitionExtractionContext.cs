@@ -70,7 +70,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     public string GetFullyQualifiedType(TypeSyntax typeSyntax)
     {
       bool isNullable = false;
-      INamedTypeSymbol? typeSymbol;
+      INamedTypeSymbol typeSymbol;
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
       {
         typeSyntax = nullableTypeSyntax.ElementType;

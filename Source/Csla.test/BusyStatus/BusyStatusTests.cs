@@ -143,7 +143,7 @@ namespace cslalighttest.BusyStatus
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-      var tcs = new TaskCompletionSource<bool>();
+      var tcs = new TaskCompletionSource();
       items[0].ValidationComplete += async (_, _) =>
       {
         try

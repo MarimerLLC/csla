@@ -138,25 +138,36 @@ namespace cslalighttest.BusyStatus
     }
 
     [TestMethod]
-    public void ListTestSaveWhileNotBusy()
+    public async Task ListTestSaveWhileNotBusy()
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
+      var tcs = new TaskCompletionSource();
       items[0].ValidationComplete += async (_, _) =>
       {
-#pragma warning disable MSTEST0040 // Do not assert inside 'async void' contexts
-        Assert.IsFalse(items.IsBusy);
-        Assert.IsTrue(items.IsSavable);
-        items = await items.SaveAsync();
-        string actual = items[0].OperationResult;
-        Assert.AreEqual("DataPortal_Update", actual);
-#pragma warning restore MSTEST0040 // Do not assert inside 'async void' contexts
+        try
+        {
+          Assert.IsFalse(items.IsBusy);
+          Assert.IsTrue(items.IsSavable);
+          items = await items.SaveAsync();
+          string actual = items[0].OperationResult;
+          Assert.AreEqual("DataPortal_Update", actual);
+        }
+        catch (Exception ex)
+        {
+          tcs.SetException(ex);
+        }
+        finally
+        {
+          tcs.TrySetResult();
+        }
       };
 
       items[0].RuleField = "some value";
       Assert.IsTrue(items.IsBusy);
       Assert.IsFalse(items.IsSavable);
+      await tcs.Task;
     }
 
     [TestMethod]

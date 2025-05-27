@@ -14,7 +14,7 @@
 - [x] Csla.AspNetCore
 - [ ] Csla.Blazor
 - [ ] Csla.Blazor.WebAssembly
-- [ ] Csla.Web
+- [x] Csla.Web
 - [ ] Csla.Windows
 - [ ] Csla.Xaml.Maui
 - [ ] Csla.Xaml.Wpf

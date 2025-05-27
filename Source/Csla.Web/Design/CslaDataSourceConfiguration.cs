@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using System.Web.UI;
 using System.ComponentModel.Design;
+using System.Web.UI;
 using System.Windows.Forms;
 
 namespace Csla.Web.Design
@@ -18,7 +18,7 @@ namespace Csla.Web.Design
   /// </summary>
   public partial class CslaDataSourceConfiguration : Form
   {
-    private DataSourceControl _control;
+    private DataSourceControl? _control;
 
     /// <summary>
     /// Create instance of object.
@@ -33,10 +33,11 @@ namespace Csla.Web.Design
     /// </summary>
     /// <param name="control">Reference to the data source control.</param>
     /// <param name="oldTypeName">Existing type name.</param>
-    public CslaDataSourceConfiguration(DataSourceControl control, string oldTypeName)
+    /// <exception cref="ArgumentNullException"><paramref name="control"/> is <see langword="null"/>.</exception>
+    public CslaDataSourceConfiguration(DataSourceControl control, string? oldTypeName)
       : this()
     {
-      _control = control;
+      _control = control ?? throw new ArgumentNullException(nameof(control));
       DiscoverTypes();
       TypeComboBox.Text = oldTypeName;
     }
@@ -49,8 +50,8 @@ namespace Csla.Web.Design
     private void DiscoverTypes()
     {
       // try to get a reference to the type discovery service
-      ITypeDiscoveryService discovery = null;
-      if (_control.Site != null)
+      ITypeDiscoveryService? discovery = null;
+      if (_control!.Site != null)
         discovery = (ITypeDiscoveryService)_control.Site.GetService(typeof(ITypeDiscoveryService));
 
       if (discovery != null)

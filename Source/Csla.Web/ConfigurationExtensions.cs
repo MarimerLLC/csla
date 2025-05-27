@@ -32,8 +32,12 @@ public static class WebConfigurationExtensions
   /// </summary>
   /// <param name="config">CslaConfiguration object</param>
   /// <param name="options">XamlOptions action</param>
-  public static CslaOptions AddAspNet(this CslaOptions config, Action<AspNetOptions> options)
+  /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+  public static CslaOptions AddAspNet(this CslaOptions config, Action<AspNetOptions>? options)
   {
+    if (config is null)
+      throw new ArgumentNullException(nameof(config));
+
     var webOptions = new AspNetOptions();
     options?.Invoke(webOptions);
 
@@ -43,8 +47,3 @@ public static class WebConfigurationExtensions
     return config;
   }
 }
-
-/// <summary>
-/// Options for ASP.NET
-/// </summary>
-public class AspNetOptions;

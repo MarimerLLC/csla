@@ -5,16 +5,10 @@
 // </copyright>
 // <summary>Tests of serialization behaviour on the AutoSerializable class PersonPOCO</summary>
 //-----------------------------------------------------------------------
-using System;
-using Csla.Configuration;
 using Csla.Generator.AutoSerialization.CSharp.TestObjects;
 using Csla.Generator.AutoSerialization.CSharp.Tests.Helpers;
-using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.TestHelpers;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Generator.AutoSerialization.CSharp.Tests
 {
@@ -22,12 +16,12 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
   /// <summary>
   /// Tests of serialization on the PersonPOCO class and its children
   /// </summary>
-	[TestClass]
+  [TestClass]
   public class PersonPOCOTests
   {
-    private static TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext = default!;
 
-    private SerializationInfo _serializationInfo;
+    private SerializationInfo _serializationInfo = default!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
@@ -69,7 +63,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "Joe";
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
@@ -90,7 +84,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "Smith";
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
@@ -153,7 +147,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "Mid";
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
@@ -572,7 +566,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "1 High Street";
       PersonPOCO person = new PersonPOCO();
       person.Address = new AddressPOCO() { AddressLine1 = "1 High Street" };
@@ -610,7 +604,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "Townsville";
       PersonPOCO person = new PersonPOCO();
       person.Address = new AddressPOCO() { Town = "Townsville" };
@@ -630,7 +624,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      EmailAddress actual;
+      EmailAddress? actual;
       PersonPOCO person = new PersonPOCO();
       PersonPOCO deserializedPerson;
 
@@ -648,7 +642,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "a@b.com";
       PersonPOCO person = new PersonPOCO();
       person.EmailAddress = new EmailAddress() { Email = "a@b.com" };
@@ -686,7 +680,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       {
         formatter.Serialize(serializationStream, valueToSerialize);
         serializationStream.Seek(0, System.IO.SeekOrigin.Begin);
-        deserializedValue = formatter.Deserialize(serializationStream) as PersonPOCO;
+        deserializedValue = (PersonPOCO)formatter.Deserialize(serializationStream)!;
       }
 
       return deserializedValue;

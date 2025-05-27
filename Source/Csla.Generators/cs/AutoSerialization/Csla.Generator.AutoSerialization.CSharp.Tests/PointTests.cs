@@ -5,14 +5,8 @@
 // </copyright>
 // <summary>Tests of serialization behaviour on the AutoSerializable struct Point</summary>
 //-----------------------------------------------------------------------
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Csla.Serialization.Mobile;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Generator.AutoSerialization.CSharp.TestObjects;
-using Microsoft.Extensions.DependencyInjection;
-using Csla.Configuration;
+using Csla.Serialization.Mobile;
 using Csla.TestHelpers;
 
 namespace Csla.Generator.AutoSerialization.CSharp.Tests
@@ -24,7 +18,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
   [TestClass]
   public class PointTests
   {
-    private static TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext = default!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
@@ -83,7 +77,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       var applicationContext = _testDIContext.CreateTestApplicationContext();
 
       System.IO.MemoryStream serializationStream;
-      Nullable<Point> deserializedValue;
+      Point deserializedValue;
       MobileFormatter formatter = new MobileFormatter(applicationContext);
 
       // Act
@@ -91,10 +85,10 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       {
         formatter.Serialize(serializationStream, valueToSerialize);
         serializationStream.Seek(0, System.IO.SeekOrigin.Begin);
-        deserializedValue = formatter.Deserialize(serializationStream) as Nullable<Point>;
+        deserializedValue = (Point)formatter.Deserialize(serializationStream)!;
       }
 
-      return deserializedValue.Value;
+      return deserializedValue;
     }
 
     #endregion

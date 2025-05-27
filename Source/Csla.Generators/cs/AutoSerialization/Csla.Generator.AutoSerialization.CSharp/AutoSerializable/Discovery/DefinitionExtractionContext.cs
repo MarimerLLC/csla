@@ -16,7 +16,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
   /// </summary>
   internal class DefinitionExtractionContext
   {
-
+    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
     private readonly SemanticModel _semanticModel;
     private const string _serializationNamespace = "Csla.Serialization";
     private const string _cslaNamespace = "Csla";
@@ -57,7 +57,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       {
         return false;
       }
-      
+
       return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
     }
 
@@ -68,11 +68,11 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>Boolean true if the type is decorated with the AutoSerializable attribute, otherwise false</returns>
     public bool IsTypeAutoSerializable(TypeSyntax typeSyntax)
     {
-      if(_semanticModel.GetSymbolInfo(typeSyntax).Symbol is not INamedTypeSymbol typeSymbol)
+      if (_semanticModel.GetSymbolInfo(typeSyntax).Symbol is not INamedTypeSymbol typeSymbol)
       {
         return false;
       }
-      
+
       return IsTypeDecoratedBy(typeSymbol, _autoSerializableAttributeName, _serializationNamespace);
     }
 
@@ -138,6 +138,41 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     public bool IsFieldDecoratedWithAutoNonSerialized(FieldDeclarationSyntax fieldDeclaration)
     {
       return IsFieldDecoratedWith(fieldDeclaration, _autoDoNotSerializeAttributeName, _cslaNamespace);
+    }
+
+    public string GetFullyQualifiedType(TypeSyntax typeSyntax)
+    {
+      bool isNullable = false;
+      INamedTypeSymbol? typeSymbol;
+      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
+      {
+        typeSyntax = nullableTypeSyntax.ElementType;
+        isNullable = true;
+      }
+
+      bool isArray = false;
+      if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+        isArray = true;
+      }
+      else
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      }
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
+
+      var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);
+      if (isArray && fullyQualified[^1] != ']')
+      {
+        fullyQualified += "[]";
+      }
+      if (isNullable && fullyQualified[^1] != '?')
+      {
+        fullyQualified += '?';
+      }
+      return fullyQualified;
     }
 
     #region Private Helper Methods
@@ -210,11 +245,13 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       }
 
       // Match on the type name
-      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
-      
+      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase))
+        return false;
+
       // Match on the namespace of the type
       INamespaceSymbol namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
-      if (namespaceSymbol is null) return false;
+      if (namespaceSymbol is null)
+        return false;
       return IsMatchingNamespaceSymbol(namespaceSymbol, desiredTypeNamespace);
     }
 
@@ -237,7 +274,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
         endNamespace = desiredTypeNamespace.Substring(separatorPosition + 1);
         remainingNamespace = desiredTypeNamespace.Substring(0, separatorPosition);
       }
-      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase))
+        return false;
 
       if (string.IsNullOrWhiteSpace(remainingNamespace))
       {

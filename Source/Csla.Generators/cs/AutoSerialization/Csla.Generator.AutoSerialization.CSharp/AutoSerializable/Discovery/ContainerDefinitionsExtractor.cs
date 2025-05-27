@@ -5,9 +5,9 @@
 // </copyright>
 // <summary>Extract the definitions of the containers of a type</summary>
 //-----------------------------------------------------------------------
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Text;
 
 namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
 {
@@ -32,7 +32,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
         containers.Add(GetContainerDefinition(containingTypeDeclaration));
       }
 
-      var namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
+      var namespaceDeclaration = containingTypeDeclaration.Parent as BaseNamespaceDeclarationSyntax;
       if (namespaceDeclaration is not null)
       {
         containers.Add(GetContainerDefinition(namespaceDeclaration));
@@ -67,7 +67,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       return containerDefinition;
     }
 
-    private static ExtractedContainerDefinition GetContainerDefinition(NamespaceDeclarationSyntax namespaceDeclarationSyntax)
+    private static ExtractedContainerDefinition GetContainerDefinition(BaseNamespaceDeclarationSyntax namespaceDeclarationSyntax)
     {
       StringBuilder containerDefinitionBuilder = new StringBuilder();
       ExtractedContainerDefinition containerDefinition;

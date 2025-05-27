@@ -11,13 +11,13 @@ public partial class BusinessBaseTestClass
 	public static readonly PropertyInfo<global::Test2.UniqueType1> UniqueNameProperty = RegisterProperty<global::Test2.UniqueType1>(nameof(UniqueName));
 	public partial global::Test2.UniqueType1 UniqueName
 	{
-		get => GetProperty(UniqueNameProperty);
+		get => GetProperty(UniqueNameProperty)!;
 		private set => SetProperty(UniqueNameProperty, value);
 	}
 	public static readonly PropertyInfo<global::Test3.NonUniqueType> NonUniqueProperty = RegisterProperty<global::Test3.NonUniqueType>(nameof(NonUnique));
 	public partial global::Test3.NonUniqueType NonUnique
 	{
-		get => GetProperty(NonUniqueProperty);
+		get => GetProperty(NonUniqueProperty)!;
 		set => SetProperty(NonUniqueProperty, value);
 	}
 }

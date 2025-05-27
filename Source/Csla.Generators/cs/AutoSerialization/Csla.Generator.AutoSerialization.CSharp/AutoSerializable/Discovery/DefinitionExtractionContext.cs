@@ -16,7 +16,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
   /// </summary>
   internal class DefinitionExtractionContext
   {
-
+    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
     private readonly SemanticModel _semanticModel;
     private const string _serializationNamespace = "Csla.Serialization";
     private const string _cslaNamespace = "Csla";
@@ -162,15 +162,19 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
 
     public string GetFullyQualifiedType(TypeSyntax typeSyntax)
     {
+      bool isNullable = false;
       INamedTypeSymbol typeSymbol;
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
       {
         typeSyntax = nullableTypeSyntax.ElementType;
+        isNullable = true;
       }
 
+      bool isArray = false;
       if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
       {
         typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+        isArray = true;
       }
       else
       {
@@ -179,10 +183,17 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
         return string.Empty;
 
-      return typeSymbol.ToDisplayString(FullyQualifiedFormat);
+      var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);
+      if (isArray && fullyQualified[fullyQualified.Length - 1] != ']')
+      {
+        fullyQualified += "[]";
+      }
+      if (isNullable && fullyQualified[fullyQualified.Length - 1] != '?')
+      {
+        fullyQualified += '?';
+      }
+      return fullyQualified;
     }
-
-    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
 
     #region Private Helper Methods
 

@@ -262,7 +262,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
       textWriter.WriteLine();
       textWriter.Write(memberDefinition.MemberName);
       textWriter.Write(" = formatter.GetObject(childData.ReferenceId) as ");
-      textWriter.Write(memberDefinition.TypeDefinition.GloballyFullyQualifiedType);
+      var typeName = RemoveQuestionMarkSuffix(memberDefinition.TypeDefinition);
+      textWriter.Write(typeName);
       if (!memberDefinition.TypeDefinition.Nullable && nullable)
       {
         textWriter.Write(" ?? ");
@@ -272,6 +273,17 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
       textWriter.WriteLine(';');
 
       AppendBlockEnd(textWriter);
+
+      static string RemoveQuestionMarkSuffix(ExtractedMemberTypeDefinition typeDefinition)
+      {
+        var name = typeDefinition.GloballyFullyQualifiedType;
+        if (typeDefinition.Nullable && name[name.Length - 1] == '?')
+        {
+          name = name.Substring(0, name.Length - 1);
+        }
+
+        return name;
+      }
     }
 
     /// <summary>
@@ -358,13 +370,14 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization
       textWriter.Write(memberDefinition.MemberName);
       textWriter.Write(" = info.GetValue<");
       textWriter.Write(memberDefinition.TypeDefinition.GloballyFullyQualifiedType);
-      if (memberDefinition.TypeDefinition.Nullable)
-      {
-        textWriter.Write('?');
-      }
       textWriter.Write(">(nameof(");
       textWriter.Write(memberDefinition.MemberName);
-      textWriter.WriteLine("));");
+      textWriter.Write("))");
+      if (!memberDefinition.TypeDefinition.Nullable)
+      {
+        textWriter.Write('!');
+      }
+      textWriter.WriteLine(';');
     }
 
     /// <summary>

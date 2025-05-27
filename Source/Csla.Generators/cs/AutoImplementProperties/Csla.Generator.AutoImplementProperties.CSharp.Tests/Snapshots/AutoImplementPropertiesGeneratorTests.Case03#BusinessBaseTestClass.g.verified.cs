@@ -11,7 +11,7 @@ public partial class BusinessBaseTestClass
 	public static readonly PropertyInfo<global::Test2.GenericType<string>> NameProperty = RegisterProperty<global::Test2.GenericType<string>>(nameof(Name));
 	public partial global::Test2.GenericType<string> Name
 	{
-		get => GetProperty(NameProperty);
+		get => GetProperty(NameProperty)!;
 		private set => SetProperty(NameProperty, value);
 	}
 }

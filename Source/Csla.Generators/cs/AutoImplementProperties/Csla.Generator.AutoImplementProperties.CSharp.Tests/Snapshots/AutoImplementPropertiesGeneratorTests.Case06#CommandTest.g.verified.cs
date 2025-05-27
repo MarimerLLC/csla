@@ -11,7 +11,7 @@ public partial class CommandTest
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
 	public partial string Name
 	{
-		get => ReadProperty(NameProperty);
+		get => ReadProperty(NameProperty)!;
 		private set => LoadProperty(NameProperty, value);
 	}
 }

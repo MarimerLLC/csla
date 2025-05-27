@@ -24,7 +24,7 @@ namespace Test
 		
 		void IMobileObject.SetState(SerializationInfo info)
 		{
-			Name = info.GetValue<string>(nameof(Name));
+			Name = info.GetValue<string>(nameof(Name))!;
 		}
 		
 	}

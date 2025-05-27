@@ -180,5 +180,45 @@ namespace Csla.Generator.Tests
 
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
+
+    public static IEnumerable<object[]> Case09TestData()
+    {
+      var nonNullableBuiltInTypes = new string[] { "bool", "byte", "sbyte", "char", "decimal", "double", "float", "int", "uint", "long", "ulong", "short", "ushort" };
+
+      foreach (var item in nonNullableBuiltInTypes)
+      {
+        yield return new object[] { item };
+        yield return new object[] { $"{item}?" };
+        yield return new object[] { $"{item}[]" };
+        yield return new object[] { $"{item}[]?" };
+      }
+
+      var nullableBuiltInTypes = new string[] { "string", "object" };
+
+      foreach (var item in nullableBuiltInTypes)
+      {
+        yield return new object[] { item };
+        yield return new object[] { $"{item}?" };
+        yield return new object[] { $"{item}[]" };
+        yield return new object[] { $"{item}[]?" };
+      }
+    }
+
+    [DataTestMethod]
+    [DynamicData(nameof(Case09TestData))]
+    public async Task Case09(string type)
+    {
+      var source = $$"""
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class BusinessBaseTestClass : Csla.BusinessBase<BusinessBaseTestClass>
+        {
+          public partial {{type}} Name { get; private set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
   }
 }

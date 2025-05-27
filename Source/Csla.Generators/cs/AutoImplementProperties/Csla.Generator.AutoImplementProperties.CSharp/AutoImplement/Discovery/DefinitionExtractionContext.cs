@@ -77,9 +77,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         isNullable = true;
       }
 
+      bool isArray = false;
       if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
       {
         typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+        isArray = true;
       }
       else
       {
@@ -89,6 +91,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         return string.Empty;
 
       var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);
+      if (isArray && fullyQualified[^1] != ']')
+      {
+        fullyQualified += "[]";
+      }
       if (isNullable && fullyQualified[^1] != '?')
       {
         fullyQualified += '?';

@@ -30,9 +30,10 @@ namespace Csla.Windows
     /// Constructor creates a new HostPropertyAttribute object instance using the information supplied.
     /// </summary>
     /// <param name="hostPropertyName">The name of the host property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="hostPropertyName"/> is <see langword="null"/>.</exception>
     public HostPropertyAttribute(string hostPropertyName)
     {
-      HostPropertyName = hostPropertyName;
+      HostPropertyName = hostPropertyName ?? throw new ArgumentNullException(nameof(hostPropertyName));
     }
 
     #endregion

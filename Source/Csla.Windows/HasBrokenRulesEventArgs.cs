@@ -32,6 +32,7 @@ namespace Csla.Windows
     /// <param name="autoShowBrokenRules">
     /// Indicates whether to automatically show broken rules.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="commandName"/> is <see langword="null"/>.</exception>
     public HasBrokenRulesEventArgs(string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)
       : base(false, commandName)
     {
@@ -62,6 +63,7 @@ namespace Csla.Windows
     /// <param name="autoShowBrokenRules">
     /// Indicates whether to automatically show broken rules.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="commandName"/> is <see langword="null"/>.</exception>
     public HasBrokenRulesEventArgs(bool cancel, string commandName, bool hasErrors, bool hasWarnings, bool hasInformation, bool autoShowBrokenRules)
       : base(cancel, commandName)
     {

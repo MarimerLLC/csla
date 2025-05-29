@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 // code from Bill McCarthy
 // http://msmvps.com/bill/archive/2005/10/05/69012.aspx
@@ -32,7 +33,7 @@ namespace Csla.Windows
     /// <summary>
     /// BindingError event is raised when a data binding error occurs due to a exception.
     /// </summary>
-    public event BindingErrorEventHandler BindingError = null;
+    public event BindingErrorEventHandler? BindingError = null;
     #endregion
     #region Constructors
     /// <summary>
@@ -46,8 +47,11 @@ namespace Csla.Windows
     /// Constructor creates a new BindingSourceRefresh component, adds the component to the container supplied before initialising all the different sub components.
     /// </summary>
     /// <param name="container">The container the component is to be added to.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
     public BindingSourceRefresh(IContainer container)
     {
+      _ = container ?? throw new ArgumentNullException(nameof(container));
+
       container.Add(this);
       InitializeComponent();
     }
@@ -57,7 +61,7 @@ namespace Csla.Windows
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private IContainer components = null;
+    private IContainer components;
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
@@ -75,6 +79,7 @@ namespace Csla.Windows
     /// Required method for Designer support - do not modify
     /// the contents of this method with the code editor.
     /// </summary>
+    [MemberNotNull(nameof(components))]
     private void InitializeComponent()
     {
       components = new System.ComponentModel.Container();
@@ -88,7 +93,7 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="extendee">The control to be extended.</param>
     /// <returns>True if the control is a binding source, else false.</returns>
-    public bool CanExtend(object extendee)
+    public bool CanExtend(object? extendee)
     {
       return (extendee is BindingSource);
     }
@@ -97,9 +102,12 @@ namespace Csla.Windows
     /// property added to extended controls.
     /// </summary>
     /// <param name="source">Control being extended.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     public bool GetReadValuesOnChange(BindingSource source)
     {
+      _ = source ?? throw new ArgumentNullException(nameof(source));
+
       if (_sources.TryGetValue(source, out var result))
         return result;
       else
@@ -112,10 +120,13 @@ namespace Csla.Windows
     /// <param name="source">Control being extended.</param>
     /// <param name="value">New value of property.</param>
     /// <remarks></remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
-    public void SetReadValuesOnChange(
-      BindingSource source, bool value)
+    public void SetReadValuesOnChange(BindingSource source, bool value)
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       _sources[source] = value;
       if (!_isInitialising)
       {
@@ -134,7 +145,7 @@ namespace Csla.Windows
 #if NETSTANDARD2_0 || NET8_0_OR_GREATER
     [System.ComponentModel.DataAnnotations.ScaffoldColumn(false)]
 #endif
-    public ContainerControl Host { get; set; }
+    public ContainerControl? Host { get; set; }
 
     /// <summary>
     /// Forces the binding to re-read after an exception is thrown when changing the binding value
@@ -154,7 +165,7 @@ namespace Csla.Windows
     /// <param name="register">True to register the events, false to unregister them.</param>
     private void RegisterControlEvents(ICurrencyManagerProvider container, bool register)
     {
-      var currencyManager = container.CurrencyManager;
+      var currencyManager = container.CurrencyManager!;
       // If we are to register the events the do so.
       if (register)
       {
@@ -210,21 +221,24 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
-    private void Bindings_CollectionChanging(object sender, CollectionChangeEventArgs e)
+    private void Bindings_CollectionChanging(object? sender, CollectionChangeEventArgs e)
     {
       switch (e.Action)
       {
         case CollectionChangeAction.Refresh:
-          // remove events for entire list
-          RegisterBindingEvents((BindingsCollection)sender, false);
+          if (sender is BindingsCollection source)
+          {
+            // remove events for entire list
+            RegisterBindingEvents(source, false);
+          }
           break;
         case CollectionChangeAction.Add:
-          // adding new element -  remove events for element
-          RegisterBindingEvent((Binding)e.Element, false);
-          break;
         case CollectionChangeAction.Remove:
-          // removing element - remove events for element
-          RegisterBindingEvent((Binding)e.Element, false);
+          if (e.Element is Binding binding)
+          {
+            // removing element - remove events for element
+            RegisterBindingEvent(binding, false);
+          }
           break;
       }
     }
@@ -236,17 +250,23 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="sender">The source of the event.</param>
     /// <param name="e">The <see cref="System.ComponentModel.CollectionChangeEventArgs"/> instance containing the event data.</param>
-    private void Bindings_CollectionChanged(object sender, CollectionChangeEventArgs e)
+    private void Bindings_CollectionChanged(object? sender, CollectionChangeEventArgs e)
     {
       switch (e.Action)
       {
         case CollectionChangeAction.Refresh:
-          // refresh entire list  - add event to all items
-          RegisterBindingEvents((BindingsCollection)sender, true);
+          if (sender is BindingsCollection source)
+          {
+            // refresh entire list  - add event to all items
+            RegisterBindingEvents(source, true);
+          }
           break;
         case CollectionChangeAction.Add:
-          // new element added - add event to element
-          RegisterBindingEvent((Binding)e.Element, true);
+          if (e.Element is Binding binding)
+          {
+            // new element added - add event to element
+            RegisterBindingEvent(binding, true);
+          }
           break;
         case CollectionChangeAction.Remove:
           // element has been removed - do nothing
@@ -262,14 +282,12 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="sender">The object that triggered the event.</param>
     /// <param name="e">The event arguments.</param>
-    private void Control_BindingComplete(object sender, BindingCompleteEventArgs e)
+    private void Control_BindingComplete(object? sender, BindingCompleteEventArgs e)
     {
       switch (e.BindingCompleteState)
       {
         case BindingCompleteState.Exception:
-          if ((RefreshOnException)
-        && e.Binding.DataSource is BindingSource source
-        && GetReadValuesOnChange(source))
+          if ((RefreshOnException) && e.Binding?.DataSource is BindingSource source && GetReadValuesOnChange(source))
           {
             e.Binding.ReadValue();
           }
@@ -277,9 +295,7 @@ namespace Csla.Windows
           BindingError?.Invoke(this, new BindingErrorEventArgs(e.Binding, e.Exception));
           break;
         default:
-          if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate)
-                  && e.Binding.DataSource is BindingSource dataSource
-                  && GetReadValuesOnChange(dataSource))
+          if ((e.BindingCompleteContext == BindingCompleteContext.DataSourceUpdate) && e.Binding?.DataSource is BindingSource dataSource && GetReadValuesOnChange(dataSource))
           {
             e.Binding.ReadValue();
           }
@@ -336,12 +352,12 @@ namespace Csla.Windows
     /// <summary>
     /// Exception gets the exception that caused the binding error.
     /// </summary>
-    public Exception Exception { get; }
+    public Exception? Exception { get; }
 
     /// <summary>
     /// Binding gets the binding that caused the exception.
     /// </summary>
-    public Binding Binding { get; }
+    public Binding? Binding { get; }
 
     #endregion
 
@@ -352,7 +368,7 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="binding">The binding that caused th exception.</param>
     /// <param name="exception">The exception that caused the error.</param>
-    public BindingErrorEventArgs(Binding binding, Exception exception)
+    public BindingErrorEventArgs(Binding? binding, Exception? exception)
     {
       Binding = binding;
       Exception = exception;

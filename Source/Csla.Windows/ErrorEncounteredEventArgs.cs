@@ -22,10 +22,11 @@ namespace Csla.Windows
     /// <param name="ex">
     /// Reference to the exception.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="commandName"/> or <paramref name="ex"/> is <see langword="null"/>.</exception>
     public ErrorEncounteredEventArgs(string commandName, Exception ex)
       : base(commandName)
     {
-      Ex = ex;
+      Ex = ex ?? throw new ArgumentNullException(nameof(ex));
     }
 
     /// <summary>

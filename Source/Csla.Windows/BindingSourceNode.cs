@@ -17,52 +17,39 @@ namespace Csla.Windows
   /// </summary>
   public class BindingSourceNode
   {
+    internal BindingSource Source { get; }
+
+    internal List<BindingSourceNode> Children { get; } = [];
+
+    internal BindingSourceNode? Parent { get; set; }
+
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="source">
     /// BindingSource object to be managed.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     public BindingSourceNode(BindingSource source)
     {
-      Source = source;
+      Source = source ?? throw new ArgumentNullException(nameof(source));
       Source.CurrentChanged += BindingSource_CurrentChanged;
     }
 
-    private List<BindingSourceNode> _children;
-
-    private void BindingSource_CurrentChanged(object sender, EventArgs e)
+    private void BindingSource_CurrentChanged(object? sender, EventArgs e)
     {
-      if (_children.Count > 0)
-        foreach (BindingSourceNode child in _children)
+      if (Children.Count > 0)
+        foreach (BindingSourceNode child in Children)
           child.Source.EndEdit();
     }
 
-    internal BindingSource Source { get; }
-
-    internal List<BindingSourceNode> Children
-    {
-      get
-      {
-        if (_children == null)
-          _children = new List<BindingSourceNode>();
-
-        return _children;
-      }
-    }
-
-    internal BindingSourceNode Parent { get; set; }
-
     internal void Unbind(bool cancel)
     {
-      if (Source == null)
-        return;
-
-      if (_children.Count > 0)
-        foreach (BindingSourceNode child in _children)
+      if (Children.Count > 0)
+        foreach (BindingSourceNode child in Children)
           child.Unbind(cancel);
 
-      IEditableObject current = Source.Current as IEditableObject;
+      IEditableObject? current = Source.Current as IEditableObject;
 
       if (!(Source.DataSource is BindingSource))
         Source.DataSource = null;
@@ -75,17 +62,14 @@ namespace Csla.Windows
           current.EndEdit();
       }
 
-      if (Source.DataSource is BindingSource)
+      if (Source.DataSource is BindingSource && Parent is not null)
         Source.DataSource = Parent.Source;
     }
 
     internal void EndEdit()
     {
-      if (Source == null)
-        return;
-
-      if (_children.Count > 0)
-        foreach (BindingSourceNode child in _children)
+      if (Children.Count > 0)
+        foreach (BindingSourceNode child in Children)
           child.EndEdit();
 
       Source.EndEdit();
@@ -93,23 +77,17 @@ namespace Csla.Windows
 
     internal void SetEvents(bool value)
     {
-      if (Source == null)
-        return;
-
       Source.RaiseListChangedEvents = value;
 
-      if (_children.Count > 0)
-        foreach (BindingSourceNode child in _children)
+      if (Children.Count > 0)
+        foreach (BindingSourceNode child in Children)
           child.SetEvents(value);
     }
 
     internal void ResetBindings(bool refreshMetadata)
     {
-      if (Source == null)
-        return;
-
-      if (_children.Count > 0)
-        foreach (BindingSourceNode child in _children)
+      if (Children.Count > 0)
+        foreach (BindingSourceNode child in Children)
           child.ResetBindings(refreshMetadata);
 
       Source.ResetBindings(refreshMetadata);
@@ -121,7 +99,7 @@ namespace Csla.Windows
     /// <param name="objectToBind">
     /// Business object.
     /// </param>
-    public void Bind(object objectToBind)
+    public void Bind(object? objectToBind)
     {
       if (objectToBind is ISupportUndo root)
         root.BeginEdit();
@@ -138,7 +116,7 @@ namespace Csla.Windows
     {
       SetEvents(false);
 
-      ISupportUndo root = Source.DataSource as ISupportUndo;
+      ISupportUndo? root = Source.DataSource as ISupportUndo;
 
       Unbind(false);
       EndEdit();
@@ -150,11 +128,11 @@ namespace Csla.Windows
     /// Cancels changes to the business object.
     /// </summary>
     /// <param name="businessObject"></param>
-    public void Cancel(object businessObject)
+    public void Cancel(object? businessObject)
     {
       SetEvents(false);
 
-      ISupportUndo root = Source.DataSource as ISupportUndo;
+      ISupportUndo? root = Source.DataSource as ISupportUndo;
 
       Unbind(true);
 

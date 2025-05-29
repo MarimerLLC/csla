@@ -21,6 +21,7 @@ namespace Csla.Configuration
     /// environments.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddWindowsForms(this CslaOptions config)
     {
       return AddWindowsForms(config, null);
@@ -32,7 +33,8 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">XamlOptions action</param>
-    public static CslaOptions AddWindowsForms(this CslaOptions config, Action<WindowsFormsOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions AddWindowsForms(this CslaOptions config, Action<WindowsFormsOptions>? options)
     {
       var winFormsOptions = new WindowsFormsOptions();
       options?.Invoke(winFormsOptions);
@@ -45,9 +47,4 @@ namespace Csla.Configuration
       return config;
     }
   }
-
-  /// <summary>
-  /// Configuration options for AddWindowsForms method
-  /// </summary>
-  public class WindowsFormsOptions;
 }

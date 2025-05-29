@@ -14,7 +14,16 @@
     <Title>CSLA .NET Windows Forms</Title>
     <PackageTags>CSLA;WinForms;Windows Forms</PackageTags>
     <PackageId>Csla.Windows.Forms</PackageId>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
+
+  <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
+    <PackageReference Include="Polyfill" Version="7.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj" />

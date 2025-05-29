@@ -17,7 +17,7 @@ namespace Csla.Windows;
 /// </summary>
 public static class BindingSourceHelper
 {
-  private static BindingSourceNode _rootSourceNode;
+  private static BindingSourceNode _rootSourceNode = default!;
 
   /// <summary>
   /// Sets up BindingSourceNode objects for all
@@ -30,9 +30,11 @@ public static class BindingSourceHelper
   /// <param name="rootSource">
   /// Root BindingSource object.
   /// </param>
-  public static BindingSourceNode InitializeBindingSourceTree(
-    IContainer container, BindingSource rootSource)
+  /// <exception cref="ArgumentNullException"><paramref name="rootSource"/> or <paramref name="container"/> is <see langword="null"/>.</exception>
+  public static BindingSourceNode InitializeBindingSourceTree(IContainer container, BindingSource rootSource)
   {
+    if (container is null)
+      throw new ArgumentNullException(nameof(container));
     if (rootSource == null)
       throw new ApplicationException(Resources.BindingSourceNotProvided);
 
@@ -42,13 +44,11 @@ public static class BindingSourceHelper
     return _rootSourceNode;
   }
 
-  private static IEnumerable<BindingSourceNode> GetChildBindingSources(
-    IContainer container, BindingSource parent, BindingSourceNode parentNode)
+  private static IEnumerable<BindingSourceNode> GetChildBindingSources(IContainer container, BindingSource parent, BindingSourceNode parentNode)
   {
     foreach (Component component in container.Components)
     {
-      if (component is BindingSource {DataSource: not null} source &&
-          source.DataSource.Equals(parent))
+      if (component is BindingSource { DataSource: not null } source && source.DataSource.Equals(parent))
       {
         var childNode = new BindingSourceNode(source)
         {

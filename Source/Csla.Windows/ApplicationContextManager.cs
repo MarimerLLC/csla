@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Principal;
 using Csla.Configuration;
 
@@ -16,7 +17,7 @@ namespace Csla.Windows
   /// <param name="securityOptions"></param>
   public class ApplicationContextManager(SecurityOptions securityOptions) : Csla.Core.ApplicationContextManager
   {
-    private static IPrincipal _principal;
+    private static IPrincipal _principal = default!;
     private SecurityOptions _securityOptions = securityOptions;
 
     /// <summary>
@@ -37,6 +38,7 @@ namespace Csla.Windows
     }
 
     /// <inheritdoc />
+    [MemberNotNull(nameof(_principal))]
     public override void SetUser(IPrincipal principal)
     {
       _principal = principal ?? throw new ArgumentNullException(nameof(principal));

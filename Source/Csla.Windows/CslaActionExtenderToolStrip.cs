@@ -18,12 +18,12 @@ namespace Csla.Windows
   /// data binding to CSLA .NET business objects.
   /// </summary>
   [ToolboxItem(true)]
-  [ProvideProperty("ActionType", typeof (ToolStripButton))]
-  [ProvideProperty("PostSaveAction", typeof (ToolStripButton))]
-  [ProvideProperty("RebindAfterSave", typeof (ToolStripButton))]
-  [ProvideProperty("DisableWhenClean", typeof (ToolStripButton))]
-  [ProvideProperty("DisableWhenUseless", typeof (ToolStripButton))]
-  [ProvideProperty("CommandName", typeof (ToolStripButton))]
+  [ProvideProperty("ActionType", typeof(ToolStripButton))]
+  [ProvideProperty("PostSaveAction", typeof(ToolStripButton))]
+  [ProvideProperty("RebindAfterSave", typeof(ToolStripButton))]
+  [ProvideProperty("DisableWhenClean", typeof(ToolStripButton))]
+  [ProvideProperty("DisableWhenUseless", typeof(ToolStripButton))]
+  [ProvideProperty("CommandName", typeof(ToolStripButton))]
   public class CslaActionExtenderToolStrip : Component, IExtenderProvider
   {
     #region Constructors
@@ -32,9 +32,10 @@ namespace Csla.Windows
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="container">Container for the component.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
     public CslaActionExtenderToolStrip(IContainer container)
     {
-      _container = container;
+      _container = container ?? throw new ArgumentNullException(nameof(container));
       container.Add(this);
     }
 
@@ -44,16 +45,16 @@ namespace Csla.Windows
 
     private Dictionary<ToolStripButton, CslaActionExtenderProperties> _sources = [];
 
-    private object _dataSource = null;
-    private IContainer _container = null;
-    private BindingSourceNode _bindingSourceTree = null;
+    private object? _dataSource = null;
+    private readonly IContainer _container;
+    private BindingSourceNode? _bindingSourceTree = null;
     private bool _closeForm = false;
 
     #endregion
 
     #region IExtenderProvider implementation
 
-    bool IExtenderProvider.CanExtend(object extendee)
+    bool IExtenderProvider.CanExtend(object? extendee)
     {
       return extendee is ToolStripButton;
     }
@@ -67,9 +68,9 @@ namespace Csla.Windows
     /// </summary>
     [Category("Data")]
     [Description("Gets or sets the data source to which this button is bound for action purposes.")]
-    [AttributeProvider(typeof (IListSource))]
+    [AttributeProvider(typeof(IListSource))]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
-    public object DataSource
+    public object? DataSource
     {
       get => _dataSource;
       set
@@ -157,12 +158,16 @@ namespace Csla.Windows
     /// Gets the action type.
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Gets or sets the action type for this button.")]
     [Bindable(true)]
     [DefaultValue(CslaFormAction.None)]
     public CslaFormAction GetActionType(ToolStripButton ctl)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         return source.ActionType;
 
@@ -174,12 +179,16 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
     /// <param name="value">Value for property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Gets or sets the action type for this button.")]
     [Bindable(true)]
     [DefaultValue(CslaFormAction.None)]
     public void SetActionType(ToolStripButton ctl, CslaFormAction value)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         source.ActionType = value;
       else
@@ -198,12 +207,16 @@ namespace Csla.Windows
     /// Gets the post save action.
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Gets or sets the action performed after a save (if ActionType is set to Save).")]
     [Bindable(true)]
     [DefaultValue(PostSaveActionType.None)]
     public PostSaveActionType GetPostSaveAction(ToolStripButton ctl)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         return source.PostSaveAction;
 
@@ -215,12 +228,16 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
     /// <param name="value">Value for property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Gets or sets the action performed after a save (if ActionType is set to Save).")]
     [Bindable(true)]
     [DefaultValue(PostSaveActionType.None)]
     public void SetPostSaveAction(ToolStripButton ctl, PostSaveActionType value)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         source.PostSaveAction = value;
       else
@@ -239,12 +256,16 @@ namespace Csla.Windows
     /// Gets the rebind after save value.
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Determines if the binding source will rebind after business object saves.")]
     [Bindable(true)]
     [DefaultValue(true)]
     public bool GetRebindAfterSave(ToolStripButton ctl)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         return source.RebindAfterSave;
 
@@ -256,12 +277,16 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
     /// <param name="value">Value for property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Determines if the binding source will rebind after business object saves.")]
     [Bindable(true)]
     [DefaultValue(true)]
     public void SetRebindAfterSave(ToolStripButton ctl, bool value)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         source.RebindAfterSave = value;
       else
@@ -280,12 +305,16 @@ namespace Csla.Windows
     /// Gets the disable when useless value.
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("If True, then the status of the underlying business object will cause this button to be enabled or disabled.")]
     [Bindable(true)]
     [DefaultValue(false)]
     public bool GetDisableWhenUseless(ToolStripButton ctl)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         return source.DisableWhenUseless;
 
@@ -297,12 +326,16 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
     /// <param name="value">Value for property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("If True, then the status of the underlying business object will cause this button to be enabled or disabled.")]
     [Bindable(true)]
     [DefaultValue(true)]
     public void SetDisableWhenUseless(ToolStripButton ctl, bool value)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         source.DisableWhenUseless = value;
       else
@@ -321,12 +354,16 @@ namespace Csla.Windows
     /// Gets the command name value.
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Gets or sets the name of this command control for unique identification purposes.")]
     [Bindable(true)]
     [DefaultValue("")]
     public string GetCommandName(ToolStripButton ctl)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+
       if (_sources.TryGetValue(ctl, out var source))
         return source.CommandName;
 
@@ -338,12 +375,18 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="ctl">Reference to ToolStripButton.</param>
     /// <param name="value">Value for property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctl"/> or <paramref name="value"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     [Description("Gets or sets the name of this command control for unique identification purposes.")]
     [Bindable(true)]
     [DefaultValue("")]
     public void SetCommandName(ToolStripButton ctl, string value)
     {
+      if (ctl is null)
+        throw new ArgumentNullException(nameof(ctl));
+      if (value is null)
+        throw new ArgumentNullException(nameof(value));
+
       if (_sources.TryGetValue(ctl, out var source))
         source.CommandName = value;
       else
@@ -365,56 +408,56 @@ namespace Csla.Windows
     /// </summary>
     [Category("Csla")]
     [Description("Event fires just before the attempted action.")]
-    public event EventHandler<CslaActionCancelEventArgs> Clicking;
+    public event EventHandler<CslaActionCancelEventArgs>? Clicking;
 
     /// <summary>
     /// Event indicating the user clicked on the ToolStripButton.
     /// </summary>
     [Category("Csla")]
     [Description("Event fires after a successful action.  When button is set to Save, this event will only fire upon a successful save.  If button is set to Close, this event will never fire.")]
-    public event EventHandler<CslaActionEventArgs> Clicked;
+    public event EventHandler<CslaActionEventArgs>? Clicked;
 
     /// <summary>
     /// Event indicating an error was encountered.
     /// </summary>
     [Category("Csla")]
     [Description("Event fires upon encountering any exception during an action.")]
-    public event EventHandler<ErrorEncounteredEventArgs> ErrorEncountered;
+    public event EventHandler<ErrorEncounteredEventArgs>? ErrorEncountered;
 
     /// <summary>
     /// Event indicating the object is set for new.
     /// </summary>
     [Category("Csla")]
     [Description("Event fires upon a successful save when the PostSaveAction property is set to AndNew.")]
-    public event EventHandler<CslaActionEventArgs> SetForNew;
+    public event EventHandler<CslaActionEventArgs>? SetForNew;
 
     /// <summary>
     /// Event indicating the business object is in an invalid state.
     /// </summary>
     [Category("Csla")]
     [Description("Event fires when the object is in an invalid state.  Note that this event will work in conjunction with the InvalidateOnWarnings and InvalidateOnInformation properties.")]
-    public event EventHandler<CslaActionEventArgs> BusinessObjectInvalid;
+    public event EventHandler<CslaActionEventArgs>? BusinessObjectInvalid;
 
     /// <summary>
     /// Event indicating the business object has broken rules.
     /// </summary>
     [Category("Csla")]
     [Description("Event fires if there are any broken rules at all, despite severity.")]
-    public event EventHandler<HasBrokenRulesEventArgs> HasBrokenRules;
+    public event EventHandler<HasBrokenRulesEventArgs>? HasBrokenRules;
 
     /// <summary>
     /// Event indicating that the object is saving.
     /// </summary>
     [Category("Csla")]
     [Description("Fires just before a save action is performed.")]
-    public event EventHandler<CslaActionCancelEventArgs> ObjectSaving;
+    public event EventHandler<CslaActionCancelEventArgs>? ObjectSaving;
 
     /// <summary>
     /// Event indicating that the object has been saved.
     /// </summary>
     [Category("Csla")]
     [Description("Fires immediately after the underlying object successfully saves.")]
-    public event EventHandler<CslaActionEventArgs> ObjectSaved;
+    public event EventHandler<CslaActionEventArgs>? ObjectSaved;
 
     #endregion
 
@@ -500,22 +543,22 @@ namespace Csla.Windows
     /// Resets all action behaviors.
     /// </summary>
     /// <param name="objectToBind">Target object.</param>
-    public void ResetActionBehaviors(ISavable objectToBind)
+    public void ResetActionBehaviors(ISavable? objectToBind)
     {
       InitializeControls(true);
 
-      BindingSource rootSource = _dataSource as BindingSource;
-
-      if (rootSource != null)
+      if (DataSource is not BindingSource bindingSource)
       {
-        AddEventHooks(objectToBind);
+        throw new InvalidOperationException($"{nameof(DataSource)} == null");
       }
 
-      _bindingSourceTree = BindingSourceHelper.InitializeBindingSourceTree(_container, rootSource);
+      AddEventHooks(objectToBind);
+
+      _bindingSourceTree = BindingSourceHelper.InitializeBindingSourceTree(_container, bindingSource);
       _bindingSourceTree.Bind(objectToBind);
     }
 
-    private void AddEventHooks(ISavable objectToBind)
+    private void AddEventHooks(ISavable? objectToBind)
     {
       // make sure to not attach many times
       RemoveEventHooks(objectToBind);
@@ -531,7 +574,7 @@ namespace Csla.Windows
       }
     }
 
-    private void RemoveEventHooks(ISavable objectToBind)
+    private void RemoveEventHooks(ISavable? objectToBind)
     {
       if (objectToBind is INotifyPropertyChanged propChangedObjParent)
       {
@@ -544,12 +587,12 @@ namespace Csla.Windows
       }
     }
 
-    private void propChangedObj_ChildChanged(object sender, ChildChangedEventArgs e)
+    private void propChangedObj_ChildChanged(object? sender, ChildChangedEventArgs e)
     {
       ResetControls();
     }
 
-    private void propChangedObj_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void propChangedObj_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       ResetControls();
     }
@@ -563,9 +606,13 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="sender">Object originating action.</param>
     /// <param name="e">Arguments.</param>
-    protected void OnClick(object sender, EventArgs e)
+    protected void OnClick(object? sender, EventArgs e)
     {
-      ToolStripButton ctl = (ToolStripButton) sender;
+      if (sender is not ToolStripButton ctl)
+      {
+        throw new InvalidOperationException($"{nameof(sender)} != typeof(ToolStripButton)");
+      }
+
       CslaActionExtenderProperties props = _sources[ctl];
       if (props.ActionType != CslaFormAction.None)
       {
@@ -576,9 +623,9 @@ namespace Csla.Windows
           OnClicking(args);
           if (!args.Cancel)
           {
-            ISavable savableObject = null;
-            ITrackStatus trackableObject = null;
-            BindingSource source = null;
+            ISavable? savableObject = null;
+            ITrackStatus? trackableObject = null;
+            BindingSource? source = null;
 
             var sourceObjectError = false;
             if (_dataSource != null)
@@ -617,13 +664,11 @@ namespace Csla.Windows
                 case CslaFormAction.Cancel:
 
                   diagResult = DialogResult.Yes;
-                  if (WarnOnCancel && trackableObject.IsDirty)
-                    diagResult = MessageBox.Show(
-                      WarnOnCancelMessage, Resources.Warning,
-                      MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                  if (WarnOnCancel && trackableObject?.IsDirty == true)
+                    diagResult = MessageBox.Show(WarnOnCancelMessage, Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                   if (diagResult == DialogResult.Yes)
-                    _bindingSourceTree.Cancel(savableObject);
+                    _bindingSourceTree?.Cancel(savableObject);
 
                   break;
                 // case CslaFormAction.Cancel
@@ -631,17 +676,15 @@ namespace Csla.Windows
                 case CslaFormAction.Close:
 
                   diagResult = DialogResult.Yes;
-                  if (trackableObject.IsDirty || trackableObject.IsNew)
+                  if (trackableObject?.IsDirty == true || trackableObject?.IsNew == true)
                   {
                     if (WarnIfCloseOnDirty)
-                      diagResult = MessageBox.Show(
-                        DirtyWarningMessage + Environment.NewLine + Resources.ActionExtenderCloseConfirmation,
-                        Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                      diagResult = MessageBox.Show(DirtyWarningMessage + Environment.NewLine + Resources.ActionExtenderCloseConfirmation, Resources.Warning, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                   }
 
                   if (diagResult == DialogResult.Yes)
                   {
-                    _bindingSourceTree.Close();
+                    _bindingSourceTree?.Close();
                     _closeForm = true;
                   }
 
@@ -658,23 +701,19 @@ namespace Csla.Windows
                       foreach (var brokenRule in businessObject.GetBrokenRules())
                       {
                         var lambdaBrokenRule = brokenRule;
-                        var friendlyName =
-                          PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
-                            c => c.Name == lambdaBrokenRule.Property).FriendlyName;
+                        var friendlyName = PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).First(c => c.Name == lambdaBrokenRule.Property).FriendlyName;
                         brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
                       }
-                      MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                      MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
                     {
-                      MessageBox.Show(ObjectIsValidMessage, Resources.ActionExtenderInformationCaption,
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                      MessageBox.Show(ObjectIsValidMessage, Resources.ActionExtenderInformationCaption, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                   }
 
                   break;
-                //case CslaFormAction.Validate
+                  //case CslaFormAction.Validate
 
               } // switch (props.ActionType)
 
@@ -688,7 +727,7 @@ namespace Csla.Windows
                   {
                     // For some strange reason, this has to be done down here.
                     // Putting it in the Select Case AfterSave... does not work.
-                    _bindingSourceTree.ResetBindings(false);
+                    _bindingSourceTree?.ResetBindings(false);
                     InitializeControls(true);
                   }
                 }
@@ -719,19 +758,19 @@ namespace Csla.Windows
 
     #region Private methods
 
-    private bool ExecuteSaveAction(ISavable savableObject, ITrackStatus trackableObject, CslaActionExtenderProperties props)
+    private bool ExecuteSaveAction(ISavable? savableObject, ITrackStatus? trackableObject, CslaActionExtenderProperties props)
     {
       var result = true;
       bool okToContinue = true;
 
-      BusinessBase businessObject = null;
+      BusinessBase? businessObject = null;
       bool savableObjectIsBusinessBase = savableObject is BusinessBase;
       if (savableObjectIsBusinessBase)
         businessObject = savableObject as BusinessBase;
 
       if (savableObjectIsBusinessBase)
       {
-        if (!businessObject.IsValid)
+        if (businessObject?.IsValid == false)
         {
           HasBrokenRulesEventArgs argsHasBrokenRules = new HasBrokenRulesEventArgs(
             props.CommandName,
@@ -752,33 +791,30 @@ namespace Csla.Windows
       {
         if (savableObjectIsBusinessBase)
         {
-          if (AutoShowBrokenRules && !businessObject.IsValid)
+          if (AutoShowBrokenRules && businessObject?.IsValid == false)
           {
             string brokenRules = string.Empty;
             foreach (var brokenRule in businessObject.GetBrokenRules())
             {
               var lambdaBrokenRule = brokenRule;
-              var friendlyName =
-                PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).Find(
-                  c => c.Name == lambdaBrokenRule.Property).FriendlyName;
+              var friendlyName = PropertyInfoManager.GetRegisteredProperties(businessObject.GetType()).First(c => c.Name == lambdaBrokenRule.Property).FriendlyName;
               brokenRules += $"{friendlyName}: {brokenRule}{Environment.NewLine}";
             }
-            MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption,
-              MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(brokenRules, Resources.ActionExtenderErrorCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
           }
         }
 
-        if (trackableObject.IsValid)
+        if (trackableObject?.IsValid == true)
         {
           CslaActionCancelEventArgs savingArgs = new CslaActionCancelEventArgs(false, props.CommandName);
           OnObjectSaving(savingArgs);
 
           if (!savingArgs.Cancel)
           {
-            _bindingSourceTree.Apply();
-            ISavable objectToSave = savableObject;
+            _bindingSourceTree?.Apply();
+            ISavable? objectToSave = savableObject;
 
-            if (objectToSave != null)
+            if (objectToSave != null && savableObject != null)
             {
               try
               {
@@ -793,7 +829,7 @@ namespace Csla.Windows
 
                     if (props.RebindAfterSave)
                     {
-                      _bindingSourceTree.Bind(savableObject);
+                      _bindingSourceTree?.Bind(savableObject);
                       AddEventHooks(savableObject);
                     }
                     break;
@@ -812,7 +848,7 @@ namespace Csla.Windows
               }
               catch (Exception ex)
               {
-                _bindingSourceTree.Bind(objectToSave);
+                _bindingSourceTree?.Bind(objectToSave);
                 AddEventHooks(objectToSave);
                 OnErrorEncountered(new ErrorEncounteredEventArgs(props.CommandName, new ObjectSaveException(ex)));
                 // there was some problem
@@ -825,7 +861,7 @@ namespace Csla.Windows
               result = false;
             }
 
-            _bindingSourceTree.SetEvents(true);
+            _bindingSourceTree?.SetEvents(true);
           }
         }
         else
@@ -875,7 +911,7 @@ namespace Csla.Windows
     {
       if (pair.Value.DisableWhenUseless || (pair.Value.DisableWhenClean && !ctl.Enabled))
       {
-        ISavable businessObject = GetBusinessObject();
+        ISavable? businessObject = GetBusinessObject();
         if (businessObject is ITrackStatus trackableObject)
         {
           if (pair.Value.ActionType == CslaFormAction.Cancel || pair.Value.DisableWhenClean)
@@ -902,22 +938,23 @@ namespace Csla.Windows
         if (enumerator.MoveNext())
         {
           ToolStripButton ctl = enumerator.Current.Key;
-          Form frm = GetParentForm(ctl);
+          Form? frm = GetParentForm(ctl);
           frm?.Close();
         }
       }
     }
 
-    private Form GetParentForm(ToolStripButton thisToolStripButton)
+    private Form? GetParentForm(ToolStripButton thisToolStripButton)
     {
       return GetParentForm(thisToolStripButton.GetCurrentParent());
     }
 
-    private Form GetParentForm(Control thisControl)
+    private Form? GetParentForm(Control? thisControl)
     {
-      Form frm;
-
-      if (thisControl.Parent is Form form)
+      Form? frm;
+      if (thisControl is null)
+        frm = null;
+      else if (thisControl.Parent is Form form)
         frm = form;
       else
         frm = GetParentForm(thisControl.Parent);
@@ -925,9 +962,9 @@ namespace Csla.Windows
       return frm;
     }
 
-    private ISavable GetBusinessObject()
+    private ISavable? GetBusinessObject()
     {
-      ISavable businessObject = null;
+      ISavable? businessObject = null;
       if (_dataSource is BindingSource source)
         businessObject = source.DataSource as ISavable;
 

@@ -15,6 +15,6 @@
 - [ ] Csla.Blazor
 - [ ] Csla.Blazor.WebAssembly
 - [x] Csla.Web
-- [ ] Csla.Windows
+- [x] Csla.Windows
 - [ ] Csla.Xaml.Maui
 - [ ] Csla.Xaml.Wpf

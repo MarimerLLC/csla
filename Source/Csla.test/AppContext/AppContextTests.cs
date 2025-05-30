@@ -239,16 +239,14 @@ namespace Csla.Test.AppContext
             DataPortalReturnObjectOnException =true)));
       IDataPortal<ExceptionRoot> dataPortal = testDIContext.CreateDataPortal<ExceptionRoot>();
       
-      ExceptionRoot root = null;
-      
       try
       {
         var ex = Assert.ThrowsException<DataPortalException>(() => 
         {
-          root = dataPortal.Create(new ExceptionRoot.Criteria());
+          var root = dataPortal.Create(new ExceptionRoot.Criteria());
         });
           
-        root = (ExceptionRoot)ex.BusinessObject;
+        var root = (ExceptionRoot)ex.BusinessObject;
         Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
       }

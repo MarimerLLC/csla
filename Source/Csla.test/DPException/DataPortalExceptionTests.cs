@@ -145,7 +145,6 @@ namespace Csla.Test.DPException
       var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
-        Assert.Fail("The previous operation should have thrown an Exception and not executed successfully.");
       });
       
       Assert.IsNull(ex.ErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.ErrorInfo)} should have been null but is not.");

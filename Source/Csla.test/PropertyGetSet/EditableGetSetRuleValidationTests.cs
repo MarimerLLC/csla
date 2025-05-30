@@ -97,13 +97,11 @@ namespace Csla.Test.PropertyGetSet
       egsv.MemberBackedId = ID;
       Assert.IsTrue(ID.Equals(egsv.MemberBackedId));
 
-      var ex = Assert.ThrowsException<Exception>(() => 
+      Assert.ThrowsException<Exception>(() => 
       {
         // Set the required property and verify that it has the value that it was set to.
         egsv.MemberBackedIdWithNoRelationshipTypes = ID;
-        Assert.IsTrue(ID.Equals(egsv.MemberBackedIdWithNoRelationshipTypes));
       });
-      Assert.IsNotNull(ex.Message);
 
       // Verify that the object is not valid.
       Assert.IsFalse(egsv.IsValid, egsv.BrokenRulesCollection.ToString());

@@ -602,42 +602,32 @@ namespace Csla.Test.PropertyGetSet
 // to crash if the debugger is attached to the emulator at the time this is run.
 // https://connect.microsoft.com/VisualStudio/feedback/details/606930/consistent-visual-studio-crash-on-typeinitializationexception-in-wp7-emulator
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
     {
       IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
       IDataPortal<BadGetSet> badDataPortal = _testDIContext.CreateDataPortal<BadGetSet>();
 
       var first = EditableGetSet.GetObject(dataPortal);
-      try
+      var ex = Assert.ThrowsException<TypeInitializationException>(() =>
       {
         var root = BadGetSet.GetObject(badDataPortal);
         var tmp = root.Id;
-      }
-      catch (TypeInitializationException ex)
-      {
-        throw ex.InnerException;
-      }
+      });
+      Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyRegisteredTwice()
     {
       IDataPortal<BadGetSetTwo> dataPortal = _testDIContext.CreateDataPortal<BadGetSetTwo>();
 
-      try
+      var ex = Assert.ThrowsException<TypeInitializationException>(() =>
       {
         var root = BadGetSetTwo.GetObject(dataPortal);
         var tmp = root.Id;
-      }
-      catch (TypeInitializationException ex)
-      {
-        if (ex.InnerException != null)
-          throw ex.InnerException;
-        else
-          throw;
-      }
+      });
+      
+      Assert.IsInstanceOfType(ex.InnerException, typeof(InvalidOperationException));
     }
 #endif
 

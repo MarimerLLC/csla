@@ -84,16 +84,8 @@ namespace Csla.Test.SmartDate
       Assert.AreEqual(DateTime.MaxValue, d.Date);
       Assert.AreEqual("", d.ToString());
 
-      try
-      {
-        d = new Csla.SmartDate("Invalid Date", true);
-      }
-      catch (Exception ex) { Assert.IsTrue(ex is ArgumentException); }
-      try
-      {
-        d = new Csla.SmartDate("Invalid Date", false);
-      }
-      catch (Exception ex) { Assert.IsTrue(ex is ArgumentException); }
+      Assert.ThrowsException<ArgumentException>(() => new Csla.SmartDate("Invalid Date", true));
+      Assert.ThrowsException<ArgumentException>(() => new Csla.SmartDate("Invalid Date", false));
 
       d = new Csla.SmartDate(now, true);
       Assert.AreEqual(now, d.Date);
@@ -127,14 +119,7 @@ namespace Csla.Test.SmartDate
       Assert.AreEqual(DateTime.Now.AddDays(-1.0).ToShortDateString(), d.ToShortDateString());
       d = Csla.SmartDate.StringToDate("+");
       Assert.AreEqual(DateTime.Now.AddDays(1.0).ToShortDateString(), d.ToShortDateString());
-      try
-      {
-        d = Csla.SmartDate.StringToDate("Invalid Date");
-      }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(ex is ArgumentException);
-      }
+      Assert.ThrowsException<ArgumentException>(() => Csla.SmartDate.StringToDate("Invalid Date"));
 
       d = Csla.SmartDate.StringToDate("");
       Assert.AreEqual(DateTime.MinValue, d);
@@ -145,22 +130,8 @@ namespace Csla.Test.SmartDate
       Assert.AreEqual(DateTime.MinValue, d);
       d = Csla.SmartDate.StringToDate("", false);
       Assert.AreEqual(DateTime.MaxValue, d);
-      try
-      {
-        d = Csla.SmartDate.StringToDate("Invalid Date", true);
-      }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(ex is ArgumentException);
-      }
-      try
-      {
-        d = Csla.SmartDate.StringToDate("Invalid Date", false);
-      }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(ex is ArgumentException);
-      }
+      Assert.ThrowsException<ArgumentException>(() => Csla.SmartDate.StringToDate("Invalid Date", true));
+      Assert.ThrowsException<ArgumentException>(() => Csla.SmartDate.StringToDate("Invalid Date", false));
       d = Csla.SmartDate.StringToDate(null, true);
       Assert.AreEqual(DateTime.MinValue, d);
       d = Csla.SmartDate.StringToDate(null, false);

@@ -194,17 +194,14 @@ namespace Csla.Test.AppContext
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       
       ExceptionRoot root;
-      try
+      var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         root = dataPortal.Create(new ExceptionRoot.Criteria());
-        Assert.Fail("Exception didn't occur");
-      }
-      catch (DataPortalException ex)
-      {
-        Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
-        Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
-        Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
-      }
+      });
+      
+      Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
+      Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
+      Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
 
       Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
     }
@@ -219,21 +216,14 @@ namespace Csla.Test.AppContext
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
       
       ExceptionRoot root = null;
-      try
+      var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         root = dataPortal.Fetch(new ExceptionRoot.Criteria("fail"));
-        Assert.Fail("Exception didn't occur");
-      }
-      catch (DataPortalException ex)
-      {
-        Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
-        Assert.AreEqual("Fail fetch", ex.GetBaseException().Message, "Base exception message incorrect");
-        Assert.IsTrue(ex.Message.StartsWith("DataPortal.Fetch failed"), "Exception message incorrect");
-      }
-      catch (Exception ex)
-      {
-        Assert.Fail("Unexpected exception: " + ex.ToString());
-      }
+      });
+      
+      Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
+      Assert.AreEqual("Fail fetch", ex.GetBaseException().Message, "Base exception message incorrect");
+      Assert.IsTrue(ex.Message.StartsWith("DataPortal.Fetch failed"), "Exception message incorrect");
 
       Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
     }
@@ -249,20 +239,18 @@ namespace Csla.Test.AppContext
             DataPortalReturnObjectOnException =true)));
       IDataPortal<ExceptionRoot> dataPortal = testDIContext.CreateDataPortal<ExceptionRoot>();
       
+      ExceptionRoot root = null;
+      
       try
       {
-        ExceptionRoot root;
-        try
+        var ex = Assert.ThrowsException<DataPortalException>(() => 
         {
           root = dataPortal.Create(new ExceptionRoot.Criteria());
-          Assert.Fail("Create exception didn't occur");
-        }
-        catch (DataPortalException ex)
-        {
-          root = (ExceptionRoot)ex.BusinessObject;
-          Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
-          Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
-        }
+        });
+          
+        root = (ExceptionRoot)ex.BusinessObject;
+        Assert.AreEqual("Fail create", ex.GetBaseException().Message, "Base exception message incorrect");
+        Assert.IsTrue(ex.Message.StartsWith("DataPortal.Create failed"), "Exception message incorrect");
       }
       finally
       {
@@ -277,17 +265,16 @@ namespace Csla.Test.AppContext
       IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
 
       ExceptionRoot root = null;
-      try
+
+      var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         dataPortal.Delete("fail");
-        Assert.Fail("Exception didn't occur");
-      }
-      catch (DataPortalException ex)
-      {
-        root = (ExceptionRoot)ex.BusinessObject;
-        Assert.AreEqual("Fail delete", ex.GetBaseException().Message, "Base exception message incorrect");
-        Assert.IsTrue(ex.Message.StartsWith("DataPortal.Delete failed"), "Exception message incorrect");
-      }
+      });
+      
+      root = (ExceptionRoot)ex.BusinessObject;
+      Assert.AreEqual("Fail delete", ex.GetBaseException().Message, "Base exception message incorrect");
+      Assert.IsTrue(ex.Message.StartsWith("DataPortal.Delete failed"), "Exception message incorrect");
+      
       Assert.IsNull(root, "Business object returned");
       Assert.AreEqual("create", TestResults.GetResult("create"), "GlobalContext not preserved");
     }

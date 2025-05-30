@@ -609,15 +609,12 @@ namespace Csla.Test.PropertyGetSet
       IDataPortal<BadGetSet> badDataPortal = _testDIContext.CreateDataPortal<BadGetSet>();
 
       var first = EditableGetSet.GetObject(dataPortal);
-      try
+      var ex = Assert.ThrowsException<TypeInitializationException>(() =>
       {
         var root = BadGetSet.GetObject(badDataPortal);
         var tmp = root.Id;
-      }
-      catch (TypeInitializationException ex)
-      {
-        throw ex.InnerException;
-      }
+      });
+      throw ex.InnerException;
     }
 
     [TestMethod]
@@ -626,18 +623,16 @@ namespace Csla.Test.PropertyGetSet
     {
       IDataPortal<BadGetSetTwo> dataPortal = _testDIContext.CreateDataPortal<BadGetSetTwo>();
 
-      try
+      var ex = Assert.ThrowsException<TypeInitializationException>(() =>
       {
         var root = BadGetSetTwo.GetObject(dataPortal);
         var tmp = root.Id;
-      }
-      catch (TypeInitializationException ex)
-      {
-        if (ex.InnerException != null)
-          throw ex.InnerException;
-        else
-          throw;
-      }
+      });
+      
+      if (ex.InnerException != null)
+        throw ex.InnerException;
+      else
+        throw;
     }
 #endif
 

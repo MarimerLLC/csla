@@ -46,16 +46,12 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
-      try
+      var ex = Assert.ThrowsException<Exception>(() => 
       {
         // get the required property and verify that it has the value that it was set to.
         var result = egsv.MemberBackedIdWithNoRelationshipTypes;
-        Assert.Fail("This property has a backing feild and an exception should of been thrown.");
-      }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(true, ex.Message);
-      }
+      });
+      Assert.IsNotNull(ex.Message);
     }
 
     [TestMethod]
@@ -65,16 +61,12 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
-      try
+      var ex = Assert.ThrowsException<Exception>(() => 
       {
         // Set the required property and verify that it has the value that it was set to.
         egsv.MemberBackedIdWithNoRelationshipTypes = ID;
-        Assert.Fail("This property has a backing feild and an exception should of been thrown.");
-      }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(true, ex.Message);
-      }
+      });
+      Assert.IsNotNull(ex.Message);
     }
 
     [TestMethod]
@@ -88,15 +80,11 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsTrue(egsv.Id.Equals(string.Empty));
       Assert.IsTrue(egsv.MemberBackedId.Equals(string.Empty));
 
-      try
+      var ex = Assert.ThrowsException<Exception>(() => 
       {
         Assert.IsTrue(egsv.MemberBackedIdWithNoRelationshipTypes.Equals(string.Empty));
-        Assert.Fail("This property has a backing feild and an exception should of been thrown.");
-      }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(true, ex.Message);
-      }
+      });
+      Assert.IsNotNull(ex.Message);
 
       // Verify that the object is not valid.
       Assert.IsFalse(egsv.IsValid, egsv.BrokenRulesCollection.ToString());
@@ -109,16 +97,13 @@ namespace Csla.Test.PropertyGetSet
       egsv.MemberBackedId = ID;
       Assert.IsTrue(ID.Equals(egsv.MemberBackedId));
 
-      try
+      var ex = Assert.ThrowsException<Exception>(() => 
       {
         // Set the required property and verify that it has the value that it was set to.
         egsv.MemberBackedIdWithNoRelationshipTypes = ID;
         Assert.IsTrue(ID.Equals(egsv.MemberBackedIdWithNoRelationshipTypes));
-      }
-      catch (Exception ex)
-      {
-        Assert.IsTrue(true, ex.Message);
-      }
+      });
+      Assert.IsNotNull(ex.Message);
 
       // Verify that the object is not valid.
       Assert.IsFalse(egsv.IsValid, egsv.BrokenRulesCollection.ToString());

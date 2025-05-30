@@ -45,18 +45,16 @@ namespace Csla.Test.DPException
       string baseInnerInnerException = string.Empty;
       string exceptionSource = string.Empty;
 
-      try
+      var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         root = root.Save();
-      }
-      catch (DataPortalException ex)
-      {
-        baseException = ex.Message;
-        baseInnerException = ex.InnerException.Message;
-        baseInnerInnerException = ex.InnerException.InnerException?.Message;
-        exceptionSource = ex.InnerException.InnerException?.Source;
-        Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
-      }
+      });
+
+      baseException = ex.Message;
+      baseInnerException = ex.InnerException.Message;
+      baseInnerInnerException = ex.InnerException.InnerException?.Message;
+      exceptionSource = ex.InnerException.InnerException?.Source;
+      Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
 
       //check base exception
       Assert.IsTrue(baseException.StartsWith("DataPortal.Update failed"), "Exception should start with 'DataPortal.Update failed'");
@@ -89,17 +87,15 @@ namespace Csla.Test.DPException
       string baseInnerException = string.Empty;
       string baseInnerInnerException = string.Empty;
 
-      try
+      var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         //this will throw an exception
         DataPortal.TransactionalRoot.DeleteTransactionalRoot(13, dataPortal);
-      }
-      catch (DataPortalException ex)
-      {
-        baseException = ex.Message;
-        baseInnerException = ex.InnerException.Message;
-        baseInnerInnerException = ex.InnerException.InnerException.Message;
-      }
+      });
+
+      baseException = ex.Message;
+      baseInnerException = ex.InnerException.Message;
+      baseInnerInnerException = ex.InnerException.InnerException.Message;
 
       Assert.IsTrue(baseException.StartsWith("DataPortal.Delete failed"), "Should start with 'DataPortal.Delete failed'");
       Assert.IsTrue(baseException.Contains("DataPortal_Delete: you chose an unlucky number"));
@@ -120,18 +116,16 @@ namespace Csla.Test.DPException
       string baseInnerException = string.Empty;
       string baseInnerInnerException = string.Empty;
 
-      try
+      var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         //this will throw an exception
         DataPortal.TransactionalRoot root =
             DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
-      }
-      catch (DataPortalException ex)
-      {
-        baseException = ex.Message;
-        baseInnerException = ex.InnerException.Message;
-        baseInnerInnerException = ex.InnerException.InnerException.Message;
-      }
+      });
+
+      baseException = ex.Message;
+      baseInnerException = ex.InnerException.Message;
+      baseInnerInnerException = ex.InnerException.InnerException.Message;
 
       Assert.IsTrue(baseException.StartsWith("DataPortal.Fetch failed"), "Should start with 'DataPortal.Fetch failed'");
       Assert.IsTrue(baseException.Contains("DataPortal_Fetch: you chose an unlucky number"),
@@ -148,17 +142,14 @@ namespace Csla.Test.DPException
     public void CheckBusinessErrorInfoIsNullWhennErrorInfoIsNull() {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
 
-      try 
+      var ex = Assert.ThrowsException<DataPortalException>(() => 
       {
         DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.GetTransactionalRoot(13, dataPortal);
-
         Assert.Fail("The previous operation should have thrown an Exception and not executed successfully.");
-      } 
-      catch (DataPortalException ex) 
-      {
-        Assert.IsNull(ex.ErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.ErrorInfo)} should have been null but is not.");
-        Assert.IsNull(ex.BusinessErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.BusinessErrorInfo)} should have been null but is not.");
-      }
+      });
+      
+      Assert.IsNull(ex.ErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.ErrorInfo)} should have been null but is not.");
+      Assert.IsNull(ex.BusinessErrorInfo, $"{nameof(DataPortalException)}.{nameof(DataPortalException.BusinessErrorInfo)} should have been null but is not.");
     }
   }
 }

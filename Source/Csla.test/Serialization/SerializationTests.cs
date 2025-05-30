@@ -448,54 +448,26 @@ namespace Csla.Test.Serialization
 
       Security.PermissionsRoot root = dataPortal.Create();
 
-      try
-      {
-        root.FirstName = "something";
-        Assert.Fail("Exception didn't occur");
-      }
-      catch (Csla.Security.SecurityException ex)
-      {
-        Assert.AreEqual("Property set not allowed", ex.Message);
-      }
+      var ex = Assert.ThrowsException<Csla.Security.SecurityException>(() => root.FirstName = "something");
+      Assert.AreEqual("Property set not allowed", ex.Message);
 
       dataPortal = adminDIContext.CreateDataPortal<Security.PermissionsRoot>();
       root = dataPortal.Create();
 
-      try
-      {
-        root.FirstName = "something";
-      }
-      catch (Csla.Security.SecurityException)
-      {
-        Assert.Fail("exception occurred");
-      }
+      root.FirstName = "something";
 
       // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
       //Csla.ApplicationContext.User = new ClaimsPrincipal();
 
       Security.PermissionsRoot rootClone = root.Clone();
 
-      try
-      {
-        rootClone.FirstName = "something else";
-        Assert.Fail("Exception didn't occur");
-      }
-      catch (Csla.Security.SecurityException ex)
-      {
-        Assert.AreEqual("Property set not allowed", ex.Message);
-      }
+      var ex = Assert.ThrowsException<Csla.Security.SecurityException>(() => rootClone.FirstName = "something else");
+      Assert.AreEqual("Property set not allowed", ex.Message);
 
       // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
       //Csla.ApplicationContext.User = GetPrincipal("Admin");
 
-      try
-      {
-        rootClone.FirstName = "something new";
-      }
-      catch (Csla.Security.SecurityException)
-      {
-        Assert.Fail("exception occurred");
-      }
+      rootClone.FirstName = "something new";
 
     }
 

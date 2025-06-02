@@ -461,8 +461,8 @@ namespace Csla.Test.Serialization
 
       Security.PermissionsRoot rootClone = root.Clone();
 
-      var ex = Assert.ThrowsException<Csla.Security.SecurityException>(() => rootClone.FirstName = "something else");
-      Assert.AreEqual("Property set not allowed", ex.Message);
+      var ex2 = Assert.ThrowsException<Csla.Security.SecurityException>(() => rootClone.FirstName = "something else");
+      Assert.AreEqual("Property set not allowed", ex2.Message);
 
       // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
       //Csla.ApplicationContext.User = GetPrincipal("Admin");

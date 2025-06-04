@@ -356,11 +356,21 @@ namespace Csla.Test.DataPortal
       Assert.IsNotNull(method);
       Assert.AreEqual(0, method.MethodInfo.GetParameters().Count());
     }
+
+    [TestMethod($"{nameof(ServiceProviderMethodCaller.TryFindDataPortalMethod)} must not throw when the business object is attributed with an object factory which is not loaded/known in the current environment."), GitHubWorkItem("https://github.com/MarimerLLC/csla/issues/4681")]
+    public void TryFindDataPortalMethod_Testcase1()
+    {
+      FluentActions.Invoking(() => _systemUnderTest.TryFindDataPortalMethod<FetchAttribute>(typeof(NotKnownObjectFactoryInCurrentEnvironment), null, out var _)).Should().NotThrow();
+    }
   }
 
-  //
-  // End of test methods, start of support classes
-  //
+  #region Classes for testing various scenarios of loading/finding data portal methods
+
+  [Csla.Server.ObjectFactory("NotLoadedAssembly.NotKnownObjectFactoryInCurrentEnvironmentFactory, NotLoadedAssembly")]
+  public class NotKnownObjectFactoryInCurrentEnvironment : BusinessBase<NotKnownObjectFactoryInCurrentEnvironment>
+  {
+
+  }
 
   public class OldStyleNoOverride : BusinessBase<OldStyleNoOverride>
   {
@@ -668,4 +678,6 @@ namespace Csla.Test.DataPortal
     private void DeleteSelf(int x, int y)
     { }
   }
+
+  #endregion
 }

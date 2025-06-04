@@ -16,7 +16,7 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Server;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Reflection
 {
@@ -85,9 +85,15 @@ namespace Csla.Reflection
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="dataPortalMethod">The maybe found method.</param>
     /// <returns><see langword="true"/> if a method with the provided attribute was found. Otherwise <see langword="false"/>.</returns>
-    public bool TryFindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
+    public bool TryFindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type? targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
       where T : DataPortalOperationAttribute
     {
+      if (targetType is null)
+      {
+        dataPortalMethod = null;
+        return false;
+      }
+
       dataPortalMethod = FindDataPortalMethod<T>(targetType, criteria, false);
       return dataPortalMethod != null;
     }
@@ -132,8 +138,11 @@ namespace Csla.Reflection
       var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
       {
-        var factoryLoader = _applicationContext.CurrentServiceProvider.GetService(typeof(IObjectFactoryLoader)) as IObjectFactoryLoader;
-        var factoryType = factoryLoader?.GetFactoryType(factoryInfo.FactoryTypeName);
+        if (!TryGetFactoryType(factoryInfo, _applicationContext, throwOnError, out var factoryType))
+        {
+          return null;
+        }
+
         var ftList = new List<System.Reflection.MethodInfo>();
         var level = 0;
         while (factoryType != null)
@@ -159,6 +168,22 @@ namespace Csla.Reflection
         {
           var ftlist = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
           candidates.AddRange(ftlist.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
+        }
+
+        static bool TryGetFactoryType(ObjectFactoryAttribute factoryAttribute, ApplicationContext context, bool throwOnError, [NotNullWhen(true)] out Type? factoryType)
+        {
+          try
+          {
+            var factoryLoader = context.CurrentServiceProvider.GetRequiredService<IObjectFactoryLoader>();
+            factoryType = factoryLoader.GetFactoryType(factoryAttribute.FactoryTypeName);
+          }
+          catch when (!throwOnError)
+          {
+            factoryType = null;
+            return false;
+          }
+
+          return factoryType is not null;
         }
       }
       else // not using factory types

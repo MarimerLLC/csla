@@ -38,12 +38,13 @@ namespace Csla.Server
     /// on the business object.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Type"/> for <paramref name="factoryName"/> could not be loaded.</exception>
     public Type GetFactoryType(string factoryName)
     {
       if (factoryName is null)
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(factoryName)), nameof(factoryName));
 
-      return Type.GetType(factoryName) ?? throw new InvalidOperationException(Resources.FactoryTypeNotFoundException);
+      return Type.GetType(factoryName) ?? throw new InvalidOperationException(string.Format(Resources.FactoryTypeNotFoundException, factoryName));
     }
 
     /// <summary>
@@ -61,6 +62,7 @@ namespace Csla.Server
     /// type name parameter.
     /// </returns>
     /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Type"/> for <paramref name="factoryName"/> could not be loaded.</exception>
     public object GetFactory(string factoryName)
     {
       if (factoryName is null)

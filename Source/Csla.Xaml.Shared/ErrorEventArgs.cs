@@ -18,6 +18,6 @@ namespace Csla.Xaml
     /// Gets the Exception object for the error
     /// that occurred.
     /// </summary>
-    public Exception Error { get; internal set; }
+    public Exception? Error { get; internal set; }
   }
 }

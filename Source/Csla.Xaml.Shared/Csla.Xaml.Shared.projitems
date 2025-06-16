@@ -30,5 +30,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)TriggerAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)XamlOptions.cs" />
   </ItemGroup>
 </Project>

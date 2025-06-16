@@ -38,6 +38,8 @@
     <Title>CSLA .NET for MAUI</Title>
     <PackageTags>CSLA;Business;MAUI</PackageTags>
     <PackageId>Csla.Maui</PackageId>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

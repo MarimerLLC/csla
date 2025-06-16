@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Implements support for RoutedCommands that can</summary>
 //-----------------------------------------------------------------------
-using System.Windows.Input;
 using System.ComponentModel;
+using System.Windows.Input;
 using Csla.Core;
 
 namespace Csla.Xaml
@@ -33,10 +33,10 @@ namespace Csla.Xaml
     static CslaDataProviderCommandManager()
     {
       CommandBinding binding;
-      
+
       binding = new CommandBinding(ApplicationCommands.Save, SaveCommand, CanExecuteSave);
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
-      
+
       binding = new CommandBinding(ApplicationCommands.Undo, UndoCommand, CanExecuteUndo);
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
 
@@ -47,8 +47,11 @@ namespace Csla.Xaml
       CommandManager.RegisterClassCommandBinding(typeof(CslaDataProviderCommandManager), binding);
     }
 
-    private static void CanExecuteSave(object target, CanExecuteRoutedEventArgs e)
+    private static void CanExecuteSave(object? target, CanExecuteRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       bool result = false;
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
       {
@@ -63,14 +66,20 @@ namespace Csla.Xaml
       e.CanExecute = result;
     }
 
-    private static void SaveCommand(object target, ExecutedRoutedEventArgs e)
+    private static void SaveCommand(object? target, ExecutedRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
         ctl.Provider.Save();
     }
 
-    private static void CanExecuteUndo(object target, CanExecuteRoutedEventArgs e)
+    private static void CanExecuteUndo(object? target, CanExecuteRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       bool result = false;
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
       {
@@ -88,14 +97,20 @@ namespace Csla.Xaml
       e.CanExecute = result;
     }
 
-    private static void UndoCommand(object target, ExecutedRoutedEventArgs e)
+    private static void UndoCommand(object? target, ExecutedRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
         ctl.Provider.Cancel();
     }
 
-    private static void CanExecuteNew(object target, CanExecuteRoutedEventArgs e)
+    private static void CanExecuteNew(object? target, CanExecuteRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       bool result = false;
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
       {
@@ -109,39 +124,45 @@ namespace Csla.Xaml
       e.CanExecute = result;
     }
 
-    private static void NewCommand(object target, ExecutedRoutedEventArgs e)
+    private static void NewCommand(object? target, ExecutedRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
         ctl.Provider.AddNew();
     }
 
-    private static void CanExecuteRemove(object target, CanExecuteRoutedEventArgs e)
+    private static void CanExecuteRemove(object? target, CanExecuteRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       bool result = false;
-      if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
+      if (target is CslaDataProviderCommandManager ctl && ctl.Provider?.Data != null)
       {
-        if (ctl.Provider.Data != null)
+        IBindingList? list;
+        if (e.Parameter is BusinessBase bb)
+          list = bb.Parent as IBindingList;
+        else
+          list = ctl.Provider.Data as IBindingList;
+        if (list != null)
         {
-          IBindingList list;
-          if (e.Parameter is BusinessBase bb)
-            list = bb.Parent as IBindingList;
-          else
-            list = ctl.Provider.Data as IBindingList;
-          if (list != null)
-          {
-            result = list.AllowRemove;
-            if (result && !Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
-              result = false;
-          }
+          result = list.AllowRemove;
+          if (result && !Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, ctl.Provider.Data))
+            result = false;
         }
       }
       e.CanExecute = result;
     }
 
-    private static void RemoveCommand(object target, ExecutedRoutedEventArgs e)
+    private static void RemoveCommand(object? target, ExecutedRoutedEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       if (target is CslaDataProviderCommandManager ctl && ctl.Provider != null)
-        ctl.Provider.RemoveItem(null, new ExecuteEventArgs { MethodParameter = e.Parameter });
+        ctl.Provider.RemoveItem(null, new ExecuteEventArgs(e.Parameter));
     }
   }
 }

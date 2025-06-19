@@ -2,6 +2,26 @@
 
 CSLA 9 is a substantial update to CSLA .NET, adding support for .NET 9, removing .NET 6 and UWP, and many enhancements and bug fixes.
 
+## CSLA .NET version 9.1.0 release
+
+CSLA .NET version 9.1.0 includes several enhancements and bug fixes.
+
+Primary changes in this release include:
+
+* Ensure ApplicationContext isn't null during initialization
+* Stop caching the user principal in Blazor WebAssembly
+* Fix issue with CancellationTokenSource
+* Add option to ignore `DataAnnotation` attributes in `AddBusinessRules`
+* Ongoing code modernization and cleanup thanks to @SimonCropp and others
+
+https://github.com/MarimerLLC/csla/compare/v9.0.0...v9.1.0
+
+### Contributors
+
+* @rockfordlhotka
+* @SimonCropp
+* @StefanOssendorf
+
 ## CSLA .NET version 9.0.0 release
 
 Primary changes in this release include:

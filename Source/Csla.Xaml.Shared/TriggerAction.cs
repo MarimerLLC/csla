@@ -64,7 +64,7 @@ namespace Csla.Xaml
       }
       else if (pCount == 2)
       {
-        object parameterValue = null;
+        object parameterValue;
         if (RebindParameterDynamically)
           parameterValue = GetMethodParameter();
         else
@@ -149,7 +149,7 @@ namespace Csla.Xaml
     /// Gets or sets the target UI control.
     /// </summary>
     public static readonly DependencyProperty TargetControlProperty =
-      DependencyProperty.Register("TargetControl", typeof(FrameworkElement),
+      DependencyProperty.Register(nameof(TargetControl), typeof(FrameworkElement),
       typeof(TriggerAction), new PropertyMetadata((o, e) =>
         {
           var ta = (TriggerAction)o;
@@ -162,8 +162,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public FrameworkElement TargetControl
     {
-      get { return (FrameworkElement)GetValue(TargetControlProperty); }
-      set { SetValue(TargetControlProperty, value); }
+      get => (FrameworkElement)GetValue(TargetControlProperty);
+      set => SetValue(TargetControlProperty, value);
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ namespace Csla.Xaml
     /// that will trigger the action.
     /// </summary>
     public static readonly DependencyProperty TriggerEventProperty =
-      DependencyProperty.Register("TriggerEvent", typeof(string),
+      DependencyProperty.Register(nameof(TriggerEvent), typeof(string),
       typeof(TriggerAction), new PropertyMetadata("Click", (o, e) =>
       {
         var ta = (TriggerAction)o;
@@ -184,8 +184,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public string TriggerEvent
     {
-      get { return (string)GetValue(TriggerEventProperty); }
-      set { SetValue(TriggerEventProperty, value); }
+      get => (string)GetValue(TriggerEventProperty);
+      set => SetValue(TriggerEventProperty, value);
     }
 
     /// <summary>
@@ -193,7 +193,7 @@ namespace Csla.Xaml
     /// to be invoked.
     /// </summary>
     public static readonly DependencyProperty MethodNameProperty =
-      DependencyProperty.Register("MethodName", typeof(string),
+      DependencyProperty.Register(nameof(MethodName), typeof(string),
       typeof(TriggerAction), new PropertyMetadata(null));
     /// <summary>
     /// Gets or sets the name of the method
@@ -202,8 +202,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public string MethodName
     {
-      get { return (string)GetValue(MethodNameProperty); }
-      set { SetValue(MethodNameProperty, value); }
+      get => (string)GetValue(MethodNameProperty);
+      set => SetValue(MethodNameProperty, value);
     }
 
     /// <summary>
@@ -211,7 +211,7 @@ namespace Csla.Xaml
     /// be passed to the invoked method.
     /// </summary>
     public static readonly DependencyProperty MethodParameterProperty =
-      DependencyProperty.Register("MethodParameter", typeof(object),
+      DependencyProperty.Register(nameof(MethodParameter), typeof(object),
       typeof(TriggerAction), new PropertyMetadata(null));
     /// <summary>
     /// Gets or sets the value of a parameter to
@@ -220,8 +220,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public object MethodParameter
     {
-      get { return GetValue(MethodParameterProperty); }
-      set { SetValue(MethodParameterProperty, value); }
+      get => GetValue(MethodParameterProperty);
+      set => SetValue(MethodParameterProperty, value);
     }
 
     /// <summary>
@@ -230,7 +230,7 @@ namespace Csla.Xaml
     /// before invoking the target method.
     /// </summary>
     public static readonly DependencyProperty RebindParameterDynamicallyProperty =
-      DependencyProperty.Register("RebindParameterDynamically", typeof(bool),
+      DependencyProperty.Register(nameof(RebindParameterDynamically), typeof(bool),
       typeof(TriggerAction), new PropertyMetadata(null));
     /// <summary>
     /// Gets or sets a value indicating whether the
@@ -240,8 +240,8 @@ namespace Csla.Xaml
     [Category("Common")]
     public bool RebindParameterDynamically
     {
-      get { return (bool)GetValue(RebindParameterDynamicallyProperty); }
-      set { SetValue(RebindParameterDynamicallyProperty, value); }
+      get => (bool)GetValue(RebindParameterDynamicallyProperty);
+      set => SetValue(RebindParameterDynamicallyProperty, value);
     }
 
 #endregion

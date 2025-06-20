@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Principal;
 using Csla.Configuration;
 
@@ -16,8 +17,8 @@ namespace Csla.Windows
   /// <param name="securityOptions"></param>
   public class ApplicationContextManager(SecurityOptions securityOptions) : Csla.Core.ApplicationContextManager
   {
-    private static IPrincipal _principal;
-    private SecurityOptions SecurityOptions { get; set; } = securityOptions;
+    private static IPrincipal _principal = default!;
+    private SecurityOptions _securityOptions = securityOptions;
 
     /// <summary>
     /// Gets the current principal.
@@ -26,7 +27,7 @@ namespace Csla.Windows
     {
       if (_principal == null)
       {
-        if (SecurityOptions.FlowSecurityPrincipalFromClient)
+        if (_securityOptions.FlowSecurityPrincipalFromClient)
           SetUser(new System.Security.Claims.ClaimsPrincipal());
         else
 #pragma warning disable CA1416 // Validate platform compatibility
@@ -36,13 +37,11 @@ namespace Csla.Windows
       return _principal;
     }
 
-    /// <summary>
-    /// Sets the current principal.
-    /// </summary>
-    /// <param name="principal">Principal object.</param>
+    /// <inheritdoc />
+    [MemberNotNull(nameof(_principal))]
     public override void SetUser(IPrincipal principal)
     {
-      _principal = principal;
+      _principal = principal ?? throw new ArgumentNullException(nameof(principal));
       Thread.CurrentPrincipal = principal;
     }
   }

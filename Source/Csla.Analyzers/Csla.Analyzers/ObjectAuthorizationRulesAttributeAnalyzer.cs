@@ -15,21 +15,21 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor missingAttributeRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesAttributeMissing, ObjectAuthorizationRulesAttributeAnalyzerConstants.AttributeMissingTitle,
         ObjectAuthorizationRulesAttributeAnalyzerConstants.AttributeMissingMessage, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesAttributeMissing, nameof(ObjectAuthorizationRulesAttributeAnalyzer)));
     private static readonly DiagnosticDescriptor shouldBePublicRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesPublic, ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesPublicTitle,
         ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesPublicMessage, Constants.Categories.Usage,
         DiagnosticSeverity.Info, true,
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesPublic, nameof(ObjectAuthorizationRulesAttributeAnalyzer)));
     private static readonly DiagnosticDescriptor shouldBeStaticRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ObjectAuthorizationRulesStatic, ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesStaticTitle,
         ObjectAuthorizationRulesAttributeAnalyzerConstants.RulesStaticMessage, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,
@@ -39,7 +39,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(missingAttributeRule, shouldBePublicRule, shouldBeStaticRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [missingAttributeRule, shouldBePublicRule, shouldBeStaticRule];
 
     /// <summary>
     /// 
@@ -56,6 +56,10 @@ namespace Csla.Analyzers
       var methodNode = (MethodDeclarationSyntax)context.Node;
 
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype())

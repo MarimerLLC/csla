@@ -9,7 +9,6 @@
 using Csla.Test.Basic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Globalization;
-using UnitDriven;
 using Csla.Testing.Business.DataPortal;
 using Single = Csla.Test.DataPortalTest.Single;
 using Csla.Test.DataPortalTest;
@@ -19,7 +18,7 @@ using cslalighttest.CslaDataProvider;
 namespace Csla.Test.DataPortal
 {
   [TestClass]
-  public class AsynchDataPortalTest : TestBase
+  public class AsynchDataPortalTest
   {
     private CultureInfo CurrentCulture;
     private CultureInfo CurrentUICulture;
@@ -97,28 +96,19 @@ namespace Csla.Test.DataPortal
 
 
     [TestMethod]
-    public void CreateAsync_WithException()
+    public async Task CreateAsync_WithException()
     {
-      var lck = new AutoResetEvent(false);
-      new Action(async () =>
-      {
-        IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
         
-        try
-        {
-          var result = await dataPortal.CreateAsync(9999);
-          Assert.Fail("Expected exception not thrown");
-        }
-        catch (Exception ex)
-        {
-          Assert.IsInstanceOfType(ex, typeof(DataPortalException));
-        }
-        finally
-        {
-          lck.Set();
-        }
-      }).Invoke();
-      lck.WaitOne();
+      try
+      {
+        var result = await dataPortal.CreateAsync(9999);
+        Assert.Fail("Expected exception not thrown");
+      }
+      catch (Exception ex)
+      {
+        Assert.IsInstanceOfType(ex, typeof(DataPortalException));
+      }
     }
 
     [TestMethod]
@@ -164,28 +154,19 @@ namespace Csla.Test.DataPortal
 
 
     [TestMethod]
-    public void FetchAsync_WithException()
+    public async Task FetchAsync_WithException()
     {
-      var lck = new AutoResetEvent(false);
-      new Action(async () =>
-      {
-        IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
 
-        try
-        {
-          var result = await dataPortal.FetchAsync(9999);
-          Assert.Fail("Expected exception not thrown");
-        }
-        catch (Exception ex)
-        {
-          Assert.IsInstanceOfType(ex, typeof(DataPortalException));
-        }
-        finally
-        {
-          lck.Set();
-        }
-      }).Invoke();
-      lck.WaitOne();
+      try
+      {
+        var result = await dataPortal.FetchAsync(9999);
+        Assert.Fail("Expected exception not thrown");
+      }
+      catch (Exception ex)
+      {
+        Assert.IsInstanceOfType(ex, typeof(DataPortalException));
+      } 
     }
 
     [TestMethod]
@@ -226,37 +207,23 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task SaveAsyncWithException()
     {
-      var context = GetContext();
-      await context.Assert.Try(async () =>
-      {
-        IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
 
-        var result = await dataPortal.CreateAsync(555);
-        Assert.IsNotNull(result);
-        Assert.AreEqual(555, result.Id);
-        Assert.IsTrue(result.IsNew);
-        Assert.IsTrue(result.IsDirty);
-        var lck = new AutoResetEvent(false);
-        new Action(async () =>
-        {
-          try
-          {
-            result = await result.SaveAsync();
-            Assert.Fail("Expected exception not thrown");
-          }
-          catch (Exception ex)
-          {
-            context.Assert.IsTrue(ex.GetType() == typeof(DataPortalException));
-          }
-          finally
-          {
-            lck.Set();
-          }
-        }).Invoke();
-        lck.WaitOne();
-        context.Assert.Success();
-      });
-      context.Complete();
+      var result = await dataPortal.CreateAsync(555);
+      Assert.IsNotNull(result);
+      Assert.AreEqual(555, result.Id);
+      Assert.IsTrue(result.IsNew);
+      Assert.IsTrue(result.IsDirty);
+
+      try
+      {
+        result = await result.SaveAsync();
+        Assert.Fail("Expected exception not thrown");
+      }
+      catch (Exception ex)
+      {
+        Assert.IsTrue(ex.GetType() == typeof(DataPortalException));
+      }
     }
 
 #endif
@@ -285,29 +252,20 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public void ExecuteAsyncWithException()
+    public async Task ExecuteAsyncWithException()
     {
-      var lck = new AutoResetEvent(false);
-      new Action(async () =>
-      {
-        IDataPortal<SingleCommand> dataPortal = _testDIContext.CreateDataPortal<SingleCommand>();
+      IDataPortal<SingleCommand> dataPortal = _testDIContext.CreateDataPortal<SingleCommand>();
 
-        try
-        {
-          var cmd = dataPortal.Create(555);
-          var result = await dataPortal.ExecuteAsync(cmd);
-          Assert.Fail("Expected exception not thrown");
-        }
-        catch (Exception ex)
-        {
-          Assert.IsInstanceOfType(ex, typeof(DataPortalException));
-        }
-        finally
-        {
-          lck.Set();
-        }
-      }).Invoke();
-      lck.WaitOne();
+      try
+      {
+        var cmd = dataPortal.Create(555);
+        var result = await dataPortal.ExecuteAsync(cmd);
+        Assert.Fail("Expected exception not thrown");
+      }
+      catch (Exception ex)
+      {
+        Assert.IsInstanceOfType(ex, typeof(DataPortalException));
+      }
     }
     #endregion
 

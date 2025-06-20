@@ -172,7 +172,7 @@ namespace cslalighttest.CslaDataProvider
 
 
     [Serializable]
-    public class FetchCriteria : CriteriaBase<FetchCriteria>
+    public class FetchCriteria : ReadOnlyBase<FetchCriteria>
     {
       public FetchCriteria() { }
 

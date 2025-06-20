@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor inheritsFromBusinessRuleRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.AsynchronousBusinessRuleInheritance,
         AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants.Title,
         AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzerConstants.Message,
@@ -26,8 +26,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(inheritsFromBusinessRuleRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [inheritsFromBusinessRuleRule];
 
     /// <summary>
     /// 
@@ -47,6 +46,11 @@ namespace Csla.Analyzers
       if (!methodNode.ContainsDiagnostics)
       {
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+        if (methodSymbol is null)
+        {
+          return;
+        }
+
         var typeSymbol = methodSymbol.ContainingType;
 
         if(typeSymbol.IsBusinessRule() && methodSymbol.Name == "Execute" && methodSymbol.IsAsync)

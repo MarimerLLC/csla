@@ -6,6 +6,7 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -20,6 +21,7 @@ namespace Csla.Configuration
     /// environments.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddWindowsForms(this CslaOptions config)
     {
       return AddWindowsForms(config, null);
@@ -31,22 +33,18 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">XamlOptions action</param>
-    public static CslaOptions AddWindowsForms(this CslaOptions config, Action<WindowsFormsOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions AddWindowsForms(this CslaOptions config, Action<WindowsFormsOptions>? options)
     {
       var winFormsOptions = new WindowsFormsOptions();
       options?.Invoke(winFormsOptions);
 
       // use correct IContextManager
-      config.Services.AddSingleton<Core.IContextManager, Csla.Windows.ApplicationContextManager>();
+      config.Services.AddSingleton<Core.IContextManager, ApplicationContextManager>();
 
       // use correct mode for raising PropertyChanged events
       config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows;
       return config;
     }
   }
-
-  /// <summary>
-  /// Configuration options for AddWindowsForms method
-  /// </summary>
-  public class WindowsFormsOptions;
 }

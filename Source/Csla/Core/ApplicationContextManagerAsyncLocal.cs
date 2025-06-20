@@ -15,9 +15,9 @@ namespace Csla.Core
   /// </summary>
   public class ApplicationContextManagerAsyncLocal : IContextManagerLocal
   {
-    private readonly AsyncLocal<IContextDictionary> _localContext = new();
-    private readonly AsyncLocal<IContextDictionary> _clientContext = new();
-    private readonly AsyncLocal<IPrincipal> _principal = new();
+    private readonly AsyncLocal<IContextDictionary?> _localContext = new();
+    private readonly AsyncLocal<IContextDictionary?> _clientContext = new();
+    private readonly AsyncLocal<IPrincipal?> _principal = new();
 
     /// <summary>
     /// Gets a value indicating whether the context manager
@@ -28,10 +28,7 @@ namespace Csla.Core
     /// <summary>
     /// Returns a value indicating whether the context is valid.
     /// </summary>
-    public bool IsValid
-    {
-      get { return true; }
-    }
+    public bool IsValid => true;
 
     /// <summary>
     /// Gets the current user principal.
@@ -39,7 +36,7 @@ namespace Csla.Core
     /// <returns>The current user principal</returns>
     public virtual IPrincipal GetUser()
     {
-      IPrincipal result = _principal.Value;
+      IPrincipal? result = _principal.Value;
       if (result == null)
       {
         result = new System.Security.Claims.ClaimsPrincipal();
@@ -48,19 +45,16 @@ namespace Csla.Core
       return result;
     }
 
-    /// <summary>
-    /// Sets the current user principal.
-    /// </summary>
-    /// <param name="principal">User principal value</param>
+    /// <inheritdoc />
     public virtual void SetUser(IPrincipal principal)
     {
-      _principal.Value = principal;
+      _principal.Value = principal ?? throw new ArgumentNullException(nameof(principal));
     }
 
     /// <summary>
     /// Gets the local context dictionary.
     /// </summary>
-    public IContextDictionary GetLocalContext()
+    public IContextDictionary? GetLocalContext()
     {
       return _localContext.Value;
     }
@@ -69,7 +63,7 @@ namespace Csla.Core
     /// Sets the local context dictionary.
     /// </summary>
     /// <param name="localContext">Context dictionary</param>
-    public void SetLocalContext(IContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary? localContext)
     {
       _localContext.Value = localContext;
     }
@@ -78,7 +72,7 @@ namespace Csla.Core
     /// Gets the client context dictionary.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
       return _clientContext.Value;
     }
@@ -88,22 +82,19 @@ namespace Csla.Core
     /// </summary>
     /// <param name="clientContext">Context dictionary</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
       _clientContext.Value = clientContext;
     }
 
-    private readonly AsyncLocal<ApplicationContext> _applicationContext = new();
+    private readonly AsyncLocal<ApplicationContext?> _applicationContext = new();
 
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext 
+    public ApplicationContext? ApplicationContext 
     {
-      get
-      {
-        return _applicationContext.Value;
-      }
+      get => _applicationContext.Value;
       set
       {
         _applicationContext.Value = value;

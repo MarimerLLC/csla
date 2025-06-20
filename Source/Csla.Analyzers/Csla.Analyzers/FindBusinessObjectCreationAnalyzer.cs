@@ -16,7 +16,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor objectCreatedRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.FindBusinessObjectCreation, FindBusinessObjectCreationConstants.Title,
         FindBusinessObjectCreationConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Error, true,
@@ -26,8 +26,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(objectCreatedRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [objectCreatedRule];
 
     /// <summary>
     /// 

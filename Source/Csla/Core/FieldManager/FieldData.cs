@@ -18,25 +18,21 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <typeparam name="T">Type of field value contained.</typeparam>
   [Serializable]
-  public class FieldData<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : IFieldData<T>
+  public class FieldData<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : IFieldData<T>
   {
-    [NonSerialized]
-    [NotUndoable]
-    private readonly bool _isChild = typeof(T).IsAssignableFrom(typeof(IMobileObject));
-    private T _data;
+    private T? _data;
     private bool _isDirty;
 
     /// <summary>
     /// Creates a new instance of the object.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public FieldData()
     {
       IsSerializable = true;
     }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
     /// <summary>
     /// Creates a new instance of the object.
@@ -45,9 +41,10 @@ namespace Csla.Core.FieldManager
     /// Name of the field.
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
+    /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
     public FieldData(string name, bool isSerializable)
     {
-      Name = name;
+      Name = name ?? throw new ArgumentNullException(nameof(name));
       IsSerializable = isSerializable;
     }
 
@@ -59,12 +56,9 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets or sets the value of the field.
     /// </summary>
-    public virtual T Value
+    public virtual T? Value
     {
-      get
-      {
-        return _data;
-      }
+      get => _data;
       set
       {
         _data = value;
@@ -72,12 +66,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    object IFieldData.Value
+    object? IFieldData.Value
     {
-      get
-      {
-        return Value;
-      }
+      get => Value;
       set
       {
         if (value == null)
@@ -103,10 +94,7 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    bool ITrackStatus.IsSavable
-    {
-      get { return true; }
-    }
+    bool ITrackStatus.IsSavable => true;
 
     bool ITrackStatus.IsChild
     {
@@ -123,10 +111,7 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether the field
     /// has been changed.
     /// </summary>
-    public virtual bool IsSelfDirty
-    {
-      get { return IsDirty; }
-    }
+    public virtual bool IsSelfDirty => IsDirty;
 
     /// <summary>
     /// Gets a value indicating whether the field
@@ -162,15 +147,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    bool ITrackStatus.IsSelfValid
-    {
-      get { return IsValid; }
-    }
+    bool ITrackStatus.IsSelfValid => IsValid;
 
-    bool ITrackStatus.IsValid
-    {
-      get { return IsValid; }
-    }
+    bool ITrackStatus.IsValid => IsValid;
 
     /// <summary>
     /// Gets a value indicating whether this field
@@ -187,10 +166,10 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    event BusyChangedEventHandler INotifyBusy.BusyChanged
+    event BusyChangedEventHandler? INotifyBusy.BusyChanged
     {
-      add { throw new NotImplementedException(); }
-      remove { throw new NotImplementedException(); }
+      add => throw new NotImplementedException();
+      remove => throw new NotImplementedException();
     }
 
     /// <summary>
@@ -212,12 +191,9 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    bool INotifyBusy.IsSelfBusy
-    {
-      get { return IsBusy; }
-    }
+    bool INotifyBusy.IsSelfBusy => IsBusy;
 
-    T IFieldData<T>.Value { get => Value; set => Value = value; }
+    T? IFieldData<T>.Value { get => Value; set => Value = value; }
 
     string IFieldData.Name => Name;
 
@@ -229,22 +205,22 @@ namespace Csla.Core.FieldManager
 
     [NotUndoable]
     [NonSerialized]
-    private EventHandler<ErrorEventArgs> _unhandledAsyncException;
+    private EventHandler<ErrorEventArgs>? _unhandledAsyncException;
 
     /// <summary>
     /// Event indicating that an exception occurred on
     /// a background thread.
     /// </summary>
-    public event EventHandler<ErrorEventArgs> UnhandledAsyncException
+    public event EventHandler<ErrorEventArgs>? UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value);
     }
 
-    event EventHandler<ErrorEventArgs> INotifyUnhandledAsyncException.UnhandledAsyncException
+    event EventHandler<ErrorEventArgs>? INotifyUnhandledAsyncException.UnhandledAsyncException
     {
-      add { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Combine(_unhandledAsyncException, value); }
-      remove { _unhandledAsyncException = (EventHandler<ErrorEventArgs>)Delegate.Remove(_unhandledAsyncException, value); }
+      add => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Combine(_unhandledAsyncException, value);
+      remove => _unhandledAsyncException = (EventHandler<ErrorEventArgs>?)Delegate.Remove(_unhandledAsyncException, value);
     }
 
     void IFieldData.MarkClean()
@@ -252,43 +228,46 @@ namespace Csla.Core.FieldManager
       MarkClean();
     }
 
-    void IMobileObject.GetState(SerializationInfo info)
+    private static bool IsFieldSerializable(MobileFormatter formatter)
     {
-      if (!_isChild)
+      return formatter.IsTypeSerializable(typeof(T));
+    }
+
+    void IMobileObject.GetState(SerializationInfo info)
+    { }
+
+    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      bool isSerializable = IsFieldSerializable(formatter);
+      info.AddValue("_name", Name);
+      if (isSerializable)
       {
-        info.AddValue("_name", Name);
+        SerializationInfo childInfo = formatter.SerializeObject(_data);
+        info.AddChild(Name, childInfo.ReferenceId, _isDirty);
+      }
+      else
+      {
         info.AddValue("_data", _data);
         info.AddValue("_isDirty", _isDirty);
       }
     }
 
-    void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      if (_isChild)
-      {
-        info.AddValue("_name", Name);
-        SerializationInfo childInfo = formatter.SerializeObject((IMobileObject)_data);
-        info.AddChild(Name, childInfo.ReferenceId, _isDirty);
-      }
-    }
-
     void IMobileObject.SetState(SerializationInfo info)
-    {
-      if (!_isChild)
-      {
-        Name = info.GetValue<string>("_name");
-        _data = info.GetValue<T>("_data");
-        _isDirty = info.GetValue<bool>("_isDirty");
-      }
-    }
+    { }
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      if (_isChild)
+      bool isSerializable = IsFieldSerializable(formatter);
+      Name = info.GetRequiredValue<string>("_name");
+      if (isSerializable)
       {
-        Name = info.GetValue<string>("_name");
         SerializationInfo.ChildData childData = info.Children[Name];
-        _data = (T)formatter.GetObject(childData.ReferenceId);
+        _data = (T?)formatter.GetObject(childData.ReferenceId);
+      }
+      else
+      {
+        _data = info.GetValue<T>("_data");
+        _isDirty = info.GetValue<bool>("_isDirty");
       }
     }
   }

@@ -16,6 +16,7 @@ namespace Csla.Core
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><see langword="value"/> is <see langword="null"/>.</exception>
     ApplicationContext ApplicationContext { get; set; }
   }
 }

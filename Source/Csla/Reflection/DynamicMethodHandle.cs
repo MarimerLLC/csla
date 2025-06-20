@@ -10,15 +10,15 @@ namespace Csla.Reflection
 {
   internal class DynamicMethodHandle
   {
-    public string MethodName { get; private set; }
-    public DynamicMethodDelegate DynamicMethod { get; private set; }
+    public string? MethodName { get; private set; }
+    public DynamicMethodDelegate? DynamicMethod { get; private set; }
     public bool HasFinalArrayParam { get; private set; }
     public int MethodParamsLength { get; private set; }
-    public Type FinalArrayElementType { get; private set; }
+    public Type? FinalArrayElementType { get; private set; }
     public bool IsAsyncTask { get; private set; }
     public bool IsAsyncTaskObject { get; private set; }
 
-    public DynamicMethodHandle(System.Reflection.MethodInfo info, params object[] parameters)
+    public DynamicMethodHandle(System.Reflection.MethodInfo? info, params object?[]? parameters)
     {
       if (info == null)
       {
@@ -28,11 +28,10 @@ namespace Csla.Reflection
       {
         MethodName = info.Name;
         var infoParams = info.GetParameters();
-        object[] inParams = null;
+        object?[]? inParams = null;
         if (parameters == null)
         {
           inParams = [null];
-
         }
         else
         {

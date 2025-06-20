@@ -26,11 +26,8 @@ namespace Csla.Blazor.State
     /// </summary>
     public Session GetSession()
     {
-      Session result;
       var key = _sessionIdManager.GetSessionId();
-      if (!_sessions.ContainsKey(key))
-        _sessions.TryAdd(key, []);
-      result = _sessions[key];
+      var result = _sessions.GetOrAdd(key, []);
       result.Touch();
       return result;
     }
@@ -58,8 +55,8 @@ namespace Csla.Blazor.State
     private static void Replace(Session newSession, Session oldSession)
     {
       oldSession.Clear();
-      foreach (var key in newSession.Keys)
-        oldSession.Add(key, newSession[key]);
+      foreach (var (key, value) in newSession)
+        oldSession.Add(key, value);
     }
 
     /// <summary>

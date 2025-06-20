@@ -39,12 +39,15 @@ namespace Csla.Channels.Grpc
 
       _channel = channel ?? throw new ArgumentNullException(nameof(channel));
       DataPortalUrl = options.DataPortalUrl;
-      VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
+      _versionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
     private GrpcChannel? _channel;
     private static GrpcChannel? _defaultChannel;
-    private string? VersionRoutingTag { get; set; }
+    private string? _versionRoutingTag;
+
+    /// <inheritdoc />
+    public override string DataPortalUrl { get; }
 
     /// <summary>
     /// Gets the GrpcChannel used by the gRPC client.
@@ -91,13 +94,13 @@ namespace Csla.Channels.Grpc
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialized response from server</returns>
-    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync)
     {
       ByteString outbound = ByteString.CopyFrom(serialized);
       var request = new RequestMessage
       {
         Body = outbound,
-        Operation = CreateOperationTag(operation, VersionRoutingTag, routingToken)
+        Operation = CreateOperationTag(operation, _versionRoutingTag, routingToken)
       };
       ResponseMessage response;
       if (isSync)
@@ -112,7 +115,7 @@ namespace Csla.Channels.Grpc
       return await GetGrpcClient().InvokeAsync(request);
     }
 
-    private string CreateOperationTag(string operation, string? versionToken, string routingToken)
+    private string CreateOperationTag(string operation, string? versionToken, string? routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
         return $"{operation}/{routingToken}-{versionToken}";

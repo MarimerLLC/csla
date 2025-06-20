@@ -11,6 +11,7 @@ using System.Data;
 using System.ComponentModel;
 using System.Reflection;
 using Csla.Properties;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Data
 {
@@ -31,8 +32,12 @@ namespace Csla.Data
     /// </remarks>
     /// <param name="ds">A reference to the DataSet to be filled.</param>
     /// <param name="source">A reference to the object or collection acting as a data source.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ds"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void Fill(DataSet ds, object source)
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       string className = source.GetType().Name;
       Fill(ds, className, source);
     }
@@ -47,20 +52,30 @@ namespace Csla.Data
     /// <param name="ds">A reference to the DataSet to be filled.</param>
     /// <param name="tableName"></param>
     /// <param name="source">A reference to the object or collection acting as a data source.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ds"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="tableName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public void Fill(DataSet ds, string tableName, object source)
     {
-      DataTable dt;
-      bool exists;
+      if (ds is null)
+        throw new ArgumentNullException(nameof(ds));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+      if (string.IsNullOrWhiteSpace(tableName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(tableName)), nameof(tableName));
 
-      dt = ds.Tables[tableName];
-      exists = (dt != null);
 
-      if (!exists)
+      var dt = ds.Tables[tableName];
+
+      bool addNewTable = false;
+      if (dt is null)
+      {
         dt = new DataTable(tableName);
+        addNewTable = true;
+      }
 
       Fill(dt, source);
 
-      if (!exists)
+      if (addNewTable)
         ds.Tables.Add(dt);
     }
 
@@ -69,14 +84,18 @@ namespace Csla.Data
     /// </summary>
     /// <param name="dt">A reference to the DataTable to be filled.</param>
     /// <param name="source">A reference to the object or collection acting as a data source.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="dt"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
     public void Fill(DataTable dt, object source)
     {
-      if (source == null)
-        throw new ArgumentException(Resources.NothingNotValid);
+      if (dt is null)
+        throw new ArgumentNullException(nameof(dt));
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
 
       // get the list of columns from the source
       List<string> columns = GetColumns(source);
-      if (columns.Count < 1) return;
+      if (columns.Count < 1)
+        return;
 
       // create columns in DataTable if needed
       foreach (string column in columns)
@@ -106,9 +125,8 @@ namespace Csla.Data
       }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-    private void CopyData(
-      DataTable dt, IList ds, List<string> columns)
+    [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+    private void CopyData(DataTable dt, IList ds, List<string> columns)
     {
       // load the data into the DataTable
       dt.BeginLoadData();
@@ -119,7 +137,11 @@ namespace Csla.Data
         {
           try
           {
-            dr[column] = GetField(ds[index], column);
+            var obj = ds[index];
+            if (obj is null)
+              throw new DataException(Resources.ErrorReadingValueException + " " + column);
+
+            dr[column] = GetField(obj, column);
           }
           catch (Exception ex)
           {
@@ -150,10 +172,9 @@ namespace Csla.Data
       else
       {
         // now handle lists/arrays/collections
-        if (innerSource is IEnumerable iEnumerable)
+        if (innerSource is IEnumerable)
         {
-          Type childType = Utilities.GetChildItemType(
-            innerSource.GetType());
+          Type? childType = Utilities.GetChildItemType(innerSource.GetType());
           result = ScanObject(childType);
         }
         else
@@ -168,12 +189,12 @@ namespace Csla.Data
     private List<string> ScanDataView(DataView ds)
     {
       List<string> result = [];
-      for (int field = 0; field < ds.Table.Columns.Count; field++)
+      for (int field = 0; field < ds.Table!.Columns.Count; field++)
         result.Add(ds.Table.Columns[field].ColumnName);
       return result;
     }
 
-    private List<string> ScanObject(Type sourceType)
+    private List<string> ScanObject(Type? sourceType)
     {
       List<string> result = [];
 
@@ -205,19 +226,18 @@ namespace Csla.Data
       if (obj is DataRowView dataRowView)
       {
         // this is a DataRowView from a DataView
-        result = dataRowView[fieldName].ToString();
+        result = dataRowView[fieldName].ToString()!;
       }
       else if (obj is ValueType && obj.GetType().IsPrimitive)
       {
         // this is a primitive value type
-        result = obj.ToString();
+        result = obj.ToString()!;
       }
       else
       {
         if (obj is string tmp)
         {
-          // this is a simple string
-          result = (string)obj;
+          result = tmp;
         }
         else
         {
@@ -227,37 +247,33 @@ namespace Csla.Data
             Type sourceType = obj.GetType();
 
             // see if the field is a property
-            PropertyInfo prop = sourceType.GetProperty(fieldName);
+            PropertyInfo? prop = sourceType.GetProperty(fieldName);
 
             if ((prop == null) || (!prop.CanRead))
             {
               // no readable property of that name exists - 
               // check for a field
-              FieldInfo field = sourceType.GetField(fieldName);
+              FieldInfo? field = sourceType.GetField(fieldName);
               if (field == null)
               {
                 // no field exists either, throw an exception
-                throw new DataException(
-                  Resources.NoSuchValueExistsException +
-                  " " + fieldName);
+                throw new DataException(Resources.NoSuchValueExistsException + " " + fieldName);
               }
               else
               {
                 // got a field, return its value
-                result = field.GetValue(obj).ToString();
+                result = field.GetValue(obj)!.ToString()!;
               }
             }
             else
             {
               // found a property, return its value
-              result = prop.GetValue(obj, null).ToString();
+              result = prop.GetValue(obj, null)!.ToString()!;
             }
           }
           catch (Exception ex)
           {
-            throw new DataException(
-              Resources.ErrorReadingValueException +
-              " " + fieldName, ex);
+            throw new DataException(Resources.ErrorReadingValueException + " " + fieldName, ex);
           }
         }
       }

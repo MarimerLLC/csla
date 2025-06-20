@@ -37,7 +37,7 @@ namespace Csla.Xaml
     INotifyPropertyChanged, IViewModel
 #endif
   {
-    private ApplicationContext ApplicationContext { get => ApplicationContextManager.GetApplicationContext(); }
+    private ApplicationContext ApplicationContext => ApplicationContextManager.GetApplicationContext();
 
 #if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI
     private T _model;
@@ -46,7 +46,7 @@ namespace Csla.Xaml
     /// </summary>
     public T Model
     {
-      get { return _model; }
+      get => _model;
       set
       {
         if (!ReferenceEquals(value, _model))
@@ -63,7 +63,7 @@ namespace Csla.Xaml
     /// Gets or sets the Model object.
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
-        DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
+        DependencyProperty.Register(nameof(Model), typeof(T), typeof(ViewModelBase<T>),
         new PropertyMetadata((o, e) =>
         {
           var viewmodel = (ViewModelBase<T>)o;
@@ -89,7 +89,7 @@ namespace Csla.Xaml
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
-        DependencyProperty.Register("ManageObjectLifetime", typeof(bool),
+        DependencyProperty.Register(nameof(ManageObjectLifetime), typeof(bool),
         typeof(ViewModelBase<T>), new PropertyMetadata(true));
 #endif
     /// <summary>
@@ -118,7 +118,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       protected set
       {
         if (value != _isBusy)
@@ -138,10 +138,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool IsDirty
     {
-      get
-      {
-        return _isDirty;
-      }
+      get => _isDirty;
       protected set
       {
         if (_isDirty != value)
@@ -160,10 +157,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool IsValid
     {
-      get
-      {
-        return _isValid;
-      }
+      get => _isValid;
       protected set
       {
         if (_isValid != value)
@@ -182,10 +176,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanSave
     {
-      get
-      {
-        return _canSave;
-      }
+      get => _canSave;
       protected set
       {
         if (_canSave != value)
@@ -204,10 +195,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanCancel
     {
-      get
-      {
-        return _canCancel;
-      }
+      get => _canCancel;
       protected set
       {
         if (_canCancel != value)
@@ -227,10 +215,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanCreate
     {
-      get
-      {
-        return _canCreate;
-      }
+      get => _canCreate;
       protected set
       {
         if (_canCreate != value)
@@ -249,10 +234,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanDelete
     {
-      get
-      {
-        return _canDelete;
-      }
+      get => _canDelete;
       protected set
       {
         if (_canDelete != value)
@@ -272,10 +254,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanFetch
     {
-      get
-      {
-        return _canFetch;
-      }
+      get => _canFetch;
       protected set
       {
         if (_canFetch != value)
@@ -294,10 +273,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanRemove
     {
-      get
-      {
-        return _canRemove;
-      }
+      get => _canRemove;
       protected set
       {
         if (_canRemove != value)
@@ -316,10 +292,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanAddNew
     {
-      get
-      {
-        return _canAddNew;
-      }
+      get => _canAddNew;
       protected set
       {
         if (_canAddNew != value)
@@ -527,7 +500,7 @@ namespace Csla.Xaml
     /// <param name="factory">Factory method to invoke</param>
     public virtual async Task<T> RefreshAsync<F>(Func<Task<T>> factory)
     {
-      T result = default;
+      T result;
       try
       {
         IsBusy = true;
@@ -787,8 +760,8 @@ namespace Csla.Xaml
 
     object IViewModel.Model
     {
-      get { return Model; }
-      set { Model = (T)value; }
+      get => Model;
+      set => Model = (T)value;
     }
 
     /// <summary>

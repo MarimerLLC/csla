@@ -58,103 +58,90 @@ namespace Csla.Reflection
     #region Dynamic Method Cache
 
 #if NET8_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMethodHandle>> _methodCache = [];
+    private static readonly Dictionary<MethodCacheKey, Tuple<string?, DynamicMethodHandle>> _methodCache = [];
 #else
     private readonly static Dictionary<MethodCacheKey, DynamicMethodHandle> _methodCache = [];
 #endif
 
-    private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
+    private static DynamicMethodHandle GetCachedMethod(object obj, System.Reflection.MethodInfo info, params object?[]? parameters)
     {
       var objectType = obj.GetType();
 
-      var found = false;
-
-      DynamicMethodHandle mh = null;
+      DynamicMethodHandle mh;
 
 #if NET8_0_OR_GREATER
+      if (objectType.FullName is null)
+        throw new InvalidOperationException($"Full type name of {objectType} could not be retrieved by {nameof(Type)}.{nameof(Type.FullName)}.");
+
       var key = new MethodCacheKey(objectType.FullName, info.Name, GetParameterTypes(parameters));
 
       try
       {
-        found = _methodCache.TryGetValue(key, out var methodHandleInfo);
-
-        mh = methodHandleInfo?.Item2;
+        if (_methodCache.TryGetValue(key, out var methodHandleInfo))
+          return methodHandleInfo.Item2;
       }
       catch
       { /* failure will drop into !found block */ }
 
-      if (!found)
+      lock (_methodCache)
       {
-        lock (_methodCache)
+        if(!_methodCache.TryGetValue(key, out var methodHandleInfo))
         {
-          found = _methodCache.TryGetValue(key, out var methodHandleInfo);
-
-          mh = methodHandleInfo?.Item2;
-
-          if (!found)
-          {
-            mh = new DynamicMethodHandle(info, parameters);
-
-            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMethodAssemblyLoadContextUnload);
-
-            _methodCache.Add(key, cacheInstance);
-          }
+          var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, new DynamicMethodHandle(info, parameters), OnMethodAssemblyLoadContextUnload);
+          _methodCache.Add(key, cacheInstance);
+          methodHandleInfo = cacheInstance;
         }
+
+        mh = methodHandleInfo.Item2;
       }
+      
 #else
       var key = new MethodCacheKey(objectType.FullName, info.Name, GetParameterTypes(parameters));
 
       try
       {
-        found = _methodCache.TryGetValue(key, out mh);
+        if(_methodCache.TryGetValue(key, out mh))
+        {
+          return mh;
+        }
       }
       catch
       { /* failure will drop into !found block */ }
 
-      if (!found)
+      lock (_methodCache)
       {
-        lock (_methodCache)
+        if (!_methodCache.TryGetValue(key, out mh))
         {
-          if (!_methodCache.TryGetValue(key, out mh))
-          {
-            mh = new DynamicMethodHandle(info, parameters);
-
-            _methodCache.Add(key, mh);
-          }
+          mh = new DynamicMethodHandle(info, parameters);
+          _methodCache.Add(key, mh);
         }
       }
+      
 #endif
 
       return mh;
     }
 
-    private static DynamicMethodHandle GetCachedMethod(object obj, string method, params object[] parameters)
+    private static DynamicMethodHandle GetCachedMethod(object obj, string method, params object?[]? parameters)
     {
       return GetCachedMethod(obj, method, true, parameters);
     }
 
-    private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object[] parameters)
+    private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
-#if NET8_0_OR_GREATER
       var objectType = obj.GetType();
+      if (objectType.FullName is null)
+        throw new InvalidOperationException($"Full type name of {objectType} could not be retrieved by {nameof(Type)}.{nameof(Type.FullName)}.");
 
+#if NET8_0_OR_GREATER
       var key = new MethodCacheKey(objectType.FullName, method, GetParameterTypes(hasParameters, parameters));
 
       DynamicMethodHandle mh;
-
-      var found = _methodCache.TryGetValue(key, out var methodHandleInfo);
-
-      mh = methodHandleInfo?.Item2;
-
-      if (!found)
+      if (!_methodCache.TryGetValue(key, out var methodHandleInfo))
       {
         lock (_methodCache)
         {
-          found = _methodCache.TryGetValue(key, out methodHandleInfo);
-
-          mh = methodHandleInfo?.Item2;
-
-          if (!found)
+          if (!_methodCache.TryGetValue(key, out methodHandleInfo))
           {
             var info = GetMethod(obj.GetType(), method, hasParameters, parameters);
 
@@ -164,10 +151,18 @@ namespace Csla.Reflection
 
             _methodCache.Add(key, cacheInstance);
           }
+          else
+          {
+            mh = methodHandleInfo.Item2;
+          }
         }
       }
+      else
+      {
+        mh = methodHandleInfo.Item2;
+      }
 #else
-      var key = new MethodCacheKey(obj.GetType().FullName, method, GetParameterTypes(hasParameters, parameters));
+      var key = new MethodCacheKey(objectType.FullName, method, GetParameterTypes(hasParameters, parameters));
 
       if (!_methodCache.TryGetValue(key, out DynamicMethodHandle mh))
       {
@@ -192,17 +187,22 @@ namespace Csla.Reflection
 
     #region Dynamic Constructor Cache
 
-    private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new Dictionary<Type, DynamicCtorDelegate>();
+    private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new();
 
     private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
     {
       if (objectType == null)
         throw new ArgumentNullException(nameof(objectType));
-      DynamicCtorDelegate result = null;
+
+      DynamicCtorDelegate result = default!;
       var found = false;
       try
       {
-        found = _ctorCache.TryGetValue(objectType, out result);
+        if (_ctorCache.TryGetValue(objectType, out var tmpResult))
+        {
+          found = true;
+          result = tmpResult;
+        }
       }
       catch
       { /* failure will drop into !found block */ }
@@ -210,9 +210,9 @@ namespace Csla.Reflection
       {
         lock (_ctorCache)
         {
-          if (!_ctorCache.TryGetValue(objectType, out result))
+          if (!_ctorCache.TryGetValue(objectType, out var tmpResult))
           {
-            ConstructorInfo info = objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
+            ConstructorInfo? info = objectType.GetConstructor(ctorFlags, null, Type.EmptyTypes, null);
             if (info == null)
               throw new NotSupportedException(string.Format(
                 CultureInfo.CurrentCulture,
@@ -221,6 +221,10 @@ namespace Csla.Reflection
 
             result = DynamicMethodHandlerFactory.CreateConstructor(info);
             _ctorCache.Add(objectType, result);
+          }
+          else
+          {
+            result = tmpResult;
           }
         }
       }
@@ -237,8 +241,12 @@ namespace Csla.Reflection
     /// <param name="typeName">Type name including assembly name.</param>
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
     /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
-    public static Type GetType(string typeName, bool throwOnError, bool ignoreCase)
+    /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static Type? GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
+      if (string.IsNullOrWhiteSpace(typeName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
+
       try
       {
         return Type.GetType(typeName, throwOnError, ignoreCase);
@@ -272,7 +280,8 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="typeName">Type name including assembly name.</param>
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
-    public static Type GetType(string typeName, bool throwOnError)
+    /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static Type? GetType(string typeName, bool throwOnError)
     {
       return GetType(typeName, throwOnError, false);
     }
@@ -281,9 +290,10 @@ namespace Csla.Reflection
     /// Gets a Type object based on the type name.
     /// </summary>
     /// <param name="typeName">Type name including assembly name.</param>
+    /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static Type GetType(string typeName)
     {
-      return GetType(typeName, true, false);
+      return GetType(typeName, true, false)!;
     }
 
 #endregion
@@ -292,42 +302,39 @@ namespace Csla.Reflection
     private const BindingFlags fieldFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
 #if NET8_0_OR_GREATER
-    private static readonly Dictionary<MethodCacheKey, Tuple<string, DynamicMemberHandle>> _memberCache = [];
+    private static readonly Dictionary<MethodCacheKey, Tuple<string?, DynamicMemberHandle>> _memberCache = [];
 #else
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
 #endif
 
     internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
     {
+      if (objectType.FullName is null)
+        throw new InvalidOperationException($"Full type name of {objectType} could not be retrieved by {nameof(Type)}.{nameof(Type.FullName)}.");
+
       var key = new MethodCacheKey(objectType.FullName, propertyName, GetParameterTypes(null));
 
 #if NET8_0_OR_GREATER
-      var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
-
-      var mh = memberHandleInfo?.Item2;
-
-      if (!found)
+      if (_memberCache.TryGetValue(key, out var memberHandleInfo))
       {
-        lock (_memberCache)
+        return memberHandleInfo.Item2;
+      }
+      
+      DynamicMemberHandle mh;
+      lock (_memberCache)
+      {
+        if (_memberCache.TryGetValue(key, out memberHandleInfo))
         {
-          found = _memberCache.TryGetValue(key, out memberHandleInfo);
-
-          mh = memberHandleInfo?.Item2;
-
-          if (!found)
-          {
-            var info = objectType.GetProperty(propertyName, propertyFlags);
-
-            if (info == null)
-              throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, propertyName));
-
-            mh = new DynamicMemberHandle(info);
-
-            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
-
-            _memberCache.Add(key, cacheInstance);
-          }
+          return memberHandleInfo.Item2;
         }
+
+        var info = objectType.GetProperty(propertyName, propertyFlags) ?? throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, propertyName));
+
+        mh = new DynamicMemberHandle(info);
+
+        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
+
+        _memberCache.Add(key, cacheInstance);
       }
 #else
       if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
@@ -354,36 +361,33 @@ namespace Csla.Reflection
 
     internal static DynamicMemberHandle GetCachedField(Type objectType, string fieldName)
     {
+      if (objectType.FullName is null)
+        throw new InvalidOperationException($"Full type name of {objectType} could not be retrieved by {nameof(Type)}.{nameof(Type.FullName)}.");
+
       var key = new MethodCacheKey(objectType.FullName, fieldName, GetParameterTypes(null));
 
 #if NET8_0_OR_GREATER
-      var found = _memberCache.TryGetValue(key, out var memberHandleInfo);
-
-      var mh = memberHandleInfo?.Item2;
-
-      if (!found)
+      DynamicMemberHandle mh;
+      if (_memberCache.TryGetValue(key, out var memberHandleInfo))
       {
-        lock (_memberCache)
-        {
-          found = _memberCache.TryGetValue(key, out memberHandleInfo);
-
-          mh = memberHandleInfo?.Item2;
-
-          if (!found)
-          {
-            var info = objectType.GetField(fieldName, fieldFlags);
-
-            if (info == null)
-              throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, fieldName));
-
-            mh = new DynamicMemberHandle(info);
-
-            var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
-
-            _memberCache.Add(key, cacheInstance);
-          }
-        }
+        return memberHandleInfo.Item2;
       }
+      
+      lock (_memberCache)
+      {
+        if (_memberCache.TryGetValue(key, out memberHandleInfo))
+        {
+          return memberHandleInfo.Item2;
+        }
+
+        var info = objectType.GetField(fieldName, fieldFlags) ?? throw new InvalidOperationException(string.Format(Resources.MemberNotFoundException, fieldName));
+        mh = new DynamicMemberHandle(info);
+
+        var cacheInstance = AssemblyLoadContextManager.CreateCacheInstance(objectType, mh, OnMemberAssemblyLoadContextUnload);
+
+        _memberCache.Add(key, cacheInstance);
+      }
+      
 #else
       if (!_memberCache.TryGetValue(key, out DynamicMemberHandle mh))
       {
@@ -413,31 +417,28 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="obj">Target object.</param>
     /// <param name="property">Property to invoke.</param>
-    public static object CallPropertyGetter(object obj, string property)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><paramref name="property"/> not found on type of <paramref name="obj"/>.</exception>
+    public static object? CallPropertyGetter(object obj, string property)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(property))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(property)), nameof(property));
+
       if (ApplicationContext.UseReflectionFallback)
       {
         var propertyInfo = obj.GetType().GetProperty(property);
+        if (propertyInfo == null)
+          throw new InvalidOperationException($"Property {property} not found on {obj.GetType().FullName}.");
+
         return propertyInfo.GetValue(obj);
       }
       else
       {
-        if (obj == null)
-          throw new ArgumentNullException(nameof(obj));
-        if (string.IsNullOrEmpty(property))
-          throw new ArgumentException("Argument is null or empty.", nameof(property));
-
         var mh = GetCachedProperty(obj.GetType(), property);
-        if (mh.DynamicMemberGet == null)
-        {
-          throw new NotSupportedException(string.Format(
-            CultureInfo.CurrentCulture,
-            "The property '{0}' on Type '{1}' does not have a public getter.",
-            property,
-            obj.GetType()));
-        }
-
-        return mh.DynamicMemberGet(obj);
+        return mh.MemberGetOrNotSupportedException(obj);
       }
     }
 
@@ -448,36 +449,32 @@ namespace Csla.Reflection
     /// <param name="obj">Target object.</param>
     /// <param name="property">Property to invoke.</param>
     /// <param name="value">New value for property.</param>
-    public static void CallPropertySetter(object obj, string property, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static void CallPropertySetter(object obj, string property, object? value)
     {
-      if (obj == null)
+      if (obj is null)
         throw new ArgumentNullException(nameof(obj));
-      if (string.IsNullOrEmpty(property))
-        throw new ArgumentException("Argument is null or empty.", nameof(property));
+      if (string.IsNullOrWhiteSpace(property))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(property)), nameof(property));
 
       if (ApplicationContext.UseReflectionFallback)
       {
         var propertyInfo = obj.GetType().GetProperty(property);
+        if (propertyInfo is null)
+          throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, property, "Property not found."));
+        
         propertyInfo.SetValue(obj, value);
       }
       else
       {
         var mh = GetCachedProperty(obj.GetType(), property);
-        if (mh.DynamicMemberSet == null)
-        {
-          throw new NotSupportedException(string.Format(
-            CultureInfo.CurrentCulture,
-            "The property '{0}' on Type '{1}' does not have a public setter.",
-            property,
-            obj.GetType()));
-        }
-
-        mh.DynamicMemberSet(obj, value);
+        mh.MemberSetOrNotSupportedException(obj, value);
       }
     }
 
 
-#region Call Method
+    #region Call Method
 
     /// <summary>
     /// Uses reflection to dynamically invoke a method
@@ -489,8 +486,15 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public static object CallMethodIfImplemented(object obj, string method)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? CallMethodIfImplemented(object obj, string method)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return CallMethodIfImplemented(obj, method, false, null);
     }
 
@@ -507,12 +511,19 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static object CallMethodIfImplemented(object obj, string method, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? CallMethodIfImplemented(object obj, string method, params object?[]? parameters)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return CallMethodIfImplemented(obj, method, true, parameters);
     }
 
-    private static object CallMethodIfImplemented(object obj, string method, bool hasParameters, params object[] parameters)
+    private static object? CallMethodIfImplemented(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
@@ -525,7 +536,7 @@ namespace Csla.Reflection
       else
       {
         var mh = GetCachedMethod(obj, method, parameters);
-        if (mh == null || mh.DynamicMethod == null)
+        if (mh.DynamicMethod == null)
           return null;
         return CallMethod(obj, mh, hasParameters, parameters);
       }
@@ -538,10 +549,17 @@ namespace Csla.Reflection
     /// <param name="method">The name of the method to find.</param>
     /// <param name="parameters">The parameters matching the parameters types of the method to match.</param>
     /// <returns>True obj implements a matching method.</returns>
-    public static bool IsMethodImplemented(object obj, string method, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static bool IsMethodImplemented(object obj, string method, params object?[]? parameters)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       var mh = GetCachedMethod(obj, method, parameters);
-      return mh != null && mh.DynamicMethod != null;
+      return mh.DynamicMethod != null;
     }
 
     /// <summary>
@@ -555,8 +573,15 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public static object CallMethod(object obj, string method)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? CallMethod(object obj, string method)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return CallMethod(obj, method, false, null);
     }
 
@@ -574,19 +599,23 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static object CallMethod(object obj, string method, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? CallMethod(object obj, string method, params object?[]? parameters)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return CallMethod(obj, method, true, parameters);
     }
 
-    private static object CallMethod(object obj, string method, bool hasParameters, params object[] parameters)
+    private static object? CallMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
-        System.Reflection.MethodInfo info = GetMethod(obj.GetType(), method, hasParameters, parameters);
-        if (info == null)
-          throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-
+        var info = GetMethod(obj.GetType(), method, hasParameters, parameters) ?? throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
         return CallMethod(obj, info, hasParameters, parameters);
       }
       else
@@ -612,15 +641,24 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static object CallMethod(object obj, System.Reflection.MethodInfo info, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
+    public static object CallMethod(object obj, System.Reflection.MethodInfo info, params object?[]? parameters)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
       return CallMethod(obj, info, true, parameters);
     }
 
-    private static object CallMethod(object obj, System.Reflection.MethodInfo info, bool hasParameters, params object[] parameters)
+    private static object CallMethod(object obj, System.Reflection.MethodInfo info, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
+        if (parameters is null)
+          throw new ArgumentNullException(nameof(parameters));
+
         var infoParams = info.GetParameters();
         var infoParamsCount = infoParams.Length;
         bool hasParamArray = infoParamsCount > 0 && infoParams[infoParamsCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0;
@@ -629,7 +667,7 @@ namespace Csla.Reflection
           specialParamArray = true;
         if (hasParamArray && infoParams[infoParamsCount - 1].ParameterType.Equals(typeof(object[])))
           specialParamArray = true;
-        object[] par;
+        object?[] par;
         if (infoParamsCount == 1 && specialParamArray)
         {
           par = [parameters];
@@ -649,7 +687,7 @@ namespace Csla.Reflection
         object result;
         try
         {
-          result = info.Invoke(obj, par);
+          result = info.Invoke(obj, par)!;
         }
         catch (Exception e)
         {
@@ -665,17 +703,20 @@ namespace Csla.Reflection
       else
       {
         var mh = GetCachedMethod(obj, info, parameters);
-        if (mh == null || mh.DynamicMethod == null)
+        if (mh.DynamicMethod == null)
           throw new NotImplementedException(obj.GetType().Name + "." + info.Name + " " + Resources.MethodNotImplemented);
         return CallMethod(obj, mh, hasParameters, parameters);
       }
     }
 
-    private static object CallMethod(object obj, DynamicMethodHandle methodHandle, bool hasParameters, params object[] parameters)
+    private static object CallMethod(object obj, DynamicMethodHandle methodHandle, bool hasParameters, params object?[]? parameters)
     {
-      object result = null;
+      if (methodHandle.DynamicMethod is null)
+        throw new InvalidOperationException($"{nameof(DynamicMethodHandle)}.{nameof(DynamicMethodHandle.DynamicMethod)} == null");
 
-      object[] inParams;
+      object result;
+
+      object?[] inParams;
       if (parameters == null)
         inParams = [null];
       else
@@ -690,16 +731,19 @@ namespace Csla.Reflection
         {
           // no paramter was supplied for the param array
           // copy items into new array with last entry null
-          object[] paramList = new object[pCount];
+          object?[] paramList = new object[pCount];
           for (var pos = 0; pos <= pCount - 2; pos++)
-            paramList[pos] = parameters[pos];
+            paramList[pos] = inParams[pos];
           paramList[paramList.Length - 1] = hasParameters && inParams.Length == 0 ? inParams : null;
 
           // use new array
           inParams = paramList;
         }
-        else if ((inCount == pCount && inParams[inCount - 1] != null && !inParams[inCount - 1].GetType().IsArray) || inCount > pCount)
+        else if ((inCount == pCount && inParams[inCount - 1]?.GetType().IsArray == false) || inCount > pCount)
         {
+          if (methodHandle.FinalArrayElementType is null)
+            throw new InvalidOperationException($"{nameof(DynamicMethodHandle)}.{nameof(DynamicMethodHandle.FinalArrayElementType)} == null");
+
           // 1 or more params go in the param array
           // copy extras into an array
           var extras = inParams.Length - (pCount - 1);
@@ -707,9 +751,9 @@ namespace Csla.Reflection
           Array.Copy(inParams, pCount - 1, extraArray, 0, extras);
 
           // copy items into new array
-          object[] paramList = new object[pCount];
+          object?[] paramList = new object[pCount];
           for (var pos = 0; pos <= pCount - 2; pos++)
-            paramList[pos] = parameters[pos];
+            paramList[pos] = inParams[pos];
           paramList[paramList.Length - 1] = extraArray;
 
           // use new array
@@ -729,11 +773,14 @@ namespace Csla.Reflection
 
     private static object[] GetExtrasArray(int count, Type arrayType)
     {
-      return (object[])(Array.CreateInstance(arrayType.GetElementType(), count));
+      if (arrayType.GetElementType() is not Type elementType)
+        throw new InvalidOperationException($"{arrayType}.{nameof(Type.GetElementType)}() != {nameof(Type)}.");
+      
+      return (object[])(Array.CreateInstance(elementType, count));
     }
-#endregion
+    #endregion
 
-#region Get/Find Method
+    #region Get/Find Method
 
     /// <summary>
     /// Uses reflection to locate a matching method
@@ -745,12 +792,15 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public static System.Reflection.MethodInfo GetMethod(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-#endif
-      Type objectType, string method)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return GetMethod(objectType, method, true, false, null);
     }
 
@@ -767,24 +817,21 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static System.Reflection.MethodInfo GetMethod(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-#endif
-      Type objectType, string method, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method, params object?[]? parameters)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return GetMethod(objectType, method, true, parameters);
     }
 
-    private static System.Reflection.MethodInfo GetMethod(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-#endif
-      Type objectType, string method, bool hasParameters, params object[] parameters)
+    private static System.Reflection.MethodInfo? GetMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method, bool hasParameters, params object?[]? parameters)
     {
-      System.Reflection.MethodInfo result;
-
-      object[] inParams;
+      object?[] inParams;
       if (!hasParameters)
         inParams = [];
       else if (parameters == null)
@@ -796,7 +843,7 @@ namespace Csla.Reflection
 
       // first see if there's a matching method
       // where all params match types
-      result = FindMethod(objectType, method, GetParameterTypes(hasParameters, inParams));
+      var result = FindMethod(objectType, method, GetParameterTypes(hasParameters, inParams));
 
       if (result == null)
       {
@@ -821,10 +868,10 @@ namespace Csla.Reflection
       return result;
     }
 
-    private static System.Reflection.MethodInfo FindMethodUsingFuzzyMatching(Type objectType, string method, object[] parameters)
+    private static System.Reflection.MethodInfo? FindMethodUsingFuzzyMatching(Type objectType, string method, object?[] parameters)
     {
-      System.Reflection.MethodInfo result = null;
-      Type currentType = objectType;
+      System.Reflection.MethodInfo? result = null;
+      Type? currentType = objectType;
       do
       {
         System.Reflection.MethodInfo[] methods = currentType.GetMethods(oneLevelFlags);
@@ -851,7 +898,7 @@ namespace Csla.Reflection
               if (infoParams[pCount - 1].GetCustomAttributes(typeof(ParamArrayAttribute), true).Length > 0)
               {
                 // last param is a param array
-                if (parameterCount == pCount && parameters[pCount - 1].GetType().Equals(infoParams[pCount - 1].ParameterType))
+                if (parameterCount == pCount && parameters[pCount - 1]?.GetType().Equals(infoParams[pCount - 1].ParameterType) == true)
                 {
                   // got a match so use it
                   result = m;
@@ -897,20 +944,30 @@ namespace Csla.Reflection
     /// <param name="types">
     /// Parameter types to pass to method.
     /// </param>
-    public static System.Reflection.MethodInfo FindMethod(Type objectType, string method, Type[] types)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="types"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static System.Reflection.MethodInfo? FindMethod(Type objectType, string method, Type[] types)
     {
-      System.Reflection.MethodInfo info;
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (types is null)
+        throw new ArgumentNullException(nameof(types));
+      if (string.IsNullOrWhiteSpace(method))
+      throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
+      System.Reflection.MethodInfo? info;
+      Type? objType = objectType;
       do
       {
         // find for a strongly typed match
-        info = objectType.GetMethod(method, oneLevelFlags, null, types, null);
+        info = objType.GetMethod(method, oneLevelFlags, null, types, null);
         if (info != null)
         {
           break; // match found
         }
 
-        objectType = objectType.BaseType;
-      } while (objectType != null);
+        objType = objType.BaseType;
+      } while (objType != null);
 
       return info;
     }
@@ -929,22 +986,26 @@ namespace Csla.Reflection
     /// <param name="parameterCount">
     /// Number of parameters to pass to method.
     /// </param>
-    public static System.Reflection.MethodInfo FindMethod(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-      [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2075:UnrecognizedReflectionPattern",
-            Justification = "We only walk BaseType chain in this method, so assumption will holds")]
-#endif
-      Type objectType, string method, int parameterCount)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static System.Reflection.MethodInfo? FindMethod(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2075:UnrecognizedReflectionPattern", Justification = "We only walk BaseType chain in this method, so assumption will holds")]
+        Type objectType, string method, int parameterCount)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       // walk up the inheritance hierarchy looking
       // for a method with the right number of
       // parameters
-      System.Reflection.MethodInfo result = null;
-      Type currentType = objectType;
+      System.Reflection.MethodInfo? result = null;
+      Type? currentType = objectType;
       do
       {
-        System.Reflection.MethodInfo info = currentType.GetMethod(method, oneLevelFlags);
+        System.Reflection.MethodInfo? info = currentType.GetMethod(method, oneLevelFlags);
         if (info != null)
         {
           var infoParams = info.GetParameters();
@@ -992,12 +1053,12 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameter values.
     /// </param>
-    public static Type[] GetParameterTypes(object[] parameters)
+    public static Type[] GetParameterTypes(object?[]? parameters)
     {
       return GetParameterTypes(true, parameters);
     }
 
-    private static Type[] GetParameterTypes(bool hasParameters, object[] parameters)
+    private static Type[] GetParameterTypes(bool hasParameters, object?[]? parameters)
     {
       if (!hasParameters)
         return [];
@@ -1011,7 +1072,7 @@ namespace Csla.Reflection
       }
       else
       {
-        foreach (object item in parameters)
+        foreach (object? item in parameters)
         {
           if (item == null)
           {
@@ -1031,14 +1092,17 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="t">Type of object containing the property.</param>
     /// <param name="propertyName">Name of the property.</param>
-    public static PropertyDescriptor GetPropertyDescriptor(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type t, string propertyName)
+    /// <exception cref="ArgumentNullException"><paramref name="t"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static PropertyDescriptor? GetPropertyDescriptor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type t, string propertyName)
     {
+      if (t is null)
+        throw new ArgumentNullException(nameof(t));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
       var propertyDescriptors = TypeDescriptor.GetProperties(t);
-      PropertyDescriptor result = null;
+      PropertyDescriptor? result = null;
       foreach (PropertyDescriptor desc in propertyDescriptors)
         if (desc.Name == propertyName)
         {
@@ -1053,8 +1117,15 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="objectType">Object containing the property.</param>
     /// <param name="propertyName">Name of the property.</param>
-    public static PropertyInfo GetProperty(Type objectType, string propertyName)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static PropertyInfo? GetProperty(Type objectType, string propertyName)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
       return objectType.GetProperty(propertyName, propertyFlags);
     }
 
@@ -1064,9 +1135,15 @@ namespace Csla.Reflection
     /// <param name="obj">Object containing the property.</param>
     /// <param name="info">Property info object for the property.</param>
     /// <returns>The value of the property.</returns>
-    public static object GetPropertyValue(object obj, PropertyInfo info)
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="obj"/> is <see langword="null"/>.</exception>
+    public static object? GetPropertyValue(object obj, PropertyInfo info)
     {
-      object result;
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
+      object? result;
       try
       {
         result = info.GetValue(obj, null);
@@ -1089,9 +1166,15 @@ namespace Csla.Reflection
     /// <param name="obj">Object containing method.</param>
     /// <param name="info">Method info object.</param>
     /// <returns>Any value returned from the method.</returns>
-    public static object CallMethod(object obj, System.Reflection.MethodInfo info)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
+    public static object? CallMethod(object obj, System.Reflection.MethodInfo info)
     {
-      object result;
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
+      object? result;
       try
       {
         result = info.Invoke(obj, null);
@@ -1122,8 +1205,15 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static Task<object> CallMethodTryAsync(object obj, string method, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static Task<object?> CallMethodTryAsync(object obj, string method, params object?[]? parameters)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return CallMethodTryAsync(obj, method, true, parameters);
     }
 
@@ -1135,61 +1225,85 @@ namespace Csla.Reflection
     /// <param name="method">
     /// Name of the method.
     /// </param>
-    public static Task<object> CallMethodTryAsync(object obj, string method)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static Task<object?> CallMethodTryAsync(object obj, string method)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return CallMethodTryAsync(obj, method, false, null);
     }
 
-    private async static Task<object> CallMethodTryAsync(object obj, string method, bool hasParameters, params object[] parameters)
+    private async static Task<object?> CallMethodTryAsync(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
-      try
+      if (ApplicationContext.UseReflectionFallback)
       {
-        if (ApplicationContext.UseReflectionFallback)
+        var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
+        if (info == null)
+          throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+        var isAsyncTask = (info.ReturnType == typeof(Task));
+        var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+        if (isAsyncTask)
         {
-          var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
-          if (info == null)
-            throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-          var isAsyncTask = (info.ReturnType == typeof(Task));
-          var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
-          if (isAsyncTask)
-          {
-            await (Task)CallMethod(obj, method, hasParameters, parameters);
-            return null;
-          }
-          else if (isAsyncTaskObject)
-          {
-            return await (Task<object>)CallMethod(obj, method, hasParameters, parameters);
-          }
-          else
-          {
-            return CallMethod(obj, method, hasParameters, parameters);
-          }
+          await ThrowIfNotTaskReturn(CallMethod(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
+          return null;
+        }
+        else if (isAsyncTaskObject)
+        {
+          return await ThrowIfNotTaskTReturn(CallMethod(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
         }
         else
         {
-          var mh = GetCachedMethod(obj, method, hasParameters, parameters);
-          if (mh == null || mh.DynamicMethod == null)
-            throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
-          if (mh.IsAsyncTask)
-          {
-            await (Task)CallMethod(obj, mh, hasParameters, parameters);
-            return null;
-          }
-          else if (mh.IsAsyncTaskObject)
-          {
-            return await (Task<object>)CallMethod(obj, mh, hasParameters, parameters);
-          }
-          else
-          {
-            return CallMethod(obj, mh, hasParameters, parameters);
-          }
+          return CallMethod(obj, method, hasParameters, parameters);
         }
       }
-      catch (InvalidCastException ex)
+      else
       {
-        throw new NotSupportedException(
-          string.Format(Resources.TaskOfObjectException, obj.GetType().Name + "." + method),
-          ex);
+        var mh = GetCachedMethod(obj, method, hasParameters, parameters);
+        if (mh.DynamicMethod == null)
+          throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+        if (mh.IsAsyncTask)
+        {
+          await ThrowIfNotTaskReturn(CallMethod(obj, mh, hasParameters, parameters), obj, method).ConfigureAwait(false);
+          return null;
+        }
+        else if (mh.IsAsyncTaskObject)
+        {
+          return await ThrowIfNotTaskTReturn(CallMethod(obj, mh, hasParameters, parameters), obj, method).ConfigureAwait(false);
+        }
+        else
+        {
+          return CallMethod(obj, mh, hasParameters, parameters);
+        }
+      }
+
+      static async Task ThrowIfNotTaskReturn(object? returnValue, object objectType, string calledMethodName)
+      {
+        if (returnValue is not Task t)
+        {
+          ThrowNotSupportedException(objectType, calledMethodName);
+        }
+
+        await t.ConfigureAwait(false);
+      }
+
+      static async Task<object?> ThrowIfNotTaskTReturn(object? returnValue, object objectType, string calledMethodName)
+      {
+        if (returnValue is not Task<object?> t)
+        {
+          ThrowNotSupportedException(objectType, calledMethodName);
+        }
+
+        return await t.ConfigureAwait(false);
+      }
+
+      [DoesNotReturn]
+      static void ThrowNotSupportedException(object obj, string method)
+      {
+        throw new NotSupportedException(string.Format(Resources.TaskOfObjectException, obj.GetType().Name + "." + method));
       }
     }
 
@@ -1198,8 +1312,15 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="obj">Object containing method.</param>
     /// <param name="method">Name of the method.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static bool IsAsyncMethod(object obj, string method)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return IsAsyncMethod(obj, method, false, null);
     }
 
@@ -1211,8 +1332,15 @@ namespace Csla.Reflection
     /// <param name="parameters">
     /// Parameters to pass to method.
     /// </param>
-    public static bool IsAsyncMethod(object obj, string method, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static bool IsAsyncMethod(object obj, string method, params object?[]? parameters)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       return IsAsyncMethod(obj, method, true, parameters);
     }
 
@@ -1223,13 +1351,11 @@ namespace Csla.Reflection
       return isAsyncTask || isAsyncTaskObject;
     }
 
-    private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object[] parameters)
+    private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
-        var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters));
-        if (info == null)
-          throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
+        var info = FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters)) ?? throw new NotImplementedException(obj.GetType().Name + "." + method + " " + Resources.MethodNotImplemented);
         return IsAsyncMethod(info);
       }
       else
@@ -1250,12 +1376,21 @@ namespace Csla.Reflection
     /// <param name="typeParams">Type parameters for method</param>
     /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
     /// <param name="parameters">Parameters for method</param>
-    public static Task<object> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="typeParams"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static async Task<object?> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
-      var tcs = new TaskCompletionSource<object>();
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+      if (typeParams is null)
+        throw new ArgumentNullException(nameof(typeParams));
+
+      var tcs = new TaskCompletionSource<object?>();
       try
       {
-        Task task = null;
+        object? invocationResult;
         if (hasParameters)
         {
           var pTypes = GetParameterTypes(parameters);
@@ -1265,25 +1400,30 @@ namespace Csla.Reflection
           if (methodReference == null)
             throw new InvalidOperationException(objectType.Name + "." + method);
           var gr = methodReference.MakeGenericMethod(typeParams);
-          task = (Task)gr.Invoke(null, parameters);
+
+          invocationResult = gr.Invoke(null, parameters);
         }
         else
         {
           var methodReference = objectType.GetMethod(method, BindingFlags.Static | BindingFlags.Public, null, CallingConventions.Any, Type.EmptyTypes, null);
+          if (methodReference == null)
+            throw new InvalidOperationException(objectType.Name + "." + method);
           var gr = methodReference.MakeGenericMethod(typeParams);
-          task = (Task)gr.Invoke(null, null);
+          invocationResult = gr.Invoke(null, null);
         }
-        task.Wait();
-        if (task.Exception != null)
-          tcs.SetException(task.Exception);
-        else
-          tcs.SetResult(CallPropertyGetter(task, "Result"));
+
+        if (invocationResult is not Task task)
+          throw new NotSupportedException(string.Format(Resources.TaskOfObjectException, objectType.Name + "." + method));
+
+        await task.ConfigureAwait(false);
+        
+        tcs.SetResult(CallPropertyGetter(task, "Result"));
       }
       catch (Exception ex)
       {
         tcs.SetException(ex);
       }
-      return tcs.Task;
+      return await tcs.Task.ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1294,10 +1434,19 @@ namespace Csla.Reflection
     /// <param name="typeParams">Type parameters for method</param>
     /// <param name="hasParameters">Flag indicating whether method accepts parameters</param>
     /// <param name="parameters">Parameters for method</param>
-    public static object CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="typeParams"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+      if (typeParams is null)
+        throw new ArgumentNullException(nameof(typeParams));
+
       var objectType = target.GetType();
-      object result;
+      object? result;
       if (hasParameters)
       {
         var pTypes = GetParameterTypes(parameters);
@@ -1327,12 +1476,19 @@ namespace Csla.Reflection
     /// <param name="method">Name of the factory method</param>
     /// <param name="parameters">Parameters passed to factory method.</param>
     /// <returns>Result of the factory method invocation.</returns>
-    public static object CallFactoryMethod(Type objectType, string method, params object[] parameters)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static object? CallFactoryMethod(Type objectType, string method, params object?[] parameters)
     {
-      object returnValue;
-      System.Reflection.MethodInfo factory = objectType.GetMethod(
-           method, factoryFlags, null,
-           GetParameterTypes(parameters), null);
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+      if (parameters is null)
+        throw new ArgumentNullException(nameof(parameters));
+
+      object? returnValue;
+      System.Reflection.MethodInfo? factory = objectType.GetMethod(method, factoryFlags, null, GetParameterTypes(parameters), null);
 
       if (factory == null)
       {
@@ -1352,8 +1508,7 @@ namespace Csla.Reflection
       {
         // no matching factory could be found
         // so throw exception
-        throw new InvalidOperationException(
-          string.Format(Resources.NoSuchFactoryMethod, method));
+        throw new InvalidOperationException(string.Format(Resources.NoSuchFactoryMethod, method));
       }
       try
       {
@@ -1377,8 +1532,15 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="objectType">Object containing the method.</param>
     /// <param name="method">Name of the method.</param>
-    public static System.Reflection.MethodInfo GetNonPublicMethod(Type objectType, string method)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static System.Reflection.MethodInfo? GetNonPublicMethod(Type objectType, string method)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
       var result = FindMethod(objectType, method, privateMethodFlags);
       return result;
     }
@@ -1390,17 +1552,25 @@ namespace Csla.Reflection
     /// <param name="objType">Type of object.</param>
     /// <param name="method">Name of the method.</param>
     /// <param name="flags">Flag values.</param>
-    public static System.Reflection.MethodInfo FindMethod(Type objType, string method, BindingFlags flags)
+    /// <exception cref="ArgumentNullException"><paramref name="objType"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public static System.Reflection.MethodInfo? FindMethod(Type objType, string method, BindingFlags flags)
     {
-      System.Reflection.MethodInfo info;
+      if (objType is null)
+        throw new ArgumentNullException(nameof(objType));
+      if (string.IsNullOrWhiteSpace(method))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
+
+      System.Reflection.MethodInfo? info;
+      var tmpType = objType;
       do
       {
         // find for a strongly typed match
-        info = objType.GetMethod(method, flags);
+        info = tmpType.GetMethod(method, flags);
         if (info != null)
           break; // match found
-        objType = objType.BaseType;
-      } while (objType != null);
+        tmpType = objType.BaseType;
+      } while (tmpType != null);
 
       return info;
     }
@@ -1409,13 +1579,13 @@ namespace Csla.Reflection
     private static void OnMethodAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_methodCache)
-        AssemblyLoadContextManager.RemoveFromCache(_methodCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_methodCache, context);
     }
 
     private static void OnMemberAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_memberCache)
-        AssemblyLoadContextManager.RemoveFromCache(_memberCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_memberCache, context);
     }
 #endif
   }

@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CslaVersion>8.2.3</CslaVersion>
+    <CslaVersion>9.0.0-rc4-gc005a93a3c</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Csla" Version="$(CslaVersion)" />
@@ -9,7 +9,7 @@
     <PackageVersion Include="Csla.Windows.Forms" Version="$(CslaVersion)" />
 
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
 
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>

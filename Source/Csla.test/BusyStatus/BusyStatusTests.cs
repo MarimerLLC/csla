@@ -12,14 +12,12 @@ using Csla.TestHelpers;
 using Csla.Testing.Business.BusyStatus;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UnitDriven;
 
 namespace cslalighttest.BusyStatus
 {
   [TestClass]
-  public class BusyStatusTests : TestBase
+  public class BusyStatusTests
   {
-
     private static TestDIContext _testDIContext;
     private static TestDIContext _noCloneOnUpdateDIContext;
 
@@ -43,13 +41,10 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
-      context.Assert.IsTrue(item.IsBusy, "Should be busy");
-      context.Assert.IsFalse(item.IsSavable, "Should not be savable");
-      context.Assert.Success();
-      context.Complete();
+      Assert.IsTrue(item.IsBusy, "Should be busy");
+      Assert.IsFalse(item.IsSavable, "Should not be savable");
     }
 
     [TestMethod]
@@ -57,13 +52,10 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
-      UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].RuleField = "some value";
-      context.Assert.IsTrue(items.IsBusy);
-      context.Assert.IsFalse(items.IsSavable);
-      context.Assert.Success();
-      context.Complete();
+      Assert.IsTrue(items.IsBusy);
+      Assert.IsFalse(items.IsSavable);
     }
 
     [TestMethod]
@@ -71,11 +63,10 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
-      context.Assert.IsTrue(item.IsBusy);
-      context.Assert.IsFalse(item.IsSavable);
+      Assert.IsTrue(item.IsBusy);
+      Assert.IsFalse(item.IsSavable);
 
       try
       {
@@ -84,12 +75,10 @@ namespace cslalighttest.BusyStatus
       catch (Exception ex)
       {
         var error = ex as InvalidOperationException;
-        context.Assert.IsNotNull(error);
-        context.Assert.IsTrue(error.Message.ToLower().Contains("busy"));
-        context.Assert.IsTrue(error.Message.ToLower().Contains("save"));
-        context.Assert.Success();
+        Assert.IsNotNull(error);
+        Assert.IsTrue(error.Message.ToLower().Contains("busy"));
+        Assert.IsTrue(error.Message.ToLower().Contains("save"));
       }
-      context.Complete();
     }
 
     [TestMethod]
@@ -97,11 +86,10 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
-      UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].RuleField = "some value";
-      context.Assert.IsTrue(items.IsBusy);
-      context.Assert.IsFalse(items.IsSavable);
+      Assert.IsTrue(items.IsBusy);
+      Assert.IsFalse(items.IsSavable);
 
       try
       {
@@ -110,12 +98,10 @@ namespace cslalighttest.BusyStatus
       catch (Exception ex)
       {
         var error = ex as InvalidOperationException;
-        context.Assert.IsNotNull(error);
-        context.Assert.IsTrue(error.Message.ToLower().Contains("busy"));
-        context.Assert.IsTrue(error.Message.ToLower().Contains("save"));
-        context.Assert.Success();
+        Assert.IsNotNull(error);
+        Assert.IsTrue(error.Message.ToLower().Contains("busy"));
+        Assert.IsTrue(error.Message.ToLower().Contains("save"));
       }
-      context.Complete();
     }
 
     [TestMethod]
@@ -123,18 +109,15 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.ValidationComplete += (_, _) =>
       {
-        context.Assert.IsFalse(item.IsBusy);
-        context.Assert.IsTrue(item.IsSavable);
-        context.Assert.Success();
+        Assert.IsFalse(item.IsBusy);
+        Assert.IsTrue(item.IsSavable);
       };
       item.RuleField = "some value";
-      context.Assert.IsTrue(item.IsBusy);
-      context.Assert.IsFalse(item.IsSavable);
-      context.Complete();
+      Assert.IsTrue(item.IsBusy);
+      Assert.IsFalse(item.IsSavable);
     }
 
     [TestMethod]
@@ -142,40 +125,49 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
-      UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       items[0].ValidationComplete += (_, _) =>
       {
-        context.Assert.IsFalse(items.IsBusy);
-        context.Assert.IsTrue(items.IsSavable);
-        context.Assert.Success();
+        Assert.IsFalse(items.IsBusy);
+        Assert.IsTrue(items.IsSavable);
       };
 
       items[0].RuleField = "some value";
-      context.Assert.IsTrue(items.IsBusy);
-      context.Assert.IsFalse(items.IsSavable);
+      Assert.IsTrue(items.IsBusy);
+      Assert.IsFalse(items.IsSavable);
     }
 
     [TestMethod]
-    public void ListTestSaveWhileNotBusy()
+    public async Task ListTestSaveWhileNotBusy()
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
-      UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
+      var tcs = new TaskCompletionSource();
       items[0].ValidationComplete += async (_, _) =>
       {
-        context.Assert.IsFalse(items.IsBusy);
-        context.Assert.IsTrue(items.IsSavable);
-        items = await items.SaveAsync();
-        context.Assert.AreEqual("DataPortal_Update", items[0].OperationResult);
-        context.Assert.Success();
+        try
+        {
+          Assert.IsFalse(items.IsBusy);
+          Assert.IsTrue(items.IsSavable);
+          items = await items.SaveAsync();
+          string actual = items[0].OperationResult;
+          Assert.AreEqual("DataPortal_Update", actual);
+        }
+        catch (Exception ex)
+        {
+          tcs.SetException(ex);
+        }
+        finally
+        {
+          tcs.TrySetResult();
+        }
       };
 
       items[0].RuleField = "some value";
-      context.Assert.IsTrue(items.IsBusy);
-      context.Assert.IsFalse(items.IsSavable);
-      context.Complete();
+      Assert.IsTrue(items.IsBusy);
+      Assert.IsFalse(items.IsSavable);
+      await tcs.Task;
     }
 
     [TestMethod]
@@ -184,14 +176,11 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _testDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
-      context.Assert.IsTrue(item.IsBusy);
-      context.Assert.IsFalse(item.IsSavable);
+      Assert.IsTrue(item.IsBusy);
+      Assert.IsFalse(item.IsSavable);
       item.Save();
-      context.Assert.Success();
-      context.Complete();
     }
 
     [TestMethod]
@@ -199,12 +188,11 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
-      UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 
       items[0].RuleField = "some value";
-      context.Assert.IsTrue(items.IsBusy);
-      context.Assert.IsFalse(items.IsSavable);
+      Assert.IsTrue(items.IsBusy);
+      Assert.IsFalse(items.IsSavable);
       bool gotError = false;
       try
       {
@@ -214,10 +202,7 @@ namespace cslalighttest.BusyStatus
       {
         gotError = true;
       }
-      context.Assert.IsTrue(gotError);
-      context.Assert.Success();
-
-      context.Complete();
+      Assert.IsTrue(gotError);
     }
 
     [TestMethod]
@@ -225,20 +210,17 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.ValidationComplete += (_, _) =>
       {
-        context.Assert.IsFalse(item.IsBusy);
-        context.Assert.IsTrue(item.IsSavable);
+        Assert.IsFalse(item.IsBusy);
+        Assert.IsTrue(item.IsSavable);
         item = item.Save();
-        context.Assert.AreEqual("DataPortal_Update", item.OperationResult);
-        context.Assert.Success();
+        Assert.AreEqual("DataPortal_Update", item.OperationResult);
       };
       item.RuleField = "some value";
-      context.Assert.IsTrue(item.IsBusy);
-      context.Assert.IsFalse(item.IsSavable);
-      context.Complete();
+      Assert.IsTrue(item.IsBusy);
+      Assert.IsFalse(item.IsSavable);
     }
 
     [TestMethod]
@@ -246,26 +228,20 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
-      UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-
-
 
       items[0].ValidationComplete += (_, _) =>
       {
-        context.Assert.IsFalse(items.IsBusy);
-        context.Assert.IsTrue(items.IsSavable);
+        Assert.IsFalse(items.IsBusy);
+        Assert.IsTrue(items.IsSavable);
         items = items.Save();
-        context.Assert.AreEqual("DataPortal_Update", items[0].OperationResult);
-        context.Assert.Success();
+        string actual = items[0].OperationResult;
+        Assert.AreEqual("DataPortal_Update", actual);
       };
 
       items[0].RuleField = "some value";
-      context.Assert.IsTrue(items.IsBusy);
-      context.Assert.IsFalse(items.IsSavable);
-
-      context.Complete();
-
+      Assert.IsTrue(items.IsBusy);
+      Assert.IsFalse(items.IsSavable);
     }
 
     [TestMethod]
@@ -273,15 +249,12 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.OperationResult = "something";
-      context.Assert.IsFalse(item.IsBusy);
-      context.Assert.IsTrue(item.IsSavable);
+      Assert.IsFalse(item.IsBusy);
+      Assert.IsTrue(item.IsSavable);
       item = item.Save();
-      context.Assert.AreEqual("DataPortal_Update", item.OperationResult);
-      context.Assert.Success();
-      context.Complete();
+      Assert.AreEqual("DataPortal_Update", item.OperationResult);
     }
 
     [TestMethod]
@@ -289,16 +262,14 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
-      UnitTestContext context = GetContext();
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
 
       items[0].OperationResult = "something";
-      context.Assert.IsFalse(items.IsBusy);
-      context.Assert.IsTrue(items.IsSavable);
+      Assert.IsFalse(items.IsBusy);
+      Assert.IsTrue(items.IsSavable);
       items = items.Save();
-      context.Assert.AreEqual("DataPortal_Update", items[0].OperationResult);
-      context.Assert.Success();
-      context.Complete();
+      string actual = items[0].OperationResult;
+      Assert.AreEqual("DataPortal_Update", actual);
     }
 
     [TestMethod]
@@ -306,7 +277,6 @@ namespace cslalighttest.BusyStatus
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
 
@@ -321,7 +291,6 @@ namespace cslalighttest.BusyStatus
 
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRule>();
 
-      UnitTestContext context = GetContext();
       var item = await dataPortal.FetchAsync("an id");
       item.RuleField = "some value";
 

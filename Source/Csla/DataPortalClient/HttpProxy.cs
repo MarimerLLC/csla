@@ -5,16 +5,14 @@
 // </copyright>
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
-using Csla.Configuration;
-using Csla.DataPortalClient;
-using Csla.Properties;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-#if NET8_0_OR_GREATER
 using System.Runtime.Versioning;
-#endif
 using System.Text;
+using Csla.Configuration;
+using Csla.DataPortalClient;
+using Csla.Properties;
 
 namespace Csla.Channels.Http
 {
@@ -40,7 +38,7 @@ namespace Csla.Channels.Http
       _httpClient = httpClient;
       Options = options;
       DataPortalUrl = options.DataPortalUrl;
-      VersionRoutingTag = dataPortalOptions.VersionRoutingTag;
+      _versionRoutingTag = dataPortalOptions.VersionRoutingTag;
     }
 
     /// <summary>
@@ -48,9 +46,11 @@ namespace Csla.Channels.Http
     /// </summary>
     protected HttpProxyOptions Options { get; set; }
 
-    private string VersionRoutingTag { get; set; }
+    private string _versionRoutingTag;
 
-#nullable enable
+    /// <inheritdoc />
+    public override string DataPortalUrl { get; }
+
     /// <summary>
     /// Gets an HttpClientHandler for use
     /// in initializing the HttpClient instance.
@@ -59,7 +59,6 @@ namespace Csla.Channels.Http
     {
       return null;
     }
-#nullable disable
 
     /// <summary>
     /// Gets an HttpClient object for use in
@@ -103,9 +102,7 @@ namespace Csla.Channels.Http
     /// Gets an WebClient object for use in
     /// synchronous communication with the server.
     /// </summary>
-#if NET8_0_OR_GREATER
     [UnsupportedOSPlatform("browser")]
-#endif
     protected virtual WebClient GetWebClient()
     {
       return new DefaultWebClient(Options.Timeout, Options.ReadWriteTimeout);
@@ -119,7 +116,7 @@ namespace Csla.Channels.Http
     /// <param name="routingToken">Routing Tag for server</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>Serialized response from server</returns>
-    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string routingToken, bool isSync)
+    protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync)
     {
       return isSync
         ? CallViaWebClient(serialized, operation, routingToken)
@@ -144,12 +141,12 @@ namespace Csla.Channels.Http
     protected virtual void SetWebClientHeaders(WebClient client)
     { }
 
-    private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string routingToken)
+    private async Task<byte[]> CallViaHttpClient(byte[] serialized, string operation, string? routingToken)
     {
       var client = GetHttpClient();
       using var httpRequest = new HttpRequestMessage(
         HttpMethod.Post,
-        $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}");
+        $"{DataPortalUrl}?operation={CreateOperationTag(operation, _versionRoutingTag, routingToken)}");
       SetHttpRequestHeaders(httpRequest);
 #if NET8_0_OR_GREATER
       if (Options.UseTextSerialization)
@@ -184,7 +181,7 @@ namespace Csla.Channels.Http
       return serialized;
     }
 
-    private byte[] CallViaWebClient(byte[] serialized, string operation, string routingToken)
+    private byte[] CallViaWebClient(byte[] serialized, string operation, string? routingToken)
     {
 #if NET8_0_OR_GREATER
       if (OperatingSystem.IsBrowser())
@@ -193,7 +190,7 @@ namespace Csla.Channels.Http
       }
 #endif
       WebClient client = GetWebClient();
-      var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, VersionRoutingTag, routingToken)}";
+      var url = $"{DataPortalUrl}?operation={CreateOperationTag(operation, _versionRoutingTag, routingToken)}";
       client.Headers["Content-Type"] = Options.UseTextSerialization ? "application/base64,text/plain" : "application/octet-stream";
       SetWebClientHeaders(client);
       try
@@ -244,7 +241,7 @@ namespace Csla.Channels.Http
       }
     }
 
-    private string CreateOperationTag(string operation, string versionToken, string routingToken)
+    private string CreateOperationTag(string operation, string versionToken, string? routingToken)
     {
       if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
         return $"{operation}/{routingToken}-{versionToken}";
@@ -252,9 +249,7 @@ namespace Csla.Channels.Http
     }
 
 #pragma warning disable SYSLIB0014
-#if NET8_0_OR_GREATER
     [UnsupportedOSPlatform("browser")]
-#endif
     private class DefaultWebClient(TimeSpan timeout, TimeSpan readWriteTimeout) : WebClient
     {
 
@@ -265,12 +260,12 @@ namespace Csla.Channels.Http
         {
           if (readWriteTimeout > TimeSpan.Zero)
           {
-            httpWebRequest.ReadWriteTimeout = readWriteTimeout.Milliseconds;
+            httpWebRequest.ReadWriteTimeout = (int)readWriteTimeout.TotalMilliseconds;
           }
         }
         if (timeout > TimeSpan.Zero)
         {
-          req.Timeout = timeout.Milliseconds;
+          req.Timeout = (int)timeout.TotalMilliseconds;
         }
         return req;
       }

@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor shouldUseSerializableTypesRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, FindOperationsWithNonSerializableArgumentsConstants.Title,
         FindOperationsWithNonSerializableArgumentsConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Warning, true,
@@ -25,8 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
-      ImmutableArray.Create(shouldUseSerializableTypesRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldUseSerializableTypesRule];
 
     /// <summary>
     /// 
@@ -42,6 +41,10 @@ namespace Csla.Analyzers
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype() && methodSymbol.IsRootDataPortalOperation())
@@ -54,7 +57,7 @@ namespace Csla.Analyzers
               !argumentType.IsSerializableByMobileFormatter(context.Compilation) &&
               !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) && 
               argumentType is not { ContainingNamespace.Name: "System", Name: "Nullable" } &&
-              argumentType is INamedTypeSymbol namedArgument)
+              argumentType is INamedTypeSymbol)
           {
             context.ReportDiagnostic(Diagnostic.Create(
               shouldUseSerializableTypesRule, argument.Locations[0]));

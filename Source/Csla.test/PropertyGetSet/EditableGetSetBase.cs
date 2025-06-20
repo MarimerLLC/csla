@@ -31,10 +31,6 @@ namespace Csla.Test.PropertyGetSet
   public class EditableGetSetNFIBase<T> : EditableGetSetTopNFIBase<T>
     where T : EditableGetSetNFIBase<T>
   {
-    public EditableGetSetNFIBase()
-    {
-    }
-
     public static PropertyInfo<string> BaseProperty = RegisterProperty<string>(new PropertyInfo<string>("Base", "Base"));
     public string Base
     {

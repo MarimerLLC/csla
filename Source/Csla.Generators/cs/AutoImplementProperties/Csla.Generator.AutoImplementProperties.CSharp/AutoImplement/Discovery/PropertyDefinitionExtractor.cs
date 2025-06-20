@@ -35,13 +35,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         Setter = HasSetter(propertyDeclaration),
         SetterModifiers = GetSetterModifiers(propertyDeclaration),
         Modifiers = GetPropertyModifiers(propertyDeclaration),
-        Partial = IsPartial(propertyDeclaration)
+        Partial = IsPartial(propertyDeclaration),
+        TypeDefinition = new ExtractedMemberTypeDefinition
+        {
+          Nullable = GetFieldTypeNullable(propertyDeclaration),
+          FullyQualifiedType = extractionContext.GetFullyQualifiedType(propertyDeclaration.Type)
+        }
       };
       propertyDefinition.AttributeDefinitions.AddRange(GetPropertyAttributes(propertyDeclaration, extractionContext));
-
-      propertyDefinition.TypeDefinition.TypeName = GetPropertyTypeName(propertyDeclaration);
-      propertyDefinition.TypeDefinition.TypeNamespace = extractionContext.GetTypeNamespace(propertyDeclaration.Type);
-      propertyDefinition.TypeDefinition.Nullable = GetFieldTypeNullable(propertyDeclaration);
 
       return propertyDefinition;
     }
@@ -173,7 +174,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
           .Select(m => m.ToString())
           .ToArray();
 
-      return setterModifiers;
+      return setterModifiers ?? [];
     }
 
     #endregion

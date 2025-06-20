@@ -15,7 +15,7 @@ using Microsoft.CodeAnalysis.Text;
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
   /// <summary>
-  /// Generates partial classes for incremental properties implementation based based on the presence of the <see cref="Csla.CslaImplementPropertiesInterfaceAttribute{T}"/> attribute.
+  /// Generates partial classes for incremental properties implementation based based on the presence of the Csla.CslaImplementPropertiesInterfaceAttribute{T} attribute.
   /// </summary>
   [Generator]
   public class IncrementalAutoImplementInterfacePartialsGenerator : IIncrementalGenerator
@@ -37,7 +37,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
                 {
                   return TypeDefinitionExtractor.ExtractTypeDefinitionForInterfaces(new DefinitionExtractionContext(ctx.SemanticModel, true, false), typeDeclarationSyntax);
                 }
-                return null;
+                return default!;
               })
           .Where(static m => m is not null).WithTrackingName(TrackingNames.ExtractClasses);
 

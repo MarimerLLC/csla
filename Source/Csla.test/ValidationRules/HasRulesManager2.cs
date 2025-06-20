@@ -28,7 +28,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [Serializable]
-    public class Criteria : CriteriaBase<Criteria>
+    public class Criteria : ReadOnlyBase<Criteria>
     {
       public string _name;
 

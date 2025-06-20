@@ -5,14 +5,9 @@
 // </copyright>
 // <summary>Tests of serialization behaviour on the AutoSerializable class PersonPOCO</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization.Mobile;
-using Csla.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using Csla.Generator.AutoSerialization.CSharp.TestObjects;
 using Csla.Generator.AutoSerialization.CSharp.Tests.Helpers;
-using Microsoft.Extensions.DependencyInjection;
-using Csla.Configuration;
+using Csla.Serialization.Mobile;
 using Csla.TestHelpers;
 
 namespace Csla.Generator.AutoSerialization.CSharp.Tests
@@ -21,15 +16,23 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
   /// <summary>
   /// Tests of serialization on the PersonPOCO class and its children
   /// </summary>
-	[TestClass]
+  [TestClass]
   public class PersonPOCOTests
   {
-    private static TestDIContext _testDIContext;
+    private static TestDIContext _testDIContext = default!;
+
+    private SerializationInfo _serializationInfo = default!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
+    [TestInitialize]
+    public void TestInitialize()
+    {
+      _serializationInfo = new SerializationInfo(1, AssemblyNameTranslator.GetSerializationName(typeof(PersonPOCO), true));
     }
 
     #region GetState
@@ -39,7 +42,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
       int actual;
       int expected = 5;
       IMobileObject mobileObject;
@@ -48,8 +50,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetState(serializationInfo);
-      actual = serializationInfo.GetValue<int>("PersonId");
+      mobileObject.GetState(_serializationInfo);
+      actual = _serializationInfo.GetValue<int>("PersonId");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -61,8 +63,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
-      string actual;
+      string? actual;
       string expected = "Joe";
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
@@ -70,8 +71,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetState(serializationInfo);
-      actual = serializationInfo.GetValue<string>("FirstName");
+      mobileObject.GetState(_serializationInfo);
+      actual = _serializationInfo.GetValue<string>("FirstName");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -83,8 +84,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
-      string actual;
+      string? actual;
       string expected = "Smith";
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
@@ -92,8 +92,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetState(serializationInfo);
-      actual = serializationInfo.GetValue<string>("LastName");
+      mobileObject.GetState(_serializationInfo);
+      actual = _serializationInfo.GetValue<string>("LastName");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -105,7 +105,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
       bool actual;
       bool expected = false;
       IMobileObject mobileObject;
@@ -114,8 +113,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetState(serializationInfo);
-      actual = serializationInfo.Values.ContainsKey("DateOfBirth");
+      mobileObject.GetState(_serializationInfo);
+      actual = _serializationInfo.Values.ContainsKey("DateOfBirth");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -127,7 +126,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
       bool actual;
       bool expected = false;
       IMobileObject mobileObject;
@@ -136,8 +134,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetState(serializationInfo);
-      actual = serializationInfo.Values.ContainsKey("MiddleName");
+      mobileObject.GetState(_serializationInfo);
+      actual = _serializationInfo.Values.ContainsKey("MiddleName");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -149,8 +147,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
-      string actual;
+      string? actual;
       string expected = "Mid";
       IMobileObject mobileObject;
       PersonPOCO person = new PersonPOCO();
@@ -158,8 +155,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetState(serializationInfo);
-      actual = serializationInfo.GetValue<string>("_middleName");
+      mobileObject.GetState(_serializationInfo);
+      actual = _serializationInfo.GetValue<string>("_middleName");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -356,7 +353,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       var applicationContext = _testDIContext.CreateTestApplicationContext();
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
       bool expected = true;
       bool actual;
       IMobileObject mobileObject;
@@ -366,8 +362,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetChildren(serializationInfo, formatter);
-      actual = serializationInfo.Children.ContainsKey("Address");
+      mobileObject.GetChildren(_serializationInfo, formatter);
+      actual = _serializationInfo.Children.ContainsKey("Address");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -380,7 +376,6 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       var applicationContext = _testDIContext.CreateTestApplicationContext();
 
       // Arrange
-      SerializationInfo serializationInfo = new SerializationInfo();
       bool expected = true;
       bool actual;
       IMobileObject mobileObject;
@@ -390,8 +385,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
       // Act
       mobileObject = (IMobileObject)person;
-      mobileObject.GetChildren(serializationInfo, formatter);
-      actual = serializationInfo.Children.ContainsKey("EmailAddress");
+      mobileObject.GetChildren(_serializationInfo, formatter);
+      actual = _serializationInfo.Children.ContainsKey("EmailAddress");
 
       // Assert
       Assert.AreEqual(expected, actual);
@@ -571,7 +566,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "1 High Street";
       PersonPOCO person = new PersonPOCO();
       person.Address = new AddressPOCO() { AddressLine1 = "1 High Street" };
@@ -609,7 +604,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "Townsville";
       PersonPOCO person = new PersonPOCO();
       person.Address = new AddressPOCO() { Town = "Townsville" };
@@ -629,7 +624,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      EmailAddress actual;
+      EmailAddress? actual;
       PersonPOCO person = new PersonPOCO();
       PersonPOCO deserializedPerson;
 
@@ -647,7 +642,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     {
 
       // Arrange
-      string actual;
+      string? actual;
       string expected = "a@b.com";
       PersonPOCO person = new PersonPOCO();
       person.EmailAddress = new EmailAddress() { Email = "a@b.com" };
@@ -685,7 +680,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       {
         formatter.Serialize(serializationStream, valueToSerialize);
         serializationStream.Seek(0, System.IO.SeekOrigin.Begin);
-        deserializedValue = formatter.Deserialize(serializationStream) as PersonPOCO;
+        deserializedValue = (PersonPOCO)formatter.Deserialize(serializationStream)!;
       }
 
       return deserializedValue;

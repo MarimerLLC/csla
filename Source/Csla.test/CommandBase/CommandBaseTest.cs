@@ -10,7 +10,8 @@ namespace Csla.Test.CommandBase
   [TestClass]
   public class CommandBaseTest : Csla.Server.ObjectFactory
   {
-    public CommandBaseTest() : base(null)
+    private static TestDIContext _classDIContext;
+    public CommandBaseTest() : base(_classDIContext.CreateTestApplicationContext())
     {
     }
 
@@ -26,6 +27,7 @@ namespace Csla.Test.CommandBase
     public static void ClassInitialize(TestContext testContext) 
     {
       _ = testContext;
+      _classDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
     #region Additional test attributes

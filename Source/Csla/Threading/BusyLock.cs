@@ -25,10 +25,10 @@ namespace Csla.Threading
     /// (IsBusy is false).
     /// </summary>
     /// <param name="obj">Target object.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public static void WaitOne(INotifyBusy obj)
     {
-      BusyLocker locker = new BusyLocker(obj, TimeSpan.FromMilliseconds(Timeout.Infinite));
-      locker.WaitOne();
+      WaitOne(obj, Timeout.InfiniteTimeSpan);
     }
 
     /// <summary>
@@ -37,8 +37,12 @@ namespace Csla.Threading
     /// </summary>
     /// <param name="obj">Target object.</param>
     /// <param name="timeout">Timeout value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public static void WaitOne(INotifyBusy obj, TimeSpan timeout)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+
       BusyLocker locker = new BusyLocker(obj, timeout);
       locker.WaitOne();
     }
@@ -50,20 +54,21 @@ namespace Csla.Threading
   /// </summary>
   public class BusyLocker : IDisposable
   {
-    private ManualResetEvent _event = new ManualResetEvent(false);
-    private INotifyBusy _target;
-    private TimeSpan _timeout;
+    private readonly ManualResetEvent _event = new(false);
+    private readonly INotifyBusy _target;
+    private readonly TimeSpan _timeout;
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="target">Target object.</param>
     /// <param name="timeout">Timeout value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
     public BusyLocker(INotifyBusy target, TimeSpan timeout)
     {
-      _event.Reset(); // set the event to non-signaled by default.
-      _target = target;
+      _target = target ?? throw new ArgumentNullException(nameof(target));
       _timeout = timeout;
+      _event.Reset(); // set the event to non-signaled by default.
     }
 
     /// <summary>

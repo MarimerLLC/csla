@@ -10,14 +10,14 @@ using System.ComponentModel;
 
 namespace Csla.Web
 {
-/// <summary>
-/// Argument object used in the SelectObject event.
-/// </summary>
+  /// <summary>
+  /// Argument object used in the SelectObject event.
+  /// </summary>
   [Serializable]
   public class SelectObjectArgs : EventArgs
   {
 
-    private object _businessObject;
+    private object? _businessObject;
 
     /// <summary>
     /// Get or set a reference to the business object
@@ -25,10 +25,10 @@ namespace Csla.Web
     /// event handler in the web page.
     /// </summary>
     /// <value>A reference to a CSLA .NET business object.</value>
-    public object BusinessObject
+    public object? BusinessObject
     {
-      get { return _businessObject; }
-      set { _businessObject = value; }
+      get => _businessObject;
+      set => _businessObject = value;
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace Csla.Web
     /// <see cref="SortExpression"/> to find all the
     /// property names and sort directions for the sort.
     /// </remarks>
-    public string SortProperty { get; }
+    public string SortProperty { get; } = "";
 
     /// <summary>
     /// Gets the sort direction for the sort if only
@@ -92,8 +92,11 @@ namespace Csla.Web
     /// it with values from data binding.
     /// </summary>
     /// <param name="args">Values provided from data binding.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="args"/> is <see langword="null"/>.</exception>
     public SelectObjectArgs(System.Web.UI.DataSourceSelectArguments args)
     {
+      if (args is null)
+        throw new ArgumentNullException(nameof(args));
 
       StartRowIndex = args.StartRowIndex;
       MaximumRows = args.MaximumRows;

@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor operationUsageRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.IsOperationAttributeUsageCorrect, EvaluateOperationAttributeUsageAnalyzerConstants.Title,
         EvaluateOperationAttributeUsageAnalyzerConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Error, true,
@@ -25,7 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(operationUsageRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [operationUsageRule];
 
     /// <summary>
     /// 
@@ -40,18 +40,25 @@ namespace Csla.Analyzers
     private static void AnalyzerAttributeDeclaration(SyntaxNodeAnalysisContext context)
     {
       var attributeNode = (AttributeSyntax)context.Node;
-      var attributeSymbol = context.SemanticModel.GetSymbolInfo(attributeNode).Symbol.ContainingSymbol as ITypeSymbol;
+      var attributeSymbol = context.SemanticModel.GetSymbolInfo(attributeNode).Symbol?.ContainingSymbol as ITypeSymbol;
 
       if (attributeSymbol.IsDataPortalOperationAttribute())
       {
         var methodNode = attributeNode.FindParent<MethodDeclarationSyntax>();
+        if (methodNode is null)
+        {
+          return;
+        }
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+        if (methodSymbol is null)
+        {
+          return;
+        }
         var typeSymbol = methodSymbol.ContainingType;
 
         if (!typeSymbol.IsStereotype() || methodSymbol.IsStatic)
         {
-          context.ReportDiagnostic(Diagnostic.Create(
-            operationUsageRule, attributeNode.GetLocation()));
+          context.ReportDiagnostic(Diagnostic.Create(operationUsageRule, attributeNode.GetLocation()));
         }
       }
     }

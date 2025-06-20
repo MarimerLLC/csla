@@ -19,7 +19,7 @@ namespace Csla.Xaml
   {
     private static IPrincipal _principal = null;
     private static ApplicationContext applicationContext;
-    private SecurityOptions SecurityOptions { get; set; } = securityOptions;
+    private SecurityOptions _securityOptions = securityOptions;
 
     /// <summary>
     /// Method called when the ApplicationContext
@@ -45,12 +45,12 @@ namespace Csla.Xaml
       if (_principal == null)
       {
 #if NET8_0_OR_GREATER
-        if (OperatingSystem.IsWindows() && !SecurityOptions.FlowSecurityPrincipalFromClient)
+        if (OperatingSystem.IsWindows() && !_securityOptions .FlowSecurityPrincipalFromClient)
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
         else
           SetUser(new System.Security.Claims.ClaimsPrincipal());
 #elif NETFRAMEWORK
-        if (!SecurityOptions.FlowSecurityPrincipalFromClient)
+        if (!_securityOptions.FlowSecurityPrincipalFromClient)
 #pragma warning disable CA1416 // Validate platform compatibility
           SetUser(new WindowsPrincipal(WindowsIdentity.GetCurrent()));
 #pragma warning restore CA1416 // Validate platform compatibility
@@ -63,13 +63,10 @@ namespace Csla.Xaml
       return _principal;
     }
 
-    /// <summary>
-    /// Sets the current principal.
-    /// </summary>
-    /// <param name="principal">Principal object.</param>
+    /// <inheritdoc />
     public override void SetUser(IPrincipal principal)
     {
-      _principal = principal;
+      _principal = principal ?? throw new ArgumentNullException(nameof(principal));
       Thread.CurrentPrincipal = principal;
     }
   }

@@ -16,7 +16,7 @@ namespace Csla.Security
   /// custom identity class.
   /// </summary>
   [Serializable]
-  public class UsernameCriteria : CriteriaBase<UsernameCriteria>
+  public class UsernameCriteria : ReadOnlyBase<UsernameCriteria>
   {
     /// <summary>
     /// Username property definition.
@@ -27,8 +27,8 @@ namespace Csla.Security
     /// </summary>
     public string Username
     {
-      get { return ReadProperty(UsernameProperty); }
-      private set { LoadProperty(UsernameProperty, value); }
+      get => ReadProperty(UsernameProperty)!;
+      private set => LoadProperty(UsernameProperty, value);
     }
 
     /// <summary>
@@ -40,8 +40,8 @@ namespace Csla.Security
     /// </summary>
     public string Password
     {
-      get { return ReadProperty(PasswordProperty); }
-      private set { LoadProperty(PasswordProperty, value); }
+      get => ReadProperty(PasswordProperty)!;
+      private set => LoadProperty(PasswordProperty, value);
     }
 
     /// <summary>
@@ -53,10 +53,11 @@ namespace Csla.Security
     /// <param name="password">
     /// Password value.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="username"/> or <paramref name="password"/> is <see langword="null"/>.</exception>
     public UsernameCriteria(string username, string password)
     {
-      Username = username;
-      Password = password;
+      Username = username ?? throw new ArgumentNullException(nameof(username));
+      Password = password ?? throw new ArgumentNullException(nameof(password));
     }
 
     /// <summary>

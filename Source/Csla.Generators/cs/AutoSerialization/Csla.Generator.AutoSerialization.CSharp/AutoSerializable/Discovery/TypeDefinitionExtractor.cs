@@ -27,19 +27,20 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>ExtractedTypeDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedTypeDefinition ExtractTypeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      ExtractedTypeDefinition definition = new ExtractedTypeDefinition();
       StringBuilder fullyQualifiedNameBuilder = new StringBuilder();
 
-      definition.TypeName = GetTypeName(extractionContext, targetTypeDeclaration);
-      definition.TypeKind = GetTypeKind(extractionContext, targetTypeDeclaration);
-      definition.Namespace = GetNamespace(extractionContext, targetTypeDeclaration);
-      definition.Scope = GetScopeDefinition(extractionContext, targetTypeDeclaration);
+      var definition = new ExtractedTypeDefinition
+      {
+        TypeName = GetTypeName(targetTypeDeclaration),
+        TypeKind = GetTypeKind(targetTypeDeclaration),
+        Namespace = GetNamespace(targetTypeDeclaration),
+        Scope = GetScopeDefinition(targetTypeDeclaration),
+      };
 
       foreach (ExtractedContainerDefinition containerDefinition in ContainerDefinitionsExtractor.GetContainerDefinitions(extractionContext, targetTypeDeclaration))
       {
         definition.ContainerDefinitions.Add(containerDefinition);
-        fullyQualifiedNameBuilder.Append(containerDefinition.Name);
-        fullyQualifiedNameBuilder.Append(".");
+        fullyQualifiedNameBuilder.Append(containerDefinition.Name).Append('.');
       }
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
@@ -63,38 +64,56 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Extract the namespace of the type for which we will be generating code
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The namespace of the type for which generation is being performed</returns>
-    private static string GetNamespace(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetNamespace(TypeDeclarationSyntax targetTypeDeclaration)
     {
-      string namespaceName = string.Empty;
-      NamespaceDeclarationSyntax namespaceDeclaration;
-      TypeDeclarationSyntax containingTypeDeclaration;
+      // If we don't have a namespace at all we'll return an empty string
+      // This accounts for the "default namespace" case
+      string nameSpace = string.Empty;
 
-      // Iterate through the containing types should the target type be nested inside other types
-      containingTypeDeclaration = targetTypeDeclaration;
-      while (containingTypeDeclaration.Parent is TypeDeclarationSyntax syntax)
+      // Get the containing syntax node for the type declaration
+      // (could be a nested type, for example)
+      SyntaxNode? potentialNamespaceParent = targetTypeDeclaration.Parent;
+    
+      // Keep moving "out" of nested classes etc until we get to a namespace
+      // or until we run out of parents
+      while (potentialNamespaceParent != null && potentialNamespaceParent is not NamespaceDeclarationSyntax && potentialNamespaceParent is not FileScopedNamespaceDeclarationSyntax)
       {
-        containingTypeDeclaration = syntax;
+        potentialNamespaceParent = potentialNamespaceParent.Parent;
       }
 
-      namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
-      if (namespaceDeclaration is not null)
+      // Build up the final namespace by looping until we no longer have a namespace declaration
+      if (potentialNamespaceParent is BaseNamespaceDeclarationSyntax namespaceParent)
       {
-        namespaceName = namespaceDeclaration.Name.ToString();
+        // We have a namespace. Use that as the type
+        nameSpace = namespaceParent.Name.ToString();
+        
+        // Keep moving "out" of the namespace declarations until we 
+        // run out of nested namespace declarations
+        while (true)
+        {
+          if (namespaceParent.Parent is not NamespaceDeclarationSyntax parent)
+          {
+            break;
+          }
+
+          // Add the outer namespace as a prefix to the final namespace
+          nameSpace = $"{namespaceParent.Name}.{nameSpace}";
+          namespaceParent = parent;
+        }
       }
 
-      return namespaceName;
+      // return the final namespace
+      return nameSpace;
     }
 
     /// <summary>
     /// Extract the scope of the type for which we will be generating code
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The scope of the type for which generation is being performed</returns>
-    private static string GetScopeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetScopeDefinition(TypeDeclarationSyntax targetTypeDeclaration)
     {
       StringBuilder scopeNameBuilder = new StringBuilder();
 
@@ -138,16 +157,15 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     private static void AppendScopeName(StringBuilder stringBuilder, string scope)
     {
       stringBuilder.Append(scope);
-      stringBuilder.Append(" ");
+      stringBuilder.Append(' ');
     }
 
     /// <summary>
     /// Extract the name of the type for which we will be generating code
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The name of the type for which generation is being performed</returns>
-    private static string GetTypeName(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetTypeName(TypeDeclarationSyntax targetTypeDeclaration)
     {
       return targetTypeDeclaration.Identifier.ToString();
     }
@@ -155,10 +173,9 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Extract the textual definition of the kind that this type represents
     /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
     /// <returns>The kind of the type for which generation is being performed</returns>
-    private static string GetTypeKind(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
+    private static string GetTypeKind(TypeDeclarationSyntax targetTypeDeclaration)
     {
       return targetTypeDeclaration.Keyword.ToString();
     }

@@ -6,6 +6,7 @@
 // <summary>This exception is returned for any errors occuring</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Server.Hosts.DataPortalChannel;
 
 namespace Csla
@@ -14,7 +15,7 @@ namespace Csla
   /// This exception is returned for any errors occurring
   /// during the server-side DataPortal invocation.
   /// </summary>
-  [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
+  [SuppressMessage("Microsoft.Design", "CA1032:ImplementStandardExceptionConstructors")]
   [Serializable]
   public class DataPortalException : Exception
   {
@@ -38,7 +39,7 @@ namespace Csla
     /// <param name="ex">Inner exception.</param>
     /// <param name="businessObject">The business object
     /// as it was at the time of the exception.</param>
-    public DataPortalException(string message, Exception ex, object businessObject)
+    public DataPortalException(string message, Exception ex, object? businessObject)
       : base(message, ex)
     {
       _innerStackTrace = ex.StackTrace;
@@ -64,10 +65,11 @@ namespace Csla
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="info">Info about the exception.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     public DataPortalException(DataPortalErrorInfo info)
       : base(info.Message)
     {
-      ErrorInfo = info;
+      ErrorInfo = info ?? throw new ArgumentNullException(nameof(info));
     }
 
     /// <summary>
@@ -101,13 +103,14 @@ namespace Csla
     /// but this property returns information
     /// about the exception.
     /// </summary>
-    public DataPortalErrorInfo ErrorInfo { get; private set; }
+    [MemberNotNull(nameof(BusinessErrorInfo))]
+    public DataPortalErrorInfo? ErrorInfo { get; }
 
     /// <summary>
     /// Gets the original exception error info
     /// that caused this exception.
     /// </summary>
-    public DataPortalErrorInfo BusinessErrorInfo
+    public DataPortalErrorInfo? BusinessErrorInfo
     {
       get
       {
@@ -118,7 +121,7 @@ namespace Csla
       }
     }
 
-    private string _innerStackTrace;
+    private readonly string? _innerStackTrace;
 
     /// <summary>
     /// Returns a reference to the business object
@@ -132,9 +135,9 @@ namespace Csla
     /// state may have been altered by the server and
     /// may no longer reflect data in the database.
     /// </remarks>
-    public object BusinessObject { get; }
+    public object? BusinessObject { get; }
 
-    private Exception _businessException;
+    private Exception? _businessException;
 
     /// <summary>
     /// Gets the original server-side exception.
@@ -145,14 +148,14 @@ namespace Csla
     /// instances in the exception stack to find the original
     /// exception.
     /// </remarks>
-    public Exception BusinessException
+    public Exception? BusinessException
     {
       get
       {
         if (_businessException == null)
         {
           _businessException = InnerException;
-          while (_businessException is Reflection.CallMethodException || _businessException is DataPortalException)
+          while (_businessException is Reflection.CallMethodException or DataPortalException)
             _businessException = _businessException.InnerException;
         }
         return _businessException;
@@ -170,7 +173,7 @@ namespace Csla
       get
       {
         if (ErrorInfo != null)
-          return BusinessErrorInfo.Message;
+          return BusinessErrorInfo!.Message;
         else if (BusinessException == null)
           return Message;
         else
@@ -182,10 +185,7 @@ namespace Csla
     /// Get the combined stack trace from the server
     /// and client.
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
-    public override string StackTrace
-    {
-      get { return $"{_innerStackTrace}{Environment.NewLine}{base.StackTrace}"; }
-    }
+    [SuppressMessage("Microsoft.Globalization", "CA1305:SpecifyIFormatProvider", MessageId = "System.String.Format(System.String,System.Object,System.Object,System.Object)")]
+    public override string StackTrace => $"{_innerStackTrace}{Environment.NewLine}{base.StackTrace}";
   }
 }

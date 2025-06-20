@@ -7,9 +7,9 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using System.Web.UI.Design;
 using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {
@@ -22,17 +22,17 @@ namespace Csla.Web.Design
   public class ObjectViewSchema : IDataSourceViewSchema
   {
     private string _typeName = "";
-    private CslaDataSourceDesigner _designer;
+    private CslaDataSourceDesigner? _designer;
 
     /// <summary>
     /// Create an instance of the object.
     /// </summary>
     /// <param name="site">Site containing the control.</param>
-    /// <param name="typeName">The business class for
-    /// which to generate the schema.</param>
-    public ObjectViewSchema(CslaDataSourceDesigner site, string typeName)
+    /// <param name="typeName">The business class for which to generate the schema.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="typeName"/> is <see langword="null"/>.</exception>
+    public ObjectViewSchema(CslaDataSourceDesigner? site, string typeName)
     {
-      _typeName = typeName;
+      _typeName = typeName ?? throw new ArgumentNullException(nameof(typeName));
       _designer = site;
     }
 
@@ -43,7 +43,7 @@ namespace Csla.Web.Design
     /// <remarks>This schema object only returns
     /// schema for the object itself, so GetChildren will
     /// always return Nothing (null in C#).</remarks>
-    public IDataSourceViewSchema[] GetChildren()
+    public IDataSourceViewSchema[]? GetChildren()
     {
       return null;
     }
@@ -60,16 +60,14 @@ namespace Csla.Web.Design
     /// </remarks>
     public IDataSourceFieldSchema[] GetFields()
     {
-      ITypeResolutionService typeService = null;
-      List<ObjectFieldInfo> result = new List<ObjectFieldInfo>();
+      var result = new List<IDataSourceFieldSchema>();
 
       if (_designer != null)
       {
-        Type objectType = null;
         try
         {
-          typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
-          objectType = typeService.GetType(_typeName, true, false);
+          var typeService = (ITypeResolutionService)(_designer.Site.GetService(typeof(ITypeResolutionService)));
+          var objectType = typeService.GetType(_typeName, true, false);
 
           if (typeof(IEnumerable).IsAssignableFrom(objectType))
           {
@@ -95,12 +93,6 @@ namespace Csla.Web.Design
     /// <summary>
     /// Returns the name of the schema.
     /// </summary>
-    public string Name
-    {
-      get
-      {
-        return "Default";
-      }
-    }
+    public string Name => "Default";
   }
 }

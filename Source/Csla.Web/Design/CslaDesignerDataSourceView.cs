@@ -7,10 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using System.Web.UI.Design;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Data;
-using System.ComponentModel;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {
@@ -21,11 +21,12 @@ namespace Csla.Web.Design
   public class CslaDesignerDataSourceView : DesignerDataSourceView
   {
 
-    private CslaDataSourceDesigner _owner = null;
+    private readonly CslaDataSourceDesigner _owner;
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="owner"/> or <paramref name="viewName"/> is <see langword="null"/>.</exception>
     public CslaDesignerDataSourceView(CslaDataSourceDesigner owner, string viewName)
       : base(owner, viewName)
     {
@@ -54,7 +55,7 @@ namespace Csla.Web.Design
       // create sample data
       for (int index = 1; index <= minimumRows; index++)
       {
-        object[] values = new object[result.Columns.Count];
+        object?[] values = new object[result.Columns.Count];
         int colIndex = 0;
         foreach (DataColumn col in result.Columns)
         {
@@ -92,35 +93,23 @@ namespace Csla.Web.Design
     /// with the <see cref="BrowsableAttribute">Browsable attribute</see>
     /// as False.
     /// </remarks>
-    public override IDataSourceViewSchema Schema
-    {
-      get
-      {
-        return new ObjectSchema(
-          _owner, 
-          _owner.DataSourceControl.TypeName).GetViews()[0];
-      }
-    }
+    public override IDataSourceViewSchema Schema =>
+      new ObjectSchema(
+        _owner,
+        _owner.DataSourceControl.TypeName).GetViews()[0];
 
     /// <summary>
     /// Get a value indicating whether data binding can retrieve
     /// the total number of rows of data.
     /// </summary>
-    public override bool CanRetrieveTotalRowCount
-    {
-      get
-      {
-        return true;
-      }
-    }
+    public override bool CanRetrieveTotalRowCount => true;
 
     private Type GetObjectType()
     {
       Type result;
       try
       {
-        ITypeResolutionService typeService = null;
-        typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
+        var typeService = (ITypeResolutionService)(_owner.Site.GetService(typeof(ITypeResolutionService)));
         result = typeService.GetType(_owner.DataSourceControl.TypeName, true, false);
       }
       catch
@@ -213,24 +202,12 @@ namespace Csla.Web.Design
     /// Gets a value indicating whether the data source supports
     /// paging.
     /// </summary>
-    public override bool CanPage
-    {
-      get
-      {
-        return _owner.DataSourceControl.TypeSupportsPaging;
-      }
-    }
+    public override bool CanPage => _owner.DataSourceControl.TypeSupportsPaging;
 
     /// <summary>
     /// Gets a value indicating whether the data source supports
     /// sorting.
     /// </summary>
-    public override bool CanSort
-    {
-      get
-      {
-        return _owner.DataSourceControl.TypeSupportsSorting;
-      }
-    }
+    public override bool CanSort => _owner.DataSourceControl.TypeSupportsSorting;
   }
 }

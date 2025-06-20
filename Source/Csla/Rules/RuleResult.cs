@@ -6,6 +6,7 @@
 // <summary>Contains information about the result of a rule.</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
 using Csla.Properties;
 
 namespace Csla.Rules
@@ -19,17 +20,17 @@ namespace Csla.Rules
     /// Gets the unique name of the rule that created
     /// this result.
     /// </summary>
-    public string RuleName { get; private set; }
+    public string RuleName { get; }
     /// <summary>
     /// Gets a value indicating whether the 
     /// rule was successful.
     /// </summary>
-    public bool Success { get; private set; }
+    public bool Success { get; }
     /// <summary>
     /// Gets a human-readable description of 
     /// why the rule failed.
     /// </summary>
-    public string Description { get; private set; }
+    public string Description { get; }
     /// <summary>
     /// Gets or sets the severity of a failed rule.
     /// </summary>
@@ -43,13 +44,13 @@ namespace Csla.Rules
     /// <summary>
     /// Gets the primary property for this result.
     /// </summary>
-    public Core.IPropertyInfo PrimaryProperty { get; private set; }
+    public IPropertyInfo? PrimaryProperty { get; }
     /// <summary>
     /// Gets or sets a list of properties that were affected
     /// by the rule, so appropriate PropertyChanged events
     /// can be raised for UI notification.
     /// </summary>
-    public List<Core.IPropertyInfo> Properties { get; set; }
+    public List<IPropertyInfo> Properties { get; } = [];
     /// <summary>
     /// Gets or sets the broken rule priority.
     /// </summary>
@@ -59,7 +60,7 @@ namespace Csla.Rules
     /// to update the business object's properties after
     /// the rule is complete.
     /// </summary>
-    public Dictionary<Core.IPropertyInfo, object> OutputPropertyValues { get; set; }
+    public Dictionary<IPropertyInfo, object?> OutputPropertyValues { get; } = [];
     /// <summary>
     /// Gets or sets a value of Message's display Index 
     /// </summary>
@@ -74,13 +75,10 @@ namespace Csla.Rules
     /// be attached.</param>
     /// <param name="displayIndex"> Message's display Index 
     /// in UI </param>
-    public RuleResult(string ruleName, Core.IPropertyInfo property, int displayIndex)
+    /// <exception cref="ArgumentNullException"><paramref name="ruleName"/> is <see langword="null"/>.</exception>
+    public RuleResult(string ruleName, IPropertyInfo? property, int displayIndex)
+      : this(ruleName, property, string.Empty, displayIndex, RuleSeverity.Success)
     {
-      RuleName = ruleName;
-      PrimaryProperty = property;
-      Success = true;
-      Severity = RuleSeverity.Success;
-      DisplayIndex = displayIndex;
     }
 
     /// <summary>
@@ -94,18 +92,23 @@ namespace Csla.Rules
     /// why the rule failed.</param>
     /// <param name="displayIndex"> Message's display Index 
     /// in UI </param>
-    public RuleResult(string ruleName, Core.IPropertyInfo property, string description, int displayIndex)
+    /// <exception cref="ArgumentNullException"><paramref name="ruleName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="description"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public RuleResult(string ruleName, IPropertyInfo? property, string description, int displayIndex)
+      : this(ruleName, property, description, displayIndex, RuleSeverity.Error)
     {
-
-      if (string.IsNullOrEmpty(description))
+      if (string.IsNullOrWhiteSpace(description))
         throw new ArgumentException(string.Format(Resources.RuleMessageRequired, ruleName), nameof(description));
+    }
 
-      RuleName = ruleName;
+    private RuleResult(string ruleName, IPropertyInfo? property, string description, int displayIndex, RuleSeverity severity)
+    {
+      RuleName = ruleName ?? throw new ArgumentNullException(nameof(ruleName));
       PrimaryProperty = property;
       Description = description;
-      Success = string.IsNullOrEmpty(description);
-      Severity = RuleSeverity.Error;
       DisplayIndex = displayIndex;
+      Severity = severity;
+      Success = severity == RuleSeverity.Success;
     }
   }
 }

@@ -19,10 +19,7 @@ namespace Csla.Core.LoadManager
 
     public IPropertyInfo Property { get; }
 
-    public AsyncLoader(
-      IPropertyInfo property,
-      Delegate factory, 
-      params object[] parameters)
+    public AsyncLoader(IPropertyInfo property, Delegate factory, params object[] parameters)
     {
       Property = property;
       _factory = factory;

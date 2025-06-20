@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor incorrectParameterRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.RefOrOutParameterInOperation,
         FindRefAndOutParametersInOperationsAnalyzerConstants.Title,
         FindRefAndOutParametersInOperationsAnalyzerConstants.Message,
@@ -26,8 +26,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(incorrectParameterRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [incorrectParameterRule];
 
     /// <summary>
     /// 
@@ -46,14 +45,17 @@ namespace Csla.Analyzers
       if (!methodNode.ContainsDiagnostics)
       {
         var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+        if (methodSymbol is null)
+        {
+          return;
+        }
         var typeSymbol = methodSymbol.ContainingType;
 
         if (typeSymbol.IsBusinessBase() && methodSymbol.IsDataPortalOperation())
         {
           foreach(var parameterSymbol in methodSymbol.Parameters)
           {
-            if(parameterSymbol.RefKind == RefKind.Out ||
-              parameterSymbol.RefKind == RefKind.Ref)
+            if(parameterSymbol.RefKind == RefKind.Out || parameterSymbol.RefKind == RefKind.Ref)
             {
               context.ReportDiagnostic(Diagnostic.Create(
                 incorrectParameterRule, parameterSymbol.Locations[0]));

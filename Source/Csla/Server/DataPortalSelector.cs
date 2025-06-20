@@ -17,6 +17,11 @@ namespace Csla.Server
   /// </summary>
   public class DataPortalSelector : IDataPortalServer
   {
+    private readonly ApplicationContext _applicationContext;
+    private readonly SimpleDataPortal _simpleDataPortal;
+    private readonly FactoryDataPortal _factoryDataPortal;
+    private readonly Configuration.DataPortalOptions _dataPortalOptions;
+
     /// <summary>
     /// 
     /// </summary>
@@ -24,44 +29,28 @@ namespace Csla.Server
     /// <param name="simpleDataPortal"></param>
     /// <param name="factoryDataPortal"></param>
     /// <param name="dataPortalOptions"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="simpleDataPortal"/>, <paramref name="factoryDataPortal"/> or <paramref name="dataPortalOptions"/> is <see langword="null"/>.</exception>
     public DataPortalSelector(ApplicationContext applicationContext, SimpleDataPortal simpleDataPortal, FactoryDataPortal factoryDataPortal, Configuration.DataPortalOptions dataPortalOptions)
     {
-      _applicationContext = applicationContext;
-      SimpleDataPortal = simpleDataPortal;
-      FactoryDataPortal = factoryDataPortal;
-      DataPortalOptions = dataPortalOptions;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _simpleDataPortal = simpleDataPortal ?? throw new ArgumentNullException(nameof(simpleDataPortal));
+      _factoryDataPortal = factoryDataPortal ?? throw new ArgumentNullException(nameof(factoryDataPortal));
+      _dataPortalOptions = dataPortalOptions ?? throw new ArgumentNullException(nameof(dataPortalOptions));
     }
 
-    private ApplicationContext _applicationContext;
-    private SimpleDataPortal SimpleDataPortal { get; set; }
-    private FactoryDataPortal FactoryDataPortal { get; set; }
-    private Configuration.DataPortalOptions DataPortalOptions { get; set; }
-
-    /// <summary>
-    /// Create a new business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Create(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -72,35 +61,23 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, "DataPortal.Create " + Resources.FailedOnServer,
-          ex, null, DataPortalOptions);
+          ex, null, _dataPortalOptions);
       }
     }
 
-    /// <summary>
-    /// Get an existing business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to retrieve.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Fetch(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -112,22 +89,15 @@ namespace Csla.Server
         if (typeof(Core.ICommandObject).IsAssignableFrom(objectType))
           throw DataPortal.NewDataPortalException(
             _applicationContext, "DataPortal.Execute " + Resources.FailedOnServer,
-            ex, null, DataPortalOptions);
+            ex, null, _dataPortalOptions);
         else
           throw DataPortal.NewDataPortalException(
             _applicationContext, "DataPortal.Fetch " + Resources.FailedOnServer,
-            ex, null, DataPortalOptions);
+            ex, null, _dataPortalOptions);
       }
     }
 
-    /// <summary>
-    /// Update a business object.
-    /// </summary>
-    /// <param name="obj">Business object to update.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <inheritdoc />
     public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
       try
@@ -135,11 +105,11 @@ namespace Csla.Server
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(obj.GetType());
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Update(obj, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -150,35 +120,23 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, "DataPortal.Update " + Resources.FailedOnServer,
-          ex, obj, DataPortalOptions);
+          ex, obj, _dataPortalOptions);
       }
     }
 
-    /// <summary>
-    /// Delete a business object.
-    /// </summary>
-    /// <param name="objectType">Type of business object to create.</param>
-    /// <param name="criteria">Criteria object describing business object.</param>
-    /// <param name="context">
-    /// <see cref="Server.DataPortalContext" /> object passed to the server.
-    /// </param>
-    /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
-    public async Task<DataPortalResult> Delete(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
-#endif
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <inheritdoc />
+    public async Task<DataPortalResult> Delete([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       try
       {
         context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
         if (context.FactoryInfo == null)
         {
-          return await SimpleDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _simpleDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
         else
         {
-          return await FactoryDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
+          return await _factoryDataPortal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
         }
       }
       catch (DataPortalException)
@@ -189,7 +147,7 @@ namespace Csla.Server
       {
         throw DataPortal.NewDataPortalException(
           _applicationContext, "DataPortal.Delete " + Resources.FailedOnServer,
-          ex, null, DataPortalOptions);
+          ex, null, _dataPortalOptions);
       }
     }
   }

@@ -21,17 +21,17 @@ namespace Csla.Web.Design
   public class ObjectSchema : IDataSourceSchema
   {
     private string _typeName = "";
-    private CslaDataSourceDesigner _designer;
+    private CslaDataSourceDesigner? _designer;
 
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="designer">Data source designer object.</param>
-    /// <param name="typeName">Type name for
-    /// which the schema should be generated.</param>
-    public ObjectSchema(CslaDataSourceDesigner designer, string typeName)
+    /// <param name="typeName">Type name for which the schema should be generated.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="typeName"/> is <see langword="null"/>.</exception>
+    public ObjectSchema(CslaDataSourceDesigner? designer, string typeName)
     {
-      _typeName = typeName;
+      _typeName = typeName ?? throw new ArgumentNullException(nameof(typeName));
       _designer = designer;
     }
 

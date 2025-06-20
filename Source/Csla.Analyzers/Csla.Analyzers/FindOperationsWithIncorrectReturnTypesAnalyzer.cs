@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor shouldOnlyReturnVoidOrTaskRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes, FindOperationsWithIncorrectReturnTypesAnalyzerConstants.Title,
         FindOperationsWithIncorrectReturnTypesAnalyzerConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Error, true,
@@ -25,8 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(shouldOnlyReturnVoidOrTaskRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldOnlyReturnVoidOrTaskRule];
 
     /// <summary>
     /// 
@@ -42,6 +41,10 @@ namespace Csla.Analyzers
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation())

@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor operationAttributeRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute, DoesOperationHaveAttributeAnalyzerConstants.Title,
         DoesOperationHaveAttributeAnalyzerConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Info, true,
@@ -25,7 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(operationAttributeRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [operationAttributeRule];
 
     /// <summary>
     /// 
@@ -42,6 +42,10 @@ namespace Csla.Analyzers
       var methodNode = (MethodDeclarationSyntax)context.Node;
 
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype())

@@ -15,8 +15,8 @@ using Csla.Runtime;
 using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
 
 namespace Csla.Core.FieldManager
 {
@@ -26,33 +26,36 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <remarks></remarks>
 #if TESTING
-  [System.Diagnostics.DebuggerStepThrough]
+  [DebuggerStepThrough]
 #endif
   [Serializable]
   public class FieldDataManager : MobileObject, IUndoableObject, IUseApplicationContext
   {
-    private string _businessObjectType;
+    private string? _businessObjectType;
     [NonSerialized]
-    BusinessBase _parent;
+    BusinessBase? _parent;
     [NonSerialized]
     private List<IPropertyInfo> _propertyList;
-    private IFieldData[] _fieldData;
+    private IFieldData?[] _fieldData;
 
     private ApplicationContext _applicationContext;
-    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    /// <inheritdoc />
+    ApplicationContext IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(value)); }
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [Obsolete(MobileFormatter.DefaultCtorObsoleteMessage, error: true)]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable. It's okay to suppress because it can't be used by user code
     public FieldDataManager() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
 
-    internal FieldDataManager(ApplicationContext applicationContext,
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type businessObjectType)
+    internal FieldDataManager(ApplicationContext applicationContext, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]Type businessObjectType)
     {
-      _applicationContext = applicationContext;
+      if (businessObjectType is null)
+        throw new ArgumentNullException(nameof(businessObjectType));
+
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       SetPropertyList(businessObjectType);
       _fieldData = new IFieldData[_propertyList.Count];
     }
@@ -61,11 +64,9 @@ namespace Csla.Core.FieldManager
     /// Called when parent object is deserialized to
     /// restore property list.
     /// </summary>
-    internal void SetPropertyList(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type businessObjectType)
+    /// <exception cref="ArgumentNullException"><paramref name="businessObjectType"/> is <see langword="null"/>.</exception>
+    [MemberNotNull(nameof(_propertyList))]
+    internal void SetPropertyList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type businessObjectType)
     {
       _businessObjectType = businessObjectType.AssemblyQualifiedName;
       _propertyList = GetConsolidatedList(businessObjectType);
@@ -74,7 +75,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Called by parent to set the back-reference.
     /// </summary>
-    internal void SetParent(BusinessBase parent)
+    internal void SetParent(BusinessBase? parent)
     {
       _parent = parent;
     }
@@ -95,8 +96,7 @@ namespace Csla.Core.FieldManager
     /// property name.
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the
-    /// property name doesn't correspond to a registered property.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the property name doesn't correspond to a registered property.</exception>
     public IPropertyInfo GetRegisteredProperty(string propertyName)
     {
       var result = GetRegisteredProperties().FirstOrDefault(c => c.Name == propertyName);
@@ -109,26 +109,19 @@ namespace Csla.Core.FieldManager
     /// Gets a value indicating whether there
     /// are any managed fields available.
     /// </summary>
-    public bool HasFields
-    {
-      get { return _propertyList.Count > 0; }
-    }
+    public bool HasFields => _propertyList.Count > 0;
 
     #region ConsolidatedPropertyList
 
 #if NET8_0_OR_GREATER
-    private static Dictionary<Type, Tuple<string, List<IPropertyInfo>>> _consolidatedLists = new Dictionary<Type, Tuple<string, List<IPropertyInfo>>>();
+    private static readonly Dictionary<Type, Tuple<string?, List<IPropertyInfo>>> _consolidatedLists = new();
 #else
     private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
 #endif
 
-    private static List<IPropertyInfo> GetConsolidatedList(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type type)
+    private static List<IPropertyInfo> GetConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
-      List<IPropertyInfo> result = null;
+      List<IPropertyInfo> result = []; // Only initialized to make the compiler happy
 
       var found = false;
 
@@ -136,8 +129,10 @@ namespace Csla.Core.FieldManager
       {
 #if NET8_0_OR_GREATER
         found = _consolidatedLists.TryGetValue(type, out var consolidatedListsInfo);
-
-        result = consolidatedListsInfo?.Item2;
+        if (found)
+        {
+          result = consolidatedListsInfo!.Item2;
+        }
 #else
         result = _consolidatedLists[type];
 #endif
@@ -168,9 +163,9 @@ namespace Csla.Core.FieldManager
             _consolidatedLists.Add(type, cacheInstance);
           }
 #else
-          if (_consolidatedLists.ContainsKey(type))
+          if (_consolidatedLists.TryGetValue(type, out var list))
           {
-            result = _consolidatedLists[type];
+            result = list;
           }
           else
           {
@@ -185,17 +180,13 @@ namespace Csla.Core.FieldManager
       return result;
     }
 
-    private static List<IPropertyInfo> CreateConsolidatedList(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type type)
+    private static List<IPropertyInfo> CreateConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       ForceStaticFieldInit(type);
       List<IPropertyInfo> result = [];
 
       // get inheritance hierarchy
-      Type current = type;
+      Type? current = type;
       List<Type> hierarchy = [];
       do
       {
@@ -240,9 +231,14 @@ namespace Csla.Core.FieldManager
     /// <param name="propertyInfo">
     /// The property corresponding to the field.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException"><paramref name="propertyInfo"/> is declared as private field or property is not registered.</exception>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
-    public IFieldData GetFieldData(IPropertyInfo propertyInfo)
+    public IFieldData? GetFieldData(IPropertyInfo propertyInfo)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
         throw new InvalidOperationException(Resources.PropertyIsPrivateField);
 
@@ -274,7 +270,7 @@ namespace Csla.Core.FieldManager
       }
     }
 
-    internal IPropertyInfo FindProperty(object value)
+    internal IPropertyInfo? FindProperty(object value)
     {
       var index = 0;
       foreach (var item in _fieldData)
@@ -295,7 +291,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    internal void SetFieldData(IPropertyInfo prop, object value)
+    internal void SetFieldData(IPropertyInfo prop, object? value)
     {
       Type valueType;
       if (value != null)
@@ -319,7 +315,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    internal void SetFieldData<P>(IPropertyInfo prop, P value)
+    internal void SetFieldData<P>(IPropertyInfo prop, P? value)
     {
       var field = GetOrCreateFieldData(prop);
       if (field is IFieldData<P> fd)
@@ -338,7 +334,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    internal IFieldData LoadFieldData(IPropertyInfo prop, object value)
+    internal IFieldData LoadFieldData(IPropertyInfo prop, object? value)
     {
       Type valueType;
       if (value != null)
@@ -365,7 +361,7 @@ namespace Csla.Core.FieldManager
     /// <param name="value">
     /// Value to store for field.
     /// </param>
-    internal IFieldData LoadFieldData<P>(IPropertyInfo prop, P value)
+    internal IFieldData LoadFieldData<P>(IPropertyInfo prop, P? value)
     {
       var field = GetOrCreateFieldData(prop);
       if (field is IFieldData<P> fd)
@@ -406,8 +402,13 @@ namespace Csla.Core.FieldManager
     /// <param name="propertyInfo">
     /// The property corresponding to the field.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException"><paramref name="propertyInfo"/> is not registered.</exception>
     public bool FieldExists(IPropertyInfo propertyInfo)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       try
       {
         return _fieldData[propertyInfo.Index] != null;
@@ -426,18 +427,22 @@ namespace Csla.Core.FieldManager
     /// The property corresponding to the field.
     /// </param>
     /// <returns>True if the field has been changed.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException"><paramref name="propertyInfo"/> is not registered.</exception>
     public bool IsFieldDirty(IPropertyInfo propertyInfo)
     {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       try
       {
-        bool result = false;
+        bool result;
         var field = _fieldData[propertyInfo.Index];
         if (field != null)
           result = field.IsDirty;
         else
           result = false;
         return result;
-
       }
       catch (IndexOutOfRangeException ex)
       {
@@ -501,10 +506,7 @@ namespace Csla.Core.FieldManager
     /// <summary>
     /// Gets the current edit level of the object.
     /// </summary>
-    public int EditLevel
-    {
-      get { return _stateStack.Count; }
-    }
+    public int EditLevel => _stateStack.Count;
 
     void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
     {
@@ -553,12 +555,12 @@ namespace Csla.Core.FieldManager
             string.Format(Resources.EditLevelMismatchException, "UndoChanges"),
             GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
 
-        IFieldData[] state = null;
+        IFieldData[]? state;
         using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))
         {
           buffer.Position = 0;
           var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
-          state = ((MobileList<IFieldData>)(formatter.Deserialize(buffer))).ToArray();
+          state = [.. ((MobileList<IFieldData>)formatter.Deserialize(buffer)!)];
         }
 
         for (var index = 0; index < _fieldData.Length; index++)
@@ -648,7 +650,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object obj = item.Value;
+          object? obj = item.Value;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             dp.UpdateChild(obj, parameters);
         }
@@ -668,7 +670,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object obj = item.Value;
+          object? obj = item.Value;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             portal.UpdateAll(obj, parameters);
         }
@@ -687,7 +689,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object obj = item.Value;
+          object? obj = item.Value;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             await portal.UpdateAsync(obj, parameters).ConfigureAwait(false);
         }
@@ -707,7 +709,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object obj = item.Value;
+          object? obj = item.Value;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             await portal.UpdateAllAsync(obj, parameters).ConfigureAwait(false);
         }
@@ -735,7 +737,7 @@ namespace Csla.Core.FieldManager
       if (mode == StateMode.Serialization && _stateStack.Count > 0)
         info.AddValue("_stateStack", _stateStack.ToArray());
 
-      foreach (IFieldData data in _fieldData)
+      foreach (IFieldData? data in _fieldData)
       {
         if (data != null && (data.IsSerializable || mode != StateMode.Serialization))
         {
@@ -757,12 +759,14 @@ namespace Csla.Core.FieldManager
     /// <param name="formatter">Serializer instance</param>
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      foreach (IFieldData data in _fieldData)
+      foreach (IFieldData? data in _fieldData)
       {
-        var serializable = formatter.IsTypeSerializable(data?.Value?.GetType());
-        if (serializable)
+        if (data?.Value is null)
+          continue;
+
+        if (formatter.IsTypeSerializable(data.Value.GetType()))
         {
-          SerializationInfo childInfo = formatter.SerializeObject(data?.Value);
+          SerializationInfo childInfo = formatter.SerializeObject(data.Value);
           info.AddChild(data.Name, childInfo.ReferenceId, data.IsDirty);
         }
       }
@@ -781,8 +785,8 @@ namespace Csla.Core.FieldManager
     /// </param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      string type = (string)info.Values["_businessObjectType"].Value;
-      Type businessObjecType = Reflection.MethodCaller.GetType(type);
+      string type = (string)info.Values["_businessObjectType"].Value!;
+      Type businessObjecType = Reflection.MethodCaller.GetType(type)!;
       SetPropertyList(businessObjecType);
 
       if (mode == StateMode.Serialization)
@@ -790,7 +794,7 @@ namespace Csla.Core.FieldManager
         _stateStack.Clear();
         if (info.Values.ContainsKey("_stateStack"))
         {
-          var stackArray = info.GetValue<byte[][]>("_stateStack");
+          var stackArray = (IEnumerable<byte[]>)info.GetRequiredValue<byte[][]>("_stateStack");
           foreach (var item in stackArray.Reverse())
             _stateStack.Push(item);
         }
@@ -817,14 +821,14 @@ namespace Csla.Core.FieldManager
         }
         else if (mode == StateMode.Undo && !((property.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField))
         {
-          IFieldData data = GetFieldData(property);
+          IFieldData? data = GetFieldData(property);
           if (data != null)
           {
             if (!info.Values.ContainsKey("child_" + property.Name) || !info.GetValue<bool>("child_" + property.Name))
               _fieldData[property.Index] = null;
 
             // We don't want to reset children during an undo.
-            else if (!typeof(IMobileObject).IsAssignableFrom(data.Value.GetType()))
+            else if (!typeof(IMobileObject).IsAssignableFrom(data.Value?.GetType()))
               data.Value = property.DefaultValue;
           }
         }
@@ -859,11 +863,7 @@ namespace Csla.Core.FieldManager
     /// by a type, and any of its base class types.
     /// </summary>
     /// <param name="type">Type of object to initialize.</param>
-    public static void ForceStaticFieldInit(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type type)
+    public static void ForceStaticFieldInit([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       const BindingFlags attr =
         BindingFlags.Static |
@@ -887,7 +887,7 @@ namespace Csla.Core.FieldManager
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_consolidatedLists)
-        AssemblyLoadContextManager.RemoveFromCache(_consolidatedLists, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, Type>?>)_consolidatedLists, context);
     }
 #endif
   }

@@ -5,9 +5,9 @@
 // </copyright>
 // <summary>Extract the definitions of the containers of a type</summary>
 //-----------------------------------------------------------------------
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Text;
 
 namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
 {
@@ -22,22 +22,20 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <returns>The definitions of all of the containers of the type for which generation is being performed</returns>
     public static IReadOnlyList<ExtractedContainerDefinition> GetContainerDefinitions(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      NamespaceDeclarationSyntax namespaceDeclaration;
-      TypeDeclarationSyntax containingTypeDeclaration;
-      List<ExtractedContainerDefinition> containers = new List<ExtractedContainerDefinition>();
+      List<ExtractedContainerDefinition> containers = [];
 
       // Iterate through the containing types should the target type be nested inside other types
-      containingTypeDeclaration = targetTypeDeclaration;
+      var containingTypeDeclaration = targetTypeDeclaration;
       while (containingTypeDeclaration.Parent is TypeDeclarationSyntax syntax)
       {
         containingTypeDeclaration = syntax;
-        containers.Add(GetContainerDefinition(extractionContext, containingTypeDeclaration));
+        containers.Add(GetContainerDefinition(containingTypeDeclaration));
       }
 
-      namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
+      var namespaceDeclaration = containingTypeDeclaration.Parent as BaseNamespaceDeclarationSyntax;
       if (namespaceDeclaration is not null)
       {
-        containers.Add(GetContainerDefinition(extractionContext, namespaceDeclaration));
+        containers.Add(GetContainerDefinition(namespaceDeclaration));
       }
 
       containers.Reverse();
@@ -45,7 +43,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       return containers;
     }
 
-    private static ExtractedContainerDefinition GetContainerDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax typeDeclarationSyntax)
+    private static ExtractedContainerDefinition GetContainerDefinition(TypeDeclarationSyntax typeDeclarationSyntax)
     {
       StringBuilder containerDefinitionBuilder = new StringBuilder();
       ExtractedContainerDefinition containerDefinition;
@@ -53,24 +51,23 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       foreach (SyntaxToken modifier in typeDeclarationSyntax.Modifiers)
       {
         containerDefinitionBuilder.Append(modifier.ToString());
-        containerDefinitionBuilder.Append(" ");
+        containerDefinitionBuilder.Append(' ');
       }
 
       containerDefinitionBuilder.Append(typeDeclarationSyntax.Keyword.ToString());
-      containerDefinitionBuilder.Append(" ");
+      containerDefinitionBuilder.Append(' ');
       containerDefinitionBuilder.Append(typeDeclarationSyntax.Identifier.ToString());
 
       containerDefinition = new ExtractedContainerDefinition
       {
         Name = typeDeclarationSyntax.Identifier.ToString(),
         FullDefinition = containerDefinitionBuilder.ToString()
-
       };
 
       return containerDefinition;
     }
 
-    private static ExtractedContainerDefinition GetContainerDefinition(DefinitionExtractionContext extractionContext, NamespaceDeclarationSyntax namespaceDeclarationSyntax)
+    private static ExtractedContainerDefinition GetContainerDefinition(BaseNamespaceDeclarationSyntax namespaceDeclarationSyntax)
     {
       StringBuilder containerDefinitionBuilder = new StringBuilder();
       ExtractedContainerDefinition containerDefinition;
@@ -78,11 +75,15 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       foreach (SyntaxToken modifier in namespaceDeclarationSyntax.Modifiers)
       {
         containerDefinitionBuilder.Append(modifier.ToString());
-        containerDefinitionBuilder.Append(" ");
+        containerDefinitionBuilder.Append(' ');
       }
 
-      containerDefinitionBuilder.Append("namespace ");
-      containerDefinitionBuilder.Append(namespaceDeclarationSyntax.Name.ToString());
+      var namespaceValue = namespaceDeclarationSyntax.Name.ToString();
+      if (!string.IsNullOrWhiteSpace(namespaceValue))
+      {
+        containerDefinitionBuilder.Append("namespace ");
+        containerDefinitionBuilder.Append(namespaceValue);
+      }
 
       containerDefinition = new ExtractedContainerDefinition
       {

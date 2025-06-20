@@ -27,6 +27,7 @@ namespace Csla.Web
     /// <param name="owner">The CslaDataSource object
     /// that owns this view.</param>
     /// <param name="viewName">The name of the view.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="owner"/> or <paramref name="viewName"/> is <see langword="null"/>.</exception>
     public CslaDataSourceView(CslaDataSource owner, string viewName)
       : base(owner, viewName)
     {
@@ -37,14 +38,14 @@ namespace Csla.Web
     /// Get or set the name of the assembly (no longer used).
     /// </summary>
     /// <value>Obsolete - do not use.</value>
-    public string TypeAssemblyName { get; set; }
+    public string TypeAssemblyName { get; set; } = "";
 
     /// <summary>
     /// Get or set the full type name of the business object
     /// class to be used as a data source.
     /// </summary>
     /// <value>Full type name of the business class.</value>
-    public string TypeName { get; set; }
+    public string TypeName { get; set; } = "";
 
     /// <summary>
     /// Get or set a value indicating whether the
@@ -72,13 +73,12 @@ namespace Csla.Web
     /// </summary>
     /// <param name="arguments">Arguments object.</param>
     /// <returns>The data returned from the select.</returns>
-    protected override IEnumerable 
-      ExecuteSelect(DataSourceSelectArguments arguments)
+    protected override IEnumerable ExecuteSelect(DataSourceSelectArguments arguments)
     {
       // get the object from the page
       SelectObjectArgs args = new SelectObjectArgs(arguments);
       _owner.OnSelectObject(args);
-      object result = args.BusinessObject;
+      object? result = args.BusinessObject;
 
       if (arguments.RetrieveTotalRowCount)
       {
@@ -143,11 +143,10 @@ namespace Csla.Web
     /// <param name="values">The values from
     /// the UI that are to be inserted.</param>
     /// <returns>The number of rows affected.</returns>
-    protected override int ExecuteInsert(
-      IDictionary values)
+    protected override int ExecuteInsert(IDictionary values)
     {
       // tell the page to insert the object
-      InsertObjectArgs args = 
+      InsertObjectArgs args =
         new InsertObjectArgs(values);
       _owner.OnInsertObject(args);
       return args.RowsAffected;
@@ -165,8 +164,7 @@ namespace Csla.Web
     {
       get
       {
-        if (typeof(Core.IUndoableObject).IsAssignableFrom(
-          CslaDataSource.GetType(TypeAssemblyName, TypeName)))
+        if (typeof(Core.IUndoableObject).IsAssignableFrom(CslaDataSource.GetType(TypeAssemblyName, TypeName)))
           return true;
         else
           return false;
@@ -185,7 +183,6 @@ namespace Csla.Web
     /// <returns>The number of rows affected.</returns>
     protected override int ExecuteDelete(IDictionary keys, IDictionary oldValues)
     {
-      
       // tell the page to delete the object
       DeleteObjectArgs args = new DeleteObjectArgs(keys, oldValues);
       _owner.OnDeleteObject(args);
@@ -240,35 +237,20 @@ namespace Csla.Web
     /// Gets a value indicating whether the data source supports
     /// paging of the data.
     /// </summary>
-    public override bool CanPage
-    {
-      get 
-      {
-        return TypeSupportsPaging;
-      }
-    }
+    public override bool CanPage => TypeSupportsPaging;
 
     /// <summary>
     /// Gets a value indicating whether the data source can
     /// retrieve the total number of rows of data. Always
     /// returns true.
     /// </summary>
-    public override bool CanRetrieveTotalRowCount
-    {
-      get { return true; }
-    }
+    public override bool CanRetrieveTotalRowCount => true;
 
     /// <summary>
     /// Gets a alue indicating whether the data source supports
     /// sorting of the data. Always returns false.
     /// </summary>
-    public override bool CanSort
-    {
-      get 
-      {
-        return TypeSupportsSorting;
-      }
-    }
+    public override bool CanSort => TypeSupportsSorting;
 
     #endregion
 

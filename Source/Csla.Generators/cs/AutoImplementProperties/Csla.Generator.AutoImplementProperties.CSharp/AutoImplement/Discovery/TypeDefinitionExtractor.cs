@@ -30,12 +30,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
             .SelectMany(al => al.Attributes)
             .FirstOrDefault(a => a.Name.ToString().StartsWith(DefinitionExtractionContext.CslaImplementPropertiesAttribute));
 
-        if (attribute != null)
+        if (attribute?.Name is GenericNameSyntax genericName)
         {
-          var genericName = attribute.Name as GenericNameSyntax;
           // Get the generic argument of the attribute
-          var genericArgument = genericName?.TypeArgumentList?.Arguments.FirstOrDefault();
+          var genericArgument = genericName.TypeArgumentList?.Arguments.FirstOrDefault();
 
+          if (genericArgument is null)
+          {
+            return extractedTypeDefinition;
+          }
 
           // Get the type symbol of the generic argument
           var semanticModel = extractionContext.SemanticModel;
@@ -82,24 +85,23 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>ExtractedTypeDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedTypeDefinition ExtractTypeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      ExtractedTypeDefinition definition = new ExtractedTypeDefinition();
-      StringBuilder fullyQualifiedNameBuilder = new StringBuilder();
-
-      definition.TypeName = GetTypeName(targetTypeDeclaration);
-      definition.TypeKind = GetTypeKind(targetTypeDeclaration);
-      definition.Namespace = GetNamespace(targetTypeDeclaration);
-      definition.Scope = GetScopeDefinition(targetTypeDeclaration);
-      definition.BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration);
-      definition.DefaultPropertyModifiers = ["public"];
-      definition.DefaultPropertySetterModifiers = [];
+      var typeName = GetTypeName(targetTypeDeclaration);
+      ExtractedTypeDefinition definition = new ExtractedTypeDefinition
+      {
+        TypeName = typeName,
+        TypeKind = GetTypeKind(targetTypeDeclaration),
+        Namespace = GetNamespace(targetTypeDeclaration),
+        Scope = GetScopeDefinition(targetTypeDeclaration),
+        BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration),
+        DefaultPropertyModifiers = ["public"],
+        DefaultPropertySetterModifiers = [],
+        FullyQualifiedName = typeName
+      };
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
       {
         definition.Properties.Add(propertyDefinition);
       }
-
-      fullyQualifiedNameBuilder.Append(definition.TypeName);
-      definition.FullyQualifiedName = fullyQualifiedNameBuilder.ToString();
 
       return definition;
     }
@@ -119,12 +121,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       var targetTypeSymbol = extractionContext.SemanticModel.GetDeclaredSymbol(targetTypeDeclaration) as INamedTypeSymbol;
       var baseTypeSymbol = targetTypeSymbol?.BaseType;
 
-      if (baseTypeSymbol != null)
-      {
-        return baseTypeSymbol.Name;
-      }
-
-      return null;
+      return baseTypeSymbol?.Name ?? string.Empty;
     }
 
     #endregion
@@ -138,24 +135,44 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>The namespace of the type for which generation is being performed</returns>
     private static string GetNamespace(TypeDeclarationSyntax targetTypeDeclaration)
     {
-      string namespaceName = string.Empty;
-      NamespaceDeclarationSyntax namespaceDeclaration;
-      TypeDeclarationSyntax containingTypeDeclaration;
+      // If we don't have a namespace at all we'll return an empty string
+      // This accounts for the "default namespace" case
+      string nameSpace = string.Empty;
 
-      // Iterate through the containing types should the target type be nested inside other types
-      containingTypeDeclaration = targetTypeDeclaration;
-      while (containingTypeDeclaration.Parent is TypeDeclarationSyntax syntax)
+      // Get the containing syntax node for the type declaration
+      // (could be a nested type, for example)
+      SyntaxNode? potentialNamespaceParent = targetTypeDeclaration.Parent;
+    
+      // Keep moving "out" of nested classes etc until we get to a namespace
+      // or until we run out of parents
+      while (potentialNamespaceParent != null && potentialNamespaceParent is not NamespaceDeclarationSyntax && potentialNamespaceParent is not FileScopedNamespaceDeclarationSyntax)
       {
-        containingTypeDeclaration = syntax;
+        potentialNamespaceParent = potentialNamespaceParent.Parent;
       }
 
-      namespaceDeclaration = containingTypeDeclaration.Parent as NamespaceDeclarationSyntax;
-      if (namespaceDeclaration is not null)
+      // Build up the final namespace by looping until we no longer have a namespace declaration
+      if (potentialNamespaceParent is BaseNamespaceDeclarationSyntax namespaceParent)
       {
-        namespaceName = namespaceDeclaration.Name.ToString();
+        // We have a namespace. Use that as the type
+        nameSpace = namespaceParent.Name.ToString();
+        
+        // Keep moving "out" of the namespace declarations until we 
+        // run out of nested namespace declarations
+        while (true)
+        {
+          if (namespaceParent.Parent is not NamespaceDeclarationSyntax parent)
+          {
+            break;
+          }
+
+          // Add the outer namespace as a prefix to the final namespace
+          nameSpace = $"{namespaceParent.Name}.{nameSpace}";
+          namespaceParent = parent;
+        }
       }
 
-      return namespaceName;
+      // return the final namespace
+      return nameSpace;
     }
 
     /// <summary>
@@ -207,7 +224,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private static void AppendScopeName(StringBuilder stringBuilder, string scope)
     {
       stringBuilder.Append(scope);
-      stringBuilder.Append(" ");
+      stringBuilder.Append(' ');
     }
 
     /// <summary>

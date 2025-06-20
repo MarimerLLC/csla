@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
-using System.Web.UI;
 using System.ComponentModel.Design;
+using System.Web.UI;
 using System.Windows.Forms;
 
 namespace Csla.Web.Design
@@ -18,7 +18,7 @@ namespace Csla.Web.Design
   /// </summary>
   public partial class CslaDataSourceConfiguration : Form
   {
-    private DataSourceControl _control;
+    private DataSourceControl? _control;
 
     /// <summary>
     /// Create instance of object.
@@ -33,10 +33,11 @@ namespace Csla.Web.Design
     /// </summary>
     /// <param name="control">Reference to the data source control.</param>
     /// <param name="oldTypeName">Existing type name.</param>
-    public CslaDataSourceConfiguration(DataSourceControl control, string oldTypeName)
+    /// <exception cref="ArgumentNullException"><paramref name="control"/> is <see langword="null"/>.</exception>
+    public CslaDataSourceConfiguration(DataSourceControl control, string? oldTypeName)
       : this()
     {
-      _control = control;
+      _control = control ?? throw new ArgumentNullException(nameof(control));
       DiscoverTypes();
       TypeComboBox.Text = oldTypeName;
     }
@@ -44,16 +45,13 @@ namespace Csla.Web.Design
     /// <summary>
     /// Gets the type name entered by the user.
     /// </summary>
-    public string TypeName
-    {
-      get { return TypeComboBox.Text; }
-    }
+    public string TypeName => TypeComboBox.Text;
 
     private void DiscoverTypes()
     {
       // try to get a reference to the type discovery service
-      ITypeDiscoveryService discovery = null;
-      if (_control.Site != null)
+      ITypeDiscoveryService? discovery = null;
+      if (_control!.Site != null)
         discovery = (ITypeDiscoveryService)_control.Site.GetService(typeof(ITypeDiscoveryService));
 
       if (discovery != null)
@@ -70,12 +68,12 @@ namespace Csla.Web.Design
           // adds the types to the list
           foreach (Type type in types)
           {
-            if (type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(",")) != "Csla" &&
+            if (type.Assembly.FullName.Substring(0, type.Assembly.FullName.IndexOf(',')) != "Csla" &&
               typeof(Core.IBusinessObject).IsAssignableFrom(type))
             {
               string name = type.AssemblyQualifiedName;
               if (name.Substring(name.Length - 19, 19) == "PublicKeyToken=null")
-                name = name.Substring(0, name.IndexOf(",", name.IndexOf(",") + 1));
+                name = name.Substring(0, name.IndexOf(',', name.IndexOf(',') + 1));
               TypeComboBox.Items.Add(name);
             }
           }

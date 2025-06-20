@@ -27,8 +27,7 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(shouldUseNameofRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldUseNameofRule];
 
     /// <summary>
     /// 
@@ -51,7 +50,7 @@ namespace Csla.Analyzers.ManagedBackingFieldUsesNameof
         {
           context.CancellationToken.ThrowIfCancellationRequested();
 
-          if (context.SemanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol && variable.Initializer.Value is InvocationExpressionSyntax invocation)
+          if (context.SemanticModel.GetDeclaredSymbol(variable) is IFieldSymbol fieldSymbol && variable.Initializer?.Value is InvocationExpressionSyntax invocation)
           {
             if (fieldSymbol.Type.IsIPropertyInfo() && invocation.Expression is GenericNameSyntax invocationName)
             {

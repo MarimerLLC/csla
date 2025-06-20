@@ -1,4 +1,5 @@
-﻿using Csla.Properties;
+﻿#nullable disable
+using Csla.Properties;
 
 namespace Csla.Serialization.Mobile
 {
@@ -25,19 +26,19 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="serializationStream">Stream to read the data from</param>
     /// <returns>List of SerializationInfo objects</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="serializationStream"/> is <see langword="null"/>.</exception>
     public List<SerializationInfo> Read(Stream serializationStream)
     {
+      if (serializationStream is null)
+        throw new ArgumentNullException(nameof(serializationStream));
+
       var returnValue = new List<SerializationInfo>();
       keywordsDictionary.Clear();
       using var reader = new BinaryReader(serializationStream);
       var totalCount = reader.ReadInt32();
       for (var counter = 0; counter < totalCount; counter++)
       {
-        var info = new SerializationInfo
-        {
-          ReferenceId = reader.ReadInt32(),
-          TypeName = (string)ReadObject(reader)
-        };
+        var info = new SerializationInfo(referenceId: reader.ReadInt32(), typeName: (string)ReadObject(reader));
 
         var childCount = reader.ReadInt32();
         string systemName;
@@ -65,7 +66,9 @@ namespace Csla.Serialization.Mobile
       return returnValue;
     }
 
-    private object ReadObject(BinaryReader reader)
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Ignored because the type is outdated and removed with the major version 11.
+    private object? ReadObject(BinaryReader reader)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
     {
       var knownType = (CslaKnownTypes)reader.ReadByte();
       switch (knownType)

@@ -36,38 +36,38 @@ namespace Csla.Windows
 
     public CslaFormAction ActionType
     {
-      get { return _actionType; }
-      set { _actionType = value; }
+      get => _actionType;
+      set => _actionType = value;
     }
 
     public PostSaveActionType PostSaveAction
     {
-      get { return _postSaveAction; }
-      set { _postSaveAction = value; }
+      get => _postSaveAction;
+      set => _postSaveAction = value;
     }
 
     public bool RebindAfterSave
     {
-      get { return _rebindAfterSave; }
-      set { _rebindAfterSave = value; }
+      get => _rebindAfterSave;
+      set => _rebindAfterSave = value;
     }
 
     public bool DisableWhenClean
     {
-      get { return _disableWhenClean; }
-      set { _disableWhenClean = value; }
+      get => _disableWhenClean;
+      set => _disableWhenClean = value;
     }
 
     public bool DisableWhenUseless
     {
-      get { return _disableWhenUseless; }
-      set { _disableWhenUseless = value; }
+      get => _disableWhenUseless;
+      set => _disableWhenUseless = value;
     }
 
     public string CommandName
     {
-      get { return _commandName; }
-      set { _commandName = value; }
+      get => _commandName;
+      set => _commandName = value;
     }
 
     #endregion

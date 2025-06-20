@@ -56,11 +56,12 @@ namespace Csla.Web
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="keys"/>, <paramref name="values"/> or <paramref name="oldValues"/> is <see langword="null"/>.</exception>
     public UpdateObjectArgs(System.Collections.IDictionary keys, System.Collections.IDictionary values, System.Collections.IDictionary oldValues)
     {
-      Keys = keys;
-      Values = values;
-      OldValues = oldValues;
+      Keys = keys ?? throw new ArgumentNullException(nameof(keys));
+      Values = values ?? throw new ArgumentNullException(nameof(values));
+      OldValues = oldValues ?? throw new ArgumentNullException(nameof(oldValues));
     }
 
   }

@@ -17,7 +17,7 @@ namespace Csla.Rules
   /// </summary>
   public abstract class AuthorizationRule : IAuthorizationRule
   {
-    private IMemberInfo _element;
+    private IMemberInfo? _element;
     private AuthorizationActions _action;
     private bool _cacheResult = true;
     private bool _locked = false;
@@ -35,17 +35,17 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="action">Action this rule will enforce.</param>
     /// <param name="element">Method or property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
     public AuthorizationRule(AuthorizationActions action, IMemberInfo element)
       : this(action)
     {
-      _element = element;
+      _element = element ?? throw new ArgumentNullException(nameof(element));
     }
     /// <summary>
     /// Authorization rule implementation.
     /// </summary>
     /// <param name="context">Rule context object.</param>
     protected abstract void Execute(IAuthorizationContext context);
-
 
     /// <summary>
     /// Gets a value indicating whether the results
@@ -55,7 +55,7 @@ namespace Csla.Rules
     /// <returns>bool, true by default to allow cache result.</returns>
     public bool CacheResult
     {
-      get { return _cacheResult; }
+      get => _cacheResult;
       protected set
       {
         CanWriteProperty("CacheResult");
@@ -67,9 +67,9 @@ namespace Csla.Rules
     /// Gets the name of the element (property/method)
     /// to which this rule is associated.
     /// </summary>
-    public IMemberInfo Element
+    public IMemberInfo? Element
     {
-      get { return _element; }
+      get => _element;
       set
       {
         CanWriteProperty("Element");
@@ -82,7 +82,7 @@ namespace Csla.Rules
     /// </summary>
     public AuthorizationActions Action
     {
-      get { return _action; }
+      get => _action;
       set
       {
         CanWriteProperty("Action");
@@ -98,6 +98,7 @@ namespace Csla.Rules
 
     #region IAuthorizationRule
 
+    /// <inheritdoc />
     void IAuthorizationRule.Execute(IAuthorizationContext context)
     {
       if (!_locked)
@@ -109,10 +110,7 @@ namespace Csla.Rules
     /// Gets the authorization action this rule
     /// will enforce.
     /// </summary>
-    AuthorizationActions IAuthorizationRuleBase.Action
-    {
-      get { return Action; }
-    }
+    AuthorizationActions IAuthorizationRuleBase.Action => Action;
 
     #endregion
 
@@ -128,8 +126,14 @@ namespace Csla.Rules
     /// <remarks>
     /// No authorization checks occur when this method is called.
     /// </remarks>
-    protected object ReadProperty(object obj, IPropertyInfo propertyInfo)
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected object? ReadProperty(object obj, IPropertyInfo propertyInfo)
     {
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
       if (obj is IManageProperties target)
         return target.ReadProperty(propertyInfo);
       else

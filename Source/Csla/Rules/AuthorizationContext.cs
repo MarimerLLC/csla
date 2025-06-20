@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Rules
 {
@@ -20,15 +21,15 @@ namespace Csla.Rules
     /// Gets the rule object.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public IAuthorizationRuleBase Rule { get; internal set; }
+    public IAuthorizationRuleBase Rule { get; }
     /// <summary>
     /// Gets a reference to the target business object.
     /// </summary>
-    public object Target { get; internal set; }
+    public object? Target { get; }
     /// <summary>
     /// Gets the type of the target business class.
     /// </summary>
-    public Type TargetType { get; internal set; }
+    public Type TargetType { get; }
     /// <summary>
     /// Gets or sets a value indicating whether the
     /// current user has permission to perform the requested
@@ -39,22 +40,7 @@ namespace Csla.Rules
     /// <summary>
     /// Gets an object which is the criteria specified in the data portal call, if any.
     /// </summary>
-    public object[] Criteria { get; internal set; }
-
-    /// <summary>
-    /// Creates a AuthorizationContext instance for unit testing.
-    /// </summary>
-    /// <param name="applicationContext"></param>
-    /// <param name="rule">The rule.</param>
-    /// <param name="target">The target.</param>
-    /// <param name="targetType">Type of the target.</param>
-    public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object target, Type targetType)
-    {
-      ApplicationContext = applicationContext;
-      Rule = rule;
-      Target = target;
-      TargetType = targetType;
-    }
+    public object?[]? Criteria { get; }
 
     /// <summary>
     /// Gets a reference to the current ApplicationContext.
@@ -64,7 +50,36 @@ namespace Csla.Rules
     /// <summary>
     /// Gets a data portal factory instance
     /// </summary>
-    public IDataPortalFactory DataPortalFactory =>
-      (IDataPortalFactory)ApplicationContext.CurrentServiceProvider.GetService(typeof(IDataPortalFactory));
+    public IDataPortalFactory DataPortalFactory => ApplicationContext.CurrentServiceProvider.GetRequiredService<IDataPortalFactory>();
+
+    /// <summary>
+    /// Creates a AuthorizationContext instance for unit testing.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    /// <param name="rule">The rule.</param>
+    /// <param name="target">The target.</param>
+    /// <param name="targetType">Type of the target.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="rule"/> or <paramref name="targetType"/> is <see langword="null"/>.</exception>
+    public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object? target, Type targetType) : this(applicationContext, rule, target, targetType, null)
+    {
+    }
+
+    /// <summary>
+    /// Creates a AuthorizationContext instance for unit testing.
+    /// </summary>
+    /// <param name="applicationContext"></param>
+    /// <param name="rule">The rule.</param>
+    /// <param name="target">The target.</param>
+    /// <param name="targetType">Type of the target.</param>
+    /// <param name="criteria">The criteria.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="rule"/> or <paramref name="targetType"/> is <see langword="null"/>.</exception>
+    internal AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object? target, Type targetType, object?[]? criteria)
+    {
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      Rule = rule ?? throw new ArgumentNullException(nameof(rule));
+      Target = target;
+      TargetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
+      Criteria = criteria;
+    }
   }
 }

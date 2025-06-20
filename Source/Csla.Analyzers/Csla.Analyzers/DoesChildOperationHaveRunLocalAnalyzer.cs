@@ -15,7 +15,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor childHasRunLocalRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal, DoesChildOperationHaveRunLocalAnalyzerConstants.Title,
         DoesChildOperationHaveRunLocalAnalyzerConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,
@@ -25,7 +25,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(childHasRunLocalRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [childHasRunLocalRule];
 
     /// <summary>
     /// 
@@ -42,6 +42,11 @@ namespace Csla.Analyzers
       var methodNode = (MethodDeclarationSyntax)context.Node;
 
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
+
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype() && methodSymbol.IsChildDataPortalOperation() &&

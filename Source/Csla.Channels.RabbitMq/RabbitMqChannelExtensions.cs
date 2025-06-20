@@ -23,20 +23,20 @@ namespace Csla.Configuration
     /// <param name="config">CslaDataPortalConfiguration object</param>
     /// <param name="options">Data portal proxy options</param>
     /// <exception cref="ArgumentNullException"><paramref name="config"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
-    public static DataPortalClientOptions UseRabbitMqProxy(this DataPortalClientOptions config, Action<Channels.RabbitMq.RabbitMqProxyOptions> options)
+    public static DataPortalClientOptions UseRabbitMqProxy(this DataPortalClientOptions config, Action<RabbitMqProxyOptions> options)
     {
       if (config is null)
         throw new ArgumentNullException(nameof(config));
       if (options is null)
         throw new ArgumentNullException(nameof(options));
 
-      var proxyOptions = new Channels.RabbitMq.RabbitMqProxyOptions();
+      var proxyOptions = new RabbitMqProxyOptions();
       options.Invoke(proxyOptions);
       config.Services.AddTransient(typeof(IDataPortalProxy),
         sp =>
         {
           var applicationContext = sp.GetRequiredService<ApplicationContext>();
-          return new Channels.RabbitMq.RabbitMqProxy(applicationContext, proxyOptions);
+          return new RabbitMqProxy(applicationContext, proxyOptions);
         });
       return config;
     }
@@ -48,7 +48,7 @@ namespace Csla.Configuration
     /// <param name="options"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentNullException"></exception>
-    public static DataPortalServerOptions UseRabbitMqPortal(this DataPortalServerOptions config, Action<Channels.RabbitMq.RabbitMqPortalOptions>? options)
+    public static DataPortalServerOptions UseRabbitMqPortal(this DataPortalServerOptions config, Action<RabbitMqPortalOptions>? options)
     {
       if (config is null)
         throw new ArgumentNullException(nameof(config));

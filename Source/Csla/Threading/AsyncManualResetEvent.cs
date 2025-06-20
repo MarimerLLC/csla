@@ -16,7 +16,7 @@ namespace Csla.Threading
   /// </summary>
   public class AsyncManualResetEvent
   {
-    private volatile TaskCompletionSource<bool> _tcs = new TaskCompletionSource<bool>();
+    private volatile TaskCompletionSource<bool> _tcs = new();
 
     /// <summary>
     /// Get awaitable task for the event
@@ -45,8 +45,7 @@ namespace Csla.Threading
       while (true)
       {
         var tcs = _tcs;
-        if (!tcs.Task.IsCompleted ||
-            Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
+        if (!tcs.Task.IsCompleted || Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
           return;
       }
     }

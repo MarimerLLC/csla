@@ -16,7 +16,7 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor makeNonPublicRule =
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.IsOperationMethodPublic, IsOperationMethodPublicAnalyzerConstants.Title,
         IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Warning, true,
@@ -24,7 +24,7 @@ namespace Csla.Analyzers
           Constants.AnalyzerIdentifiers.IsOperationMethodPublic, nameof(IsOperationMethodPublicAnalyzer)));
 
     private static readonly DiagnosticDescriptor makeNonPublicForInterfaceRule = 
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.IsOperationMethodPublicForInterface, IsOperationMethodPublicAnalyzerConstants.Title,
         IsOperationMethodPublicAnalyzerConstants.Message, Constants.Categories.Design,
         DiagnosticSeverity.Warning, true,
@@ -34,8 +34,8 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => 
-      ImmutableArray.Create(makeNonPublicRule, makeNonPublicForInterfaceRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+      [makeNonPublicRule, makeNonPublicForInterfaceRule];
 
     /// <summary>
     /// 
@@ -51,6 +51,10 @@ namespace Csla.Analyzers
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype() && methodSymbol.IsDataPortalOperation() &&
@@ -63,7 +67,7 @@ namespace Csla.Analyzers
         }
         else
         {
-          var properties = new Dictionary<string, string>
+          var properties = new Dictionary<string, string?>
           {
             [IsOperationMethodPublicAnalyzerConstants.IsSealed] = typeSymbol.IsSealed.ToString()
           }.ToImmutableDictionary();

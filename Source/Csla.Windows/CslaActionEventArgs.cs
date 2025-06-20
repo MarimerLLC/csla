@@ -19,9 +19,10 @@ namespace Csla.Windows
     /// <param name="commandName">
     /// Name of the command.
     /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="commandName"/> is <see langword="null"/>.</exception>
     public CslaActionEventArgs(string commandName)
     {
-      CommandName = commandName;
+      CommandName = commandName ?? throw new ArgumentNullException(nameof(commandName));
     }
 
     /// <summary>

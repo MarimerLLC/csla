@@ -15,14 +15,14 @@ namespace Csla.Analyzers
     : DiagnosticAnalyzer
   {
     private static readonly DiagnosticDescriptor publicNoArgumentConstructorIsMissingRule = 
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, PublicNoArgumentConstructorIsMissingConstants.Title,
         PublicNoArgumentConstructorIsMissingConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Error, true, 
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.PublicNoArgumentConstructorIsMissing, nameof(CheckConstructorsAnalyzer)));
     private static readonly DiagnosticDescriptor constructorHasParametersRule = 
-      new DiagnosticDescriptor(
+      new(
         Constants.AnalyzerIdentifiers.ConstructorHasParameters, ConstructorHasParametersConstants.Title,
         ConstructorHasParametersConstants.Message, Constants.Categories.Usage,
         DiagnosticSeverity.Warning, true,
@@ -33,9 +33,10 @@ namespace Csla.Analyzers
     /// 
     /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-      ImmutableArray.Create(
+    [
         publicNoArgumentConstructorIsMissingRule,
-        constructorHasParametersRule);
+        constructorHasParametersRule
+    ];
 
     /// <summary>
     /// 
@@ -55,9 +56,9 @@ namespace Csla.Analyzers
       var classNode = (ClassDeclarationSyntax)context.Node;
       var classSymbol = context.SemanticModel.GetDeclaredSymbol(classNode);
 
-      if (classSymbol.IsStereotype() && !(classSymbol?.IsAbstract).Value)
+      if (classSymbol.IsStereotype() && !classSymbol.IsAbstract)
       {
-        foreach (var constructor in classSymbol?.Constructors)
+        foreach (var constructor in classSymbol.Constructors)
         {
           if (!constructor.IsStatic)
           {
@@ -85,7 +86,7 @@ namespace Csla.Analyzers
 
         if (!hasPublicNoArgumentConstructor)
         {
-          var properties = new Dictionary<string, string>
+          var properties = new Dictionary<string, string?>
           {
             [PublicNoArgumentConstructorIsMissingConstants.HasNonPublicNoArgumentConstructor] = hasNonPublicNoArgumentConstructor.ToString()
           }.ToImmutableDictionary();

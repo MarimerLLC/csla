@@ -5,7 +5,7 @@
   <PropertyGroup>
    <PackageLicenseExpression>MIT</PackageLicenseExpression>
    <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
-   <OutputPath>..\..\bin\maui-packages\</OutputPath>
+   <OutputPath>..\..\bin\packages-maui\</OutputPath>
    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
    <RepositoryType>git</RepositoryType>
    <Company>Marimer LLC</Company>

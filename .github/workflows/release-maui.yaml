@@ -4,7 +4,7 @@ name: release
 on:
   push:
     branches:
-      - 'release/*'
+      - 'release-maui/*'
 
 jobs:
 
@@ -29,4 +29,4 @@ jobs:
       run: dotnet pack Source\csla.maui.build.sln --configuration Release
 
     - name: Push NuGet packages
-      run: dotnet nuget push bin\maui-packages\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push bin\packages-maui\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

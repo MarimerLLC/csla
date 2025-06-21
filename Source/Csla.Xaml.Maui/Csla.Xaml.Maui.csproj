@@ -32,6 +32,9 @@
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Csla" Version="9.1.*" />
+  </ItemGroup>
 
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);MAUI</DefineConstants>
@@ -39,10 +42,6 @@
     <PackageTags>CSLA;Business;MAUI</PackageTags>
     <PackageId>Csla.Maui</PackageId>
   </PropertyGroup>
-
-  <ItemGroup>
-	  <ProjectReference Include="..\Csla\Csla.csproj" />
-	</ItemGroup>
 
 	<Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
 </Project>

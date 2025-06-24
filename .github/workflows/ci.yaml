@@ -9,9 +9,8 @@ on:
     paths: ['Source/**', '.github/workflows/**']
 
 jobs:
-
-  build:
-
+  - job: Build_CSLA_Main
+    displayName: 'Build Main'
     runs-on: windows-latest
 
     steps:
@@ -29,3 +28,42 @@ jobs:
 
     - name: Test
       run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
+  
+  - job: Build_CSLA_MAUI
+    displayName: 'Build MAUI'
+    runs-on: macos-15
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0'
+
+    - name: "dotnet workload restore"
+      uses: CmdLine@2
+      with:
+        script: 'dotnet workload restore'
+  
+    - name: "Select a specific version of Xcode"
+      uses: CmdLine@2
+      with:
+        script: 'sudo xcode-select -s /Applications/Xcode_16.3.app'
+
+    - name: Build iOS
+      run: dotnet build Source\csla.maui.test.sln
+      with:
+        arguments: '-f net9.0-ios'
+
+    - name: Build Android
+      run: dotnet build Source\csla.maui.test.sln
+      with:
+        arguments: '-f net9.0-Android'
+    
+    - name: Build Android
+      run: dotnet build Source\csla.maui.test.sln
+      with:
+        arguments: '-f net9.0-maccatalyst'

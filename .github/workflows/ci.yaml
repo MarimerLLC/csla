@@ -43,8 +43,8 @@ jobs:
         while IFS= read -r file
         do
           echo $file
-          if [[ $file = Source/Csla.Xaml.Maui/* || $file = Source/Csla.Xaml.Shared/* ]]; then
-            echo "This modified file is not under the 'Maui' folder."
+          if [[ $file = Source/Csla.Xaml.Maui/* || $file = Source/Csla.Xaml.Shared/* || $file = Source/csla.maui.test.sln ]]; then
+            echo "found a MAUI modified file."
             echo "run_maui=true" >> $GITHUB_OUTPUT
             break
           else

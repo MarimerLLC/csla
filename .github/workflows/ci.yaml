@@ -13,7 +13,7 @@ jobs:
     name: 'Build Main'
     runs-on: windows-latest
     outputs:
-      run_job: ${{ steps.check_files.outputs.run_maui }}
+      run_maui: ${{ steps.check_files.outputs.run_maui }}
 
     steps:
     - uses: actions/checkout@v4
@@ -31,7 +31,7 @@ jobs:
     - name: Test
       run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
 
-    - name: check modified files
+    - name: check for MAUI modified files
       id: check_files
       run: |
         echo "=============== list modified files ==============="

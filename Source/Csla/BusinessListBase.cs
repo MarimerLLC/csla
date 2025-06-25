@@ -1162,7 +1162,9 @@ namespace Csla
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<SavedEventArgs>? _savedEvent;
+    private EventHandler<SavedEventArgs>? _nonSerializableSavedHandlers;
+    [NotUndoable]
+    private EventHandler<SavedEventArgs>? _serializableSavedHandlers;
 
     /// <summary>
     /// Event raised when an object has been saved.
@@ -1170,17 +1172,33 @@ namespace Csla
     [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
     public event EventHandler<SavedEventArgs>? Saved
     {
-      add => _savedEvent = (EventHandler<SavedEventArgs>?)Delegate.Combine(_savedEvent, value);
-      remove => _savedEvent = (EventHandler<SavedEventArgs>?)Delegate.Remove(_savedEvent, value);
+      add
+      {
+        if (value is null)
+          return;
+        if (value.Method.IsPublic)
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Combine(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Combine(_nonSerializableSavedHandlers, value);
+      }
+      remove
+      {
+        if (value is null)
+          return;
+        if (value.Method.IsPublic)
+          _serializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_serializableSavedHandlers, value);
+        else
+          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_nonSerializableSavedHandlers, value);
+      }
     }
 
     /// <summary>
-    /// Raises the <see cref="Saved"/> event, indicating that the
+    /// Raises the Saved event, indicating that the
     /// object has been saved, and providing a reference
     /// to the new object instance.
     /// </summary>
     /// <param name="newObject">The new object instance.</param>
-    /// <param name="e">Exception that occurred during the operation.</param>
+    /// <param name="e">Exception that occurred during operation.</param>
     /// <param name="userState">User state object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -1188,10 +1206,11 @@ namespace Csla
     {
       if (newObject is null)
         throw new ArgumentNullException(nameof(newObject));
-
       SavedEventArgs args = new SavedEventArgs(newObject, e, userState);
-      _savedEvent?.Invoke(this, args);
+      _nonSerializableSavedHandlers?.Invoke(this, args);
+      _serializableSavedHandlers?.Invoke(this, args);
     }
+
     #endregion
 
     #region  Parent/Child link
@@ -1308,5 +1327,102 @@ namespace Csla
 
     #endregion
 
+    #region Object ID Value
+
+    /// <summary>
+    /// Override this method to return a unique identifying value for this object.
+    /// </summary>
+    protected virtual object? GetIdValue()
+    {
+      return null;
+    }
+
+    #endregion
+
+    #region System.Object Overrides
+
+    /// <summary>
+    /// Returns a text representation of this object by
+    /// returning the <see cref="GetIdValue"/> value
+    /// in text form.
+    /// </summary>
+    public override string ToString()
+    {
+      object? id = GetIdValue();
+      if (id == null)
+        return base.ToString() ?? string.Empty;
+      else
+        return id.ToString() ?? string.Empty;
+    }
+
+    #endregion
+
+    #region Register Properties/Methods
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property.</typeparam>
+    /// <param name="info">PropertyInfo object for the property.</param>
+    /// <returns>The provided IPropertyInfo object.</returns>
+    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> info)
+    {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName)
+    {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(System.Linq.Expressions.Expression<Func<T, object>> propertyLambdaExpression)
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+      var reflectedPropertyInfo = Csla.Reflection.Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterProperty<P>(reflectedPropertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Registers a method for use in Authorization.
+    /// </summary>
+    /// <param name="methodName">Method name from nameof()</param>
+    protected static System.Reflection.MethodInfo RegisterMethod(string methodName)
+    {
+      if (methodName is null)
+        throw new ArgumentNullException(nameof(methodName));
+      return Csla.Reflection.MethodCaller.GetMethod(typeof(T), methodName)!;
+    }
+
+    /// <summary>
+    /// Registers a method for use in Authorization.
+    /// </summary>
+    /// <param name="methodLambdaExpression">The method lambda expression.</param>
+    protected static System.Reflection.MethodInfo RegisterMethod(System.Linq.Expressions.Expression<System.Action<T>> methodLambdaExpression)
+    {
+      if (methodLambdaExpression is null)
+        throw new ArgumentNullException(nameof(methodLambdaExpression));
+      var reflectedMethodInfo = Csla.Reflection.Reflect<T>.GetMethod(methodLambdaExpression);
+      return RegisterMethod(reflectedMethodInfo.Name);
+    }
+
+    #endregion
   }
 }

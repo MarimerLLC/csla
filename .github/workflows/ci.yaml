@@ -7,6 +7,7 @@ on:
   pull_request:
     branches: [ main, v7.x, v8.x, v9.x ]
     paths: ['Source/**', '.github/workflows/**']
+  workflow_dispatch:
 
 jobs:
   Build_CSLA_Main:

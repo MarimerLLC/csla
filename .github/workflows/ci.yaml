@@ -33,7 +33,6 @@ jobs:
 
     - name: check for MAUI modified files
       id: check_files
-      uses: actions/Bash@3
       run: |
         bash
         echo "=============== list modified files ==============="

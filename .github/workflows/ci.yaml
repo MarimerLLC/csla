@@ -44,16 +44,16 @@ jobs:
         dotnet-version: '9.0'
 
     - name: "dotnet workload restore"
-      run: dotnet workload restore Source\csla.maui.test.sln
+      run: dotnet workload restore Source/csla.maui.test.sln
   
     - name: "Select a specific version of Xcode"
       run: sudo xcode-select -s /Applications/Xcode_16.3.app
 
     - name: Build iOS
-      run: dotnet build Source\csla.maui.test.sln -f net9.0-ios
+      run: dotnet build Source/csla.maui.test.sln -f net9.0-ios
 
     - name: Build Android
-      run: dotnet build Source\csla.maui.test.sln -f net9.0-Android
+      run: dotnet build Source/csla.maui.test.sln -f net9.0-Android
     
     - name: Build Android
-      run: dotnet build Source\csla.maui.test.sln -f net9.0-maccatalyst
+      run: dotnet build Source/csla.maui.test.sln -f net9.0-maccatalyst

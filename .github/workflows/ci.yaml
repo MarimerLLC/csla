@@ -45,10 +45,10 @@ jobs:
           echo $file
           if [[ $file = Source/Csla.Xaml.Maui/* || $file = Source/Csla.Xaml.Shared/* ]]; then
             echo "This modified file is not under the 'Maui' folder."
-            echo "::set-output name=run_maui::true"
+            echo "run_maui=true" >> $GITHUB_OUTPUT
             break
           else
-            echo "::set-output name=run_maui::true"
+            echo "run_maui=false" >> $GITHUB_OUTPUT
           fi
         done < files.txt
   

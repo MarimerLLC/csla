@@ -44,14 +44,10 @@ jobs:
         dotnet-version: '9.0'
 
     - name: "dotnet workload restore"
-      uses: CmdLine@2
-      with:
-        script: 'dotnet workload restore'
+      uses: 'dotnet workload restore'
   
     - name: "Select a specific version of Xcode"
-      uses: CmdLine@2
-      with:
-        script: 'sudo xcode-select -s /Applications/Xcode_16.3.app'
+      run: 'sudo xcode-select -s /Applications/Xcode_16.3.app'
 
     - name: Build iOS
       run: dotnet build Source\csla.maui.test.sln

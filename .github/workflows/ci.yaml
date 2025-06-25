@@ -12,6 +12,8 @@ jobs:
   Build_CSLA_Main:
     name: 'Build Main'
     runs-on: windows-latest
+    outputs:
+      run_job: ${{ steps.check_files.outputs.run_maui }}
 
     steps:
     - uses: actions/checkout@v4
@@ -28,9 +30,31 @@ jobs:
 
     - name: Test
       run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
+
+    - name: check modified files
+      id: check_files
+      run: |
+        echo "=============== list modified files ==============="
+        git diff --name-only HEAD^ HEAD
+      
+        echo "========== check paths of modified files =========="
+        git diff --name-only HEAD^ HEAD &gt; files.txt
+        while IFS= read -r file
+        do
+          echo $file
+          if [[ $file = Source/Csla.Xaml.Maui/* || $file = Source/Csla.Xaml.Shared/* ]]; then
+            echo "This modified file is not under the 'Maui' folder."
+            echo "::set-output name=run_maui::true"
+            break
+          else
+            echo "::set-output name=run_maui::true"
+          fi
+        done &lt; files.txt
   
   Build_CSLA_MAUI:
     name: 'Build MAUI'
+    needs: Build_CSLA_Main
+    if: needs.Build_CSLA_Main.outputs.run_maui == 'true'
     runs-on: macos-15
 
     steps:
@@ -55,5 +79,5 @@ jobs:
     - name: Build Android
       run: dotnet build Source/csla.maui.test.sln -f net9.0-Android
     
-    - name: Build Android
+    - name: Build MacOS
       run: dotnet build Source/csla.maui.test.sln -f net9.0-maccatalyst

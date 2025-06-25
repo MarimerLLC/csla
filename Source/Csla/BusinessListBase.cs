@@ -654,6 +654,9 @@ namespace Csla
       info.AddValue("Csla.BusinessListBase._isChild", _isChild);
       info.AddValue("Csla.BusinessListBase._editLevel", EditLevel);
       info.AddValue("Csla.Core.BusinessBase._identity", _identity);
+      info.AddValue("Csla.BusinessListBase._isNew", _isNew);
+      info.AddValue("Csla.BusinessListBase._isDeleted", _isDeleted);
+      info.AddValue("Csla.BusinessListBase._isDirty", _isDirty);
       base.OnGetState(info);
     }
 
@@ -674,6 +677,9 @@ namespace Csla
       _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
       EditLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
+      _isNew = info.GetValue<bool>("Csla.BusinessListBase._isNew");
+      _isDeleted = info.GetValue<bool>("Csla.BusinessListBase._isDeleted");
+      _isDirty = info.GetValue<bool>("Csla.BusinessListBase._isDirty");
       base.OnSetState(info);
     }
 
@@ -787,7 +793,7 @@ namespace Csla
     /// <summary>
     /// Gets a value indicating whether this object's data has been changed.
     /// </summary>
-    public bool IsDirty
+    public virtual bool IsDirty
     {
       get
       {
@@ -868,6 +874,68 @@ namespace Csla
 
         return false;
       }
+    }
+
+    #endregion
+
+    #region Metastate
+
+    [NonSerialized]
+    private bool _isNew = true;
+    [NonSerialized]
+    private bool _isDeleted = false;
+    [NonSerialized]
+    private bool _isDirty = false;
+
+    /// <summary>
+    /// Gets a value indicating whether this object is new.
+    /// </summary>
+    public virtual bool IsNew => _isNew;
+
+    /// <summary>
+    /// Gets a value indicating whether this object is marked for deletion.
+    /// </summary>
+    public virtual bool IsDeleted => _isDeleted;
+
+    /// <summary>
+    /// Gets a value indicating whether this object's data has been changed (self only).
+    /// </summary>
+    public virtual bool IsSelfDirty => _isDirty;
+
+    /// <summary>
+    /// Marks the object as new.
+    /// </summary>
+    public virtual void MarkNew()
+    {
+      _isNew = true;
+      _isDeleted = false;
+      _isDirty = true;
+    }
+
+    /// <summary>
+    /// Marks the object as old.
+    /// </summary>
+    public virtual void MarkOld()
+    {
+      _isNew = false;
+      _isDirty = false;
+    }
+
+    /// <summary>
+    /// Marks the object as deleted.
+    /// </summary>
+    public virtual void MarkDeleted()
+    {
+      _isDeleted = true;
+      _isDirty = true;
+    }
+
+    /// <summary>
+    /// Marks the object as dirty.
+    /// </summary>
+    public virtual void MarkDirty(bool force = true)
+    {
+      _isDirty = force;
     }
 
     #endregion
@@ -1290,10 +1358,14 @@ namespace Csla
     }
 
     void IDataPortalTarget.MarkNew()
-    { }
+    {
+      MarkNew();
+    }
 
     void IDataPortalTarget.MarkOld()
-    { }
+    {
+      MarkOld();
+    }
 
     void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
     {
@@ -1423,6 +1495,144 @@ namespace Csla
       return RegisterMethod(reflectedMethodInfo.Name);
     }
 
+    #endregion
+
+    #region Property Management Methods
+
+    /// <summary>
+    /// Gets the value of a property.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyInfo">Property information object.</param>
+    /// <returns>The value of the property.</returns>
+    protected P? GetProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      return ((IManageProperties)this).GetProperty(propertyInfo) is P value ? value : default;
+    }
+
+    /// <summary>
+    /// Sets the value of a property.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyInfo">Property information object.</param>
+    /// <param name="value">The value to set.</param>
+    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P value)
+    {
+      ((IManageProperties)this).SetProperty(propertyInfo, value);
+    }
+
+    /// <summary>
+    /// Loads the value of a property.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyInfo">Property information object.</param>
+    /// <param name="value">The value to load.</param>
+    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P value)
+    {
+      ((IManageProperties)this).LoadProperty(propertyInfo, value);
+    }
+
+    /// <summary>
+    /// Reads the value of a property.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="propertyInfo">Property information object.</param>
+    /// <returns>The value of the property.</returns>
+    protected P? ReadProperty<P>(PropertyInfo<P> propertyInfo)
+    {
+      return ((IManageProperties)this).ReadProperty(propertyInfo);
+    }
+
+    #endregion
+
+    #region Events
+
+    /// <summary>
+    /// Occurs when the list changes.
+    /// </summary>
+    public event ListChangedEventHandler? ListChanged;
+
+    /// <summary>
+    /// Raises the ListChanged event.
+    /// </summary>
+    /// <param name="e">The event args.</param>
+    protected virtual void OnListChanged(ListChangedEventArgs e)
+    {
+      ListChanged?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// Occurs when a child object has changed.
+    /// </summary>
+    public new event EventHandler<ChildChangedEventArgs>? ChildChanged;
+
+    /// <summary>
+    /// Raises the ChildChanged event.
+    /// </summary>
+    /// <param name="e">The event args.</param>
+    protected override void OnChildChanged(ChildChangedEventArgs e)
+    {
+      ChildChanged?.Invoke(this, e);
+      base.OnChildChanged(e);
+    }
+
+    #endregion
+
+    #region BypassPropertyChecks
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _bypassPropertyChecks = false;
+    [NonSerialized]
+    [NotUndoable]
+    private BypassPropertyChecksObject? _bypassPropertyChecksObject = null;
+
+    /// <summary>
+    /// By wrapping this property inside a using block
+    /// you can set property values on current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    protected internal BypassPropertyChecksObject BypassPropertyChecks
+    {
+      get
+      {
+        if (_bypassPropertyChecksObject == null)
+          _bypassPropertyChecksObject = new BypassPropertyChecksObject(this);
+        return _bypassPropertyChecksObject;
+      }
+    }
+
+    /// <summary>
+    /// Class that allows setting of property values on 
+    /// current business object
+    /// without raising PropertyChanged events
+    /// and checking user rights.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected internal class BypassPropertyChecksObject : IDisposable
+    {
+      private readonly BusinessListBase<T, C> _businessObject;
+      private bool _disposed;
+      public BypassPropertyChecksObject(BusinessListBase<T, C> businessObject)
+      {
+        _businessObject = businessObject;
+        _businessObject._bypassPropertyChecks = true;
+      }
+      public void Dispose()
+      {
+        if (!_disposed)
+        {
+          _businessObject._bypassPropertyChecks = false;
+          _disposed = true;
+        }
+      }
+      public static BypassPropertyChecksObject GetManager(BusinessListBase<T, C> businessObject)
+      {
+        return new BypassPropertyChecksObject(businessObject);
+      }
+    }
     #endregion
   }
 }

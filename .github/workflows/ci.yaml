@@ -33,8 +33,8 @@ jobs:
 
     - name: check for MAUI modified files
       id: check_files
+      shell: bash
       run: |
-        bash
         echo "=============== list modified files ==============="
         git diff --name-only HEAD^ HEAD
       

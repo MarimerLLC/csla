@@ -44,7 +44,7 @@ jobs:
         dotnet-version: '9.0'
 
     - name: "dotnet workload restore"
-      run: dotnet workload restore
+      run: dotnet workload restore Source\csla.maui.test.sln
   
     - name: "Select a specific version of Xcode"
       run: sudo xcode-select -s /Applications/Xcode_16.3.app

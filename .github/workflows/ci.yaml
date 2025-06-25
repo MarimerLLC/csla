@@ -50,7 +50,7 @@ jobs:
           else
             echo "::set-output name=run_maui::true"
           fi
-        done &lt; files.txt
+        done < files.txt
   
   Build_CSLA_MAUI:
     name: 'Build MAUI'

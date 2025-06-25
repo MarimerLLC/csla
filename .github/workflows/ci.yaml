@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-    name: 'Build Main'
     runs-on: windows-latest
     outputs:
       run_maui: ${{ steps.check_files.outputs.run_maui }}

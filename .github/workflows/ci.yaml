@@ -2,12 +2,11 @@ name: main
 
 on:
   push:
-    branches: [ main, v7.x, v8.x, v9.x ]
+    branches: [ main, v7.x, v8.x, v9.x, feature/4691-MAUI_CI_Build ]
     paths: ['Source/**', '.github/workflows/**']
   pull_request:
     branches: [ main, v7.x, v8.x, v9.x ]
     paths: ['Source/**', '.github/workflows/**']
-  workflow_dispatch:
 
 jobs:
   Build_CSLA_Main:

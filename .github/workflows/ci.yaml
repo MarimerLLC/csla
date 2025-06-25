@@ -9,7 +9,7 @@ on:
     paths: ['Source/**', '.github/workflows/**']
 
 jobs:
-  Build_CSLA_Main:
+  build:
     name: 'Build Main'
     runs-on: windows-latest
     outputs:
@@ -54,8 +54,8 @@ jobs:
   
   Build_CSLA_MAUI:
     name: 'Build MAUI'
-    needs: Build_CSLA_Main
-    if: needs.Build_CSLA_Main.outputs.run_maui == 'true'
+    needs: build
+    if: needs.build.outputs.run_maui == 'true'
     runs-on: macos-15
 
     steps:

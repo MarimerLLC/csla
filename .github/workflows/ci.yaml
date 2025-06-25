@@ -43,6 +43,9 @@ jobs:
       with:
         dotnet-version: '9.0'
 
+    - name: Install MAUI workload
+      run: dotnet workload install maui
+
     - name: "dotnet workload restore"
       run: dotnet workload restore Source/csla.maui.test.sln
   

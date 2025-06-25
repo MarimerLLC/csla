@@ -9,7 +9,7 @@ on:
     paths: ['Source/**', '.github/workflows/**']
 
 jobs:
-  Build_CSLA_Main
+  Build_CSLA_Main:
     name: 'Build Main'
     runs-on: windows-latest
 
@@ -29,7 +29,7 @@ jobs:
     - name: Test
       run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
   
-  Build_CSLA_MAUI
+  Build_CSLA_MAUI:
     name: 'Build MAUI'
     runs-on: macos-15
 

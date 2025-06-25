@@ -39,7 +39,7 @@ jobs:
         git diff --name-only HEAD^ HEAD
       
         echo "========== check paths of modified files =========="
-        git diff --name-only HEAD^ HEAD &gt; files.txt
+        git diff --name-only HEAD^ HEAD > files.txt
         while IFS= read -r file
         do
           echo $file

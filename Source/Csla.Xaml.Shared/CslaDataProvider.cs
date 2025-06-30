@@ -326,12 +326,13 @@ namespace Csla.Xaml
 
     /// <summary>
     /// Refresh the ObjectInstance by calling the
-    /// supplied factory.
+    /// supplied factory asynchronously.
     /// </summary>
     /// <typeparam name="T">Type of ObjectInstance</typeparam>
     /// <param name="factory">Async data portal or factory method</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous refresh operation.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="factory"/> is <see langword="null"/>.</exception>
-    public async void Refresh<T>(Func<Task<T>> factory)
+    public async Task Refresh<T>(Func<Task<T>> factory)
     {
       if (factory is null)
         throw new ArgumentNullException(nameof(factory));
@@ -376,6 +377,14 @@ namespace Csla.Xaml
       OnQueryFinished(result, exceptionResult, _ => { IsBusy = false; return null; }, null);
     }
 
+    /// <summary>
+    /// Executes the factory method to create or fetch the business object, handling exceptions and object lifetime management.
+    /// </summary>
+    /// <param name="state">A QueryRequest object containing the factory method, parameters, and options.</param>
+    /// <remarks>
+    /// This method is called either on the UI thread or a background thread depending on the IsAsynchronous property.
+    /// It invokes the specified factory method, manages exceptions, and updates the data provider's state accordingly.
+    /// </remarks>
     private void DoQuery(object? state)
     {
       if (state is not QueryRequest request)

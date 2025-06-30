@@ -33,8 +33,11 @@
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.12" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'=='Release'">
     <PackageReference Include="Csla" Version="9.1.*" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(Configuration)'!='Release'">
+    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -22,9 +22,13 @@ namespace Csla.Xaml
     /// <param name="targetType">Desired output type (ignored).</param>
     /// <param name="parameter">Extra parameter (ignored).</param>
     /// <param name="culture">Desired culture (ignored).</param>
-    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    /// <exception cref="ArgumentException"><paramref name="value"/> is not of type <see cref="bool"/>.</exception>
+    public object? Convert(object? value, Type? targetType, object? parameter, System.Globalization.CultureInfo? culture)
     {
-      return !(bool)value;
+      if (value is not bool val)
+        throw new ArgumentException($"{value?.GetType().ToString()} != typeof(bool)", nameof(value));
+
+      return !val;
     }
 
     /// <summary>
@@ -34,9 +38,13 @@ namespace Csla.Xaml
     /// <param name="targetType">Desired output type (ignored).</param>
     /// <param name="parameter">Extra parameter (ignored).</param>
     /// <param name="culture">Desired culture (ignored).</param>
-    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    /// <exception cref="ArgumentException"><paramref name="value"/> is not of type <see cref="bool"/>.</exception>
+    public object? ConvertBack(object? value, Type? targetType, object? parameter, System.Globalization.CultureInfo? culture)
     {
-      return !(bool)value;
+      if (value is not bool val)
+        throw new ArgumentException($"{value?.GetType().ToString()} != typeof(bool)", nameof(value));
+
+      return !val;
     }
   }
 }

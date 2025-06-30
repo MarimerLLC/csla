@@ -533,4 +533,7 @@
     <value>No business object instance was provided for authorization action {0} of type {1}.</value>
     <comment>0 - auth action, 1 - bo type</comment>
   </data>
+  <data name="UnsupportedXamlListTypeForModel" xml:space="preserve">
+    <value>The model type must be either of type {0} or {1} to be used as a collection type.</value>
+  </data>
 </root>

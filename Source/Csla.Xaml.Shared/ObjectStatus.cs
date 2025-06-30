@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Container for other UI controls that exposes</summary>
 //-----------------------------------------------------------------------
-using System.Windows;
 using System.ComponentModel;
+using System.Windows;
 using Csla.Core;
 
 namespace Csla.Xaml
@@ -27,7 +27,7 @@ namespace Csla.Xaml
   /// </remarks>
   public class ObjectStatus : DataDecoratorBase
   {
-#region Per-Type Dependency Properties
+    #region Per-Type Dependency Properties
 
     private static readonly DependencyProperty CanCreateProperty =
       DependencyProperty.Register(nameof(CanCreateObject), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
@@ -106,9 +106,9 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
 
-#region Per-Instance Dependency Properties
+    #region Per-Instance Dependency Properties
 
     private static readonly DependencyProperty IsDeletedProperty =
       DependencyProperty.Register(nameof(IsDeleted), typeof(bool), typeof(ObjectStatus), new FrameworkPropertyMetadata(false), null);
@@ -128,7 +128,7 @@ namespace Csla.Xaml
     public bool IsDeleted
     {
       get => (bool)GetValue(IsDeletedProperty);
-      protected set 
+      protected set
       {
         bool old = IsDeleted;
         SetValue(IsDeletedProperty, value);
@@ -205,9 +205,9 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
 
-#region Base Overrides 
+    #region Base Overrides 
 
     /// <summary>
     /// This method is called when the data
@@ -224,7 +224,7 @@ namespace Csla.Xaml
     /// of the data object to which the 
     /// control is bound has changed.
     /// </summary>
-    protected override void DataPropertyChanged(PropertyChangedEventArgs e)
+    protected override void DataPropertyChanged(PropertyChangedEventArgs? e)
     {
       Refresh();
     }
@@ -311,7 +311,7 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

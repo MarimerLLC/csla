@@ -20,6 +20,7 @@ namespace Csla.Xaml
     /// wishes to handle from the CslaDataProvider.
     /// </summary>
     /// <param name="source">Data provider control.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     void Register(object source);
   }
 }

@@ -27,7 +27,7 @@ namespace Csla.Xaml
       DataContextChanged += ErrorDialog_DataContextChanged;
     }
 
-    void ErrorDialog_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    void ErrorDialog_DataContextChanged(object? sender, DependencyPropertyChangedEventArgs e)
     {
       DetachSource(e.OldValue);
       AttachSource(e.NewValue);
@@ -47,9 +47,9 @@ namespace Csla.Xaml
     /// Gets or sets the title of the error
     /// dialog.
     /// </summary>
-    public string DialogTitle
+    public string? DialogTitle
     {
-      get => (string)GetValue(DialogTitleProperty);
+      get => (string?)GetValue(DialogTitleProperty);
       set => SetValue(DialogTitleProperty, value);
     }
 
@@ -69,9 +69,9 @@ namespace Csla.Xaml
     /// within the error dialog (before the
     /// exception message).
     /// </summary>
-    public string DialogFirstLine
+    public string? DialogFirstLine
     {
-      get => (string)GetValue(DialogFirstLineProperty);
+      get => (string?)GetValue(DialogFirstLineProperty);
       set => SetValue(DialogFirstLineProperty, value);
     }
 
@@ -118,24 +118,24 @@ namespace Csla.Xaml
       set => SetValue(DialogIconProperty, value);
     }
 
-    internal void Register(object source)
+    internal void Register(object? source)
     {
       AttachSource(source);
     }
 
-    private void AttachSource(object source)
+    private void AttachSource(object? source)
     {
       if (source is DataSourceProvider dp)
         dp.DataChanged += source_DataChanged;
     }
 
-    private void DetachSource(object source)
+    private void DetachSource(object? source)
     {
       if (source is DataSourceProvider dp)
         dp.DataChanged -= source_DataChanged;
     }
 
-    private void source_DataChanged(object sender, EventArgs e)
+    private void source_DataChanged(object? sender, EventArgs e)
     {
       if (sender is DataSourceProvider dp && dp.Error != null)
       {
@@ -151,22 +151,22 @@ namespace Csla.Xaml
         else
           output = $"{DialogFirstLine}{Environment.NewLine}{error}";
 
-        MessageBox.Show(
-          output,
-          DialogTitle,
-          MessageBoxButton.OK, 
-          DialogIcon);
+        MessageBox.Show(output, DialogTitle, MessageBoxButton.OK, DialogIcon);
       }
     }
 
-#region IErrorDialog Members
+    #region IErrorDialog Members
 
+    /// <inheritdoc />
     void IErrorDialog.Register(object source)
     {
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
       AttachSource(source);
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

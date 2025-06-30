@@ -23,10 +23,12 @@ namespace Csla.Xaml
   public class ViewModel<T> : ViewModelBase<T>
   {
     /// <summary>
-    /// Saves the Model, first committing changes
-    /// if ManagedObjectLifetime is true.
+    /// Saves the Model, first committing changes if ManagedObjectLifetime is true.
     /// </summary>
-    public virtual async void SaveAsync(object sender, ExecuteEventArgs e)
+    /// <param name="sender">The source of the event, typically the UI element that triggered the save operation.</param>
+    /// <param name="e">The <see cref="ExecuteEventArgs"/> containing event data and parameters for the save operation.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous save operation.</returns>
+    public virtual async Task SaveAsync(object sender, ExecuteEventArgs e)
     {
       await SaveAsync();
     }

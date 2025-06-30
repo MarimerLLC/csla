@@ -22,13 +22,11 @@ namespace Csla.Blazor
     /// Creates an instance of the type
     /// </summary>
     /// <param name="options">Authorization options</param>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public CslaPermissionsPolicyProvider(IOptions<AuthorizationOptions> options)
     {
-      if (options == null)
-      {
-        throw new ArgumentNullException(nameof(options));
-      }
-      
+      ArgumentNullException.ThrowIfNull(options);
+
       _options = options.Value;
     }
 
@@ -39,7 +37,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets the fallback policy
     /// </summary>
-    public Task<AuthorizationPolicy> GetFallbackPolicyAsync() => Task.FromResult(_options.FallbackPolicy);
+    public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() => Task.FromResult(_options.FallbackPolicy);
 
     /// <summary>
     /// Gets the authorization policy
@@ -50,10 +48,13 @@ namespace Csla.Blazor
     /// to a CSLA policy, otherwise gets a policy from the fallback
     /// provider.
     /// </remarks>
-    public Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
+    /// <exception cref="ArgumentNullException"><paramref name="policyName"/> is <see langword="null"/>.</exception>
+    public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
+      ArgumentNullException.ThrowIfNull(policyName);
+
       var policy = _options.GetPolicy(policyName);
-      if (policy is null && CslaPolicy.TryGetPermissionRequirement(policyName, out CslaPermissionRequirement requirement))
+      if (policy is null && CslaPolicy.TryGetPermissionRequirement(policyName, out CslaPermissionRequirement? requirement))
       {
         var policyBuilder = new AuthorizationPolicyBuilder();
         policyBuilder.AddRequirements(requirement);

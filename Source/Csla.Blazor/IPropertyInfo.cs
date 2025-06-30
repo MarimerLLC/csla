@@ -15,7 +15,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets or sets the value of the property
     /// </summary>
-    object Value { get; set; }
+    object? Value { get; set; }
     /// <summary>
     /// Gets the friendly name for the property.
     /// </summary>
@@ -57,15 +57,15 @@ namespace Csla.Blazor
     /// <summary>
     /// Event raised when a property changes.
     /// </summary>
-    event PropertyChangedEventHandler PropertyChanged;
+    event PropertyChangedEventHandler? PropertyChanged;
     /// <summary>
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    System.Reflection.PropertyInfo GetPropertyInfo();
+    System.Reflection.PropertyInfo? GetPropertyInfo();
     /// <summary>
     /// Gets the value of the TextSeparator
     /// </summary>
-    string TextSeparator { get;}
+    string TextSeparator { get; }
   }
 }

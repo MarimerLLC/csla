@@ -20,10 +20,11 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="action">Authorization action</param>
     /// <param name="objectType">Business object type</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public CslaPermissionRequirement(Rules.AuthorizationActions action, Type objectType)
     {
       Action = action;
-      ObjectType = objectType;
+      ObjectType = objectType ?? throw new ArgumentNullException(nameof(objectType));
     }
 
     /// <summary>

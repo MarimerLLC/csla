@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Globalization;
 using Csla.Rules;
 
 namespace Csla.Blazor
@@ -31,18 +32,21 @@ namespace Csla.Blazor
     /// <param name="model">Model object</param>
     /// <param name="propertyName">Property name</param>
     /// <param name="textSeprator">Text Seprator</param>
+    /// <exception cref="ArgumentNullException"><paramref name="model"/> or <paramref name="textSeprator"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public PropertyInfo(object model, string propertyName, string textSeprator = " ")
     {
-      Model = model;
+      ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+      Model = model ?? throw new ArgumentNullException(nameof(model));
       PropertyName = propertyName;
       if (Model is INotifyPropertyChanged npc)
       {
         npc.PropertyChanged += Npc_PropertyChanged;
       }
-      TextSeparator = textSeprator;
+      TextSeparator = textSeprator ?? throw new ArgumentNullException(nameof(textSeprator));
     }
 
-    private void Npc_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void Npc_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       if (e.PropertyName == "IsBusy")
         OnPropertyChanged(nameof(IsBusy));
@@ -61,7 +65,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets or sets the value of the property
     /// </summary>
-    public object Value
+    public object? Value
     {
       get => Utilities.CallByName(Model, PropertyName, CallType.Get);
       set => Utilities.CallByName(Model, PropertyName, CallType.Set, value);
@@ -74,7 +78,7 @@ namespace Csla.Blazor
     {
       get
       {
-        var pi = Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(Model.GetType(), PropertyName);
+        var pi = Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(Model.GetType(), PropertyName) ?? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.PropertyNameDoesNotExist, PropertyName));
         return pi.FriendlyName;
       }
     }
@@ -192,7 +196,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Event raised when a property changes.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private void OnPropertyChanged(string propertyName)
     {
@@ -203,7 +207,7 @@ namespace Csla.Blazor
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
-    public System.Reflection.PropertyInfo GetPropertyInfo() 
+    public System.Reflection.PropertyInfo? GetPropertyInfo()
       => Model.GetType().GetProperty(PropertyName);
   }
 }

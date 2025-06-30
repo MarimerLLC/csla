@@ -9,7 +9,6 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
@@ -30,9 +29,10 @@ namespace Csla.Blazor
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ViewModel(ApplicationContext applicationContext)
     {
-      ApplicationContext = applicationContext;
+      ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     #region Events
@@ -40,43 +40,44 @@ namespace Csla.Blazor
     /// <summary>
     /// Event raised after Model has been saved.
     /// </summary>
-    public event Action Saved;
+    public event Action? Saved;
     /// <summary>
     /// Event raised when failed to save Model.
     /// </summary>
-    public event EventHandler<Core.ErrorEventArgs> Error;
+    public event EventHandler<Core.ErrorEventArgs>? Error;
     /// <summary>
     /// Event raised when Model is changing.
     /// </summary>
-    public event Action<T, T> ModelChanging;
+    public event Action<T?, T?>? ModelChanging;
     /// <summary>
     /// Event raised when Model has changed.
     /// </summary>
-    public event Action ModelChanged;
+    public event Action? ModelChanged;
     /// <summary>
     /// Event raised when the Model object
     /// raises its PropertyChanged event.
     /// </summary>
-    public event PropertyChangedEventHandler ModelPropertyChanged;
+    public event PropertyChangedEventHandler? ModelPropertyChanged;
     /// <summary>
     /// Event raised when the Model object
     /// raises its ModelChildChanged event.
     /// </summary>
-    public event Action<object, ChildChangedEventArgs> ModelChildChanged;
+    public event Action<object, ChildChangedEventArgs>? ModelChildChanged;
     /// <summary>
     /// Event raised when the Model object
     /// raises its ModelCollectionChanged event.
     /// </summary>
-    public event Action<object, NotifyCollectionChangedEventArgs> ModelCollectionChanged;
+    public event Action<object, NotifyCollectionChangedEventArgs>? ModelCollectionChanged;
 
     /// <summary>
     /// Raises the ModelChanging event.
     /// </summary>
     /// <param name="oldValue">Old Model value</param>
     /// <param name="newValue">New Model value</param>
-    protected virtual void OnModelChanging(T oldValue, T newValue)
+    protected virtual void OnModelChanging(T? oldValue, T? newValue)
     {
-      if (ReferenceEquals(oldValue, newValue)) return;
+      if (ReferenceEquals(oldValue, newValue))
+        return;
 
       if (ManageObjectLifetime && newValue is ISupportUndo undo)
         undo.BeginEdit();
@@ -108,7 +109,7 @@ namespace Csla.Blazor
     /// Unhooks changed event handlers from the model.
     /// </summary>
     /// <param name="model"></param>
-    protected void UnhookChangedEvents(T model)
+    protected void UnhookChangedEvents(T? model)
     {
       if (model is INotifyPropertyChanged npc)
         npc.PropertyChanged -= OnModelPropertyChanged;
@@ -124,7 +125,7 @@ namespace Csla.Blazor
     /// Hooks changed events on the model.
     /// </summary>
     /// <param name="model"></param>
-    private void HookChangedEvents(T model)
+    private void HookChangedEvents(T? model)
     {
       if (model is INotifyPropertyChanged npc)
         npc.PropertyChanged += OnModelPropertyChanged;
@@ -157,7 +158,7 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    protected virtual void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+    protected virtual void OnModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       ModelPropertyChanged?.Invoke(this, e);
     }
@@ -167,7 +168,7 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    protected virtual void OnModelChildChanged(object sender, ChildChangedEventArgs e)
+    protected virtual void OnModelChildChanged(object? sender, ChildChangedEventArgs e)
     {
       ModelChildChanged?.Invoke(this, e);
     }
@@ -177,7 +178,7 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    protected virtual void OnModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    protected virtual void OnModelCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
       ModelCollectionChanged?.Invoke(this, e);
     }
@@ -190,10 +191,13 @@ namespace Csla.Blazor
     /// Refresh the Model.
     /// </summary>
     /// <param name="factory">Async data portal or factory method</param>
-    public async Task<T> RefreshAsync(Func<Task<T>> factory)
+    /// <exception cref="ArgumentNullException"><paramref name="factory"/> is <see langword="null"/>.</exception>
+    public async Task<T?> RefreshAsync(Func<Task<T?>> factory)
     {
+      ArgumentNullException.ThrowIfNull(factory);
+
       Exception = null;
-      ViewModelErrorText = null;
+      ViewModelErrorText = string.Empty;
       try
       {
         IsBusy = true;
@@ -250,7 +254,7 @@ namespace Csla.Blazor
     public async Task SaveAsync(CancellationToken ct)
     {
       Exception = null;
-      ViewModelErrorText = null;
+      ViewModelErrorText = string.Empty;
       try
       {
         if (Model is ITrackStatus obj && !obj.IsSavable)
@@ -283,7 +287,7 @@ namespace Csla.Blazor
             undoable.ApplyEdit();
 
           // clone the object if possible
-          if (Model is ICloneable clonable)
+          if (savable is ICloneable clonable)
             savable = (ISavable)clonable.Clone();
         }
 
@@ -323,7 +327,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Override to provide custom Model save behavior.
     /// </summary>
-    protected virtual async Task<T> DoSaveAsync(ISavable cloned)
+    protected virtual async Task<T?> DoSaveAsync(ISavable? cloned)
     {
       if (cloned != null)
       {
@@ -364,11 +368,11 @@ namespace Csla.Blazor
 
     #region Properties
 
-    private T _model;
+    private T? _model;
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model
+    public T? Model
     {
       get => _model;
       set
@@ -407,10 +411,10 @@ namespace Csla.Blazor
     /// to the meta-state of the property.
     /// </summary>
     /// <param name="property">Property expression</param>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public IPropertyInfo GetPropertyInfo<P>(Expression<Func<P>> property)
     {
-      if (property == null)
-        throw new ArgumentNullException(nameof(property));
+      ArgumentNullException.ThrowIfNull(property);
 
       var keyName = property.GetKey();
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
@@ -424,10 +428,11 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="property">Property expression</param>
     /// <param name="textSeparator">text seprator for concatenating errors </param>
+    /// <exception cref="ArgumentNullException"><paramref name="textSeparator"/> or <paramref name="property"/> is <see langword="null"/>.</exception>
     public IPropertyInfo GetPropertyInfo<P>(string textSeparator, Expression<Func<P>> property)
     {
-      if (property == null)
-        throw new ArgumentNullException(nameof(property));
+      ArgumentNullException.ThrowIfNull(textSeparator);
+      ArgumentNullException.ThrowIfNull(property);
 
       var keyName = property.GetKey();
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
@@ -441,10 +446,10 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="property">Property expression</param>
     /// <param name="id">Unique identifier for property in list or array</param>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
     public IPropertyInfo GetPropertyInfo<P>(Expression<Func<P>> property, string id)
     {
-      if (property == null)
-        throw new ArgumentNullException(nameof(property));
+      ArgumentNullException.ThrowIfNull(property);
 
       var keyName = property.GetKey() + $"[{id}]";
       var identifier = Microsoft.AspNetCore.Components.Forms.FieldIdentifier.Create(property);
@@ -457,8 +462,13 @@ namespace Csla.Blazor
     /// to the meta-state of the property.
     /// </summary>
     /// <param name="propertyName">Property name</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Model"/> is <see langword="null"/>.</exception>
     public IPropertyInfo GetPropertyInfo(string propertyName)
     {
+      ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+      _ = Model ?? throw new InvalidOperationException($"{nameof(Model)} == null");
+
       var keyName = Model.GetType().FullName + "." + propertyName;
       return GetPropertyInfo(keyName, Model, propertyName, " ");
     }
@@ -470,8 +480,13 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="propertyName">Property name</param>
     /// <param name="id">Unique identifier for property in list or array</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Model"/> is <see langword="null"/>.</exception>
     public IPropertyInfo GetPropertyInfo(string propertyName, string id)
     {
+      ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+      _ = Model ?? throw new InvalidOperationException($"{nameof(Model)} == null");
+
       var keyName = Model.GetType().FullName + "." + propertyName + $"[{id}]";
       return GetPropertyInfo(keyName, Model, propertyName, " ");
     }
@@ -485,7 +500,7 @@ namespace Csla.Blazor
         return result;
       }
 
-      result = new PropertyInfo(model, propertyName,textSeparator);
+      result = new PropertyInfo(model, propertyName, textSeparator);
       _propertyInfoCache.Add(keyName, result);
       return result;
     }
@@ -497,7 +512,7 @@ namespace Csla.Blazor
     /// <summary>
     /// Gets any error text generated by refresh or save operations.
     /// </summary>
-    public string ViewModelErrorText { get; protected set; }
+    public string ViewModelErrorText { get; protected set; } = string.Empty;
 
     /// <summary>
     /// Gets the first validation error 
@@ -520,7 +535,7 @@ namespace Csla.Blazor
     /// the view model during refresh or save
     /// operations.
     /// </summary>
-    public Exception Exception { get; private set; }
+    public Exception? Exception { get; private set; }
 
     #endregion
 

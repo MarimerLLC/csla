@@ -27,18 +27,45 @@ namespace Csla.Xaml
     /// The control that raised the event that
     /// triggered invocation of this method.
     /// </summary>
-    public FrameworkElement TriggerSource { get; set; }
+    public FrameworkElement? TriggerSource { get; }
 #endif
-      /// <summary>
+    /// <summary>
     /// The MethodParameter value provided by
     /// the designer.
     /// </summary>
-    public object MethodParameter { get; set; }
+    public object? MethodParameter { get; }
     /// <summary>
     /// The EventArgs parameter from the event
     /// that triggered invocation of this method.
     /// </summary>
-    public object TriggerParameter { get; set; }
+    public object? TriggerParameter { get; }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="ExecuteEventArgs"/>.
+    /// </summary>
+    /// <param name="methodParameter">The method parameter.</param>
+    public ExecuteEventArgs(object? methodParameter) : this(methodParameter, null, null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="ExecuteEventArgs"/>.
+    /// </summary>
+    /// <param name="methodParameter">The method parameter.</param>
+    /// <param name="triggerParameter">The trigger parameter.</param>
+    /// <param name="triggerSource">The trigger source (only available in non Android and IOS environment).</param>
+    public ExecuteEventArgs(object? methodParameter, object? triggerParameter
+#if !ANDROID && !IOS
+    , FrameworkElement? triggerSource
+#endif
+    )
+    {
+      MethodParameter = methodParameter;
+      TriggerParameter = triggerParameter;
+#if !ANDROID && !IOS
+      TriggerSource = triggerSource;
+#endif
+    }
   }
 }
 #endif

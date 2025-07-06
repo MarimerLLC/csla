@@ -23,6 +23,6 @@ namespace Csla.Xaml
     /// Gets or sets the Model property
     /// of the viewmodel object.
     /// </summary>
-    object Model { get; set; }
+    object? Model { get; set; }
   }
 }

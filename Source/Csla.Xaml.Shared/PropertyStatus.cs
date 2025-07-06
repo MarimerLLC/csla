@@ -35,7 +35,7 @@ namespace Csla.Xaml
   [TemplateVisualState(Name = "Information", GroupName = "CommonStates")]
   public class PropertyStatus : ContentControl, INotifyPropertyChanged
   {
-    private FrameworkElement _lastImage;
+    private FrameworkElement? _lastImage;
     private Point _lastPosition;
     private Point _popupLastPosition;
     private Size _lastAppSize;
@@ -59,7 +59,7 @@ namespace Csla.Xaml
     /// </summary>
     public PropertyStatus()
     {
-      BrokenRules = new ObservableCollection<BrokenRule>();
+      SetValue(BrokenRulesProperty, new ObservableCollection<BrokenRule>());
       DefaultStyleKey = typeof(PropertyStatus);
       IsTabStop = false;
 
@@ -83,7 +83,8 @@ namespace Csla.Xaml
                               };
       DataContextChanged += (_, e) =>
       {
-        if (!_loading) SetSource(e.NewValue);
+        if (!_loading)
+          SetSource(e.NewValue);
       };
     }
 
@@ -96,9 +97,9 @@ namespace Csla.Xaml
       UpdateState();
     }
 
-#endregion
+    #endregion
 
-#region Source property
+    #region Source property
 
     /// <summary>
     /// Gets or sets the source business
@@ -128,7 +129,7 @@ namespace Csla.Xaml
     /// property to which this control is bound.
     /// </summary>
     [Category("Common")]
-    public object Property
+    public object? Property
     {
       get => GetValue(PropertyProperty);
       set => SetValue(PropertyProperty, value);
@@ -138,7 +139,7 @@ namespace Csla.Xaml
     /// Gets or sets the Source.
     /// </summary>
     /// <value>The source.</value>
-    protected object Source { get; set; } = null;
+    protected object? Source { get; set; } = null;
 
     /// <summary>
     /// Gets or sets the binding path.
@@ -166,11 +167,10 @@ namespace Csla.Xaml
       }
     }
 
-
     /// <summary>
     /// Sets the source binding and updates status.
     /// </summary>
-    protected virtual void SetSource(object dataItem)
+    protected virtual void SetSource(object? dataItem)
     {
       SetBindingValues();
       var newSource = GetRealSource(dataItem, BindingPath);
@@ -198,7 +198,7 @@ namespace Csla.Xaml
       var propertyName = string.Empty;
 
       var binding = GetBindingExpression(PropertyProperty);
-      if (binding?.ParentBinding is {Path: not null})
+      if (binding?.ParentBinding is { Path: not null })
       {
         bindingPath = binding.ParentBinding.Path.Path;
 
@@ -217,8 +217,12 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    protected object GetRealSource(object source, string bindingPath)
+    /// <exception cref="ArgumentNullException"><paramref name="bindingPath"/> is <see langword="null"/>.</exception>
+    protected object? GetRealSource(object? source, string bindingPath)
     {
+      if (bindingPath is null)
+        throw new ArgumentNullException(nameof(bindingPath));
+
       var firstProperty = string.Empty;
       var dotIndex = bindingPath.IndexOf('.');
       if (dotIndex > 0)
@@ -229,15 +233,18 @@ namespace Csla.Xaml
       if (source != null && !string.IsNullOrEmpty(firstProperty))
       {
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
-        return GetRealSource(
-          MethodCaller.GetPropertyValue(source, p),
-          bindingPath.Substring(dotIndex + 1));
+        if (p is null)
+        {
+          return null;
+        }
+
+        return GetRealSource(MethodCaller.GetPropertyValue(source, p), bindingPath.Substring(dotIndex + 1));
       }
       else
         return source;
     }
 
-    private void DetachSource(object source)
+    private void DetachSource(object? source)
     {
       if (source is INotifyPropertyChanged p)
         p.PropertyChanged -= source_PropertyChanged;
@@ -247,7 +254,7 @@ namespace Csla.Xaml
       ClearState();
     }
 
-    private void AttachSource(object source)
+    private void AttachSource(object? source)
     {
       if (source is INotifyPropertyChanged p)
         p.PropertyChanged += source_PropertyChanged;
@@ -256,13 +263,13 @@ namespace Csla.Xaml
 
     }
 
-    void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    void source_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       if (e.PropertyName == PropertyName || string.IsNullOrEmpty(e.PropertyName))
         UpdateState();
     }
 
-    void source_BusyChanged(object sender, BusyChangedEventArgs e)
+    void source_BusyChanged(object? sender, BusyChangedEventArgs e)
     {
       if (e.PropertyName == PropertyName || string.IsNullOrEmpty(e.PropertyName))
       {
@@ -278,9 +285,9 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
 
-#region BrokenRules property
+    #region BrokenRules property
 
     /// <summary>
     /// Gets the broken rules collection from the
@@ -300,12 +307,11 @@ namespace Csla.Xaml
     public ObservableCollection<BrokenRule> BrokenRules
     {
       get => (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty);
-      private set => SetValue(BrokenRulesProperty, value);
     }
 
-#endregion
+    #endregion
 
-#region State properties
+    #region State properties
 
     private bool _canRead = true;
     /// <summary>
@@ -423,11 +429,11 @@ namespace Csla.Xaml
       }
     }
 
-#endregion
+    #endregion
 
-#region Image
+    #region Image
 
-    private void EnablePopup(FrameworkElement image)
+    private void EnablePopup(FrameworkElement? image)
     {
       if (image != null)
       {
@@ -436,7 +442,7 @@ namespace Csla.Xaml
       }
     }
 
-    private void DisablePopup(FrameworkElement image)
+    private void DisablePopup(FrameworkElement? image)
     {
       if (image != null)
       {
@@ -447,7 +453,7 @@ namespace Csla.Xaml
 
     private void image_MouseEnter(object sender, MouseEventArgs e)
     {
-      Popup popup = (Popup)FindChild(this, "popup");
+      var popup = (Popup?)FindChild(this, "popup");
       if (popup != null && sender is UIElement element)
       {
         popup.Placement = PlacementMode.Mouse;
@@ -477,28 +483,35 @@ namespace Csla.Xaml
 
     private void image_MouseLeave(object sender, MouseEventArgs e)
     {
-      Popup popup = (Popup)FindChild(this, "popup");
-      popup.IsOpen = false;
+      var popup = (Popup?)FindChild(this, "popup");
+      if (popup is not null)
+      {
+        popup.IsOpen = false;
+      }
     }
 
     void popup_MouseLeave(object sender, MouseEventArgs e)
     {
-      Popup popup = (Popup)FindChild(this, "popup");
-      popup.IsOpen = false;
+      var popup = (Popup?)FindChild(this, "popup");
+      if (popup is not null)
+      {
+        popup.IsOpen = false;
+      }
     }
 
-#endregion
+    #endregion
 
-#region State management
+    #region State management
 
     /// <summary>
     /// Updates the state on control Property.
     /// </summary>
     protected virtual void UpdateState()
     {
-      if (_loading) return;
+      if (_loading)
+        return;
 
-      Popup popup = (Popup)FindChild(this, "popup");
+      var popup = (Popup?)FindChild(this, "popup");
       if (popup != null)
         popup.IsOpen = false;
 
@@ -541,9 +554,9 @@ namespace Csla.Xaml
 
           if (!IsValid)
           {
-            BrokenRule worst = (from r in BrokenRules
-                                orderby r.Severity
-                                select r).FirstOrDefault();
+            BrokenRule? worst = (from r in BrokenRules
+                                 orderby r.Severity
+                                 select r).FirstOrDefault();
 
             if (worst != null)
             {
@@ -569,7 +582,7 @@ namespace Csla.Xaml
     /// <summary>
     /// Contains tha last status on this control
     /// </summary>
-    private string _lastState;
+    private string? _lastState;
 
     /// <summary>
     /// Clears the state.
@@ -588,7 +601,8 @@ namespace Csla.Xaml
     /// <param name="useTransitions">if set to <c>true</c> then use transitions.</param>
     protected virtual void GoToState(bool useTransitions)
     {
-      if (_loading) return;
+      if (_loading)
+        return;
 
       if (FindChild(this, "busy") is BusyAnimation busy)
         busy.IsRunning = IsBusy;
@@ -608,15 +622,15 @@ namespace Csla.Xaml
         VisualStateManager.GoToState(this, newState, useTransitions);
         if (newState != "Busy" && newState != "PropertyValid")
         {
-          _lastImage = (FrameworkElement)FindChild(this, $"{newState.ToLower()}Image");
+          _lastImage = (FrameworkElement?)FindChild(this, $"{newState.ToLower()}Image");
           EnablePopup(_lastImage);
         }
       }
     }
 
-#endregion
+    #endregion
 
-#region Helpers
+    #region Helpers
 
     /// <summary>
     /// Find child dependency property.
@@ -624,44 +638,53 @@ namespace Csla.Xaml
     /// <param name="parent">The parent.</param>
     /// <param name="name">The name.</param>
     /// <returns>DependencyObject child</returns>
-    protected DependencyObject FindChild(DependencyObject parent, string name)
+    /// <exception cref="ArgumentNullException"><paramref name="parent"/> is <see langword="null"/>.</exception>
+    protected DependencyObject? FindChild(DependencyObject parent, string? name)
     {
-      DependencyObject found = null;
+      if (parent is null)
+        throw new ArgumentNullException(nameof(parent));
+
+      DependencyObject? found = null;
       int count = VisualTreeHelper.GetChildrenCount(parent);
       for (int x = 0; x < count; x++)
       {
         DependencyObject child = VisualTreeHelper.GetChild(parent, x);
-        string childName = child.GetValue(NameProperty) as string;
+        string? childName = child.GetValue(NameProperty) as string;
         if (childName == name)
         {
           found = child;
           break;
         }
-        else found = FindChild(child, name);
+        else
+          found = FindChild(child, name);
       }
 
       return found;
     }
 
-#endregion
+    #endregion
 
-#region INotifyPropertyChanged Members
+    #region INotifyPropertyChanged Members
 
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     /// Raises the PropertyChanged event.
     /// </summary>
     /// <param name="propertyName">Name of the changed property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected virtual void OnPropertyChanged(string propertyName)
     {
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

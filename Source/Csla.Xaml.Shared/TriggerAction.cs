@@ -7,9 +7,9 @@
 // <summary>Control used to invoke a method on the DataContext</summary>
 //-----------------------------------------------------------------------
 #define DEBUG
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
-using System.ComponentModel;
 using System.Windows.Data;
 
 namespace Csla.Xaml
@@ -35,7 +35,7 @@ namespace Csla.Xaml
     /// </summary>
     private void CallMethod(object sender, EventArgs e)
     {
-      object target = DataContext;
+      object? target = DataContext;
       if (target is CollectionViewSource cvs && cvs.View != null)
       {
         target = cvs.View.CurrentItem;
@@ -45,7 +45,11 @@ namespace Csla.Xaml
         if (target is ICollectionView icv)
           target = icv.CurrentItem;
       }
-      if (target == null) return; // can be null at design time - so just exit
+      if (target == null)
+        return; // can be null at design time - so just exit
+
+      if (MethodName is null)
+        throw new InvalidOperationException($"{nameof(MethodName)} == null");
 
       var targetMethod = target.GetType().GetMethod(MethodName);
       if (targetMethod == null)
@@ -64,26 +68,19 @@ namespace Csla.Xaml
       }
       else if (pCount == 2)
       {
-        object parameterValue;
+        object? parameterValue;
         if (RebindParameterDynamically)
           parameterValue = GetMethodParameter();
         else
           parameterValue = MethodParameter;
 
-        targetMethod.Invoke(target, [
-          this, new ExecuteEventArgs
-            {
-              MethodParameter = parameterValue,
-              TriggerParameter = e,
-              TriggerSource = TargetControl
-            }
-        ]);
+        targetMethod.Invoke(target, [this, new ExecuteEventArgs(parameterValue, e, TargetControl)]);
       }
       else
         throw new NotSupportedException(Properties.Resources.ExecuteBadParams);
     }
 
-    private void HookEvent(FrameworkElement oldTarget, string oldEvent, FrameworkElement newTarget, string newEvent)
+    private void HookEvent(FrameworkElement? oldTarget, string oldEvent, FrameworkElement? newTarget, string newEvent)
     {
       if (!ReferenceEquals(oldTarget, newTarget) || oldEvent != newEvent)
       {
@@ -92,16 +89,16 @@ namespace Csla.Xaml
           var eventRef = oldTarget.GetType().GetEvent(oldEvent);
           if (eventRef != null)
           {
-            var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
-            var p = invoke.GetParameters();
-            if (p.Length == 2)
+            var invoke = eventRef.EventHandlerType?.GetMethod("Invoke");
+            var p = invoke?.GetParameters();
+            if (p?.Length == 2)
             {
               var p1Type = p[1].ParameterType;
               if (typeof(EventArgs).IsAssignableFrom(p1Type))
               {
-                var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
+                var del = Delegate.CreateDelegate(eventRef.EventHandlerType!,
                   this,
-                  GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                  GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)!);
                 eventRef.RemoveEventHandler(oldTarget, del);
               }
               else
@@ -119,16 +116,16 @@ namespace Csla.Xaml
           var eventRef = newTarget.GetType().GetEvent(newEvent);
           if (eventRef != null)
           {
-            var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
-            var p = invoke.GetParameters();
-            if (p.Length == 2)
+            var invoke = eventRef.EventHandlerType?.GetMethod("Invoke");
+            var p = invoke?.GetParameters();
+            if (p?.Length == 2)
             {
               var p1Type = p[1].ParameterType;
               if (typeof(EventArgs).IsAssignableFrom(p1Type))
               {
-                var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
+                var del = Delegate.CreateDelegate(eventRef.EventHandlerType!,
                   this,
-                  GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                  GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)!);
                 eventRef.AddEventHandler(newTarget, del);
               }
               else
@@ -143,7 +140,7 @@ namespace Csla.Xaml
       }
     }
 
-#region Properties
+    #region Properties
 
     /// <summary>
     /// Gets or sets the target UI control.
@@ -154,15 +151,15 @@ namespace Csla.Xaml
         {
           var ta = (TriggerAction)o;
           ta.HookEvent(
-            (FrameworkElement)e.OldValue, ta.TriggerEvent, (FrameworkElement)e.NewValue, ta.TriggerEvent);
+            (FrameworkElement?)e.OldValue, ta.TriggerEvent, (FrameworkElement?)e.NewValue, ta.TriggerEvent);
         }));
     /// <summary>
     /// Gets or sets the target UI control.
     /// </summary>
     [Category("Common")]
-    public FrameworkElement TargetControl
+    public FrameworkElement? TargetControl
     {
-      get => (FrameworkElement)GetValue(TargetControlProperty);
+      get => (FrameworkElement?)GetValue(TargetControlProperty);
       set => SetValue(TargetControlProperty, value);
     }
 
@@ -181,11 +178,12 @@ namespace Csla.Xaml
     /// Gets or sets the name of the event
     /// that will trigger the action.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><see cref="TriggerEvent"/> is <see langword="null"/>.</exception>
     [Category("Common")]
     public string TriggerEvent
     {
       get => (string)GetValue(TriggerEventProperty);
-      set => SetValue(TriggerEventProperty, value);
+      set => SetValue(TriggerEventProperty, value ?? throw new ArgumentNullException(nameof(TriggerEvent)));
     }
 
     /// <summary>
@@ -200,9 +198,9 @@ namespace Csla.Xaml
     /// to be invoked.
     /// </summary>
     [Category("Common")]
-    public string MethodName
+    public string? MethodName
     {
-      get => (string)GetValue(MethodNameProperty);
+      get => (string?)GetValue(MethodNameProperty);
       set => SetValue(MethodNameProperty, value);
     }
 
@@ -218,7 +216,7 @@ namespace Csla.Xaml
     /// be passed to the invoked method.
     /// </summary>
     [Category("Common")]
-    public object MethodParameter
+    public object? MethodParameter
     {
       get => GetValue(MethodParameterProperty);
       set => SetValue(MethodParameterProperty, value);
@@ -244,11 +242,11 @@ namespace Csla.Xaml
       set => SetValue(RebindParameterDynamicallyProperty, value);
     }
 
-#endregion
+    #endregion
 
-#region GetMethodParameter
+    #region GetMethodParameter
 
-    private object GetMethodParameter()
+    private object? GetMethodParameter()
     {
       var be = GetBindingExpression(MethodParameterProperty);
       if (be != null && be.ParentBinding != null)
@@ -280,7 +278,7 @@ namespace Csla.Xaml
       return result;
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

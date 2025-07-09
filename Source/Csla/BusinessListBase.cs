@@ -6,13 +6,26 @@
 // <summary>This is the base class from which most business collections</summary>
 //-----------------------------------------------------------------------
 
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Csla.Core;
+using Csla.Core.FieldManager;
+using Csla.Core.LoadManager;
 using Csla.Properties;
+using Csla.Reflection;
+using Csla.Rules;
+using Csla.Security;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 
@@ -34,7 +47,13 @@ namespace Csla
       ISavable<T>,
       IDataPortalTarget,
       IBusinessListBase<C>,
-      IUseApplicationContext
+      IUseApplicationContext,
+      INotifyPropertyChanged,
+      IManageProperties,
+      IHostRules,
+      ICheckRules,
+      IUseFieldManager,
+      IUseBusinessRules
     where T : BusinessListBase<T, C>
     where C : IEditableBusinessObject
   {
@@ -60,6 +79,7 @@ namespace Csla
         ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         InitializeIdentity();
         Initialize();
+        InitializeBusinessRules();
         AllowNew = true;
       }
     }
@@ -107,1532 +127,193 @@ namespace Csla
 
     #endregion
 
-    #region ICloneable
+    #region BusinessRules, IsValid
 
-    object ICloneable.Clone()
+    [NonSerialized]
+    [NotUndoable]
+    private EventHandler? _validationCompleteHandlers;
+
+    /// <summary>
+    /// Event raised when validation is complete.
+    /// </summary>
+    public event EventHandler? ValidationComplete
     {
-      return GetClone();
+      add => _validationCompleteHandlers = (EventHandler?)Delegate.Combine(_validationCompleteHandlers, value);
+      remove => _validationCompleteHandlers = (EventHandler?)Delegate.Remove(_validationCompleteHandlers, value);
     }
 
     /// <summary>
-    /// Creates a clone of the object.
+    /// Raises the ValidationComplete event
     /// </summary>
-    /// <returns>A new object containing the exact data of the original object.</returns>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual object GetClone()
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected virtual void OnValidationComplete()
     {
-      return ObjectCloner.GetInstance(ApplicationContext).Clone(this)!;
+      _validationCompleteHandlers?.Invoke(this, EventArgs.Empty);
     }
 
-    /// <summary>
-    /// Creates a clone of the object.
-    /// </summary>
-    /// <returns>A new object containing the exact data of the original object.</returns>
-    public T Clone()
+    private void InitializeBusinessRules()
     {
-      return (T)GetClone();
+      var rules = BusinessRuleManager.GetRulesForType(GetType());
+      if (!rules.Initialized)
+        lock (rules)
+          if (!rules.Initialized)
+          {
+            try
+            {
+              AddBusinessRules();
+              rules.Initialized = true;
+            }
+            catch (Exception)
+            {
+              BusinessRuleManager.CleanupRulesForType(GetType());
+              throw;  // and rethrow exception
+            }
+          }
     }
 
-    #endregion
-
-    #region Delete and Undelete child
-
-    private MobileList<C>? _deletedList;
+    private BusinessRules? _businessRules;
 
     /// <summary>
-    /// A collection containing all child objects marked
-    /// for deletion.
+    /// Provides access to the broken rules functionality.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected MobileList<C> DeletedList
+    /// <remarks>
+    /// This property is used within your business logic so you can
+    /// easily call the AddRule() method to associate business
+    /// rules with your object's properties.
+    /// </remarks>
+    protected BusinessRules BusinessRules
     {
       get
       {
-        if (_deletedList == null)
-          _deletedList = new MobileList<C>();
-        return _deletedList;
+        if (_businessRules == null)
+          _businessRules = new BusinessRules(ApplicationContext, this);
+        else if (_businessRules.Target == null)
+          _businessRules.SetTarget(this);
+        return _businessRules;
       }
     }
 
-    [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList => (IEnumerable<IEditableBusinessObject>)DeletedList;
-
-    private void DeleteChild(C child)
-    {
-      // set child edit level
-      UndoableBase.ResetChildEditLevel(child, EditLevel, false);
-
-      // mark the object as deleted
-      child.DeleteChild();
-      // and add it to the deleted collection for storage
-      DeletedList.Add(child);
-    }
-
-    private void UnDeleteChild(C child)
-    {
-      // since the object is no longer deleted, remove it from
-      // the deleted collection
-      DeletedList.Remove(child);
-
-      // we are inserting an _existing_ object so
-      // we need to preserve the object's editleveladded value
-      // because it will be changed by the normal add process
-      int saveLevel = child.EditLevelAdded;
-
-      Add(child);
-      child.EditLevelAdded = saveLevel;
-    }
+    BusinessRules IUseBusinessRules.BusinessRules => BusinessRules;
 
     /// <summary>
-    /// Returns true if the internal deleted list
-    /// contains the specified child object.
+    /// Gets the registered rules. Only for unit testing and not visible to code. 
     /// </summary>
-    /// <param name="item">Child object to check.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public bool ContainsDeleted(C item)
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    protected BusinessRuleManager GetRegisteredRules()
     {
-      if (item is null)
-        throw new ArgumentNullException(nameof(item));
-
-      return DeletedList.Contains(item);
-    }
-
-    #endregion
-
-    #region Begin/Cancel/ApplyEdit
-
-    /// <summary>
-    /// Starts a nested edit on the object.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// When this method is called the object takes a snapshot of
-    /// its current state (the values of its variables). This snapshot
-    /// can be restored by calling <see cref="CancelEdit" />
-    /// or committed by calling <see cref="ApplyEdit" />.
-    /// </para><para>
-    /// This is a nested operation. Each call to BeginEdit adds a new
-    /// snapshot of the object's state to a stack. You should ensure that 
-    /// for each call to BeginEdit there is a corresponding call to either 
-    /// CancelEdit or ApplyEdit to remove that snapshot from the stack.
-    /// </para><para>
-    /// See Chapters 2 and 3 for details on n-level undo and state stacking.
-    /// </para><para>
-    /// This method triggers the copying of all child object states.
-    /// </para>
-    /// </remarks>
-    public void BeginEdit()
-    {
-      if (IsChild)
-        throw new NotSupportedException(Resources.NoBeginEditChildException);
-
-      CopyState(EditLevel + 1);
-    }
-
-    /// <summary>
-    /// Cancels the current edit process, restoring the object's state to
-    /// its previous values.
-    /// </summary>
-    /// <remarks>
-    /// Calling this method causes the most recently taken snapshot of the 
-    /// object's state to be restored. This resets the object's values
-    /// to the point of the last <see cref="BeginEdit" />
-    /// call.
-    /// <para>
-    /// This method triggers an undo in all child objects.
-    /// </para>
-    /// </remarks>
-    public void CancelEdit()
-    {
-      if (IsChild)
-        throw new NotSupportedException(Resources.NoCancelEditChildException);
-
-      UndoChanges(EditLevel - 1);
-    }
-
-    /// <summary>
-    /// Commits the current edit process.
-    /// </summary>
-    /// <remarks>
-    /// Calling this method causes the most recently taken snapshot of the 
-    /// object's state to be discarded, thus committing any changes made
-    /// to the object's state since the last 
-    /// <see cref="BeginEdit" /> call.
-    /// <para>
-    /// This method triggers an <see cref="Core.BusinessBase.ApplyEdit"/>
-    ///  in all child objects.
-    /// </para>
-    /// </remarks>
-    public void ApplyEdit()
-    {
-      if (IsChild)
-        throw new NotSupportedException(Resources.NoApplyEditChildException);
-
-      AcceptChanges(EditLevel - 1);
+      return BusinessRules.TypeRules;
     }
 
     /// <inheritdoc />
-    Task IParent.ApplyEditChild(IEditableBusinessObject child)
+    void IHostRules.RuleStart(IPropertyInfo property)
     {
-      if (child is null)
-        throw new ArgumentNullException(nameof(child));
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
 
-      EditChildComplete(child);
-      return Task.CompletedTask;
+      OnBusyChanged(new BusyChangedEventArgs(property.Name, true));
     }
 
-    IParent? IParent.Parent => Parent;
-
-    /// <summary>
-    /// Override this method to be notified when a child object's
-    /// <see cref="Core.BusinessBase.ApplyEdit" /> method has
-    /// completed.
-    /// </summary>
-    /// <param name="child">The child object that was edited.</param>
-    protected virtual void EditChildComplete(IEditableBusinessObject child)
+    /// <inheritdoc />
+    void IHostRules.RuleComplete(IPropertyInfo property)
     {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
 
-      // do nothing, we don't really care
-      // when a child has its edits applied
+      OnPropertyChanged(property);
+      OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
+      MetaPropertyHasChanged("IsSelfValid");
+      MetaPropertyHasChanged("IsValid");
+      MetaPropertyHasChanged("IsSavable");
     }
 
-    #endregion
-
-    #region Insert, Remove, Clear
-
-    /// <summary>
-    /// Override this method to create a new object that is added
-    /// to the collection. 
-    /// </summary>
-    protected override C AddNewCore()
+    /// <inheritdoc />
+    void IHostRules.RuleComplete(string property)
     {
-      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
-      var item = dp.CreateChild();
-      Add(item);
-      return item;
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
+      OnPropertyChanged(property);
+      MetaPropertyHasChanged("IsSelfValid");
+      MetaPropertyHasChanged("IsValid");
+      MetaPropertyHasChanged("IsSavable");
     }
 
-    /// <summary>
-    /// Override this method to create a new object that is added
-    /// to the collection. 
-    /// </summary>
-    protected override async Task<C> AddNewCoreAsync()
+    /// <inheritdoc />
+    void IHostRules.AllRulesComplete()
     {
-      var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
-      var item = await dp.CreateChildAsync();
-      Add(item);
-      return item;
+      OnValidationComplete();
+      MetaPropertyHasChanged("IsSelfValid");
+      MetaPropertyHasChanged("IsValid");
+      MetaPropertyHasChanged("IsSavable");
     }
 
     /// <summary>
-    /// This method is called by a child object when it
-    /// wants to be removed from the collection.
-    /// </summary>
-    /// <param name="child">The child object to remove.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
-    void IEditableCollection.RemoveChild(IEditableBusinessObject child)
-    {
-      if (child is null)
-        throw new ArgumentNullException(nameof(child));
-
-      Remove((C)child);
-    }
-
-    object IEditableCollection.GetDeletedList()
-    {
-      return DeletedList;
-    }
-
-    /// <summary>
-    /// This method is called by a child object when it
-    /// wants to be removed from the collection.
-    /// </summary>
-    /// <param name="child">The child object to remove.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
-    Task IParent.RemoveChild(IEditableBusinessObject child)
-    {
-      if (child is null)
-        throw new ArgumentNullException(nameof(child));
-
-      Remove((C)child);
-      return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Sets the edit level of the child object as it is added.
-    /// </summary>
-    /// <param name="index">Index of the item to insert.</param>
-    /// <param name="item">Item to insert.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
-    protected override void InsertItem(int index, C item)
-    {
-      if (item is null)
-        throw new ArgumentNullException(nameof(item));
-
-      if (item.IsChild)
-      {
-        IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
-
-        // set parent reference
-        item.SetParent(this);
-        // ensure child uses same context as parent
-        if (item is IUseApplicationContext iuac)
-          iuac.ApplicationContext = ApplicationContext;
-        // set child edit level
-        UndoableBase.ResetChildEditLevel(item, EditLevel, false);
-        // when an object is inserted we assume it is
-        // a new object and so the edit level when it was
-        // added must be set
-        item.EditLevelAdded = EditLevel;
-        base.InsertItem(index, item);
-      }
-      else
-      {
-        // item must be marked as a child object
-        throw new InvalidOperationException(Resources.ListItemNotAChildException);
-      }
-    }
-
-    /// <summary>
-    /// Marks the child object for deletion and moves it to
-    /// the collection of deleted objects.
-    /// </summary>
-    /// <param name="index">Index of the item to remove.</param>
-    protected override void RemoveItem(int index)
-    {
-      // when an object is 'removed' it is really
-      // being deleted, so do the deletion work
-      C child = this[index];
-      using (LoadListMode)
-      {
-        base.RemoveItem(index);
-      }
-      if (!_completelyRemoveChild)
-      {
-        // the child shouldn't be completely removed,
-        // so copy it to the deleted list
-        DeleteChild(child);
-      }
-      if (RaiseListChangedEvents)
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
-    }
-
-    /// <summary>
-    /// Replaces the item at the specified index with
-    /// the specified item, first moving the original
-    /// item to the deleted list.
-    /// </summary>
-    /// <param name="index">The zero-based index of the item to replace.</param>
-    /// <param name="item">
-    /// The new value for the item at the specified index. 
-    /// The value can be null for reference types.
-    /// </param>
-    /// <remarks></remarks>
-    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
-    protected override void SetItem(int index, C item)
-    {
-      if (item is null)
-        throw new ArgumentNullException(nameof(item));
-
-      C? child = default;
-      if (!(ReferenceEquals(this[index], item)))
-        child = this[index];
-      // replace the original object with this new
-      // object
-      using (LoadListMode)
-      {
-        if (child != null)
-          DeleteChild(child);
-      }
-
-      // set parent reference
-      item.SetParent(this);
-      // set child edit level
-      UndoableBase.ResetChildEditLevel(item, EditLevel, false);
-      // reset EditLevelAdded 
-      item.EditLevelAdded = EditLevel;
-      // add to list and raise list changed as appropriate
-      base.SetItem(index, item);
-    }
-
-    /// <summary>
-    /// Clears the collection, moving all active
-    /// items to the deleted list.
-    /// </summary>
-    protected override void ClearItems()
-    {
-      while (Count > 0) RemoveItem(0);
-      //DeferredLoadIndexIfNotLoaded();
-      //_indexSet.ClearIndexes();
-      //DeferredLoadPositionMapIfNotLoaded();
-      //_positionMap.ClearMap();
-      base.ClearItems();
-    }
-
-    #endregion
-
-    #region Edit level tracking
-
-    // keep track of how many edit levels we have
-
-    /// <summary>
-    /// Returns the current edit level of the object.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected int EditLevel { get; private set; }
-
-    int IUndoableObject.EditLevel => EditLevel;
-
-    #endregion
-
-    #region N-level undo
-
-    void IUndoableObject.CopyState(int parentEditLevel, bool parentBindingEdit)
-    {
-      if (!parentBindingEdit)
-        CopyState(parentEditLevel);
-    }
-
-    void IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)
-    {
-      if (!parentBindingEdit)
-        UndoChanges(parentEditLevel);
-    }
-
-    void IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)
-    {
-      if (!parentBindingEdit)
-        AcceptChanges(parentEditLevel);
-    }
-
-    private void CopyState(int parentEditLevel)
-    {
-      if (EditLevel + 1 > parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "CopyState"), GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel - 1);
-
-      // we are going a level deeper in editing
-      EditLevel += 1;
-
-      // cascade the call to all child objects
-      for (int x = 0; x < Count; x++)
-      {
-        C child = this[x];
-        child.CopyState(EditLevel, false);
-      }
-
-      // cascade the call to all deleted child objects
-      foreach (C child in DeletedList)
-        child.CopyState(EditLevel, false);
-    }
-
-    private bool _completelyRemoveChild;
-
-    private void UndoChanges(int parentEditLevel)
-    {
-      C child;
-
-      if (EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "UndoChanges"), GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
-
-      // we are coming up one edit level
-      EditLevel -= 1;
-      if (EditLevel < 0) EditLevel = 0;
-
-      using (LoadListMode)
-      {
-        try
-        {
-          // Cancel edit on all current items
-          for (int index = Count - 1; index >= 0; index--)
-          {
-            child = this[index];
-
-            //ACE: Important, make sure to remove the item prior to
-            //     it going through undo, otherwise, it will
-            //     incur a more expensive RemoveByReference operation
-            //DeferredLoadIndexIfNotLoaded();
-            //_indexSet.RemoveItem(child);
-
-            child.UndoChanges(EditLevel, false);
-
-            //ACE: Now that we have undone the changes, we can add the item
-            //     back in the index.
-            //_indexSet.InsertItem(child);
-
-            // if item is below its point of addition, remove
-            if (child.EditLevelAdded > EditLevel)
-            {
-              bool oldAllowRemove = AllowRemove;
-              try
-              {
-                AllowRemove = true;
-                _completelyRemoveChild = true;
-                //RemoveIndexItem(child);
-                RemoveAt(index);
-              }
-              finally
-              {
-                _completelyRemoveChild = false;
-                AllowRemove = oldAllowRemove;
-              }
-            }
-          }
-
-          // cancel edit on all deleted items
-          for (int index = DeletedList.Count - 1; index >= 0; index--)
-          {
-            child = DeletedList[index];
-            child.UndoChanges(EditLevel, false);
-            if (child.EditLevelAdded > EditLevel)
-            {
-              // if item is below its point of addition, remove
-              DeletedList.RemoveAt(index);
-            }
-            else
-            {
-              // if item is no longer deleted move back to main list
-              if (!child.IsDeleted) UnDeleteChild(child);
-            }
-          }
-        }
-        finally
-        {
-          OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-      }
-    }
-
-    private void AcceptChanges(int parentEditLevel)
-    {
-      if (EditLevel - 1 != parentEditLevel)
-        throw new UndoException(string.Format(Resources.EditLevelMismatchException, "AcceptChanges"), GetType().Name, _parent?.GetType().Name, EditLevel, parentEditLevel + 1);
-
-      // we are coming up one edit level
-      EditLevel -= 1;
-
-      // cascade the call to all child objects
-      foreach (C child in this)
-      {
-        child.AcceptChanges(EditLevel, false);
-        // if item is below its point of addition, lower point of addition
-        if (child.EditLevelAdded > EditLevel) child.EditLevelAdded = EditLevel;
-      }
-
-      // cascade the call to all deleted child objects
-      for (int index = DeletedList.Count - 1; index >= 0; index--)
-      {
-        C child = DeletedList[index];
-        child.AcceptChanges(EditLevel, false);
-        // if item is below its point of addition, remove
-        if (child.EditLevelAdded > EditLevel)
-          DeletedList.RemoveAt(index);
-      }
-      if (EditLevel < 0) EditLevel = 0;
-    }
-
-    #endregion
-
-    #region Mobile Object overrides
-
-    /// <summary>
-    /// Method called by MobileFormatter when an object
-    /// should serialize its data. The data should be
-    /// serialized into the SerializationInfo parameter.
-    /// </summary>
-    /// <param name="info">
-    /// Object to contain the serialized data.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
-    protected override void OnGetState(SerializationInfo info)
-    {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-
-      info.AddValue("Csla.BusinessListBase._isChild", _isChild);
-      info.AddValue("Csla.BusinessListBase._editLevel", EditLevel);
-      info.AddValue("Csla.Core.BusinessBase._identity", _identity);
-      info.AddValue("Csla.BusinessListBase._isNew", _isNew);
-      info.AddValue("Csla.BusinessListBase._isDeleted", _isDeleted);
-      info.AddValue("Csla.BusinessListBase._isDirty", _isDirty);
-      base.OnGetState(info);
-    }
-
-    /// <summary>
-    /// Method called by MobileFormatter when an object
-    /// should be deserialized. The data should be
-    /// deserialized from the SerializationInfo parameter.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the serialized data.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
-    protected override void OnSetState(SerializationInfo info)
-    {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-
-      _isChild = info.GetValue<bool>("Csla.BusinessListBase._isChild");
-      EditLevel = info.GetValue<int>("Csla.BusinessListBase._editLevel");
-      _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
-      _isNew = info.GetValue<bool>("Csla.BusinessListBase._isNew");
-      _isDeleted = info.GetValue<bool>("Csla.BusinessListBase._isDeleted");
-      _isDirty = info.GetValue<bool>("Csla.BusinessListBase._isDirty");
-      base.OnSetState(info);
-    }
-
-    /// <summary>
-    /// Method called by MobileFormatter when an object
-    /// should serialize its child references. The data should be
-    /// serialized into the SerializationInfo parameter.
-    /// </summary>
-    /// <param name="info">
-    /// Object to contain the serialized data.
-    /// </param>
-    /// <param name="formatter">
-    /// Reference to the formatter performing the serialization.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="formatter"/> is <see langword="null"/>.</exception>
-    protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-      if (formatter is null)
-        throw new ArgumentNullException(nameof(formatter));
-
-      base.OnGetChildren(info, formatter);
-      if (_deletedList != null)
-      {
-        var fieldManagerInfo = formatter.SerializeObject(_deletedList);
-        info.AddChild("_deletedList", fieldManagerInfo.ReferenceId);
-      }
-    }
-
-    /// <summary>
-    /// Method called by MobileFormatter when an object
-    /// should deserialize its child references. The data should be
-    /// deserialized from the SerializationInfo parameter.
-    /// </summary>
-    /// <param name="info">
-    /// Object containing the serialized data.
-    /// </param>
-    /// <param name="formatter">
-    /// Reference to the formatter performing the deserialization.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="info"/> or <paramref name="formatter"/> is <see langword="null"/>.</exception>
-    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
-    {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-      if (formatter is null)
-        throw new ArgumentNullException(nameof(formatter));
-
-      if (info.Children.TryGetValue("_deletedList", out var child))
-      {
-        _deletedList = (MobileList<C>?)formatter.GetObject(child.ReferenceId);
-      }
-      base.OnSetChildren(info, formatter);
-    }
-
-    #endregion
-
-    #region IsChild
-
-    [NotUndoable]
-    private bool _isChild = false;
-
-    /// <summary>
-    /// Indicates whether this collection object is a child object.
-    /// </summary>
-    /// <returns>True if this is a child object.</returns>
-    public bool IsChild => _isChild;
-
-    /// <summary>
-    /// Marks the object as being a child object.
+    /// Override this method in your business class to
+    /// be notified when you need to set up shared 
+    /// business rules.
     /// </summary>
     /// <remarks>
-    /// <para>
-    /// By default all business objects are 'parent' objects. This means
-    /// that they can be directly retrieved and updated into the database.
-    /// </para><para>
-    /// We often also need child objects. These are objects which are contained
-    /// within other objects. For instance, a parent Invoice object will contain
-    /// child LineItem objects.
-    /// </para><para>
-    /// To create a child object, the MarkAsChild method must be called as the
-    /// object is created. Please see Chapter 7 for details on the use of the
-    /// MarkAsChild method.
-    /// </para>
+    /// This method is automatically called by CSLA .NET
+    /// when your object should associate per-type 
+    /// validation rules with its properties.
     /// </remarks>
-    protected void MarkAsChild()
+    protected virtual void AddBusinessRules()
     {
-      _identity = -1;
-      _isChild = true;
+      BusinessRules.AddDataAnnotations();
+    }
+
+    /// <summary>
+    /// Raises OnPropertyChanged for meta properties (IsXYZ) when PropertyChangedMode is not Windows
+    /// </summary>
+    /// <param name="name">meta property name that has cchanged.</param>
+    protected virtual void MetaPropertyHasChanged(string name)
+    {
+      if (ApplicationContext.PropertyChangedMode != ApplicationContext.PropertyChangedModes.Windows)
+        OnMetaPropertyChanged(name);
     }
 
     #endregion
 
-    #region IsDirty, IsValid, IsSavable
-
-    /// <summary>
-    /// Await this method to ensure business object is not busy.
-    /// </summary>
-    public async Task WaitForIdle()
-    {
-      var cslaOptions = ApplicationContext.GetRequiredService<Configuration.CslaOptions>();
-      await WaitForIdle(TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds)).ConfigureAwait(false);
-    }
-
-    /// <summary>
-    /// Gets a value indicating whether this object's data has been changed.
-    /// </summary>
-    bool ITrackStatus.IsSelfDirty => IsDirty;
-
-    /// <summary>
-    /// Gets a value indicating whether this object's data has been changed.
-    /// </summary>
-    public virtual bool IsDirty
-    {
-      get
-      {
-        // any non-new deletions make us dirty
-        foreach (C item in DeletedList)
-          if (!item.IsNew)
-            return true;
-
-        // run through all the child objects
-        // and if any are dirty then then
-        // collection is dirty
-        foreach (C child in this)
-          if (child.IsDirty)
-            return true;
-        return false;
-      }
-    }
-
-    bool ITrackStatus.IsSelfValid => IsSelfValid;
-
-    /// <summary>
-    /// Gets a value indicating whether this object is currently in
-    /// a valid state (has no broken validation rules).
-    /// </summary>
-    protected virtual bool IsSelfValid => IsValid;
-
-    /// <summary>
-    /// Gets a value indicating whether this object is currently in
-    /// a valid state (has no broken validation rules).
-    /// </summary>
-    public virtual bool IsValid
-    {
-      get
-      {
-        // run through all the child objects
-        // and if any are invalid then the
-        // collection is invalid
-        foreach (C child in this)
-          if (!child.IsValid)
-            return false;
-        return true;
-      }
-    }
-
-    /// <summary>
-    /// Returns true if this object has changes, is valid,
-    /// the user is authorized and the object is not busy.
-    /// </summary>
-    public virtual bool IsSavable
-    {
-      get
-      {
-        var result = IsDirty && IsValid && !IsBusy;
-        if (result)
-          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
-
-        return result;
-      }
-    }
-
-    /// <summary>
-    /// Gets the busy status for this object and its child objects.
-    /// </summary>
-    public override bool IsBusy
-    {
-      get
-      {
-        // run through all the child objects
-        // and if any are busy then then
-        // collection is busy
-        foreach (C item in DeletedList)
-          if (item.IsBusy)
-            return true;
-
-        foreach (C child in this)
-          if (child.IsBusy)
-            return true;
-
-        return false;
-      }
-    }
-
-    #endregion
-
-    #region Metastate
-
-    [NonSerialized]
-    private bool _isNew = true;
-    [NonSerialized]
-    private bool _isDeleted = false;
-    [NonSerialized]
-    private bool _isDirty = false;
-
-    /// <summary>
-    /// Gets a value indicating whether this object is new.
-    /// </summary>
-    public virtual bool IsNew => _isNew;
-
-    /// <summary>
-    /// Gets a value indicating whether this object is marked for deletion.
-    /// </summary>
-    public virtual bool IsDeleted => _isDeleted;
-
-    /// <summary>
-    /// Gets a value indicating whether this object's data has been changed (self only).
-    /// </summary>
-    public virtual bool IsSelfDirty => _isDirty;
-
-    /// <summary>
-    /// Marks the object as new.
-    /// </summary>
-    public virtual void MarkNew()
-    {
-      _isNew = true;
-      _isDeleted = false;
-      _isDirty = true;
-    }
-
-    /// <summary>
-    /// Marks the object as old.
-    /// </summary>
-    public virtual void MarkOld()
-    {
-      _isNew = false;
-      _isDirty = false;
-    }
-
-    /// <summary>
-    /// Marks the object as deleted.
-    /// </summary>
-    public virtual void MarkDeleted()
-    {
-      _isDeleted = true;
-      _isDirty = true;
-    }
-
-    /// <summary>
-    /// Marks the object as dirty.
-    /// </summary>
-    public virtual void MarkDirty(bool force = true)
-    {
-      _isDirty = force;
-    }
-
-    #endregion
-
-    #region  ITrackStatus
-
-    bool ITrackStatus.IsNew => false;
-
-    bool ITrackStatus.IsDeleted => false;
-
-    #endregion
-
-    #region  Child Data Access
-
-    /// <summary>
-    /// Initializes a new instance of the object
-    /// with default values.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Child_Create()
-    { /* do nothing - list self-initializes */ }
-
-    /// <summary>
-    /// Saves all items in the list, automatically
-    /// performing insert, update or delete operations
-    /// as necessary.
-    /// </summary>
-    /// <param name="parameters">
-    /// Optional parameters passed to child update
-    /// methods.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Child_Update(params object?[] parameters)
-    {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
-
-      using (LoadListMode)
-      {
-        var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
-        foreach (var child in DeletedList)
-          dp.UpdateChild(child, parameters);
-        DeletedList.Clear();
-
-        foreach (var child in this)
-          if (child.IsDirty) dp.UpdateChild(child, parameters);
-      }
-    }
-
-    /// <summary>
-    /// Asynchronously saves all items in the list, automatically
-    /// performing insert, update or delete operations as necessary.
-    /// </summary>
-    /// <param name="parameters">
-    /// Optional parameters passed to child update
-    /// methods.
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="parameters"/> is <see langword="null"/>.</exception>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    [UpdateChild]
-    protected virtual async Task Child_UpdateAsync(params object?[] parameters)
-    {
-      if (parameters is null)
-        throw new ArgumentNullException(nameof(parameters));
-
-      using (LoadListMode)
-      {
-        var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
-        foreach (var child in DeletedList)
-          await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
-        DeletedList.Clear();
-
-        foreach (var child in this)
-          if (child.IsDirty) await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
-      }
-    }
-
-    #endregion
-
-    #region Data Access
-
-    /// <summary>
-    /// Saves the object to the database.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// Calling this method starts the save operation, causing the all child
-    /// objects to be inserted, updated or deleted within the database based on the
-    /// each object's current state.
-    /// </para><para>
-    /// All this is contingent on <see cref="IsDirty" />. If
-    /// this value is false, no data operation occurs. 
-    /// It is also contingent on <see cref="IsValid" />. If this value is 
-    /// false an exception will be thrown to 
-    /// indicate that the UI attempted to save an invalid object.
-    /// </para><para>
-    /// It is important to note that this method returns a new version of the
-    /// business collection that contains any data updated during the save operation.
-    /// You MUST update all object references to use this new version of the
-    /// business collection in order to have access to the correct object data.
-    /// </para><para>
-    /// You can override this method to add your own custom behaviors to the save
-    /// operation. For instance, you may add some security checks to make sure
-    /// the user can save the object. If all security checks pass, you would then
-    /// invoke the base Save method via <c>MyBase.Save()</c>.
-    /// </para>
-    /// </remarks>
-    /// <returns>A new object containing the saved values.</returns>
-    public T Save()
-    {
-      try
-      {
-        return SaveAsync(null, true).Result;
-      }
-      catch (AggregateException ex)
-      {
-        if (ex.InnerExceptions.Count > 0)
-          throw ex.InnerExceptions[0];
-        else
-          throw;
-      }
-    }
-
-    /// <summary>
-    /// Saves the object to the database.
-    /// </summary>
-    public async Task<T> SaveAsync()
-    {
-      return await SaveAsync(null, false);
-    }
-
-    /// <summary>
-    /// Saves the object to the database.
-    /// </summary>
-    /// <param name="userState">User state data.</param>
-    /// <param name="isSync">True if the save operation should be synchronous.</param>
-    protected virtual async Task<T> SaveAsync(object? userState, bool isSync)
-    {
-      T result;
-      if (IsChild)
-        throw new InvalidOperationException(Resources.NoSaveChildException);
-
-      if (EditLevel > 0)
-        throw new InvalidOperationException(Resources.NoSaveEditingException);
-
-      if (!IsValid)
-        throw new Rules.ValidationException(Resources.NoSaveInvalidException);
-
-      if (IsBusy)
-        throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);
-
-      if (IsDirty)
-      {
-        var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
-        if (isSync)
-        {
-          result = dp.Update((T)this);
-        }
-        else
-        {
-          result = await dp.UpdateAsync((T)this);
-        }
-      }
-      else
-      {
-        result = (T)this;
-      }
-      OnSaved(result, null, userState);
-      return result;
-    }
-
-    /// <summary>
-    /// Saves the object to the database, merging
-    /// any resulting updates into the existing
-    /// object graph.
-    /// </summary>
-    public async Task SaveAndMergeAsync()
-    {
-      await new GraphMerger(ApplicationContext).MergeBusinessListGraphAsync<T, C>((T)this, await SaveAsync());
-    }
-
-    /// <summary>
-    /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_xyz method.
-    /// </summary>
-    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
-    { }
-
-    /// <summary>
-    /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_xyz method.
-    /// </summary>
-    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    { }
-
-    /// <summary>
-    /// Called by the server-side DataPortal if an exception
-    /// occurs during data access.
-    /// </summary>
-    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    /// <param name="ex">The Exception thrown during data access.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    { }
-
-    /// <summary>
-    /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_XYZ method.
-    /// </summary>
-    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Child_OnDataPortalInvoke(DataPortalEventArgs e)
-    { }
-
-    /// <summary>
-    /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_XYZ method.
-    /// </summary>
-    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    { }
-
-    /// <summary>
-    /// Called by the server-side DataPortal if an exception
-    /// occurs during data access.
-    /// </summary>
-    /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
-    /// <param name="ex">The Exception thrown during data access.</param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    { }
-
-    #endregion
-
-    #region ISavable Members
-
-    object ISavable.Save()
-    {
-      return Save();
-    }
-
-    object ISavable.Save(bool forceUpdate)
-    {
-      return Save();
-    }
-
-    async Task<object> ISavable.SaveAsync()
-    {
-      return await SaveAsync();
-    }
-
-    async Task<object> ISavable.SaveAsync(bool forceUpdate)
-    {
-      return await SaveAsync();
-    }
-
-    Task ISavable.SaveAndMergeAsync(bool forceUpdate)
-    {
-      return SaveAndMergeAsync();
-    }
-
-    void ISavable.SaveComplete(object newObject)
-    {
-      OnSaved((T)newObject, null, null);
-    }
-
-    T ISavable<T>.Save(bool forceUpdate)
-    {
-      return Save();
-    }
-
-    async Task<T> ISavable<T>.SaveAsync(bool forceUpdate)
-    {
-      return await SaveAsync();
-    }
-
-    Task ISavable<T>.SaveAndMergeAsync(bool forceUpdate)
-    {
-      return SaveAndMergeAsync();
-    }
-
-    void ISavable<T>.SaveComplete(T newObject)
-    {
-      OnSaved(newObject, null, null);
-    }
+    #region INotifyPropertyChanged
 
     [NonSerialized]
     [NotUndoable]
-    private EventHandler<SavedEventArgs>? _nonSerializableSavedHandlers;
+    private PropertyChangedEventHandler? _nonSerializableChangedHandlers;
     [NotUndoable]
-    private EventHandler<SavedEventArgs>? _serializableSavedHandlers;
+    private PropertyChangedEventHandler? _serializableChangedHandlers;
 
     /// <summary>
-    /// Event raised when an object has been saved.
+    /// Event raised when a property value has changed.
     /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
-    public event EventHandler<SavedEventArgs>? Saved
+    public new event PropertyChangedEventHandler? PropertyChanged
     {
       add
       {
         if (value is null)
           return;
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Combine(_serializableSavedHandlers, value);
+          _serializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Combine(_serializableChangedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Combine(_nonSerializableSavedHandlers, value);
+          _nonSerializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Combine(_nonSerializableChangedHandlers, value);
       }
       remove
       {
         if (value is null)
           return;
         if (value.Method.IsPublic)
-          _serializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_serializableSavedHandlers, value);
+          _serializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Remove(_serializableChangedHandlers, value);
         else
-          _nonSerializableSavedHandlers = (EventHandler<SavedEventArgs>?)Delegate.Remove(_nonSerializableSavedHandlers, value);
+          _nonSerializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Remove(_nonSerializableChangedHandlers, value);
       }
     }
 
     /// <summary>
-    /// Raises the Saved event, indicating that the
-    /// object has been saved, and providing a reference
-    /// to the new object instance.
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
     /// </summary>
-    /// <param name="newObject">The new object instance.</param>
-    /// <param name="e">Exception that occurred during operation.</param>
-    /// <param name="userState">User state object.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected virtual void OnSaved(T newObject, Exception? e, object? userState)
-    {
-      if (newObject is null)
-        throw new ArgumentNullException(nameof(newObject));
-      SavedEventArgs args = new SavedEventArgs(newObject, e, userState);
-      _nonSerializableSavedHandlers?.Invoke(this, args);
-      _serializableSavedHandlers?.Invoke(this, args);
-    }
-
-    #endregion
-
-    #region  Parent/Child link
-
-    [NotUndoable, NonSerialized]
-    private IParent? _parent;
-
-    /// <summary>
-    /// Provide access to the parent reference for use
-    /// in child object code.
-    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has changed.</param>
     /// <remarks>
-    /// This value will be Nothing for root objects.
-    /// </remarks>
-    [Browsable(false)]
-    [Display(AutoGenerateField = false)]
-    [ScaffoldColumn(false)]
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
-    public IParent? Parent => _parent;
-
-    /// <summary>
-    /// Used by BusinessListBase as a child object is 
-    /// created to tell the child object about its
-    /// parent.
-    /// </summary>
-    /// <param name="parent">A reference to the parent collection object.</param>
-    protected virtual void SetParent(IParent? parent)
-    {
-      // ensure parent & _identity manager not null for case to check
-      if (parent != null && _identityManager != null)
-      {
-        // changed GetNextIdentity to accept optional parameter to return next identity
-        int current = _identityManager.GetNextIdentity();
-        // attempt to find case where we decrement next identity so none are skipped - not necessary
-        if (current > 0)
-          --current;
-
-        // ensure parent next identity accounts for this (child collection) next identity
-        parent.GetNextIdentity(current);
-
-        _parent = parent;
-        _identityManager = null;
-      }
-      else
-      {
-        // case when current identity manager has next identity of > 1
-        // parent next identity incremented by 1 not accounting for this (child collection) next identity
-        _parent = parent;
-        _identityManager = null;
-        InitializeIdentity();
-      }
-    }
-
-    /// <summary>
-    /// Used by BusinessListBase as a child object is 
-    /// created to tell the child object about its
-    /// parent.
-    /// </summary>
-    /// <param name="parent">A reference to the parent collection object.</param>
-    void IEditableCollection.SetParent(IParent? parent)
-    {
-      SetParent(parent);
-    }
-
-    #endregion
-
-    #region IDataPortalTarget Members
-
-    void IDataPortalTarget.CheckRules()
-    { }
-
-    Task IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
-
-    void IDataPortalTarget.MarkAsChild()
-    {
-      MarkAsChild();
-    }
-
-    void IDataPortalTarget.MarkNew()
-    {
-      MarkNew();
-    }
-
-    void IDataPortalTarget.MarkOld()
-    {
-      MarkOld();
-    }
-
-    void IDataPortalTarget.DataPortal_OnDataPortalInvoke(DataPortalEventArgs e)
-    {
-      DataPortal_OnDataPortalInvoke(e);
-    }
-
-    void IDataPortalTarget.DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    {
-      DataPortal_OnDataPortalInvokeComplete(e);
-    }
-
-    void IDataPortalTarget.DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    {
-      DataPortal_OnDataPortalException(e, ex);
-    }
-
-    void IDataPortalTarget.Child_OnDataPortalInvoke(DataPortalEventArgs e)
-    {
-      Child_OnDataPortalInvoke(e);
-    }
-
-    void IDataPortalTarget.Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
-    {
-      Child_OnDataPortalInvokeComplete(e);
-    }
-
-    void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
-    {
-      Child_OnDataPortalException(e, ex);
-    }
-
-    #endregion
-
-    #region Object ID Value
-
-    /// <summary>
-    /// Override this method to return a unique identifying value for this object.
-    /// </summary>
-    protected virtual object? GetIdValue()
-    {
-      return null;
-    }
-
-    #endregion
-
-    #region System.Object Overrides
-
-    /// <summary>
-    /// Returns a text representation of this object by
-    /// returning the <see cref="GetIdValue"/> value
-    /// in text form.
-    /// </summary>
-    public override string ToString()
-    {
-      object? id = GetIdValue();
-      if (id == null)
-        return base.ToString() ?? string.Empty;
-      else
-        return id.ToString() ?? string.Empty;
-    }
-
-    #endregion
-
-    #region Register Properties/Methods
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property.</typeparam>
-    /// <param name="info">PropertyInfo object for the property.</param>
-    /// <returns>The provided IPropertyInfo object.</returns>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> info)
-    {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
-    }
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyName">Property name from nameof()</param>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName)
-    {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
-      return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
-    }
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property</typeparam>
-    /// <param name="propertyLambdaExpression">Property Expression</param>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(System.Linq.Expressions.Expression<Func<T, object>> propertyLambdaExpression)
-    {
-      if (propertyLambdaExpression is null)
-        throw new ArgumentNullException(nameof(propertyLambdaExpression));
-      var reflectedPropertyInfo = Csla.Reflection.Reflect<T>.GetProperty(propertyLambdaExpression);
-      return RegisterProperty<P>(reflectedPropertyInfo.Name);
-    }
-
-    /// <summary>
-    /// Registers a method for use in Authorization.
-    /// </summary>
-    /// <param name="methodName">Method name from nameof()</param>
-    protected static System.Reflection.MethodInfo RegisterMethod(string methodName)
-    {
-      if (methodName is null)
-        throw new ArgumentNullException(nameof(methodName));
-      return Csla.Reflection.MethodCaller.GetMethod(typeof(T), methodName)!;
-    }
-
-    /// <summary>
-    /// Registers a method for use in Authorization.
-    /// </summary>
-    /// <param name="methodLambdaExpression">The method lambda expression.</param>
-    protected static System.Reflection.MethodInfo RegisterMethod(System.Linq.Expressions.Expression<System.Action<T>> methodLambdaExpression)
-    {
-      if (methodLambdaExpression is null)
-        throw new ArgumentNullException(nameof(methodLambdaExpression));
-      var reflectedMethodInfo = Csla.Reflection.Reflect<T>.GetMethod(methodLambdaExpression);
-      return RegisterMethod(reflectedMethodInfo.Name);
-    }
-
-    #endregion
-
-    #region Property Management Methods
-
-    /// <summary>
-    /// Gets the value of a property.
-    /// </summary>
-    /// <typeparam name="P">Type of the property.</typeparam>
-    /// <param name="propertyInfo">Property information object.</param>
-    /// <returns>The value of the property.</returns>
-    protected P? GetProperty<P>(PropertyInfo<P> propertyInfo)
-    {
-      return ((IManageProperties)this).GetProperty(propertyInfo) is P value ? value : default;
-    }
-
-    /// <summary>
-    /// Sets the value of a property.
-    /// </summary>
-    /// <typeparam name="P">Type of the property.</typeparam>
-    /// <param name="propertyInfo">Property information object.</param>
-    /// <param name="value">The value to set.</param>
-    protected void SetProperty<P>(PropertyInfo<P> propertyInfo, P value)
-    {
-      ((IManageProperties)this).SetProperty(propertyInfo, value);
-    }
-
-    /// <summary>
-    /// Loads the value of a property.
-    /// </summary>
-    /// <typeparam name="P">Type of the property.</typeparam>
-    /// <param name="propertyInfo">Property information object.</param>
-    /// <param name="value">The value to load.</param>
-    protected void LoadProperty<P>(PropertyInfo<P> propertyInfo, P value)
-    {
-      ((IManageProperties)this).LoadProperty(propertyInfo, value);
-    }
-
-    /// <summary>
-    /// Reads the value of a property.
-    /// </summary>
-    /// <typeparam name="P">Type of the property.</typeparam>
-    /// <param name="propertyInfo">Property information object.</param>
-    /// <returns>The value of the property.</returns>
-    protected P? ReadProperty<P>(PropertyInfo<P> propertyInfo)
-    {
-      return ((IManageProperties)this).ReadProperty(propertyInfo);
-    }
-
-    #endregion
-
-    #region Events
-
-    /// <summary>
-    /// Occurs when the list changes.
-    /// </summary>
-    public event ListChangedEventHandler? ListChanged;
-
-    /// <summary>
-    /// Raises the ListChanged event.
-    /// </summary>
-    /// <param name="e">The event args.</param>
-    protected virtual void OnListChanged(ListChangedEventArgs e)
-    {
-      ListChanged?.Invoke(this, e);
-    }
-
-    /// <summary>
-    /// Occurs when a child object has changed.
-    /// </summary>
-    public new event EventHandler<ChildChangedEventArgs>? ChildChanged;
-
-    /// <summary>
-    /// Raises the ChildChanged event.
-    /// </summary>
-    /// <param name="e">The event args.</param>
-    protected override void OnChildChanged(ChildChangedEventArgs e)
-    {
-      ChildChanged?.Invoke(this, e);
-      base.OnChildChanged(e);
-    }
-
-    #endregion
-
-    #region BypassPropertyChecks
-
-    [NonSerialized]
-    [NotUndoable]
-    private bool _bypassPropertyChecks = false;
-    [NonSerialized]
-    [NotUndoable]
-    private BypassPropertyChecksObject? _bypassPropertyChecksObject = null;
-
-    /// <summary>
-    /// By wrapping this property inside a using block
-    /// you can set property values on current business object
-    /// without raising PropertyChanged events
-    /// and checking user rights.
-    /// </summary>
-    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-    protected internal BypassPropertyChecksObject BypassPropertyChecks
-    {
-      get
-      {
-        if (_bypassPropertyChecksObject == null)
-          _bypassPropertyChecksObject = new BypassPropertyChecksObject(this);
-        return _bypassPropertyChecksObject;
-      }
-    }
-
-    /// <summary>
-    /// Class that allows setting of property values on 
-    /// current business object
-    /// without raising PropertyChanged events
-    /// and checking user rights.
-    /// </summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    protected internal class BypassPropertyChecksObject : IDisposable
-    {
-      private readonly BusinessListBase<T, C> _businessObject;
-      private bool _disposed;
-      public BypassPropertyChecksObject(BusinessListBase<T, C> businessObject)
-      {
-        _businessObject = businessObject;
-        _businessObject._bypassPropertyChecks = true;
-      }
-      public void Dispose()
-      {
-        if (!_disposed)
-        {
-          _businessObject._bypassPropertyChecks = false;
-          _disposed = true;
-        }
-      }
-      public static BypassPropertyChecksObject GetManager(BusinessListBase<T, C> businessObject)
-      {
-        return new BypassPropertyChecksObject(businessObject);
-      }
-    }
-    #endregion
-  }
-}
+    /// This method may be called by properties in the business
+    /// class to indicate

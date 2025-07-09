@@ -533,4 +533,10 @@
     <value>No business object instance was provided for authorization action {0} of type {1}.</value>
     <comment>0 - auth action, 1 - bo type</comment>
   </data>
+  <data name="SessionManagerSessionStateCouldNotBeRetrieved" xml:space="preserve">
+    <value>The json result from state controller '{0}' could not be deserialized as `{1}`.</value>
+  </data>
+  <data name="WasmApplicationContextManagerSessionNotRetrieved" xml:space="preserve">
+    <value>The session is not available. Please ensure to call `{0}` in your component.</value>
+  </data>
 </root>

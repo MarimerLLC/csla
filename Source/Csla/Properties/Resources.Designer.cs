@@ -1033,6 +1033,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The json result from state controller &apos;{0}&apos; could not be deserialized as `{1}`..
+        /// </summary>
+        public static string SessionManagerSessionStateCouldNotBeRetrieved {
+            get {
+                return ResourceManager.GetString("SessionManagerSessionStateCouldNotBeRetrieved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to t.
         /// </summary>
         public static string SmartDateT {
@@ -1281,6 +1290,15 @@ namespace Csla.Properties {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The session is not available. Please ensure to call `{0}` in your component..
+        /// </summary>
+        public static string WasmApplicationContextManagerSessionNotRetrieved {
+            get {
+                return ResourceManager.GetString("WasmApplicationContextManagerSessionNotRetrieved", resourceCulture);
             }
         }
     }

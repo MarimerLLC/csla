@@ -1249,6 +1249,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The model type must be either of type {0} or {1} to be used as a collection type..
+        /// </summary>
+        public static string UnsupportedXamlListTypeForModel {
+            get {
+                return ResourceManager.GetString("UnsupportedXamlListTypeForModel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update method name not specified in MobileFactory attribute.
         /// </summary>
         public static string UpdateMethodNameNotSpecified {

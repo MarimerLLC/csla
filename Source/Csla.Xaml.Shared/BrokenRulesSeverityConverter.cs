@@ -6,11 +6,11 @@
 // </copyright>
 // <summary>Converts validation severity values into corresponding</summary>
 //-----------------------------------------------------------------------
-using Csla.Rules;
-using System.Windows.Resources;
-using System.Windows.Media.Imaging;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Media.Imaging;
+using System.Windows.Resources;
+using Csla.Rules;
 
 namespace Csla.Xaml
 {
@@ -28,16 +28,21 @@ namespace Csla.Xaml
     /// <param name="targetType">Desired output type (ignored).</param>
     /// <param name="parameter">Extra parameter (ignored).</param>
     /// <param name="culture">Desired culture (ignored).</param>
-    public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    /// <exception cref="ArgumentException"><paramref name="value"/> is <see langword="null"/> or not of type <see cref="RuleSeverity"/>.</exception>
+    public object? Convert(object? value, Type? targetType, object? parameter, System.Globalization.CultureInfo? culture)
     {
-      RuleSeverity severity = (RuleSeverity)value;
+      if (value is not RuleSeverity severity)
+      {
+        throw new ArgumentException($"{value?.GetType().ToString()} != typeof({nameof(RuleSeverity)})", nameof(value));
+      }
+
       string uri = $"/Csla.Xaml;component/Resources/{severity}.png";
       StreamResourceInfo sr = Application.GetResourceStream(new Uri(uri, UriKind.Relative));
       BitmapImage bmp = new BitmapImage();
       bmp.BeginInit();
       bmp.StreamSource = sr.Stream;
       bmp.EndInit();
-      
+
       return bmp;
     }
 
@@ -48,7 +53,7 @@ namespace Csla.Xaml
     /// <param name="targetType">Desired output type (ignored).</param>
     /// <param name="parameter">Extra parameter (ignored).</param>
     /// <param name="culture">Desired culture (ignored).</param>
-    public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+    public object? ConvertBack(object? value, Type? targetType, object? parameter, System.Globalization.CultureInfo? culture)
     {
       return RuleSeverity.Error;
     }

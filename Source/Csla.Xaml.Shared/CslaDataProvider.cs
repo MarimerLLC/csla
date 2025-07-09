@@ -9,11 +9,11 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Data;
 using System.Reflection;
+using System.Windows.Data;
 using Csla.Core;
-using Csla.Reflection;
 using Csla.Properties;
+using Csla.Reflection;
 
 namespace Csla.Xaml
 {
@@ -37,7 +37,8 @@ namespace Csla.Xaml
     /// <summary>
     /// Event raised when the object has been saved.
     /// </summary>
-    public event EventHandler<SavedEventArgs> Saved;
+    public event EventHandler<SavedEventArgs>? Saved;
+
     /// <summary>
     /// Raise the Saved event when the object has been saved.
     /// </summary>
@@ -46,23 +47,26 @@ namespace Csla.Xaml
     /// <param name="error">Reference to an exception object if
     /// an error occurred.</param>
     /// <param name="userState">Reference to a userstate object.</param>
-    protected virtual void OnSaved(object newObject, Exception error, object userState)
+    /// <exception cref="ArgumentNullException"><paramref name="newObject"/> is <see langword="null"/>.</exception>
+    protected virtual void OnSaved(object newObject, Exception? error, object? userState)
     {
+      if (newObject is null)
+        throw new ArgumentNullException(nameof(newObject));
+
       Saved?.Invoke(this, new SavedEventArgs(newObject, error, userState));
     }
 
-    void _factoryParameters_CollectionChanged(
-      object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    void _factoryParameters_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
     {
       BeginQuery();
     }
 
-#region Properties
+    #region Properties
 
-    private Type _objectType = null;
+    private Type? _objectType = null;
     private bool _manageLifetime;
     private string _factoryMethod = string.Empty;
-    private ObservableCollection<object> _factoryParameters;
+    private readonly ObservableCollection<object> _factoryParameters;
     private bool _isBusy;
 
     /// <summary>
@@ -76,11 +80,11 @@ namespace Csla.Xaml
     /// Gets or sets the type of object 
     /// to create an instance of.
     /// </summary>
-    public Type ObjectType
+    public Type? ObjectType
     {
       get => _objectType;
-      set 
-      { 
+      set
+      {
         _objectType = value;
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectType"));
       }
@@ -102,7 +106,7 @@ namespace Csla.Xaml
       }
     }
 
-    private object _dataChangedHandler;
+    private object? _dataChangedHandler;
 
     /// <summary>
     /// Gets or sets a reference to an object that
@@ -113,7 +117,7 @@ namespace Csla.Xaml
     /// This property is designed to 
     /// reference an IErrorDialog control.
     /// </remarks>
-    public object DataChangedHandler
+    public object? DataChangedHandler
     {
       get => _dataChangedHandler;
       set
@@ -131,12 +135,13 @@ namespace Csla.Xaml
     /// that should be called to create the
     /// object instance.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><see cref="FactoryMethod"/> is <see langword="null"/>.</exception>
     public string FactoryMethod
     {
       get => _factoryMethod;
       set
       {
-        _factoryMethod = value;
+        _factoryMethod = value ?? throw new ArgumentNullException(nameof(FactoryMethod));
         OnPropertyChanged(new PropertyChangedEventArgs("FactoryMethod"));
       }
     }
@@ -158,10 +163,10 @@ namespace Csla.Xaml
     /// Gets or sets a reference to the data
     /// object.
     /// </summary>
-    public object ObjectInstance
+    public object? ObjectInstance
     {
       get => Data;
-      set 
+      set
       {
         OnQueryFinished(value, null, null, null);
         OnPropertyChanged(new PropertyChangedEventArgs("ObjectInstance"));
@@ -187,14 +192,14 @@ namespace Csla.Xaml
     /// </summary>
     public void Rebind()
     {
-      object tmp = ObjectInstance;
+      object? tmp = ObjectInstance;
       ObjectInstance = null;
       ObjectInstance = tmp;
     }
 
-#endregion
+    #endregion
 
-#region Query
+    #region Query
 
     private bool _firstRun = true;
     private bool _init = false;
@@ -251,11 +256,13 @@ namespace Csla.Xaml
       if (IsRefreshDeferred)
         return;
 
-      QueryRequest request = new QueryRequest();
-      request.ObjectType = _objectType;
-      request.FactoryMethod = _factoryMethod;
-      request.FactoryParameters = _factoryParameters;
-      request.ManageObjectLifetime = _manageLifetime;
+      QueryRequest request = new QueryRequest
+      {
+        ObjectType = _objectType ?? throw new InvalidOperationException($"{nameof(ObjectType)} == null"),
+        FactoryMethod = _factoryMethod,
+        FactoryParameters = _factoryParameters,
+        ManageObjectLifetime = _manageLifetime
+      };
 
       IsBusy = true;
 
@@ -271,10 +278,14 @@ namespace Csla.Xaml
     /// </summary>
     /// <typeparam name="T">Type of ObjectInstance</typeparam>
     /// <param name="factory">Sync data portal or factory method</param>
+    /// <exception cref="ArgumentNullException"><paramref name="factory"/> is <see langword="null"/>.</exception>
     public void Refresh<T>(Func<T> factory)
     {
-      T result = default(T);
-      Exception exceptionResult = null;
+      if (factory is null)
+        throw new ArgumentNullException(nameof(factory));
+
+      T? result = default;
+      Exception? exceptionResult = null;
 
       // invoke factory method
       try
@@ -301,10 +312,9 @@ namespace Csla.Xaml
         exceptionResult = ex;
       }
 
-      if (ManageObjectLifetime && result != null)
+      if (ManageObjectLifetime && result is ISupportUndo undo)
       {
-        if (result is ISupportUndo undo)
-          undo.BeginEdit();
+        undo.BeginEdit();
       }
 
       if (!_endInitCompete && exceptionResult != null)
@@ -321,10 +331,13 @@ namespace Csla.Xaml
     /// <typeparam name="T">Type of ObjectInstance</typeparam>
     /// <param name="factory">Async data portal or factory method</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous refresh operation.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="factory"/> is <see langword="null"/>.</exception>
     public async Task Refresh<T>(Func<Task<T>> factory)
     {
-      T result = default(T);
-      Exception exceptionResult = null;
+      if (factory is null)
+        throw new ArgumentNullException(nameof(factory));
+      T? result = default;
+      Exception? exceptionResult = null;
 
       // invoke factory method
       try
@@ -372,20 +385,22 @@ namespace Csla.Xaml
     /// This method is called either on the UI thread or a background thread depending on the IsAsynchronous property.
     /// It invokes the specified factory method, manages exceptions, and updates the data provider's state accordingly.
     /// </remarks>
-    private void DoQuery(object state)
+    private void DoQuery(object? state)
     {
-      QueryRequest request = (QueryRequest)state;
-      object result = null;
-      Exception exceptionResult = null;
+      if (state is not QueryRequest request)
+      {
+        throw new InvalidOperationException($"Internal exception: State must have been provided as an instance of type {nameof(QueryRequest)}. This should not have happened.");
+      }
+
+      object? result = null;
+      Exception? exceptionResult = null;
       object[] parameters = request.FactoryParameters.ToArray();
 
       try
       {
         // get factory method info
         BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;
-        System.Reflection.MethodInfo factory = request.ObjectType.GetMethod(
-          request.FactoryMethod, flags, null, 
-          MethodCaller.GetParameterTypes(parameters), null);
+        System.Reflection.MethodInfo? factory = request.ObjectType.GetMethod(request.FactoryMethod, flags, null, MethodCaller.GetParameterTypes(parameters), null);
 
         if (factory == null)
         {
@@ -406,8 +421,7 @@ namespace Csla.Xaml
         {
           // no matching factory could be found
           // so throw exception
-          throw new InvalidOperationException(
-            string.Format(Resources.NoSuchFactoryMethod, request.FactoryMethod));
+          throw new InvalidOperationException(string.Format(Resources.NoSuchFactoryMethod, request.FactoryMethod));
         }
 
         // invoke factory method
@@ -454,52 +468,31 @@ namespace Csla.Xaml
     }
 
 
-#region QueryRequest Class
+    #region QueryRequest Class
 
     private class QueryRequest
     {
-      private Type _objectType;
+      public required Type ObjectType { get; set; }
 
-      public Type ObjectType
-      {
-        get => _objectType;
-        set => _objectType = value;
-      }
+      public required string FactoryMethod { get; set; }
 
-      public Func<object[], Task<object>> Factory {  get; set; }
-
-      private string _factoryMethod;
-
-      public string FactoryMethod
-      {
-        get => _factoryMethod;
-        set => _factoryMethod = value;
-      }
-
-      private ObservableCollection<object> _factoryParameters;
+      private ObservableCollection<object> _factoryParameters = [];
 
       public ObservableCollection<object> FactoryParameters
       {
         get => _factoryParameters;
-        set =>
-          _factoryParameters = 
-            new ObservableCollection<object>([..value]);
+        set => _factoryParameters = new ObservableCollection<object>([.. value]);
       }
-      private bool _manageLifetime;
 
-      public bool ManageObjectLifetime
-      {
-        get => _manageLifetime;
-        set => _manageLifetime = value;
-      }
+      public bool ManageObjectLifetime { get; set; }
 
     }
 
-#endregion
+    #endregion
 
-#endregion
+    #endregion
 
-#region Cancel/Update/New/Remove  
+    #region Cancel/Update/New/Remove  
 
     /// <summary>
     /// Cancels changes to the business object, returning
@@ -547,7 +540,7 @@ namespace Csla.Xaml
       if (Data is ISavable savable)
       {
         object result = savable;
-        Exception exceptionResult = null;
+        Exception? exceptionResult = null;
         try
         {
           IsBusy = true;
@@ -572,9 +565,8 @@ namespace Csla.Xaml
           }
 
           // start editing the resulting object
-          undo = result as ISupportUndo;
-          if (undo != null && _manageLifetime)
-            undo.BeginEdit();
+          if (result is ISupportUndo undo2 && _manageLifetime)
+            undo2.BeginEdit();
         }
         catch (Exception ex)
         {
@@ -594,7 +586,7 @@ namespace Csla.Xaml
     /// Adds a new item to the object if the object
     /// implements IBindingList and AllowNew is true.
     /// </summary>
-    public object AddNew()
+    public object? AddNew()
     {
       // only do something if the object implements
       // IBindingList
@@ -614,12 +606,16 @@ namespace Csla.Xaml
     /// ExecuteEventArgs, where MethodParameter contains 
     /// the item to be removed from the list.
     /// </param>
-    public void RemoveItem(object sender, ExecuteEventArgs e)
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
+    public void RemoveItem(object? sender, ExecuteEventArgs e)
     {
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
       var item = e.MethodParameter;
       // only do something if the object implements
       // IBindingList
-      IBindingList list;
+      IBindingList? list;
       if (item is BusinessBase bb)
         list = bb.Parent as IBindingList;
       else
@@ -628,7 +624,7 @@ namespace Csla.Xaml
         list.Remove(item);
     }
 
-#endregion
+    #endregion
 
   }
 }

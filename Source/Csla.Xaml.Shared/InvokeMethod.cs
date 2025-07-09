@@ -6,8 +6,8 @@
 // </copyright>
 // <summary>Invokes a method on a target object when a </summary>
 //-----------------------------------------------------------------------
-using System.Windows;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Csla.Xaml
 {
@@ -18,7 +18,7 @@ namespace Csla.Xaml
   /// </summary>
   public class InvokeMethod : FrameworkElement
   {
-#region Attached properties
+    #region Attached properties
 
     /// <summary>
     /// Object containing the method to be invoked.
@@ -34,8 +34,12 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetTarget(UIElement ctrl, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
+    public static void SetTarget(UIElement ctrl, object? value)
     {
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+
       ctrl.SetValue(TargetProperty, value);
     }
 
@@ -43,13 +47,16 @@ namespace Csla.Xaml
     /// Gets the object containing the method to be invoked.
     /// </summary>
     /// <param name="ctrl">Attached control</param>
-    public static object GetTarget(UIElement ctrl)
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
+    public static object? GetTarget(UIElement ctrl)
     {
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+
       var result = ctrl.GetValue(TargetProperty);
-      if (result == null)
+      if (result == null && ctrl is FrameworkElement fe)
       {
-        if (ctrl is FrameworkElement fe)
-          result = fe.DataContext;
+        result = fe.DataContext;
       }
 
       if (result is ICollectionView icv)
@@ -71,8 +78,15 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="value"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static void SetMethodName(UIElement ctrl, string value)
     {
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+      if (string.IsNullOrWhiteSpace(value))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(value)), nameof(value));
+
       ctrl.SetValue(MethodNameProperty, value);
     }
 
@@ -80,9 +94,13 @@ namespace Csla.Xaml
     /// Gets the name of method to be invoked.
     /// </summary>
     /// <param name="ctrl">Attached control</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
     public static string GetMethodName(UIElement ctrl)
     {
-      return (string)ctrl.GetValue(MethodNameProperty);
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+
+      return (string)ctrl.GetValue(MethodNameProperty) ?? "";
     }
 
     /// <summary>
@@ -105,8 +123,12 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetTriggerEvent(UIElement ctrl, string value)
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
+    public static void SetTriggerEvent(UIElement ctrl, string? value)
     {
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+
       ctrl.SetValue(TriggerEventProperty, value);
     }
 
@@ -115,9 +137,13 @@ namespace Csla.Xaml
     /// invoking the target method.
     /// </summary>
     /// <param name="ctrl">Attached control</param>
-    public static string GetTriggerEvent(UIElement ctrl)
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
+    public static string? GetTriggerEvent(UIElement ctrl)
     {
-      return (string)ctrl.GetValue(TriggerEventProperty);
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+
+      return (string?)ctrl.GetValue(TriggerEventProperty);
     }
 
     /// <summary>
@@ -134,8 +160,12 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="ctrl">Attached control</param>
     /// <param name="value">New value</param>
-    public static void SetMethodParameter(UIElement ctrl, object value)
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
+    public static void SetMethodParameter(UIElement ctrl, object? value)
     {
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+
       ctrl.SetValue(MethodParameterProperty, value);
     }
 
@@ -143,44 +173,28 @@ namespace Csla.Xaml
     /// Gets the parameter value to be passed to invoked method.
     /// </summary>
     /// <param name="ctrl">Attached control</param>
-    public static object GetMethodParameter(UIElement ctrl)
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
+    public static object? GetMethodParameter(UIElement ctrl)
     {
+      if (ctrl is null)
+        throw new ArgumentNullException(nameof(ctrl));
+
       return ctrl.GetValue(MethodParameterProperty);
     }
 
-    private static System.Windows.Data.Binding CopyBinding(System.Windows.Data.Binding oldBinding)
-    {
-      var result = new System.Windows.Data.Binding();
-      result.BindsDirectlyToSource = oldBinding.BindsDirectlyToSource;
-      result.Converter = oldBinding.Converter;
-      result.ConverterCulture = oldBinding.ConverterCulture;
-      result.ConverterParameter = oldBinding.ConverterParameter;
-      result.Mode = oldBinding.Mode;
-      result.NotifyOnValidationError = oldBinding.NotifyOnValidationError;
-      result.Path = oldBinding.Path;
-      if (oldBinding.ElementName != null)
-        result.ElementName = oldBinding.ElementName;
-      else if (oldBinding.RelativeSource != null)
-        result.RelativeSource = oldBinding.RelativeSource;
-      else
-        result.Source = oldBinding.Source;
-      result.UpdateSourceTrigger = oldBinding.UpdateSourceTrigger;
-      result.ValidatesOnExceptions = oldBinding.ValidatesOnExceptions;
-      return result;
-    }
+    #endregion
 
-#endregion
-
-    private UIElement _element;
+    private readonly UIElement _element;
 
     /// <summary>
     /// Invokes the target method if all required attached
     /// property values have been set.
     /// </summary>
     /// <param name="ctrl">Attached UI control</param>
+    /// <exception cref="ArgumentNullException"><paramref name="ctrl"/> is <see langword="null"/>.</exception>
     public InvokeMethod(UIElement ctrl)
     {
-      _element = ctrl;
+      _element = ctrl ?? throw new ArgumentNullException(nameof(ctrl));
       var triggerEvent = GetTriggerEvent(_element);
       if (!string.IsNullOrEmpty(triggerEvent))
       {
@@ -188,16 +202,16 @@ namespace Csla.Xaml
         var eventRef = ctrl.GetType().GetEvent(triggerEvent);
         if (eventRef != null)
         {
-          var invoke = eventRef.EventHandlerType.GetMethod("Invoke");
-          var p = invoke.GetParameters();
+          var invoke = eventRef.EventHandlerType?.GetMethod("Invoke");
+          var p = invoke?.GetParameters() ?? [];
           if (p.Length == 2)
           {
             var p1Type = p[1].ParameterType;
             if (typeof(EventArgs).IsAssignableFrom(p1Type))
             {
-              var del = Delegate.CreateDelegate(eventRef.EventHandlerType,
+              var del = Delegate.CreateDelegate(eventRef.EventHandlerType!,
                 this,
-                GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic));
+                GetType().GetMethod("CallMethod", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic)!);
               eventRef.AddEventHandler(ctrl, del);
             }
             else
@@ -211,15 +225,15 @@ namespace Csla.Xaml
       }
     }
 
-    private void CallMethod(object sender, EventArgs e)
+    private void CallMethod(object? sender, EventArgs e)
     {
-      object target = GetTarget(_element);
+      object target = GetTarget(_element) ?? throw new InvalidOperationException("Target must not be null.");
       var methodName = GetMethodName(_element);
       var targetMethod = target.GetType().GetMethod(methodName);
       if (targetMethod == null)
         throw new MissingMethodException(methodName);
 
-      object p = GetMethodParameter(_element);
+      object? p = GetMethodParameter(_element);
       var pCount = targetMethod.GetParameters().Length;
       try
       {
@@ -229,12 +243,7 @@ namespace Csla.Xaml
           targetMethod.Invoke(
             target,
             [
-              this, new ExecuteEventArgs
-              {
-                MethodParameter = p,
-                TriggerParameter = e,
-                TriggerSource = (FrameworkElement)_element
-              }
+              this, new ExecuteEventArgs(p, e, (FrameworkElement)_element)
             ]);
         else
           throw new NotSupportedException(Properties.Resources.ExecuteBadParams);

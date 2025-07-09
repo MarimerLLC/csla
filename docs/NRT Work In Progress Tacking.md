@@ -12,8 +12,8 @@
 - [x] Csla.Generator.AutoSerialization.CSharp
 - [x] Csla.Web.Mvc5-Net4.6
 - [x] Csla.AspNetCore
-- [ ] Csla.Blazor
-- [ ] Csla.Blazor.WebAssembly
+- [x] Csla.Blazor
+- [x] Csla.Blazor.WebAssembly
 - [x] Csla.Web
 - [x] Csla.Windows
 - [x] Csla.Xaml.Maui

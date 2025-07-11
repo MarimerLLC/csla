@@ -25,7 +25,7 @@ namespace Csla.Core
 #endif
   [Serializable]
   public class MobileObservableCollection<T> : System.Collections.ObjectModel.ObservableCollection<T>,
-    IMobileList
+    IMobileObject, IMobileList
   {
     #region LoadListMode
 
@@ -109,8 +109,20 @@ namespace Csla.Core
 
     void IMobileObject.GetState(SerializationInfo info)
     {
-      OnGetState(info);
+      OnGetState(info, StateMode.Serialization);
     }
+
+    /// <summary>
+    /// Override this method to get custom field values
+    /// from the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnGetState(SerializationInfo info, StateMode mode)
+    { }
 
     /// <summary>
     /// Override this method to get custom field values
@@ -119,7 +131,9 @@ namespace Csla.Core
     /// <param name="info">Serialization info.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnGetState(SerializationInfo info)
-    { }
+    {
+      OnGetState(info, StateMode.Serialization);
+    }
 
     /// <summary>
     /// Override this method to get custom child object
@@ -149,7 +163,7 @@ namespace Csla.Core
 
     void IMobileObject.SetState(SerializationInfo info)
     {
-      OnSetState(info);
+      OnSetState(info, StateMode.Serialization);
     }
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
@@ -162,9 +176,23 @@ namespace Csla.Core
     /// into the serialization stream.
     /// </summary>
     /// <param name="info">Serialization info.</param>
+    /// <param name="mode">
+    /// The StateMode indicating why this method was invoked.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnSetState(SerializationInfo info, StateMode mode)
+    { }
+
+    /// <summary>
+    /// Override this method to set custom field values
+    /// into the serialization stream.
+    /// </summary>
+    /// <param name="info">Serialization info.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSetState(SerializationInfo info)
-    { }
+    {
+      OnSetState(info, StateMode.Serialization);
+    }
 
     /// <summary>
     /// Override this method to set custom child object

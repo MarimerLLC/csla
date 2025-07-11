@@ -1,100 +1,81 @@
 # Inheritance Hierarchy: BusinessBase vs BusinessListBase
 
 This diagram compares the inheritance hierarchies of `BusinessBase` and `BusinessListBase`, ignoring interfaces.
+
 ```mermaid
 %% Legend:
 %% [csla] = in your codebase
 %% [bcl] = .NET BCL
 %% [nuget] = NuGet package
-%% <|.. = implements interface
 
 classDiagram
     object <|-- MobileObject
     class object {<<bcl>>}
-```mermaid
-%% Legend:
-%% [csla] = in your codebase
-%% [bcl] = .NET BCL
-%% [nuget] = NuGet package
-%% <|.. = implements interface
+    class MobileObject {<<csla>>
+        Implements IMobileObject
+    }
 
-classDiagram
-    object <|-- MobileObject
     MobileObject <|-- BindableBase
+    class BindableBase {<<csla>>
+        Implements INotifyPropertyChanged
+        Implements IBindable
+    }
     BindableBase <|-- UndoableBase
+    class UndoableBase {<<csla>>
+        Implements IUndoableObject
+    }
     UndoableBase <|-- BusinessBase
+    class BusinessBase {<<csla>>
+        Implements IEditableBusinessObject
+        Implements IEditableObject
+        Implements ICloneable
+        Implements IAuthorizeReadWrite
+        Implements IParent
+        Implements IDataPortalTarget
+        Implements IManageProperties
+        Implements IHostRules
+        Implements ICheckRules
+        Implements INotifyChildChanged
+        Implements ISerializationNotification
+        Implements IDataErrorInfo
+        Implements INotifyDataErrorInfo
+        Implements IUseFieldManager
+        Implements IUseBusinessRules
+    }
     BusinessBase <|-- BusinessBaseOfT
+    class BusinessBaseOfT {<<csla>>
+        Implements ISavable
+        Implements ISavable~T~
+        Implements IBusinessBase
+    }
+
     object <|-- CollectionOfT
+    class CollectionOfT {<<bcl>>
+        Implements ICollection
+        Implements IEnumerable
+    }
     CollectionOfT <|-- ObservableCollectionOfT
+    class ObservableCollectionOfT {<<bcl>>
+        Implements INotifyCollectionChanged
+        Implements INotifyPropertyChanged
+    }
     ObservableCollectionOfT <|-- MobileObservableCollectionOfT
+    class MobileObservableCollectionOfT {<<csla>>
+        Implements IMobileList
+    }
     MobileObservableCollectionOfT <|-- ObservableBindingListOfT
+    class ObservableBindingListOfT {<<csla>>
+        Implements IObservableBindingList
+        Implements INotifyBusy
+        Implements INotifyChildChanged
+        Implements ISerializationNotification
+    }
     ObservableBindingListOfT <|-- BusinessListBaseOfT_C
-
-    %% Interfaces (partial, main ones for clarity)
-    BindableBase <|.. INotifyPropertyChanged
-    BindableBase <|.. INotifyPropertyChanging
-    UndoableBase <|.. IUndoableObject
-    UndoableBase <|.. IUseApplicationContext
-    BusinessBase <|.. ISavable
-    BusinessBase <|.. ISavableOfT
-    BusinessBase <|.. IBusinessBase
-    BusinessBaseOfT <|.. ISavableOfT
-    MobileObservableCollectionOfT <|.. IMobileList
-    ObservableBindingListOfT <|.. IObservableBindingList
-    ObservableBindingListOfT <|.. INotifyBusy
-    ObservableBindingListOfT <|.. INotifyChildChanged
-    ObservableBindingListOfT <|.. ISerializationNotification
-
-    %% Declare all nodes for styling
-    class object
-    class MobileObject
-    class BindableBase
-    class UndoableBase
-    class BusinessBase
-    class BusinessBaseOfT
-    class CollectionOfT
-    class ObservableCollectionOfT
-    class MobileObservableCollectionOfT
-    class ObservableBindingListOfT
-    class BusinessListBaseOfT_C
-    class INotifyPropertyChanged
-    class INotifyPropertyChanging
-    class IUndoableObject
-    class IUseApplicationContext
-    class ISavable
-    class ISavableOfT
-    class IBusinessBase
-    class IMobileList
-    class IObservableBindingList
-    class INotifyBusy
-    class INotifyChildChanged
-    class ISerializationNotification
-
-classDef interface fill:#e6f0ff,stroke:#1a4d80,stroke-width:2px
-classDef csla fill:#f5f5f5,stroke:#888,stroke-width:2px
-classDef bcl fill:#f0f0ff,stroke:#888,stroke-width:2px
-
-class INotifyPropertyChanged interface
-class INotifyPropertyChanging interface
-class IUndoableObject interface
-class IUseApplicationContext interface
-class ISavable interface
-class ISavableOfT interface
-class IBusinessBase interface
-class IMobileList interface
-class IObservableBindingList interface
-class INotifyBusy interface
-class INotifyChildChanged interface
-class ISerializationNotification interface
-class MobileObject csla
-class BindableBase csla
-class UndoableBase csla
-class BusinessBase csla
-class BusinessBaseOfT csla
-class MobileObservableCollectionOfT csla
-class ObservableBindingListOfT csla
-class BusinessListBaseOfT_C csla
-class object bcl
-class CollectionOfT bcl
-class ObservableCollectionOfT bcl
-class UndoableBase csla;
+    class BusinessListBaseOfT_C {<<csla>>
+        Implements IContainsDeletedList
+        Implements ISavable~T~
+        Implements IDataPortalTarget
+        Implements IBusinessListBase~C~
+        Implements IUseApplicationContext
+    }
+```

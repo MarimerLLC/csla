@@ -20,7 +20,7 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="T"></typeparam>
   [Serializable]
-  public class ObservableBindingList<T> : MobileObservableCollection<T>,
+  public class ObservableBindingList<T> : UndoableObservableBindingList<T>,
     IObservableBindingList,
     INotifyBusy,
     INotifyChildChanged,

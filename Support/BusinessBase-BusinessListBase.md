@@ -19,11 +19,11 @@ classDiagram
     class BindableBase {<<csla>>
         Implements INotifyPropertyChanged
         Implements INotifyPropertyChanging
-        Implements IBindable
     }
     BindableBase <|-- UndoableBase
     class UndoableBase {<<csla>>
         Implements IUndoableObject
+        Implements IUseApplicationContext
     }
     UndoableBase <|-- BusinessBase
     class BusinessBase {<<csla>>
@@ -66,7 +66,12 @@ classDiagram
         Implements IMobileList
         Implements INotifyPropertyChanging
     }
-    MobileObservableCollectionOfT <|-- ObservableBindingListOfT
+    MobileObservableCollectionOfT <|-- UndoableObservableBindingListOfT
+    class UndoableObservableBindingListOfT {<<csla>>
+        Implements IUndoableObject
+        Implements IUseApplicationContext
+    }
+    UndoableObservableBindingListOfT <|-- ObservableBindingListOfT
     class ObservableBindingListOfT {<<csla>>
         Implements IObservableBindingList
         Implements INotifyBusy

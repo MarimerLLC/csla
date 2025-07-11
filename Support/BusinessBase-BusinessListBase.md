@@ -18,6 +18,7 @@ classDiagram
     MobileObject <|-- BindableBase
     class BindableBase {<<csla>>
         Implements INotifyPropertyChanged
+        Implements INotifyPropertyChanging
         Implements IBindable
     }
     BindableBase <|-- UndoableBase
@@ -61,7 +62,9 @@ classDiagram
     }
     ObservableCollectionOfT <|-- MobileObservableCollectionOfT
     class MobileObservableCollectionOfT {<<csla>>
+        Implements IMobileObject
         Implements IMobileList
+        Implements INotifyPropertyChanging
     }
     MobileObservableCollectionOfT <|-- ObservableBindingListOfT
     class ObservableBindingListOfT {<<csla>>

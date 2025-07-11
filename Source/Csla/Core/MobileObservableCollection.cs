@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using Csla.Core.FieldManager;
 using Csla.Serialization.Mobile;
 using Csla.Properties;
 using System.Diagnostics;
@@ -25,7 +26,7 @@ namespace Csla.Core
 #endif
   [Serializable]
   public class MobileObservableCollection<T> : System.Collections.ObjectModel.ObservableCollection<T>,
-    IMobileObject, IMobileList
+    IMobileObject, IMobileList, INotifyPropertyChanging
   {
     #region LoadListMode
 
@@ -224,6 +225,254 @@ namespace Csla.Core
           }
         }
       }
+    }
+
+    #endregion
+
+    #region INotifyPropertyChanging Members
+
+    [NonSerialized]
+    private PropertyChangingEventHandler? _nonSerializableChangingHandlers;
+    private PropertyChangingEventHandler? _serializableChangingHandlers;
+
+    /// <summary>
+    /// Implements a serialization-safe PropertyChanging event.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+    public event PropertyChangingEventHandler? PropertyChanging
+    {
+      add
+      {
+        if (value is null)
+          return;
+
+        if (ShouldHandlerSerialize(value))
+          _serializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Combine(_serializableChangingHandlers, value);
+        else
+          _nonSerializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Combine(_nonSerializableChangingHandlers, value);
+      }
+      remove
+      {
+        if (value is null)
+          return;
+
+        if (ShouldHandlerSerialize(value))
+          _serializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Remove(_serializableChangingHandlers, value);
+        else
+          _nonSerializableChangingHandlers = (PropertyChangingEventHandler?)Delegate.Remove(_nonSerializableChangingHandlers, value);
+      }
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanging event
+    /// for all object properties.
+    /// </summary>
+    /// <remarks>
+    /// This method is for backward compatibility with
+    /// CSLA .NET 1.x.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnIsDirtyChanging()
+    {
+      OnUnknownPropertyChanging();
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanging event
+    /// for all object properties.
+    /// </summary>
+    /// <remarks>
+    /// This method is automatically called by MarkDirty. It
+    /// actually raises PropertyChanging for an empty string,
+    /// which tells data binding to refresh all properties.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnUnknownPropertyChanging()
+    {
+      OnPropertyChanging(string.Empty);
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanging event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has Changing.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanging(string propertyName)
+    {
+      _nonSerializableChangingHandlers?.Invoke(this,
+        new PropertyChangingEventArgs(propertyName));
+      _serializableChangingHandlers?.Invoke(this,
+        new PropertyChangingEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanging event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo of the property that
+    /// has Changing.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanging(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanging(propertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Override this method to change the default logic for determining 
+    /// if the event handler should be serialized
+    /// </summary>
+    /// <param name="value">the event handler to review</param>
+    protected virtual bool ShouldHandlerSerialize(PropertyChangingEventHandler value)
+    {
+      return value.Method.IsPublic && value.Method.DeclaringType != null;
+    }
+
+    #endregion
+
+    #region INotifyPropertyChanged Members
+
+    [NonSerialized]
+    private PropertyChangedEventHandler? _nonSerializableChangedHandlers;
+    private PropertyChangedEventHandler? _serializableChangedHandlers;
+
+    /// <summary>
+    /// Override this method to change the default logic for determining 
+    /// if the event handler should be serialized
+    /// </summary>
+    /// <param name="value">the event handler to review</param>
+    protected virtual bool ShouldHandlerSerialize(PropertyChangedEventHandler value)
+    {
+      return value.Method.IsPublic && value.Method.DeclaringType != null;
+    }
+    
+    /// <summary>
+    /// Implements a serialization-safe PropertyChanged event.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1062:ValidateArgumentsOfPublicMethods")]
+    public new event PropertyChangedEventHandler? PropertyChanged
+    {
+      add
+      {
+        if (value is null)
+          return;
+
+        if (ShouldHandlerSerialize(value))
+          _serializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Combine(_serializableChangedHandlers, value);
+        else
+          _nonSerializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Combine(_nonSerializableChangedHandlers, value);
+      }
+      remove
+      {
+        if (value is null)
+          return;
+
+        if (ShouldHandlerSerialize(value))
+          _serializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Remove(_serializableChangedHandlers, value);
+        else
+          _nonSerializableChangedHandlers = (PropertyChangedEventHandler?)Delegate.Remove(_nonSerializableChangedHandlers, value);
+      }
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      _nonSerializableChangedHandlers?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      _serializableChangedHandlers?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a MetaData (IsXYZ) property
+    /// </summary>
+    /// <param name="propertyName">Name of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnMetaPropertyChanged(string propertyName)
+    {
+      _nonSerializableChangedHandlers?.Invoke(this,
+        new MetaPropertyChangedEventArgs(propertyName));
+      _serializableChangedHandlers?.Invoke(this,
+        new MetaPropertyChangedEventArgs(propertyName));
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for a specific property.
+    /// </summary>
+    /// <param name="propertyInfo">PropertyInfo of the property that
+    /// has changed.</param>
+    /// <remarks>
+    /// This method may be called by properties in the business
+    /// class to indicate the change in a specific property.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnPropertyChanged(IPropertyInfo propertyInfo)
+    {
+      OnPropertyChanged(propertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for all object properties.
+    /// </summary>
+    /// <remarks>
+    /// This method is for backward compatibility with
+    /// CSLA .NET 1.x.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnIsDirtyChanged()
+    {
+      OnUnknownPropertyChanged();
+    }
+
+    /// <summary>
+    /// Call this method to raise the PropertyChanged event
+    /// for all object properties.
+    /// </summary>
+    /// <remarks>
+    /// This method is automatically called by MarkDirty. It
+    /// actually raises PropertyChanged for an empty string,
+    /// which tells data binding to refresh all properties.
+    /// </remarks>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnUnknownPropertyChanged()
+    {
+      OnPropertyChanged(string.Empty);
+    }
+
+    /// <summary>
+    /// Override OnPropertyChanged to route through our
+    /// implementation.
+    /// </summary>
+    /// <param name="e">Event args</param>
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+      base.OnPropertyChanged(e);
+      OnPropertyChanged(e.PropertyName);
     }
 
     #endregion

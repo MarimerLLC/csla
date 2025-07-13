@@ -15,7 +15,7 @@ namespace Csla.Blazor
   /// </summary>
   public static class CslaPolicy
   {
-    private static string PolicyPrefix = "Csla:";
+    private const string PolicyPrefix = "Csla:";
 
     /// <summary>
     /// Gets a string representing a CSLA permissions policy
@@ -47,6 +47,12 @@ namespace Csla.Blazor
       if (policy.StartsWith(PolicyPrefix))
       {
         var parts = policy.Substring(PolicyPrefix.Length).Split('|');
+        if (parts.Length < 2)
+        {
+          requirement = null;
+          return false;
+        }
+
         var action = (Rules.AuthorizationActions)Enum.Parse(typeof(Rules.AuthorizationActions), parts[0]);
         var type = Type.GetType(parts[1]);
         if (type is null)

@@ -140,6 +140,8 @@ namespace Csla.Blazor.WebAssembly.State
       _session?.Touch();
       if (_options.SyncContextWithServer)
       {
+        ExceptionLocalizer.ThrowIfNullSessionNotRetrieved(_session);
+
         var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);

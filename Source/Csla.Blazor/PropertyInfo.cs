@@ -37,13 +37,13 @@ namespace Csla.Blazor
     public PropertyInfo(object model, string propertyName, string textSeprator = " ")
     {
       ArgumentException.ThrowIfNullOrWhiteSpace(propertyName);
+      TextSeparator = textSeprator ?? throw new ArgumentNullException(nameof(textSeprator));
       Model = model ?? throw new ArgumentNullException(nameof(model));
       PropertyName = propertyName;
       if (Model is INotifyPropertyChanged npc)
       {
         npc.PropertyChanged += Npc_PropertyChanged;
       }
-      TextSeparator = textSeprator ?? throw new ArgumentNullException(nameof(textSeprator));
     }
 
     private void Npc_PropertyChanged(object? sender, PropertyChangedEventArgs e)

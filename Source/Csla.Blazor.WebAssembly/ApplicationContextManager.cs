@@ -6,10 +6,8 @@
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Security.Claims;
 using System.Security.Principal;
-using Csla.Blazor.State;
 using Csla.Core;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -167,9 +165,10 @@ public class ApplicationContextManager : IContextManager, IDisposable
 
   private Session GetSession()
   {
-    const string SessionRetrievalHint = $"await {nameof(StateManager)}.{nameof(StateManager.InitializeAsync)}()";
     ThrowIoeIfApplicationContextIsNull();
-    return ApplicationContext.GetRequiredService<ISessionManager>().GetCachedSession() ?? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.WasmApplicationContextManagerSessionNotRetrieved, SessionRetrievalHint));
+    var session = ApplicationContext.GetRequiredService<ISessionManager>().GetCachedSession();
+    ExceptionLocalizer.ThrowIfNullSessionNotRetrieved(session);
+    return session;
   }
 
   [MemberNotNull(nameof(ApplicationContext))]

@@ -6,8 +6,8 @@
 // <summary>Default context manager for the user property</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Principal;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Csla.Core
 {
@@ -30,11 +30,11 @@ namespace Csla.Core
     /// </summary>
     public bool IsValid => true;
 
-    private static IContextDictionary? currentLocalContext = new ContextDictionary();
-    private static IContextDictionary? currentClientContext = new ContextDictionary();
-    private static IPrincipal currentPrincipal = new ClaimsPrincipal();
-    private static IServiceProvider? currentDefaultServiceProvider;
-    private static IServiceProvider? currentServiceProvider;
+    private static IContextDictionary? _currentLocalContext = new ContextDictionary();
+    private static IContextDictionary? _currentClientContext = new ContextDictionary();
+    private static IPrincipal _currentPrincipal = new ClaimsPrincipal();
+    private static IServiceProvider? _currentDefaultServiceProvider;
+    private static IServiceProvider? _currentServiceProvider;
 
     /// <summary>
     /// Gets the client context dictionary.
@@ -42,7 +42,7 @@ namespace Csla.Core
     /// <param name="executionLocation"></param>
     public IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      return currentClientContext;
+      return _currentClientContext;
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ namespace Csla.Core
     /// </summary>
     public IServiceProvider? GetDefaultServiceProvider()
     {
-      return currentDefaultServiceProvider;
+      return _currentDefaultServiceProvider;
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ namespace Csla.Core
     /// </summary>
     public IContextDictionary? GetLocalContext()
     {
-      return currentLocalContext;
+      return _currentLocalContext;
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace Csla.Core
     /// <returns>The current user principal</returns>
     public IPrincipal GetUser()
     {
-      return currentPrincipal;
+      return _currentPrincipal;
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ namespace Csla.Core
     /// <param name="executionLocation"></param>
     public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
-      currentClientContext = clientContext;
+      _currentClientContext = clientContext;
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
     {
-      currentDefaultServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+      _currentDefaultServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ namespace Csla.Core
     /// <param name="localContext">Context dictionary</param>
     public void SetLocalContext(IContextDictionary? localContext)
     {
-      currentLocalContext = localContext;
+      _currentLocalContext = localContext;
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ namespace Csla.Core
     /// </summary>
     public IServiceProvider? GetServiceProvider()
     {
-      return currentServiceProvider ?? GetDefaultServiceProvider();
+      return _currentServiceProvider ?? GetDefaultServiceProvider();
     }
 
     /// <summary>
@@ -114,13 +114,13 @@ namespace Csla.Core
     /// <exception cref="ArgumentNullException"><paramref name="scope"/> is <see langword="null"/>.</exception>
     public void SetServiceProvider(IServiceProvider scope)
     {
-      currentServiceProvider = scope ?? throw new ArgumentNullException(nameof(scope));
+      _currentServiceProvider = scope ?? throw new ArgumentNullException(nameof(scope));
     }
 
     /// <inheritdoc />
     public void SetUser(IPrincipal principal)
     {
-      currentPrincipal = principal ?? throw new ArgumentNullException(nameof(principal));
+      _currentPrincipal = principal ?? throw new ArgumentNullException(nameof(principal));
     }
 
     private static ApplicationContext? _applicationContext;

@@ -7,12 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
-using Csla.Server;
 using Csla.Server.Dashboard;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,21 +26,18 @@ namespace Csla.Server
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
     /// </summary>
-    private ApplicationContext _applicationContext;
+    private readonly ApplicationContext _applicationContext;
 
     /// <summary>
     /// Gets the data portal dashboard instance.
     /// </summary>
-    private IDashboard _dashboard;
+    private readonly IDashboard _dashboard;
 
-    private DataPortalOptions _dataPortalOptions;
-    private IAuthorizeDataPortal _authorizer;
-    private InterceptorManager _interceptorManager;
-    private IObjectFactoryLoader _factoryLoader;
-    private IDataPortalActivator _activator;
-    private IDataPortalExceptionInspector _exceptionInspector;
-    private DataPortalExceptionHandler _dataPortalExceptionHandler;
-    private SecurityOptions _securityOptions;
+    private readonly DataPortalOptions _dataPortalOptions;
+    private readonly IAuthorizeDataPortal _authorizer;
+    private readonly InterceptorManager _interceptorManager;
+    private readonly DataPortalExceptionHandler _dataPortalExceptionHandler;
+    private readonly SecurityOptions _securityOptions;
 
     /// <summary>
     /// Creates an instance of the type.
@@ -50,10 +45,7 @@ namespace Csla.Server
     /// <param name="applicationContext"></param>
     /// <param name="dashboard"></param>
     /// <param name="options"></param>
-    /// <param name="activator"></param>
     /// <param name="authorizer"></param>
-    /// <param name="exceptionInspector"></param>
-    /// <param name="factoryLoader"></param>
     /// <param name="interceptors"></param>
     /// <param name="exceptionHandler"></param>
     /// <param name="securityOptions"></param>
@@ -64,9 +56,6 @@ namespace Csla.Server
       CslaOptions options,
       IAuthorizeDataPortal authorizer,
       InterceptorManager interceptors,
-      IObjectFactoryLoader factoryLoader,
-      IDataPortalActivator activator,
-      IDataPortalExceptionInspector exceptionInspector,
       DataPortalExceptionHandler exceptionHandler,
       SecurityOptions securityOptions)
     {
@@ -77,9 +66,6 @@ namespace Csla.Server
       _dataPortalOptions = options.DataPortalOptions;
       _authorizer = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
       _interceptorManager = interceptors ?? throw new ArgumentNullException(nameof(interceptors));
-      _factoryLoader = factoryLoader ?? throw new ArgumentNullException(nameof(factoryLoader));
-      _activator = activator ?? throw new ArgumentNullException(nameof(activator));
-      _exceptionInspector = exceptionInspector ?? throw new ArgumentNullException(nameof(exceptionInspector));
       _dataPortalExceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
       _securityOptions = securityOptions ?? throw new ArgumentNullException(nameof(securityOptions));
     }
@@ -105,14 +91,13 @@ namespace Csla.Server
     }
 #endif
 
-    private Reflection.ServiceProviderMethodCaller? serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller? _serviceProviderMethodCaller;
     private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
       get
       {
-        if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = _applicationContext.CreateInstanceDI<Reflection.ServiceProviderMethodCaller>();
-        return serviceProviderMethodCaller;
+        _serviceProviderMethodCaller ??= _applicationContext.CreateInstanceDI<Reflection.ServiceProviderMethodCaller>();
+        return _serviceProviderMethodCaller;
       }
     }
 
@@ -182,7 +167,7 @@ namespace Csla.Server
       {
         if (ex is AggregateException aggregateEx && aggregateEx.InnerExceptions.Count > 0)
         {
-            ex = aggregateEx.InnerExceptions[0].InnerException ?? aggregateEx;
+          ex = aggregateEx.InnerExceptions[0].InnerException ?? aggregateEx;
         }
 
         var fex = NewDataPortalException(
@@ -584,7 +569,8 @@ namespace Csla.Server
       _interceptorManager.Complete(e);
 
       var timer = _applicationContext.ClientContext.GetValueOrNull("__dataportaltimer");
-      if (timer == null) return;
+      if (timer == null)
+        return;
 
       var startTime = (DateTimeOffset)timer;
       e.Runtime = DateTimeOffset.Now - startTime;
@@ -666,7 +652,8 @@ namespace Csla.Server
       _applicationContext.SetLogicalExecutionLocation(_oldLocation);
       // if the dataportal is not remote then
       // do nothing
-      if (!context.IsRemotePortal) return;
+      if (!context.IsRemotePortal)
+        return;
       _applicationContext.Clear();
       if (_securityOptions.FlowSecurityPrincipalFromClient)
         _applicationContext.User = null;

@@ -10,14 +10,14 @@ namespace Csla.Serialization.Mobile
   [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
   public class CslaLegacyBinaryWriter : ICslaWriter
   {
-    private readonly Dictionary<string, int> keywordsDictionary;
+    private readonly Dictionary<string, int> _keywordsDictionary;
 
     /// <summary>
     /// Creates new instance of <see cref="CslaLegacyBinaryWriter"/>
     /// </summary>
     public CslaLegacyBinaryWriter()
     {
-      keywordsDictionary = new Dictionary<string, int>();
+      _keywordsDictionary = new Dictionary<string, int>();
     }
 
 
@@ -29,7 +29,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="objectData">List of SerializationInfo objects to write to stream</param>
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
-      keywordsDictionary.Clear();
+      _keywordsDictionary.Clear();
       using var writer = new CslaNonClosingBinaryWriter(serializationStream);
       writer.Write(objectData.Count);
       foreach (var serializationInfo in objectData)
@@ -75,14 +75,14 @@ namespace Csla.Serialization.Mobile
     private DictionaryCheckResult GetKey(string value)
     {
       DictionaryCheckResult returnValue;
-      if (keywordsDictionary.TryGetValue(value, out var key))
+      if (_keywordsDictionary.TryGetValue(value, out var key))
       {
         returnValue = new DictionaryCheckResult(false, key);
       }
       else
       {
-        returnValue = new DictionaryCheckResult(true, keywordsDictionary.Count);
-        keywordsDictionary.Add(value, returnValue.Key);
+        returnValue = new DictionaryCheckResult(true, _keywordsDictionary.Count);
+        _keywordsDictionary.Add(value, returnValue.Key);
       }
       return returnValue;
     }

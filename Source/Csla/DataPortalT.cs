@@ -24,7 +24,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T: notnull
+  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T : notnull
   {
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
@@ -90,14 +90,13 @@ namespace Csla
       }
     }
 
-    private Reflection.ServiceProviderMethodCaller? serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller? _serviceProviderMethodCaller;
     private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
       get
       {
-        if (serviceProviderMethodCaller == null)
-          serviceProviderMethodCaller = _applicationContext.CreateInstanceDI< ServiceProviderMethodCaller>();
-        return serviceProviderMethodCaller;
+        _serviceProviderMethodCaller ??= _applicationContext.CreateInstanceDI<ServiceProviderMethodCaller>();
+        return _serviceProviderMethodCaller;
       }
     }
 
@@ -208,7 +207,7 @@ namespace Csla
       {
         HandleFetchDataPortalException(ex);
       }
-      
+
       return result.ReturnObject!;
     }
 
@@ -290,7 +289,7 @@ namespace Csla
     {
       var operation = DataPortalOperations.Update;
       Type objectType = obj.GetType();
-      
+
       IDataPortalProxy proxy;
       var factoryInfo = Server.ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);
       if (factoryInfo != null)
@@ -353,7 +352,7 @@ namespace Csla
               method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.UpdateMethodName, [obj]);
           }
         }
-          
+
         var runLocal = method?.RunLocal ?? false;
         proxy = GetDataPortalProxy(runLocal);
       }
@@ -411,7 +410,7 @@ namespace Csla
 
       Server.DataPortalResult result = default!;
       try
-      { 
+      {
         if (!proxy.IsServerRemote && _dataPortalClientOptions.AutoCloneOnUpdate)
         {
           // when using local data portal, automatically
@@ -450,9 +449,9 @@ namespace Csla
       {
         HandleUpdateDataPortalException(ex);
       }
-     
-    return (T)result.ReturnObject!;
-  }
+
+      return (T)result.ReturnObject!;
+    }
 
     [DoesNotReturn]
     private void HandleUpdateDataPortalException(Server.DataPortalException ex)
@@ -688,7 +687,7 @@ namespace Csla
     /// <inheritdoc />
     public void UpdateChild(T child)
     {
-      if (child is null) 
+      if (child is null)
         throw new ArgumentNullException(nameof(child));
 
       var portal = new Server.ChildDataPortal(_applicationContext);
@@ -708,7 +707,7 @@ namespace Csla
     /// <inheritdoc />
     public void UpdateChild(T child, params object?[]? parameters)
     {
-      if (child is null) 
+      if (child is null)
         throw new ArgumentNullException(nameof(child));
 
       var portal = new Server.ChildDataPortal(_applicationContext);
@@ -718,7 +717,7 @@ namespace Csla
     /// <inheritdoc />
     public async Task UpdateChildAsync(T child)
     {
-      if (child is null) 
+      if (child is null)
         throw new ArgumentNullException(nameof(child));
 
       var portal = new Server.ChildDataPortal(_applicationContext);
@@ -728,7 +727,7 @@ namespace Csla
     /// <inheritdoc />
     public async Task UpdateChildAsync(T child, params object?[]? parameters)
     {
-      if (child is null) 
+      if (child is null)
         throw new ArgumentNullException(nameof(child));
 
       var portal = new Server.ChildDataPortal(_applicationContext);

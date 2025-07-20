@@ -43,7 +43,7 @@ namespace Csla.Rules
     }
 
     [NonSerialized]
-    private Lock SyncRoot = LockFactory.Create();
+    private Lock _syncRoot = LockFactory.Create();
 
     private ApplicationContext _applicationContext;
 
@@ -881,7 +881,8 @@ namespace Csla.Rules
     internal static bool CanRunRule(ApplicationContext applicationContext, IBusinessRuleBase rule, RuleContextModes contextMode)
     {
       // default then just return true
-      if (rule.RunMode == RunModes.Default) return true;
+      if (rule.RunMode == RunModes.Default)
+        return true;
 
       bool canRun = true;
 
@@ -1004,7 +1005,7 @@ namespace Csla.Rules
         {
           if (r.Rule.IsAsync)
           {
-            lock (SyncRoot)
+            lock (_syncRoot)
             {
               // update output values
               if (r.OutputPropertyValues != null)
@@ -1094,7 +1095,7 @@ namespace Csla.Rules
         // mark properties busy
         if (rule.IsAsync)
         {
-          lock (SyncRoot)
+          lock (_syncRoot)
           {
             // mark each property as busy
             foreach (var item in rule.AffectedProperties)
@@ -1305,7 +1306,7 @@ namespace Csla.Rules
     [System.Runtime.Serialization.OnDeserialized]
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
-      SyncRoot = LockFactory.Create();
+      _syncRoot = LockFactory.Create();
     }
 
     #endregion

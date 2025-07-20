@@ -10,6 +10,18 @@ If you are upgrading from a version of CSLA prior to 8, you should review the [U
 
 TBD
 
+## RevalidatingInterceptor
+
+The constructor has changed and now expects an `IOptions<IOptions<RevalidatingInterceptorOptions>>` instance. With this new options object it is now possible to skip the revalidation of business rules during a `Delete` operation.
+To configure the new options we are using the .Net [Options pattern](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-9.0) (it's not ASP.Net core specific!).
+```csharp
+services.Configure<RevalidatingInterceptorOptions>(opts =>
+{
+  opts.IgnoreDeleteOperation = true;
+});
+```
+
+
 ## Nullable Reference Types
 
 CSLA 10 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values or returns `null`.

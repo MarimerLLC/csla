@@ -13,7 +13,7 @@ TBD
 ## RevalidatingInterceptor
 
 The constructor has changed and now expects an `IOptions<IOptions<RevalidatingInterceptorOptions>>` instance. With this new options object it is now possible to skip the revalidation of business rules during a `Delete` operation.
-To configure the new options we are using the .Net [Options pattern](https://learn.microsoft.com/en-us/dotnet/core/extensions/options) (it's not ASP.Net core specific!).
+To configure the new options we are using the .Net [Options pattern](https://learn.microsoft.com/en-us/dotnet/core/extensions/options).
 ```csharp
 services.Configure<RevalidatingInterceptorOptions>(opts =>
 {

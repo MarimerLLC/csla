@@ -374,7 +374,7 @@ namespace Csla
 
       if (item.IsChild)
       {
-        IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
+        IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
 
         // set parent reference
         item.SetParent(this);

@@ -536,4 +536,10 @@
   <data name="UnsupportedXamlListTypeForModel" xml:space="preserve">
     <value>The model type must be either of type {0} or {1} to be used as a collection type.</value>
   </data>
+  <data name="SessionManagerSessionStateCouldNotBeRetrieved" xml:space="preserve">
+    <value>The json result from state controller '{0}' could not be deserialized as `{1}`.</value>
+  </data>
+  <data name="WasmApplicationContextManagerSessionNotRetrieved" xml:space="preserve">
+    <value>The session is not available. Please ensure to call `{0}` in your component.</value>
+  </data>
 </root>

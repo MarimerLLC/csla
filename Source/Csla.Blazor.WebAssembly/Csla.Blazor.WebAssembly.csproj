@@ -10,6 +10,8 @@
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Title>CSLA .NET Blazor WebAssembly</Title>
     <PackageTags>CSLA;Blazor;aspnetcore;WebAssembly;wasm</PackageTags>
+    <Nullable>enable</Nullable>
+    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

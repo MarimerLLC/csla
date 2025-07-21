@@ -20,10 +20,9 @@ namespace Csla.Blazor.Authentication
     /// </summary>
     public CslaAuthenticationStateProvider()
     {
-      SetPrincipal(new ClaimsPrincipal());
     }
 
-    private AuthenticationState AuthenticationState { get; set; }
+    private AuthenticationState AuthenticationState { get; set; } = new AuthenticationState(new ClaimsPrincipal());
 
     /// <summary>
     /// Gets the authentication state.
@@ -37,8 +36,11 @@ namespace Csla.Blazor.Authentication
     /// Sets the principal representing the current user identity.
     /// </summary>
     /// <param name="principal">ClaimsPrincipal instance</param>
+    /// <exception cref="ArgumentNullException"><paramref name="principal"/> is <see langword="null"/>.</exception>
     public void SetPrincipal(ClaimsPrincipal principal)
     {
+      ArgumentNullException.ThrowIfNull(principal);
+
       AuthenticationState = new AuthenticationState(principal);
       NotifyAuthenticationStateChanged(Task.FromResult(AuthenticationState));
     }

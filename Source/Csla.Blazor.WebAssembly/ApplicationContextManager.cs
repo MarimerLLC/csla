@@ -5,11 +5,12 @@
 // </copyright>
 // <summary>Application context manager that uses HttpContextAccessor</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
+using System.Security.Claims;
+using System.Security.Principal;
 using Csla.Core;
 using Csla.State;
 using Microsoft.AspNetCore.Components.Authorization;
-using System.Security.Claims;
-using System.Security.Principal;
 
 namespace Csla.Blazor.WebAssembly;
 
@@ -24,9 +25,10 @@ public class ApplicationContextManager : IContextManager, IDisposable
   /// with the required IServiceProvider.
   /// </summary>
   /// <param name="authenticationStateProvider">AuthenticationStateProvider service</param>
+  /// <exception cref="ArgumentNullException"><paramref name="authenticationStateProvider"/> is <see langword="null"/>.</exception>
   public ApplicationContextManager(AuthenticationStateProvider authenticationStateProvider)
   {
-    AuthenticationStateProvider = authenticationStateProvider;
+    AuthenticationStateProvider = authenticationStateProvider ?? throw new ArgumentNullException(nameof(authenticationStateProvider));
     AuthenticationStateProvider.AuthenticationStateChanged += AuthenticationStateProvider_AuthenticationStateChanged;
     InitializeUser();
   }
@@ -42,13 +44,15 @@ public class ApplicationContextManager : IContextManager, IDisposable
   /// <summary>
   /// Gets or sets a reference to the current ApplicationContext.
   /// </summary>
-  public ApplicationContext ApplicationContext { get; set; }
+  public ApplicationContext? ApplicationContext { get; set; }
 
+  [MemberNotNull(nameof(AuthenticationState))]
   private void InitializeUser()
   {
     AuthenticationStateProvider_AuthenticationStateChanged(AuthenticationStateProvider.GetAuthenticationStateAsync());
   }
 
+  [MemberNotNull(nameof(AuthenticationState))]
   private void AuthenticationStateProvider_AuthenticationStateChanged(Task<AuthenticationState> task)
   {
     AuthenticationState = task;
@@ -98,11 +102,11 @@ public class ApplicationContextManager : IContextManager, IDisposable
   /// </summary>
   public IContextDictionary GetLocalContext()
   {
+    ThrowIoeIfApplicationContextIsNull();
+
+    var session = GetSession();
     IContextDictionary localContext;
-    var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-    var session = sessionManager.GetCachedSession();
-    session.TryGetValue("localContext", out var result);
-    if (result is IContextDictionary context)
+    if (session.TryGetValue("localContext", out var result) && result is IContextDictionary context)
     {
       localContext = context;
     }
@@ -118,10 +122,11 @@ public class ApplicationContextManager : IContextManager, IDisposable
   /// Sets the local context.
   /// </summary>
   /// <param name="localContext">Local context.</param>
-  public void SetLocalContext(IContextDictionary localContext)
+  public void SetLocalContext(IContextDictionary? localContext)
   {
-    var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-    var session = sessionManager.GetCachedSession();
+    ThrowIoeIfApplicationContextIsNull();
+
+    var session = GetSession();
     session["localContext"] = localContext;
   }
 
@@ -131,11 +136,11 @@ public class ApplicationContextManager : IContextManager, IDisposable
   /// <param name="executionLocation"></param>
   public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
   {
+    ThrowIoeIfApplicationContextIsNull();
+
     IContextDictionary clientContext;
-    var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-    var session = sessionManager.GetCachedSession();
-    session.TryGetValue("clientContext", out var result);
-    if (result is IContextDictionary context)
+    var session = GetSession();
+    if (session.TryGetValue("clientContext", out var result) && result is IContextDictionary context)
     {
       clientContext = context;
     }
@@ -152,12 +157,22 @@ public class ApplicationContextManager : IContextManager, IDisposable
   /// </summary>
   /// <param name="clientContext">Client context.</param>
   /// <param name="executionLocation"></param>
-  public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+  public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
   {
-    var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-    var session = sessionManager.GetCachedSession();
+    var session = GetSession();
     session["clientContext"] = clientContext;
   }
+
+  private Session GetSession()
+  {
+    ThrowIoeIfApplicationContextIsNull();
+    var session = ApplicationContext.GetRequiredService<ISessionManager>().GetCachedSession();
+    ExceptionLocalizer.ThrowIfNullSessionNotRetrieved(session);
+    return session;
+  }
+
+  [MemberNotNull(nameof(ApplicationContext))]
+  private void ThrowIoeIfApplicationContextIsNull() => _ = ApplicationContext ?? throw new InvalidOperationException($"{nameof(ApplicationContext)} == null");
 
   /// <summary>
   /// Dispose this object's resources.

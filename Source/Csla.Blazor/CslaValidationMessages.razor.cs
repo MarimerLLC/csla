@@ -1,8 +1,8 @@
-﻿using Csla.Core;
+﻿using System.Linq.Expressions;
+using Csla.Core;
 using Csla.Rules;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using System.Linq.Expressions;
 
 namespace Csla.Blazor
 {
@@ -18,15 +18,15 @@ namespace Csla.Blazor
     protected bool _validationInitiated = false;
 
     private FieldIdentifier _fieldIdentifier;
-    private EditContext _previousEditContext;
-    private EventHandler<FieldChangedEventArgs> _fieldChangedHandler;
-    private EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
+    private EditContext? _previousEditContext;
+    private EventHandler<FieldChangedEventArgs>? _fieldChangedHandler;
+    private EventHandler<ValidationStateChangedEventArgs>? _validationStateChangedHandler;
 
     /// <summary>
     /// Gets or sets the expression t use during validation
     /// </summary>
     [Parameter]
-    public Expression<Func<PropertyType>> For { get; set; }
+    public Expression<Func<PropertyType>> For { get; set; } = default!;
 
     /// <summary>
     /// Gets or sets the wrapper id
@@ -80,7 +80,7 @@ namespace Csla.Blazor
     /// Gets or sets the current edit context
     /// </summary>
     [CascadingParameter]
-    protected EditContext CurrentEditContext { get; set; }
+    protected EditContext CurrentEditContext { get; set; } = default!;
 
     #region Event Handlers
 
@@ -108,8 +108,7 @@ namespace Csla.Blazor
 
       }
 
-      if (For == null)
-        throw new ArgumentNullException(nameof(For));
+      ArgumentNullException.ThrowIfNull(For);
 
       // Create a FieldIdentifier to use in recognising the field being validated
       _fieldIdentifier = FieldIdentifier.Create(For);
@@ -129,7 +128,7 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="eventArgs"></param>
-    protected void OnFieldChanged(object sender, FieldChangedEventArgs eventArgs)
+    protected void OnFieldChanged(object? sender, FieldChangedEventArgs eventArgs)
     {
       if (eventArgs.FieldIdentifier.Equals(_fieldIdentifier))
       {
@@ -143,7 +142,7 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="eventArgs"></param>
-    protected void OnValidationStateChanged(object sender, ValidationStateChangedEventArgs eventArgs)
+    protected void OnValidationStateChanged(object? sender, ValidationStateChangedEventArgs eventArgs)
     {
       IEnumerable<string> messages;
 
@@ -204,7 +203,7 @@ namespace Csla.Blazor
     private IEnumerable<string> GetBrokenRuleMessages(RuleSeverity severity)
     {
       IList<string> messages = new List<string>();
-      ICheckRules objectUnderTest;
+      ICheckRules? objectUnderTest;
 
       // Attempt to gain access to the underlying CSLA object
       objectUnderTest = _fieldIdentifier.Model as ICheckRules;
@@ -217,7 +216,7 @@ namespace Csla.Blazor
       foreach (BrokenRule rule in objectUnderTest.GetBrokenRules())
       {
         // Exclude any broken rules that are not for the property we are interested in
-        if (rule.Property.Equals(_fieldIdentifier.FieldName, StringComparison.InvariantCultureIgnoreCase))
+        if (_fieldIdentifier.FieldName.Equals(rule.Property, StringComparison.InvariantCultureIgnoreCase))
         {
           // Exclude any of a severity other than that we want
           if (rule.Severity == severity)

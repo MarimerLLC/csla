@@ -62,4 +62,5 @@ Supporting nullable types means that some APIs have changed to support nullable 
 
 
 ## Breaking changes
-* `Csla.Server.DataPortal` unused constructor parameters removed
+* `Csla.Server.DataPortal` constructor changes:
+  * Removed unused parameters: `IDataPortalActivator activator`, `IDataPortalExceptionInspector exceptionInspector`

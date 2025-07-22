@@ -2,6 +2,8 @@
 using Csla.Server;
 using Csla.Server.Interceptors.ServerSide;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Server.Interceptors.ServerSide
@@ -10,6 +12,8 @@ namespace Csla.Test.Server.Interceptors.ServerSide
   public class RevalidatingInterceptorTests
   {
     private static TestDIContext _testDIContext;
+    private ApplicationContext _applicationContext;
+    private RevalidatingInterceptor _systemUnderTest;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
@@ -17,19 +21,31 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       _testDIContext = TestDIContextFactory.CreateDefaultContext();
     }
 
+    [TestInitialize]
+    public void TestSetup()
+    {
+      _applicationContext = _testDIContext.CreateTestApplicationContext();
+      _systemUnderTest = new RevalidatingInterceptor(_applicationContext, _testDIContext.ServiceProvider.GetRequiredService<IOptions<RevalidatingInterceptorOptions>>());
+
+      PrepareApplicationContext(_applicationContext);
+    }
+
+    private static void PrepareApplicationContext(ApplicationContext applicationContext)
+    {
+      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
+      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
+    }
+
+
     [TestMethod]
     public async Task Initialize_PrimitiveCriteria_NoExceptionRaised()
     {
       // Arrange
       var criteria = new PrimitiveCriteria(1);
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      var sut = new RevalidatingInterceptor(applicationContext);
       var args = CreateUpdateArgsOfRoot(criteria);
-      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      await sut.InitializeAsync(args);
+      await _systemUnderTest.InitializeAsync(args);
     }
 
     [TestMethod]
@@ -38,14 +54,10 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       // Arrange
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      RevalidatingInterceptor sut = new RevalidatingInterceptor(applicationContext);
       var args = CreateUpdateArgsOfRoot(rootObject);
-      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      await sut.InitializeAsync(args);
+      await _systemUnderTest.InitializeAsync(args);
     }
 
     [TestMethod]
@@ -56,14 +68,10 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      var sut = new RevalidatingInterceptor(applicationContext);
       var args = CreateUpdateArgsOfRoot(rootObject);
-      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      await sut.InitializeAsync(args);
+      await _systemUnderTest.InitializeAsync(args);
     }
 
     [TestMethod]
@@ -76,14 +84,10 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       childObject.Data = "Test child data";
       GrandChild grandChildObject = childObject.GrandChildren.AddNew();
       grandChildObject.Data = "Test grandchild data";
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      var sut = new RevalidatingInterceptor(applicationContext);
       var args = CreateUpdateArgsOfRoot(rootObject);
-      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act
-      await sut.InitializeAsync(args);
+      await _systemUnderTest.InitializeAsync(args);
     }
 
     [TestMethod]
@@ -92,14 +96,10 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       // Arrange
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria(""));
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      var sut = new RevalidatingInterceptor(applicationContext);
       var args = CreateUpdateArgsOfRoot(rootObject);
-      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act and Assert
-      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
+      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
     }
 
     [TestMethod]
@@ -109,14 +109,10 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
       rootObject.Children.AddNew();
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      var sut = new RevalidatingInterceptor(applicationContext);
       var args = CreateUpdateArgsOfRoot(rootObject);
-      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act and Assert
-      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
+      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
     }
 
     [TestMethod]
@@ -128,14 +124,29 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
       childObject.GrandChildren.AddNew();
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      var sut = new RevalidatingInterceptor(applicationContext);
       var args = CreateUpdateArgsOfRoot(rootObject);
-      applicationContext.SetExecutionLocation(ApplicationContext.ExecutionLocations.Server);
-      applicationContext.LocalContext["__logicalExecutionLocation"] = ApplicationContext.LogicalExecutionLocations.Server;
 
       // Act and Assert
-      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await sut.InitializeAsync(args));
+      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
+    }
+
+    [TestMethod]
+    public async Task Initialize_DeletingAnInvalidObjectDoesNotThrowWhenRevalidationForDeleteIsDisabled()
+    {
+      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      Root rootObject = dataPortal.Create(new Root.Criteria(""));
+      var args = new InterceptArgs(rootObject.GetType(), rootObject, DataPortalOperations.Delete, true);
+
+      var diContext = TestDIContextFactory.CreateDefaultContext(services =>
+      {
+        services.Configure<RevalidatingInterceptorOptions>(opts => opts.IgnoreDeleteOperation = true);
+      });
+      var appContext = diContext.CreateTestApplicationContext();
+      PrepareApplicationContext(appContext);
+
+      var sut = new RevalidatingInterceptor(appContext, diContext.ServiceProvider.GetRequiredService<IOptions<RevalidatingInterceptorOptions>>());
+
+      await sut.InitializeAsync(args);
     }
 
     private static InterceptArgs CreateUpdateArgsOfRoot(object parameter) => new InterceptArgs(typeof(Root), parameter, DataPortalOperations.Update, true);

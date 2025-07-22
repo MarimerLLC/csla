@@ -25,7 +25,7 @@ namespace Csla.TestHelpers
     /// Create a test DI context for testing with a default authenticated user
     /// </summary>
     /// <returns>A TestDIContext that can be used to perform testing dependent upon DI</returns>
-    public static TestDIContext CreateDefaultContext()
+    public static TestDIContext CreateDefaultContext(Action<IServiceCollection> configureServices = null)
     {
       ClaimsPrincipal principal;
 
@@ -33,7 +33,7 @@ namespace Csla.TestHelpers
       principal = CreateDefaultClaimsPrincipal();
 
       // Delegate to the other overload to create the context
-      return CreateContext(principal);
+      return CreateContext(principal, configureServices);
     }
 
     /// <summary>
@@ -41,9 +41,9 @@ namespace Csla.TestHelpers
     /// </summary>
     /// <param name="principal">The principal which is to be set as the security context for Csla operations</param>
     /// <returns>A TestDIContext that can be used to perform testing dependent upon DI</returns>
-    public static TestDIContext CreateContext(ClaimsPrincipal principal)
+    public static TestDIContext CreateContext(ClaimsPrincipal principal, Action<IServiceCollection> configureServices = null)
     {
-      return CreateContext(null, principal);
+      return CreateContext(null, principal, configureServices);
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace Csla.TestHelpers
     /// <param name="customCslaOptions">The options action that is used by the consumer to configure Csla</param>
     /// <param name="principal">The principal which is to be set as the security context for Csla operations</param>
     /// <returns>A TestDIContext that can be used to perform testing dependent upon DI</returns>
-    public static TestDIContext CreateContext(Action<CslaOptions> customCslaOptions, ClaimsPrincipal principal)
+    public static TestDIContext CreateContext(Action<CslaOptions> customCslaOptions, ClaimsPrincipal principal, Action<IServiceCollection> configureServices = null)
     {
       IServiceProvider serviceProvider;
       ApplicationContext context;
@@ -77,6 +77,7 @@ namespace Csla.TestHelpers
       services.TryAddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
       services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
       services.AddCsla(customCslaOptions);
+      configureServices?.Invoke(services);
 
       serviceProvider = services.BuildServiceProvider();
 

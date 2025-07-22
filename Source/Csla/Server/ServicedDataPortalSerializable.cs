@@ -20,7 +20,7 @@ namespace Csla.Server
   [ComVisible(true)]
   public class ServicedDataPortalSerializable : ServicedComponent, IDataPortalServer
   {
-    private DataPortalBroker portal { get; }
+    private readonly DataPortalBroker _portal;
 
     /// <summary>
     /// 
@@ -29,7 +29,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> is <see langword="null"/>.</exception>
     public ServicedDataPortalSerializable(DataPortalBroker dataPortalBroker)
     {
-      portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
+      _portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ namespace Csla.Server
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
-      return portal.Create(objectType, criteria, context, isSync);
+      return _portal.Create(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ namespace Csla.Server
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
-      return portal.Fetch(objectType, criteria, context, isSync);
+      return _portal.Fetch(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -113,7 +113,7 @@ namespace Csla.Server
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
-      return portal.Update(obj, context, isSync);
+      return _portal.Update(obj, context, isSync);
     }
 
     /// <summary>
@@ -140,7 +140,7 @@ namespace Csla.Server
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
-      return portal.Delete(objectType, criteria, context, isSync);
+      return _portal.Delete(objectType, criteria, context, isSync);
     }
   }
 }

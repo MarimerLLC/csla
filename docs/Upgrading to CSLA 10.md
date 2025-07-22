@@ -59,3 +59,8 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `SessionMessage` now inherits from `MobileObject` instead of `CommandBase`.
 * `DataPortalResponse` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.
 * `UpdateRequest` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.
+
+
+## Breaking changes
+* `Csla.Server.DataPortal` constructor changes:
+  * Removed unused parameters: `IDataPortalActivator activator`, `IDataPortalExceptionInspector exceptionInspector`

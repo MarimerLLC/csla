@@ -8,7 +8,7 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public class CslaBinaryReader : ICslaReader
   {
-    private readonly Dictionary<int, string> keywordsDictionary;
+    private readonly Dictionary<int, string> _keywordsDictionary;
     private readonly ApplicationContext _applicationContext;
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace Csla.Serialization.Mobile
     public CslaBinaryReader(ApplicationContext applicationContext)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      keywordsDictionary = new Dictionary<int, string>();
+      _keywordsDictionary = new Dictionary<int, string>();
     }
 
     /// <inheritdoc />
@@ -29,7 +29,7 @@ namespace Csla.Serialization.Mobile
         throw new ArgumentNullException(nameof(serializationStream));
 
       var returnValue = new List<SerializationInfo>();
-      keywordsDictionary.Clear();
+      _keywordsDictionary.Clear();
 
       using var reader = new BinaryReader(serializationStream);
       var totalCount = reader.ReadInt32();
@@ -74,10 +74,10 @@ namespace Csla.Serialization.Mobile
           return reader.ReadString();
         case CslaKnownTypes.StringWithDictionaryKey:
           var systemString = reader.ReadString();
-          keywordsDictionary.Add(reader.ReadInt32(), systemString);
+          _keywordsDictionary.Add(reader.ReadInt32(), systemString);
           return systemString;
         case CslaKnownTypes.StringDictionaryKey:
-          return keywordsDictionary[reader.ReadInt32()];
+          return _keywordsDictionary[reader.ReadInt32()];
         default:
           throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
       }

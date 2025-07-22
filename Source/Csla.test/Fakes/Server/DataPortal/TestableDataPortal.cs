@@ -24,9 +24,6 @@ namespace Csla.Testing.Business.DataPortal
       CslaOptions options,
       IAuthorizeDataPortal authorizer,
       InterceptorManager interceptors,
-      IObjectFactoryLoader factoryLoader,
-      IDataPortalActivator activator,
-      IDataPortalExceptionInspector exceptionInspector,
       DataPortalExceptionHandler exceptionHandler,
       SecurityOptions securityOptions
     ) : base(
@@ -35,9 +32,6 @@ namespace Csla.Testing.Business.DataPortal
       options,
       authorizer,
       interceptors,
-      factoryLoader,
-      activator,
-      exceptionInspector,
       exceptionHandler,
       securityOptions
     )

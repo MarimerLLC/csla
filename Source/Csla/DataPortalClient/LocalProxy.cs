@@ -23,6 +23,8 @@ namespace Csla.Channels.Local
   /// </summary>
   public class LocalProxy : DataPortalProxy
   {
+    private readonly LocalProxyOptions _options;
+
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
@@ -31,7 +33,7 @@ namespace Csla.Channels.Local
     public LocalProxy(ApplicationContext applicationContext, LocalProxyOptions options)
       : base(applicationContext)
     {
-      Options = options;
+      _options = options;
     }
 
     /// <summary>
@@ -40,13 +42,11 @@ namespace Csla.Channels.Local
     /// </summary>
     protected ApplicationContext CallerApplicationContext => ApplicationContext;
 
-    private readonly LocalProxyOptions Options;
-
     private void InitializeContext(out IDataPortalServer _portal, out IServiceScope? _logicalServerScope, out ApplicationContext _logicalServerApplicationContext)
     {
       var logicalServerServiceProvider = CallerApplicationContext.CurrentServiceProvider;
 
-      if (Options.UseLocalScope
+      if (_options.UseLocalScope
         && CallerApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client
         && CallerApplicationContext.IsAStatefulContextManager)
       {
@@ -73,7 +73,7 @@ namespace Csla.Channels.Local
     {
       // if there's no isolated scope, there's no reason to 
       // change the object graph's ApplicationContext
-      if (!Options.UseLocalScope)
+      if (!_options.UseLocalScope)
         return;
 
       if (obj is IUseApplicationContext useApplicationContext)
@@ -84,7 +84,7 @@ namespace Csla.Channels.Local
     {
       // if there's no isolated scope, there's no reason to 
       // change the object graph's ApplicationContext
-      if (!Options.UseLocalScope)
+      if (!_options.UseLocalScope)
         return;
 
       if (obj != null && !ReferenceEquals(obj.ApplicationContext, applicationContext))
@@ -147,7 +147,7 @@ namespace Csla.Channels.Local
     /// </summary>
     private void ResetApplicationContext(ApplicationContext logicalServerApplicationContext)
     {
-      if (Options.UseLocalScope)
+      if (_options.UseLocalScope)
       {
         if (logicalServerApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Client)
         {
@@ -185,7 +185,7 @@ namespace Csla.Channels.Local
         }
         else
         {
-          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+          if (!_options.FlowSynchronizationContext || SynchronizationContext.Current == null)
             result = await Task.Run(() => _portal.Create(objectType, criteria, context, isSync));
           else
             result = await await Task.Factory.StartNew(() => _portal.Create(objectType, criteria, context, isSync),
@@ -229,7 +229,7 @@ namespace Csla.Channels.Local
         }
         else
         {
-          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+          if (!_options.FlowSynchronizationContext || SynchronizationContext.Current == null)
             result = await Task.Run(() => _portal.Fetch(objectType, criteria, context, isSync));
           else
             result = await await Task.Factory.StartNew(() => _portal.Fetch(objectType, criteria, context, isSync),
@@ -273,7 +273,7 @@ namespace Csla.Channels.Local
         }
         else
         {
-          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+          if (!_options.FlowSynchronizationContext || SynchronizationContext.Current == null)
             result = await Task.Run(() => _portal.Update(obj, context, isSync));
           else
             result = await await Task.Factory.StartNew(() => _portal.Update(obj, context, isSync),
@@ -317,7 +317,7 @@ namespace Csla.Channels.Local
         }
         else
         {
-          if (!Options.FlowSynchronizationContext || SynchronizationContext.Current == null)
+          if (!_options.FlowSynchronizationContext || SynchronizationContext.Current == null)
             result = await Task.Run(() => _portal.Delete(objectType, criteria, context, isSync));
           else
             result = await await Task.Factory.StartNew(() => _portal.Delete(objectType, criteria, context, isSync),

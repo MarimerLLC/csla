@@ -12,13 +12,13 @@ namespace Csla.Core
 {
   class InvalidQueryException : Exception
   {
-    private string message;
+    private string _message;
 
     public InvalidQueryException(string message)
     {
-      this.message = message + " ";
+      this._message = message + " ";
     }
 
-    public override string Message => Resources.ClientQueryIsInvalid + message;
+    public override string Message => Resources.ClientQueryIsInvalid + _message;
   }
 }

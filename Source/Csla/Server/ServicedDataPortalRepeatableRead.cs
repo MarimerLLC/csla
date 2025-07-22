@@ -20,7 +20,7 @@ namespace Csla.Server
   [ComVisible(true)]
   public class ServicedDataPortalRepeatableRead : ServicedComponent, IDataPortalServer
   {
-    private DataPortalBroker portal { get; }
+    private readonly DataPortalBroker _portal;
 
     /// <summary>
     /// 
@@ -29,7 +29,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> is <see langword="null"/>.</exception>
     public ServicedDataPortalRepeatableRead(DataPortalBroker dataPortalBroker)
     {
-      portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
+      _portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return portal.Create(objectType, criteria, context, isSync);
+      return _portal.Create(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return portal.Fetch(objectType, criteria, context, isSync);
+      return _portal.Fetch(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      return portal.Update(obj, context, isSync);
+      return _portal.Update(obj, context, isSync);
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ namespace Csla.Server
     [AutoComplete(true)]
     public Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return portal.Delete(objectType, criteria, context, isSync);
+      return _portal.Delete(objectType, criteria, context, isSync);
     }
   }
 }

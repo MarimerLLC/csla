@@ -8,7 +8,7 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public class CslaBinaryWriter : ICslaWriter
   {
-    private readonly Dictionary<string, int> keywordsDictionary;
+    private readonly Dictionary<string, int> _keywordsDictionary;
     private readonly ApplicationContext _applicationContext;
 
     /// <summary>
@@ -19,7 +19,7 @@ namespace Csla.Serialization.Mobile
     public CslaBinaryWriter(ApplicationContext applicationContext)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-      keywordsDictionary = new Dictionary<string, int>();
+      _keywordsDictionary = new Dictionary<string, int>();
     }
 
     /// <inheritdoc />
@@ -30,7 +30,7 @@ namespace Csla.Serialization.Mobile
       if (objectData is null)
         throw new ArgumentNullException(nameof(objectData));
 
-      keywordsDictionary.Clear();
+      _keywordsDictionary.Clear();
       using var writer = new CslaNonClosingBinaryWriter(serializationStream);
       writer.Write(objectData.Count);
       foreach (var serializationInfo in objectData)
@@ -77,14 +77,14 @@ namespace Csla.Serialization.Mobile
     {
       DictionaryCheckResult returnValue;
 
-      if (keywordsDictionary.TryGetValue(value, out var key))
+      if (_keywordsDictionary.TryGetValue(value, out var key))
       {
         returnValue = new DictionaryCheckResult(false, key);
       }
       else
       {
-        returnValue = new DictionaryCheckResult(true, keywordsDictionary.Count);
-        keywordsDictionary.Add(value, returnValue.Key);
+        returnValue = new DictionaryCheckResult(true, _keywordsDictionary.Count);
+        _keywordsDictionary.Add(value, returnValue.Key);
       }
       return returnValue;
     }

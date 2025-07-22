@@ -10,14 +10,14 @@ namespace Csla.Serialization.Mobile
   [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
   public class CslaLegacyBinaryReader : ICslaReader
   {
-    private readonly Dictionary<int, string> keywordsDictionary;
+    private readonly Dictionary<int, string> _keywordsDictionary;
 
     /// <summary>
     /// Creates new instance of <see cref="CslaLegacyBinaryReader"/>
     /// </summary>
     public CslaLegacyBinaryReader()
     {
-      keywordsDictionary = new Dictionary<int, string>();
+      _keywordsDictionary = new Dictionary<int, string>();
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ namespace Csla.Serialization.Mobile
         throw new ArgumentNullException(nameof(serializationStream));
 
       var returnValue = new List<SerializationInfo>();
-      keywordsDictionary.Clear();
+      _keywordsDictionary.Clear();
       using var reader = new BinaryReader(serializationStream);
       var totalCount = reader.ReadInt32();
       for (var counter = 0; counter < totalCount; counter++)
@@ -137,10 +137,10 @@ namespace Csla.Serialization.Mobile
           return null;
         case CslaKnownTypes.StringWithDictionaryKey:
           var systemString = reader.ReadString();
-          keywordsDictionary.Add(reader.ReadInt32(), systemString);
+          _keywordsDictionary.Add(reader.ReadInt32(), systemString);
           return systemString;
         case CslaKnownTypes.StringDictionaryKey:
-          return keywordsDictionary[reader.ReadInt32()];
+          return _keywordsDictionary[reader.ReadInt32()];
         default:
           throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
       }

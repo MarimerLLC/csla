@@ -27,7 +27,7 @@ namespace Csla.State
     /// <summary>
     /// Gets the current user's session from the cache.
     /// </summary>
-    Session GetCachedSession();
+    Session? GetCachedSession();
     /// <summary>
     /// Sends the current user's session from
     /// the wasm client to the web server.

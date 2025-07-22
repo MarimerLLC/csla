@@ -20,8 +20,9 @@ namespace Csla.Blazor
     /// </summary>
     /// <param name="action">Authorization action</param>
     /// <param name="objectType">Business domain type</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     public HasPermissionAttribute(Rules.AuthorizationActions action, Type objectType)
-      : base(CslaPolicy.GetPolicy(action, objectType))
+      : base(CslaPolicy.GetPolicy(action, objectType ?? throw new ArgumentNullException(nameof(objectType))))
     { }
   }
 }

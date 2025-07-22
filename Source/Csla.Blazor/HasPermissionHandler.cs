@@ -15,15 +15,16 @@ namespace Csla.Blazor
   /// </summary>
   public class CslaPermissionsHandler : AuthorizationHandler<CslaPermissionRequirement>
   {
-    private ApplicationContext _applicationContext;
+    private readonly ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaPermissionsHandler(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>

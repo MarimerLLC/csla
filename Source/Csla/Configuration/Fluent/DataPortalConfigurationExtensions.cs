@@ -8,6 +8,7 @@
 
 using Csla.DataPortalClient;
 using Csla.Server;
+using Csla.Server.Interceptors.ServerSide;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -100,6 +101,7 @@ namespace Csla.Configuration
       services.TryAddTransient(typeof(IChildDataPortal<>), typeof(DataPortal<>));
       services.TryAddTransient<IDataPortalFactory, DataPortalFactory>();
       services.TryAddTransient<IChildDataPortalFactory, ChildDataPortalFactory>();
+      services.AddOptions<RevalidatingInterceptorOptions>();
 
       services.TryAddScoped(typeof(IAuthorizeDataPortal), config.DataPortalOptions.DataPortalServerOptions.AuthorizerProviderType);
       foreach (Type interceptorType in config.DataPortalOptions.DataPortalServerOptions.InterceptorProviders)

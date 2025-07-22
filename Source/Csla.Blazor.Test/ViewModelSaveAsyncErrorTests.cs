@@ -1,6 +1,8 @@
 ﻿using Csla.Blazor.Test.Fakes;
 using Csla.Core;
 using Csla.TestHelpers;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Blazor.Test
@@ -67,10 +69,12 @@ namespace Csla.Blazor.Test
       // Act
       await vm.SaveAsync();
 
-      // Assert
-      Assert.IsFalse(error); // Error event shouldn't have been triggered
-      Assert.IsNull(vm.Exception);
-      Assert.IsNull(vm.ViewModelErrorText);
+      using (new AssertionScope())
+      {
+        error.Should().BeFalse(); // Error event shouldn't have been triggered
+        vm.Exception.Should().BeNull();
+        vm.ViewModelErrorText.Should().BeEmpty();
+      }
     }
 
 
@@ -89,10 +93,11 @@ namespace Csla.Blazor.Test
       // Act
       await vm.SaveAsync(cancellationToken);
 
-      // Assert
-
-      Assert.IsNull(vm.Exception);
-      Assert.IsNull(vm.ViewModelErrorText);
+      using (new AssertionScope())
+      {
+        vm.Exception.Should().BeNull();
+        vm.ViewModelErrorText.Should().BeEmpty();
+      }
     }
 
     [TestMethod]

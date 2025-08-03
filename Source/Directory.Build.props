@@ -2,6 +2,8 @@
  <PropertyGroup>
    <LangVersion>latest</LangVersion>
    <ImplicitUsings>enable</ImplicitUsings>
+   <Nullable>enable</Nullable>
+   <WarningsAsErrors>nullable</WarningsAsErrors>
  </PropertyGroup>
  
  <!-- Common Package Settings -->

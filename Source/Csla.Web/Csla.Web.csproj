@@ -12,8 +12,6 @@
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <Title>CSLA .NET ASP.NET</Title>
     <PackageTags>CSLA;ASP.NET;Web Forms</PackageTags>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

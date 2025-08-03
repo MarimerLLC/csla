@@ -9,8 +9,6 @@
     <SignAssembly>true</SignAssembly>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET ASP.NET MVC 5</Title>
     <PackageTags>CSLA;ASP.NET;MVC</PackageTags>
   </PropertyGroup>

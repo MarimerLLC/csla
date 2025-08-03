@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp.Tests\ModuleInitializer.cs" Link="ModuleInitializer.cs" />
+    <Compile Include="..\Csla.Generator.AutoImplementProperties.CSharp.Tests\ModuleInitializer.cs" Link="ModuleInitializer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,10 +32,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
-    <ProjectReference Include="..\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" />
+    <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj" OutputItemType="Analyzer" />
     <ProjectReference Include="..\Csla.Generator.AutoSerialization.CSharp.TestObjects\Csla.Generator.AutoSerialization.CSharp.TestObjects.csproj" />
-    <ProjectReference Include="..\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj" OutputItemType="Analyzer" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Csla\Csla.csproj" />
-    <ProjectReference Include="..\Csla.AspNetCore\Csla.AspNetCore.csproj" />
+    <ProjectReference Include="..\..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\Csla.AspNetCore\Csla.AspNetCore.csproj" />
   </ItemGroup>
 
 </Project>

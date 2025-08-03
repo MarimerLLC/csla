@@ -14,8 +14,6 @@
     <Title>CSLA .NET Windows Forms</Title>
     <PackageTags>CSLA;WinForms;Windows Forms</PackageTags>
     <PackageId>Csla.Windows.Forms</PackageId>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">

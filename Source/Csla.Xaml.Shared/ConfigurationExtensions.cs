@@ -6,8 +6,11 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 using Csla.Xaml;
+
+#if !MAUI
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+#endif
 
 namespace Csla.Configuration;
 

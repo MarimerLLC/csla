@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <RootNamespace>Csla.Test</RootNamespace>
   </PropertyGroup>
 
@@ -25,7 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
-    <ProjectReference Include="..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\Csla\Csla.csproj" />
   </ItemGroup>
 
   <ItemGroup>

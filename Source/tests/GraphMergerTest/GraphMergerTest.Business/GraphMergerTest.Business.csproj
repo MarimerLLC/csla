@@ -6,7 +6,7 @@
     <TargetFrameworks>net462;net8.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\..\Csla\Csla.csproj" />
     <ProjectReference Include="..\GraphMergerTest.Dal\GraphMergerTest.Dal.csproj" />
   </ItemGroup>
   <ItemGroup>

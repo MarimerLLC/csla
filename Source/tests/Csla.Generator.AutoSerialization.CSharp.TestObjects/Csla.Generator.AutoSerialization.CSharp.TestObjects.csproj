@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj" OutputItemType="Analyzer" />
+  </ItemGroup>
+
+</Project>

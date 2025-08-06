@@ -7,8 +7,6 @@
     <Description>CSLA .NET Microsoft.Data.SqlClient support.</Description>
     <SignAssembly>true</SignAssembly>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET Microsoft.Data.SqlClient</Title>
     <PackageTags>CSLA;SqlClient;Sql Server</PackageTags>
   </PropertyGroup>

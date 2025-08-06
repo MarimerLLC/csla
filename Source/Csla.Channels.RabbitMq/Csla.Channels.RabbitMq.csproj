@@ -7,8 +7,6 @@
     <Description>RabbitMQ data portal channel for CSLA .NET.</Description>
     <SignAssembly>true</SignAssembly>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET RabbitMQ data portal channel</Title>
     <PackageTags>CSLA;RabbitMQ</PackageTags>
   </PropertyGroup>

@@ -14,8 +14,6 @@
     <IsPackable>false</IsPackable>
     <BaseOutputPath>..\..\..\..\..\Bin</BaseOutputPath>
     <OutputPath>..\..\..\..\..\bin\packages\</OutputPath>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <DelaySign>false</DelaySign>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>

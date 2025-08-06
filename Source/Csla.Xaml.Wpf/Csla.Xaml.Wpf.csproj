@@ -14,8 +14,6 @@
 
     <Title>CSLA .NET WPF</Title>
     <PackageTags>CSLA;WPF;XAML</PackageTags>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

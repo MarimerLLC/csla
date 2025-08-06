@@ -10,8 +10,6 @@
     <SignAssembly>true</SignAssembly>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET AspNetCore</Title>
     <PackageTags>CSLA;AspNetCore;Razor</PackageTags>
   </PropertyGroup>

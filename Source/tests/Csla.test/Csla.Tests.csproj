@@ -5,7 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <IsPackable>false</IsPackable>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <RootNamespace>Csla.Test</RootNamespace>
     <RunSettingsFilePath>$(MSBuildProjectDirectory)\test.runsettings</RunSettingsFilePath>
   </PropertyGroup>
@@ -67,7 +67,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
-    <ProjectReference Include="..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\Csla\Csla.csproj" />
   </ItemGroup>
 
   <ItemGroup>

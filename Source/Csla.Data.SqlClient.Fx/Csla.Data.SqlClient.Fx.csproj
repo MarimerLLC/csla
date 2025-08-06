@@ -9,8 +9,6 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET System.Data.SqlClient</Title>
     <PackageTags>CSLA;SqlClient;Sql Server</PackageTags>
   </PropertyGroup>

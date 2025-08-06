@@ -9,8 +9,6 @@
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <Title>CSLA .NET gRPC data portal channel</Title>
     <PackageTags>CSLA;gRPC</PackageTags>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

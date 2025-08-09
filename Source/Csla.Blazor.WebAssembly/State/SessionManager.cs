@@ -56,7 +56,8 @@ namespace Csla.Blazor.WebAssembly.State
     {
       try
       {
-        return await RetrieveSession(GetCancellationToken(timeout));
+        using var cts = timeout.ToCancellationTokenSource();
+        return await RetrieveSession(cts.Token);
       }
       catch (TaskCanceledException tcex)
       {
@@ -114,18 +115,13 @@ namespace Csla.Blazor.WebAssembly.State
     {
       try
       {
-        await SendSession(GetCancellationToken(timeout));
+        using var cts = timeout.ToCancellationTokenSource();
+        await SendSession(cts.Token);
       }
       catch (TaskCanceledException tcex)
       {
         throw new TimeoutException($"{this.GetType().FullName}.{nameof(SendSession)}.", tcex);
       }
-    }
-
-    private static CancellationToken GetCancellationToken(TimeSpan timeout)
-    {
-      var cts = new CancellationTokenSource(timeout);
-      return cts.Token;
     }
 
     /// <summary>

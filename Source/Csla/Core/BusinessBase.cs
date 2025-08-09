@@ -14,7 +14,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Csla.Configuration;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
 using Csla.Properties;
@@ -1323,38 +1322,40 @@ namespace Csla.Core
 
     #region IDataErrorInfo
 
-    string IDataErrorInfo.Error
+    string IDataErrorInfo.Error => GetDataErrorInfoError();
+
+    /// <inheritdoc cref="IDataErrorInfo.Error" />
+    protected virtual string GetDataErrorInfoError()
     {
-      get
-      {
-        if (!IsSelfValid)
-          return BusinessRules.GetBrokenRules().ToString(
-            RuleSeverity.Error);
-        else
-          return String.Empty;
-      }
+      if (!IsSelfValid)
+        return BusinessRules.GetBrokenRules().ToString(RuleSeverity.Error);
+
+      return string.Empty;
     }
 
-    IEnumerable INotifyDataErrorInfo.GetErrors(string? propertyName)
+    IEnumerable INotifyDataErrorInfo.GetErrors(string? propertyName) => GetNotifyDataErrorInfoGetErrors(propertyName);
+
+    /// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string)" />
+    protected virtual IEnumerable GetNotifyDataErrorInfoGetErrors(string? propertyName)
     {
       return BusinessRules.GetBrokenRules().Where(r => r.Property == propertyName && r.Severity == RuleSeverity.Error).Select(r => r.Description);
     }
 
-    bool INotifyDataErrorInfo.HasErrors => !IsSelfValid;
+    bool INotifyDataErrorInfo.HasErrors => GetNotifyDataErrorInfoHasErrors();
 
-    string IDataErrorInfo.this[string columnName]
+    /// <inheritdoc cref="INotifyDataErrorInfo.HasErrors" />
+    protected virtual bool GetNotifyDataErrorInfoHasErrors() => !IsSelfValid;
+
+    string IDataErrorInfo.this[string columnName] => GetDataErrorInfoIndexerError(columnName);
+
+    /// <inheritdoc cref="IDataErrorInfo.this" />
+    protected virtual string GetDataErrorInfoIndexerError(string columnName)
     {
-      get
-      {
-        string result = string.Empty;
-        if (!IsSelfValid)
-        {
-          BrokenRule? rule = BusinessRules.GetBrokenRules().GetFirstBrokenRule(columnName);
-          if (rule != null)
-            result = rule.Description;
-        }
-        return result;
-      }
+      if (IsSelfValid)
+        return string.Empty;
+
+      var rule = BusinessRules.GetBrokenRules().GetFirstBrokenRule(columnName);
+      return rule?.Description ?? string.Empty;
     }
 
     [NonSerialized]
@@ -2360,9 +2361,11 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks)
+              OnPropertyChanging(propertyName);
             field = newValue;
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks)
+              PropertyHasChanged(propertyName);
           }
         }
       }
@@ -2441,9 +2444,11 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks)
+              OnPropertyChanging(propertyName);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks)
+              PropertyHasChanged(propertyName);
           }
         }
       }
@@ -2642,9 +2647,11 @@ namespace Csla.Core
       {
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, true))
         {
-          if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo);
+          if (!_bypassPropertyChecks)
+            OnPropertyChanging(propertyInfo);
           FieldManager.SetFieldData(propertyInfo, newValue);
-          if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo);
+          if (!_bypassPropertyChecks)
+            PropertyHasChanged(propertyInfo);
         }
       }
       catch (System.Security.SecurityException ex)

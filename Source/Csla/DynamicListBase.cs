@@ -144,7 +144,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public Task SaveItemAsync(T item)
     {
-      if (item is null) 
+      if (item is null)
         throw new ArgumentNullException(nameof(item));
 
       return SaveItemAsync(IndexOf(item));
@@ -294,10 +294,10 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void InsertItem(int index, T item)
     {
-      if(item is null) 
+      if (item is null)
         throw new ArgumentNullException(nameof(item));
 
-      IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
+      IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
       item.SetParent(this);
       // ensure child uses same context as parent
       if (item is IUseApplicationContext iuac)
@@ -357,7 +357,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void SetItem(int index, T item)
     {
-      if(item is null) 
+      if (item is null)
         throw new ArgumentNullException(nameof(item));
 
       item.SetParent(this);

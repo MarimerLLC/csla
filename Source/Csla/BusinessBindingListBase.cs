@@ -345,7 +345,7 @@ namespace Csla
 
       if (item.IsChild)
       {
-        IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
+        IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
 
         // set parent reference
         item.SetParent(this);
@@ -506,7 +506,8 @@ namespace Csla
 
       // we are coming up one edit level
       EditLevel -= 1;
-      if (EditLevel < 0) EditLevel = 0;
+      if (EditLevel < 0)
+        EditLevel = 0;
 
       try
       {
@@ -550,7 +551,8 @@ namespace Csla
             else
             {
               // if item is no longer deleted move back to main list
-              if (!child.IsDeleted) UnDeleteChild(child);
+              if (!child.IsDeleted)
+                UnDeleteChild(child);
             }
           }
         }
@@ -568,14 +570,16 @@ namespace Csla
 
       // we are coming up one edit level
       EditLevel -= 1;
-      if (EditLevel < 0) EditLevel = 0;
+      if (EditLevel < 0)
+        EditLevel = 0;
 
       // cascade the call to all child objects
       foreach (C child in this)
       {
         child.AcceptChanges(EditLevel, false);
         // if item is below its point of addition, lower point of addition
-        if (child.EditLevelAdded > EditLevel) child.EditLevelAdded = EditLevel;
+        if (child.EditLevelAdded > EditLevel)
+          child.EditLevelAdded = EditLevel;
       }
 
       // cascade the call to all deleted child objects
@@ -881,7 +885,8 @@ namespace Csla
         DeletedList.Clear();
 
         foreach (var child in this)
-          if (child.IsDirty) dp.UpdateChild(child, parameters);
+          if (child.IsDirty)
+            dp.UpdateChild(child, parameters);
       }
     }
 
@@ -909,7 +914,8 @@ namespace Csla
         DeletedList.Clear();
 
         foreach (var child in this)
-          if (child.IsDirty) await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
+          if (child.IsDirty)
+            await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
       }
     }
 

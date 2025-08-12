@@ -27,8 +27,8 @@ namespace Csla.Core
     public int GetNextIdentity(int? current = null)
     {
       int result;
-      if (current == null) 
-      { 
+      if (current == null)
+      {
         result = _nextIdentity;
       }
       else if (current == -1)
@@ -50,18 +50,11 @@ namespace Csla.Core
     /// Ensures that the internal value of <see cref="_nextIdentity"/> is greater than the greatest <see cref="IBusinessObject.Identity"/> within the given collection.
     /// That ensures that new object get a unique identity within the collection.
     /// </summary>
-    /// <typeparam name="T">Item type of the list</typeparam>
     /// <param name="parent"></param>
-    /// <param name="items"></param>
-    internal static void EnsureNextIdentityValueIsUnique<T>(IParent parent, IReadOnlyCollection<T> items) where T: IBusinessObject
+    /// <param name="item"></param>
+    internal static void EnsureNextIdentityValueIsUnique(IParent parent, IBusinessObject item)
     {
-      // No items means we do not have to worry about any identity duplicates
-      if (items.Count == 0)
-      {
-        return;
-      }
-
-      _ = parent.GetNextIdentity(items.Max(c => c.Identity));
+      _ = parent.GetNextIdentity(item.Identity);
     }
   }
 }

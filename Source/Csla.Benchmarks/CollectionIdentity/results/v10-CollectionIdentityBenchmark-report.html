@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Csla.Benchmarks.CollectionIdentity.CollectionIdentityBenchmark-20250810-171058</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.2, Windows 11 (10.0.26100.4652/24H2/2024Update/HudsonValley)
+AMD Ryzen 7 5800X 3.80GHz, 1 CPU, 16 logical and 8 physical cores
+.NET SDK 9.0.304
+  [Host]               : .NET 9.0.8 (9.0.825.36511), X64 RyuJIT AVX2
+  .NET 8.0             : .NET 8.0.19 (8.0.1925.36514), X64 RyuJIT AVX2
+  .NET 9.0             : .NET 9.0.8 (9.0.825.36511), X64 RyuJIT AVX2
+  .NET Framework 4.6.2 : .NET Framework 4.8.1 (4.8.9310.0), X64 RyuJIT VectorSize=256
+  .NET Framework 4.7.2 : .NET Framework 4.8.1 (4.8.9310.0), X64 RyuJIT VectorSize=256
+  .NET Framework 4.8   : .NET Framework 4.8.1 (4.8.9310.0), X64 RyuJIT VectorSize=256
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Job           </th><th>Runtime       </th><th>NumberOfItems</th><th>Mean     </th><th>Error  </th><th>StdDev </th><th>Ratio</th><th>RatioSD</th>
+</tr>
+</thead><tbody><tr><td>Create</td><td>.NET 8.0</td><td>.NET 8.0</td><td>1</td><td>30.42 &mu;s</td><td>0.364 &mu;s</td><td>0.340 &mu;s</td><td>1.31</td><td>0.02</td>
+</tr><tr><td>Create</td><td>.NET 9.0</td><td>.NET 9.0</td><td>1</td><td>23.20 &mu;s</td><td>0.209 &mu;s</td><td>0.232 &mu;s</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>1</td><td>70.60 &mu;s</td><td>0.264 &mu;s</td><td>0.234 &mu;s</td><td>3.04</td><td>0.03</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>1</td><td>69.25 &mu;s</td><td>0.393 &mu;s</td><td>0.348 &mu;s</td><td>2.98</td><td>0.03</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>1</td><td>70.08 &mu;s</td><td>0.502 &mu;s</td><td>0.470 &mu;s</td><td>3.02</td><td>0.04</td>
+</tr><tr><td>Create</td><td>.NET 8.0</td><td>.NET 8.0</td><td>10</td><td>66.34 &mu;s</td><td>0.747 &mu;s</td><td>0.831 &mu;s</td><td>1.17</td><td>0.03</td>
+</tr><tr><td>Create</td><td>.NET 9.0</td><td>.NET 9.0</td><td>10</td><td>56.75 &mu;s</td><td>0.906 &mu;s</td><td>1.300 &mu;s</td><td>1.00</td><td>0.03</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>10</td><td>164.73 &mu;s</td><td>0.560 &mu;s</td><td>0.524 &mu;s</td><td>2.90</td><td>0.06</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>10</td><td>165.49 &mu;s</td><td>1.062 &mu;s</td><td>0.993 &mu;s</td><td>2.92</td><td>0.06</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>10</td><td>163.71 &mu;s</td><td>0.607 &mu;s</td><td>0.568 &mu;s</td><td>2.89</td><td>0.06</td>
+</tr><tr><td>Create</td><td>.NET 8.0</td><td>.NET 8.0</td><td>100</td><td>418.63 &mu;s</td><td>3.784 &mu;s</td><td>3.160 &mu;s</td><td>1.10</td><td>0.03</td>
+</tr><tr><td>Create</td><td>.NET 9.0</td><td>.NET 9.0</td><td>100</td><td>380.70 &mu;s</td><td>7.535 &mu;s</td><td>11.507 &mu;s</td><td>1.00</td><td>0.04</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>100</td><td>1,104.12 &mu;s</td><td>21.860 &mu;s</td><td>21.469 &mu;s</td><td>2.90</td><td>0.10</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>100</td><td>1,067.95 &mu;s</td><td>3.589 &mu;s</td><td>3.182 &mu;s</td><td>2.81</td><td>0.08</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>100</td><td>1,065.52 &mu;s</td><td>5.328 &mu;s</td><td>4.984 &mu;s</td><td>2.80</td><td>0.08</td>
+</tr><tr><td>Create</td><td>.NET 8.0</td><td>.NET 8.0</td><td>1000</td><td>4,651.62 &mu;s</td><td>68.860 &mu;s</td><td>61.043 &mu;s</td><td>1.08</td><td>0.02</td>
+</tr><tr><td>Create</td><td>.NET 9.0</td><td>.NET 9.0</td><td>1000</td><td>4,311.18 &mu;s</td><td>32.509 &mu;s</td><td>30.409 &mu;s</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>1000</td><td>17,012.72 &mu;s</td><td>324.385 &mu;s</td><td>347.088 &mu;s</td><td>3.95</td><td>0.08</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>1000</td><td>16,732.66 &mu;s</td><td>330.092 &mu;s</td><td>366.896 &mu;s</td><td>3.88</td><td>0.09</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>1000</td><td>16,337.16 &mu;s</td><td>132.756 &mu;s</td><td>110.857 &mu;s</td><td>3.79</td><td>0.04</td>
+</tr><tr><td>Create</td><td>.NET 8.0</td><td>.NET 8.0</td><td>10000</td><td>119,235.24 &mu;s</td><td>2,308.136 &mu;s</td><td>2,919.054 &mu;s</td><td>1.04</td><td>0.04</td>
+</tr><tr><td>Create</td><td>.NET 9.0</td><td>.NET 9.0</td><td>10000</td><td>114,738.22 &mu;s</td><td>2,241.116 &mu;s</td><td>3,141.732 &mu;s</td><td>1.00</td><td>0.04</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>10000</td><td>205,838.74 &mu;s</td><td>2,556.223 &mu;s</td><td>2,391.093 &mu;s</td><td>1.80</td><td>0.05</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>10000</td><td>205,994.46 &mu;s</td><td>2,688.964 &mu;s</td><td>2,515.259 &mu;s</td><td>1.80</td><td>0.05</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>10000</td><td>203,591.04 &mu;s</td><td>1,383.315 &mu;s</td><td>1,226.273 &mu;s</td><td>1.78</td><td>0.05</td>
+</tr><tr><td>Create</td><td>.NET 8.0</td><td>.NET 8.0</td><td>100000</td><td>1,134,581.03 &mu;s</td><td>8,213.392 &mu;s</td><td>7,280.958 &mu;s</td><td>0.99</td><td>0.01</td>
+</tr><tr><td>Create</td><td>.NET 9.0</td><td>.NET 9.0</td><td>100000</td><td>1,142,227.88 &mu;s</td><td>8,870.622 &mu;s</td><td>7,407.371 &mu;s</td><td>1.00</td><td>0.01</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>100000</td><td>1,919,307.17 &mu;s</td><td>15,593.454 &mu;s</td><td>14,586.126 &mu;s</td><td>1.68</td><td>0.02</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>100000</td><td>1,937,460.75 &mu;s</td><td>33,454.070 &mu;s</td><td>29,656.162 &mu;s</td><td>1.70</td><td>0.03</td>
+</tr><tr><td>Create</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>100000</td><td>2,028,175.96 &mu;s</td><td>39,296.108 &mu;s</td><td>32,814.030 &mu;s</td><td>1.78</td><td>0.03</td>
+</tr></tbody></table>
+</body>
+</html>

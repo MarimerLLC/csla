@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net462;net472;net48;net8.0;net9.0</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
+    <PackageReference Include="Csla" Version="10.0.0-alpha-0001-g9fc8b77197" />
+    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" Version="10.0.0-alpha-0001-g9fc8b77197" />
+  </ItemGroup>
+
+</Project>

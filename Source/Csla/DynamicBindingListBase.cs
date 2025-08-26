@@ -60,7 +60,7 @@ namespace Csla
     /// Gets the current ApplicationContext
     /// </summary>
     protected ApplicationContext ApplicationContext { get; private set; }
-    
+
     /// <inheritdoc />
     ApplicationContext IUseApplicationContext.ApplicationContext
     {
@@ -137,7 +137,7 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public T SaveItem(T item)
     {
-      if(item is null) 
+      if (item is null)
         throw new ArgumentNullException(nameof(item));
 
       return SaveItem(IndexOf(item));
@@ -259,7 +259,7 @@ namespace Csla
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSaved(T newObject, Exception? e)
     {
-      if (newObject == null) 
+      if (newObject == null)
         throw new ArgumentNullException(nameof(newObject));
 
       SavedEventArgs args = new SavedEventArgs(newObject, e, null);
@@ -293,10 +293,10 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     protected override void InsertItem(int index, T item)
     {
-      if(item is null) 
+      if (item is null)
         throw new ArgumentNullException(nameof(item));
 
-      IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
+      IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
       item.SetParent(this);
       base.InsertItem(index, item);
     }

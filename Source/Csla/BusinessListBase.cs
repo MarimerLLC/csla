@@ -10,7 +10,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
@@ -374,7 +373,7 @@ namespace Csla
 
       if (item.IsChild)
       {
-        IdentityManager.EnsureNextIdentityValueIsUnique(this, this);
+        IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
 
         // set parent reference
         item.SetParent(this);
@@ -464,7 +463,8 @@ namespace Csla
     /// </summary>
     protected override void ClearItems()
     {
-      while (Count > 0) RemoveItem(0);
+      while (Count > 0)
+        RemoveItem(0);
       //DeferredLoadIndexIfNotLoaded();
       //_indexSet.ClearIndexes();
       //DeferredLoadPositionMapIfNotLoaded();
@@ -539,7 +539,8 @@ namespace Csla
 
       // we are coming up one edit level
       EditLevel -= 1;
-      if (EditLevel < 0) EditLevel = 0;
+      if (EditLevel < 0)
+        EditLevel = 0;
 
       using (LoadListMode)
       {
@@ -594,7 +595,8 @@ namespace Csla
             else
             {
               // if item is no longer deleted move back to main list
-              if (!child.IsDeleted) UnDeleteChild(child);
+              if (!child.IsDeleted)
+                UnDeleteChild(child);
             }
           }
         }
@@ -618,7 +620,8 @@ namespace Csla
       {
         child.AcceptChanges(EditLevel, false);
         // if item is below its point of addition, lower point of addition
-        if (child.EditLevelAdded > EditLevel) child.EditLevelAdded = EditLevel;
+        if (child.EditLevelAdded > EditLevel)
+          child.EditLevelAdded = EditLevel;
       }
 
       // cascade the call to all deleted child objects
@@ -630,7 +633,8 @@ namespace Csla
         if (child.EditLevelAdded > EditLevel)
           DeletedList.RemoveAt(index);
       }
-      if (EditLevel < 0) EditLevel = 0;
+      if (EditLevel < 0)
+        EditLevel = 0;
     }
 
     #endregion
@@ -914,7 +918,8 @@ namespace Csla
         DeletedList.Clear();
 
         foreach (var child in this)
-          if (child.IsDirty) dp.UpdateChild(child, parameters);
+          if (child.IsDirty)
+            dp.UpdateChild(child, parameters);
       }
     }
 
@@ -942,7 +947,8 @@ namespace Csla
         DeletedList.Clear();
 
         foreach (var child in this)
-          if (child.IsDirty) await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
+          if (child.IsDirty)
+            await dp.UpdateChildAsync(child, parameters).ConfigureAwait(false);
       }
     }
 

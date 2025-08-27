@@ -34,6 +34,8 @@ namespace Csla.Test.BizRules
     [TestMethod]
     public void DefaultDataAnnotationsScan()
     {
+      SetScanForDataAnnotations(true);
+
       var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule>>();
       var obj = portal.Create();
       obj.Name = "";
@@ -44,8 +46,7 @@ namespace Csla.Test.BizRules
     [TestCategory("SkipOnCIServer")]
     public void DisableDataAnnotationsScan()
     {
-      var options = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();
-      options.ScanForDataAnnotations(false);
+      SetScanForDataAnnotations(false);
 
       // use different type to avoid caching
       var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule2>>();
@@ -53,6 +54,13 @@ namespace Csla.Test.BizRules
       obj.Name = "";
       obj.IsValid.Should().BeTrue();
     }
+
+    private void SetScanForDataAnnotations(bool enable)
+    {
+      var options = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();
+      options.ScanForDataAnnotations(enable);
+    }
+
   }
 
   public class TestBusinessRule : BusinessBase<TestBusinessRule>

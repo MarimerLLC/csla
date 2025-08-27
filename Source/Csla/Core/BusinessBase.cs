@@ -1322,9 +1322,13 @@ namespace Csla.Core
 
     #region IDataErrorInfo
 
+    /// <inheritdoc cref="IDataErrorInfo.Error" />
     string IDataErrorInfo.Error => GetDataErrorInfoError();
 
-    /// <inheritdoc cref="IDataErrorInfo.Error" />
+    /// <summary>
+    /// Returns a string describing the error state of the object for use by <see cref="IDataErrorInfo.Error"/>.
+    /// This method is called by the <see cref="IDataErrorInfo.Error"/> property implementation.
+    /// </summary>
     protected virtual string GetDataErrorInfoError()
     {
       if (!IsSelfValid)
@@ -1333,22 +1337,39 @@ namespace Csla.Core
       return string.Empty;
     }
 
+    /// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string?)" />
     IEnumerable INotifyDataErrorInfo.GetErrors(string? propertyName) => GetNotifyDataErrorInfoGetErrors(propertyName);
 
-    /// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string)" />
+    /// <summary>
+    /// Gets the validation errors for a specified property or for the entire entity for use by <see cref="INotifyDataErrorInfo.GetErrors(string?)"/>.
+    /// This method is called by the <see cref="INotifyDataErrorInfo.GetErrors(string?)"/> method implementation.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to retrieve validation errors for; or null or System.String.Empty, to retrieve entity-level errors.</param>
+    /// <returns>The validation errors for the property or entity.</returns>
     protected virtual IEnumerable GetNotifyDataErrorInfoGetErrors(string? propertyName)
     {
       return BusinessRules.GetBrokenRules().Where(r => r.Property == propertyName && r.Severity == RuleSeverity.Error).Select(r => r.Description);
     }
 
+    /// <inheritdoc cref="INotifyDataErrorInfo.HasErrors" />
     bool INotifyDataErrorInfo.HasErrors => GetNotifyDataErrorInfoHasErrors();
 
-    /// <inheritdoc cref="INotifyDataErrorInfo.HasErrors" />
+    /// <summary>
+    /// Gets a value that indicates whether the entity has validation errors for use by <see cref="INotifyDataErrorInfo.HasErrors"/>.
+    /// This method is called by the <see cref="INotifyDataErrorInfo.HasErrors"/> property implementation.
+    /// </summary>
+    /// <returns><see langword="true"/> if the entity currently has validation errors; otherwise, <see langword="false"/>.</returns>
     protected virtual bool GetNotifyDataErrorInfoHasErrors() => !IsSelfValid;
 
+    /// <inheritdoc cref="IDataErrorInfo.this[string]" />
     string IDataErrorInfo.this[string columnName] => GetDataErrorInfoIndexerError(columnName);
 
-    /// <inheritdoc cref="IDataErrorInfo.this" />
+    /// <summary>
+    /// Gets the error message for the property with the given name for use by <see cref="IDataErrorInfo.this[string]"/>.
+    /// This method is called by the <see cref="IDataErrorInfo.this[string]"/> indexer implementation.
+    /// </summary>
+    /// <param name="columnName">The name of the property whose error message to get.</param>
+    /// <returns>The error message for the property. The default is an empty string ("").</returns>
     protected virtual string GetDataErrorInfoIndexerError(string columnName)
     {
       if (IsSelfValid)

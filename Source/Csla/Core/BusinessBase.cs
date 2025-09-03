@@ -14,7 +14,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Csla.Configuration;
 using Csla.Core.FieldManager;
 using Csla.Core.LoadManager;
 using Csla.Properties;
@@ -1323,38 +1322,61 @@ namespace Csla.Core
 
     #region IDataErrorInfo
 
-    string IDataErrorInfo.Error
+    /// <inheritdoc cref="IDataErrorInfo.Error" />
+    string IDataErrorInfo.Error => GetDataErrorInfoError();
+
+    /// <summary>
+    /// Returns a string describing the error state of the object for use by <see cref="IDataErrorInfo.Error"/>.
+    /// This method is called by the <see cref="IDataErrorInfo.Error"/> property implementation.
+    /// </summary>
+    protected virtual string GetDataErrorInfoError()
     {
-      get
-      {
-        if (!IsSelfValid)
-          return BusinessRules.GetBrokenRules().ToString(
-            RuleSeverity.Error);
-        else
-          return String.Empty;
-      }
+      if (!IsSelfValid)
+        return BusinessRules.GetBrokenRules().ToString(RuleSeverity.Error);
+
+      return string.Empty;
     }
 
-    IEnumerable INotifyDataErrorInfo.GetErrors(string? propertyName)
+    /// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string?)" />
+    IEnumerable INotifyDataErrorInfo.GetErrors(string? propertyName) => GetNotifyDataErrorInfoGetErrors(propertyName);
+
+    /// <summary>
+    /// Gets the validation errors for a specified property or for the entire entity for use by <see cref="INotifyDataErrorInfo.GetErrors(string?)"/>.
+    /// This method is called by the <see cref="INotifyDataErrorInfo.GetErrors(string?)"/> method implementation.
+    /// </summary>
+    /// <param name="propertyName">The name of the property to retrieve validation errors for; or null or System.String.Empty, to retrieve entity-level errors.</param>
+    /// <returns>The validation errors for the property or entity.</returns>
+    protected virtual IEnumerable GetNotifyDataErrorInfoGetErrors(string? propertyName)
     {
       return BusinessRules.GetBrokenRules().Where(r => r.Property == propertyName && r.Severity == RuleSeverity.Error).Select(r => r.Description);
     }
 
-    bool INotifyDataErrorInfo.HasErrors => !IsSelfValid;
+    /// <inheritdoc cref="INotifyDataErrorInfo.HasErrors" />
+    bool INotifyDataErrorInfo.HasErrors => GetNotifyDataErrorInfoHasErrors();
 
-    string IDataErrorInfo.this[string columnName]
+    /// <summary>
+    /// Gets a value that indicates whether the entity has validation errors for use by <see cref="INotifyDataErrorInfo.HasErrors"/>.
+    /// This method is called by the <see cref="INotifyDataErrorInfo.HasErrors"/> property implementation.
+    /// </summary>
+    /// <returns><see langword="true"/> if the entity currently has validation errors; otherwise, <see langword="false"/>.</returns>
+    protected virtual bool GetNotifyDataErrorInfoHasErrors() => !IsSelfValid;
+
+    /// <inheritdoc cref="IDataErrorInfo.this[string]" />
+    string IDataErrorInfo.this[string columnName] => GetDataErrorInfoIndexerError(columnName);
+
+    /// <summary>
+    /// Gets the error message for the property with the given name for use by <see cref="IDataErrorInfo.this[string]"/>.
+    /// This method is called by the <see cref="IDataErrorInfo.this[string]"/> indexer implementation.
+    /// </summary>
+    /// <param name="columnName">The name of the property whose error message to get.</param>
+    /// <returns>The error message for the property. The default is an empty string ("").</returns>
+    protected virtual string GetDataErrorInfoIndexerError(string columnName)
     {
-      get
-      {
-        string result = string.Empty;
-        if (!IsSelfValid)
-        {
-          BrokenRule? rule = BusinessRules.GetBrokenRules().GetFirstBrokenRule(columnName);
-          if (rule != null)
-            result = rule.Description;
-        }
-        return result;
-      }
+      if (IsSelfValid)
+        return string.Empty;
+
+      var rule = BusinessRules.GetBrokenRules().GetFirstBrokenRule(columnName);
+      return rule?.Description ?? string.Empty;
     }
 
     [NonSerialized]
@@ -2360,9 +2382,11 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks)
+              OnPropertyChanging(propertyName);
             field = newValue;
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks)
+              PropertyHasChanged(propertyName);
           }
         }
       }
@@ -2441,9 +2465,11 @@ namespace Csla.Core
           }
           if (doChange)
           {
-            if (!_bypassPropertyChecks) OnPropertyChanging(propertyName);
+            if (!_bypassPropertyChecks)
+              OnPropertyChanging(propertyName);
             field = Utilities.CoerceValue<P>(typeof(V), field, newValue);
-            if (!_bypassPropertyChecks) PropertyHasChanged(propertyName);
+            if (!_bypassPropertyChecks)
+              PropertyHasChanged(propertyName);
           }
         }
       }
@@ -2642,9 +2668,11 @@ namespace Csla.Core
       {
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, true))
         {
-          if (!_bypassPropertyChecks) OnPropertyChanging(propertyInfo);
+          if (!_bypassPropertyChecks)
+            OnPropertyChanging(propertyInfo);
           FieldManager.SetFieldData(propertyInfo, newValue);
-          if (!_bypassPropertyChecks) PropertyHasChanged(propertyInfo);
+          if (!_bypassPropertyChecks)
+            PropertyHasChanged(propertyInfo);
         }
       }
       catch (System.Security.SecurityException ex)

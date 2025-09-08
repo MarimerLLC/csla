@@ -4,6 +4,7 @@
    <ImplicitUsings>enable</ImplicitUsings>
    <Nullable>enable</Nullable>
    <WarningsAsErrors>nullable</WarningsAsErrors>
+   <EnableWindowsTargeting>true</EnableWindowsTargeting>
  </PropertyGroup>
  
  <!-- Common Package Settings -->

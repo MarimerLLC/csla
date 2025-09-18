@@ -9,7 +9,11 @@ namespace Csla
   public sealed class LazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Core.IUseApplicationContext
     where T : class
   {
-    private readonly Lock _syncRoot = LockFactory.Create();
+#if NET9_0_OR_GREATER
+    private readonly Lock _syncRoot = new();
+#else
+    private readonly object _syncRoot = new();
+#endif
     private T? _value;
     private readonly Func<T> _delegate;
 

@@ -3849,7 +3849,11 @@ namespace Csla.Core
     protected internal class BypassPropertyChecksObject : IDisposable
     {
       private BusinessBase? _businessObject;
-      private static Lock _lock = LockFactory.Create();
+#if NET9_0_OR_GREATER
+      private static Lock _lock = new();
+#else
+      private static object _lock = new();
+#endif
 
       internal BypassPropertyChecksObject(BusinessBase businessObject)
       {

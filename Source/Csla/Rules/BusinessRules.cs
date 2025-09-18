@@ -42,8 +42,13 @@ namespace Csla.Rules
       _target = target ?? throw new ArgumentNullException(nameof(target));
     }
 
+#if NET9_0_OR_GREATER
     [NonSerialized]
-    private Lock _syncRoot = LockFactory.Create();
+    private Lock _syncRoot = new();
+#else
+    [NonSerialized]
+    private object _syncRoot = new();
+#endif
 
     private ApplicationContext _applicationContext;
 
@@ -1306,7 +1311,7 @@ namespace Csla.Rules
     [System.Runtime.Serialization.OnDeserialized]
     private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
     {
-      _syncRoot = LockFactory.Create();
+      _syncRoot = new();
     }
 
     #endregion

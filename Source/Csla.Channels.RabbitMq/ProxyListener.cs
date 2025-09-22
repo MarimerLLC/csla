@@ -109,7 +109,11 @@ namespace Csla.Channels.RabbitMq
     }
 
     private volatile bool IsListening;
-    private readonly Lock ListeningLock = LockFactory.Create();
+#if NET9_0_OR_GREATER
+    private readonly Lock ListeningLock = new();
+#else
+    private readonly object ListeningLock = new();
+#endif
 
     public async Task StartListening()
     {

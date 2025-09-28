@@ -35,11 +35,13 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="applicationContext"></param>
     /// <param name="target">Target business object.</param>
+    /// <param name="unhandledAsyncRuleExceptionHandler"></param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
-    public BusinessRules(ApplicationContext applicationContext, IHostRules target)
+    public BusinessRules(ApplicationContext applicationContext, IHostRules target, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       _target = target ?? throw new ArgumentNullException(nameof(target));
+      _unhandledAsyncRuleExceptionHandler = unhandledAsyncRuleExceptionHandler ?? throw new ArgumentNullException(nameof(unhandledAsyncRuleExceptionHandler));
     }
 
 #if NET9_0_OR_GREATER
@@ -49,6 +51,8 @@ namespace Csla.Rules
     [NonSerialized]
     private object _syncRoot = new();
 #endif
+    [NonSerialized]
+    private readonly IUnhandledAsyncRuleExceptionHandler _unhandledAsyncRuleExceptionHandler;
 
     private ApplicationContext _applicationContext;
 
@@ -1120,7 +1124,7 @@ namespace Csla.Rules
           if (rule is IBusinessRule syncRule)
             syncRule.Execute(context);
           else if (rule is IBusinessRuleAsync asyncRule)
-            RunAsyncRule(asyncRule, context);
+            RunAsyncRule(asyncRule, context, _unhandledAsyncRuleExceptionHandler);
           else
             throw new ArgumentOutOfRangeException(rule.GetType().FullName);
         }
@@ -1151,11 +1155,15 @@ namespace Csla.Rules
       return new RunRulesResult(affectedProperties, dirtyProperties);
     }
 
-    private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context)
+    private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
     {
       try
       {
         await asyncRule.ExecuteAsync(context);
+      }
+      catch (Exception exc) when (unhandledAsyncRuleExceptionHandler.CanHandle(exc, asyncRule))
+      {
+        await unhandledAsyncRuleExceptionHandler.Handle(exc, asyncRule, context);
       }
       finally
       {

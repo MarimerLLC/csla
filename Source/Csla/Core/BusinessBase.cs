@@ -1086,7 +1086,7 @@ namespace Csla.Core
       get
       {
         if (_businessRules == null)
-          _businessRules = new BusinessRules(ApplicationContext, this);
+          _businessRules = new BusinessRules(ApplicationContext, this, ApplicationContext.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>());
         else if (_businessRules.Target == null)
           _businessRules.SetTarget(this);
         return _businessRules;

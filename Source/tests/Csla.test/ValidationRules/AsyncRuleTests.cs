@@ -6,9 +6,11 @@
 // <summary>This only works on Silverlight because when run through NUnit it is not running</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Rules;
 using Csla.TestHelpers;
-using FluentAssertions.Execution;
 using FluentAssertions;
+using FluentAssertions.Execution;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
@@ -152,11 +154,85 @@ namespace Csla.Test.ValidationRules
       await har.WaitForIdle();
 
       var affectedProperties = await har.CheckRulesForPropertyAsyncAwait();
-      using (new AssertionScope()) 
+      using (new AssertionScope())
       {
         har.AsyncAwait.Should().Be("abc");
         affectedProperties.Should().ContainSingle().Which.Should().Be(nameof(AsyncRuleRoot.AsyncAwait));
       }
+    }
+
+    [TestMethod($"When an async rule throws an exception the framework must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.CanHandle)}.")]
+    public async Task AsyncRuleException_Testcase01()
+    {
+      var diContext = CreateDIContextForAsyncRuleExceptions();
+
+      var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+
+      var cp = diContext.CreateDataPortal<DelayedAsynRuleExceptionRoot>();
+      var bo = await cp.CreateAsync();
+
+      var tcs = new TaskCompletionSource();
+      unhandledExceptionHandler.CanHandleInspector = (_, _) => tcs.SetResult();
+
+      await ForceThreadSwitch(bo, TimeSpan.FromMilliseconds(25));
+
+      await tcs.Task.WaitAsync(TimeSpan.FromMilliseconds(150));
+    }
+
+    [TestMethod($"When an async rules exception can be handled by {nameof(IUnhandledAsyncRuleExceptionHandler)} it must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.Handle)}.")]
+    public async Task AsyncRuleException_Testcase02()
+    {
+      var diContext = CreateDIContextForAsyncRuleExceptions();
+
+      var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+
+      var cp = diContext.CreateDataPortal<DelayedAsynRuleExceptionRoot>();
+      var bo = await cp.CreateAsync();
+
+      bool canHandleInvoked = false;
+      unhandledExceptionHandler.HandleInspector = (_, _, _) => canHandleInvoked = true;
+
+      await ForceThreadSwitch(bo, TimeSpan.FromMilliseconds(25));
+
+      await Task.Delay(TimeSpan.FromMilliseconds(150));
+
+      canHandleInvoked.Should().BeTrue();
+    }
+
+    [TestMethod($"When the default {nameof(IUnhandledAsyncRuleExceptionHandler)} is used the exception must be handled by a global unhandled exception handler (for this test it's the {nameof(AppDomain)}.{nameof(AppDomain.CurrentDomain)}.{nameof(AppDomain.CurrentDomain.UnhandledException)} event).")]
+    public async Task AsyncRuleException_Testcase03()
+    {
+      var diContext = CreateDIContextForAsyncRuleExceptions();
+
+      bool unobservedTaskExceptionFound = false;
+      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+      try
+      {
+        var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+        unhandledExceptionHandler.CanHandleResult = false;
+        var cp = diContext.CreateDataPortal<DelayedAsynRuleExceptionRoot>();
+        var bo = await cp.CreateAsync();
+
+        await ForceThreadSwitch(bo, TimeSpan.FromMilliseconds(25));
+
+        await Task.Delay(TimeSpan.FromMilliseconds(150));
+
+        unobservedTaskExceptionFound.Should().BeTrue();
+      }
+      finally
+      {
+        AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+      }
+
+      void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) => unobservedTaskExceptionFound = true;
+    }
+
+
+    private static TestDIContext CreateDIContextForAsyncRuleExceptions() => TestDIContextFactory.CreateDefaultContext(servics => servics.AddSingleton<IUnhandledAsyncRuleExceptionHandler, TestUnhandledAsyncRuleExceptionHandler>());
+    private static async Task ForceThreadSwitch(DelayedAsynRuleExceptionRoot root, TimeSpan exceptionDelay)
+    {
+      await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
+      root.ExceptionDelay = exceptionDelay;
     }
   }
 }

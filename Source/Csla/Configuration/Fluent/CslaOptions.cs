@@ -58,7 +58,7 @@ namespace Csla.Configuration
     /// <returns>This instance.</returns>
     public CslaOptions UseUnhandledAsyncRuleExceptionHandler<T>() where T : IUnhandledAsyncRuleExceptionHandler
     {
-
+      UnhandledAsyncRuleExceptionHandlerType = typeof(T);
       return this;
     }
 

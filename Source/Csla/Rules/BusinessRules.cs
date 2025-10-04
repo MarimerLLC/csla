@@ -35,7 +35,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="applicationContext"></param>
     /// <param name="target">Target business object.</param>
-    /// <param name="unhandledAsyncRuleExceptionHandler"></param>
+    /// <param name="unhandledAsyncRuleExceptionHandler">Handler for unhandled exceptions that occur during asynchronous rule execution.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
     public BusinessRules(ApplicationContext applicationContext, IHostRules target, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
     {

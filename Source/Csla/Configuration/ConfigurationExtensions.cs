@@ -6,6 +6,7 @@
 // <summary>Implement extension methods for base .NET configuration</summary>
 //-----------------------------------------------------------------------
 using Csla.DataPortalClient;
+using Csla.Rules;
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -57,6 +58,8 @@ namespace Csla.Configuration
 
       services.AddScoped(typeof(IDataPortalCache), cslaOptions.DataPortalOptions.DataPortalClientOptions.DataPortalCacheType);
       cslaOptions.AddRequiredDataPortalServices(services);
+
+      services.AddScoped(typeof(IUnhandledAsyncRuleExceptionHandler), cslaOptions.UnhandledAsyncRuleExceptionHandlerType);
 
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Any(i => i.ServiceType == typeof(IDataPortalProxy));

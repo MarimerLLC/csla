@@ -168,7 +168,7 @@ namespace Csla.Test.ValidationRules
 
       var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
 
-      var cp = diContext.CreateDataPortal<DelayedAsynRuleExceptionRoot>();
+      var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
       var bo = await cp.CreateAsync();
 
       var tcs = new TaskCompletionSource();
@@ -186,7 +186,7 @@ namespace Csla.Test.ValidationRules
 
       var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
 
-      var cp = diContext.CreateDataPortal<DelayedAsynRuleExceptionRoot>();
+      var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
       var bo = await cp.CreateAsync();
 
       bool canHandleInvoked = false;
@@ -210,7 +210,7 @@ namespace Csla.Test.ValidationRules
       {
         var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
         unhandledExceptionHandler.CanHandleResult = false;
-        var cp = diContext.CreateDataPortal<DelayedAsynRuleExceptionRoot>();
+        var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
         var bo = await cp.CreateAsync();
 
         await ForceThreadSwitch(bo, TimeSpan.FromMilliseconds(25));
@@ -229,7 +229,7 @@ namespace Csla.Test.ValidationRules
 
 
     private static TestDIContext CreateDIContextForAsyncRuleExceptions() => TestDIContextFactory.CreateDefaultContext(services => services.AddSingleton<IUnhandledAsyncRuleExceptionHandler, TestUnhandledAsyncRuleExceptionHandler>());
-    private static async Task ForceThreadSwitch(DelayedAsynRuleExceptionRoot root, TimeSpan exceptionDelay)
+    private static async Task ForceThreadSwitch(DelayedAsyncRuleExceptionRoot root, TimeSpan exceptionDelay)
     {
       await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);
       root.ExceptionDelay = exceptionDelay;

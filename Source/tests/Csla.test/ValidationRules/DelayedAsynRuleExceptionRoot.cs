@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="DelayedAsynRuleExceptionRoot.cs" company="Marimer LLC">
+// <copyright file="DelayedAsyncRuleExceptionRoot.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
@@ -12,7 +12,7 @@ using Csla.Rules;
 namespace Csla.Test.ValidationRules
 {
   [CslaImplementProperties]
-  internal partial class DelayedAsynRuleExceptionRoot : BusinessBase<DelayedAsynRuleExceptionRoot>
+  internal partial class DelayedAsyncRuleExceptionRoot : BusinessBase<DelayedAsyncRuleExceptionRoot>
   {
     public partial TimeSpan ExceptionDelay { get; set; }
 

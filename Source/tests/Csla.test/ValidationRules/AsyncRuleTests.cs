@@ -228,7 +228,7 @@ namespace Csla.Test.ValidationRules
     }
 
 
-    private static TestDIContext CreateDIContextForAsyncRuleExceptions() => TestDIContextFactory.CreateDefaultContext(servics => servics.AddSingleton<IUnhandledAsyncRuleExceptionHandler, TestUnhandledAsyncRuleExceptionHandler>());
+    private static TestDIContext CreateDIContextForAsyncRuleExceptions() => TestDIContextFactory.CreateDefaultContext(services => services.AddSingleton<IUnhandledAsyncRuleExceptionHandler, TestUnhandledAsyncRuleExceptionHandler>());
     private static async Task ForceThreadSwitch(DelayedAsynRuleExceptionRoot root, TimeSpan exceptionDelay)
     {
       await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);

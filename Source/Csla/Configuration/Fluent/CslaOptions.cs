@@ -8,6 +8,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
+using Csla.Rules;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -49,6 +50,22 @@ namespace Csla.Configuration
     /// used by ApplicationContext.
     /// </summary>
     public Type? ContextManagerType { get; private set; }
+
+    /// <summary>
+    /// Sets the type for the <see cref="IUnhandledAsyncRuleExceptionHandler"/> to be used.
+    /// </summary>
+    /// <typeparam name="T">The type to register for <see cref="IUnhandledAsyncRuleExceptionHandler"/>.</typeparam>
+    /// <returns>This instance.</returns>
+    public CslaOptions UseUnhandledAsyncRuleExceptionHandler<T>() where T : IUnhandledAsyncRuleExceptionHandler
+    {
+      UnhandledAsyncRuleExceptionHandlerType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
+    /// Gets the type used for the <see cref="IUnhandledAsyncRuleExceptionHandler"/>.
+    /// </summary>
+    public Type UnhandledAsyncRuleExceptionHandlerType { get; private set; } = typeof(DontObserveUnhandledAsyncRuleExceptionHandler);
 
     /// <summary>
     /// Sets a value indicating whether CSLA

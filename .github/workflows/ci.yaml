@@ -22,7 +22,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0'
+        dotnet-version: '10.0'
 
     - name: Build
       run: dotnet build Source\csla.test.sln
@@ -65,7 +65,7 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0'
+        dotnet-version: '10.0'
 
     - name: Install MAUI workload
       run: dotnet workload install maui

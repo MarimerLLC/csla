@@ -167,6 +167,7 @@ namespace Csla.Test.ValidationRules
       var diContext = CreateDIContextForAsyncRuleExceptions();
 
       var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+      unhandledExceptionHandler.CanHandleResult = true; // Otherwise the test host process will be crashed
 
       var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
       var bo = await cp.CreateAsync();
@@ -185,6 +186,7 @@ namespace Csla.Test.ValidationRules
       var diContext = CreateDIContextForAsyncRuleExceptions();
 
       var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+      unhandledExceptionHandler.CanHandleResult = true; // Otherwise the test host process will be crashed
 
       var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
       var bo = await cp.CreateAsync();
@@ -199,6 +201,7 @@ namespace Csla.Test.ValidationRules
       canHandleInvoked.Should().BeTrue();
     }
 
+    [Ignore("This test can be run but will crash the test host, so this is failing any CI build. But for completness it's here and can be run if necessary.")]
     [TestMethod($"When the default {nameof(IUnhandledAsyncRuleExceptionHandler)} is used the exception must be handled by a global unhandled exception handler (for this test it's the {nameof(AppDomain)}.{nameof(AppDomain.CurrentDomain)}.{nameof(AppDomain.CurrentDomain.UnhandledException)} event).")]
     public async Task AsyncRuleException_Testcase03()
     {

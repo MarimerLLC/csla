@@ -24,7 +24,7 @@
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net10&quot;))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.0-rc.1.25452.6" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.0-rc.1.25452.6" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0-rc.1.25452.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0-rc.1.25451.107" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net9&quot;))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.12" />

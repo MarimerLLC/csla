@@ -11,6 +11,7 @@ using Csla.Test;
 using Csla.TestHelpers;
 using Csla.Testing.Business.BusyStatus;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace cslalighttest.BusyStatus
@@ -143,31 +144,33 @@ namespace cslalighttest.BusyStatus
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<ItemWithAsynchRuleList>();
 
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-      var tcs = new TaskCompletionSource();
+      var tcs = new TaskCompletionSource<(bool WasBusy, bool WasSavable, string ReturnedOperationResult)>();
       items[0].ValidationComplete += async (_, _) =>
       {
         try
         {
-          Assert.IsFalse(items.IsBusy);
-          Assert.IsTrue(items.IsSavable);
+          var wasBusyInHandler = items.IsBusy;
+          var wasSavableInHandler = items.IsSavable;
           items = await items.SaveAsync();
-          string actual = items[0].OperationResult;
-          Assert.AreEqual("DataPortal_Update", actual);
+          var returnedOperationResultInHandler = items[0].OperationResult;
+          tcs.SetResult((wasBusyInHandler, wasSavableInHandler, returnedOperationResultInHandler));
         }
         catch (Exception ex)
         {
           tcs.SetException(ex);
-        }
-        finally
-        {
-          tcs.TrySetResult();
         }
       };
 
       items[0].RuleField = "some value";
       Assert.IsTrue(items.IsBusy);
       Assert.IsFalse(items.IsSavable);
-      await tcs.Task;
+      var (wasBusy, wasSavable, returnedOperationResult) = await tcs.Task;
+      using (new AssertionScope())
+      {
+        wasBusy.Should().BeFalse();
+        wasSavable.Should().BeTrue();
+        returnedOperationResult.Should().Be("DataPortal_Update");
+      }
     }
 
     [TestMethod]

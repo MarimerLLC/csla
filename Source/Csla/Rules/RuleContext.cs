@@ -165,9 +165,10 @@ namespace Csla.Rules
     /// <param name="rule">Reference to the rule object.</param>
     /// <param name="target">Target business object.</param>
     /// <param name="inputPropertyValues">Input property values used by the rule.</param>
+    /// <param name="executeContext">The execution context under which the rule is running.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="completeHandler"/>, <paramref name="rule"/> or <paramref name="inputPropertyValues"/> is <see langword="null"/>.</exception>
-    public RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, IBusinessRuleBase rule, object? target, Dictionary<IPropertyInfo, object?> inputPropertyValues)
-      : this(applicationContext, rule, RuleContextModes.PropertyChanged, completeHandler, inputPropertyValues, target)
+    public RuleContext(ApplicationContext applicationContext, Action<IRuleContext> completeHandler, IBusinessRuleBase rule, object? target, Dictionary<IPropertyInfo, object?> inputPropertyValues, RuleContextModes executeContext = RuleContextModes.PropertyChanged)
+      : this(applicationContext, rule, executeContext, completeHandler, inputPropertyValues, target)
     {
     }
 

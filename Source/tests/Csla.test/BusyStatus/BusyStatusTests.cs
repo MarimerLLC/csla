@@ -153,7 +153,7 @@ namespace cslalighttest.BusyStatus
           var wasSavableInHandler = items.IsSavable;
           items = await items.SaveAsync();
           var returnedOperationResultInHandler = items[0].OperationResult;
-          tcs.SetResult((wasBusyInHandler, wasSavableInHandler, returnedOperationResultInHandler));
+          tcs.TrySetResult((wasBusyInHandler, wasSavableInHandler, returnedOperationResultInHandler));
         }
         catch (Exception ex)
         {

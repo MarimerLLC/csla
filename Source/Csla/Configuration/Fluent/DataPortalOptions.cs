@@ -12,6 +12,8 @@ namespace Csla.Configuration
   /// </summary>
   public class DataPortalOptions
   {
+    private string _versionRoutingTag = string.Empty;
+
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
@@ -30,14 +32,24 @@ namespace Csla.Configuration
     /// </summary>
     /// <remarks>
     /// Application version used to create data portal
-    /// routing tag (can not contain '-').
+    /// routing tag (can not contain '-' or '/').
     /// If this value is set then you must use the
     /// .NET Core server-side data portal endpoint
     /// as a router so the request can be routed to
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public string VersionRoutingTag { get; set; } = string.Empty;
+    public string VersionRoutingTag
+    {
+      get => _versionRoutingTag;
+      set
+      {
+        if (!string.IsNullOrWhiteSpace(value))
+          if (value!.Contains("-") || value.Contains("/"))
+            throw new ArgumentException("Version routing tag value cannot contain '-' or '/' characters", nameof(value));
+        _versionRoutingTag = value;
+      }
+    }
 
     /// <summary>
     /// Gets the data portal client options

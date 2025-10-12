@@ -91,6 +91,97 @@ namespace csla.netcore.test.DataPortal
       Assert.AreEqual("create/mytag-v1", result);
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void RoutingTagWithHyphenThrowsException()
+    {
+      var tag = new DataPortalServerRoutingTagAttribute("my-tag");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void RoutingTagWithSlashThrowsException()
+    {
+      var tag = new DataPortalServerRoutingTagAttribute("my/tag");
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void RoutingTagPropertyWithHyphenThrowsException()
+    {
+      var tag = new DataPortalServerRoutingTagAttribute("validtag");
+      tag.RoutingTag = "invalid-tag";
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void RoutingTagPropertyWithSlashThrowsException()
+    {
+      var tag = new DataPortalServerRoutingTagAttribute("validtag");
+      tag.RoutingTag = "invalid/tag";
+    }
+
+    [TestMethod]
+    public void RoutingTagWithValidValueSucceeds()
+    {
+      var tag = new DataPortalServerRoutingTagAttribute("validtag123");
+      Assert.AreEqual("validtag123", tag.RoutingTag);
+    }
+
+    [TestMethod]
+    public void RoutingTagWithNullValueSucceeds()
+    {
+      var tag = new DataPortalServerRoutingTagAttribute(null);
+      Assert.IsNull(tag.RoutingTag);
+    }
+
+    [TestMethod]
+    public void RoutingTagWithEmptyValueSucceeds()
+    {
+      var tag = new DataPortalServerRoutingTagAttribute("");
+      Assert.AreEqual("", tag.RoutingTag);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void VersionRoutingTagWithHyphenThrowsException()
+    {
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
+      dataPortalOptions.VersionRoutingTag = "v1-beta";
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void VersionRoutingTagWithSlashThrowsException()
+    {
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
+      dataPortalOptions.VersionRoutingTag = "v1/beta";
+    }
+
+    [TestMethod]
+    public void VersionRoutingTagWithValidValueSucceeds()
+    {
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
+      dataPortalOptions.VersionRoutingTag = "v1";
+      Assert.AreEqual("v1", dataPortalOptions.VersionRoutingTag);
+    }
+
+    [TestMethod]
+    public void VersionRoutingTagWithEmptyValueSucceeds()
+    {
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
+      var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
+      dataPortalOptions.VersionRoutingTag = "";
+      Assert.AreEqual("", dataPortalOptions.VersionRoutingTag);
+    }
+
     /// <summary>
     /// Create an Http Proxy instance for use in testing
     /// </summary>

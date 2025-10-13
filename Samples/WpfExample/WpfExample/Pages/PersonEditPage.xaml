@@ -18,7 +18,7 @@
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
     <csla:PropertyInfo Property="{Binding Name}" x:Name="NameInfo" />
-    <TextBlock Text="{Binding ElementName=NameInfo, Path=FriendlyName}" Grid.Row="0" Grid.Column="0" />
+    <Label Content="{Binding ElementName=NameInfo, Path=FriendlyName}" Grid.Row="0" Grid.Column="0" />
     <TextBox Text="{Binding Name}" Grid.Row="0" Grid.Column="1" Width="200" />
     <Button Content="Save" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding IsSavable}" Click="SavePerson" />
   </Grid>

@@ -26,7 +26,7 @@ namespace Csla
       {
         if (!string.IsNullOrWhiteSpace(value))
           if (value!.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("Routing tag value cannot contain '-' or '/' characters", nameof(value));
+            throw new ArgumentException(Properties.Resources.RoutingTagInvalidCharacters, nameof(value));
         _routingTag = value;
       }
     }

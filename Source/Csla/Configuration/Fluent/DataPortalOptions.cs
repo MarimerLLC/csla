@@ -46,7 +46,7 @@ namespace Csla.Configuration
       {
         if (!string.IsNullOrWhiteSpace(value))
           if (value!.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("Version routing tag value cannot contain '-' or '/' characters", nameof(value));
+            throw new ArgumentException(Properties.Resources.VersionRoutingTagInvalidCharacters, nameof(value));
         _versionRoutingTag = value;
       }
     }

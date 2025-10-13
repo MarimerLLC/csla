@@ -542,4 +542,10 @@
   <data name="WasmApplicationContextManagerSessionNotRetrieved" xml:space="preserve">
     <value>The session is not available. Please ensure to call `{0}` in your component.</value>
   </data>
+  <data name="RoutingTagInvalidCharacters" xml:space="preserve">
+    <value>Routing tag value cannot contain '-' or '/' characters</value>
+  </data>
+  <data name="VersionRoutingTagInvalidCharacters" xml:space="preserve">
+    <value>Version routing tag value cannot contain '-' or '/' characters</value>
+  </data>
 </root>

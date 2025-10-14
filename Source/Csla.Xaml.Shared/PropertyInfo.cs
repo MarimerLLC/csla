@@ -564,6 +564,28 @@ namespace Csla.Xaml
 
     #endregion
 
+    #region FriendlyName
+
+    /// <summary>
+    /// Gets the friendly name for the property.
+    /// </summary>
+    [Category("Property Status")]
+    public string FriendlyName
+    {
+      get
+      {
+        if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
+        {
+          var pi = Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(Source.GetType(), BindingPath);
+          if (pi != null)
+            return pi.FriendlyName;
+        }
+        return string.Empty;
+      }
+    }
+
+    #endregion
+
     #region Error/Warn/Info Text
 
     /// <summary>
@@ -854,6 +876,7 @@ namespace Csla.Xaml
       OnPropertyChanged(nameof(ErrorText));
       OnPropertyChanged(nameof(WarningText));
       OnPropertyChanged(nameof(InformationText));
+      OnPropertyChanged(nameof(FriendlyName));
     }
 
     #endregion

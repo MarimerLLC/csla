@@ -254,7 +254,7 @@ namespace Csla.Channels.Local
     }
 
     /// <inheritdoc />
-    public override async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

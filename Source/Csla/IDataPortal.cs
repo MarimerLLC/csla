@@ -6,6 +6,8 @@
 // <summary>Interface defining the members of the data portal type</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
+
 namespace Csla
 {
     /// <summary>
@@ -35,14 +37,14 @@ namespace Csla
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    Task<object> UpdateAsync(object obj);
+    Task<ICslaObject> UpdateAsync(ICslaObject obj);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <exception cref="ArgumentNullException"><paramref name="command"/> is <see langword="null"/>.</exception>
-    Task<object> ExecuteAsync(object command);
+    Task<ICslaObject> ExecuteAsync(ICslaObject command);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>
@@ -93,7 +95,7 @@ namespace Csla
     /// <param name="obj">A reference to the Command object to be executed.</param>
     /// <returns>A reference to the updated Command object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    object Execute(object obj);
+    ICslaObject Execute(ICslaObject obj);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>
@@ -114,7 +116,7 @@ namespace Csla
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <returns>A reference to the updated business object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    object Update(object obj);
+    ICslaObject Update(ICslaObject obj);
     /// <summary>
     /// Called by a Shared (static in C#) method in the business class to cause
     /// immediate deletion of a specific object from the database.
@@ -123,3 +125,4 @@ namespace Csla
     void Delete(params object?[]? criteria);
   }
 }
+

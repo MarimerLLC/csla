@@ -736,14 +736,14 @@ namespace Csla
 
     async Task<object> IDataPortal.CreateAsync(params object?[]? criteria) => await CreateAsync(criteria);
     async Task<object> IDataPortal.FetchAsync(params object?[]? criteria) => await FetchAsync(criteria);
-    async Task<object> IDataPortal.UpdateAsync(object obj) => await UpdateAsync((T)obj);
-    async Task<object> IDataPortal.ExecuteAsync(object command) => await ExecuteAsync((T)command);
+    async Task<Core.ICslaObject> IDataPortal.UpdateAsync(Core.ICslaObject obj) => await UpdateAsync((T)obj);
+    async Task<Core.ICslaObject> IDataPortal.ExecuteAsync(Core.ICslaObject command) => await ExecuteAsync((T)command);
     async Task<object> IDataPortal.ExecuteAsync(params object?[]? criteria) => await ExecuteAsync(criteria);
     object IDataPortal.Create(params object?[]? criteria) => Create(criteria);
     object IDataPortal.Fetch(params object?[]? criteria) => Fetch(criteria);
-    object IDataPortal.Execute(object obj) => Execute((T)obj);
+    Core.ICslaObject IDataPortal.Execute(Core.ICslaObject obj) => Execute((T)obj);
     object IDataPortal.Execute(params object?[]? criteria) => Execute(criteria);
-    object IDataPortal.Update(object obj) => Update((T)obj);
+    Core.ICslaObject IDataPortal.Update(Core.ICslaObject obj) => Update((T)obj);
 
     async Task<object> IChildDataPortal.CreateChildAsync(params object?[]? criteria) => Task.FromResult(await CreateChildAsync(criteria));
     async Task<object> IChildDataPortal.FetchChildAsync(params object?[]? criteria) => Task.FromResult(await FetchChildAsync(criteria));

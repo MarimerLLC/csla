@@ -98,7 +98,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Update(Core.ICslaObject obj, DataPortalContext context, bool isSync)
     {
       try
       {

@@ -19,7 +19,7 @@
     <RootNamespace>Csla.Generator.AutoSerialization.CSharp</RootNamespace>
     <PackageId>Csla.Generator.AutoSerialization.CSharp</PackageId>
     <Description>CSLA .NET Generator AutoSerialization for CSharp</Description>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Generators</Title>
     <PackageTags>CSLA;Roslyn;Generator</PackageTags>

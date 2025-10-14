@@ -19,7 +19,7 @@
     <RootNamespace>Csla.Generator.AutoImplementProperties.CSharp</RootNamespace>
     <PackageId>Csla.Generator.AutoImplementProperties.CSharp</PackageId>
     <Description>CSLA .NET Generator AutoImplementProperties for CSharp</Description>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Generators</Title>
     <PackageTags>CSLA;Roslyn;Generator</PackageTags>

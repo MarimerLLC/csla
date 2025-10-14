@@ -13,7 +13,7 @@ namespace Csla.Core.FieldManager
   /// Defines the members required by a field
   /// data storage object.
   /// </summary>
-  public interface IFieldData : ITrackStatus, IMobileObject
+  public interface IFieldData : ITrackStatus, IMobileObject, ICslaObject
   {
     /// <summary>
     /// Gets the name of the field.

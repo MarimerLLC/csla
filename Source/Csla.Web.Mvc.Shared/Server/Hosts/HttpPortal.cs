@@ -154,7 +154,7 @@ namespace Csla.Server.Hosts
           request.ClientUICulture,
           DeserializeRequired<IContextDictionary>(request.ClientContext));
 
-        var dpr = await dataPortalServer.Update(obj, context, true);
+        var dpr = await dataPortalServer.Update((ICslaObject)obj, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, dpr.Error);

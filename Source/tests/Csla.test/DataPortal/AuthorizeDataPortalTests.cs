@@ -7,9 +7,10 @@
 //-----------------------------------------------------------------------
 
 using Csla.Configuration;
-using Csla.Testing.Business.DataPortal;
+using Csla.Core;
 using Csla.Server;
 using Csla.TestHelpers;
+using Csla.Testing.Business.DataPortal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -176,7 +177,7 @@ namespace Csla.Test.DataPortal
     {
       var applicationContext = _testDIContext.CreateTestApplicationContext();
       var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
-      await dp.Update(applicationContext.CreateInstance(typeof(TestBO)), new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
+      await dp.Update((ICslaObject)applicationContext.CreateInstance(typeof(TestBO)), new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;

@@ -100,7 +100,7 @@ namespace Csla.Server.Dashboard
     /// </summary>
     public List<Activity> GetRecentActivity()
     {
-      return [];
+      return new List<Activity>();
     }
 
     /// <inheritdoc />

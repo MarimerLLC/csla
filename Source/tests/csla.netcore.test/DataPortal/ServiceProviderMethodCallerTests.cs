@@ -424,6 +424,46 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void FindMethodWithNullableOptionalInjection()
+    {
+      var obj = new NullableOptionalServiceInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+      method.AllowNull.Should().HaveCount(1);
+      method.AllowNull![0].Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithNullableOptionalInjection_ServiceNotRegistered()
+    {
+      var portal = _diContext.CreateDataPortal<NullableOptionalServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Nullable optional service is null as expected");
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithNullableOptionalInjection_ServiceRegistered()
+    {
+      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      {
+        services.AddTransient<IOptionalService, FakeOptionalService>();
+      });
+
+      var portal = contextWithService.CreateDataPortal<NullableOptionalServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Fake service data");
+    }
+
+    [TestMethod]
     public void FindMethodWithRequiredInjection()
     {
       var obj = new RequiredServiceInjection();
@@ -839,6 +879,27 @@ namespace Csla.Test.DataPortal
       }
     }
   }
+
+#nullable enable
+  public class NullableOptionalServiceInjection : BusinessBase<NullableOptionalServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject] IOptionalService? optionalService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = optionalService == null ? "Nullable optional service is null as expected" : optionalService.GetData();
+      }
+    }
+  }
+#nullable restore
 
   public class RequiredServiceInjection : BusinessBase<RequiredServiceInjection>
   {

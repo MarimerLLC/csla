@@ -6,9 +6,12 @@
 // <summary>Class that contains cached metadata about data portal</summary>
 //-----------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Csla.Server;
 
 namespace Csla.Reflection
@@ -102,7 +105,7 @@ namespace Csla.Reflection
               if (injectAttribute != null)
               {
                 IsInjected[index] = true;
-                AllowNull[index] = injectAttribute.AllowNull;
+                AllowNull[index] = injectAttribute.AllowNull || ParameterAllowsNull(item);
               }
               index++;
             }
@@ -115,5 +118,115 @@ namespace Csla.Reflection
         }
       }
     }
+
+    private static bool ParameterAllowsNull(ParameterInfo parameter)
+    {
+      if (Nullable.GetUnderlyingType(parameter.ParameterType) != null)
+        return true;
+
+      if (!parameter.ParameterType.IsValueType)
+        return IsNullableReference(parameter);
+
+      return false;
+    }
+
+    private static bool IsNullableReference(ParameterInfo parameter)
+    {
+      if (TryGetNullableAttribute(parameter.CustomAttributes, out var nullableFlag))
+        return nullableFlag == NullableFlag;
+
+      var context = GetNullableContext(parameter);
+      return context == NullableFlag;
+    }
+
+    private static byte? GetNullableContext(ParameterInfo parameter)
+    {
+      var member = parameter.Member;
+      if (member != null)
+      {
+        if (TryGetNullableContext(member.CustomAttributes, out var memberFlag))
+          return memberFlag;
+
+        var declaringType = member.DeclaringType;
+        while (declaringType != null)
+        {
+          if (TryGetNullableContext(declaringType.CustomAttributes, out var typeFlag))
+            return typeFlag;
+
+          declaringType = declaringType.DeclaringType;
+        }
+
+        var assembly = member.Module?.Assembly;
+        if (assembly != null && TryGetNullableContext(assembly.CustomAttributes, out var assemblyFlag))
+          return assemblyFlag;
+      }
+
+      return null;
+    }
+
+    private static bool TryGetNullableContext(IEnumerable<CustomAttributeData> attributes, out byte flag)
+    {
+      foreach (var attribute in attributes)
+      {
+        if (attribute.AttributeType.FullName == NullableContextAttributeName &&
+            attribute.ConstructorArguments.Count == 1 &&
+            attribute.ConstructorArguments[0].ArgumentType == typeof(byte))
+        {
+          flag = (byte)attribute.ConstructorArguments[0].Value!;
+          return true;
+        }
+      }
+
+      flag = default;
+      return false;
+    }
+
+    private static bool TryGetNullableAttribute(IEnumerable<CustomAttributeData> attributes, out byte flag)
+    {
+      foreach (var attribute in attributes)
+      {
+        if (attribute.AttributeType.FullName == NullableAttributeName &&
+            TryExtractFlag(attribute, out flag))
+        {
+          return true;
+        }
+      }
+
+      flag = default;
+      return false;
+    }
+
+    private static bool TryExtractFlag(CustomAttributeData attribute, out byte flag)
+    {
+      if (attribute.ConstructorArguments.Count == 1)
+      {
+        var argument = attribute.ConstructorArguments[0];
+        if (argument.ArgumentType == typeof(byte))
+        {
+          flag = (byte)argument.Value!;
+          return true;
+        }
+
+        if (argument.Value is IEnumerable<CustomAttributeTypedArgument> nestedArguments)
+        {
+          foreach (var nested in nestedArguments)
+          {
+            if (nested.ArgumentType == typeof(byte))
+            {
+              flag = (byte)nested.Value!;
+              return true;
+            }
+            break;
+          }
+        }
+      }
+
+      flag = default;
+      return false;
+    }
+
+    private const string NullableAttributeName = "System.Runtime.CompilerServices.NullableAttribute";
+    private const string NullableContextAttributeName = "System.Runtime.CompilerServices.NullableContextAttribute";
+    private const byte NullableFlag = 2;
   }
 }

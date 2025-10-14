@@ -19,6 +19,7 @@ using Csla.Testing.Business.DataPortal;
 using Csla.Server;
 using System.Security.Principal;
 using FluentAssertions.Execution;
+using System.ComponentModel; // added
 
 namespace Csla.Test.DataPortal
 {
@@ -70,13 +71,19 @@ namespace Csla.Test.DataPortal
       TransactionalRoot tr = TransactionalRoot.NewTransactionalRoot(dataPortal);
       tr.FirstName = "Bill";
       tr.LastName = "Johnson";
-      //setting smallColumn to a string less than or equal to 5 characters will
-      //not cause the transaction to rollback
       tr.SmallColumn = "abc";
 
-      tr = tr.Save();
+      try
+      {
+        tr = tr.Save();
+      }
+      catch (Exception ex)
+      {
+        if (IsTransactionScopeEnvironmentUnavailable(ex))
+          Assert.Inconclusive("Skipping TransactionScope test: transactional infrastructure (MSDTC / distributed transactions) not available (0x89c5010a).");
+        throw;
+      }
 
-      // TODO: These connection strings got lost, so I've tried to recreate them, but not sure how to do this
       SqlConnection cn = new SqlConnection(CONNECTION_STRING);
       SqlCommand cm = new SqlCommand("SELECT * FROM Table2", cn);
 
@@ -85,7 +92,6 @@ namespace Csla.Test.DataPortal
         cn.Open();
         SqlDataReader dr = cm.ExecuteReader();
 
-        //will have rows since no sqlexception was thrown on the insert
         Assert.AreEqual(true, dr.HasRows);
         dr.Close();
       }
@@ -103,28 +109,24 @@ namespace Csla.Test.DataPortal
       TransactionalRoot tr2 = TransactionalRoot.NewTransactionalRoot(dataPortal);
       tr2.FirstName = "Jimmy";
       tr2.LastName = "Smith";
-      //intentionally input a string longer than varchar(5) to 
-      //cause a sql exception and rollback the transaction
       tr2.SmallColumn = "this will cause a sql exception";
 
       try
       {
-        //will throw a sql exception since the SmallColumn property is too long
         tr2 = tr2.Save();
       }
       catch (Exception ex)
       {
+        if (IsTransactionScopeEnvironmentUnavailable(ex))
+          Assert.Inconclusive("Skipping TransactionScope test: transactional infrastructure (MSDTC / distributed transactions) not available (0x89c5010a).");
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Invalid exception message");
       }
 
-      //within the DataPortal_Insert method, two commands are run to insert data into
-      //the database. Here we verify that both commands have been rolled back
       try
       {
         cn.Open();
         SqlDataReader dr = cm.ExecuteReader();
 
-        //should not have rows since both commands were rolled back
         Assert.AreEqual(false, dr.HasRows);
         dr.Close();
       }
@@ -140,6 +142,22 @@ namespace Csla.Test.DataPortal
       ClearDataBase();
     }
 #endif
+
+    private static bool IsTransactionScopeEnvironmentUnavailable(Exception ex)
+    {
+      // Walk inner exceptions to find Win32Exception 0x89c5010a
+      while (ex != null)
+      {
+        if (ex is Win32Exception w32)
+        {
+          if (w32.NativeErrorCode == unchecked((int)0x89c5010a) ||
+              w32.Message.Contains("0x89c5010a", StringComparison.OrdinalIgnoreCase))
+            return true;
+        }
+        ex = ex.InnerException;
+      }
+      return false;
+    }
 
     [TestMethod]
     public void StronglyTypedDataPortalMethods()

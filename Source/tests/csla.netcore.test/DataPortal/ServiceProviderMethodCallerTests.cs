@@ -362,6 +362,39 @@ namespace Csla.Test.DataPortal
     {
       FluentActions.Invoking(() => _systemUnderTest.TryFindDataPortalMethod<FetchAttribute>(typeof(NotKnownObjectFactoryInCurrentEnvironment), null, out var _)).Should().NotThrow();
     }
+
+    [TestMethod]
+    public void FindMethodWithIDataPortalFactoryInjection()
+    {
+      var obj = new DataPortalFactoryInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [null]);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithIDataPortalFactoryInjection()
+    {
+      var portal = _diContext.CreateDataPortal<DataPortalFactoryInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Factory injected");
+    }
+
+    [TestMethod]
+    public async Task FetchMethodWithIDataPortalFactoryInjection()
+    {
+      var portal = _diContext.CreateDataPortal<DataPortalFactoryInjection>();
+      var obj = await portal.FetchAsync(42);
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Fetched 42 with factory: injected");
+    }
   }
 
   #region Classes for testing various scenarios of loading/finding data portal methods
@@ -677,6 +710,34 @@ namespace Csla.Test.DataPortal
     [DeleteSelfChild]
     private void DeleteSelf(int x, int y)
     { }
+  }
+
+  public class DataPortalFactoryInjection : BusinessBase<DataPortalFactoryInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject] IDataPortalFactory factory)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = factory != null ? "Factory injected" : "Factory is null";
+      }
+    }
+
+    [Fetch]
+    private void Fetch(int id, [Inject] IDataPortalFactory factory)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = $"Fetched {id} with factory: {(factory != null ? "injected" : "null")}";
+      }
+    }
   }
 
   #endregion

@@ -16,6 +16,6 @@
     <BaseOutputPath>..\..\..\..\..\Bin</BaseOutputPath>
     <OutputPath>..\..\..\..\..\bin\packages\</OutputPath>
     <DelaySign>false</DelaySign>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 </Project>

@@ -6,8 +6,11 @@
 // <summary>OpenTelemetry dashboard implementation for data portal</summary>
 //-----------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using System.Threading;
 
 namespace Csla.Server.Dashboard
 {

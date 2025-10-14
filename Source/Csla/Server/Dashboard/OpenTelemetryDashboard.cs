@@ -44,22 +44,22 @@ namespace Csla.Server.Dashboard
       _meter = new Meter(MeterName, MeterVersion);
 
       _totalCallsCounter = _meter.CreateCounter<long>(
-        "csla.dataportal.calls.total",
+        name: "csla.dataportal.calls.total",
         unit: "{call}",
         description: "Total number of data portal calls");
 
       _completedCallsCounter = _meter.CreateCounter<long>(
-        "csla.dataportal.calls.completed",
+        name: "csla.dataportal.calls.completed",
         unit: "{call}",
         description: "Number of successfully completed data portal calls");
 
       _failedCallsCounter = _meter.CreateCounter<long>(
-        "csla.dataportal.calls.failed",
+        name: "csla.dataportal.calls.failed",
         unit: "{call}",
         description: "Number of failed data portal calls");
 
       _callDurationHistogram = _meter.CreateHistogram<double>(
-        "csla.dataportal.call.duration",
+        name: "csla.dataportal.call.duration",
         unit: "ms",
         description: "Duration of data portal calls in milliseconds");
 

@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
       xmlns:businesslibrary="clr-namespace:BusinessLibrary;assembly=BusinessLibrary" d:DataContext="{d:DesignInstance Type=businesslibrary:PersonEdit}"
       mc:Ignorable="d" Loaded="UserControl_Loaded"
       d:DesignHeight="450" d:DesignWidth="800">
@@ -16,7 +17,8 @@
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
     </Grid.ColumnDefinitions>
-    <TextBlock Text="Name" Grid.Row="0" Grid.Column="0" />
+    <csla:PropertyInfo Property="{Binding Name}" x:Name="NameInfo" />
+    <Label Content="{Binding ElementName=NameInfo, Path=FriendlyName}" Grid.Row="0" Grid.Column="0" />
     <TextBox Text="{Binding Name}" Grid.Row="0" Grid.Column="1" Width="200" />
     <Button Content="Save" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding IsSavable}" Click="SavePerson" />
   </Grid>

@@ -18,7 +18,7 @@ namespace Csla.Reflection
   /// </summary>
   public class ServiceProviderMethodInfo
   {
-    [MemberNotNullWhen(true, nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(DataPortalMethodInfo))]
+    [MemberNotNullWhen(true, nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(DataPortalMethodInfo))]
     private bool Initialized { get; set; }
 
     /// <summary>
@@ -45,6 +45,11 @@ namespace Csla.Reflection
     /// parameters need to be injected
     /// </summary>
     public bool[]? IsInjected { get; private set; }
+    /// <summary>
+    /// Gets an array of values indicating which
+    /// injected parameters allow null values
+    /// </summary>
+    public bool[]? AllowNull { get; private set; }
     /// <summary>
     /// Gets a value indicating whether the method
     /// returns type Task
@@ -74,7 +79,7 @@ namespace Csla.Reflection
     /// Initializes and caches the metastate values
     /// necessary to invoke the method
     /// </summary>
-    [MemberNotNull(nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(DataPortalMethodInfo))]
+    [MemberNotNull(nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(DataPortalMethodInfo))]
     public void PrepForInvocation()
     {
       if (!Initialized)
@@ -87,12 +92,17 @@ namespace Csla.Reflection
             Parameters = MethodInfo.GetParameters();
             TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
             IsInjected = new bool[Parameters.Length];
+            AllowNull = new bool[Parameters.Length];
 
             int index = 0;
             foreach (var item in Parameters)
             {
-              if (item.GetCustomAttributes<InjectAttribute>().Any())
+              var injectAttribute = item.GetCustomAttributes<InjectAttribute>().FirstOrDefault();
+              if (injectAttribute != null)
+              {
                 IsInjected[index] = true;
+                AllowNull[index] = injectAttribute.AllowNull;
+              }
               index++;
             }
             IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));

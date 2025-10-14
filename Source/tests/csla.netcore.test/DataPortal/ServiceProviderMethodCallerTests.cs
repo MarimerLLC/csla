@@ -395,6 +395,56 @@ namespace Csla.Test.DataPortal
       obj.Should().NotBeNull();
       obj.Data.Should().Be("Fetched 42 with factory: injected");
     }
+
+    [TestMethod]
+    public void FindMethodWithOptionalInjection()
+    {
+      var obj = new OptionalServiceInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [null]);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+      method.AllowNull.Should().HaveCount(1);
+      method.AllowNull![0].Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithOptionalServiceInjection()
+    {
+      var portal = _diContext.CreateDataPortal<OptionalServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Optional service is null as expected");
+    }
+
+    [TestMethod]
+    public void FindMethodWithRequiredInjection()
+    {
+      var obj = new RequiredServiceInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [null]);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+      method.AllowNull.Should().HaveCount(1);
+      method.AllowNull![0].Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithRequiredServiceInjection()
+    {
+      var portal = _diContext.CreateDataPortal<RequiredServiceInjection>();
+      
+      // This should throw because the service is required but not registered
+      await FluentActions.Invoking(async () => await portal.CreateAsync())
+        .Should().ThrowAsync<InvalidOperationException>();
+    }
   }
 
   #region Classes for testing various scenarios of loading/finding data portal methods
@@ -736,6 +786,50 @@ namespace Csla.Test.DataPortal
       using (BypassPropertyChecks)
       {
         Data = $"Fetched {id} with factory: {(factory != null ? "injected" : "null")}";
+      }
+    }
+  }
+
+  // Fake service interface for testing optional injection
+  public interface IOptionalService
+  {
+    string GetData();
+  }
+
+  public class OptionalServiceInjection : BusinessBase<OptionalServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject(AllowNull = true)] IOptionalService optionalService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = optionalService == null ? "Optional service is null as expected" : optionalService.GetData();
+      }
+    }
+  }
+
+  public class RequiredServiceInjection : BusinessBase<RequiredServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject] IOptionalService requiredService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = requiredService?.GetData() ?? "Service not provided";
       }
     }
   }

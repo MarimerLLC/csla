@@ -9,6 +9,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Principal;
 using Csla.Configuration;
+using Csla.Core;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Server.Dashboard;
@@ -352,7 +353,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Update(Core.ICslaObject obj, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

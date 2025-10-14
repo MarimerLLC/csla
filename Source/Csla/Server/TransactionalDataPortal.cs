@@ -9,6 +9,7 @@
 using System.Runtime.Versioning;
 using System.Diagnostics.CodeAnalysis;
 using System.Transactions;
+using Csla.Core;
 
 namespace Csla.Server
 {
@@ -140,7 +141,7 @@ namespace Csla.Server
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A reference to the newly updated object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    public async Task<DataPortalResult> Update(Core.ICslaObject obj, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

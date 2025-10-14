@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.Xml;
-
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 
 namespace Csla.Server
 {
@@ -77,7 +77,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public Task<DataPortalResult> Update(Core.ICslaObject obj, DataPortalContext context, bool isSync)
+    public Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

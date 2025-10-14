@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 using Csla.Properties;
 
 namespace Csla.Server
@@ -98,7 +99,7 @@ namespace Csla.Server
     }
 
     /// <inheritdoc />
-    public async Task<DataPortalResult> Update(Core.ICslaObject obj, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       try
       {

@@ -368,7 +368,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodWithIDataPortalFactoryInjection()
     {
       var obj = new DataPortalFactoryInjection();
-      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [null]);
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
 
       method.Should().NotBeNull();
       method.PrepForInvocation();
@@ -401,7 +401,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodWithOptionalInjection()
     {
       var obj = new OptionalServiceInjection();
-      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [null]);
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
 
       method.Should().NotBeNull();
       method.PrepForInvocation();
@@ -427,7 +427,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodWithRequiredInjection()
     {
       var obj = new RequiredServiceInjection();
-      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [null]);
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
 
       method.Should().NotBeNull();
       method.PrepForInvocation();

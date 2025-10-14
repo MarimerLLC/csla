@@ -695,7 +695,7 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public void UpdateChild(object child, params object?[]? parameters)
+    public void UpdateChild(Core.ICslaObject child, params object?[]? parameters)
     {
       if (child is null)
         throw new ArgumentNullException(nameof(child));
@@ -747,10 +747,10 @@ namespace Csla
 
     async Task<object> IChildDataPortal.CreateChildAsync(params object?[]? criteria) => Task.FromResult(await CreateChildAsync(criteria));
     async Task<object> IChildDataPortal.FetchChildAsync(params object?[]? criteria) => Task.FromResult(await FetchChildAsync(criteria));
-    async Task IChildDataPortal.UpdateChildAsync(object obj, params object?[]? parameters) => await UpdateChildAsync((T)obj);
+    async Task IChildDataPortal.UpdateChildAsync(Core.ICslaObject obj, params object?[]? parameters) => await UpdateChildAsync((T)obj);
     object IChildDataPortal.CreateChild(params object?[]? criteria) => CreateChild(criteria);
     object IChildDataPortal.FetchChild(params object?[]? criteria) => FetchChild(criteria);
-    void IChildDataPortal.UpdateChild(object obj, params object?[]? parameters) => UpdateChild(obj, parameters);
+    void IChildDataPortal.UpdateChild(Core.ICslaObject obj, params object?[]? parameters) => UpdateChild(obj, parameters);
   }
 
   internal static class Extensions

@@ -216,7 +216,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Business object to update.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public void Update(object obj)
+    public void Update(Core.ICslaObject obj)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -237,7 +237,7 @@ namespace Csla.Server
     /// Parameters passed to method.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public void Update(object obj, params object?[]? parameters)
+    public void Update(Core.ICslaObject obj, params object?[]? parameters)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -255,7 +255,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Business object to update.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public Task UpdateAsync(object obj)
+    public Task UpdateAsync(Core.ICslaObject obj)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -271,7 +271,7 @@ namespace Csla.Server
     /// Parameters passed to method.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public Task UpdateAsync(object obj, params object?[]? parameters)
+    public Task UpdateAsync(Core.ICslaObject obj, params object?[]? parameters)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -284,7 +284,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Business object to update.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public void UpdateAll(object obj)
+    public void UpdateAll(Core.ICslaObject obj)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -300,7 +300,7 @@ namespace Csla.Server
     /// Parameters passed to method.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public void UpdateAll(object obj, params object?[]? parameters)
+    public void UpdateAll(Core.ICslaObject obj, params object?[]? parameters)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -313,7 +313,7 @@ namespace Csla.Server
     /// </summary>
     /// <param name="obj">Business object to update.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public Task UpdateAllAsync(object obj)
+    public Task UpdateAllAsync(Core.ICslaObject obj)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -329,7 +329,7 @@ namespace Csla.Server
     /// Parameters passed to method.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    public Task UpdateAllAsync(object obj, params object?[]? parameters)
+    public Task UpdateAllAsync(Core.ICslaObject obj, params object?[]? parameters)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -337,7 +337,7 @@ namespace Csla.Server
       return DoUpdateAsync(obj, true, parameters);
     }
 
-    private async Task DoUpdateAsync(object obj, bool bypassIsDirtyTest, params object?[]? parameters)
+    private async Task DoUpdateAsync(Core.ICslaObject obj, bool bypassIsDirtyTest, params object?[]? parameters)
     {
       if (obj is Core.BusinessBase busObj && busObj.IsDirty == false && bypassIsDirtyTest == false)
       {

@@ -1310,5 +1310,23 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("WasmApplicationContextManagerSessionNotRetrieved", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Routing tag value cannot contain '-' or '/' characters.
+        /// </summary>
+        public static string RoutingTagInvalidCharacters {
+            get {
+                return ResourceManager.GetString("RoutingTagInvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version routing tag value cannot contain '-' or '/' characters.
+        /// </summary>
+        public static string VersionRoutingTagInvalidCharacters {
+            get {
+                return ResourceManager.GetString("VersionRoutingTagInvalidCharacters", resourceCulture);
+            }
+        }
     }
 }

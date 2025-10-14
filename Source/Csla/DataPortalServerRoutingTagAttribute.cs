@@ -17,7 +17,7 @@ namespace Csla
     private string? _routingTag;
 
     /// <summary>
-    /// Gets or sets the routing tag (can not contain '-').
+    /// Gets or sets the routing tag (can not contain '-' or '/').
     /// </summary>
     public string? RoutingTag
     {
@@ -26,7 +26,7 @@ namespace Csla
       {
         if (!string.IsNullOrWhiteSpace(value))
           if (value!.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("valueRoutingToken");
+            throw new ArgumentException(Properties.Resources.RoutingTagInvalidCharacters, nameof(value));
         _routingTag = value;
       }
     }
@@ -34,7 +34,7 @@ namespace Csla
     /// <summary>
     /// Creates an instance of this attribute.
     /// </summary>
-    /// <param name="tag">Routing tag value (can not contain '-')</param>
+    /// <param name="tag">Routing tag value (can not contain '-' or '/')</param>
     public DataPortalServerRoutingTagAttribute(string? tag)
     {
       RoutingTag = tag;

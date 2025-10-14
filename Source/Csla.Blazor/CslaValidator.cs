@@ -10,12 +10,12 @@ namespace Csla.Blazor
   /// </summary>
   public class CslaValidator : ComponentBase
   {
-    
+
     /// <summary>
     /// Gets or sets the current edit context for the component
     /// </summary>
     [CascadingParameter]
-    public EditContext CurrentEditContext { get; set; }
+    public EditContext CurrentEditContext { get; set; } = default!;
 
     /// <summary>
     /// Override to do work after initialization
@@ -26,9 +26,7 @@ namespace Csla.Blazor
       if (CurrentEditContext == null)
       {
         // No cascading parameter is available; we are probably not inside an EditForm component
-        throw new InvalidOperationException(
-          string.Format(Properties.Resources.CascadingEditContextRequiredException,
-          nameof(CslaValidator), nameof(EditContext)));
+        throw new InvalidOperationException(string.Format(Properties.Resources.CascadingEditContextRequiredException, nameof(CslaValidator), nameof(EditContext)));
       }
 
       // Wire up validation to the context we have been provided

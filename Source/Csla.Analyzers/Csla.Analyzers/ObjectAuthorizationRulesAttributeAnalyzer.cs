@@ -39,7 +39,7 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(missingAttributeRule, shouldBePublicRule, shouldBeStaticRule);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [missingAttributeRule, shouldBePublicRule, shouldBeStaticRule];
 
     /// <summary>
     /// 
@@ -56,6 +56,10 @@ namespace Csla.Analyzers
       var methodNode = (MethodDeclarationSyntax)context.Node;
 
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
       var typeSymbol = methodSymbol.ContainingType;
 
       if (typeSymbol.IsStereotype())

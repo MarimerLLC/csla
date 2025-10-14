@@ -1,0 +1,40 @@
+<Project>
+
+ 
+ <!-- Common Package Settings -->
+  <PropertyGroup>
+   <PackageLicenseExpression>MIT</PackageLicenseExpression>
+   <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
+   <OutputPath>..\..\bin\packages-maui\</OutputPath>
+   <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
+   <RepositoryType>git</RepositoryType>
+   <Company>Marimer LLC</Company>
+   <Product>CSLA .NET</Product>
+   <Copyright>Copyright © 2002-$([System.DateTime]::Now.ToString('yyyy')) Marimer LLC</Copyright>
+   <Authors>Marimer LLC</Authors>
+   <PackageReadmeFile>readme.md</PackageReadmeFile>
+   <PackageIcon>images\csla.png</PackageIcon>   
+   <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+   <NeutralLanguage>en-US</NeutralLanguage>
+   <DefaultLanguage>en-US</DefaultLanguage>
+
+   <EmbedUntrackedSources>true</EmbedUntrackedSources>
+   <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+
+   <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+   <GenerateDocumentationFile>True</GenerateDocumentationFile>
+   <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+ </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.7.112">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+ <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
+   <None Include="$(MSBuildThisFileDirectory)..\Source\readme.md" Pack="true" PackagePath="\" />
+   <None Include="$(MSBuildThisFileDirectory)..\Support\Logos\csla.png" Link="csla.png" Pack="true" PackagePath="\images\csla.png" Visible="false" />
+ </ItemGroup>
+</Project>

@@ -1,0 +1,695 @@
+//-----------------------------------------------------------------------
+// <copyright file="SerializationTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+
+using System.ComponentModel;
+using System.Security.Claims;
+using Csla.Configuration;
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
+using Csla.Test.ValidationRules;
+using Csla.TestHelpers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Csla.Test.Serialization
+{
+  [TestClass]
+  public class SerializationTests
+  {
+    private static TestDIContext _testDIContext;
+
+    [Serializable]
+    private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>;
+
+    [Serializable]
+    private class TestItem : BusinessBase<TestItem>
+    {
+      protected override object GetIdValue()
+      {
+        return 0;
+      }
+
+      public TestItem()
+      {
+        MarkAsChild();
+      }
+    }
+
+    private static ClaimsPrincipal GetPrincipal(params string[] roles)
+    {
+      var identity = new ClaimsIdentity();
+      foreach (var item in roles)
+        identity.AddClaim(new Claim(ClaimTypes.Role, item));
+      return new ClaimsPrincipal(identity);
+    }
+
+    [ClassInitialize]
+    public static void ClassInitialize(TestContext context)
+    {
+      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
+    [TestInitialize]
+    public void Initialize()
+    {
+      TestResults.Reinitialise();
+    }
+
+    // TODO: fix test
+    [Ignore]
+    [TestMethod]
+    public void SerializeDataPortalException()
+    {
+      var obj = new Csla.Server.DataPortalException("test message", new Exception("inner message"), null);
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var cloner = new Core.ObjectCloner(applicationContext);
+      var obj2 = (Csla.Server.DataPortalException)cloner.Clone(obj);
+      Assert.IsFalse(ReferenceEquals(obj, obj2));
+      Assert.AreEqual(obj.Message, obj2.Message);
+    }
+
+    [TestMethod]
+    public void DateTimeKind()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeHolder>();
+      var obj = portal.Create();
+      DateTime.SpecifyKind(obj.Value, System.DateTimeKind.Local);
+      var obj2 = obj.Clone();
+      Assert.AreEqual(obj.Value.Kind, obj2.Value.Kind);
+    }
+
+    [TestMethod]
+    public void CorrectDefaultSerializer()
+    {
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
+      Assert.IsTrue(serializer.GetType() == typeof(MobileFormatter));
+    }
+
+    [TestMethod]
+    public void TestWithoutSerializableHandler()
+    {
+      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+
+      SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
+      nonSerializableEventHandler handler = new nonSerializableEventHandler();
+      handler.Reg(root);
+      root.Data = "something";
+      string actual = TestResults.GetResult("PropertyChangedFiredCount");
+      Assert.AreEqual("1", actual);
+      root.Data = "something else";
+      string actual1 = TestResults.GetResult("PropertyChangedFiredCount");
+      Assert.AreEqual("2", actual1);
+
+      //serialize an object with eventhandling objects that are nonserializable
+      root = root.Clone();
+      root.Data = "something new";
+
+      //still at 2 even though we changed the property again 
+      //when the clone method performs serialization, the nonserializable 
+      //object containing an event handler for the propertyChanged event
+      //is lost
+      string actual2 = TestResults.GetResult("PropertyChangedFiredCount");
+      Assert.AreEqual("2", actual2);
+    }
+
+    // TODO: fix test
+    [Ignore]
+    [TestMethod]
+    public void Clone()
+    {
+      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+
+      SerializationRoot root = dataPortal.Create();
+
+      root = (SerializationRoot)root.Clone();
+
+      string actual = TestResults.GetResult("Deserialized");
+      Assert.AreEqual("true", actual, "Deserialized not called");
+    }
+
+    // TODO: fix test
+    [Ignore]
+    [TestMethod]
+    public void SerializableEvents()
+    {
+      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+
+      SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
+      TestEventSink handler = new TestEventSink();
+
+      root.PropertyChanged += OnIsDirtyChanged;
+
+      root.PropertyChanged += StaticOnIsDirtyChanged;
+
+      root.PropertyChanged += PublicStaticOnIsDirtyChanged;
+
+      root.PropertyChanged += OnIsDirtyChanged;  //will call this method twice since it is assigned twice
+
+      handler.Reg(root);
+
+      root.Data = "abc";
+
+      Assert.AreEqual("abc", root.Data, "Data value not set");
+
+      string actual = TestResults.GetResult("OnIsDirtyChanged");
+      Assert.AreEqual("OnIsDirtyChanged", actual, "Didn't call local handler");
+
+      string actual1 = TestResults.GetResult("StaticOnIsDirtyChanged");
+      Assert.AreEqual("StaticOnIsDirtyChanged", actual1, "Didn't call static handler");
+
+      Assert.AreEqual(
+        "PublicStaticOnIsDirtyChanged",
+        TestResults.GetResult("PublicStaticOnIsDirtyChanged"),
+        "Didn't call public static handler");
+
+      Assert.AreEqual(
+        "Test.OnIsDirtyChanged",
+        TestResults.GetResult("Test.OnIsDirtyChanged"),
+        "Didn't call serializable handler");
+
+      Assert.AreEqual(
+        "Test.PrivateOnIsDirtyChanged",
+        TestResults.GetResult("Test.PrivateOnIsDirtyChanged"),
+        "Didn't call serializable private handler");
+
+      root = root.Clone();
+
+      TestResults.Reinitialise();
+
+      root.Data = "xyz";
+
+      Assert.AreEqual("xyz", root.Data, "Data value not set");
+
+      string actual2 = TestResults.GetResult("OnIsDirtyChanged");
+      Assert.AreEqual("", actual2, "Called local handler after clone");
+
+      string actual3 = TestResults.GetResult("StaticOnIsDirtyChanged");
+      Assert.AreEqual("", actual3, "Called static handler after clone");
+
+      string actual4 = TestResults.GetResult("PublicStaticOnIsDirtyChanged");
+      Assert.AreEqual("PublicStaticOnIsDirtyChanged", actual4, "Didn't call public static handler after clone");
+
+      string actual5 = TestResults.GetResult("Test.OnIsDirtyChanged");
+      Assert.AreEqual("Test.OnIsDirtyChanged", actual5, "Didn't call serializable handler after clone");
+
+      string actual6 = TestResults.GetResult("Test.PrivateOnIsDirtyChanged");
+      Assert.AreEqual("", actual6, "Called serializable private handler after clone");
+    }
+
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task TestValidationRulesAfterSerialization()
+    {
+      IDataPortal<HasRulesManager> dataPortal = _testDIContext.CreateDataPortal<HasRulesManager>();
+
+      var root = await dataPortal.CreateAsync(new HasRulesManager.Criteria());
+      root.Name = "";
+      Assert.AreEqual(false, root.IsValid, "root should not start valid");
+
+      root = root.Clone();
+      Assert.AreEqual(false, root.IsValid, "root should not be valid after clone");
+      root.Name = "something";
+      Assert.AreEqual(true, root.IsValid, "root should be valid after property set");
+      root = root.Clone();
+      Assert.AreEqual(true, root.IsValid, "root should be valid after second clone");
+    }
+
+    [TestMethod]
+    public void TestSerializationCslaBinaryReaderWriterList()
+    {
+      IDataPortal<BinaryReaderWriterTestClassList> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClassList>();
+
+      var test = BinaryReaderWriterTestClassList.NewBinaryReaderWriterTestClassList(dataPortal);
+      BinaryReaderWriterTestClassList result;
+      test.Setup();
+
+      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
+      var serialized = formatter.SerializeToDTO(test);
+      CslaBinaryWriter writer = new CslaBinaryWriter(applicationContext);
+      byte[] data;
+      using (var stream = new MemoryStream())
+      {
+        writer.Write(stream, serialized);
+        data = stream.ToArray();
+      }
+
+      CslaBinaryReader reader = new CslaBinaryReader(applicationContext);
+      using (var stream = new MemoryStream(data))
+      {
+        var deserialized = reader.Read(stream);
+        result = (BinaryReaderWriterTestClassList)formatter.DeserializeFromDTO(deserialized);
+      }
+
+      Assert.AreEqual(test.Count, result.Count);
+      for (int i = 0; i < test.Count; i++)
+      {
+        Assert.AreEqual(test[i].CharTest, result[i].CharTest);
+        Assert.AreEqual(test[i].DateTimeOffsetTest, result[i].DateTimeOffsetTest);
+        Assert.AreEqual(test[i].DateTimeTest, result[i].DateTimeTest);
+        Assert.AreEqual(test[i].DecimalTest, result[i].DecimalTest);
+        Assert.AreEqual(test[i].DoubleTest, result[i].DoubleTest);
+        Assert.AreEqual(test[i].EnumTest, result[i].EnumTest);
+        Assert.AreEqual(test[i].GuidTest, result[i].GuidTest);
+        Assert.AreEqual(test[i].Int16Test, result[i].Int16Test);
+        Assert.AreEqual(test[i].Int32Test, result[i].Int32Test);
+        Assert.AreEqual(test[i].Int64Test, result[i].Int64Test);
+        Assert.AreEqual(test[i].SByteTest, result[i].SByteTest);
+        Assert.AreEqual(test[i].SingleTest, result[i].SingleTest);
+        Assert.AreEqual(test[i].StringTest, result[i].StringTest);
+        Assert.AreEqual(test[i].TimeSpanTest, result[i].TimeSpanTest);
+        Assert.AreEqual(test[i].UInt16Test, result[i].UInt16Test);
+        Assert.AreEqual(test[i].UInt32Test, result[i].UInt32Test);
+        Assert.AreEqual(test[i].UInt64Test, result[i].UInt64Test);
+
+        Assert.AreEqual(test[i].EmptySmartDateTest, result[i].EmptySmartDateTest);
+        Assert.AreEqual(test[i].EmptySmartDateTest.FormatString, result[i].EmptySmartDateTest.FormatString);
+        Assert.AreEqual(test[i].EmptySmartDateTest.EmptyIsMin, result[i].EmptySmartDateTest.EmptyIsMin);
+        Assert.AreEqual(test[i].EmptySmartDateTest.IsEmpty, result[i].EmptySmartDateTest.IsEmpty);
+        Assert.AreEqual(test[i].EmptySmartDateTest.Date, result[i].EmptySmartDateTest.Date);
+
+        Assert.AreEqual(test[i].FilledSmartDateTest, result[i].FilledSmartDateTest);
+        Assert.AreEqual(test[i].FilledSmartDateTest.FormatString, result[i].FilledSmartDateTest.FormatString);
+        Assert.AreEqual(test[i].FilledSmartDateTest.EmptyIsMin, result[i].FilledSmartDateTest.EmptyIsMin);
+        Assert.AreEqual(test[i].FilledSmartDateTest.IsEmpty, result[i].FilledSmartDateTest.IsEmpty);
+        Assert.AreEqual(test[i].FilledSmartDateTest.Date, result[i].FilledSmartDateTest.Date);
+      }
+    }
+
+
+    [TestMethod]
+    public void TestSerializationCslaBinaryReaderWriter()
+    {
+      IDataPortal<BinaryReaderWriterTestClass> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
+
+      var test = BinaryReaderWriterTestClass.NewBinaryReaderWriterTestClass(dataPortal);
+      BinaryReaderWriterTestClass result;
+      test.Setup();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
+      var serialized = formatter.SerializeToDTO(test);
+      CslaBinaryWriter writer = new CslaBinaryWriter(applicationContext);
+      byte[] data;
+      using (var stream = new MemoryStream())
+      {
+        writer.Write(stream, serialized);
+        data = stream.ToArray();
+      }
+
+      CslaBinaryReader reader = new CslaBinaryReader(applicationContext);
+      using (var stream = new MemoryStream(data))
+      {
+        var deserialized = reader.Read(stream);
+        result = (BinaryReaderWriterTestClass)formatter.DeserializeFromDTO(deserialized);
+      }
+      Assert.AreEqual(test.BoolTest, result.BoolTest);
+      Assert.AreEqual(test.ByteArrayTest.Length, result.ByteArrayTest.Length);
+      for (int i = 0; i < test.ByteArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
+      }
+
+      Assert.AreEqual(test.ByteTest, result.ByteTest);
+      Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
+      for (int i = 0; i < test.CharArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.CharArrayTest[i], result.CharArrayTest[i]);
+      }
+
+      Assert.AreEqual(test.CharTest, result.CharTest);
+      Assert.AreEqual(test.DateTimeOffsetTest, result.DateTimeOffsetTest);
+      Assert.AreEqual(test.DateTimeTest, result.DateTimeTest);
+      Assert.AreEqual(test.DecimalTest, result.DecimalTest);
+      Assert.AreEqual(test.DoubleTest, result.DoubleTest);
+      Assert.AreEqual(test.EnumTest, result.EnumTest);
+      Assert.AreEqual(test.GuidTest, result.GuidTest);
+      Assert.AreEqual(test.Int16Test, result.Int16Test);
+      Assert.AreEqual(test.Int32Test, result.Int32Test);
+      Assert.AreEqual(test.Int64Test, result.Int64Test);
+      Assert.AreEqual(test.SByteTest, result.SByteTest);
+      Assert.AreEqual(test.SingleTest, result.SingleTest);
+      Assert.AreEqual(test.StringTest, result.StringTest);
+      Assert.AreEqual(test.TimeSpanTest, result.TimeSpanTest);
+      Assert.AreEqual(test.UInt16Test, result.UInt16Test);
+      Assert.AreEqual(test.UInt32Test, result.UInt32Test);
+      Assert.AreEqual(test.UInt64Test, result.UInt64Test);
+
+      Assert.AreEqual(test.EmptySmartDateTest, result.EmptySmartDateTest);
+      Assert.AreEqual(test.EmptySmartDateTest.FormatString, result.EmptySmartDateTest.FormatString);
+      Assert.AreEqual(test.EmptySmartDateTest.EmptyIsMin, result.EmptySmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.EmptySmartDateTest.IsEmpty, result.EmptySmartDateTest.IsEmpty);
+      Assert.AreEqual(test.EmptySmartDateTest.Date, result.EmptySmartDateTest.Date);
+
+      Assert.AreEqual(test.FilledSmartDateTest, result.FilledSmartDateTest);
+      Assert.AreEqual(test.FilledSmartDateTest.FormatString, result.FilledSmartDateTest.FormatString);
+      Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
+      Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
+    }
+
+
+    [TestMethod]
+    public void TestSerializationRoundtripWithoutStrongNameCheck()
+    {
+      // Do not use global _testDIContext in the test, since I need to change default mobile formatter options.
+      var testDIContext = TestDIContextFactory.CreateContext(options => options.SerializationOptions.UseMobileFormatter(formatterOptions => formatterOptions.DisableStrongNamesCheck()));
+      IDataPortal<BinaryReaderWriterTestClass> dataPortal = testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
+
+      var test = BinaryReaderWriterTestClass.NewBinaryReaderWriterTestClass(dataPortal);
+      BinaryReaderWriterTestClass result;
+      test.Setup();
+      ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
+
+      MobileFormatter formatter = new MobileFormatter(applicationContext);
+      var serialized = formatter.SerializeToDTO(test);
+      CslaBinaryWriter writer = new CslaBinaryWriter(applicationContext);
+      byte[] data;
+      using (var stream = new MemoryStream())
+      {
+        writer.Write(stream, serialized);
+        data = stream.ToArray();
+      }
+
+      CslaBinaryReader reader = new CslaBinaryReader(applicationContext);
+      using (var stream = new MemoryStream(data))
+      {
+        var deserialized = reader.Read(stream);
+        result = (BinaryReaderWriterTestClass)formatter.DeserializeFromDTO(deserialized);
+      }
+      Assert.AreEqual(test.BoolTest, result.BoolTest);
+      Assert.AreEqual(test.ByteArrayTest.Length, result.ByteArrayTest.Length);
+      for (int i = 0; i < test.ByteArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.ByteArrayTest[i], result.ByteArrayTest[i]);
+      }
+
+      Assert.AreEqual(test.ByteTest, result.ByteTest);
+      Assert.AreEqual(test.CharArrayTest.Length, result.CharArrayTest.Length);
+      for (int i = 0; i < test.CharArrayTest.Length; i++)
+      {
+        Assert.AreEqual(test.CharArrayTest[i], result.CharArrayTest[i]);
+      }
+
+      Assert.AreEqual(test.CharTest, result.CharTest);
+      Assert.AreEqual(test.DateTimeOffsetTest, result.DateTimeOffsetTest);
+      Assert.AreEqual(test.DateTimeTest, result.DateTimeTest);
+      Assert.AreEqual(test.DecimalTest, result.DecimalTest);
+      Assert.AreEqual(test.DoubleTest, result.DoubleTest);
+      Assert.AreEqual(test.EnumTest, result.EnumTest);
+      Assert.AreEqual(test.GuidTest, result.GuidTest);
+      Assert.AreEqual(test.Int16Test, result.Int16Test);
+      Assert.AreEqual(test.Int32Test, result.Int32Test);
+      Assert.AreEqual(test.Int64Test, result.Int64Test);
+      Assert.AreEqual(test.SByteTest, result.SByteTest);
+      Assert.AreEqual(test.SingleTest, result.SingleTest);
+      Assert.AreEqual(test.StringTest, result.StringTest);
+      Assert.AreEqual(test.TimeSpanTest, result.TimeSpanTest);
+      Assert.AreEqual(test.UInt16Test, result.UInt16Test);
+      Assert.AreEqual(test.UInt32Test, result.UInt32Test);
+      Assert.AreEqual(test.UInt64Test, result.UInt64Test);
+
+      Assert.AreEqual(test.EmptySmartDateTest, result.EmptySmartDateTest);
+      Assert.AreEqual(test.EmptySmartDateTest.FormatString, result.EmptySmartDateTest.FormatString);
+      Assert.AreEqual(test.EmptySmartDateTest.EmptyIsMin, result.EmptySmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.EmptySmartDateTest.IsEmpty, result.EmptySmartDateTest.IsEmpty);
+      Assert.AreEqual(test.EmptySmartDateTest.Date, result.EmptySmartDateTest.Date);
+
+      Assert.AreEqual(test.FilledSmartDateTest, result.FilledSmartDateTest);
+      Assert.AreEqual(test.FilledSmartDateTest.FormatString, result.FilledSmartDateTest.FormatString);
+      Assert.AreEqual(test.FilledSmartDateTest.EmptyIsMin, result.FilledSmartDateTest.EmptyIsMin);
+      Assert.AreEqual(test.FilledSmartDateTest.IsEmpty, result.FilledSmartDateTest.IsEmpty);
+      Assert.AreEqual(test.FilledSmartDateTest.Date, result.FilledSmartDateTest.Date);
+    }
+
+    [TestMethod]
+    public void TestSerializationNames()
+    {
+      Assert.AreEqual("System.Int32, /n", AssemblyNameTranslator.GetSerializationName(typeof(int), false));
+      Assert.AreEqual("System.Int32, /n", AssemblyNameTranslator.GetSerializationName(typeof(int), true));
+      Assert.AreEqual("Csla.ApplicationContext, /c", AssemblyNameTranslator.GetSerializationName(typeof(ApplicationContext), false));
+      Assert.AreEqual("Csla.ApplicationContext, /c", AssemblyNameTranslator.GetSerializationName(typeof(ApplicationContext), true));
+      Assert.AreEqual("Csla.Test.Serialization.BinaryReaderWriterTestClass, Csla.Tests", AssemblyNameTranslator.GetSerializationName(typeof(BinaryReaderWriterTestClass), false));
+      Assert.AreEqual("Csla.Test.Serialization.BinaryReaderWriterTestClass, Csla.Tests, Version=4.5.30.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30", AssemblyNameTranslator.GetSerializationName(typeof(BinaryReaderWriterTestClass), true));
+    }
+
+    // TODO: fix test
+    [Ignore]
+    [TestMethod]
+    public void TestAuthorizationRulesAfterSerialization()
+    {
+      TestDIContext adminDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      IDataPortal<Security.PermissionsRoot> dataPortal = _testDIContext.CreateDataPortal<Security.PermissionsRoot>();
+
+      Security.PermissionsRoot root = dataPortal.Create();
+
+      try
+      {
+        root.FirstName = "something";
+        Assert.Fail("Exception didn't occur");
+      }
+      catch (Csla.Security.SecurityException ex)
+      {
+        Assert.AreEqual("Property set not allowed", ex.Message);
+      }
+
+      dataPortal = adminDIContext.CreateDataPortal<Security.PermissionsRoot>();
+      root = dataPortal.Create();
+
+      try
+      {
+        root.FirstName = "something";
+      }
+      catch (Csla.Security.SecurityException)
+      {
+        Assert.Fail("exception occurred");
+      }
+
+      // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
+      //Csla.ApplicationContext.User = new ClaimsPrincipal();
+
+      Security.PermissionsRoot rootClone = root.Clone();
+
+      try
+      {
+        rootClone.FirstName = "something else";
+        Assert.Fail("Exception didn't occur");
+      }
+      catch (Csla.Security.SecurityException ex)
+      {
+        Assert.AreEqual("Property set not allowed", ex.Message);
+      }
+
+      // TODO: Not sure how to recreate this test now; can't change context under the data portal mid flight
+      //Csla.ApplicationContext.User = GetPrincipal("Admin");
+
+      try
+      {
+        rootClone.FirstName = "something new";
+      }
+      catch (Csla.Security.SecurityException)
+      {
+        Assert.Fail("exception occurred");
+      }
+
+    }
+
+    private void OnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      TestResults.AddOrOverwrite("OnIsDirtyChanged", "OnIsDirtyChanged");
+    }
+
+    private static void StaticOnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      TestResults.AddOrOverwrite("StaticOnIsDirtyChanged", "StaticOnIsDirtyChanged");
+    }
+
+    public static void PublicStaticOnIsDirtyChanged(object sender, PropertyChangedEventArgs e)
+    {
+      TestResults.AddOrOverwrite("PublicStaticOnIsDirtyChanged", "PublicStaticOnIsDirtyChanged");
+    }
+
+    // TODO: fix test
+    [Ignore]
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public void DCClone()
+    {
+      IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
+
+      System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileSerializer";
+
+      DCRoot root = DCRoot.NewDCRoot(dataPortal);
+      root.Data = 123;
+      DCRoot clone = root.Clone();
+
+      Assert.IsFalse(ReferenceEquals(root, clone), "Object instance should be different");
+      Assert.AreEqual(root.Data, clone.Data, "Data should match");
+      Assert.IsTrue(root.IsDirty, "Root IsDirty should be true");
+      Assert.IsTrue(clone.IsDirty, "Clone IsDirty should be true");
+    }
+
+    // TODO: fix test
+    [Ignore]
+    [TestMethod]
+    public void DCEditLevels()
+    {
+      IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
+
+      DCRoot root = DCRoot.NewDCRoot(dataPortal);
+      root.BeginEdit();
+      root.Data = 123;
+      root.CancelEdit();
+
+      Assert.AreEqual(0, root.Data, "Data should be 0");
+
+      root.BeginEdit();
+      root.Data = 123;
+      root.ApplyEdit();
+
+      Assert.AreEqual(123, root.Data, "Data should be 123");
+    }
+
+    [TestMethod]
+    public void AsyncLoadManagerSerializationTest()
+    {
+      IDataPortal<Basic.Children> dataPortal = _testDIContext.CreateDataPortal<Basic.Children>();
+      IDataPortal<Basic.Child> childDataPortal = _testDIContext.CreateDataPortal<Basic.Child>();
+
+      Basic.Children list = Basic.Children.NewChildren(dataPortal);
+      list.Add(childDataPortal, "1");
+      list.Add(childDataPortal, "2");
+      IEditableObject item = list[1] as IEditableObject;
+      int editLevel = (int)item.GetType().GetProperty("EditLevel", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy).GetValue(item, null);
+      object manager = item.GetType().GetProperty("LoadManager", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy).GetValue(item, null);
+
+      item.BeginEdit();
+      int newEditLevel = (int)item.GetType().GetProperty("EditLevel", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.FlattenHierarchy).GetValue(item, null);
+      Assert.AreEqual(editLevel + 1, newEditLevel, "Edit level incorrect after begin edit");
+    }
+
+    [TestMethod]
+    public void SerializeCommand()
+    {
+      IDataPortal<TestCommand> dataPortal = _testDIContext.CreateDataPortal<TestCommand>();
+      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+
+      var cmd = dataPortal.Create();
+      cmd.Name = "test data";
+
+      // TODO: Not sure how to replicate the object cloner in Csla 6
+      var buffer = new MemoryStream();
+      var mf = new MobileFormatter(applicationContext);
+      mf.Serialize(buffer, cmd);
+      buffer.Position = 0;
+      var m = (TestCommand)mf.Deserialize(buffer);
+      Assert.AreEqual(cmd.Name, m.Name, "after MobileFormatter");
+    }
+
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public void CommandOverDataPortal()
+    {
+      TestDIContext customDIContext = TestDIContextFactory.CreateDefaultContext();
+      // TODO: Get this custom proxy code included and working
+      //TestDIContext customDIContext = TestDIContextFactory.CreateContext(
+      //options => options
+      //.Services.AddTransient<DataPortalClient.IDataPortalProxy, Csla.Testing.Business.TestProxies.AppDomainProxy>()
+      //);
+      IDataPortal<TestCommand> dataPortal = customDIContext.CreateDataPortal<TestCommand>();
+
+      var cmd = dataPortal.Create();
+      cmd.Name = "test data";
+
+      var result = dataPortal.Execute(cmd);
+
+      Assert.IsFalse(ReferenceEquals(cmd, result), "References should not match");
+      Assert.AreEqual(cmd.Name + " server", result.Name);
+    }
+
+    [TestMethod]
+    public void DateOnlySerialization()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var obj = portal.Create();
+      obj.DateOnly = new DateOnly(2020, 1, 1);
+      var clone = obj.Clone();
+      Assert.AreEqual(obj.DateOnly, clone.DateOnly);
+    }
+
+    [TestMethod]
+    public void TimeOnlySerialization()
+    {
+      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var obj = portal.Create();
+      obj.TimeOnly = new TimeOnly(12, 34, 56);
+      var clone = obj.Clone();
+      Assert.AreEqual(obj.TimeOnly, clone.TimeOnly);
+    }
+  }
+
+  [Serializable]
+  public class TestCommand : CommandBase<TestCommand>
+  {
+    private static PropertyInfo<string> NameProperty = RegisterProperty<string>("Name");
+    public string Name
+    {
+      get { return ReadProperty(NameProperty); }
+      set { LoadProperty(NameProperty, value); }
+    }
+
+    [RunLocal]
+    [Create]
+    private void Create()
+    { }
+
+    [Execute]
+    protected void DataPortal_Execute()
+    {
+      Name += " server";
+    }
+  }
+
+  [Serializable]
+  public class DateTimeOnlyHolder : BusinessBase<DateTimeOnlyHolder>
+  {
+    public static readonly PropertyInfo<DateOnly> DateOnlyProperty = RegisterProperty<DateOnly>(nameof(DateOnly));
+    public DateOnly DateOnly
+    {
+      get => ReadProperty(DateOnlyProperty);
+      set => LoadProperty(DateOnlyProperty, value);
+    }
+
+    public static readonly PropertyInfo<TimeOnly> TimeOnlyProperty = RegisterProperty<TimeOnly>(nameof(TimeOnly));
+    public TimeOnly TimeOnly
+    {
+      get => ReadProperty(TimeOnlyProperty);
+      set => LoadProperty(TimeOnlyProperty, value);
+    }
+    
+    [Create]
+    private void Create()
+    { }
+  }
+
+  [Serializable]
+  public class DateTimeHolder : BusinessBase<DateTimeHolder>
+  {
+    public static readonly PropertyInfo<DateTime> ValueProperty = RegisterProperty<DateTime>(nameof(Value));
+    public DateTime Value
+    {
+      get => GetProperty(ValueProperty);
+      set => SetProperty(ValueProperty, value);
+    }
+
+    [Create]
+    private void Create()
+    { }
+  }
+
+}

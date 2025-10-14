@@ -2,32 +2,28 @@
   <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.1;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;net8.0;net9.0;net10.0</TargetFrameworks>
     <Product>CSLA .NET RabbitMQ Channel</Product>
     <Description>RabbitMQ data portal channel for CSLA .NET.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET RabbitMQ data portal channel</Title>
     <PackageTags>CSLA;RabbitMQ</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1'">
+    <PackageReference Include="Polyfill" Version="7.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Backport.System.Threading.Lock" Version="3.1.4" />
-    <Using Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" Alias="Lock" Include="System.Threading.Lock" />
-    <Using Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" Alias="Lock" Include="Backport.System.Threading.Lock" />
-    <Using Alias="LockFactory" Include="Backport.System.Threading.LockFactory" />
   </ItemGroup>
 
 </Project>

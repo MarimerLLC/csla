@@ -3,16 +3,12 @@ namespace System;
 /// <summary>
 /// Provides extension methods for <see cref="TimeSpan"/>.
 /// </summary>
-public static class TimeSpanExtensions
+internal static class TimeSpanExtensions
 {
   /// <summary>
-  /// Converts the specified <see cref="TimeSpan"/> to a <see cref="CancellationToken"/> with the specified timeout.
+  /// Creates a <see cref="CancellationTokenSource"/> with the given <paramref name="timeout"/>.
   /// </summary>
   /// <param name="timeout">The timeout duration.</param>
-  /// <returns>The <see cref="CancellationToken"/> with the specified timeout.</returns>
-  public static CancellationToken ToCancellationToken(this TimeSpan timeout)
-  {
-    var cts = new CancellationTokenSource(timeout);
-    return cts.Token;
-  }
+  /// <returns>The <see cref="CancellationTokenSource"/> with the specified timeout.</returns>
+  public static CancellationTokenSource ToCancellationTokenSource(this TimeSpan timeout) => new(timeout);
 }

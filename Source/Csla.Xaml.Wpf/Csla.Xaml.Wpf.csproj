@@ -2,7 +2,7 @@
   <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>net462;net8.0-windows;net9.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <AssemblyName>Csla.Xaml</AssemblyName>
     <RootNamespace>Csla.Xaml</RootNamespace>
@@ -10,7 +10,6 @@
     <ApplicationIcon />
     <StartupObject />
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
 
     <Title>CSLA .NET WPF</Title>
@@ -45,13 +44,13 @@
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <PackageReference Include="Polyfill" Version="7.4.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 

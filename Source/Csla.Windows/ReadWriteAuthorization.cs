@@ -36,8 +36,14 @@ namespace Csla.Windows
     /// Creates an instance of the object.
     /// </summary>
     /// <param name="container">The container of the control.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="container"/> is <see langword="null"/>.</exception>
     public ReadWriteAuthorization(IContainer container)
-    { container.Add(this); }
+    {
+      if (container is null)
+        throw new ArgumentNullException(nameof(container));
+
+      container.Add(this);
+    }
 
     /// <summary>
     /// Gets a value indicating whether the extender control
@@ -48,10 +54,13 @@ namespace Csla.Windows
     /// Any control implementing either a ReadOnly property or
     /// Enabled property can be extended.
     /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="extendee"/> is <see langword="null"/>.</exception>
     public bool CanExtend(object extendee)
     {
-      if (IsPropertyImplemented(extendee, "ReadOnly")
-        || IsPropertyImplemented(extendee, "Enabled"))
+      if (extendee is null)
+        throw new ArgumentNullException(nameof(extendee));
+
+      if (IsPropertyImplemented(extendee, "ReadOnly") || IsPropertyImplemented(extendee, "Enabled"))
         return true;
       else
         return false;
@@ -62,11 +71,14 @@ namespace Csla.Windows
     /// property added to extended controls.
     /// </summary>
     /// <param name="source">Control being extended.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     public bool GetApplyAuthorization(Control source)
     {
-      ControlStatus result;
-      if (_sources.TryGetValue(source, out result))
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
+      if (_sources.TryGetValue(source, out var result))
         return result.ApplyAuthorization;
       else
         return false;
@@ -78,15 +90,18 @@ namespace Csla.Windows
     /// </summary>
     /// <param name="source">Control being extended.</param>
     /// <param name="value">New value of property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
     [Category("Csla")]
     public void SetApplyAuthorization(Control source, bool value)
     {
-      ControlStatus status;
-      if (_sources.TryGetValue(source, out status))
+      if (source is null)
+        throw new ArgumentNullException(nameof(source));
+
+      if (_sources.TryGetValue(source, out var status))
         status.ApplyAuthorization = value;
       else
         _sources.Add(
-          source, 
+          source,
           new ControlStatus { ApplyAuthorization = value, CanRead = true });
     }
 
@@ -135,9 +150,7 @@ namespace Csla.Windows
       }
     }
 
-    private void ApplyReadRules(
-      Control ctl, Binding binding,
-      bool canRead)
+    private void ApplyReadRules(Control ctl, Binding binding, bool canRead)
     {
       var status = GetControlStatus(ctl);
 
@@ -179,25 +192,17 @@ namespace Csla.Windows
       status.CanRead = canRead;
     }
 
-    private void ApplyWriteRules(
-      Control ctl, Binding binding,
-      bool canWrite)
+    private void ApplyWriteRules(Control ctl, Binding binding, bool canWrite)
     {
-      if (ctl is Label) return;
+      if (ctl is Label)
+        return;
 
       // enable/disable writing of the value
-      PropertyInfo propertyInfo =
-        ctl.GetType().GetProperty("ReadOnly",
-        BindingFlags.FlattenHierarchy |
-        BindingFlags.Instance |
-        BindingFlags.Public);
+      PropertyInfo? propertyInfo = ctl.GetType().GetProperty("ReadOnly", BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public);
       if (propertyInfo != null)
       {
-        bool couldWrite =
-          (!(bool)propertyInfo.GetValue(
-          ctl, []));
-        propertyInfo.SetValue(
-          ctl, !canWrite, []);
+        bool couldWrite = (!(bool)propertyInfo.GetValue(ctl, [])!);
+        propertyInfo.SetValue(ctl, !canWrite, []);
         if ((!couldWrite) && (canWrite))
           binding.ReadValue();
       }
@@ -210,22 +215,20 @@ namespace Csla.Windows
       }
     }
 
-    private void ReturnEmpty(
-      object sender, ConvertEventArgs e)
+    private void ReturnEmpty(object? sender, ConvertEventArgs e)
     {
-      e.Value = GetEmptyValue(e.DesiredType);
+      e.Value = GetEmptyValue(e.DesiredType ?? throw new InvalidOperationException($"{nameof(ConvertEventArgs)}.{nameof(ConvertEventArgs.DesiredType)} == null"));
     }
 
-    private object GetEmptyValue(Type desiredType)
+    private object? GetEmptyValue(Type desiredType)
     {
-      object result = null;
+      object? result = null;
       if (desiredType.IsValueType)
         result = Activator.CreateInstance(desiredType);
       return result;
     }
 
-    private static bool IsPropertyImplemented(
-      object obj, string propertyName)
+    private static bool IsPropertyImplemented(object obj, string propertyName)
     {
       if (obj.GetType().GetProperty(propertyName,
         BindingFlags.FlattenHierarchy |

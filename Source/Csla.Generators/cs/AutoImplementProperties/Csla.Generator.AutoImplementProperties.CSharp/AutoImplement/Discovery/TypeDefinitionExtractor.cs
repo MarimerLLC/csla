@@ -30,12 +30,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
             .SelectMany(al => al.Attributes)
             .FirstOrDefault(a => a.Name.ToString().StartsWith(DefinitionExtractionContext.CslaImplementPropertiesAttribute));
 
-        if (attribute != null)
+        if (attribute?.Name is GenericNameSyntax genericName)
         {
-          var genericName = attribute.Name as GenericNameSyntax;
           // Get the generic argument of the attribute
-          var genericArgument = genericName?.TypeArgumentList?.Arguments.FirstOrDefault();
+          var genericArgument = genericName.TypeArgumentList?.Arguments.FirstOrDefault();
 
+          if (genericArgument is null)
+          {
+            return extractedTypeDefinition;
+          }
 
           // Get the type symbol of the generic argument
           var semanticModel = extractionContext.SemanticModel;
@@ -82,24 +85,23 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>ExtractedTypeDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedTypeDefinition ExtractTypeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
-      ExtractedTypeDefinition definition = new ExtractedTypeDefinition();
-      StringBuilder fullyQualifiedNameBuilder = new StringBuilder();
-
-      definition.TypeName = GetTypeName(targetTypeDeclaration);
-      definition.TypeKind = GetTypeKind(targetTypeDeclaration);
-      definition.Namespace = GetNamespace(targetTypeDeclaration);
-      definition.Scope = GetScopeDefinition(targetTypeDeclaration);
-      definition.BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration);
-      definition.DefaultPropertyModifiers = ["public"];
-      definition.DefaultPropertySetterModifiers = [];
+      var typeName = GetTypeName(targetTypeDeclaration);
+      ExtractedTypeDefinition definition = new ExtractedTypeDefinition
+      {
+        TypeName = typeName,
+        TypeKind = GetTypeKind(targetTypeDeclaration),
+        Namespace = GetNamespace(targetTypeDeclaration),
+        Scope = GetScopeDefinition(targetTypeDeclaration),
+        BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration),
+        DefaultPropertyModifiers = ["public"],
+        DefaultPropertySetterModifiers = [],
+        FullyQualifiedName = typeName
+      };
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
       {
         definition.Properties.Add(propertyDefinition);
       }
-
-      fullyQualifiedNameBuilder.Append(definition.TypeName);
-      definition.FullyQualifiedName = fullyQualifiedNameBuilder.ToString();
 
       return definition;
     }
@@ -119,12 +121,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       var targetTypeSymbol = extractionContext.SemanticModel.GetDeclaredSymbol(targetTypeDeclaration) as INamedTypeSymbol;
       var baseTypeSymbol = targetTypeSymbol?.BaseType;
 
-      if (baseTypeSymbol != null)
-      {
-        return baseTypeSymbol.Name;
-      }
-
-      return null;
+      return baseTypeSymbol?.Name ?? string.Empty;
     }
 
     #endregion
@@ -144,13 +141,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
       // Get the containing syntax node for the type declaration
       // (could be a nested type, for example)
-      SyntaxNode potentialNamespaceParent = targetTypeDeclaration.Parent;
+      SyntaxNode? potentialNamespaceParent = targetTypeDeclaration.Parent;
     
       // Keep moving "out" of nested classes etc until we get to a namespace
       // or until we run out of parents
-      while (potentialNamespaceParent != null &&
-             potentialNamespaceParent is not NamespaceDeclarationSyntax
-             && potentialNamespaceParent is not FileScopedNamespaceDeclarationSyntax)
+      while (potentialNamespaceParent != null && potentialNamespaceParent is not NamespaceDeclarationSyntax && potentialNamespaceParent is not FileScopedNamespaceDeclarationSyntax)
       {
         potentialNamespaceParent = potentialNamespaceParent.Parent;
       }
@@ -229,7 +224,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private static void AppendScopeName(StringBuilder stringBuilder, string scope)
     {
       stringBuilder.Append(scope);
-      stringBuilder.Append(" ");
+      stringBuilder.Append(' ');
     }
 
     /// <summary>

@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>Message type for communication between StateController</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Blazor.State.Messages
 {
   /// <summary>
@@ -20,6 +22,12 @@ namespace Csla.Blazor.State.Messages
     /// <summary>
     /// Gets or sets the serialized session data.
     /// </summary>
-    public byte[] SessionData { get; set; }
+    public byte[]? SessionData { get; set; }
+
+    /// <summary>
+    /// Gets a value that indicates if <see cref="ResultStatus"/> is <see cref="ResultStatuses.Success"/>.
+    /// </summary>
+    [MemberNotNullWhen(true, nameof(SessionData))]
+    public bool IsSuccess => ResultStatus == ResultStatuses.Success;
   }
 }

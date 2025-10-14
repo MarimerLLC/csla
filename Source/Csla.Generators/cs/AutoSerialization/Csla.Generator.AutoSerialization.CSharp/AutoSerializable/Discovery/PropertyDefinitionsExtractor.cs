@@ -75,8 +75,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       // Get public or internal properties that are not specifically opted out with the [AutoNonSerialized] attribute
       serializableProperties = targetTypeDeclaration.Members.Where(
         m => m is PropertyDeclarationSyntax propertyDeclaration &&
-        HasOneOfScopes(extractionContext, propertyDeclaration, "public") &&
-        HasGetterAndSetter(extractionContext, propertyDeclaration) &&
+        HasOneOfScopes(propertyDeclaration, "public") &&
+        HasGetterAndSetter(propertyDeclaration) &&
         !extractionContext.IsPropertyDecoratedWithAutoNonSerialized(propertyDeclaration))
         .Cast<PropertyDeclarationSyntax>()
         .ToList();
@@ -97,8 +97,8 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       // Get private or protected properties that are specifically opted in with the [AutoSerialized] attribute
       serializableProperties = targetTypeDeclaration.Members.Where(
         m => m is PropertyDeclarationSyntax propertyDeclaration &&
-        !HasOneOfScopes(extractionContext, propertyDeclaration, "public") &&
-        HasGetterAndSetter(extractionContext, propertyDeclaration) &&
+        !HasOneOfScopes(propertyDeclaration, "public") &&
+        HasGetterAndSetter(propertyDeclaration) &&
         extractionContext.IsPropertyDecoratedWithAutoSerialized(propertyDeclaration))
         .Cast<PropertyDeclarationSyntax>()
         .ToList();
@@ -109,11 +109,10 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Determine if a property has one of the scopes requested by a caller
     /// </summary>
-    /// <param name="context">The definition extraction context for this extraction</param>
     /// <param name="propertyDeclaration">The declaration of the property being tested</param>
     /// <param name="scopes">The list of scopes in which the caller is interested</param>
     /// <returns>Boolean true if the property has one of the scopes requested by the caller, else false</returns>
-    private static bool HasOneOfScopes(DefinitionExtractionContext context, PropertyDeclarationSyntax propertyDeclaration, params string[] scopes)
+    private static bool HasOneOfScopes(PropertyDeclarationSyntax propertyDeclaration, params string[] scopes)
     {
       foreach (string scope in scopes)
       {
@@ -129,10 +128,9 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Determine if a property has both a getter and a setter
     /// </summary>
-    /// <param name="context">The definition extraction context for this extraction</param>
     /// <param name="propertyDeclaration">The declaration of the property being tested</param>
     /// <returns>Boolean true if the property has both a getter and setter (of any scope), else false</returns>
-    private static bool HasGetterAndSetter(DefinitionExtractionContext context, PropertyDeclarationSyntax propertyDeclaration)
+    private static bool HasGetterAndSetter(PropertyDeclarationSyntax propertyDeclaration)
     {
       bool hasGetter = false;
       bool hasSetter = false;

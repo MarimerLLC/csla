@@ -5,13 +5,13 @@
 // </copyright>
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
-using Csla.State;
 using Csla.Blazor;
+using Csla.Blazor.WebAssembly.Configuration;
+using Csla.State;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Csla.Blazor.WebAssembly.Configuration;
 
 namespace Csla.Configuration
 {
@@ -24,6 +24,7 @@ namespace Csla.Configuration
     /// Registers services necessary for Blazor WebAssembly.
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddBlazorWebAssembly(this CslaOptions config)
     {
       return AddBlazorWebAssembly(config, null);
@@ -34,8 +35,11 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaConfiguration object</param>
     /// <param name="options">Options object</param>
-    public static CslaOptions AddBlazorWebAssembly(this CslaOptions config, Action<BlazorWebAssemblyConfigurationOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions AddBlazorWebAssembly(this CslaOptions config, Action<BlazorWebAssemblyConfigurationOptions>? options)
     {
+      ArgumentNullException.ThrowIfNull(config);
+
       var blazorOptions = new BlazorWebAssemblyConfigurationOptions();
       options?.Invoke(blazorOptions);
 

@@ -77,7 +77,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       // Get all fields that are not specifically opted out with the [AutoNonSerialized] attribute
       serializableFields = targetTypeDeclaration.Members.Where(
         m => m is FieldDeclarationSyntax fieldDeclaration &&
-        HasOneOfScopes(extractionContext, fieldDeclaration, "public") &&
+        HasOneOfScopes(fieldDeclaration, "public") &&
         !extractionContext.IsFieldDecoratedWithAutoNonSerialized(fieldDeclaration))
         .Cast<FieldDeclarationSyntax>()
         .ToList();
@@ -98,27 +98,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       // Get any private or protected fields that are opted in with the use of the [AutoSerialized] attribute
       serializableFields = targetTypeDeclaration.Members.Where(
         m => m is FieldDeclarationSyntax fieldDeclaration &&
-        !HasOneOfScopes(extractionContext, fieldDeclaration, "public") &&
-        extractionContext.IsFieldDecoratedWithAutoSerialized(fieldDeclaration))
-        .Cast<FieldDeclarationSyntax>()
-        .ToList();
-
-      return serializableFields;
-    }
-
-    /// <summary>
-    /// Get the field declarations for all fields which have been explicitly included in serialization
-    /// </summary>
-    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
-    /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary data</param>
-    /// <returns>A readonly list of field declarations to be included in serialization</returns>
-    private static List<FieldDeclarationSyntax> GetAllIncludedFields(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
-    {
-      List<FieldDeclarationSyntax> serializableFields;
-
-      // Get any private or protected fields that are opted in with the use of the [AutoSerialized] attribute
-      serializableFields = targetTypeDeclaration.Members.Where(
-        m => m is FieldDeclarationSyntax fieldDeclaration &&
+        !HasOneOfScopes(fieldDeclaration, "public") &&
         extractionContext.IsFieldDecoratedWithAutoSerialized(fieldDeclaration))
         .Cast<FieldDeclarationSyntax>()
         .ToList();
@@ -129,11 +109,10 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// <summary>
     /// Determine if a field has one of the scopes requested by a caller
     /// </summary>
-    /// <param name="context">The definition extraction context for this extraction</param>
     /// <param name="fieldDeclaration">The declaration of the field being tested</param>
     /// <param name="scopes">The list of scopes in which the caller is interested</param>
     /// <returns>Boolean true if the field has one of the scopes requested by the caller, else false</returns>
-    private static bool HasOneOfScopes(DefinitionExtractionContext context, FieldDeclarationSyntax fieldDeclaration, params string[] scopes)
+    private static bool HasOneOfScopes(FieldDeclarationSyntax fieldDeclaration, params string[] scopes)
     {
       foreach (string scope in scopes)
       {

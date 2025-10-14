@@ -6,8 +6,8 @@
 // <summary>Default context manager for the user property</summary>
 //-----------------------------------------------------------------------
 
-using System.Security.Principal;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Csla.Core
 {
@@ -30,35 +30,35 @@ namespace Csla.Core
     /// </summary>
     public bool IsValid => true;
 
-    private static IContextDictionary currentLocalContext = new ContextDictionary();
-    private static IContextDictionary currentClientContext = new ContextDictionary();
-    private static IPrincipal currentPrincipal = new ClaimsPrincipal();
-    private static IServiceProvider currentDefaultServiceProvider;
-    private static IServiceProvider currentServiceProvider;
+    private static IContextDictionary? _currentLocalContext = new ContextDictionary();
+    private static IContextDictionary? _currentClientContext = new ContextDictionary();
+    private static IPrincipal _currentPrincipal = new ClaimsPrincipal();
+    private static IServiceProvider? _currentDefaultServiceProvider;
+    private static IServiceProvider? _currentServiceProvider;
 
     /// <summary>
     /// Gets the client context dictionary.
     /// </summary>
     /// <param name="executionLocation"></param>
-    public IContextDictionary GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
+    public IContextDictionary? GetClientContext(ApplicationContext.ExecutionLocations executionLocation)
     {
-      return currentClientContext;
+      return _currentClientContext;
     }
 
     /// <summary>
     /// Gets the default IServiceProvider
     /// </summary>
-    public IServiceProvider GetDefaultServiceProvider()
+    public IServiceProvider? GetDefaultServiceProvider()
     {
-      return currentDefaultServiceProvider;
+      return _currentDefaultServiceProvider;
     }
 
     /// <summary>
     /// Gets the local context dictionary.
     /// </summary>
-    public IContextDictionary GetLocalContext()
+    public IContextDictionary? GetLocalContext()
     {
-      return currentLocalContext;
+      return _currentLocalContext;
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ namespace Csla.Core
     /// <returns>The current user principal</returns>
     public IPrincipal GetUser()
     {
-      return currentPrincipal;
+      return _currentPrincipal;
     }
 
     /// <summary>
@@ -75,60 +75,59 @@ namespace Csla.Core
     /// </summary>
     /// <param name="clientContext">Context dictionary</param>
     /// <param name="executionLocation"></param>
-    public void SetClientContext(IContextDictionary clientContext, ApplicationContext.ExecutionLocations executionLocation)
+    public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
     {
-      currentClientContext = clientContext;
+      _currentClientContext = clientContext;
     }
 
     /// <summary>
     /// Sets the default IServiceProvider
     /// </summary>
     /// <param name="serviceProvider">IServiceProvider instance</param>
+    /// <exception cref="ArgumentNullException"><paramref name="serviceProvider"/> is <see langword="null"/>.</exception>
     public void SetDefaultServiceProvider(IServiceProvider serviceProvider)
     {
-      currentDefaultServiceProvider = serviceProvider;
+      _currentDefaultServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     }
 
     /// <summary>
     /// Sets the local context dictionary.
     /// </summary>
     /// <param name="localContext">Context dictionary</param>
-    public void SetLocalContext(IContextDictionary localContext)
+    public void SetLocalContext(IContextDictionary? localContext)
     {
-      currentLocalContext = localContext;
+      _currentLocalContext = localContext;
     }
 
     /// <summary>
     /// Gets the service provider for current scope
     /// </summary>
-    public IServiceProvider GetServiceProvider()
+    public IServiceProvider? GetServiceProvider()
     {
-      return currentServiceProvider ?? GetDefaultServiceProvider();
+      return _currentServiceProvider ?? GetDefaultServiceProvider();
     }
 
     /// <summary>
     /// Sets the service provider for current scope
     /// </summary>
     /// <param name="scope">IServiceProvider instance</param>
+    /// <exception cref="ArgumentNullException"><paramref name="scope"/> is <see langword="null"/>.</exception>
     public void SetServiceProvider(IServiceProvider scope)
     {
-      currentServiceProvider = scope;
+      _currentServiceProvider = scope ?? throw new ArgumentNullException(nameof(scope));
     }
 
-    /// <summary>
-    /// Sets the current user principal.
-    /// </summary>
-    /// <param name="principal">User principal value</param>
+    /// <inheritdoc />
     public void SetUser(IPrincipal principal)
     {
-      currentPrincipal = principal;
+      _currentPrincipal = principal ?? throw new ArgumentNullException(nameof(principal));
     }
 
-    private static ApplicationContext _applicationContext;
+    private static ApplicationContext? _applicationContext;
 
     /// <summary>
     /// Gets or sets a reference to the current ApplicationContext.
     /// </summary>
-    public ApplicationContext ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
+    public ApplicationContext? ApplicationContext { get => _applicationContext; set => _applicationContext = value; }
   }
 }

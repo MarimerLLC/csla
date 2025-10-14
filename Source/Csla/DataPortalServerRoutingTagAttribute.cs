@@ -14,19 +14,19 @@ namespace Csla
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
   public class DataPortalServerRoutingTagAttribute : Attribute
   {
-    private string _routingTag;
+    private string? _routingTag;
 
     /// <summary>
-    /// Gets or sets the routing tag (can not contain '-').
+    /// Gets or sets the routing tag (can not contain '-' or '/').
     /// </summary>
-    public string RoutingTag
+    public string? RoutingTag
     {
-      get { return _routingTag; }
+      get => _routingTag;
       set
       {
         if (!string.IsNullOrWhiteSpace(value))
-          if (value.Contains("-") || value.Contains("/"))
-            throw new ArgumentException("valueRoutingToken");
+          if (value!.Contains("-") || value.Contains("/"))
+            throw new ArgumentException(Properties.Resources.RoutingTagInvalidCharacters, nameof(value));
         _routingTag = value;
       }
     }
@@ -34,8 +34,8 @@ namespace Csla
     /// <summary>
     /// Creates an instance of this attribute.
     /// </summary>
-    /// <param name="tag">Routing tag value (can not contain '-')</param>
-    public DataPortalServerRoutingTagAttribute(string tag)
+    /// <param name="tag">Routing tag value (can not contain '-' or '/')</param>
+    public DataPortalServerRoutingTagAttribute(string? tag)
     {
       RoutingTag = tag;
     }

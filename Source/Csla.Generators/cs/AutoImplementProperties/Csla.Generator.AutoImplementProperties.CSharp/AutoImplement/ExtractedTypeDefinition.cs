@@ -8,53 +8,54 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   /// <summary>
   /// The namespace in which the type resides
   /// </summary>
-  public string Namespace { get; set; }
+  public required string Namespace { get; init; }
 
   /// <summary>
   /// The scope of the class
   /// </summary>
-  public string Scope { get; set; } = "public";
+  public required string Scope { get; init; } = "public";
 
   /// <summary>
   /// The name of the type, excluding any namespace
   /// </summary>
-  public string TypeName { get; set; }
+  public required string TypeName { get; set; }
 
   /// <summary>
   /// The name of the kind of type being represented
   /// </summary>
-  public string TypeKind { get; set; }
+  public required string TypeKind { get; set; }
 
   /// <summary>
   /// The fully qualified name of the type, including namespace
   /// </summary>
-  public string FullyQualifiedName { get; set; }
+  public required string FullyQualifiedName { get; set; }
 
   /// <summary>
   /// The properties to be included in auto implementation
   /// </summary>
-  public IList<ExtractedPropertyDefinition> Properties { get; private set; } = new List<ExtractedPropertyDefinition>();
+  public IList<ExtractedPropertyDefinition> Properties { get; private set; } = [];
 
   /// <summary>
   /// The name of the base class for the type
   /// </summary>
-  public string BaseClassTypeName { get; internal set; }
+  public required string BaseClassTypeName { get; init; }
 
   /// <summary>
   /// The modifiers for this property
   /// </summary>
-  public string[] DefaultPropertyModifiers { get; internal set; }
+  public string[] DefaultPropertyModifiers { get; internal set; } = [];
 
   /// <summary>
   /// The modifiers for the setter of this property
   /// </summary>
-  public string[] DefaultPropertySetterModifiers { get; internal set; }
+  public required string[] DefaultPropertySetterModifiers { get; init; }
+
   /// <summary>
   /// Determines whether the current <see cref="ExtractedTypeDefinition"/> object is equal to another object of the same type.
   /// </summary>
   /// <param name="other">The object to compare with the current object.</param>
   /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-  public bool Equals(ExtractedTypeDefinition other)
+  public bool Equals(ExtractedTypeDefinition? other)
   {
     if (other == null)
       return false;
@@ -80,7 +81,7 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   /// </summary>
   /// <param name="obj">The object to compare with the current object.</param>
   /// <returns>true if the specified object is equal to the current object; otherwise, false.</returns>
-  public override bool Equals(object obj)
+  public override bool Equals(object? obj)
   {
     if (obj == null || GetType() != obj.GetType())
       return false;
@@ -94,6 +95,6 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public override int GetHashCode()
   {
     // Calculate and return the hash code based on the properties, fields, or any other relevant data
-    return System.HashCode.Combine(Namespace + Scope + TypeName, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
+    return HashCode.Combine(Namespace + Scope + TypeName, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
   }
 }

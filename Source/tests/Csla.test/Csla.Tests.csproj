@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <IsPackable>false</IsPackable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+    <RootNamespace>Csla.Test</RootNamespace>
+    <RunSettingsFilePath>$(MSBuildProjectDirectory)\test.runsettings</RunSettingsFilePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CslaDataProvider\**" />
+    <Compile Remove="DataBinding\**" />
+    <Compile Remove="Data\**" />
+    <Compile Remove="GraphMergerTest\**" />
+    <Compile Remove="IdentityConverter\**" />
+    <Compile Remove="Silverlight\**" />
+    <Compile Remove="ViewModelTests\**" />
+    <Compile Remove="Windows\**" />
+    <EmbeddedResource Remove="CslaDataProvider\**" />
+    <EmbeddedResource Remove="DataBinding\**" />
+    <EmbeddedResource Remove="Data\**" />
+    <EmbeddedResource Remove="GraphMergerTest\**" />
+    <EmbeddedResource Remove="IdentityConverter\**" />
+    <EmbeddedResource Remove="Silverlight\**" />
+    <EmbeddedResource Remove="ViewModelTests\**" />
+    <EmbeddedResource Remove="Windows\**" />
+    <None Remove="CslaDataProvider\**" />
+    <None Remove="DataBinding\**" />
+    <None Remove="Data\**" />
+    <None Remove="GraphMergerTest\**" />
+    <None Remove="IdentityConverter\**" />
+    <None Remove="Silverlight\**" />
+    <None Remove="ViewModelTests\**" />
+    <None Remove="Windows\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataPortal\ESTransactionalRoot.cs" />
+    <Compile Remove="PropertyInfo\XamlPropertyInfoTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="packages.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentAssertions" Version="8.0.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.9.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.9.1" />
+    <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+    <PackageReference Include="System.Resources.Extensions" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.Attributes.CSharp\Csla.Generator.AutoImplementProperties.Attributes.CSharp.csproj" ReferenceOutputAssembly="true" OutputItemType="Analyzer" PrivateAssets="all" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
+    <ProjectReference Include="..\..\Csla\Csla.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DataPortalTestDatabase.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="DataPortalTestDatabase_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="testConnectionStrings.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

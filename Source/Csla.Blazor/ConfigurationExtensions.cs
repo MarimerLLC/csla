@@ -25,6 +25,7 @@ namespace Csla.Configuration
     /// Configures services to provide CSLA Blazor server support
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddServerSideBlazor(this CslaOptions config)
     {
       return AddServerSideBlazor(config, null);
@@ -35,8 +36,11 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="config">CslaOptions instance</param>
     /// <param name="options">Options object</param>
-    public static CslaOptions AddServerSideBlazor(this CslaOptions config, Action<BlazorServerConfigurationOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="config"/> is <see langword="null"/>.</exception>
+    public static CslaOptions AddServerSideBlazor(this CslaOptions config, Action<BlazorServerConfigurationOptions>? options)
     {
+      ArgumentNullException.ThrowIfNull(config);
+
       var blazorOptions = new BlazorServerConfigurationOptions();
       options?.Invoke(blazorOptions);
 
@@ -75,35 +79,5 @@ namespace Csla.Configuration
       }
       return config;
     }
-  }
-
-  /// <summary>
-  /// Options for Blazor server-rendered and server-interactive.
-  /// </summary>
-  public class BlazorServerConfigurationOptions
-  {
-    /// <summary>
-    /// Gets or sets a value indicating whether the app 
-    /// should be configured to use CSLA permissions 
-    /// policies (default = true).
-    /// </summary>
-    public bool UseCslaPermissionsPolicy { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether to use a
-    /// scoped DI container to manage the ApplicationContext; 
-    /// false to use the Blazor 8 state management subsystem.
-    /// </summary>
-    public bool UseInMemoryApplicationContextManager { get; set; } = true;
-
-    /// <summary>
-    /// Gets or sets the type of the ISessionManager service.
-    /// </summary>
-    public Type SessionManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionManager, Csla.AspNetCore", true);
-
-    /// <summary>
-    /// Gets or sets the type of the ISessionIdManager service.
-    /// </summary>
-    public Type SessionIdManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionIdManager, Csla.AspNetCore", true);
   }
 }

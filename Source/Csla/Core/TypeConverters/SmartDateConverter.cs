@@ -21,7 +21,7 @@ namespace Csla.Core.TypeConverters
     /// <param name="context"></param>
     /// <param name="sourceType"></param>
     /// <remarks></remarks>
-    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+    public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType)
     {
       if (sourceType == typeof(string))
         return true;
@@ -41,12 +41,12 @@ namespace Csla.Core.TypeConverters
     /// <param name="culture"></param>
     /// <param name="value"></param>
     /// <remarks></remarks>
-    public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
+    public override object? ConvertFrom(ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object value)
     {
-      if (value is string)
-        return new SmartDate(Convert.ToString(value));
-      else if (value is DateTime)
-        return new SmartDate(Convert.ToDateTime(value));
+      if (value is string s)
+        return new SmartDate(s);
+      else if (value is DateTime dt)
+        return new SmartDate(dt);
       else if (value == null)
         return new SmartDate();
       else if (value is DateTime?)
@@ -63,7 +63,7 @@ namespace Csla.Core.TypeConverters
     /// <param name="context"></param>
     /// <param name="destinationType"></param>
     /// <remarks></remarks>
-    public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+    public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destinationType)
     {
       if (destinationType == typeof(string))
         return true;
@@ -84,19 +84,20 @@ namespace Csla.Core.TypeConverters
     /// <param name="value"></param>
     /// <param name="destinationType"></param>
     /// <remarks></remarks>
-    public override object ConvertTo(
-      ITypeDescriptorContext context,
-      System.Globalization.CultureInfo culture, object value, Type destinationType)
+    public override object? ConvertTo(ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object? value, Type destinationType)
     {
-      SmartDate sd = (SmartDate)value;
-      if (destinationType == typeof(string))
-        return sd.Text;
-      else if (destinationType == typeof(DateTime))
-        return sd.Date;
-      else if (destinationType == typeof(DateTimeOffset))
-        return new DateTimeOffset(sd.Date);
-      else if (destinationType == typeof(DateTime?))
-        return new DateTime?(sd.Date);
+      if (value is SmartDate sd)
+      {
+        if (destinationType == typeof(string))
+          return sd.Text;
+        else if (destinationType == typeof(DateTime))
+          return sd.Date;
+        else if (destinationType == typeof(DateTimeOffset))
+          return new DateTimeOffset(sd.Date);
+        else if (destinationType == typeof(DateTime?))
+          return new DateTime?(sd.Date);
+      }
+
       return base.ConvertTo(context, culture, value, destinationType);
     }
   }

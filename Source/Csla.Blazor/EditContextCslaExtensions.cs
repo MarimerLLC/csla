@@ -24,7 +24,7 @@ namespace Csla.Blazor
 
       // Perform object-level validation on request
       editContext.OnValidationRequested +=
-          (sender, _) => ValidateModel((EditContext)sender, messages);
+          (sender, _) => ValidateModel((EditContext)sender!, messages);
 
       // Perform per-field validation on each field edit
       editContext.OnFieldChanged +=
@@ -51,7 +51,7 @@ namespace Csla.Blazor
             if (brokenRule.Severity == RuleSeverity.Error)
             {
               // Add a new message for each broken rule
-              messages.Add(new FieldIdentifier(brokenRuleNode.Object, brokenRule.Property), brokenRule.Description);
+              messages.Add(new FieldIdentifier(brokenRuleNode.Object, brokenRule.Property ?? ""), brokenRule.Description);
             }
         }
       }

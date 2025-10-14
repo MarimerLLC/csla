@@ -12,18 +12,19 @@ namespace Csla.Configuration
   /// </summary>
   public class DataPortalOptions
   {
+    private string _versionRoutingTag = string.Empty;
+
     /// <summary>
     /// Creates an instance of the type
     /// </summary>
     /// <param name="cslaOptions">CslaOptions object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="cslaOptions"/> is <see langword="null"/>.</exception>
     public DataPortalOptions(CslaOptions cslaOptions)
     {
-      CslaOptions = cslaOptions;
+      CslaOptions = cslaOptions ?? throw new ArgumentNullException(nameof(cslaOptions));
       DataPortalClientOptions = new DataPortalClientOptions(this);
       DataPortalServerOptions = new DataPortalServerOptions(CslaOptions.Services);
     }
-
-    internal CslaOptions CslaOptions { get; set; }
 
     /// <summary>
     /// Gets or sets a value representing the application version
@@ -31,22 +32,34 @@ namespace Csla.Configuration
     /// </summary>
     /// <remarks>
     /// Application version used to create data portal
-    /// routing tag (can not contain '-').
+    /// routing tag (can not contain '-' or '/').
     /// If this value is set then you must use the
     /// .NET Core server-side data portal endpoint
     /// as a router so the request can be routed to
     /// another app server that is running the correct
     /// version of the application's assemblies.
     /// </remarks>
-    public string VersionRoutingTag { get; set; }
+    public string VersionRoutingTag
+    {
+      get => _versionRoutingTag;
+      set
+      {
+        if (!string.IsNullOrWhiteSpace(value))
+          if (value!.Contains("-") || value.Contains("/"))
+            throw new ArgumentException(Properties.Resources.VersionRoutingTagInvalidCharacters, nameof(value));
+        _versionRoutingTag = value;
+      }
+    }
 
     /// <summary>
-    /// Gets or sets the data portal client options
+    /// Gets the data portal client options
     /// </summary>
-    internal DataPortalClientOptions DataPortalClientOptions { get; set; }
+    internal DataPortalClientOptions DataPortalClientOptions { get; }
     /// <summary>
-    /// Gets or sets the data portal server options
+    /// Gets the data portal server options
     /// </summary>
-    internal DataPortalServerOptions DataPortalServerOptions { get; set; }
+    internal DataPortalServerOptions DataPortalServerOptions { get; }
+
+    internal CslaOptions CslaOptions { get; }
   }
 }

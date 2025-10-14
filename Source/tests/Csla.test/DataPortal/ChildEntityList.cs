@@ -1,0 +1,31 @@
+//-----------------------------------------------------------------------
+// <copyright file="ChildEntityList.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+
+namespace Csla.Test.DataBinding
+{
+  [Serializable]
+  public class ChildEntityList : BusinessBindingListBase<ChildEntityList, ChildEntity>
+  {
+    #region "Criteria"
+
+    [Serializable]
+    private class Criteria
+    {
+      //no criteria for this list
+    }
+
+    #endregion
+
+    [Fetch]
+    private void DataPortal_Fetch(object criteria, IChildDataPortal<ChildEntity> childDataPortal)
+    {
+      for (var i = 0; i < 10; i++)
+        Add(childDataPortal.CreateChild(i, "first" + i, "last" + i));
+    }
+  }
+}

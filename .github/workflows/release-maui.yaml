@@ -1,0 +1,32 @@
+name: release
+
+# trigger on a push to any release/* branch
+on:
+  push:
+    branches:
+      - 'release-maui/*'
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0'
+
+    - name: Install .NET MAUI workloads
+      run: dotnet workload install maui
+
+    - name: Build and Pack
+      run: dotnet pack Source\csla.maui.build.sln --configuration Release
+
+    - name: Push NuGet packages
+      run: dotnet nuget push bin\packages-maui\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

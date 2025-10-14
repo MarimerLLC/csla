@@ -10,7 +10,7 @@ CSLA0004 | Usage | Warning | CheckConstructorsAnalyzer
 CSLA0005 | Usage | Error | FindSaveAssignmentIssueAnalyzer
 CSLA0006 | Usage | Error | FindSaveAssignmentIssueAnalyzer
 CSLA0007 | Usage | Warning | EvaluatePropertiesForSimplicityAnalyzer
-CSLA0008 | Usage | Error | EvaluateManagedBackingFieldsAnalayzer
+CSLA0008 | Usage | Error | EvaluateManagedBackingFieldsAnalyzer
 CSLA0009 | Design | Warning | IsOperationMethodPublicAnalyzer
 CSLA0010 | Design | Warning | FindOperationsWithNonSerializableArgumentsAnalyzer
 CSLA0011 | Usage | Error | FindBusinessObjectCreationAnalyzer

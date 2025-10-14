@@ -367,6 +367,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The type &apos;{0}&apos; could not be deserialized because the serialized data could not be used for deserialization of that type..
+        /// </summary>
+        public static string DeserializationFailedDueToWrongData {
+            get {
+                return ResourceManager.GetString("DeserializationFailedDueToWrongData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit level mismatch in {0}.
         /// </summary>
         public static string EditLevelMismatchException {
@@ -565,6 +574,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The declaring type of {0} must not be null..
+        /// </summary>
+        public static string MemberInfoDeclaringTypeMustBeNotNull {
+            get {
+                return ResourceManager.GetString("MemberInfoDeclaringTypeMustBeNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Member not found on object ({0}).
         /// </summary>
         public static string MemberNotFoundException {
@@ -673,6 +691,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No business object instance was provided for authorization action {0} of type {1}..
+        /// </summary>
+        public static string NoInstanceProvidedForAuthorizationCheck {
+            get {
+                return ResourceManager.GetString("NoInstanceProvidedForAuthorizationCheck", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No principal object should be passed to DataPortal when using Windows integrated security.
         /// </summary>
         public static string NoPrincipalAllowedException {
@@ -745,6 +772,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The provided rule value is null (property: {0}) and can not be used for comparison in the {1} rule..
+        /// </summary>
+        public static string NullValueInCompareToRule {
+            get {
+                return ResourceManager.GetString("NullValueInCompareToRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can not set property if data object is not null.
         /// </summary>
         public static string ObjectNotNull {
@@ -768,6 +804,15 @@ namespace Csla.Properties {
         public static string ObjectRulesCannotSetPrimaryProperty {
             get {
                 return ResourceManager.GetString("ObjectRulesCannotSetPrimaryProperty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The object to be updated could not be deserialized. The send data are null..
+        /// </summary>
+        public static string ObjectToBeUpdatedCouldNotBeDeserialized {
+            get {
+                return ResourceManager.GetString("ObjectToBeUpdatedCouldNotBeDeserialized", resourceCulture);
             }
         }
         
@@ -970,11 +1015,29 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The server side portal could not deserialize the incoming request stream..
+        /// </summary>
+        public static string ServerSideDataPortalRequestDeserializationFailed {
+            get {
+                return ResourceManager.GetString("ServerSideDataPortalRequestDeserializationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The session id must be not null..
         /// </summary>
         public static string SessionIdManagerIdMustBeNotNull {
             get {
                 return ResourceManager.GetString("SessionIdManagerIdMustBeNotNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The json result from state controller &apos;{0}&apos; could not be deserialized as `{1}`..
+        /// </summary>
+        public static string SessionManagerSessionStateCouldNotBeRetrieved {
+            get {
+                return ResourceManager.GetString("SessionManagerSessionStateCouldNotBeRetrieved", resourceCulture);
             }
         }
         
@@ -1114,6 +1177,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value of property {0} in path {1} is null. It&apos;s not possible to generate a tag helper message..
+        /// </summary>
+        public static string TagHelperPropertyInPathHasNullValue {
+            get {
+                return ResourceManager.GetString("TagHelperPropertyInPathHasNullValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Method {0} must return Task&lt;object&gt;.
         /// </summary>
         public static string TaskOfObjectException {
@@ -1128,6 +1200,15 @@ namespace Csla.Properties {
         public static string TransactionScopeTransactionNotSupportedException {
             get {
                 return ResourceManager.GetString("TransactionScopeTransactionNotSupportedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The AssemblyQualifiedName of type &apos;{0}&apos; is null..
+        /// </summary>
+        public static string TypeAssemblyQualifiedNameIsNull {
+            get {
+                return ResourceManager.GetString("TypeAssemblyQualifiedNameIsNull", resourceCulture);
             }
         }
         
@@ -1155,6 +1236,24 @@ namespace Csla.Properties {
         public static string UnandledKNownTypeException {
             get {
                 return ResourceManager.GetString("UnandledKNownTypeException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Object data retrieved through MobileFormatter isn&apos;t a known type by SerializationInfo. The retrieved type was &apos;{0}&apos;..
+        /// </summary>
+        public static string UnexpectedSerializationInfoObjectData {
+            get {
+                return ResourceManager.GetString("UnexpectedSerializationInfoObjectData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The model type must be either of type {0} or {1} to be used as a collection type..
+        /// </summary>
+        public static string UnsupportedXamlListTypeForModel {
+            get {
+                return ResourceManager.GetString("UnsupportedXamlListTypeForModel", resourceCulture);
             }
         }
         
@@ -1200,6 +1299,33 @@ namespace Csla.Properties {
         public static string Warning {
             get {
                 return ResourceManager.GetString("Warning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The session is not available. Please ensure to call `{0}` in your component..
+        /// </summary>
+        public static string WasmApplicationContextManagerSessionNotRetrieved {
+            get {
+                return ResourceManager.GetString("WasmApplicationContextManagerSessionNotRetrieved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Routing tag value cannot contain '-' or '/' characters.
+        /// </summary>
+        public static string RoutingTagInvalidCharacters {
+            get {
+                return ResourceManager.GetString("RoutingTagInvalidCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version routing tag value cannot contain '-' or '/' characters.
+        /// </summary>
+        public static string VersionRoutingTagInvalidCharacters {
+            get {
+                return ResourceManager.GetString("VersionRoutingTagInvalidCharacters", resourceCulture);
             }
         }
     }

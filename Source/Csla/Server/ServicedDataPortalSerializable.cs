@@ -20,16 +20,17 @@ namespace Csla.Server
   [ComVisible(true)]
   public class ServicedDataPortalSerializable : ServicedComponent, IDataPortalServer
   {
+    private readonly DataPortalBroker _portal;
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="dataPortalBroker"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> is <see langword="null"/>.</exception>
     public ServicedDataPortalSerializable(DataPortalBroker dataPortalBroker)
     {
-      portal = dataPortalBroker;
+      _portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
     }
-
-    private DataPortalBroker portal { get; set; }
 
     /// <summary>
     /// Wraps a Create call in a ServicedComponent.
@@ -48,11 +49,18 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     [AutoComplete(true)]
-    public Task<DataPortalResult> Create(
-      Type objectType, object criteria, DataPortalContext context, bool isSync)
+    public Task<DataPortalResult> Create(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return portal.Create(objectType, criteria, context, isSync);
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
+      return _portal.Create(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -69,10 +77,18 @@ namespace Csla.Server
     /// <param name="context">Object containing context data from client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A populated business object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     [AutoComplete(true)]
     public Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return portal.Fetch(objectType, criteria, context, isSync);
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
+      return _portal.Fetch(objectType, criteria, context, isSync);
     }
 
     /// <summary>
@@ -88,10 +104,16 @@ namespace Csla.Server
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <returns>A reference to the newly updated object.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     [AutoComplete(true)]
     public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
     {
-      return portal.Update(obj, context, isSync);
+      if (obj is null)
+        throw new ArgumentNullException(nameof(obj));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
+      return _portal.Update(obj, context, isSync);
     }
 
     /// <summary>
@@ -107,10 +129,18 @@ namespace Csla.Server
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="criteria"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     [AutoComplete(true)]
     public Task<DataPortalResult> Delete(Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
-      return portal.Delete(objectType, criteria, context, isSync);
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (criteria is null)
+        throw new ArgumentNullException(nameof(criteria));
+      if (context is null)
+        throw new ArgumentNullException(nameof(context));
+
+      return _portal.Delete(objectType, criteria, context, isSync);
     }
   }
 }

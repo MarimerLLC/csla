@@ -45,10 +45,11 @@ namespace Csla.Web
     /// <summary>
     /// Create an instance of the object.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="keys"/> or <paramref name="oldValues"/> is <see langword="null"/>.</exception>
     public DeleteObjectArgs(System.Collections.IDictionary keys, System.Collections.IDictionary oldValues)
     {
-      Keys = keys;
-      OldValues = oldValues;
+      Keys = keys ?? throw new ArgumentNullException(nameof(keys));
+      OldValues = oldValues ?? throw new ArgumentNullException(nameof(oldValues));
     }
 
   }

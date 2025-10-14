@@ -505,4 +505,47 @@
   <data name="TransactionScopeTransactionNotSupportedException" xml:space="preserve">
     <value>Transactions with TransactionTypes.TransactionScope are not supported in the browser platform</value>
   </data>
+  <data name="MemberInfoDeclaringTypeMustBeNotNull" xml:space="preserve">
+    <value>The declaring type of {0} must not be null.</value>
+  </data>
+  <data name="NullValueInCompareToRule" xml:space="preserve">
+    <value>The provided rule value is null (property: {0}) and can not be used for comparison in the {1} rule.</value>
+  </data>
+  <data name="DeserializationFailedDueToWrongData" xml:space="preserve">
+    <value>The type '{0}' could not be deserialized because the serialized data could not be used for deserialization of that type.</value>
+  </data>
+  <data name="TypeAssemblyQualifiedNameIsNull" xml:space="preserve">
+    <value>The AssemblyQualifiedName of type '{0}' is null.</value>
+  </data>
+  <data name="TagHelperPropertyInPathHasNullValue" xml:space="preserve">
+    <value>Value of property {0} in path {1} is null. It's not possible to generate a tag helper message.</value>
+  </data>
+  <data name="ObjectToBeUpdatedCouldNotBeDeserialized" xml:space="preserve">
+    <value>The object to be updated could not be deserialized. The send data are null.</value>
+  </data>
+  <data name="UnexpectedSerializationInfoObjectData" xml:space="preserve">
+    <value>Object data retrieved through MobileFormatter isn't a known type by SerializationInfo. The retrieved type was '{0}'.</value>
+  </data>
+  <data name="ServerSideDataPortalRequestDeserializationFailed" xml:space="preserve">
+    <value>The server side portal could not deserialize the incoming request stream.</value>
+  </data>
+  <data name="NoInstanceProvidedForAuthorizationCheck" xml:space="preserve">
+    <value>No business object instance was provided for authorization action {0} of type {1}.</value>
+    <comment>0 - auth action, 1 - bo type</comment>
+  </data>
+  <data name="UnsupportedXamlListTypeForModel" xml:space="preserve">
+    <value>The model type must be either of type {0} or {1} to be used as a collection type.</value>
+  </data>
+  <data name="SessionManagerSessionStateCouldNotBeRetrieved" xml:space="preserve">
+    <value>The json result from state controller '{0}' could not be deserialized as `{1}`.</value>
+  </data>
+  <data name="WasmApplicationContextManagerSessionNotRetrieved" xml:space="preserve">
+    <value>The session is not available. Please ensure to call `{0}` in your component.</value>
+  </data>
+  <data name="RoutingTagInvalidCharacters" xml:space="preserve">
+    <value>Routing tag value cannot contain '-' or '/' characters</value>
+  </data>
+  <data name="VersionRoutingTagInvalidCharacters" xml:space="preserve">
+    <value>Version routing tag value cannot contain '-' or '/' characters</value>
+  </data>
 </root>

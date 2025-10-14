@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Components.Server.Circuits;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Core;
 using Csla.AspNetCore;
+using Csla.Web.Mvc;
 
 namespace Csla.Configuration
 {
@@ -46,7 +47,11 @@ namespace Csla.Configuration
       config.Services.AddScoped<ActiveCircuitState>();
       config.Services.AddScoped(typeof(CircuitHandler), typeof(ActiveCircuitHandler));
 #endif
+#if NETSTANDARD2_0 || NET8_0_OR_GREATER 
+      config.Services.AddMvcCore(opt => opt.ModelBinderProviders.Insert(0, new CslaModelBinderProvider()));
+#endif
       config.Services.AddScoped(typeof(IContextManager), typeof(ApplicationContextManagerHttpContext));
+      config.Services.AddHttpContextAccessor();
       return config;
     }
   }

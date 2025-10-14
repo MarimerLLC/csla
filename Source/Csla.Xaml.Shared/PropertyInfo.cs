@@ -6,12 +6,11 @@
 // <summary>Expose metastate information about a property.</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel;
-using Csla.Reflection;
-using Csla.Core;
-using Csla.Rules;
-using System.Reflection;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Csla.Core;
+using Csla.Reflection;
+using Csla.Rules;
 
 #if NETFX_CORE
 using Windows.UI.Xaml;
@@ -48,7 +47,7 @@ namespace Csla.Xaml
     /// </summary>
     public PropertyInfo()
     {
-      BrokenRules = new ObservableCollection<BrokenRule>();
+      SetValue(BrokenRulesProperty, new ObservableCollection<BrokenRule>());
 #if XAMARIN || MAUI
       _loading = false;
       BindingContextChanged += (o, e) => SetSource();
@@ -85,15 +84,16 @@ namespace Csla.Xaml
     /// business object.
     /// </summary>
     public static readonly BindableProperty BrokenRulesProperty =
-      BindableProperty.Create("BrokenRules", typeof(ObservableCollection<BrokenRule>), typeof(PropertyInfo), new ObservableCollection<BrokenRule>());
+      BindableProperty.Create(nameof(BrokenRules), typeof(ObservableCollection<BrokenRule>), typeof(PropertyInfo), new ObservableCollection<BrokenRule>());
     /// <summary>
     /// Gets the broken rules collection from the
     /// business object.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><see cref="BrokenRules"/> is <see langword="null"/>.</exception>
     public ObservableCollection<BrokenRule> BrokenRules
     {
-      get { return (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty); }
-      set { SetValue(BrokenRulesProperty, value); }
+      get => (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty);
+      set => SetValue(BrokenRulesProperty, value ?? throw new ArgumentNullException(nameof(BrokenRules)));
     }
 #else
     /// <summary>
@@ -101,7 +101,7 @@ namespace Csla.Xaml
     /// business object.
     /// </summary>
     public static readonly DependencyProperty BrokenRulesProperty = DependencyProperty.Register(
-      "BrokenRules",
+      nameof(BrokenRules),
       typeof(ObservableCollection<BrokenRule>),
       typeof(PropertyInfo),
       null);
@@ -114,7 +114,6 @@ namespace Csla.Xaml
     public ObservableCollection<BrokenRule> BrokenRules
     {
       get { return (ObservableCollection<BrokenRule>)GetValue(BrokenRulesProperty); }
-      private set { SetValue(BrokenRulesProperty, value); }
     }
 #endif
 
@@ -177,30 +176,30 @@ namespace Csla.Xaml
     /// Gets or sets the Source.
     /// </summary>
     /// <value>The source.</value>
-    protected object Source { get; set; }
+    protected object? Source { get; set; }
 
     /// <summary>
     /// Gets or sets the binding path.
     /// </summary>
     /// <value>The binding path.</value>
-    protected string BindingPath { get; set; }
+    protected string BindingPath { get; set; } = string.Empty;
 
 #if XAMARIN || MAUI
-    private string _bindingPath;
+    private string? _bindingPath;
     /// <summary>
     /// Gets or sets the binding path used to bind this
     /// control to the business object property relative
     /// to the BindingContext.
     /// </summary>
-    public string Path
+    public string? Path
     {
-      get { return _bindingPath; }
+      get => _bindingPath;
       set
       {
         if (_bindingPath != value)
         {
           _bindingPath = value;
-          OnPropertyChanged("Path");
+          OnPropertyChanged();
           SetSource();
         }
       }
@@ -218,7 +217,7 @@ namespace Csla.Xaml
           p.PropertyChanged += P_PropertyChanged;
       }
 
-      private void P_PropertyChanged(object sender, PropertyChangedEventArgs e)
+      private void P_PropertyChanged(object? sender, PropertyChangedEventArgs e)
       {
         if (e.PropertyName == PropertyName)
           Parent.SetSource();
@@ -245,16 +244,17 @@ namespace Csla.Xaml
       _sources.Clear();
       var oldSource = Source;
       Source = BindingContext;
-      BindingPath = Path;
+      BindingPath = Path ?? "";
       if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
       {
         try
         {
           while (BindingPath.Contains(".") && Source != null)
           {
-            var refName = BindingPath.Substring(0, BindingPath.IndexOf("."));
+            var dotIndex = BindingPath.IndexOf('.');
+            var refName = BindingPath.Substring(0, dotIndex);
             _sources.Add(new SourceReference(this, Source, refName));
-            BindingPath = BindingPath.Substring(BindingPath.IndexOf(".") + 1);
+            BindingPath = BindingPath.Substring(dotIndex + 1);
             Source = MethodCaller.CallPropertyGetter(Source, refName);
           }
         }
@@ -266,7 +266,7 @@ namespace Csla.Xaml
       }
       HandleSourceEvents(oldSource, Source);
       UpdateState();
-      OnPropertyChanged("Value");
+      OnPropertyChanged(nameof(Value));
     }
 #else
     /// <summary>
@@ -274,7 +274,7 @@ namespace Csla.Xaml
     /// property to which this control is bound.
     /// </summary>
     public static readonly DependencyProperty PropertyProperty = DependencyProperty.Register(
-      "Property",
+      nameof(Property),
       typeof(object),
       typeof(PropertyInfo),
       new PropertyMetadata(new object(), (o, e) =>
@@ -297,7 +297,7 @@ namespace Csla.Xaml
     /// property to which this control is bound.
     /// </summary>
     [Category("Common")]
-    public object Property
+    public object? Property
     {
       get { return GetValue(PropertyProperty); }
       set
@@ -307,9 +307,6 @@ namespace Csla.Xaml
       }
     }
 
-    //private object _oldDataContext;
-    //private System.Windows.Data.BindingExpression _oldBinding;
-
     /// <summary>
     /// Checks a binding expression to see if it is a relative source binding used in a control template.
     /// </summary>
@@ -317,7 +314,7 @@ namespace Csla.Xaml
     /// <returns>If the source binding is a relative source binding, this method 
     /// finds the proper dependency property on the parent control and returns
     /// the binding expression for that property.</returns>
-    protected virtual BindingExpression ParseRelativeBinding(BindingExpression sourceBinding)
+    protected virtual BindingExpression? ParseRelativeBinding(BindingExpression? sourceBinding)
     {
       if (sourceBinding != null
         && sourceBinding.ParentBinding.RelativeSource != null
@@ -327,18 +324,18 @@ namespace Csla.Xaml
         var path = sourceBinding.ParentBinding.Path.Path;
 
         var type = control.GetType();
-        FieldInfo fi = null;
         while (type != null)
         {
+          var name = $"{path}{_dependencyPropertySuffix}";
 #if NETFX_CORE
-          fi = type.GetField(string.Format("{0}{1}", path, _dependencyPropertySuffix), BindingFlags.Instance | BindingFlags.Public);
+          var fi = type.GetField(name, BindingFlags.Instance | BindingFlags.Public);
 #else
-          fi = type.GetField($"{path}{_dependencyPropertySuffix}");
+          var fi = type.GetField(name);
 #endif
 
           if (fi != null)
           {
-            DependencyProperty mappedDP = (DependencyProperty)fi.GetValue(control.GetType());
+            var mappedDP = (DependencyProperty?)fi.GetValue(control.GetType());
             return control.GetBindingExpression(mappedDP);
           }
           else
@@ -372,7 +369,7 @@ namespace Csla.Xaml
     /// <summary>
     /// Sets the source binding and updates status.
     /// </summary>
-    protected virtual void SetSource(object dataItem)
+    protected virtual void SetSource(object? dataItem)
     {
       bool isDataLoaded = true;
 
@@ -381,7 +378,7 @@ namespace Csla.Xaml
 
       // Check to see if PropertyInfo is inside a control template
       ClearValue(MyDataContextProperty);
-      if (newSource != null && newSource is FrameworkElement element)
+      if (newSource is FrameworkElement element)
       {
         var data = element.DataContext;
         SetBindingValues(ParseRelativeBinding(GetBindingExpression(PropertyProperty)));
@@ -415,7 +412,7 @@ namespace Csla.Xaml
         }
       }
 
-      if (BindingPath.IndexOf('.') > 0)
+      if (BindingPath.Contains('.'))
         BindingPath = BindingPath.Substring(BindingPath.LastIndexOf('.') + 1);
 
       if (isDataLoaded)
@@ -435,7 +432,7 @@ namespace Csla.Xaml
     /// <summary>
     /// Sets the binding values for this instance.
     /// </summary>
-    private void SetBindingValues(BindingExpression binding)
+    private void SetBindingValues(BindingExpression? binding)
     {
       var bindingPath = string.Empty;
 
@@ -455,22 +452,27 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    protected object GetRealSource(object source, string bindingPath)
+    /// <exception cref="ArgumentNullException"><paramref name="bindingPath"/> is <see langword="null"/>.</exception>
+    protected object? GetRealSource(object? source, string bindingPath)
     {
+      if (bindingPath is null)
+        throw new ArgumentNullException(nameof(bindingPath));
+
       if (source is ICollectionView icv)
         source = icv.CurrentItem;
-      if (source != null && bindingPath.IndexOf('.') > 0)
+      var dotIndex = bindingPath.IndexOf('.');
+      if (source != null && dotIndex > 0)
       {
-        var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+        var firstProperty = bindingPath.Substring(0, dotIndex);
         var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
         if (p != null)
         {
-         source = GetRealSource(
-          MethodCaller.GetPropertyValue(source, p),
-          bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+          source = GetRealSource(
+           MethodCaller.GetPropertyValue(source, p),
+           bindingPath.Substring(dotIndex + 1));
         }
       }
-        
+
       return source;
     }
 
@@ -479,19 +481,24 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="source">The source.</param>
     /// <param name="bindingPath">The binding path.</param>
-    protected PropertyPath GetRelativePath(object source, string bindingPath)
+    /// <exception cref="ArgumentNullException"><paramref name="bindingPath"/> is <see langword="null"/>.</exception>
+    protected PropertyPath? GetRelativePath(object? source, string bindingPath)
     {
       if (source != null)
       {
-        if (bindingPath.IndexOf('.') > 0)
+        if (bindingPath is null)
+          throw new ArgumentNullException(nameof(bindingPath));
+
+        var dotIndex = bindingPath.IndexOf('.');
+        if (dotIndex > 0)
         {
-          var firstProperty = bindingPath.Substring(0, bindingPath.IndexOf('.'));
+          var firstProperty = bindingPath.Substring(0, dotIndex);
           var p = MethodCaller.GetProperty(source.GetType(), firstProperty);
 
           if (p != null)
             return new PropertyPath(firstProperty);
           else
-            return GetRelativePath(source, bindingPath.Substring(bindingPath.IndexOf('.') + 1));
+            return GetRelativePath(source, bindingPath.Substring(dotIndex + 1));
         }
         else
           return new PropertyPath(bindingPath);
@@ -501,7 +508,7 @@ namespace Csla.Xaml
     }
 #endif
 
-    private void HandleSourceEvents(object old, object source)
+    private void HandleSourceEvents(object? old, object? source)
     {
       if (!ReferenceEquals(old, source))
       {
@@ -514,7 +521,7 @@ namespace Csla.Xaml
       }
     }
 
-    private void DetachSource(object source)
+    private void DetachSource(object? source)
     {
       if (source is INotifyPropertyChanged p)
         p.PropertyChanged -= source_PropertyChanged;
@@ -522,7 +529,7 @@ namespace Csla.Xaml
         busy.BusyChanged -= source_BusyChanged;
     }
 
-    private void AttachSource(object source)
+    private void AttachSource(object? source)
     {
       if (source is INotifyPropertyChanged p)
         p.PropertyChanged += source_PropertyChanged;
@@ -530,16 +537,16 @@ namespace Csla.Xaml
         busy.BusyChanged += source_BusyChanged;
     }
 
-    void source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    void source_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
       {
-        OnPropertyChanged("Value");
+        OnPropertyChanged(nameof(Value));
         UpdateState();
       }
     }
 
-    void source_BusyChanged(object sender, BusyChangedEventArgs e)
+    void source_BusyChanged(object? sender, BusyChangedEventArgs e)
     {
       if (e.PropertyName == BindingPath || string.IsNullOrEmpty(e.PropertyName))
       {
@@ -552,6 +559,28 @@ namespace Csla.Xaml
           IsBusy = busy;
           UpdateState();
         }
+      }
+    }
+
+    #endregion
+
+    #region FriendlyName
+
+    /// <summary>
+    /// Gets the friendly name for the property.
+    /// </summary>
+    [Category("Property Status")]
+    public string FriendlyName
+    {
+      get
+      {
+        if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
+        {
+          var pi = Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(Source.GetType(), BindingPath);
+          if (pi != null)
+            return pi.FriendlyName;
+        }
+        return string.Empty;
       }
     }
 
@@ -613,11 +642,11 @@ namespace Csla.Xaml
     /// on the business object.
     /// </summary>
     [Category("Property Status")]
-    public object Value
+    public object? Value
     {
       get
       {
-        object result = null;
+        object? result = null;
         if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
           result = MethodCaller.CallPropertyGetter(Source, BindingPath);
         return result;
@@ -638,13 +667,13 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanRead
     {
-      get { return _canRead; }
+      get => _canRead;
       protected set
       {
         if (value != _canRead)
         {
           _canRead = value;
-          OnPropertyChanged("CanRead");
+          OnPropertyChanged(nameof(CanRead));
         }
       }
     }
@@ -657,13 +686,13 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool CanWrite
     {
-      get { return _canWrite; }
+      get => _canWrite;
       protected set
       {
         if (value != _canWrite)
         {
           _canWrite = value;
-          OnPropertyChanged("CanWrite");
+          OnPropertyChanged(nameof(CanWrite));
         }
       }
     }
@@ -676,13 +705,13 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       private set
       {
         if (value != _isBusy)
         {
           _isBusy = value;
-          OnPropertyChanged("IsBusy");
+          OnPropertyChanged(nameof(IsBusy));
         }
       }
     }
@@ -695,13 +724,13 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public bool IsValid
     {
-      get { return _isValid; }
+      get => _isValid;
       private set
       {
         if (value != _isValid)
         {
           _isValid = value;
-          OnPropertyChanged("IsValid");
+          OnPropertyChanged(nameof(IsValid));
         }
       }
     }
@@ -716,13 +745,13 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public RuleSeverity RuleSeverity
     {
-      get { return _worst; }
+      get => _worst;
       private set
       {
         if (value != _worst)
         {
           _worst = value;
-          OnPropertyChanged("RuleSeverity");
+          OnPropertyChanged(nameof(RuleSeverity));
         }
       }
     }
@@ -735,35 +764,32 @@ namespace Csla.Xaml
     [Category("Property Status")]
     public string RuleDescription
     {
-      get { return _ruleDescription; }
+      get => _ruleDescription;
       private set
       {
         if (value != _ruleDescription)
         {
-          _ruleDescription = value;
-          OnPropertyChanged("RuleDescription");
+          _ruleDescription = value ?? "";
+          OnPropertyChanged(nameof(RuleDescription));
         }
       }
     }
 
-    private object _customTag;
+    private object? _customTag;
     /// <summary>
     /// Gets or sets an arbitrary value associated with this
     /// PropertyInfo instance.
     /// </summary>
     [Category("Property Status")]
-    public object CustomTag
+    public object? CustomTag
     {
-      get
-      {
-        return _customTag;
-      }
+      get => _customTag;
       set
       {
         if (!ReferenceEquals(_customTag, value))
         {
           _customTag = value;
-          OnPropertyChanged("CustomTag");
+          OnPropertyChanged(nameof(CustomTag));
         }
       }
     }
@@ -779,7 +805,8 @@ namespace Csla.Xaml
     /// </summary>
     public virtual void UpdateState()
     {
-      if (_loading) return;
+      if (_loading)
+        return;
 
       if (Source == null || string.IsNullOrEmpty(BindingPath))
       {
@@ -821,9 +848,9 @@ namespace Csla.Xaml
 
           if (!IsValid)
           {
-            BrokenRule worst = (from r in BrokenRules
-                                orderby r.Severity
-                                select r).FirstOrDefault();
+            BrokenRule? worst = (from r in BrokenRules
+                                 orderby r.Severity
+                                 select r).FirstOrDefault();
 
             if (worst != null)
             {
@@ -849,6 +876,7 @@ namespace Csla.Xaml
       OnPropertyChanged(nameof(ErrorText));
       OnPropertyChanged(nameof(WarningText));
       OnPropertyChanged(nameof(InformationText));
+      OnPropertyChanged(nameof(FriendlyName));
     }
 
     #endregion
@@ -859,7 +887,7 @@ namespace Csla.Xaml
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     /// Raises the PropertyChanged event.

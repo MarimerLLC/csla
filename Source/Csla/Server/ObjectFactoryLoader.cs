@@ -16,16 +16,17 @@ namespace Csla.Server
   /// </summary>
   public class ObjectFactoryLoader : IObjectFactoryLoader
   {
+    private readonly ApplicationContext _applicationContext;
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ObjectFactoryLoader(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
-
-    private ApplicationContext _applicationContext;
 
     /// <summary>
     /// Gets the type of the object factory.
@@ -36,9 +37,14 @@ namespace Csla.Server
     /// the ObjectFactory attribute
     /// on the business object.
     /// </param>
+    /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Type"/> for <paramref name="factoryName"/> could not be loaded.</exception>
     public Type GetFactoryType(string factoryName)
     {
-      return Type.GetType(factoryName);
+      if (factoryName is null)
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(factoryName)), nameof(factoryName));
+
+      return Type.GetType(factoryName) ?? throw new InvalidOperationException(string.Format(Resources.FactoryTypeNotFoundException, factoryName));
     }
 
     /// <summary>
@@ -55,13 +61,14 @@ namespace Csla.Server
     /// An instance of the type specified by the
     /// type name parameter.
     /// </returns>
+    /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="Type"/> for <paramref name="factoryName"/> could not be loaded.</exception>
     public object GetFactory(string factoryName)
     {
-      var ft = GetFactoryType(factoryName);
-      if (ft == null)
-        throw new InvalidOperationException(
-          string.Format(Resources.FactoryTypeNotFoundException, factoryName));
-      return _applicationContext.CreateInstanceDI(ft);
+      if (factoryName is null)
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(factoryName)), nameof(factoryName));
+
+      return _applicationContext.CreateInstanceDI(GetFactoryType(factoryName));
     }
   }
 }

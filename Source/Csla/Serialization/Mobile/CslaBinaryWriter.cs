@@ -8,28 +8,29 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public class CslaBinaryWriter : ICslaWriter
   {
-    private readonly Dictionary<string, int> keywordsDictionary;
-    private ApplicationContext _applicationContext;
+    private readonly Dictionary<string, int> _keywordsDictionary;
+    private readonly ApplicationContext _applicationContext;
 
     /// <summary>
     /// Create new instance of CslaBinaryWriter class
     /// </summary>
     /// <param name="applicationContext"></param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public CslaBinaryWriter(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
-      keywordsDictionary = new Dictionary<string, int>();
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _keywordsDictionary = new Dictionary<string, int>();
     }
 
-    /// <summary>
-    /// Write a list of <see cref="SerializationInfo"/> objects into stream,
-    /// typically <see cref="MemoryStream"/>.
-    /// </summary>
-    /// <param name="serializationStream">Stream to write the data into</param>
-    /// <param name="objectData">List of <see cref="SerializationInfo"/> objects to write to stream</param>
+    /// <inheritdoc />
     public void Write(Stream serializationStream, List<SerializationInfo> objectData)
     {
-      keywordsDictionary.Clear();
+      if (serializationStream is null)
+        throw new ArgumentNullException(nameof(serializationStream));
+      if (objectData is null)
+        throw new ArgumentNullException(nameof(objectData));
+
+      _keywordsDictionary.Clear();
       using var writer = new CslaNonClosingBinaryWriter(serializationStream);
       writer.Write(objectData.Count);
       foreach (var serializationInfo in objectData)
@@ -76,19 +77,19 @@ namespace Csla.Serialization.Mobile
     {
       DictionaryCheckResult returnValue;
 
-      if (keywordsDictionary.TryGetValue(value, out var key))
+      if (_keywordsDictionary.TryGetValue(value, out var key))
       {
         returnValue = new DictionaryCheckResult(false, key);
       }
       else
       {
-        returnValue = new DictionaryCheckResult(true, keywordsDictionary.Count);
-        keywordsDictionary.Add(value, returnValue.Key);
+        returnValue = new DictionaryCheckResult(true, _keywordsDictionary.Count);
+        _keywordsDictionary.Add(value, returnValue.Key);
       }
       return returnValue;
     }
 
-    private void Write(object target, BinaryWriter writer)
+    private void Write(object? target, BinaryWriter writer)
     {
       if (target == null)
       {

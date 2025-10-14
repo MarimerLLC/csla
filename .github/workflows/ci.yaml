@@ -9,10 +9,10 @@ on:
     paths: ['Source/**', '.github/workflows/**']
 
 jobs:
-
   build:
-
     runs-on: windows-latest
+    outputs:
+      run_maui: ${{ steps.check_files.outputs.run_maui }}
 
     steps:
     - uses: actions/checkout@v4
@@ -22,10 +22,56 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0'
+        dotnet-version: '10.0'
 
     - name: Build
       run: dotnet build Source\csla.test.sln
 
     - name: Test
       run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
+
+    - name: check for MAUI modified files
+      id: check_files
+      shell: bash
+      run: |
+        echo "=============== list modified files ==============="
+        git diff --name-only HEAD^ HEAD
+      
+        echo "========== check paths of modified files =========="
+        git diff --name-only HEAD^ HEAD > files.txt
+        while IFS= read -r file
+        do
+          echo $file
+          if [[ $file = Source/Csla.Xaml.Maui/* || $file = Source/Csla.Xaml.Shared/* || $file = Source/csla.maui.test.sln ]]; then
+            echo "found a MAUI modified file."
+            echo "run_maui=true" >> $GITHUB_OUTPUT
+            break
+          else
+            echo "run_maui=false" >> $GITHUB_OUTPUT
+          fi
+        done < files.txt
+  
+  Build_CSLA_MAUI:
+    name: 'Build MAUI'
+    needs: build
+    if: needs.build.outputs.run_maui == 'true'
+    runs-on: macos-15
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0'
+
+    - name: Install MAUI workload
+      run: dotnet workload install maui
+  
+    - name: "Select a specific version of Xcode"
+      run: sudo xcode-select -s /Applications/Xcode_16.4.app
+
+    - name: Build Solution
+      run: dotnet build Source/csla.maui.test.sln --configuration Debug

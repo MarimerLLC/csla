@@ -8,6 +8,9 @@
 
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using Csla.Reflection;
+
+
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
 
@@ -22,9 +25,9 @@ namespace Csla.Core.FieldManager
   /// </summary>
   internal class PropertyComparer : Comparer<IPropertyInfo>
   {
-    public override int Compare(IPropertyInfo x, IPropertyInfo y)
+    public override int Compare(IPropertyInfo? x, IPropertyInfo? y)
     {
-      return StringComparer.InvariantCulture.Compare(x.Name, y.Name);
+      return StringComparer.InvariantCulture.Compare(x?.Name, y?.Name);
     }
   }
 
@@ -33,14 +36,19 @@ namespace Csla.Core.FieldManager
   /// </summary>
   public static class PropertyInfoManager
   {
-    private static readonly Lock _cacheLock = LockFactory.Create();
+#if NET9_0_OR_GREATER
+    private static readonly Lock _cacheLock = new();
+#else
+    private static readonly object _cacheLock = new();
+#endif
 
 #if NET8_0_OR_GREATER
-    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> _propertyInfoCache;
+    private static ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>>? _propertyInfoCache;
 
-    private static ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>> PropertyInfoCache
+    [MemberNotNull(nameof(_propertyInfoCache))]
+    private static ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>> PropertyInfoCache
 #else
-    private static ConcurrentDictionary<Type, PropertyInfoList> _propertyInfoCache;
+    private static ConcurrentDictionary<Type, PropertyInfoList>? _propertyInfoCache;
 
     private static ConcurrentDictionary<Type, PropertyInfoList> PropertyInfoCache
 #endif
@@ -53,7 +61,7 @@ namespace Csla.Core.FieldManager
           {
 #if NET8_0_OR_GREATER
             if (_propertyInfoCache == null)
-              _propertyInfoCache = new ConcurrentDictionary<Type, Tuple<string, PropertyInfoList>>();
+              _propertyInfoCache = new ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>>();
 #else
             if (_propertyInfoCache == null)
               _propertyInfoCache = new ConcurrentDictionary<Type, PropertyInfoList>();
@@ -65,15 +73,8 @@ namespace Csla.Core.FieldManager
       }
     }
 
-#if NET8_0_OR_GREATER
-    [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067:UnrecognizedReflectionPattern",
-          Justification = "Type in cache is the same as objectType")]
-#endif
-    internal static PropertyInfoList GetPropertyListCache(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type objectType)
+    [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2067:UnrecognizedReflectionPattern", Justification = "Type in cache is the same as objectType")]
+    internal static PropertyInfoList GetPropertyListCache([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType)
     {
       var cache = PropertyInfoCache;
 
@@ -127,15 +128,7 @@ namespace Csla.Core.FieldManager
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    internal static PropertyInfo<T> RegisterProperty<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      T>(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type objectType, PropertyInfo<T> info)
+    internal static PropertyInfo<T> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, PropertyInfo<T> info)
     {
       var list = GetPropertyListCache(objectType);
       lock (list)
@@ -177,12 +170,12 @@ namespace Csla.Core.FieldManager
     /// Registered property information is only available after at least one instance
     /// of the object type has been created within the current AppDomain.
     /// </remarks>
-    public static PropertyInfoList GetRegisteredProperties(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type objectType)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
+    public static PropertyInfoList GetRegisteredProperties([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+
       // return a copy of the list to avoid
       // possible locking issues
       var list = GetPropertyListCache(objectType);
@@ -195,12 +188,14 @@ namespace Csla.Core.FieldManager
     /// </summary>
     /// <param name="objectType">The business object type.</param>
     /// <param name="propertyName">The name of the property.</param>
-    public static IPropertyInfo GetRegisteredProperty(
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-      Type objectType, string propertyName)
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    public static IPropertyInfo? GetRegisteredProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, string propertyName)
     {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (propertyName is null)
+        throw new ArgumentNullException(nameof(propertyName));
+
       return GetRegisteredProperties(objectType).FirstOrDefault(p => p.Name == propertyName);
     }
 #if NET8_0_OR_GREATER
@@ -212,7 +207,7 @@ namespace Csla.Core.FieldManager
       var cache = PropertyInfoCache;
 
       lock (cache)
-        AssemblyLoadContextManager.RemoveFromCache(cache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)cache, context);
     }
 #endif
   }

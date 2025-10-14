@@ -6,8 +6,8 @@
 // <summary>Contains schema information for a single</summary>
 //-----------------------------------------------------------------------
 
-using System.Web.UI.Design;
 using System.ComponentModel;
+using System.Web.UI.Design;
 
 namespace Csla.Web.Design
 {
@@ -23,13 +23,14 @@ namespace Csla.Web.Design
     /// <summary>
     /// Creates an instance of the object.
     /// </summary>
-    /// <param name="field">The PropertyInfo object
-    /// describing the property.</param>
+    /// <param name="field">The PropertyInfo object describing the property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="field"/> is <see langword="null"/>.</exception>
     public ObjectFieldInfo(PropertyDescriptor field)
     {
-      DataObjectFieldAttribute attribute =
-        (DataObjectFieldAttribute)
-        field.Attributes[typeof(DataObjectFieldAttribute)];
+      if (field is null)
+        throw new ArgumentNullException(nameof(field));
+
+      DataObjectFieldAttribute attribute = (DataObjectFieldAttribute)field.Attributes[typeof(DataObjectFieldAttribute)];
       if (attribute != null)
       {
         IsUnique = attribute.PrimaryKey;
@@ -37,8 +38,7 @@ namespace Csla.Web.Design
         _isNullable = attribute.IsNullable;
         Length = attribute.Length;
       }
-      DataType = Utilities.GetPropertyType(
-          field.PropertyType);
+      DataType = Utilities.GetPropertyType(field.PropertyType);
       IsReadOnly = field.IsReadOnly;
       Name = field.Name;
 
@@ -120,10 +120,7 @@ namespace Csla.Web.Design
     /// Gets the property's numeric precision.
     /// </summary>
     /// <returns>Always returns -1.</returns>
-    public int Precision
-    {
-      get { return -1; }
-    }
+    public int Precision => -1;
 
     /// <summary>
     /// Gets a value indicating whether the property
@@ -134,18 +131,12 @@ namespace Csla.Web.Design
     /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
     /// attribute on the property.
     /// </remarks>
-    public bool PrimaryKey
-    {
-      get { return IsUnique; }
-    }
+    public bool PrimaryKey => IsUnique;
 
     /// <summary>
     /// Gets the property's scale.
     /// </summary>
     /// <returns>Always returns -1.</returns>
-    public int Scale
-    {
-      get { return -1; }
-    }
+    public int Scale => -1;
   }
 }

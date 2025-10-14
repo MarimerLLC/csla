@@ -16,8 +16,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
   /// </summary>
   internal class SerializationPartialBuilder(bool nullable)
   {
-
-
     /// <summary>
     /// Build the text of a partial type that implements the properties of the target type
     /// </summary>
@@ -33,7 +31,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       if (nullable)
         textWriter.WriteLine("#nullable enable");
 
-      AppendUsingStatements(textWriter, typeDefinition);
+      AppendUsingStatements(textWriter);
 
       AppendTypeDefinition(textWriter, typeDefinition);
       AppendBlockStart(textWriter);
@@ -57,7 +55,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the block start</param>
     private void AppendBlockStart(IndentedTextWriter textWriter)
     {
-      textWriter.WriteLine("{");
+      textWriter.WriteLine('{');
       textWriter.Indent++;
     }
 
@@ -68,7 +66,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     private void AppendBlockEnd(IndentedTextWriter textWriter)
     {
       textWriter.Indent--;
-      textWriter.WriteLine("}");
+      textWriter.WriteLine('}');
     }
 
     /// <summary>
@@ -76,18 +74,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// order for it to compile the code we have generated
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the usings</param>
-    /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendUsingStatements(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+    private void AppendUsingStatements(IndentedTextWriter textWriter)
     {
       HashSet<string> requiredNamespaces;
 
-      requiredNamespaces = GetRequiredNamespaces(typeDefinition);
+      requiredNamespaces = GetRequiredNamespaces();
 
       foreach (string requiredNamespace in requiredNamespaces.Where(s => !string.IsNullOrWhiteSpace(s)))
       {
         textWriter.Write("using ");
         textWriter.Write(requiredNamespace);
-        textWriter.WriteLine(";");
+        textWriter.WriteLine(';');
       }
 
       textWriter.WriteLine();
@@ -96,24 +93,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <summary>
     /// Retrieve all of the namespaces that are required for generation of the defined type
     /// </summary>
-    /// <param name="typeDefinition">The definition of the type for which generation is being performed</param>
     /// <returns>A hashset of all of the namespaces required for generation</returns>
-    private HashSet<string> GetRequiredNamespaces(ExtractedTypeDefinition typeDefinition)
+    private HashSet<string> GetRequiredNamespaces()
     {
-      HashSet<string> requiredNamespaces = ["System", "Csla"];
-
-      foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
-      {
-        requiredNamespaces.Add(propertyDefinition.TypeDefinition.TypeNamespace);
-        foreach (var item in propertyDefinition.AttributeDefinitions)
-        {
-          requiredNamespaces.Add(item.AttributeNamespace);
-        }
-      }
-
-      requiredNamespaces.Remove(typeDefinition.Namespace);
-
-      return requiredNamespaces;
+      return ["System", "Csla"];
     }
 
     /// <summary>
@@ -132,7 +115,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");
       textWriter.Write(typeDefinition.TypeKind);
-      textWriter.Write(" ");
+      textWriter.Write(' ');
       textWriter.Write(typeDefinition.TypeName);
       textWriter.WriteLine();
     }
@@ -164,7 +147,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       if (string.IsNullOrEmpty(getter) || string.IsNullOrEmpty(setter))
         return;
 
-      textWriter.WriteLine($"public static readonly PropertyInfo<{propertyDefinition.TypeDefinition.TypeName}> {propertyDefinition.PropertyName}Property = RegisterProperty<{propertyDefinition.TypeDefinition.TypeName}>(nameof({propertyDefinition.PropertyName}));");
+      textWriter.WriteLine($"public static readonly PropertyInfo<{propertyDefinition.TypeDefinition.FullyQualifiedType}> {propertyDefinition.PropertyName}Property = RegisterProperty<{propertyDefinition.TypeDefinition.FullyQualifiedType}>(nameof({propertyDefinition.PropertyName}));");
 
       foreach (ExtractedAttributeDefinition attributeDefinition in propertyDefinition.AttributeDefinitions)
       {
@@ -174,11 +157,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
         textWriter.WriteLine($"[{attributeDefinition.AttributeName}({constructorArguments}{separator} {namedProperties})]");
       }
 
-      textWriter.WriteLine($"{string.Join(" ", propertyDefinition.Modifiers)} {propertyDefinition.TypeDefinition.TypeName} {propertyDefinition.PropertyName}");
+      textWriter.WriteLine($"{string.Join(" ", propertyDefinition.Modifiers)} {propertyDefinition.TypeDefinition.FullyQualifiedType} {propertyDefinition.PropertyName}");
       AppendBlockStart(textWriter);
       if (propertyDefinition.Getter)
       {
-        textWriter.WriteLine($"get => {getter}({propertyDefinition.PropertyName}Property);");
+        textWriter.Write($"get => {getter}({propertyDefinition.PropertyName}Property)");
+        if (!propertyDefinition.TypeDefinition.Nullable)
+        {
+          textWriter.Write('!');
+        }
+
+        textWriter.WriteLine(';');
       }
 
       if (propertyDefinition.Setter)

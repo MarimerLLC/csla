@@ -1,0 +1,683 @@
+//-----------------------------------------------------------------------
+// <copyright file="ServiceProviderMethodCallerTests.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>no summary</summary>
+//-----------------------------------------------------------------------
+using System.Reflection;
+using Csla.Reflection;
+using Csla.TestHelpers;
+using FluentAssertions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Csla.Test.DataPortal
+{
+  [TestClass]
+  public class ServiceProviderMethodCallerTests
+  {
+    private static TestDIContext _diContext = default!;
+    private ServiceProviderMethodCaller _systemUnderTest = default!;
+
+    [ClassInitialize]
+    public static void ClassSetup(TestContext context)
+    {
+      _ = context;
+      _diContext = TestDIContextFactory.CreateDefaultContext();
+    }
+
+    [TestInitialize]
+    public void TestSetup()
+    {
+      _systemUnderTest = _diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+    }
+
+    [TestMethod]
+    public void NoTarget()
+    {
+      FluentActions.Invoking(() => _systemUnderTest.FindDataPortalMethod<CreateAttribute>(null, null)).Should().Throw<ArgumentNullException>();
+    }
+
+    [TestMethod]
+    public void FindMethodInterfaceCriteria()
+    {
+      var obj = new InterfaceCriteria();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [new MyCriteria()]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    [DataRow(123)]
+    [DataRow(null)]
+    public void FindMethodNullableIntCriteria(int? data)
+    {
+      var obj = new NullableCriteria();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [data]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    [DataRow(123)]
+    [DataRow(null)]
+    public async Task FindMethodNullableCriteriaWithValueViaDataPortal(int? data)
+    {
+      var obj = await _diContext.CreateDataPortal<NullableCriteria>().CreateAsync(data);
+
+      obj.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodNoCriteriaNoDI()
+    {
+      var obj = new SimpleNoCriteriaCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [null]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodCriteriaDI()
+    {
+      var obj = new CriteriaCreateWithDI();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(System.Reflection.TargetParameterCountException))]
+    public void FindMethodBadCriteriaDI()
+    {
+      var obj = new CriteriaCreateWithDI();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodMultipleCriteriaDI()
+    {
+      var obj = new MultipleCriteriaCreateWithDI();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123, "hi"]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodMultipleCriteriaDIInterleaved()
+    {
+      var obj = new MultipleCriteriaCreateWithDIInterleaved();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123, "hi"]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodCriteriaMultipleDI()
+    {
+      var obj = new CriteriaCreateWithMultipleDI();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+      method.PrepForInvocation();
+
+      method.Parameters.Should().HaveCount(3);
+    }
+
+    [TestMethod]
+    public void FindMethodCriteriaMultipleAmbiguousDI()
+    {
+      var obj = new CriteriaCreateWithMultipleAmbiguousDI();
+      FluentActions.Invoking(() => _ = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123])).Should().Throw<AmbiguousMatchException>();
+    }
+
+    [TestMethod]
+    public void FindMethodSingleCriteriaInvalid()
+    {
+      var obj = new SimpleNoCriteriaCreate();
+      FluentActions.Invoking(() => _ = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123])).Should().Throw<TargetParameterCountException>();
+    }
+
+    [TestMethod]
+    public void FindMethodSingleCriteriaValid()
+    {
+      var obj = new SimpleCriteriaCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodObjectCriteriaValid()
+    {
+      var obj = new ObjectCriteriaCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodObjectCriteriaSubtype()
+    {
+      var obj = new ObjectCriteriaCreateSubtype();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(System.Reflection.TargetParameterCountException))]
+    public void FindMethodSingleCriteriaBadType()
+    {
+      var obj = new SimpleCriteriaCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]);
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public void FindMethod_PrivateBase()
+    {
+      var obj = new PrivateMethod();
+      var method = _systemUnderTest.FindDataPortalMethod<ExecuteAttribute>(obj, null);
+      Assert.IsNotNull(method);
+      Assert.AreEqual("Execute", method.MethodInfo.Name, "Method name should match");
+    }
+
+    [TestMethod]
+    public async Task FindMethod_PrivateBase_Invoke()
+    {
+      var portal = _diContext.CreateDataPortal<PrivateMethod>();
+      var obj = await portal.CreateAsync();
+      obj = await portal.ExecuteAsync(obj);
+
+      obj.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodDataPortal_CreateBase()
+    {
+      var obj = new OldStyleNoOverride();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodDataPortal_CreateCriteria()
+    {
+      var obj = new OldStyleCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodDataPortal_CreateCriteriaBase()
+    {
+      var obj = new OldStyleCriteriaBase();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodDataPortal_Create()
+    {
+      var obj = new OldStyleCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodDataPortal_Create_Criteria()
+    {
+      var obj = new OldStyleCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindMethodAmbiguousCriteria()
+    {
+      var obj = new AmbiguousNoCriteriaCreate();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+      method.PrepForInvocation();
+
+      Assert.AreEqual(1, method.Parameters.Count());
+    }
+
+    [TestMethod]
+    public void FindChildLegacyUpdate()
+    {
+      var obj = new BasicChild();
+      var method = _systemUnderTest.FindDataPortalMethod<UpdateChildAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void FindChildParamsUpdate()
+    {
+      var obj = new ParamsChild();
+      var method = _systemUnderTest.FindDataPortalMethod<UpdateChildAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public async Task FindChildIntUpdate()
+    {
+      var obj = await _diContext.CreateChildDataPortal<ModernChild>().CreateChildAsync();
+      object[] paramsArray = [123];
+      var method = _systemUnderTest.FindDataPortalMethod<UpdateChildAttribute>(obj, paramsArray);
+
+      method.Should().NotBeNull();
+
+      var dp = _diContext.CreateChildDataPortal<ModernChild>();
+      await dp.UpdateChildAsync(obj, 42);
+
+      obj.Id.Should().Be(42);
+
+      obj = await _diContext.CreateChildDataPortal<ModernChild>().CreateChildAsync();
+      await dp.UpdateChildAsync(obj, 123);
+
+      obj.Id.Should().Be(123);
+    }
+
+    [TestMethod]
+    public void FindOverlappingCriteriaInt()
+    {
+      var obj = new MultipleOverlappingCriteria();
+      var method = _systemUnderTest.FindDataPortalMethod<FetchAttribute>(obj, [1]);
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public async Task Issue2109()
+    {
+      var obj = new Issue2109List();
+      var method = _systemUnderTest.FindDataPortalMethod<FetchAttribute>(obj, [new string[] { "a" }]);
+      Assert.IsNotNull(method, "string[]");
+      var criteria = new My2109Criteria();
+      method = _systemUnderTest.FindDataPortalMethod<FetchAttribute>(obj, [criteria]);
+      Assert.IsNotNull(method, "ICriteriaBase");
+
+      var portal = _diContext.CreateDataPortal<Issue2109List>();
+
+      obj = await portal.FetchAsync(new My2109Criteria());
+      obj.Should().NotBeNull("Fetch with criteria.").And.Subject.First().Name.Should().Be("Csla.Test.DataPortal.My2109Criteria");
+
+      obj = await portal.FetchAsync(new string[] { "a" });
+      obj.Should().NotBeNull("Fetch with array.").And.Subject.First().Name.Should().Be("a");
+    }
+
+    [TestMethod]
+    public void Issue2287BusinessBindingListFetch()
+    {
+      var obj = new Issue2287List();
+      var method = _systemUnderTest.FindDataPortalMethod<FetchAttribute>(obj, [new Issue2287List.Criteria()]);
+      Assert.IsNotNull(method);
+      Assert.AreEqual(obj.GetType().BaseType, method.MethodInfo.DeclaringType);
+    }
+
+    [TestMethod]
+    public void Issue2287BusinessBaseFetch()
+    {
+      var obj = new Issue2287Edit();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, []);
+      Assert.IsNotNull(method);
+    }
+
+    [TestMethod]
+    public void Issue2396DeleteSelfChildNoParams()
+    {
+      var obj = new Issue2396Edit();
+      var method = _systemUnderTest.FindDataPortalMethod<DeleteSelfChildAttribute>(obj, []);
+      Assert.IsNotNull(method);
+      Assert.AreEqual(0, method.MethodInfo.GetParameters().Count());
+    }
+
+    [TestMethod]
+    public void Issue2396DeleteSelfChildWithParams()
+    {
+      var obj = new Issue2396EditParams();
+      var method = _systemUnderTest.FindDataPortalMethod<DeleteSelfChildAttribute>(obj, [1, 2]);
+      Assert.IsNotNull(method);
+      Assert.AreEqual(2, method.MethodInfo.GetParameters().Count());
+    }
+
+    [TestMethod]
+    public void Issue2396DeleteSelfChildFallbackToNoParams()
+    {
+      var obj = new Issue2396Edit();
+      var method = _systemUnderTest.FindDataPortalMethod<DeleteSelfChildAttribute>(obj, [1, 2]);
+      Assert.IsNotNull(method);
+      Assert.AreEqual(0, method.MethodInfo.GetParameters().Count());
+    }
+
+    [TestMethod($"{nameof(ServiceProviderMethodCaller.TryFindDataPortalMethod)} must not throw when the business object is attributed with an object factory which is not loaded/known in the current environment."), GitHubWorkItem("https://github.com/MarimerLLC/csla/issues/4681")]
+    public void TryFindDataPortalMethod_Testcase1()
+    {
+      FluentActions.Invoking(() => _systemUnderTest.TryFindDataPortalMethod<FetchAttribute>(typeof(NotKnownObjectFactoryInCurrentEnvironment), null, out var _)).Should().NotThrow();
+    }
+  }
+
+  #region Classes for testing various scenarios of loading/finding data portal methods
+
+  [Csla.Server.ObjectFactory("NotLoadedAssembly.NotKnownObjectFactoryInCurrentEnvironmentFactory, NotLoadedAssembly")]
+  public class NotKnownObjectFactoryInCurrentEnvironment : BusinessBase<NotKnownObjectFactoryInCurrentEnvironment>
+  {
+
+  }
+
+  public class OldStyleNoOverride : BusinessBase<OldStyleNoOverride>
+  {
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  public class PrivateMethodBase<T> : CommandBase<T>
+  where T : CommandBase<T>
+  {
+    [Create]
+    private void Create()
+    { }
+
+    [Execute]
+    private void Execute()
+    { }
+  }
+
+  public class PrivateMethod : PrivateMethodBase<PrivateMethod>
+  {
+
+  }
+
+  public class OldStyleCreate : BusinessBase<OldStyleCreate>
+  {
+    [Create]
+    protected void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+
+    [Create]
+    private void DataPortal_Create(int id)
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  public class OldStyleCriteria : BusinessBase<OldStyleCriteria>
+  {
+    [Create]
+    private void DataPortal_Create(int id)
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  public class OldStyleCriteriaBase : OldStyleCriteria
+  {
+  }
+
+  public interface ICriteria : IReadOnlyBase
+  {
+    int Id { get; }
+  }
+
+  public class MyCriteria : ReadOnlyBase<MyCriteria>, ICriteria
+  {
+    public int Id => 123;
+  }
+
+  public class InterfaceCriteria : BusinessBase<InterfaceCriteria>
+  {
+    [Create]
+    private void Create(ICriteria criteria) { _ = criteria; }
+  }
+
+  public class SimpleNoCriteriaCreate : BusinessBase<SimpleNoCriteriaCreate>
+  {
+    [Create]
+    private void Create() { }
+
+    [Create]
+    private void Create(ICloneable x) { }
+  }
+
+  public class SimpleCriteriaCreate : BusinessBase<SimpleCriteriaCreate>
+  {
+    [Create]
+    private void Create(int id) { }
+  }
+
+  public class ObjectCriteriaCreate : BusinessBase<ObjectCriteriaCreate>
+  {
+    [Create]
+    private void Create(object id) { }
+  }
+
+  public class ObjectCriteriaCreateSubtype : ObjectCriteriaCreate
+  { }
+
+  public class AmbiguousNoCriteriaCreate : BusinessBase<AmbiguousNoCriteriaCreate>
+  {
+    [Create]
+    private void Create() { }
+
+    [Create]
+    private void Create([Inject] ICloneable x) { }
+  }
+
+  public class CriteriaCreateWithDI : BusinessBase<CriteriaCreateWithDI>
+  {
+    [Create]
+    private void Create() { }
+
+    [Create]
+    private void Create(int id, [Inject] ICloneable x) { }
+  }
+
+  public class MultipleCriteriaCreateWithDI : BusinessBase<MultipleCriteriaCreateWithDI>
+  {
+    [Create]
+    private void Create() { }
+
+    [Create]
+    private void Create(int id, string foo, [Inject] ICloneable x) { }
+  }
+
+  public class CriteriaCreateWithMultipleDI : BusinessBase<CriteriaCreateWithMultipleDI>
+  {
+    [Create]
+    private void Create(int id, [Inject] ICloneable x) { }
+
+    [Create]
+    private void Create(int id, [Inject] ICloneable x, [Inject] IAsyncResult y) { }
+  }
+
+  public class CriteriaCreateWithMultipleAmbiguousDI : BusinessBase<CriteriaCreateWithMultipleAmbiguousDI>
+  {
+    [Create]
+    private void Create(int id, [Inject] ICloneable x) { }
+
+    [Create]
+    private void Create(int id, [Inject] ICloneable x, [Inject] IAsyncResult y) { }
+
+    [Create]
+    private void Create(int id, [Inject] ICloneable x, [Inject] IFormattable y) { }
+  }
+
+  public class MultipleCriteriaCreateWithDIInterleaved : BusinessBase<MultipleCriteriaCreateWithDIInterleaved>
+  {
+    [Create]
+    private void Create() { }
+
+    [Create]
+    private void Create(int id, [Inject] ICloneable x, string foo) { }
+  }
+
+  public class BasicChild : BusinessBase<BasicChild>
+  {
+    private void Child_Update()
+    {
+      // nada
+    }
+  }
+
+  public class ParamsChild : BusinessBase<ParamsChild>
+  {
+    private void Child_Update(params object[] parameters)
+    {
+      // nada
+    }
+  }
+
+  public class ModernChild : BusinessBase<ModernChild>
+  {
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+    public int Id
+    {
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+    [UpdateChild]
+    [InsertChild]
+    private void UpdateOrInsert(int id)
+    {
+      using (BypassPropertyChecks)
+        Id = id;
+    }
+  }
+
+  public class NullableCriteria : BusinessBase<NullableCriteria>
+  {
+    [Create]
+    private void Create(int? c) { _ = c; }
+  }
+
+  public class MultipleOverlappingCriteria : BusinessBase<MultipleOverlappingCriteria>
+  {
+    [Fetch]
+    private void Fetch(int id)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(int id, bool? value)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(int id, int? value)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(List<int?> values)
+    {
+    }
+
+    [Fetch]
+    private void Fetch(List<DateTime?> values)
+    {
+    }
+  }
+
+  public class Issue2109List : ReadOnlyListBase<Issue2109List, Issue2109>
+  {
+    private void DataPortal_Fetch(ICriteriaBase criteria, [Inject] IDataPortal<Issue2109> dp)
+    {
+      using (LoadListMode)
+      {
+        Add(dp.Fetch(criteria.ToString()));
+      }
+    }
+
+    private void DataPortal_Fetch(IEnumerable<string> criteria, [Inject] IDataPortal<Issue2109> dp)
+    {
+      using (LoadListMode)
+      {
+        Add(dp.Fetch(criteria.First().ToString()));
+      }
+    }
+  }
+
+  public class Issue2109 : BusinessBase<Issue2109>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    public string Name
+    {
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
+    }
+
+    private void DataPortal_Fetch(string name)
+    {
+      using (BypassPropertyChecks)
+      {
+        Name = name;
+      }
+    }
+  }
+
+  public interface ICriteriaBase
+  { }
+
+  public class My2109Criteria : ICriteriaBase
+  {
+  }
+
+  public class Issue2287List : Issue2287ListBase
+  {
+  }
+
+  public class Issue2287ListBase : Csla.BusinessBindingListBase<Issue2287List, Issue2287Edit>
+  {
+    private void DataPortal_Fetch(Criteria criteria)
+    {
+    }
+
+    public class Criteria : Csla.CriteriaBase<Criteria>
+    {
+    }
+  }
+
+  public class Issue2287Edit : Issue2287EditBase<Issue2287Edit>
+  {
+    private new void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  public class Issue2287EditBase<T> : BusinessBase<Issue2287EditBase<T>>
+  {
+    protected void DataPortal_Create()
+    {
+    }
+  }
+
+  public class Issue2396Edit : BusinessBase<Issue2396Edit>
+  {
+    [DeleteSelfChild]
+    private void DeleteSelf()
+    { }
+  }
+
+  public class Issue2396EditParams : BusinessBase<Issue2396EditParams>
+  {
+    [DeleteSelfChild]
+    private void DeleteSelf(int x, int y)
+    { }
+  }
+
+  #endregion
+}

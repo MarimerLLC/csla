@@ -20,12 +20,12 @@ namespace Csla.Analyzers
     /// <summary>
     /// 
     /// </summary>
-    public override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes);
+    public override ImmutableArray<string> FixableDiagnosticIds => [Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes];
 
     /// <summary>
     /// 
     /// </summary>
-    public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
+    public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
     /// <summary>
     /// 
@@ -33,31 +33,44 @@ namespace Csla.Analyzers
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
       var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-
+      if (root is null)
+      {
+        return;
+      }
       context.CancellationToken.ThrowIfCancellationRequested();
 
       var diagnostic = context.Diagnostics.First();
       var methodNode = root.FindNode(diagnostic.Location.SourceSpan) as MethodDeclarationSyntax;
+      if (methodNode is null)
+      {
+        return;
+      }
 
       context.CancellationToken.ThrowIfCancellationRequested();
 
       await AddCodeFixAsync(context, root, diagnostic, methodNode);
     }
 
-    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root,
-      Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
+    private static async Task AddCodeFixAsync(CodeFixContext context, SyntaxNode root, Diagnostic diagnostic, MethodDeclarationSyntax methodNode)
     {
       var model = await context.Document.GetSemanticModelAsync(context.CancellationToken);
       var methodSymbol = model.GetDeclaredSymbol(methodNode);
+      if (methodSymbol is null)
+      {
+        return;
+      }
 
       if(methodSymbol.IsAsync)
       {
-        var newRoot = root.ReplaceNode(methodNode.ReturnType,
-          SyntaxFactory.IdentifierName(typeof(Task).Name));
+        var newRoot = root.ReplaceNode(methodNode.ReturnType, SyntaxFactory.IdentifierName(typeof(Task).Name));
 
         if (!root.HasUsing(FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFixConstants.SystemThreadingTasksNamespace))
         {
-          newRoot = (newRoot as CompilationUnitSyntax).AddUsings(
+          if (newRoot is not CompilationUnitSyntax compilationUnitSyntax)
+          {
+            return;
+          }
+          newRoot = compilationUnitSyntax.AddUsings(
             SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(
               FindOperationsWithIncorrectReturnTypeResolveCorrectTypeCodeFixConstants.SystemThreadingTasksNamespace)));
         }

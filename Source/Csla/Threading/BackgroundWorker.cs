@@ -17,23 +17,25 @@ namespace Csla.Threading
   public class BackgroundWorker : Component
   {
     private readonly System.ComponentModel.BackgroundWorker _myWorker = new();
+    private readonly ApplicationContext _applicationContext;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BackgroundWorker"/> class.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public BackgroundWorker(ApplicationContext applicationContext)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       _myWorker.DoWork += InternalDoWork;
       _myWorker.RunWorkerCompleted += InternalRunWorkerCompleted;
       _myWorker.ProgressChanged += InternalProgressChanged;
     }
 
-    private ApplicationContext _applicationContext;
 
     // overridden event handler to be invoked by this class
-    private DoWorkEventHandler _myDoWork;
-    private RunWorkerCompletedEventHandler _myWorkerCompleted;
-    private ProgressChangedEventHandler _myWorkerProgressChanged;
+    private DoWorkEventHandler? _myDoWork;
+    private RunWorkerCompletedEventHandler? _myWorkerCompleted;
+    private ProgressChangedEventHandler? _myWorkerProgressChanged;
     
     /// <summary>
     /// Occurs when <see cref="M:System.ComponentModel.BackgroundWorker.RunWorkerAsync"/> is called.
@@ -41,14 +43,8 @@ namespace Csla.Threading
     [Description("Event handler to be run on a different thread when the operation begins."), Category("Asynchronous")]
     public event DoWorkEventHandler DoWork
     {
-      add
-      {
-        _myDoWork += value;
-      }
-      remove
-      {
-        _myDoWork -= value;
-      }
+      add => _myDoWork += value;
+      remove => _myDoWork -= value;
     }
 
     /// <summary>
@@ -57,14 +53,8 @@ namespace Csla.Threading
     [Description("Raised when the worker has completed (either through success, failure or cancellation)."), Category("Asynchronous")]
     public event RunWorkerCompletedEventHandler RunWorkerCompleted
     {
-      add
-      {
-        _myWorkerCompleted += value;
-      }
-      remove
-      {
-        _myWorkerCompleted -= value;
-      }
+      add => _myWorkerCompleted += value;
+      remove => _myWorkerCompleted -= value;
     }
 
 
@@ -74,14 +64,8 @@ namespace Csla.Threading
     [Description("Occurs when ReportProgress is called.).")]
     public event ProgressChangedEventHandler ProgressChanged
     {
-      add
-      {
-        _myWorkerProgressChanged += value;
-      }
-      remove
-      {
-        _myWorkerProgressChanged -= value;
-      }
+      add => _myWorkerProgressChanged += value;
+      remove => _myWorkerProgressChanged -= value;
     }
 
     /// <summary>
@@ -90,13 +74,7 @@ namespace Csla.Threading
     /// <value></value>
     /// <returns>true, if the <see cref="T:System.ComponentModel.BackgroundWorker"/> is running an asynchronous operation; otherwise, false.
     /// </returns>
-    public bool IsBusy
-    {
-      get
-      {
-        return _myWorker.IsBusy;
-      }
-    }
+    public bool IsBusy => _myWorker.IsBusy;
 
     /// <summary>
     /// Gets or sets a value indicating whether the <see cref="T:System.ComponentModel.BackgroundWorker"/> can report progress updates.
@@ -106,14 +84,8 @@ namespace Csla.Threading
     /// </returns>
     public bool WorkerReportsProgress
     {
-      get
-      {
-        return _myWorker.WorkerReportsProgress;
-      }
-      set
-      {
-        _myWorker.WorkerReportsProgress = value;
-      }
+      get => _myWorker.WorkerReportsProgress;
+      set => _myWorker.WorkerReportsProgress = value;
     }
 
     /// <summary>
@@ -124,14 +96,8 @@ namespace Csla.Threading
     /// </returns>
     public bool WorkerSupportsCancellation
     {
-      get
-      {
-        return _myWorker.WorkerSupportsCancellation;
-      }
-      set
-      {
-        _myWorker.WorkerSupportsCancellation = value;
-      }
+      get => _myWorker.WorkerSupportsCancellation;
+      set => _myWorker.WorkerSupportsCancellation = value;
     }
 
     /// <summary>
@@ -154,21 +120,15 @@ namespace Csla.Threading
     /// <value></value>
     /// <returns>true if the application has requested cancellation of a background operation; otherwise, false. The default is false.
     /// </returns>
-    public bool CancellationPending
-    {
-      get
-      {
-        return _myWorker.CancellationPending;
-      }
-    }
+    public bool CancellationPending => _myWorker.CancellationPending;
 
-#region Worker Async Request
+    #region Worker Async Request
 
     private class WorkerAsyncRequest : ContextParams
     {
-      public object Argument { get; }
+      public object? Argument { get; }
 
-      public WorkerAsyncRequest(ApplicationContext applicationContext, object argument)
+      public WorkerAsyncRequest(ApplicationContext applicationContext, object? argument)
         : base(applicationContext)
       {
         Argument = argument;
@@ -177,11 +137,11 @@ namespace Csla.Threading
 
     private class WorkerAsyncResult
     {
-      public object Result { get; }
-      public Exception Error { get; }
+      public object? Result { get; }
+      public Exception? Error { get; }
       public bool Cancelled { get; private set; }
 
-      public WorkerAsyncResult(object result, Exception error)
+      public WorkerAsyncResult(object? result, Exception? error)
       {
         Result = result;
         Error = error;
@@ -213,7 +173,7 @@ namespace Csla.Threading
     /// <exception cref="T:System.InvalidOperationException">
     ///  <see cref="P:System.ComponentModel.BackgroundWorker.IsBusy"/> is true.
     /// </exception>
-    public void RunWorkerAsync(object argument)
+    public void RunWorkerAsync(object? argument)
     {
       _myWorker.RunWorkerAsync(new WorkerAsyncRequest(_applicationContext, argument));
     }
@@ -230,9 +190,9 @@ namespace Csla.Threading
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-    void InternalDoWork(object sender, DoWorkEventArgs e)
+    void InternalDoWork(object? sender, DoWorkEventArgs e)
     {
-      var request = (WorkerAsyncRequest)e.Argument;
+      var request = (WorkerAsyncRequest)e.Argument!;
 
       // set the background worker thread context
       request.SetThreadContext();
@@ -258,16 +218,14 @@ namespace Csla.Threading
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="e">The <see cref="System.ComponentModel.RunWorkerCompletedEventArgs"/> instance containing the event data.</param>
-    private void InternalRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+    private void InternalRunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs e)
     {
-
-
-      Exception error = null;
-      object result = null;
+      Exception? error = null;
+      object? result = null;
 
       if (!e.Cancelled)
       {
-        var workerResult = (WorkerAsyncResult)e.Result;
+        var workerResult = (WorkerAsyncResult)e.Result!;
 
         // must check for error as accessing e.Result will throw exception
         // if e.Error is not null.
@@ -290,7 +248,7 @@ namespace Csla.Threading
     /// <exception cref="T:System.InvalidOperationException">
     /// The <see cref="P:System.ComponentModel.BackgroundWorker.WorkerReportsProgress"/> property is set to false.
     /// </exception>
-    private void InternalProgressChanged(object sender, ProgressChangedEventArgs e)
+    private void InternalProgressChanged(object? sender, ProgressChangedEventArgs e)
     {
       _myWorkerProgressChanged?.Invoke(this, new ProgressChangedEventArgs(e.ProgressPercentage, e.UserState));
     }
@@ -309,7 +267,7 @@ namespace Csla.Threading
     /// </summary>
     /// <param name="percentProgress">The percent progress.</param>
     /// <param name="userState">User state object.</param>
-    public void ReportProgress(int percentProgress, object userState)
+    public void ReportProgress(int percentProgress, object? userState)
     {
       _myWorker.ReportProgress(percentProgress, userState);
     }

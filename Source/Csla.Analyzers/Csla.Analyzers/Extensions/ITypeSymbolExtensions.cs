@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers.Extensions
 {
@@ -7,7 +8,7 @@ namespace Csla.Analyzers.Extensions
     private static readonly Type[] SerializableTypesByMobileFormatter =
       [typeof(TimeSpan), typeof(DateTimeOffset), typeof(byte[]), typeof(byte[][]), typeof(char[]), typeof(Guid), typeof(List<int>)];
 
-    internal static bool IsBusinessRule(this ITypeSymbol @this)
+    internal static bool IsBusinessRule([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         (((@this.Name == CslaMemberConstants.Types.IBusinessRule || @this.Name == CslaMemberConstants.Types.IBusinessRuleAsync) &&
@@ -15,7 +16,7 @@ namespace Csla.Analyzers.Extensions
           (@this.BaseType.IsBusinessRule() || @this.Interfaces.Any(_ => _.IsBusinessRule())));
     }
 
-    internal static bool IsObjectFactory(this ITypeSymbol @this)
+    internal static bool IsObjectFactory([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.ObjectFactory &&
@@ -23,7 +24,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsObjectFactory());
     }
 
-    internal static bool IsBusinessBase(this ITypeSymbol @this)
+    internal static bool IsBusinessBase([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.BusinessBase &&
@@ -31,7 +32,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsBusinessBase());
     }
 
-    internal static bool IsInjectable(this ITypeSymbol @this)
+    internal static bool IsInjectable([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.InjectAttribute &&
@@ -39,7 +40,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsInjectable());
     }
 
-    internal static bool IsDataPortalOperationAttribute(this ITypeSymbol @this)
+    internal static bool IsDataPortalOperationAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.DataPortalOperationAttribute &&
@@ -47,7 +48,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsDataPortalOperationAttribute());
     }
 
-    internal static bool IsDataPortalRootOperationAttribute(this ITypeSymbol @this)
+    internal static bool IsDataPortalRootOperationAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.DataPortalRootOperationAttribute &&
@@ -55,7 +56,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsDataPortalRootOperationAttribute());
     }
 
-    internal static bool IsDataPortalChildOperationAttribute(this ITypeSymbol @this)
+    internal static bool IsDataPortalChildOperationAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.DataPortalChildOperationAttribute &&
@@ -63,7 +64,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsDataPortalChildOperationAttribute());
     }
 
-    internal static bool IsRunLocalAttribute(this ITypeSymbol @this)
+    internal static bool IsRunLocalAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         @this.Name == CslaMemberConstants.Types.RunLocalAttribute &&
@@ -114,7 +115,7 @@ namespace Csla.Analyzers.Extensions
         specialType == SpecialType.System_DateTime;
     }
 
-    internal static bool IsIPropertyInfo(this ITypeSymbol @this)
+    internal static bool IsIPropertyInfo([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.IPropertyInfo &&
@@ -122,7 +123,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsIPropertyInfo() || @this.Interfaces.Any(_ => _.IsIPropertyInfo()));
     }
 
-    internal static bool IsEditableStereotype(this ITypeSymbol @this)
+    internal static bool IsEditableStereotype([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         (((@this.Name == CslaMemberConstants.Types.BusinessBase ||
@@ -133,7 +134,7 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsEditableStereotype());
     }
 
-    internal static bool IsStereotype(this ITypeSymbol @this)
+    internal static bool IsStereotype([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         (((@this.Name == CslaMemberConstants.Types.IBusinessObject ||
@@ -142,7 +143,7 @@ namespace Csla.Analyzers.Extensions
           (@this.BaseType.IsStereotype() || @this.Interfaces.Any(_ => _.IsStereotype())));
     }
 
-    internal static bool IsMobileObject(this ITypeSymbol @this)
+    internal static bool IsMobileObject([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.IMobileObject &&
@@ -150,7 +151,7 @@ namespace Csla.Analyzers.Extensions
           (@this.BaseType.IsMobileObject() || @this.Interfaces.Any(_ => _.IsMobileObject())));
     }
 
-    internal static bool IsObjectAuthorizationRulesAttribute(this ITypeSymbol @this)
+    internal static bool IsObjectAuthorizationRulesAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
         ((@this.Name == CslaMemberConstants.Types.ObjectAuthorizationRulesAttribute &&

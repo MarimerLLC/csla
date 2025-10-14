@@ -9,6 +9,7 @@
 using System.Collections;
 using Csla.Core;
 using Csla.Properties;
+using Microsoft.Extensions.Options;
 
 namespace Csla.Server.Interceptors.ServerSide
 {
@@ -18,14 +19,18 @@ namespace Csla.Server.Interceptors.ServerSide
   public class RevalidatingInterceptor : IInterceptDataPortal
   {
     private readonly ApplicationContext _applicationContext;
+    private readonly RevalidatingInterceptorOptions _options;
 
     /// <summary>
     /// Public constructor, intended to be executed by DI
     /// </summary>
     /// <param name="applicationContext">The context under which the DataPortal operation is executing</param>
-    public RevalidatingInterceptor(ApplicationContext applicationContext)
+    /// <param name="options">The <see cref="RevalidatingInterceptor"/> options.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+    public RevalidatingInterceptor(ApplicationContext applicationContext, IOptions<RevalidatingInterceptorOptions> options)
     {
-      _applicationContext = applicationContext;
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _options = options?.Value ?? throw new ArgumentNullException(nameof(options));
     }
 
     /// <summary>
@@ -33,18 +38,22 @@ namespace Csla.Server.Interceptors.ServerSide
     /// </summary>
     /// <param name="e">The interception arguments from the DataPortal</param>
     /// <exception cref="Rules.ValidationException"></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="e"/> is <see langword="null"/>.</exception>
     public async Task InitializeAsync(InterceptArgs e)
     {
-      ITrackStatus checkableObject;
-
       if (_applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
         || _applicationContext.LogicalExecutionLocation != ApplicationContext.LogicalExecutionLocations.Server)
       {
         return;
       }
 
-      checkableObject = e.Parameter as ITrackStatus;
-      if (checkableObject is null) return;
+      if (e is null)
+        throw new ArgumentNullException(nameof(e));
+
+      if (e.Parameter is not ITrackStatus checkableObject || (_options.IgnoreDeleteOperation && e.Operation == DataPortalOperations.Delete))
+      {
+        return;
+      }
 
       await RevalidateObjectAsync(checkableObject);
       if (!checkableObject.IsValid)
@@ -53,10 +62,7 @@ namespace Csla.Server.Interceptors.ServerSide
       }
     }
 
-    /// <summary>
-    /// Interception handler run after a DataPortal operation
-    /// </summary>
-    /// <param name="e">The interception arguments from the DataPortal</param>
+    /// <inheritdoc />
     public void Complete(InterceptArgs e)
     {
     }
@@ -65,8 +71,13 @@ namespace Csla.Server.Interceptors.ServerSide
     /// Perform revalidation of business rules on any supporting type
     /// </summary>
     /// <param name="parameter">The parameter that was passed to the DataPortal as part of the operation</param>
-    private async Task RevalidateObjectAsync(object parameter)
+    private async Task RevalidateObjectAsync(object? parameter)
     {
+      if (parameter is null)
+      {
+        return;
+      }
+
       if (parameter is IEnumerable list)
       {
         // Handle the object being a collection
@@ -88,9 +99,14 @@ namespace Csla.Server.Interceptors.ServerSide
         if (parameter is IUseFieldManager fieldHolder)
         {
           var properties = fieldHolder.FieldManager.GetRegisteredProperties();
-          foreach (var property in properties.Where(r=>r.IsChild && fieldHolder.FieldManager.FieldExists(r)))
+          foreach (var property in properties.Where(r => r.IsChild && fieldHolder.FieldManager.FieldExists(r)))
           {
-            await RevalidateObjectAsync(fieldHolder.FieldManager.GetFieldData(property).Value);
+            var fieldData = fieldHolder.FieldManager.GetFieldData(property);
+            if (fieldData is null)
+            {
+              continue;
+            }
+            await RevalidateObjectAsync(fieldData.Value);
           }
         }
         else if (parameter is IManageProperties propertyHolder)

@@ -17,7 +17,7 @@ namespace Csla.Xaml
   /// </summary>
   public class IdentityConverter : IValueConverter
   {
-#region IValueConverter Members
+    #region IValueConverter Members
 
     /// <summary>
     /// Returns the unchanged value.
@@ -26,9 +26,7 @@ namespace Csla.Xaml
     /// <param name="targetType">Desired value type.</param>
     /// <param name="parameter">Conversion parameter.</param>
     /// <param name="culture">Conversion culture.</param>
-    public object Convert(
-      object value, Type targetType,
-      object parameter, System.Globalization.CultureInfo culture)
+    public object? Convert(object? value, Type? targetType, object? parameter, System.Globalization.CultureInfo? culture)
     {
       return value;
     }
@@ -40,14 +38,12 @@ namespace Csla.Xaml
     /// <param name="targetType">Desired value type.</param>
     /// <param name="parameter">Conversion parameter.</param>
     /// <param name="culture">Conversion culture.</param>
-    public object ConvertBack(
-      object value, Type targetType,
-      object parameter, System.Globalization.CultureInfo culture)
+    public object? ConvertBack(object? value, Type? targetType, object? parameter, System.Globalization.CultureInfo? culture)
     {
       return value;
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

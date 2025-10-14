@@ -7,12 +7,12 @@
 // <summary>Base class for creating WPF panel</summary>
 //-----------------------------------------------------------------------
 using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.ComponentModel;
-using System.Reflection;
 
 namespace Csla.Xaml
 {
@@ -35,7 +35,7 @@ namespace Csla.Xaml
     /// <b>data object</b>, not necessarily the DataContext
     /// itself.
     /// </remarks>
-    protected object DataObject { get; private set; }
+    protected object? DataObject { get; private set; }
 
     /// <summary>
     /// Creates an instance of the object.
@@ -46,7 +46,7 @@ namespace Csla.Xaml
       Loaded += Panel_Loaded;
     }
 
-    private void Panel_Loaded(object sender, RoutedEventArgs e)
+    private void Panel_Loaded(object? sender, RoutedEventArgs e)
     {
       UpdateDataObject(null, DataObject);
     }
@@ -55,22 +55,21 @@ namespace Csla.Xaml
     /// Handle case where the DataContext for the
     /// control has changed.
     /// </summary>
-    private void Panel_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+    private void Panel_DataContextChanged(object? sender, DependencyPropertyChangedEventArgs e)
     {
       UpdateDataObject(e.OldValue, e.NewValue);
     }
 
-    private object GetDataObject(object dataContext)
+    private object? GetDataObject(object? dataContext)
     {
-      object result = dataContext;
+      object? result = dataContext;
       if (dataContext is DataSourceProvider provider)
       {
         result = provider.Data;
       }
-      else
+      else if (dataContext is ICollectionView icv)
       {
-        if (dataContext is ICollectionView icv)
-          result = icv.CurrentItem;
+        result = icv.CurrentItem;
       }
       return result;
     }
@@ -79,12 +78,17 @@ namespace Csla.Xaml
     /// Handle case where the Data property of the
     /// DataContext (a DataSourceProvider) has changed.
     /// </summary>
-    private void DataProvider_DataChanged(object sender, EventArgs e)
+    private void DataProvider_DataChanged(object? sender, EventArgs e)
     {
-      UpdateDataObject(DataObject, ((DataSourceProvider)sender).Data);
+      if (sender is null)
+        throw new ArgumentNullException(nameof(sender));
+      if (sender is not DataSourceProvider dsp)
+        throw new ArgumentException($"{sender.GetType()} != {nameof(DataSourceProvider)}", nameof(sender));
+
+      UpdateDataObject(DataObject, dsp.Data);
     }
 
-    private void UpdateDataObject(object oldObject, object newObject)
+    private void UpdateDataObject(object? oldObject, object? newObject)
     {
       if (!ReferenceEquals(oldObject, newObject))
       {
@@ -101,12 +105,12 @@ namespace Csla.Xaml
       }
     }
 
-#region Hook/unhook events
+    #region Hook/unhook events
 
     private void UnHookDataContextEvents(object oldValue)
     {
       // unhook any old event handling
-      object oldContext = null;
+      object oldContext;
 
       if (oldValue is not DataSourceProvider provider)
       {
@@ -128,7 +132,7 @@ namespace Csla.Xaml
     private void HookDataContextEvents(object newValue)
     {
       // hook any new event
-      object newContext = null;
+      object newContext;
 
       if (newValue is not DataSourceProvider provider)
       {
@@ -147,88 +151,88 @@ namespace Csla.Xaml
         HookBindingListChanged(newContext as IBindingList);
     }
 
-    private void UnHookPropertyChanged(INotifyPropertyChanged oldContext)
+    private void UnHookPropertyChanged(INotifyPropertyChanged? oldContext)
     {
       if (oldContext != null)
         oldContext.PropertyChanged -= DataObject_PropertyChanged;
     }
 
-    private void HookPropertyChanged(INotifyPropertyChanged newContext)
+    private void HookPropertyChanged(INotifyPropertyChanged? newContext)
     {
       if (newContext != null)
         newContext.PropertyChanged += DataObject_PropertyChanged;
     }
 
-    private void UnHookChildChanged(Core.INotifyChildChanged oldContext)
+    private void UnHookChildChanged(Core.INotifyChildChanged? oldContext)
     {
       if (oldContext != null)
         oldContext.ChildChanged -= DataObject_ChildChanged;
     }
 
-    private void HookChildChanged(Core.INotifyChildChanged newContext)
+    private void HookChildChanged(Core.INotifyChildChanged? newContext)
     {
       if (newContext != null)
         newContext.ChildChanged += DataObject_ChildChanged;
     }
 
-    private void UnHookBindingListChanged(IBindingList oldContext)
+    private void UnHookBindingListChanged(IBindingList? oldContext)
     {
       if (oldContext != null)
         oldContext.ListChanged -= DataObject_ListChanged;
     }
 
-    private void HookBindingListChanged(IBindingList newContext)
+    private void HookBindingListChanged(IBindingList? newContext)
     {
       if (newContext != null)
         newContext.ListChanged += DataObject_ListChanged;
     }
 
-    private void UnHookObservableListChanged(INotifyCollectionChanged oldContext)
+    private void UnHookObservableListChanged(INotifyCollectionChanged? oldContext)
     {
       if (oldContext != null)
         oldContext.CollectionChanged -= DataObject_CollectionChanged;
     }
 
-    private void HookObservableListChanged(INotifyCollectionChanged newContext)
+    private void HookObservableListChanged(INotifyCollectionChanged? newContext)
     {
       if (newContext != null)
         newContext.CollectionChanged += DataObject_CollectionChanged;
     }
 
-#endregion
+    #endregion
 
-#region Handle events
+    #region Handle events
 
-    private void DataObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void DataObject_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       DataPropertyChanged(e);
     }
 
-    private void DataObject_ChildChanged(object sender, Core.ChildChangedEventArgs e)
+    private void DataObject_ChildChanged(object? sender, Core.ChildChangedEventArgs e)
     {
       DataPropertyChanged(e.PropertyChangedArgs);
     }
 
-    private void DataObject_ListChanged(object sender, ListChangedEventArgs e)
+    private void DataObject_ListChanged(object? sender, ListChangedEventArgs e)
     {
       DataBindingListChanged(e);
     }
 
-    private void DataObject_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void DataObject_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
       DataObservableCollectionChanged(e);
     }
 
-#endregion
+    #endregion
 
-#region Virtual methods
+    #region Virtual methods
 
     /// <summary>
     /// This method is called when a property
     /// of the data object to which the 
     /// control is bound has changed.
     /// </summary>
-    protected virtual void DataPropertyChanged(PropertyChangedEventArgs e)
+    protected virtual void DataPropertyChanged(PropertyChangedEventArgs? e)
     {
       // may be overridden by subclass
     }
@@ -264,9 +268,9 @@ namespace Csla.Xaml
       // may be overridden by subclass
     }
 
-#endregion
+    #endregion
 
-#region FindingBindings
+    #region FindingBindings
 
     /// <summary>
     /// Scans all child controls of this panel
@@ -284,11 +288,10 @@ namespace Csla.Xaml
       for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
       {
         Visual childVisual = (Visual)VisualTreeHelper.GetChild(visual, i);
-        MemberInfo[] sharedMembers = childVisual.GetType().GetMembers(
-          BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+        MemberInfo[] sharedMembers = childVisual.GetType().GetMembers(BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy);
         foreach (MemberInfo member in sharedMembers)
         {
-          DependencyProperty prop = null;
+          DependencyProperty? prop = null;
           if (member.MemberType == MemberTypes.Field)
             prop = ((FieldInfo)member).GetValue(childVisual) as DependencyProperty;
           else if (member.MemberType == MemberTypes.Property)
@@ -296,7 +299,7 @@ namespace Csla.Xaml
 
           if (prop != null)
           {
-            Binding bnd = BindingOperations.GetBinding(childVisual, prop);
+            Binding? bnd = BindingOperations.GetBinding(childVisual, prop);
             if (bnd != null && bnd.RelativeSource == null && bnd.Path != null && string.IsNullOrEmpty(bnd.ElementName))
               FoundBinding(bnd, (FrameworkElement)childVisual, prop);
           }
@@ -317,7 +320,7 @@ namespace Csla.Xaml
     {
     }
 
-#endregion
+    #endregion
   }
 }
 #endif

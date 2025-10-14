@@ -10,6 +10,8 @@ using Csla.Core;
 using System.Security.Principal;
 using Csla.Serialization;
 using Csla.Server.Hosts.DataPortalChannel;
+using Csla.Properties;
+using System.Runtime.Serialization;
 
 namespace Csla.Server.Hosts
 {
@@ -19,8 +21,8 @@ namespace Csla.Server.Hosts
   /// </summary>
   public class HttpPortal
   {
-    private IDataPortalServer dataPortalServer;
-    private ApplicationContext _applicationContext;
+    private readonly IDataPortalServer dataPortalServer;
+    private readonly ApplicationContext _applicationContext;
 
     /// <summary>
     /// Creates an instance of the type
@@ -29,37 +31,39 @@ namespace Csla.Server.Hosts
     /// <param name="dataPortal">Data portal server service</param>
     public HttpPortal(ApplicationContext applicationContext, IDataPortalServer dataPortal)
     {
-      dataPortalServer = dataPortal;
-      _applicationContext = applicationContext;
+      dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
     /// Create and initialize an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Create(CriteriaRequest request)
-#pragma warning restore 1998
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -83,29 +87,31 @@ namespace Csla.Server.Hosts
     /// Get an existing business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Fetch(CriteriaRequest request)
-#pragma warning restore 1998
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -129,23 +135,24 @@ namespace Csla.Server.Hosts
     /// Update a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Update(UpdateRequest request)
-#pragma warning restore 1998
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
-        // unpack object
-        object? obj = GetCriteria(_applicationContext, request.ObjectData);
+        var obj = GetCriteria(_applicationContext, request.ObjectData ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized));
 
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Update(obj, context, true);
 
@@ -170,29 +177,32 @@ namespace Csla.Server.Hosts
     /// Delete a business object.
     /// </summary>
     /// <param name="request">The request parameter object.</param>
-#pragma warning disable 1998
+    /// <exception cref="ArgumentNullException"><paramref name="request"/> is <see langword="null"/>.</exception>
     public async Task<DataPortalResponse> Delete(CriteriaRequest request)
-#pragma warning restore 1998
     {
-      var result = _applicationContext.CreateInstanceDI<DataPortalResponse>();
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
+      var result = new DataPortalResponse();
       try
       {
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object? criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName), true);
+        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, (IPrincipal)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.Principal),
+          _applicationContext, 
+          Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          (IContextDictionary)_applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 
@@ -214,17 +224,14 @@ namespace Csla.Server.Hosts
 
     #region Criteria
 
-    private static object? GetCriteria(ApplicationContext applicationContext, byte[]? criteriaData)
+    private static object GetCriteria(ApplicationContext applicationContext, byte[] criteriaData)
     {
-      object? criteria = null;
-      if (criteriaData != null)
-        criteria = applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(criteriaData);
-      return criteria;
+      return applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(criteriaData) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
     }
 
     #endregion Criteria
 
-    #region Extention Method for Requests
+    #region Extension Method for Requests
 
     /// <summary>
     /// Override to convert the request data before it
@@ -256,6 +263,17 @@ namespace Csla.Server.Hosts
       return response;
     }
 
-    #endregion Extention Method for Requests
+    #endregion Extension Method for Requests
+
+    private T? Deserialize<T>(byte[] data)
+    {
+      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data);
+      return (T?)deserializedData;
+    }
+
+    private T DeserializeRequired<T>(byte[] data)
+    {
+      return Deserialize<T>(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
+    }
   }
 }

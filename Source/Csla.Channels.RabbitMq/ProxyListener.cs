@@ -71,9 +71,7 @@ namespace Csla.Channels.RabbitMq
     /// Channel, ReplyQueue, and DataPortalQueueName values
     /// used for bi-directional communication.
     /// </summary>
-#if NET8_0_OR_GREATER
     [MemberNotNull(nameof(Connection), nameof(Channel), nameof(ReplyQueue))]
-#endif
     private async Task InitializeRabbitMQ()
     {
       var factory = new ConnectionFactory { HostName = _queueUri.Host };
@@ -111,7 +109,11 @@ namespace Csla.Channels.RabbitMq
     }
 
     private volatile bool IsListening;
-    private readonly Lock ListeningLock = LockFactory.Create();
+#if NET9_0_OR_GREATER
+    private readonly Lock ListeningLock = new();
+#else
+    private readonly object ListeningLock = new();
+#endif
 
     public async Task StartListening()
     {

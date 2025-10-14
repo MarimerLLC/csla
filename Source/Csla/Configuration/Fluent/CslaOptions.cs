@@ -8,6 +8,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
+using Csla.Rules;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Configuration
@@ -21,9 +22,10 @@ namespace Csla.Configuration
     /// Creates an instance of the type
     /// </summary>
     /// <param name="services">Services collection</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public CslaOptions(IServiceCollection services)
     {
-      Services = services;
+      Services = services ?? throw new ArgumentNullException(nameof(services));
       DataPortalOptions = new DataPortalOptions(this);
       SerializationOptions = new SerializationOptions(this);
     }
@@ -32,6 +34,38 @@ namespace Csla.Configuration
     /// Gets a reference to the current services collection.
     /// </summary>
     public IServiceCollection Services { get; }
+
+    /// <summary>
+    /// Sets the type for the IContextManager to 
+    /// be used by ApplicationContext.
+    /// </summary>
+    public CslaOptions UseContextManager<T>() where T : IContextManager
+    {
+      ContextManagerType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
+    /// Gets the type for the IContextManager 
+    /// used by ApplicationContext.
+    /// </summary>
+    public Type? ContextManagerType { get; private set; }
+
+    /// <summary>
+    /// Sets the type for the <see cref="IUnhandledAsyncRuleExceptionHandler"/> to be used.
+    /// </summary>
+    /// <typeparam name="T">The type to register for <see cref="IUnhandledAsyncRuleExceptionHandler"/>.</typeparam>
+    /// <returns>This instance.</returns>
+    public CslaOptions UseUnhandledAsyncRuleExceptionHandler<T>() where T : IUnhandledAsyncRuleExceptionHandler
+    {
+      UnhandledAsyncRuleExceptionHandlerType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
+    /// Gets the type used for the <see cref="IUnhandledAsyncRuleExceptionHandler"/>.
+    /// </summary>
+    public Type UnhandledAsyncRuleExceptionHandlerType { get; private set; } = typeof(DontObserveUnhandledAsyncRuleExceptionHandler);
 
     /// <summary>
     /// Sets a value indicating whether CSLA
@@ -54,13 +88,25 @@ namespace Csla.Configuration
     /// <summary>
     /// Sets the factory type that creates PropertyInfo objects.
     /// </summary>
-    public CslaOptions RegisterPropertyInfoFactory<
-#if NET8_0_OR_GREATER
-      [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
-#endif
-      T>() where T : IPropertyInfoFactory
+    public CslaOptions RegisterPropertyInfoFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>() where T : IPropertyInfoFactory
     {
       Core.FieldManager.PropertyInfoFactory.FactoryType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
+    /// Indicates whether the data annotations scan is enabled.
+    /// </summary>
+    public bool ScanDataAnnotations { get; private set; } = true;
+
+    /// <summary>
+    /// Configures the scanning for data annotations based on the provided flag.
+    /// </summary>
+    /// <param name="flag">True to scan for data annotations, false to disable scanning. (default: true)</param>
+    /// <returns>Returns the current instance of CslaOptions.</returns>
+    public CslaOptions ScanForDataAnnotations(bool flag)
+    {
+      ScanDataAnnotations = flag;
       return this;
     }
 

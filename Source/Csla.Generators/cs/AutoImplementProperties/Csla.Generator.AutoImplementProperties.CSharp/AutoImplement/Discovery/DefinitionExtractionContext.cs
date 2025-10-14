@@ -15,6 +15,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
   /// </summary>
   internal class DefinitionExtractionContext(SemanticModel _semanticModel, bool _addAttributes, bool _filterPartialProperties)
   {
+    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
     public SemanticModel SemanticModel => _semanticModel;
     private const string _cslaNamespace = "Csla";
 
@@ -33,10 +34,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
     public string GetTypeNamespace(TypeDeclarationSyntax typeDeclarationSyntax)
     {
-      INamedTypeSymbol typeSymbol;
-
-      typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
+      var typeSymbol = _semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) as INamedTypeSymbol;
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
 
@@ -47,29 +47,62 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>The namespace in which the type is declared, or an empty string if it is global</returns>
     public string GetTypeNamespace(TypeSyntax typeSyntax)
     {
-      INamedTypeSymbol typeSymbol;
+      INamedTypeSymbol? typeSymbol;
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
       {
         typeSyntax = nullableTypeSyntax.ElementType;
       }
-      
+
       if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
       {
         typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
       }
       else
       {
-        
+
         typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
       }
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null) return string.Empty;
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
       return typeSymbol.ContainingNamespace.ToString();
     }
 
+    public string GetFullyQualifiedType(TypeSyntax typeSyntax)
+    {
+      bool isNullable = false;
+      INamedTypeSymbol? typeSymbol;
+      if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
+      {
+        typeSyntax = nullableTypeSyntax.ElementType;
+        isNullable = true;
+      }
+
+      bool isArray = false;
+      if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+        isArray = true;
+      }
+      else
+      {
+        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+      }
+      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+        return string.Empty;
+
+      var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);
+      if (isArray && fullyQualified[^1] != ']')
+      {
+        fullyQualified += "[]";
+      }
+      if (isNullable && fullyQualified[^1] != '?')
+      {
+        fullyQualified += '?';
+      }
+      return fullyQualified;
+    }
 
     #region Private Helper Methods
-
-
 
     /// <summary>
     /// Perform a recursive match on a namespace symbol by name
@@ -90,7 +123,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         endNamespace = desiredTypeNamespace.Substring(separatorPosition + 1);
         remainingNamespace = desiredTypeNamespace.Substring(0, separatorPosition);
       }
-      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase)) return false;
+      if (!namespaceSymbol.Name.Equals(endNamespace, StringComparison.InvariantCultureIgnoreCase))
+        return false;
 
       if (string.IsNullOrWhiteSpace(remainingNamespace))
       {
@@ -123,11 +157,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       INamespaceSymbol namespaceSymbol;
 
       // Match on the type name
-      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase)) return false;
+      if (!appliedAttributeSymbol.Name.Equals(desiredTypeName, StringComparison.InvariantCultureIgnoreCase))
+        return false;
 
       // Match on the namespace of the type
       namespaceSymbol = appliedAttributeSymbol.ContainingNamespace;
-      if (namespaceSymbol is null) return false;
+      if (namespaceSymbol is null)
+        return false;
       return IsMatchingNamespaceSymbol(namespaceSymbol, desiredTypeNamespace);
     }
 
@@ -141,14 +177,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>Boolean true if the type is decorated with the attribute, otherwise false</returns>
     private bool IsPropertyDecoratedWith(PropertyDeclarationSyntax propertyDeclaration, string desiredAttributeTypeName, string desiredAttributeTypeNamespace)
     {
-      INamedTypeSymbol appliedAttributeSymbol;
-
       foreach (AttributeSyntax attributeSyntax in propertyDeclaration.AttributeLists.SelectMany(al => al.Attributes))
       {
-        appliedAttributeSymbol = _semanticModel.GetTypeInfo(attributeSyntax).Type as INamedTypeSymbol;
-        if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
+        if (_semanticModel.GetTypeInfo(attributeSyntax).Type is INamedTypeSymbol appliedAttributeSymbol)
         {
-          return true;
+          if (IsMatchingTypeSymbol(appliedAttributeSymbol, desiredAttributeTypeName, desiredAttributeTypeNamespace))
+          {
+            return true;
+          }
         }
       }
       return false;

@@ -23,7 +23,7 @@ namespace Csla.Windows
     {
       InitializeComponent();
       SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-      BusyProgressBar.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase).Invoke(BusyProgressBar, [ControlStyles.SupportsTransparentBackColor, true]);
+      BusyProgressBar.GetType().GetMethod("SetStyle", System.Reflection.BindingFlags.FlattenHierarchy | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.IgnoreCase)?.Invoke(BusyProgressBar, [ControlStyles.SupportsTransparentBackColor, true]);
       if (!IsInDesignMode)
         BusyProgressBar.BackColor = _progressBarBackColor;
     }
@@ -38,10 +38,7 @@ namespace Csla.Windows
     [Browsable(true)]
     public Color ProgressBarForeColor
     {
-      get
-      {
-        return _progressBarForeColor;
-      }
+      get => _progressBarForeColor;
       set
       {
         _progressBarForeColor = value;
@@ -60,10 +57,7 @@ namespace Csla.Windows
     [Browsable(true)]
     public Color ProgressBarBackColor
     {
-      get
-      {
-        return _progressBarBackColor;
-      }
+      get => _progressBarBackColor;
       set
       {
         _progressBarBackColor = value;
@@ -83,10 +77,7 @@ namespace Csla.Windows
     [Browsable(true)]
     public bool IsRunning
     {
-      get
-      {
-        return _isRunning;
-      }
+      get => _isRunning;
       set
       {
         _isRunning = value;

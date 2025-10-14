@@ -6,10 +6,7 @@
     <Product>CSLA .NET Microsoft.Data.SqlClient</Product>
     <Description>CSLA .NET Microsoft.Data.SqlClient support.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
-    <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <Title>CSLA .NET Microsoft.Data.SqlClient</Title>
     <PackageTags>CSLA;SqlClient;Sql Server</PackageTags>
   </PropertyGroup>
@@ -30,10 +27,6 @@
     <PackageReference Include="Azure.Identity" Version="1.13.2" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

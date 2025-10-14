@@ -10,6 +10,9 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Windows;
 using Csla.Core;
 using Csla.Rules;
@@ -37,23 +40,23 @@ namespace Csla.Xaml
     INotifyPropertyChanged, IViewModel
 #endif
   {
-    private ApplicationContext ApplicationContext { get => ApplicationContextManager.GetApplicationContext(); }
+    private ApplicationContext ApplicationContext => ApplicationContextManager.GetApplicationContext();
 
 #if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI
-    private T _model;
+    private T? _model;
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model
+    public T? Model
     {
-      get { return _model; }
+      get => _model;
       set
       {
         if (!ReferenceEquals(value, _model))
         {
           var oldValue = _model;
           _model = value;
-          this.OnModelChanged((T)oldValue, _model);
+          this.OnModelChanged((T?)oldValue, _model);
           OnPropertyChanged(nameof(Model));
         }
       }
@@ -63,7 +66,7 @@ namespace Csla.Xaml
     /// Gets or sets the Model object.
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
-        DependencyProperty.Register("Model", typeof(T), typeof(ViewModelBase<T>),
+        DependencyProperty.Register(nameof(Model), typeof(T), typeof(ViewModelBase<T>),
         new PropertyMetadata((o, e) =>
         {
           var viewmodel = (ViewModelBase<T>)o;
@@ -73,9 +76,9 @@ namespace Csla.Xaml
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
-    public T Model
+    public T? Model
     {
-      get { return (T)GetValue(ModelProperty); }
+      get { return (T?)GetValue(ModelProperty); }
       set { SetValue(ModelProperty, value); }
     }
 #endif
@@ -89,7 +92,7 @@ namespace Csla.Xaml
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
-        DependencyProperty.Register("ManageObjectLifetime", typeof(bool),
+        DependencyProperty.Register(nameof(ManageObjectLifetime), typeof(bool),
         typeof(ViewModelBase<T>), new PropertyMetadata(true));
 #endif
     /// <summary>
@@ -118,7 +121,7 @@ namespace Csla.Xaml
     /// </summary>
     public bool IsBusy
     {
-      get { return _isBusy; }
+      get => _isBusy;
       protected set
       {
         if (value != _isBusy)
@@ -138,10 +141,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool IsDirty
     {
-      get
-      {
-        return _isDirty;
-      }
+      get => _isDirty;
       protected set
       {
         if (_isDirty != value)
@@ -160,10 +160,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool IsValid
     {
-      get
-      {
-        return _isValid;
-      }
+      get => _isValid;
       protected set
       {
         if (_isValid != value)
@@ -182,10 +179,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanSave
     {
-      get
-      {
-        return _canSave;
-      }
+      get => _canSave;
       protected set
       {
         if (_canSave != value)
@@ -204,10 +198,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanCancel
     {
-      get
-      {
-        return _canCancel;
-      }
+      get => _canCancel;
       protected set
       {
         if (_canCancel != value)
@@ -227,10 +218,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanCreate
     {
-      get
-      {
-        return _canCreate;
-      }
+      get => _canCreate;
       protected set
       {
         if (_canCreate != value)
@@ -249,10 +237,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanDelete
     {
-      get
-      {
-        return _canDelete;
-      }
+      get => _canDelete;
       protected set
       {
         if (_canDelete != value)
@@ -272,10 +257,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanFetch
     {
-      get
-      {
-        return _canFetch;
-      }
+      get => _canFetch;
       protected set
       {
         if (_canFetch != value)
@@ -294,10 +276,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanRemove
     {
-      get
-      {
-        return _canRemove;
-      }
+      get => _canRemove;
       protected set
       {
         if (_canRemove != value)
@@ -316,10 +295,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual bool CanAddNew
     {
-      get
-      {
-        return _canAddNew;
-      }
+      get => _canAddNew;
       protected set
       {
         if (_canAddNew != value)
@@ -352,7 +328,7 @@ namespace Csla.Xaml
         // Set properties for List 
         if (Model is ICollection list)
         {
-          Type itemType = Utilities.GetChildItemType(Model.GetType());
+          Type? itemType = Utilities.GetChildItemType(Model.GetType());
           if (itemType == null)
           {
             CanAddNew = false;
@@ -376,7 +352,7 @@ namespace Csla.Xaml
       // Else if Model instance implement ICollection
       else if (Model is ICollection list)
       {
-        Type itemType = Utilities.GetChildItemType(Model.GetType());
+        Type? itemType = Utilities.GetChildItemType(Model.GetType());
         if (itemType == null)
         {
           CanAddNew = false;
@@ -525,9 +501,9 @@ namespace Csla.Xaml
     /// Model by invoking an action.
     /// </summary>
     /// <param name="factory">Factory method to invoke</param>
-    public virtual async Task<T> RefreshAsync<F>(Func<Task<T>> factory)
+    public virtual async Task<T?> RefreshAsync<F>(Func<Task<T?>> factory)
     {
-      T result = default;
+      T? result;
       try
       {
         IsBusy = true;
@@ -545,7 +521,7 @@ namespace Csla.Xaml
     /// Saves the Model, first committing changes
     /// if ManagedObjectLifetime is true.
     /// </summary>
-    public virtual async Task<T> SaveAsync()
+    public virtual async Task<T?> SaveAsync()
     {
       try
       {
@@ -576,7 +552,7 @@ namespace Csla.Xaml
     /// <summary>
     /// Override to provide custom Model save behavior.
     /// </summary>
-    protected virtual async Task<T> DoSaveAsync(ISavable cloned)
+    protected virtual async Task<T?> DoSaveAsync(ISavable? cloned)
     {
       if (cloned != null)
       {
@@ -630,12 +606,15 @@ namespace Csla.Xaml
       {
         ibl.AddNew();
       }
-      else
+      else if (Model is IObservableBindingList iobl)
       {
-        // else try to use as IObservableBindingList
-        var iobl = ((IObservableBindingList)Model);
         iobl.AddNew();
       }
+      else
+      {
+        throw CreateInvalidOperationExceptionForUnsupportedListType();
+      }
+
       OnSetProperties();
     }
 #else
@@ -651,12 +630,15 @@ namespace Csla.Xaml
       {
         result = iobl.AddNew();
       }
+      else if (Model is IBindingList ibl)
+      {
+        result = ibl.AddNew()!;
+      }
       else
       {
-        // else try to use as BindingList
-        var ibl = ((IBindingList)Model);
-        result = ibl.AddNew();
+        throw CreateInvalidOperationExceptionForUnsupportedListType();
       }
+
       OnSetProperties();
       return result;
     }
@@ -666,8 +648,9 @@ namespace Csla.Xaml
     /// Removes an item from the Model (if it
     /// is a collection).
     /// </summary>
-    protected virtual void DoRemove(object item)
+    protected virtual void DoRemove(object? item)
     {
+      ThrowIoeWhenModelIsNull();
       ((IList)Model).Remove(item);
       OnSetProperties();
     }
@@ -678,6 +661,7 @@ namespace Csla.Xaml
     /// </summary>
     protected virtual void DoDelete()
     {
+      ThrowIoeWhenModelIsNull();
       ((IEditableBusinessObject)Model).Delete();
     }
 
@@ -688,9 +672,10 @@ namespace Csla.Xaml
     /// </summary>
     /// <param name="oldValue">Previous Model reference.</param>
     /// <param name="newValue">New Model reference.</param>
-    protected virtual void OnModelChanged(T oldValue, T newValue)
+    protected virtual void OnModelChanged(T? oldValue, T? newValue)
     {
-      if (ReferenceEquals(oldValue, newValue)) return;
+      if (ReferenceEquals(oldValue, newValue))
+        return;
 
       if (ManageObjectLifetime && newValue is ISupportUndo undo)
         undo.BeginEdit();
@@ -720,7 +705,7 @@ namespace Csla.Xaml
     /// Unhooks changed event handlers from the model.
     /// </summary>
     /// <param name="model"></param>
-    protected void UnhookChangedEvents(T model)
+    protected void UnhookChangedEvents(T? model)
     {
       if (model is INotifyPropertyChanged npc)
         npc.PropertyChanged -= Model_PropertyChanged;
@@ -736,7 +721,7 @@ namespace Csla.Xaml
     /// Hooks changed events on the model.
     /// </summary>
     /// <param name="model"></param>
-    private void HookChangedEvents(T model)
+    private void HookChangedEvents(T? model)
     {
       if (model is INotifyPropertyChanged npc)
         npc.PropertyChanged += Model_PropertyChanged;
@@ -767,49 +752,49 @@ namespace Csla.Xaml
         OnSetProperties();
     }
 
-    private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void Model_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
       OnSetProperties();
       ModelPropertyChanged?.Invoke(this, e);
     }
 
-    private void Model_ChildChanged(object sender, ChildChangedEventArgs e)
+    private void Model_ChildChanged(object? sender, ChildChangedEventArgs e)
     {
       OnSetProperties();
       ModelChildChanged?.Invoke(this, e);
     }
 
-    private void Model_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void Model_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
       OnSetProperties();
       ModelCollectionChanged?.Invoke(this, e);
     }
 
-    object IViewModel.Model
+    object? IViewModel.Model
     {
-      get { return Model; }
-      set { Model = (T)value; }
+      get => Model;
+      set => Model = (T?)value;
     }
 
     /// <summary>
     /// Event raised when a property on the Model changes.
     /// </summary>
-    public event PropertyChangedEventHandler ModelPropertyChanged;
+    public event PropertyChangedEventHandler? ModelPropertyChanged;
 
     /// <summary>
     /// Event raised when a child of the Model changes.
     /// </summary>
-    public event Action<object, ChildChangedEventArgs> ModelChildChanged;
+    public event Action<object, ChildChangedEventArgs>? ModelChildChanged;
 
     /// <summary>
     /// Event raised the Model changes and is a collection.
     /// </summary>
-    public event Action<object, NotifyCollectionChangedEventArgs> ModelCollectionChanged;
+    public event Action<object, NotifyCollectionChangedEventArgs>? ModelCollectionChanged;
 
     /// <summary>
     /// Event raised when a property changes.
     /// </summary>
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>
     /// Raise the PropertyChanged event.
@@ -818,6 +803,18 @@ namespace Csla.Xaml
     protected virtual void OnPropertyChanged(string propertyName)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    [StackTraceHidden]
+    private InvalidOperationException CreateInvalidOperationExceptionForUnsupportedListType()
+    {
+      return new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.UnsupportedXamlListTypeForModel, nameof(IObservableBindingList), "IBindingList"));
+    }
+
+    [StackTraceHidden, MemberNotNull(nameof(Model))]
+    private void ThrowIoeWhenModelIsNull()
+    {
+      _ = Model ?? throw new InvalidOperationException($"{nameof(Model)} == null");
     }
   }
 }

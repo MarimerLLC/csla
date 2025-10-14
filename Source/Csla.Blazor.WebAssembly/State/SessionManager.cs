@@ -6,6 +6,7 @@
 // <summary>Manages all user session data</summary>
 //-----------------------------------------------------------------------
 
+using System.Globalization;
 using System.Net.Http.Json;
 using Csla.Blazor.Authentication;
 using Csla.Blazor.State.Messages;
@@ -23,18 +24,18 @@ namespace Csla.Blazor.WebAssembly.State
   /// <param name="applicationContext"></param>
   /// <param name="httpClient"></param>
   /// <param name="options"></param>
-  public class SessionManager(
-    ApplicationContext applicationContext, HttpClient httpClient, BlazorWebAssemblyConfigurationOptions options) : ISessionManager
+  /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="httpClient"/> or <paramref name="options"/> is <see langword="null"/>.</exception>
+  public class SessionManager(ApplicationContext applicationContext, HttpClient httpClient, BlazorWebAssemblyConfigurationOptions options) : ISessionManager
   {
-    private readonly ApplicationContext ApplicationContext = applicationContext;
-    private readonly HttpClient client = httpClient;
-    private readonly BlazorWebAssemblyConfigurationOptions _options = options;
-    private Session _session;
+    private readonly ApplicationContext ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+    private readonly HttpClient client = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private readonly BlazorWebAssemblyConfigurationOptions _options = options ?? throw new ArgumentNullException(nameof(options));
+    private Session? _session;
 
     /// <summary>
     /// Gets the current user's session from the cache.
     /// </summary>
-    public Session GetCachedSession()
+    public Session? GetCachedSession()
     {
       if (!_options.SyncContextWithServer && _session == null)
       {
@@ -55,7 +56,8 @@ namespace Csla.Blazor.WebAssembly.State
     {
       try
       {
-        return await RetrieveSession(GetCancellationToken(timeout));
+        using var cts = timeout.ToCancellationTokenSource();
+        return await RetrieveSession(cts.Token);
       }
       catch (TaskCanceledException tcex)
       {
@@ -78,18 +80,13 @@ namespace Csla.Blazor.WebAssembly.State
         if (_session != null)
           lastTouched = _session.LastTouched;
         var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
-        var stateResult = await client.GetFromJsonAsync<StateResult>(url, ct).ConfigureAwait(false);
-        if (stateResult.ResultStatus == ResultStatuses.Success)
+        var stateResult = (await client.GetFromJsonAsync<StateResult>(url, ct).ConfigureAwait(false)) ?? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.SessionManagerSessionStateCouldNotBeRetrieved, _options.StateControllerName, nameof(StateResult)));
+        if (stateResult.IsSuccess)
         {
           var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
-          var buffer = new MemoryStream(stateResult.SessionData)
-          {
-            Position = 0
-          };
-          var message = (SessionMessage)formatter.Deserialize(buffer);
+          var message = (SessionMessage)formatter.Deserialize(stateResult.SessionData)!;
           _session = message.Session;
-          if (message.Principal is not null &&
-              ApplicationContext.GetRequiredService<AuthenticationStateProvider>() is CslaAuthenticationStateProvider provider)
+          if (message.Principal is not null && ApplicationContext.GetRequiredService<AuthenticationStateProvider>() is CslaAuthenticationStateProvider provider)
           {
             provider.SetPrincipal(message.Principal);
           }
@@ -118,18 +115,13 @@ namespace Csla.Blazor.WebAssembly.State
     {
       try
       {
-        await SendSession(GetCancellationToken(timeout));
+        using var cts = timeout.ToCancellationTokenSource();
+        await SendSession(cts.Token);
       }
       catch (TaskCanceledException tcex)
       {
         throw new TimeoutException($"{this.GetType().FullName}.{nameof(SendSession)}.", tcex);
       }
-    }
-
-    private static CancellationToken GetCancellationToken(TimeSpan timeout)
-    {
-      var cts = new CancellationTokenSource(timeout);
-      return cts.Token;
     }
 
     /// <summary>
@@ -141,9 +133,11 @@ namespace Csla.Blazor.WebAssembly.State
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task SendSession(CancellationToken ct)
     {
-      _session.Touch();
+      _session?.Touch();
       if (_options.SyncContextWithServer)
       {
+        ExceptionLocalizer.ThrowIfNullSessionNotRetrieved(_session);
+
         var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);

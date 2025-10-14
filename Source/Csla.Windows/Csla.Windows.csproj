@@ -2,14 +2,13 @@
   <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>net462;net8.0-windows;net9.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>Csla.Windows</AssemblyName>
     <RootNamespace>Csla.Windows</RootNamespace>
     <Product>CSLA .NET Windows.Forms</Product>
     <Description>UI helpers for using CSLA .NET business types with Windows Forms.</Description>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET Windows Forms</Title>
@@ -17,11 +16,14 @@
     <PackageId>Csla.Windows.Forms</PackageId>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
+  <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
+    <PackageReference Include="Polyfill" Version="7.4.0">
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 

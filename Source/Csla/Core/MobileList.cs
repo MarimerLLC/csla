@@ -19,16 +19,12 @@ namespace Csla.Core
   /// Type of object contained in the list.
   /// </typeparam>
   [Serializable]
-  public class MobileList<
-#if NET8_0_OR_GREATER
-    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-#endif
-    T> : List<T>, IMobileObject
+  public class MobileList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : List<T>, IMobileObject
   {
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    public MobileList() : base() { }
+    public MobileList() { }
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -38,6 +34,7 @@ namespace Csla.Core
     /// Creates an instance of the type.
     /// </summary>
     /// <param name="collection">Data to add to list.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     public MobileList(IEnumerable<T> collection) : base(collection) { }
 
     #region IMobileObject Members
@@ -121,9 +118,9 @@ namespace Csla.Core
       {
         T value;
         if (mobileChildren)
-          value = (T)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId);
+          value = (T)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId)!;
         else
-          value = info.GetValue<T>(_valuePrefix + index);
+          value = info.GetValue<T>(_valuePrefix + index)!;
 
         Add(value);
       }

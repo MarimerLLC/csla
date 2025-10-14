@@ -21,7 +21,7 @@ namespace Csla.Rules
     /// </summary>
     public override bool IsAsync
     {
-      get { return _isAsync; }
+      get => _isAsync;
       protected set
       {
         CanWriteProperty("IsAsync");
@@ -42,7 +42,7 @@ namespace Csla.Rules
     /// to a specfic property.
     /// </summary>
     /// <param name="primaryProperty">Primary property for this rule.</param>
-    protected BusinessRule(Core.IPropertyInfo primaryProperty)
+    protected BusinessRule(Core.IPropertyInfo? primaryProperty)
       : base(primaryProperty)
     { }
 

@@ -6,6 +6,7 @@
 // <summary>Implement extension methods for base .NET configuration</summary>
 //-----------------------------------------------------------------------
 using Csla.DataPortalClient;
+using Csla.Rules;
 using Csla.Runtime;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -21,6 +22,7 @@ namespace Csla.Configuration
     /// Add CSLA .NET services for use by the application.
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
     public static IServiceCollection AddCsla(this IServiceCollection services)
     {
       return AddCsla(services, null);
@@ -31,8 +33,12 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="services">ServiceCollection object</param>
     /// <param name="options">Options for configuring CSLA .NET</param>
-    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions> options)
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
+    public static IServiceCollection AddCsla(this IServiceCollection services, Action<CslaOptions>? options)
     {
+      if (services is null)
+        throw new ArgumentNullException(nameof(services));
+
       // ApplicationContext defaults
       services.AddScoped<Core.IContextManagerLocal, Core.ApplicationContextManagerAsyncLocal>();
       services.AddScoped<Core.ApplicationContextAccessor>();
@@ -53,8 +59,10 @@ namespace Csla.Configuration
       services.AddScoped(typeof(IDataPortalCache), cslaOptions.DataPortalOptions.DataPortalClientOptions.DataPortalCacheType);
       cslaOptions.AddRequiredDataPortalServices(services);
 
+      services.AddScoped(typeof(IUnhandledAsyncRuleExceptionHandler), cslaOptions.UnhandledAsyncRuleExceptionHandlerType);
+
       // Default to using LocalProxy and local data portal
-      var proxyInit = services.Count(i => i.ServiceType.Equals(typeof(IDataPortalProxy))) > 0;
+      var proxyInit = services.Any(i => i.ServiceType == typeof(IDataPortalProxy));
       if (!proxyInit)
       {
         cslaOptions.DataPortal(options => options.DataPortalClientOptions.UseLocalProxy());
@@ -72,6 +80,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <param name="options"></param>
     /// <returns></returns>
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
     public static CslaOptions AddConsoleApp(this CslaOptions options)
     {
       return AddConsoleApp(options, null);
@@ -83,8 +92,12 @@ namespace Csla.Configuration
     /// <param name="options"></param>
     /// <param name="config"></param>
     /// <returns></returns>
-    public static CslaOptions AddConsoleApp(this CslaOptions options, Action<ConsoleOptions> config)
+    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
+    public static CslaOptions AddConsoleApp(this CslaOptions options, Action<ConsoleOptions>? config)
     {
+      if (options is null)
+        throw new ArgumentNullException(nameof(options));
+
       var consoleOptions = new ConsoleOptions();
       config?.Invoke(consoleOptions);
 

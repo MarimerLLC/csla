@@ -24,7 +24,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T : ICslaObject, notnull
+  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T : notnull, ICslaObject
   {
     /// <summary>
     /// Gets or sets the current ApplicationContext object.

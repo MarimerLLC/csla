@@ -12,9 +12,9 @@ Here are the steps to create a local "prerelease" of CSLA NuGet packages you can
 1. Rebuild All
 1. Open PowerShell
    1. Change directory to `csla/NuGet`
-   1. `'.\Build All.ps1' /prerelease:yymmddnn`
+   1. `'./Build All.ps1' /prerelease:yymmddnn`
       * yy is year, mm is month, dd is day, nn is a unique ascending number for the current day (01, 02, etc.)
-   1. `.\consolidatepackages.bat`
+   1. `./consolidatepackages.bat`
       * This copies the packages to a `packages` directory at a _peer level_ with your `csla` directory
 1. In Visual Studio add a NuGet package source that points to this new `packages` directory
 

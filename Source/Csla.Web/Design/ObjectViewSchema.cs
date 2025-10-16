@@ -55,7 +55,7 @@ namespace Csla.Web.Design
     /// <remarks>All public properties on the object
     /// will be reflected in this schema list except
     /// for those properties where the 
-    /// <see cref="BrowsableAttribute">Browsable</see> attribute
+    /// <c>System.ComponentModel.BrowsableAttribute</c>
     /// is False.
     /// </remarks>
     public IDataSourceFieldSchema[] GetFields()

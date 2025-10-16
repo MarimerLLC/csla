@@ -24,9 +24,6 @@ namespace Csla.Server
     /// </summary>
     /// <value></value>
     /// <returns>A string that describes the immediate frames of the call stack.</returns>
-    /// <PermissionSet>
-    /// 	<IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" PathDiscovery="*AllFiles*"/>
-    /// </PermissionSet>
     public override string StackTrace { get; }
 
     /// <summary>
@@ -78,9 +75,6 @@ namespace Csla.Server
     /// <returns>
     /// A <see cref="System.String"/> that represents this instance.
     /// </returns>
-    /// <PermissionSet>
-    /// 	<IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" PathDiscovery="*AllFiles*"/>
-    /// </PermissionSet>
     public override string ToString()
     {
       string className;

@@ -1,7 +1,7 @@
 PROJECT_NAME           = "CSLA .NET"
 PROJECT_NUMBER         = "10.0.0"
 PROJECT_BRIEF          = "A home for your business logic"
-PROJECT_LOGO           = "S:/src/rdl/csla/Support/Logos/csla%20win8_compact.png"
+PROJECT_LOGO           = "S:/src/rdl/csla/Support/Logos/csla win8_compact.png"
 
 INPUT = csla/Source/Csla \
         csla/Source/Csla.Analyzers \
@@ -18,7 +18,7 @@ INPUT = csla/Source/Csla \
         csla/Source/Csla.Xaml.Maui \
         csla/Source/Csla.Xaml.Shared \
         csla/Source/Csla.Xaml.Wpf \
-        csla/docs/readme.md \
+        csla/docs \
         csla/Source/docs/contributors.md
 USE_MDFILE_AS_MAINPAGE = csla/docs/readme.md
 OUTPUT_DIRECTORY = output

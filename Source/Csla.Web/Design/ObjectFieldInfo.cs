@@ -66,7 +66,7 @@ namespace Csla.Web.Design
     /// </summary>
     /// <remarks>
     /// Returns the optional value provided through
-    /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
+    /// the <c>System.ComponentModel.DataObjectFieldAttribute</c>
     /// attribute on the property.
     /// </remarks>
     public bool Identity { get; }
@@ -93,7 +93,7 @@ namespace Csla.Web.Design
     /// </summary>
     /// <remarks>
     /// Returns the optional value provided through
-    /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
+    /// the <c>System.ComponentModel.DataObjectFieldAttribute</c>
     /// attribute on the property.
     /// </remarks>
     public int Length { get; }
@@ -111,7 +111,7 @@ namespace Csla.Web.Design
     /// Returns True for reference types, and for
     /// value types wrapped in the Nullable generic.
     /// The result can also be set to True through
-    /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
+    /// the <c>System.ComponentModel.DataObjectFieldAttribute</c>
     /// attribute on the property.
     /// </remarks>
     public bool Nullable { get; }
@@ -128,7 +128,7 @@ namespace Csla.Web.Design
     /// </summary>
     /// <remarks>
     /// Returns the optional value provided through
-    /// the <see cref="DataObjectFieldAttribute">DataObjectField</see>
+    /// the <c>System.ComponentModel.DataObjectFieldAttribute</c>
     /// attribute on the property.
     /// </remarks>
     public bool PrimaryKey => IsUnique;

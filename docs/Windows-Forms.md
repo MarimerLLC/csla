@@ -3,7 +3,7 @@
 ## Is Windows Forms supported in CSLA .NET 4.0?
 
 Yes, but your business collections need to inherit from base classes in Csla.Windows, not the ones in the main Csla namespace. Starting with CSLA .NET 4.0, the base collection types fully support WPF binding.
-<!---[See this page](WpfCollectionBinding) for more information.--->
+<!-- [See this page](WpfCollectionBinding) for more information. -->
 
 ## Windows Forms isn't in Expert 2008 Business Objects - where do I get info?
 
@@ -18,4 +18,4 @@ If you need more basic information about Windows Forms, I’m afraid you’ll ha
 
 ## Loading data into a DataGridView seems slow
 
-Read this thread for suggestions: https://cslanet.com/old-forum/11736.html
+Read this thread for suggestions: [https://cslanet.com/old-forum/11736.html](https://cslanet.com/old-forum/11736.html)

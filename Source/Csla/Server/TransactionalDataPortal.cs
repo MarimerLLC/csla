@@ -47,7 +47,7 @@ namespace Csla.Server
     /// to provide transactional support via
     /// System.Transactions.
     /// </remarks>
-    /// <param name="objectType">A <see cref="Type">Type</see> object
+  /// <param name="objectType">A <c>System.Type</c> object
     /// indicating the type of business object to be created.</param>
     /// <param name="criteria">A custom criteria object providing any
     /// extra information that may be required to properly create

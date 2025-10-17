@@ -13,7 +13,17 @@ namespace Csla
   /// via dependency injection.
   /// </summary>
   [AttributeUsage(AttributeTargets.Parameter)]
-  public class InjectAttribute : Attribute;
+  public class InjectAttribute : Attribute
+  {
+    /// <summary>
+    /// Gets or sets a value indicating whether the injected
+    /// service can be null. When false (default), GetRequiredService
+    /// is used and an exception is thrown if the service is not registered.
+    /// When true, GetService is used and null may be returned if the
+    /// service is not registered.
+    /// </summary>
+    public bool AllowNull { get; set; }
+  }
 
   /// <summary>
   /// Base type for data portal operation

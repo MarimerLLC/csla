@@ -6,8 +6,12 @@
 // <summary>Class that contains cached metadata about data portal</summary>
 //-----------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Csla.Server;
 
 namespace Csla.Reflection
@@ -18,7 +22,7 @@ namespace Csla.Reflection
   /// </summary>
   public class ServiceProviderMethodInfo
   {
-    [MemberNotNullWhen(true, nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(DataPortalMethodInfo))]
+    [MemberNotNullWhen(true, nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(DataPortalMethodInfo))]
     private bool Initialized { get; set; }
 
     /// <summary>
@@ -45,6 +49,11 @@ namespace Csla.Reflection
     /// parameters need to be injected
     /// </summary>
     public bool[]? IsInjected { get; private set; }
+    /// <summary>
+    /// Gets an array of values indicating which
+    /// injected parameters allow null values
+    /// </summary>
+    public bool[]? AllowNull { get; private set; }
     /// <summary>
     /// Gets a value indicating whether the method
     /// returns type Task
@@ -74,7 +83,7 @@ namespace Csla.Reflection
     /// Initializes and caches the metastate values
     /// necessary to invoke the method
     /// </summary>
-    [MemberNotNull(nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(DataPortalMethodInfo))]
+    [MemberNotNull(nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(DataPortalMethodInfo))]
     public void PrepForInvocation()
     {
       if (!Initialized)
@@ -87,12 +96,17 @@ namespace Csla.Reflection
             Parameters = MethodInfo.GetParameters();
             TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
             IsInjected = new bool[Parameters.Length];
+            AllowNull = new bool[Parameters.Length];
 
             int index = 0;
             foreach (var item in Parameters)
             {
-              if (item.GetCustomAttributes<InjectAttribute>().Any())
+              var injectAttribute = item.GetCustomAttributes<InjectAttribute>().FirstOrDefault();
+              if (injectAttribute != null)
+              {
                 IsInjected[index] = true;
+                AllowNull[index] = injectAttribute.AllowNull || ParameterAllowsNull(item);
+              }
               index++;
             }
             IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));
@@ -104,5 +118,110 @@ namespace Csla.Reflection
         }
       }
     }
+
+    private static bool ParameterAllowsNull(ParameterInfo parameter)
+    {
+      if (Nullable.GetUnderlyingType(parameter.ParameterType) != null)
+        return true;
+
+      if (!parameter.ParameterType.IsValueType)
+        return IsNullableReference(parameter);
+
+      return false;
+    }
+
+    private static bool IsNullableReference(ParameterInfo parameter)
+    {
+      if (TryGetNullableAttribute(parameter.CustomAttributes, out var nullableFlag))
+        return nullableFlag == NullableFlag;
+
+      var context = GetNullableContext(parameter);
+      return context == NullableFlag;
+    }
+
+    private static byte? GetNullableContext(ParameterInfo parameter)
+    {
+      var member = parameter.Member;
+      if (member != null)
+      {
+        if (TryGetNullableContext(member.CustomAttributes, out var memberFlag))
+          return memberFlag;
+
+        var declaringType = member.DeclaringType;
+        while (declaringType != null)
+        {
+          if (TryGetNullableContext(declaringType.CustomAttributes, out var typeFlag))
+            return typeFlag;
+
+          declaringType = declaringType.DeclaringType;
+        }
+
+        var assembly = member.Module?.Assembly;
+        if (assembly != null && TryGetNullableContext(assembly.CustomAttributes, out var assemblyFlag))
+          return assemblyFlag;
+      }
+
+      return null;
+    }
+
+    private static bool TryGetNullableContext(IEnumerable<CustomAttributeData> attributes, out byte flag)
+    {
+      foreach (var attribute in attributes)
+      {
+        if (attribute.AttributeType.FullName == NullableContextAttributeName &&
+            TryExtractFlag(attribute, out flag))
+        {
+          return true;
+        }
+      }
+
+      flag = default;
+      return false;
+    }
+
+    private static bool TryGetNullableAttribute(IEnumerable<CustomAttributeData> attributes, out byte flag)
+    {
+      foreach (var attribute in attributes)
+      {
+        if (attribute.AttributeType.FullName == NullableAttributeName &&
+            TryExtractFlag(attribute, out flag))
+        {
+          return true;
+        }
+      }
+
+      flag = default;
+      return false;
+    }
+
+    private static bool TryExtractFlag(CustomAttributeData attribute, out byte flag)
+    {
+      if (attribute.ConstructorArguments.Count == 1)
+      {
+        var argument = attribute.ConstructorArguments[0];
+        if (argument.ArgumentType == typeof(byte) && argument.Value is byte byteFlag)
+        {
+          flag = byteFlag;
+          return true;
+        }
+
+        if (argument.Value is IEnumerable<CustomAttributeTypedArgument> nestedArguments)
+        {
+          var nested = nestedArguments.FirstOrDefault();
+          if (nested.ArgumentType == typeof(byte) && nested.Value is byte nestedFlag)
+          {
+            flag = nestedFlag;
+            return true;
+          }
+        }
+      }
+
+      flag = default;
+      return false;
+    }
+
+    private const string NullableAttributeName = "System.Runtime.CompilerServices.NullableAttribute";
+    private const string NullableContextAttributeName = "System.Runtime.CompilerServices.NullableContextAttribute";
+    private const byte NullableFlag = 2;
   }
 }

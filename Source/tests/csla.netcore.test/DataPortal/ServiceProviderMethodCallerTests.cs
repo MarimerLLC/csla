@@ -9,6 +9,7 @@ using System.Reflection;
 using Csla.Reflection;
 using Csla.TestHelpers;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -362,6 +363,147 @@ namespace Csla.Test.DataPortal
     {
       FluentActions.Invoking(() => _systemUnderTest.TryFindDataPortalMethod<FetchAttribute>(typeof(NotKnownObjectFactoryInCurrentEnvironment), null, out var _)).Should().NotThrow();
     }
+
+    [TestMethod]
+    public void FindMethodWithIDataPortalFactoryInjection()
+    {
+      var obj = new DataPortalFactoryInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithIDataPortalFactoryInjection()
+    {
+      var portal = _diContext.CreateDataPortal<DataPortalFactoryInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Factory injected");
+    }
+
+    [TestMethod]
+    public async Task FetchMethodWithIDataPortalFactoryInjection()
+    {
+      var portal = _diContext.CreateDataPortal<DataPortalFactoryInjection>();
+      var obj = await portal.FetchAsync(42);
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Fetched 42 with factory: injected");
+    }
+
+    [TestMethod]
+    public void FindMethodWithOptionalInjection()
+    {
+      var obj = new OptionalServiceInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+      method.AllowNull.Should().HaveCount(1);
+      method.AllowNull![0].Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithOptionalServiceInjection()
+    {
+      // Don't register the service - it should be null since AllowNull = true
+      var portal = _diContext.CreateDataPortal<OptionalServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Optional service is null as expected");
+    }
+
+    [TestMethod]
+    public void FindMethodWithNullableOptionalInjection()
+    {
+      var obj = new NullableOptionalServiceInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+      method.AllowNull.Should().HaveCount(1);
+      method.AllowNull![0].Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithNullableOptionalInjection_ServiceNotRegistered()
+    {
+      var portal = _diContext.CreateDataPortal<NullableOptionalServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Nullable optional service is null as expected");
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithNullableOptionalInjection_ServiceRegistered()
+    {
+      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      {
+        services.AddTransient<IOptionalService, FakeOptionalService>();
+      });
+
+      var portal = contextWithService.CreateDataPortal<NullableOptionalServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Fake service data");
+    }
+
+    [TestMethod]
+    public void FindMethodWithRequiredInjection()
+    {
+      var obj = new RequiredServiceInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+      method.AllowNull.Should().HaveCount(1);
+      method.AllowNull![0].Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithRequiredServiceInjection_ServiceRegistered()
+    {
+      // Create a context with the service registered
+      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      {
+        services.AddTransient<IOptionalService, FakeOptionalService>();
+      });
+
+      var portal = contextWithService.CreateDataPortal<RequiredServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Fake service data");
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithRequiredServiceInjection_ThrowsWhenServiceNotRegistered()
+    {
+      var portal = _diContext.CreateDataPortal<RequiredServiceInjection>();
+      
+      // This should throw because the service is required but not registered
+      // The exception might be wrapped in other exceptions from the data portal
+      await FluentActions.Invoking(async () => await portal.CreateAsync())
+        .Should().ThrowAsync<Exception>();
+    }
   }
 
   #region Classes for testing various scenarios of loading/finding data portal methods
@@ -677,6 +819,105 @@ namespace Csla.Test.DataPortal
     [DeleteSelfChild]
     private void DeleteSelf(int x, int y)
     { }
+  }
+
+  public class DataPortalFactoryInjection : BusinessBase<DataPortalFactoryInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject] IDataPortalFactory factory)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = factory != null ? "Factory injected" : "Factory is null";
+      }
+    }
+
+    [Fetch]
+    private void Fetch(int id, [Inject] IDataPortalFactory factory)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = $"Fetched {id} with factory: {(factory != null ? "injected" : "null")}";
+      }
+    }
+  }
+
+  // Fake service interface for testing optional injection
+  public interface IOptionalService
+  {
+    string GetData();
+  }
+
+  // Fake implementation for testing
+  public class FakeOptionalService : IOptionalService
+  {
+    public string GetData() => "Fake service data";
+  }
+
+  public class OptionalServiceInjection : BusinessBase<OptionalServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject(AllowNull = true)] IOptionalService optionalService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = optionalService == null ? "Optional service is null as expected" : optionalService.GetData();
+      }
+    }
+  }
+
+#nullable enable
+  public class NullableOptionalServiceInjection : BusinessBase<NullableOptionalServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject] IOptionalService? optionalService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = optionalService == null ? "Nullable optional service is null as expected" : optionalService.GetData();
+      }
+    }
+  }
+#nullable restore
+
+  public class RequiredServiceInjection : BusinessBase<RequiredServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject] IOptionalService requiredService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = requiredService.GetData();
+      }
+    }
   }
 
   #endregion

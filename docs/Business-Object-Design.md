@@ -16,7 +16,7 @@ It is often the case that a tree is best represented as a set of read-only objec
 
 You can then have a set of Command objects that are used to perform operations on the read-only objects. The Command object can change the server-side data (in the database) and if that succeeds it can alter the client-side object graph (or at least coordinate the updates to the object graph - I'm not advocating breaking encapsulation).
 
-<!---[read more...](MovingItemsBetweenLists)--->
+<!-- [read more...](MovingItemsBetweenLists) -->
 
 ## Moving items from one editable list to another
 
@@ -26,7 +26,7 @@ You can then have a set of Command objects that are used to perform operations o
 
 You can load an NVLB object from an enum.
 
-<!---[read more...](CreateNVLBFromEnum)--->
+<!-- [read more...](CreateNVLBFromEnum) -->
 
 ## How is an empty date different from a null date?
 

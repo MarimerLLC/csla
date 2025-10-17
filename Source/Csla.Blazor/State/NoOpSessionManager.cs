@@ -31,12 +31,12 @@ namespace Csla.Blazor.State
     /// <exception cref="NotSupportedException"></exception>
     public Session GetSession()
     { throw new NotSupportedException(); }
-    /// <summary>
-    /// Not supported
-    /// </summary>
-    /// <returns></returns>
-    /// <exception cref="NotSupportedException"></exception>
-    public void PurgeSessions(TimeSpan expiration)
+  /// <summary>
+  /// Not supported.
+  /// </summary>
+  /// <param name="expiration">Unused expiration value.</param>
+  /// <exception cref="NotSupportedException"></exception>
+  public void PurgeSessions(TimeSpan expiration)
     { throw new NotSupportedException(); }
     /// <summary>
     /// Not supported

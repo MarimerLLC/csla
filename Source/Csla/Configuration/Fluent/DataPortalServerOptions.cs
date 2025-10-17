@@ -6,6 +6,7 @@
 // <summary>Server-side data portal options.</summary>
 //-----------------------------------------------------------------------
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Server;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,14 +16,22 @@ namespace Csla.Configuration
   /// <summary>
   /// Server-side data portal options.
   /// </summary>
-  /// <param name="services">Service collection.</param>
-  /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
-  public class DataPortalServerOptions(IServiceCollection services)
+  public class DataPortalServerOptions
   {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DataPortalServerOptions"/> class.
+    /// </summary>
+    /// <param name="services">Service collection.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <see langword="null"/>.</exception>
+    public DataPortalServerOptions(IServiceCollection services)
+    {
+      Services = services ?? throw new ArgumentNullException(nameof(services));
+    }
+
     /// <summary>
     /// Gets the service collection.
     /// </summary>
-    public IServiceCollection Services{ get; } = services ?? throw new ArgumentNullException(nameof(services));
+    public IServiceCollection Services { get; }
 
     /// <summary>
     /// Gets or sets a value containing the type of the

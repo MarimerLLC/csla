@@ -35,7 +35,7 @@ namespace Csla
     /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
     /// Will call the supplied delegate to create an instance of T (the value)
     /// </summary>
-    /// <param name="delegate">The @delegate.</param>
+  /// <param name="delegate">Factory delegate used to create the singleton value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="delegate"/> is <see langword="null"/>.</exception>
     public LazySingleton(Func<T> @delegate)
     {

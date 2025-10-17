@@ -90,7 +90,7 @@ namespace Csla.Web.Design
     /// </summary>
     /// <remarks>
     /// All public properties are returned except for those marked
-    /// with the <see cref="BrowsableAttribute">Browsable attribute</see>
+    /// with the <see cref="System.ComponentModel.BrowsableAttribute">Browsable attribute</see>
     /// as False.
     /// </remarks>
     public override IDataSourceViewSchema Schema =>

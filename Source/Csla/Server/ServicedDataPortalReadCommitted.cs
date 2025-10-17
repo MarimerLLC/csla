@@ -42,7 +42,7 @@ namespace Csla.Server
     /// but wraps that call within a COM+ transaction
     /// to provide transactional support.
     /// </remarks>
-    /// <param name="objectType">A <see cref="Type">Type</see> object
+  /// <param name="objectType">A <c>System.Type</c> object
     /// indicating the type of business object to be created.</param>
     /// <param name="criteria">A custom criteria object providing any
     /// extra information that may be required to properly create
@@ -66,7 +66,7 @@ namespace Csla.Server
     /// but wraps that call within a COM+ transaction
     /// to provide transactional support.
     /// </remarks>
-    /// <param name="objectType">Type of business object to retrieve.</param>
+  /// <param name="objectType">Type of business object to retrieve.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Object containing context data from client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
@@ -107,7 +107,7 @@ namespace Csla.Server
     /// but wraps that call within a COM+ transaction
     /// to provide transactional support.
     /// </remarks>
-    /// <param name="objectType">Type of business object to create.</param>
+  /// <param name="objectType">Type of business object to create.</param>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <param name="context">Context data from the client.</param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>

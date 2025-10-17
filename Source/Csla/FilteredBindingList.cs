@@ -704,7 +704,9 @@ namespace Csla
     private IBindingList? _bindingList;
     private object? _filter;
 
-    private readonly List<ListItem> _filterIndex = [];
+    /// @cond DOXYGEN_IGNORE
+    private readonly List<ListItem> _filterIndex = new();
+    /// @endcond
 
     /// <summary>
     /// Creates a new view based on the provided IList object.

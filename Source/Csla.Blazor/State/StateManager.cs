@@ -6,6 +6,9 @@
 // <summary>Get and save state from Blazor pages</summary>
 //-----------------------------------------------------------------------
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Csla.State;
 
 namespace Csla.Blazor.State
@@ -13,10 +16,19 @@ namespace Csla.Blazor.State
   /// <summary>
   /// Get and save state from Blazor pages.
   /// </summary>
-  /// <param name="sessionManager">The session manager to use for state management.</param>
-  public class StateManager(ISessionManager sessionManager)
+  public class StateManager
   {
-    private readonly ISessionManager _sessionManager = sessionManager;
+    private readonly ISessionManager _sessionManager;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StateManager"/> class.
+    /// </summary>
+    /// <param name="sessionManager">Session manager implementation used to persist page state.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="sessionManager"/> is <see langword="null"/>.</exception>
+    public StateManager(ISessionManager sessionManager)
+    {
+      _sessionManager = sessionManager ?? throw new ArgumentNullException(nameof(sessionManager));
+    }
 
     /// <summary>
     /// Get state from cache.

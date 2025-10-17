@@ -38,7 +38,7 @@ CSLA .NET 3.5 introduced types in Csla.Data, such as ConnectionManager, that hel
 
 When you save an editable root object the data portal may save that object, and all its child objects, in a transaction (if you apply the Transactional attribute). Sometimes the need exists to save more than one root object as part of a single transaction (a single data portal Save() call).
 
-<!---[read more...](SaveMultipleRootObjects)--->
+<!-- [read more...](SaveMultipleRootObjects) -->
 
 ## What is the recommended concurrency model?
 

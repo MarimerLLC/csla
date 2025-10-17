@@ -41,6 +41,6 @@ Here are some resources to help you get started with CSLA .NET:
 
 ## Contributing
 
-We welcome contributions to CSLA .NET. 
+We welcome contributions to CSLA .NET.
 
 * Please read the [contribution guidelines](https://github.com/MarimerLLC/csla/blob/main/.github/CONTRIBUTING.md) for more information.

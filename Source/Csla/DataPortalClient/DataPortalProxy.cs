@@ -8,6 +8,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Csla.Configuration;
+using Csla.Core;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
@@ -149,7 +150,7 @@ namespace Csla.DataPortalClient
     }
 
     /// <inheritdoc />
-    public async virtual Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public async virtual Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

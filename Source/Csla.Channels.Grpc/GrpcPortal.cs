@@ -259,7 +259,7 @@ namespace Csla.Channels.Grpc
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
 
-        var dpr = await dataPortalServer.Update(obj, context, true);
+        var dpr = await dataPortalServer.Update((ICslaObject)obj, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);

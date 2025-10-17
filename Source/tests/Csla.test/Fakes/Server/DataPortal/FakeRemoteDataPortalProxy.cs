@@ -1,4 +1,5 @@
 ﻿using Csla.Channels.Local;
+using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Server;
 
@@ -28,7 +29,7 @@ namespace Csla.Test.Fakes.Server.DataPortal
     public Task<DataPortalResult> Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
       => _implementingProxy.Fetch(objectType, criteria, context, isSync);
 
-    public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
       => _implementingProxy.Update(obj, context, isSync);
   }
 }

@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 using Csla.Properties;
 
 namespace Csla.Server
@@ -188,7 +189,7 @@ namespace Csla.Server
     /// <inheritdoc />
     [SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
     [SuppressMessage("Microsoft.Globalization", "CA1303:DoNotPassLiteralsAsLocalizedParameters", MessageId = "Csla.Server.DataPortalException.#ctor(System.String,System.Exception,Csla.Server.DataPortalResult)")]
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

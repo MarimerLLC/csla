@@ -6,6 +6,8 @@
 // <summary>Interface defining the members of the data portal type</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
+
 namespace Csla
 {
     /// <summary>
@@ -20,7 +22,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<object> CreateAsync(params object?[]? criteria);
+    Task<ICslaObject> CreateAsync(params object?[]? criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -28,21 +30,21 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<object> FetchAsync(params object?[]? criteria);
+    Task<ICslaObject> FetchAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
     /// <param name="obj">Object to update.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    Task<object> UpdateAsync(object obj);
+    Task<ICslaObject> UpdateAsync(ICslaObject obj);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to execute a command object.
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <exception cref="ArgumentNullException"><paramref name="command"/> is <see langword="null"/>.</exception>
-    Task<object> ExecuteAsync(object command);
+    Task<ICslaObject> ExecuteAsync(ICslaObject command);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>
@@ -50,7 +52,7 @@ namespace Csla
     /// Criteria provided to the command object.
     /// </param>
     /// <returns>The resulting command object.</returns>
-    Task<object> ExecuteAsync(params object?[]? criteria);
+    Task<ICslaObject> ExecuteAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
@@ -64,14 +66,14 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    object Create(params object?[]? criteria);
+    ICslaObject Create(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    object Fetch(params object?[]? criteria);
+    ICslaObject Fetch(params object?[]? criteria);
     /// <summary>
     /// Called to execute a Command object on the server.
     /// </summary>
@@ -93,7 +95,7 @@ namespace Csla
     /// <param name="obj">A reference to the Command object to be executed.</param>
     /// <returns>A reference to the updated Command object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    object Execute(object obj);
+    ICslaObject Execute(ICslaObject obj);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>
@@ -101,7 +103,7 @@ namespace Csla
     /// Criteria provided to the command object.
     /// </param>
     /// <returns>The resulting command object.</returns>
-    object Execute(params object?[]? criteria);
+    ICslaObject Execute(params object?[]? criteria);
     /// <summary>
     /// Insert, update or delete an object in the database.
     /// </summary>
@@ -114,7 +116,7 @@ namespace Csla
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <returns>A reference to the updated business object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    object Update(object obj);
+    ICslaObject Update(ICslaObject obj);
     /// <summary>
     /// Called by a Shared (static in C#) method in the business class to cause
     /// immediate deletion of a specific object from the database.
@@ -123,3 +125,4 @@ namespace Csla
     void Delete(params object?[]? criteria);
   }
 }
+

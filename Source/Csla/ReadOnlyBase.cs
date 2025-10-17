@@ -530,6 +530,9 @@ namespace Csla
 
     void ISerializationNotification.Deserialized()
     {
+      if (_fieldManager != null)
+        FieldManager.SetPropertyList(GetType());
+      InitializeBusinessRules();
       Deserialized();
     }
 

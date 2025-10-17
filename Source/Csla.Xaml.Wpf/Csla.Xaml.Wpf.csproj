@@ -44,7 +44,7 @@
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <PackageReference Include="Polyfill" Version="7.4.0">
+    <PackageReference Include="Polyfill" Version="8.9.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

@@ -44,7 +44,7 @@ namespace Csla
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <exception cref="ArgumentNullException"><paramref name="command"/> is <see langword="null"/>.</exception>
-    Task<ICslaObject> ExecuteAsync(ICslaObject command);
+    Task<ICommandObject> ExecuteAsync(ICommandObject command);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>
@@ -95,7 +95,7 @@ namespace Csla
     /// <param name="obj">A reference to the Command object to be executed.</param>
     /// <returns>A reference to the updated Command object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    ICslaObject Execute(ICslaObject obj);
+    ICommandObject Execute(ICommandObject obj);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>

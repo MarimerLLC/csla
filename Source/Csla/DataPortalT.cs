@@ -737,11 +737,11 @@ namespace Csla
     async Task<object> IDataPortal.CreateAsync(params object?[]? criteria) => await CreateAsync(criteria);
     async Task<object> IDataPortal.FetchAsync(params object?[]? criteria) => await FetchAsync(criteria);
     async Task<ICslaObject> IDataPortal.UpdateAsync(ICslaObject obj) => await UpdateAsync((T)obj);
-    async Task<ICslaObject> IDataPortal.ExecuteAsync(ICslaObject command) => await ExecuteAsync((T)command);
+    async Task<ICommandObject> IDataPortal.ExecuteAsync(ICommandObject command) => await ExecuteAsync((T)command);
     async Task<object> IDataPortal.ExecuteAsync(params object?[]? criteria) => await ExecuteAsync(criteria);
     object IDataPortal.Create(params object?[]? criteria) => Create(criteria);
     object IDataPortal.Fetch(params object?[]? criteria) => Fetch(criteria);
-    ICslaObject IDataPortal.Execute(ICslaObject obj) => Execute((T)obj);
+    ICommandObject IDataPortal.Execute(ICommandObject obj) => Execute((T)obj);
     object IDataPortal.Execute(params object?[]? criteria) => Execute(criteria);
     ICslaObject IDataPortal.Update(ICslaObject obj) => Update((T)obj);
 

@@ -1,10 +1,12 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="IChildDataPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
 // <summary>Interface defining the members of the child data portal type</summary>
 //-----------------------------------------------------------------------
+
+using Csla.Core;
 
 namespace Csla
 {
@@ -36,7 +38,7 @@ namespace Csla
     /// <param name="obj">Object to update.</param>
     /// <param name="parameters">Additional, optional parameters to pass</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    Task UpdateChildAsync(object obj, params object?[]? parameters);
+    Task UpdateChildAsync(ICslaObject obj, params object?[]? parameters);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -65,6 +67,6 @@ namespace Csla
     /// <param name="obj">A reference to the business object to be updated.</param>
     /// <param name="parameters">Optional arguments passed to child update methods.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    void UpdateChild(object obj, params object?[]? parameters);
+    void UpdateChild(ICslaObject obj, params object?[]? parameters);
   }
 }

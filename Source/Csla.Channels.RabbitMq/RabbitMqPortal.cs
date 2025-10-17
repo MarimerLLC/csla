@@ -246,7 +246,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
 
-        var dpr = await _dataPortalServer.Update(obj, context, true);
+        var dpr = await _dataPortalServer.Update((ICslaObject)obj, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);

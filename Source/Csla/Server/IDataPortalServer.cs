@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 
 namespace Csla.Server
 {
@@ -47,7 +48,7 @@ namespace Csla.Server
     /// </param>
     /// <param name="isSync">True if the client-side proxy should synchronously invoke the server.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
-    Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync);
+    Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync);
     /// <summary>
     /// Delete a business object.
     /// </summary>

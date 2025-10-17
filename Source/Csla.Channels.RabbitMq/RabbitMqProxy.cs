@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 using Csla.DataPortalClient;
 using Csla.Server;
 using RabbitMQ.Client;
@@ -160,7 +161,7 @@ namespace Csla.Channels.RabbitMq
     }
 
     /// <inheritdoc />
-    public override async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public override async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

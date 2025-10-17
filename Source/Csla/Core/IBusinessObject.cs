@@ -11,7 +11,7 @@ namespace Csla.Core
   /// This is the core interface implemented
   /// by all CSLA .NET base classes.
   /// </summary>
-  public interface IBusinessObject
+  public interface IBusinessObject : ICslaObject
   {
     /// <summary>
     /// Gets a value representing this object instance's

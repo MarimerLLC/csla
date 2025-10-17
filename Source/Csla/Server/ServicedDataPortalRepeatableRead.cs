@@ -8,6 +8,7 @@
 //-----------------------------------------------------------------------
 using System.EnterpriseServices;
 using System.Runtime.InteropServices;
+using Csla.Core;
 
 namespace Csla.Server
 {
@@ -92,7 +93,7 @@ namespace Csla.Server
     /// <returns>A reference to the newly updated object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="context"/> is <see langword="null"/>.</exception>
     [AutoComplete(true)]
-    public Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       return _portal.Update(obj, context, isSync);
     }

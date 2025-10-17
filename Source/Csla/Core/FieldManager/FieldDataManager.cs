@@ -650,7 +650,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object? obj = item.Value;
+          var obj = item.Value as ICslaObject;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             dp.UpdateChild(obj, parameters);
         }
@@ -670,7 +670,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object? obj = item.Value;
+          var obj = item.Value as ICslaObject;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             portal.UpdateAll(obj, parameters);
         }
@@ -689,7 +689,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object? obj = item.Value;
+          var obj = item.Value as ICslaObject;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             await portal.UpdateAsync(obj, parameters).ConfigureAwait(false);
         }
@@ -709,7 +709,7 @@ namespace Csla.Core.FieldManager
       {
         if (item != null)
         {
-          object? obj = item.Value;
+          var obj = item.Value as ICslaObject;
           if (obj is IEditableBusinessObject || obj is IEditableCollection)
             await portal.UpdateAllAsync(obj, parameters).ConfigureAwait(false);
         }

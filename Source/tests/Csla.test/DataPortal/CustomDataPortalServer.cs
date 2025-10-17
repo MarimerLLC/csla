@@ -1,4 +1,5 @@
-﻿using Csla.Server;
+﻿using Csla.Core;
+using Csla.Server;
 
 namespace Csla.Test.DataPortal
 {
@@ -29,7 +30,7 @@ namespace Csla.Test.DataPortal
       return result;
     }
 
-    public async Task<DataPortalResult> Update(object obj, DataPortalContext context, bool isSync)
+    public async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       var result = await _dataPortalSelector.Update(obj, context, isSync).ConfigureAwait(false);
 

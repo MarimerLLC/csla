@@ -36,10 +36,10 @@ namespace Csla
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
     /// </summary>
-    /// <param name="obj">Object to update.</param>
-    /// <param name="parameters">Additional, optional parameters to pass</param>
-    /// /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    Task UpdateChildAsync(T obj, params object?[]? parameters);
+    /// <param name="child">Object to update.</param>
+    /// <param name="parameters">Additional, optional parameters to pass.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
+    Task UpdateChildAsync(T child, params object?[]? parameters);
     /// <summary>
     /// Called by a factory method in a business class to create 
     /// a new object, which is loaded with default
@@ -65,10 +65,9 @@ namespace Csla
     /// different object from the original, and all object references MUST be updated
     /// to use this new object.
     /// </remarks>
-    /// <param name="obj">A reference to the business object to be updated.</param>
-    /// <param name="parameters"></param>
-    /// <returns>A reference to the updated business object.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    void UpdateChild(T obj, params object?[]? parameters);
+    /// <param name="child">A reference to the business object to be updated.</param>
+    /// <param name="parameters">Optional arguments passed to child update methods.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="child"/> is <see langword="null"/>.</exception>
+    void UpdateChild(T child, params object?[]? parameters);
   }
 }

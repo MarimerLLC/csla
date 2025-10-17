@@ -12,7 +12,7 @@ The default serializer for CSLA (version 6 and later) is `MobileFormatter`. This
 
 MobileFormatter supports many basic .NET types, including "primitive" types like `int`, `string`, `DateTime`, etc. It also supports `List<T>`, `Dictionary<K,V>`, and other common collection types. It also supports any type that implements `IMobileObject`, which includes all CSLA base types.
 
-If you create your complex types by subclassing CSLA base types and using the managed property syntax, you don't need to do anything special to support serialization. 
+If you create your complex types by subclassing CSLA base types and using the managed property syntax, you don't need to do anything special to support serialization.
 
 You can also serialize your own types that don't subclass from CSLA. In this case your type needs to implement `IMobileObject` and manage the serialization of your type's state, or create and register a custom serializer for your type.
 
@@ -36,7 +36,7 @@ The code and readme for [AutoSerialization](https://github.com/MarimerLLC/csla/t
 
 #### CslaGeneratorSerialization
 
-@JasonBock has created a serializer for CSLA 9 that may provide some insights: [CslaGeneratorSerialization](https://github.com/JasonBock/CslaGeneratorSerialization).
+[Jason Bock](https://github.com/JasonBock) has created a serializer for CSLA 9 that may provide some insights: [CslaGeneratorSerialization](https://github.com/JasonBock/CslaGeneratorSerialization).
 
 Jason's serializer offers substantial performance and memory consumption benefits over `MobileFormatter`.
 

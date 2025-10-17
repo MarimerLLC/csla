@@ -106,9 +106,6 @@ namespace Csla.Threading
     /// <exception cref="T:System.InvalidOperationException">
     ///  <see cref="P:System.ComponentModel.BackgroundWorker.WorkerSupportsCancellation"/> is false.
     /// </exception>
-    /// <PermissionSet>
-    ///  <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/>
-    /// </PermissionSet>
     public void CancelAsync()
     {
       _myWorker.CancelAsync();
@@ -158,9 +155,6 @@ namespace Csla.Threading
     /// <exception cref="T:System.InvalidOperationException">
     ///  <see cref="P:System.ComponentModel.BackgroundWorker.IsBusy"/> is true.
     /// </exception>
-    /// <PermissionSet>
-    ///  <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence"/>
-    /// </PermissionSet>
     public void RunWorkerAsync()
     {
       RunWorkerAsync(null);

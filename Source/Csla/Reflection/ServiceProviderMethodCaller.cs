@@ -541,19 +541,19 @@ namespace Csla.Reflection
       }
       else
       {
-        plist = new object[method.Parameters!.Length];
+        plist = new object[method.Parameters.Length];
         int index = 0;
         int criteriaIndex = 0;
         var service = _applicationContext.CurrentServiceProvider;
         foreach (var item in method.Parameters)
         {
-          if (method.IsInjected![index])
+          if (method.IsInjected[index])
           {
             if (service == null)
             {
               throw new NullReferenceException(nameof(service));
             }
-            if (method.AllowNull![index])
+            if (method.AllowNull[index])
             {
               // Use GetService which returns null if service is not registered
               plist[index] = service.GetService(item.ParameterType);

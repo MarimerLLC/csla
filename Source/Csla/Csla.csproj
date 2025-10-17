@@ -71,7 +71,7 @@
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Runtime.Serialization.Formatters" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
-    <PackageReference Include="Polyfill" Version="7.4.0">
+    <PackageReference Include="Polyfill" Version="8.9.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -118,7 +118,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
-    <PackageReference Include="Polyfill" Version="7.4.0">
+    <PackageReference Include="Polyfill" Version="8.9.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>

@@ -553,16 +553,10 @@ namespace Csla.Reflection
             {
               throw new NullReferenceException(nameof(service));
             }
-            if (method.AllowNull[index])
-            {
-              // Use GetService which returns null if service is not registered
-              plist[index] = service.GetService(item.ParameterType);
-            }
-            else
-            {
-              // Use GetRequiredService which throws if service is not registered
-              plist[index] = service.GetRequiredService(item.ParameterType);
-            }
+            // Use GetService for optional (allows null) or GetRequiredService for required (throws if not registered)
+            plist[index] = method.AllowNull[index]
+              ? service.GetService(item.ParameterType)
+              : service.GetRequiredService(item.ParameterType);
 
           }
           else

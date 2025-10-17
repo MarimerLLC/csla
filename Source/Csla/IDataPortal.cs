@@ -44,7 +44,7 @@ namespace Csla
     /// </summary>
     /// <param name="command">Command object to execute.</param>
     /// <exception cref="ArgumentNullException"><paramref name="command"/> is <see langword="null"/>.</exception>
-    Task<ICommandObject> ExecuteAsync(ICommandObject command);
+    Task<ICslaObject> ExecuteAsync(ICslaObject command);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>
@@ -52,7 +52,7 @@ namespace Csla
     /// Criteria provided to the command object.
     /// </param>
     /// <returns>The resulting command object.</returns>
-    Task<object> ExecuteAsync(params object?[]? criteria);
+    Task<ICslaObject> ExecuteAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to delete an object.
@@ -95,7 +95,7 @@ namespace Csla
     /// <param name="obj">A reference to the Command object to be executed.</param>
     /// <returns>A reference to the updated Command object.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
-    ICommandObject Execute(ICommandObject obj);
+    ICslaObject Execute(ICslaObject obj);
     /// <summary>
     /// Execute a command on the logical server.
     /// </summary>
@@ -103,7 +103,7 @@ namespace Csla
     /// Criteria provided to the command object.
     /// </param>
     /// <returns>The resulting command object.</returns>
-    object Execute(params object?[]? criteria);
+    ICslaObject Execute(params object?[]? criteria);
     /// <summary>
     /// Insert, update or delete an object in the database.
     /// </summary>

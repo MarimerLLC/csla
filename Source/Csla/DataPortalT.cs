@@ -24,7 +24,8 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T : notnull, ICslaObject
+  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> 
+    : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T : notnull, ICslaObject
   {
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
@@ -739,12 +740,12 @@ namespace Csla
     async Task<ICslaObject> IDataPortal.CreateAsync(params object?[]? criteria) => await CreateAsync(criteria);
     async Task<ICslaObject> IDataPortal.FetchAsync(params object?[]? criteria) => await FetchAsync(criteria);
     async Task<ICslaObject> IDataPortal.UpdateAsync(ICslaObject obj) => await UpdateAsync((T)obj);
-    async Task<ICommandObject> IDataPortal.ExecuteAsync(ICommandObject command) => await ExecuteAsync((T)command);
-    async Task<object> IDataPortal.ExecuteAsync(params object?[]? criteria) => await ExecuteAsync(criteria);
+    async Task<ICslaObject> IDataPortal.ExecuteAsync(ICslaObject command) => await ExecuteAsync((T)command);
+    async Task<ICslaObject> IDataPortal.ExecuteAsync(params object?[]? criteria) => await ExecuteAsync(criteria);
     ICslaObject IDataPortal.Create(params object?[]? criteria) => Create(criteria);
     ICslaObject IDataPortal.Fetch(params object?[]? criteria) => Fetch(criteria);
-    ICommandObject IDataPortal.Execute(ICommandObject obj) => Execute((T)obj);
-    object IDataPortal.Execute(params object?[]? criteria) => Execute(criteria);
+    ICslaObject IDataPortal.Execute(ICslaObject obj) => Execute((T)obj);
+    ICslaObject IDataPortal.Execute(params object?[]? criteria) => Execute(criteria);
     ICslaObject IDataPortal.Update(ICslaObject obj) => Update((T)obj);
 
     async Task<object> IChildDataPortal.CreateChildAsync(params object?[]? criteria) => Task.FromResult(await CreateChildAsync(criteria));

@@ -169,10 +169,8 @@ namespace Csla.Reflection
       foreach (var attribute in attributes)
       {
         if (attribute.AttributeType.FullName == NullableContextAttributeName &&
-            attribute.ConstructorArguments.Count == 1 &&
-            attribute.ConstructorArguments[0].ArgumentType == typeof(byte))
+            TryExtractFlag(attribute, out flag))
         {
-          flag = (byte)attribute.ConstructorArguments[0].Value!;
           return true;
         }
       }
@@ -201,22 +199,19 @@ namespace Csla.Reflection
       if (attribute.ConstructorArguments.Count == 1)
       {
         var argument = attribute.ConstructorArguments[0];
-        if (argument.ArgumentType == typeof(byte))
+        if (argument.ArgumentType == typeof(byte) && argument.Value is byte byteFlag)
         {
-          flag = (byte)argument.Value!;
+          flag = byteFlag;
           return true;
         }
 
         if (argument.Value is IEnumerable<CustomAttributeTypedArgument> nestedArguments)
         {
-          foreach (var nested in nestedArguments)
+          var nested = nestedArguments.FirstOrDefault();
+          if (nested.ArgumentType == typeof(byte) && nested.Value is byte nestedFlag)
           {
-            if (nested.ArgumentType == typeof(byte))
-            {
-              flag = (byte)nested.Value!;
-              return true;
-            }
-            break;
+            flag = nestedFlag;
+            return true;
           }
         }
       }

@@ -1,0 +1,27 @@
+PROJECT_NAME           = "CSLA .NET"
+PROJECT_NUMBER         = "10.0.0"
+PROJECT_BRIEF          = "A home for your business logic"
+PROJECT_LOGO           = "S:/src/rdl/csla/Support/Logos/csla win8_compact.png"
+
+INPUT = csla/Source/Csla \
+        csla/Source/Csla.Analyzers \
+        csla/Source/Csla.AspNetCore \
+        csla/Source/Csla.Blazor \
+        csla/Source/Csla.Blazor.WebAssembly \
+        csla/Source/Csla.Channels.Grpc \
+        csla/Source/Csla.Channels.RabbitMq \
+        csla/Source/Csla.Data.SqlClient \
+        csla/Source/Csla.Generators \
+        csla/Source/Csla.Web \
+        csla/Source/Csla.Web.Mvc.Shared \
+        csla/Source/Csla.Windows \
+        csla/Source/Csla.Xaml.Maui \
+        csla/Source/Csla.Xaml.Shared \
+        csla/Source/Csla.Xaml.Wpf \
+        csla/Source/docs/docs-readme.md
+USE_MDFILE_AS_MAINPAGE = csla/Source/docs/docs-readme.md
+OUTPUT_DIRECTORY = output
+EXTRACT_ALL = YES
+RECURSIVE = YES
+GENERATE_LATEX = NO
+EXCLUDE_PATTERNS = */bin/* */obj/* AnalyzerReleases.*

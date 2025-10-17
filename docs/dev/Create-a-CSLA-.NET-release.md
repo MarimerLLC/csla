@@ -28,9 +28,9 @@ NuGet release
    1. Build the solution in Release mode; Any CPU
 1. Do NuGet release
    1. Open a powershell window
-   1. Run the `nuget\Build All.ps1` script (add /prerelease:yymmddxx for test release)
+   1. Run the `nuget/Build All.ps1` script (add /prerelease:yymmddxx for test release)
    1. Make sure you have Rocky's NuGet key installed (see Nuget.org)
-   1. Run the `nuget\Push All.ps1` script
+   1. Run the `nuget/Push All.ps1` script
 
 Finalize Release
 ----------------

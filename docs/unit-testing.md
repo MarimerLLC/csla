@@ -7,7 +7,7 @@
 1. A number of the enhancements in CSLA 5 will simplify unit testing scenarios even further
 1. CSLA 6 requires and fully embraces the use of dependency injection. As a result, unit testing is now a lot easier.
 
-@jasonbock has written a nice blog post on how to use some of the features of CSLA 4 that support unit testing and mocking:
+[Jason Bock](https://github.com/JasonBock) has written a nice blog post on how to use some of the features of CSLA 4 that support unit testing and mocking:
 
 * [Abstractions in CSLA 4](Abstractions-in-CSLA.md)
 

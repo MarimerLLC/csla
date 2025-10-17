@@ -698,7 +698,9 @@ namespace Csla
     private IBindingList? _bindingList;
     private bool _initiatedLocally;
 
-    private readonly List<ListItem> _sortIndex = [];
+    /// @cond DOXYGEN_IGNORE
+    private readonly List<ListItem> _sortIndex = new();
+    /// @endcond
 
     /// <summary>
     /// Creates a new view based on the provided IList object.

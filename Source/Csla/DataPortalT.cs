@@ -52,6 +52,7 @@ namespace Csla
       _dataPortalClientOptions = dataPortalOptions.DataPortalClientOptions;
     }
 
+    /// @cond INTERNAL
     private class DataPortalAsyncRequest
     {
       private ApplicationContext _applicationContext;
@@ -90,6 +91,7 @@ namespace Csla
       }
     }
 
+    /// @endcond
     private Reflection.ServiceProviderMethodCaller? _serviceProviderMethodCaller;
     private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
     {
@@ -627,10 +629,10 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public T CreateChild(params object?[]? parameters)
+    public T CreateChild(params object?[]? criteria)
     {
       var portal = new Server.ChildDataPortal(_applicationContext);
-      return (T)(portal.Create(typeof(T), parameters));
+      return (T)(portal.Create(typeof(T), criteria));
     }
 
     /// <summary>
@@ -644,10 +646,10 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task<T> CreateChildAsync(params object?[]? parameters)
+    public async Task<T> CreateChildAsync(params object?[]? criteria)
     {
       var portal = new Server.ChildDataPortal(_applicationContext);
-      return await portal.CreateAsync<T>(parameters);
+      return await portal.CreateAsync<T>(criteria);
     }
 
     /// <summary>
@@ -661,10 +663,10 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public T FetchChild(params object?[]? parameters)
+    public T FetchChild(params object?[]? criteria)
     {
       var portal = new Server.ChildDataPortal(_applicationContext);
-      return (T)(portal.Fetch(typeof(T), parameters));
+      return (T)(portal.Fetch(typeof(T), criteria));
     }
 
     /// <summary>
@@ -678,10 +680,10 @@ namespace Csla
     }
 
     /// <inheritdoc />
-    public async Task<T> FetchChildAsync(params object?[]? parameters)
+    public async Task<T> FetchChildAsync(params object?[]? criteria)
     {
       var portal = new Server.ChildDataPortal(_applicationContext);
-      return await portal.FetchAsync<T>(parameters);
+      return await portal.FetchAsync<T>(criteria);
     }
 
     /// <inheritdoc />

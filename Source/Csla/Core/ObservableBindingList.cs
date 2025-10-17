@@ -368,6 +368,19 @@ namespace Csla.Core
       // don't rehook events here, because the MobileFormatter has
       // created new objects and so the lists will auto-subscribe
       // the events
+      Deserialized();
+    }
+
+    /// <summary>
+    /// Invoked after the object has been deserialized to allow derived classes to perform custom post-deserialization
+    /// processing.
+    /// </summary>
+    /// <remarks>Override this method in a derived class to implement actions that should occur immediately
+    /// after deserialization, such as initializing transient fields or validating object state. This method is called
+    /// automatically during the deserialization process.</remarks>
+    protected virtual void Deserialized()
+    {
+      // for override
     }
 
     #endregion

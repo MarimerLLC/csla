@@ -22,7 +22,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<object> CreateAsync(params object?[]? criteria);
+    Task<ICslaObject> CreateAsync(params object?[]? criteria);
     /// <summary>
     /// Starts an asynchronous data portal operation to
     /// create a business object.
@@ -30,7 +30,7 @@ namespace Csla
     /// <param name="criteria">
     /// Criteria describing the object to create.
     /// </param>
-    Task<object> FetchAsync(params object?[]? criteria);
+    Task<ICslaObject> FetchAsync(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class or
     /// by the UI to update an object.
@@ -66,14 +66,14 @@ namespace Csla
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>A new object, populated with default values.</returns>
-    object Create(params object?[]? criteria);
+    ICslaObject Create(params object?[]? criteria);
     /// <summary>
     /// Called by a factory method in a business class to retrieve
     /// an object, which is loaded with values from the database.
     /// </summary>
     /// <param name="criteria">Object-specific criteria.</param>
     /// <returns>An object populated with values from the database.</returns>
-    object Fetch(params object?[]? criteria);
+    ICslaObject Fetch(params object?[]? criteria);
     /// <summary>
     /// Called to execute a Command object on the server.
     /// </summary>

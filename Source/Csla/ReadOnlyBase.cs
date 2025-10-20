@@ -530,17 +530,23 @@ namespace Csla
 
     void ISerializationNotification.Deserialized()
     {
-      OnDeserializedHandler(new System.Runtime.Serialization.StreamingContext());
-    }
-
-    [System.Runtime.Serialization.OnDeserialized]
-    private void OnDeserializedHandler(System.Runtime.Serialization.StreamingContext context)
-    {
       if (_fieldManager != null)
         FieldManager.SetPropertyList(GetType());
       InitializeBusinessRules();
+      Deserialized();
     }
 
+    /// <summary>
+    /// Invoked after the object has been deserialized to allow derived classes to perform custom post-deserialization
+    /// processing.
+    /// </summary>
+    /// <remarks>Override this method in a derived class to implement actions that should occur immediately
+    /// after deserialization, such as initializing transient fields or validating object state. This method is called
+    /// automatically during the deserialization process.</remarks>
+    protected virtual void Deserialized()
+    {
+      // for override
+    }
 
     #endregion
 

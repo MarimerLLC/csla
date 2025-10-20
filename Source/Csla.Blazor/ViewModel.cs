@@ -114,7 +114,7 @@ namespace Csla.Blazor
       if (model is INotifyPropertyChanged npc)
         npc.PropertyChanged -= OnModelPropertyChanged;
 
-      if (model is IBusinessBase ncc)
+      if (model is INotifyChildChanged ncc)
         ncc.ChildChanged -= OnModelChildChanged;
 
       if (model is INotifyCollectionChanged cc)
@@ -130,7 +130,7 @@ namespace Csla.Blazor
       if (model is INotifyPropertyChanged npc)
         npc.PropertyChanged += OnModelPropertyChanged;
 
-      if (model is IBusinessBase ncc)
+      if (model is INotifyChildChanged ncc)
         ncc.ChildChanged += OnModelChildChanged;
 
       if (model is INotifyCollectionChanged cc)

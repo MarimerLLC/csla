@@ -9,7 +9,6 @@
  
  <!-- Common Package Settings -->
  <PropertyGroup>
-   <Version>10.0.0.0</Version>
    <PackageLicenseExpression>MIT</PackageLicenseExpression>
    <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
    <RepositoryUrl>https://github.com/MarimerLLC/csla</RepositoryUrl>
@@ -24,4 +23,12 @@
    <DefaultLanguage>en-US</DefaultLanguage>
    <AssemblyOriginatorKeyFile>$(SolutionDir)Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
  </PropertyGroup>
+
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
+      <PrivateAssets>all</PrivateAssets>
+      <Version>3.8.118</Version>
+    </PackageReference>
+  </ItemGroup>
 </Project>

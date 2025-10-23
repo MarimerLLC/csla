@@ -12,8 +12,8 @@ namespace BusinessLibrary
       private set { LoadProperty(IdProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-    public string Name
+    public static readonly PropertyInfo<string?> NameProperty = RegisterProperty<string?>(nameof(Name));
+    public string? Name
     {
       get { return GetProperty(NameProperty); }
       private set { LoadProperty(NameProperty, value); }

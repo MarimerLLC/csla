@@ -24,7 +24,6 @@
    <AssemblyOriginatorKeyFile>$(SolutionDir)Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
  </PropertyGroup>
 
-<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
       <PrivateAssets>all</PrivateAssets>

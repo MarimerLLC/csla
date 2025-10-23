@@ -1,15 +1,15 @@
 <Project>
 
- <!-- Read version from version.json -->
-  <Target Name="ReadVersionFromJson" BeforeTargets="Build;Pack">
-    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)version.json">
-      <Output TaskParameter="Lines" ItemName="VersionJsonLines" />
-    </ReadLinesFromFile>
-    <PropertyGroup>
-      <VersionJsonContent>@(VersionJsonLines)</VersionJsonContent>
-      <PackageVersionFromJson>$([System.Text.RegularExpressions.Regex]::Match($(VersionJsonContent), '"version"\s*:\s*"([^"]+)"').Groups[1].Value)</PackageVersionFromJson>
-    </PropertyGroup>
-  </Target>
+  <!-- Read version from version.json during evaluation so it applies before NuGet metadata is generated -->
+  <PropertyGroup>
+    <_VersionJsonPath>$(MSBuildThisFileDirectory)version.json</_VersionJsonPath>
+    <_VersionJsonContent Condition="Exists('$(_VersionJsonPath)')">$([System.IO.File]::ReadAllText('$(_VersionJsonPath)'))</_VersionJsonContent>
+    <PackageVersionFromJson Condition="'$(_VersionJsonContent)'!=''">$([System.Text.RegularExpressions.Regex]::Match($(_VersionJsonContent), '"version"\s*:\s*"([^"]+)"').Groups[1].Value.Trim())</PackageVersionFromJson>
+    <VersionPrefix Condition="'$(PackageVersionFromJson)'!=''">$([System.Text.RegularExpressions.Regex]::Match($(PackageVersionFromJson), '^([0-9]+\.[0-9]+\.[0-9]+)').Groups[1].Value)</VersionPrefix>
+    <VersionSuffix Condition="'$(PackageVersionFromJson)'!=''">$([System.Text.RegularExpressions.Regex]::Match($(PackageVersionFromJson), '^[0-9]+\.[0-9]+\.[0-9]+(?:-(.+))?$').Groups[1].Value)</VersionSuffix>
+    <Version Condition="'$(PackageVersionFromJson)'!=''">$(PackageVersionFromJson)</Version>
+    <PackageVersion Condition="'$(PackageVersionFromJson)'!=''">$(PackageVersionFromJson)</PackageVersion>
+  </PropertyGroup>
  
  <!-- Common Package Settings -->
   <PropertyGroup>
@@ -44,13 +44,6 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- Override Nerdbank.GitVersioning package version after it's calculated -->
-  <Target Name="OverrideNerdBankPackageVersion" BeforeTargets="GenerateNuspec">
-    <PropertyGroup>
-      <PackageVersion>$(PackageVersionFromJson)</PackageVersion>
-    </PropertyGroup>
-  </Target>
-  
  <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
    <None Include="$(MSBuildThisFileDirectory)..\Source\readme.md" Pack="true" PackagePath="\" />
    <None Include="$(MSBuildThisFileDirectory)..\Support\Logos\csla.png" Link="csla.png" Pack="true" PackagePath="\images\csla.png" Visible="false" />

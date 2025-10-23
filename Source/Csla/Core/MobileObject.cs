@@ -107,27 +107,15 @@ namespace Csla.Core
     #region IMobileObjectMetastate Members
 
     /// <inheritdoc />
-    byte[] IMobileObjectMetastate.GetMetastate()
+    byte[] IMobileObjectMetastate.GetMetastate(StateMode mode)
     {
-      return MobileObjectMetastateHelper.SerializeMetastate(this, StateMode.Serialization);
+      return MobileObjectMetastateHelper.SerializeMetastate(this, mode);
     }
 
     /// <inheritdoc />
-    void IMobileObjectMetastate.SetMetastate(byte[] metastate)
+    void IMobileObjectMetastate.SetMetastate(byte[] metastate, StateMode mode)
     {
-      MobileObjectMetastateHelper.DeserializeMetastate(this, metastate, StateMode.Serialization);
-    }
-
-    /// <inheritdoc />
-    byte[] IMobileObjectMetastate.GetUndoMetastate()
-    {
-      return MobileObjectMetastateHelper.SerializeMetastate(this, StateMode.Undo);
-    }
-
-    /// <inheritdoc />
-    void IMobileObjectMetastate.SetUndoMetastate(byte[] metastate)
-    {
-      MobileObjectMetastateHelper.DeserializeMetastate(this, metastate, StateMode.Undo);
+      MobileObjectMetastateHelper.DeserializeMetastate(this, metastate, mode);
     }
 
     #endregion

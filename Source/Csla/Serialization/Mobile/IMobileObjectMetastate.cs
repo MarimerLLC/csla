@@ -6,6 +6,8 @@
 // <summary>Interface for types that can serialize their metastate.</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
+
 namespace Csla.Serialization.Mobile
 {
   /// <summary>
@@ -23,25 +25,15 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Serializes the object's field values into a byte array.
     /// </summary>
+    /// <param name="mode">The state mode indicating the purpose of serialization.</param>
     /// <returns>Byte array containing the serialized field values.</returns>
-    byte[] GetMetastate();
+    byte[] GetMetastate(StateMode mode);
 
     /// <summary>
     /// Deserializes field values from a byte array into the object.
     /// </summary>
     /// <param name="metastate">Byte array containing the serialized field values.</param>
-    void SetMetastate(byte[] metastate);
-
-    /// <summary>
-    /// Serializes the object's field values for undo purposes into a byte array.
-    /// </summary>
-    /// <returns>Byte array containing the serialized field values for undo.</returns>
-    byte[] GetUndoMetastate();
-
-    /// <summary>
-    /// Deserializes undo field values from a byte array into the object.
-    /// </summary>
-    /// <param name="metastate">Byte array containing the serialized undo field values.</param>
-    void SetUndoMetastate(byte[] metastate);
+    /// <param name="mode">The state mode indicating the purpose of deserialization.</param>
+    void SetMetastate(byte[] metastate, StateMode mode);
   }
 }

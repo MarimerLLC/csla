@@ -1,13 +1,14 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CslaVersion>10.0.0-alpha-0008-g370995653f</CslaVersion>
+    <CslaVersion>10.0.0-alpha-0009-gcba43f4af4</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Csla" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.AspNetCore" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.Blazor" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.Blazor.WebAssembly" Version="$(CslaVersion)" />
+    <PackageVersion Include="Csla.Generator.AutoImplementProperties.CSharp" Version="$(CslaVersion)" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />

@@ -4,30 +4,15 @@ using Csla.Rules;
 
 namespace BusinessLibrary
 {
-  [Serializable]
-  public class PersonEdit : BusinessBase<PersonEdit>
+  [CslaImplementProperties]
+  public partial class PersonEdit : BusinessBase<PersonEdit>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
-    }
+    public partial int Id { get; private set; }
 
-    public static readonly PropertyInfo<string?> NameProperty = RegisterProperty<string?>(nameof(Name));
     [Required]
-    public string? Name
-    {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
-    }
+    public partial string? Name { get; set; }
 
-    public static readonly PropertyInfo<int> NameLengthProperty = RegisterProperty<int>(nameof(NameLength));
-    public int NameLength
-    {
-      get => GetProperty(NameLengthProperty);
-      set => SetProperty(NameLengthProperty, value);
-    }
+    public partial int NameLength { get; private set; }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     [ObjectAuthorizationRules]
@@ -53,58 +38,49 @@ namespace BusinessLibrary
     [Create]
     private void Create()
     {
-      Id = -1;
-      base.Child_Create();
+      LoadProperty(IdProperty, -1);
     }
 
     [Fetch]
-    private void Fetch(int id, [Inject]DataAccess.IPersonDal dal)
+    private void Fetch(int id, [Inject] DataAccess.IPersonDal dal)
     {
       var data = dal.Get(id);
-      using (BypassPropertyChecks)
-        Csla.Data.DataMapper.Map(data, this);
+      Csla.Data.DataMapper.Map(data, this);
       BusinessRules.CheckRules();
     }
 
     [Insert]
-    private void Insert([Inject]DataAccess.IPersonDal dal)
+    private void Insert([Inject] DataAccess.IPersonDal dal)
     {
-      using (BypassPropertyChecks)
+      var data = new DataAccess.PersonEntity
       {
-        var data = new DataAccess.PersonEntity
-        {
-          Name = Name
-        };
-        var result = dal.Insert(data);
-        Id = result.Id;
-      }
+        Name = Name
+      };
+      var result = dal.Insert(data);
+      LoadProperty(IdProperty, result.Id);
     }
 
     [Update]
-    private void Update([Inject]DataAccess.IPersonDal dal)
+    private void Update([Inject] DataAccess.IPersonDal dal)
     {
-      using (BypassPropertyChecks)
+      var data = new DataAccess.PersonEntity
       {
-        var data = new DataAccess.PersonEntity
-        {
-          Id = Id,
-          Name = Name
-        };
-        dal.Update(data);
-      }
+        Id = Id,
+        Name = Name
+      };
+      dal.Update(data);
     }
 
     [DeleteSelf]
-    private void DeleteSelf([Inject]DataAccess.IPersonDal dal)
+    private void DeleteSelf([Inject] DataAccess.IPersonDal dal)
     {
-      Delete(ReadProperty(IdProperty), dal);
+      Delete(Id, dal);
     }
 
     [Delete]
-    private void Delete(int id, [Inject]DataAccess.IPersonDal dal)
+    private void Delete(int id, [Inject] DataAccess.IPersonDal dal)
     {
       dal.Delete(id);
     }
-
   }
 }

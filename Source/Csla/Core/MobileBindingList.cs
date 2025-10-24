@@ -25,7 +25,7 @@ namespace Csla.Core
   [DebuggerStepThrough]
 #endif
   [Serializable]
-  public class MobileBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindingList<T>, IMobileList
+  public class MobileBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindingList<T>, IMobileList, IMobileObjectMetastate
   {
     #region LoadListMode
 
@@ -239,6 +239,22 @@ namespace Csla.Core
       {
           RaiseListChangedEvents = originalRaiseListChangedEvents;
       }
+    }
+
+    #endregion
+
+    #region IMobileObjectMetastate Members
+
+    /// <inheritdoc />
+    byte[] IMobileObjectMetastate.GetMetastate()
+    {
+      return MobileObjectMetastateHelper.SerializeMetastate(this);
+    }
+
+    /// <inheritdoc />
+    void IMobileObjectMetastate.SetMetastate(byte[] metastate)
+    {
+      MobileObjectMetastateHelper.DeserializeMetastate(this, metastate);
     }
 
     #endregion

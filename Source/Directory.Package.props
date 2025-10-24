@@ -1,8 +1,19 @@
 <Project>
 
+ <!-- Read version from version.json -->
+  <Target Name="ReadVersionFromJson" BeforeTargets="Build;Pack">
+    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)version.json">
+      <Output TaskParameter="Lines" ItemName="VersionJsonLines" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <VersionJsonContent>@(VersionJsonLines)</VersionJsonContent>
+      <PackageVersionFromJson>$([System.Text.RegularExpressions.Regex]::Match($(VersionJsonContent), '"version"\s*:\s*"([^"]+)"').Groups[1].Value)</PackageVersionFromJson>
+    </PropertyGroup>
+  </Target>
  
  <!-- Common Package Settings -->
   <PropertyGroup>
+   <PackageVersion>$(PackageVersionFromJson)</PackageVersion>
    <PackageLicenseExpression>MIT</PackageLicenseExpression>
    <PackageProjectUrl>https://cslanet.com</PackageProjectUrl>
    <OutputPath>..\..\bin\packages\</OutputPath>
@@ -32,6 +43,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <!-- Override Nerdbank.GitVersioning package version after it's calculated -->
+  <Target Name="OverrideNerdBankPackageVersion" BeforeTargets="GenerateNuspec">
+    <PropertyGroup>
+      <PackageVersion>$(PackageVersionFromJson)</PackageVersion>
+    </PropertyGroup>
+  </Target>
   
  <ItemGroup Condition="'$(IsPackable)'=='true' AND '$(PackageIcon)'!=''">
    <None Include="$(MSBuildThisFileDirectory)..\Source\readme.md" Pack="true" PackagePath="\" />

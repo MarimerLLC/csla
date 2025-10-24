@@ -6,9 +6,9 @@
 // <summary>Helper for serializing metastate to/from byte arrays.</summary>
 //-----------------------------------------------------------------------
 
-using System.Reflection;
+using System;
+using System.Collections.Generic;
 using System.Text.Json;
-using Csla.Core;
 
 namespace Csla.Serialization.Mobile
 {
@@ -26,28 +26,23 @@ namespace Csla.Serialization.Mobile
       IncludeFields = false
     };
 
- /// <summary>
+    /// <summary>
     /// Serializes the metastate of an IMobileObject to a byte array.
     /// </summary>
     /// <param name="mobileObject">The object to serialize.</param>
-    /// <param name="mode">The state mode (Serialization or Undo).</param>
     /// <returns>Byte array containing the serialized metastate.</returns>
-    public static byte[] SerializeMetastate(IMobileObject mobileObject, StateMode mode)
+    public static byte[] SerializeMetastate(IMobileObject mobileObject)
     {
-   if (mobileObject == null)
+      if (mobileObject == null)
         throw new ArgumentNullException(nameof(mobileObject));
 
-      // Create temporary SerializationInfo
-  var typeName = mobileObject.GetType().AssemblyQualifiedName ?? mobileObject.GetType().FullName ?? "Unknown";
+      var typeName = mobileObject.GetType().AssemblyQualifiedName ?? mobileObject.GetType().FullName ?? "Unknown";
       var info = new SerializationInfo(1, typeName);
-      
-      // Invoke OnGetState to capture field values
-  InvokeOnGetState(mobileObject, info, mode);
-      
- // Extract only the Values dictionary (not Children)
+
+      mobileObject.GetState(info);
+
       var valueDictionary = ExtractValues(info);
- 
-      // Serialize to JSON
+
       return JsonSerializer.SerializeToUtf8Bytes(valueDictionary, JsonOptions);
     }
 
@@ -56,50 +51,23 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     /// <param name="mobileObject">The object to deserialize into.</param>
     /// <param name="metastate">The byte array containing serialized metastate.</param>
-    /// <param name="mode">The state mode (Serialization or Undo).</param>
-    public static void DeserializeMetastate(IMobileObject mobileObject, byte[] metastate, StateMode mode)
-  {
-if (mobileObject == null)
+    public static void DeserializeMetastate(IMobileObject mobileObject, byte[] metastate)
+    {
+      if (mobileObject == null)
         throw new ArgumentNullException(nameof(mobileObject));
-      if (metastate == null || metastate.Length == 0)
-      throw new ArgumentException("Metastate cannot be null or empty.", nameof(metastate));
+      if (metastate == null)
+        throw new ArgumentNullException(nameof(metastate));
+      if (metastate.Length == 0)
+        throw new ArgumentException("Metastate cannot be empty.", nameof(metastate));
 
-      // Deserialize from JSON
-      var valueDictionary = JsonSerializer.Deserialize<Dictionary<string, MetastateValue>>(metastate, JsonOptions);
-      if (valueDictionary == null)
-     throw new InvalidOperationException("Failed to deserialize metastate.");
-      
-      // Create SerializationInfo and populate with deserialized values
+      var valueDictionary = JsonSerializer.Deserialize<Dictionary<string, MetastateValue>>(metastate, JsonOptions)
+        ?? throw new InvalidOperationException("Failed to deserialize metastate.");
+
       var typeName = mobileObject.GetType().AssemblyQualifiedName ?? mobileObject.GetType().FullName ?? "Unknown";
       var info = new SerializationInfo(1, typeName);
-    PopulateSerializationInfo(info, valueDictionary);
-      
-      // Invoke OnSetState to restore field values
-      InvokeOnSetState(mobileObject, info, mode);
-    }
+      PopulateSerializationInfo(info, valueDictionary);
 
-    private static void InvokeOnGetState(IMobileObject obj, SerializationInfo info, StateMode mode)
-    {
-      // Use reflection to call OnGetState (protected method)
-      var method = obj.GetType().GetMethod("OnGetState", 
-        BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-      
-      if (method != null)
-    {
-        method.Invoke(obj, new object[] { info, mode });
-      }
-    }
-
-    private static void InvokeOnSetState(IMobileObject obj, SerializationInfo info, StateMode mode)
-    {
-      // Use reflection to call OnSetState (protected method)
-      var method = obj.GetType().GetMethod("OnSetState",
-        BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
-    
-      if (method != null)
-      {
-        method.Invoke(obj, new object[] { info, mode });
-      }
+      mobileObject.SetState(info);
     }
 
     private static Dictionary<string, MetastateValue> ExtractValues(SerializationInfo info)
@@ -107,12 +75,12 @@ if (mobileObject == null)
       var result = new Dictionary<string, MetastateValue>();
       
       // Only extract from Values dictionary, not Children
-foreach (var kvp in info.Values)
+      foreach (var kvp in info.Values)
       {
-    result[kvp.Key] = new MetastateValue
+        result[kvp.Key] = new MetastateValue
         {
-     Value = kvp.Value.Value,
-     EnumTypeName = kvp.Value.EnumTypeName,
+          Value = kvp.Value.Value,
+          EnumTypeName = kvp.Value.EnumTypeName,
           IsDirty = kvp.Value.IsDirty
         };
       }
@@ -124,10 +92,10 @@ foreach (var kvp in info.Values)
       Dictionary<string, MetastateValue> values)
     {
       foreach (var kvp in values)
-{
+      {
         info.AddValue(kvp.Key, kvp.Value.Value, kvp.Value.IsDirty, kvp.Value.EnumTypeName);
- }
- }
+      }
+    }
 
     /// <summary>
     /// Represents a serialized value with metadata.
@@ -136,7 +104,7 @@ foreach (var kvp in info.Values)
     {
       public object? Value { get; set; }
       public string? EnumTypeName { get; set; }
-    public bool IsDirty { get; set; }
-  }
+      public bool IsDirty { get; set; }
+    }
   }
 }

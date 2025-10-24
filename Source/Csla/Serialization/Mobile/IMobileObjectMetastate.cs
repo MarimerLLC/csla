@@ -6,8 +6,6 @@
 // <summary>Interface for types that can serialize their metastate.</summary>
 //-----------------------------------------------------------------------
 
-using Csla.Core;
-
 namespace Csla.Serialization.Mobile
 {
   /// <summary>
@@ -25,15 +23,13 @@ namespace Csla.Serialization.Mobile
     /// <summary>
     /// Serializes the object's field values into a byte array.
     /// </summary>
-    /// <param name="mode">The state mode indicating the purpose of serialization.</param>
     /// <returns>Byte array containing the serialized field values.</returns>
-    byte[] GetMetastate(StateMode mode);
+    byte[] GetMetastate();
 
     /// <summary>
     /// Deserializes field values from a byte array into the object.
     /// </summary>
     /// <param name="metastate">Byte array containing the serialized field values.</param>
-    /// <param name="mode">The state mode indicating the purpose of deserialization.</param>
-    void SetMetastate(byte[] metastate, StateMode mode);
+    void SetMetastate(byte[] metastate);
   }
 }

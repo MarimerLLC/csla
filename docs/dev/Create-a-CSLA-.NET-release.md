@@ -22,6 +22,7 @@ CSLA .NET, starting with version 4.9.0, follows the [semantic versioning (semver
 
 1. Pull the latest code from MarimerLLC/csla
 1. Open the `Source/version.json` file and update the version number
+1. ⚠️ Commit the change to git ⚠️
 1. Do NuGet release
    1. Open a terminal window
    1. Change to the `csla/Source` folder

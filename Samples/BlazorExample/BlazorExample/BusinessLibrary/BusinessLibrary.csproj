@@ -4,10 +4,12 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Csla" />
+    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" />
   </ItemGroup>
 
   <ItemGroup>

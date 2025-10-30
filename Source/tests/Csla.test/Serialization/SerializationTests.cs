@@ -435,7 +435,7 @@ namespace Csla.Test.Serialization
       Assert.AreEqual("Csla.ApplicationContext, /c", AssemblyNameTranslator.GetSerializationName(typeof(ApplicationContext), false));
       Assert.AreEqual("Csla.ApplicationContext, /c", AssemblyNameTranslator.GetSerializationName(typeof(ApplicationContext), true));
       Assert.AreEqual("Csla.Test.Serialization.BinaryReaderWriterTestClass, Csla.Tests", AssemblyNameTranslator.GetSerializationName(typeof(BinaryReaderWriterTestClass), false));
-      Assert.AreEqual("Csla.Test.Serialization.BinaryReaderWriterTestClass, Csla.Tests, Version=4.5.30.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30", AssemblyNameTranslator.GetSerializationName(typeof(BinaryReaderWriterTestClass), true));
+      Assert.AreEqual("Csla.Test.Serialization.BinaryReaderWriterTestClass, Csla.Tests, Version=10.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30", AssemblyNameTranslator.GetSerializationName(typeof(BinaryReaderWriterTestClass), true));
     }
 
     // TODO: fix test

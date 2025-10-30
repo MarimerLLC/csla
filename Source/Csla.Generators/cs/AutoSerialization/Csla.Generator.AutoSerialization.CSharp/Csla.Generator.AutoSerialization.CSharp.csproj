@@ -26,7 +26,7 @@
 
     <!-- Add these properties for correct NuGet consumption -->
     <IsPackable>true</IsPackable>
-    <DevelopmentDependency>true</DevelopmentDependency>
+    <DevelopmentDependency>false</DevelopmentDependency>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
   </PropertyGroup>
   <ItemGroup>

@@ -14,6 +14,7 @@ TBD
 
 The constructor has changed and now expects an `IOptions<RevalidatingInterceptorOptions>` instance. With this new options object it is now possible to skip the revalidation of business rules during a `Delete` operation.
 To configure the new options we are using the .Net [Options pattern](https://learn.microsoft.com/en-us/dotnet/core/extensions/options).
+
 ```csharp
 services.Configure<RevalidatingInterceptorOptions>(opts =>
 {
@@ -22,21 +23,23 @@ services.Configure<RevalidatingInterceptorOptions>(opts =>
 ```
 
 ## Exception from asynchronous rules
+
 A new API is added to make it possible to handle exceptions thrown by asynchronous rules.
 The new interface to implement is `Csla.Rules.IUnhandledAsyncRuleExceptionHandler` which has two methods
-* `bool CanHandle(Exception, IBusinessRuleBase)`
-    * to decide whether this exception should be handled or not
 
+* `bool CanHandle(Exception, IBusinessRuleBase)`
+  * to decide whether this exception should be handled or not
 * `ValueTask Handle(Exception, IBusinessRuleBase, IRuleContext)`
-    * to handle the exception when `CanHandle(...) == true`
+  * to handle the exception when `CanHandle(...) == true`
+
 With these methods you can now decide whether to handle the exception and how or let the exception be unobserved bubble up and potentially cause a crash.
 
 You can register your implementation in two ways
+
 * Just add the implementation to your service collection `services.AddScoped<IUnhandledAsyncRuleExceptionHandler, YourImplementation>()`
 * Use `services.AddCsla(o => o.UseUnhandledAsyncRuleExceptionHandler<YourImplementation>());`. The handler is registered as scoped.
 
 The _default_ is still no handling of any exception thrown in an asynchronous rule.
-
 
 ## Nullable Reference Types
 
@@ -76,9 +79,10 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `DataPortalResponse` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.
 * `UpdateRequest` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.
 
-
 ## Breaking changes
+
 * `Csla.Server.DataPortal` constructor changed.
   * Removed unused parameters: `IDataPortalActivator activator`, `IDataPortalExceptionInspector exceptionInspector`.
 * `Csla.Rules.BusinessRules` constructor changed.
   * New parameter `IUnhandledAsyncRuleExceptionHandler` added to support the new asynchronous rule exception handling.
+  

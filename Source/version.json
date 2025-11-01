@@ -1,5 +1,14 @@
 {
-  "$schema": "https://raw.githubusercontent.com/AArnott/Nerdbank.GitVersioning/master/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "10.0.0-alpha.1",
-  "publicReleaseRefSpec": [ "^refs/heads/release$" ]
+  "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
+  "version": "10.0.0-alpha.10",
+  "publicReleaseRefSpec": [
+    "^refs/heads/main$",
+    "^refs/heads/release$",
+    "^refs/heads/v\\d+(?:\\.\\d+)?$"
+  ],
+  "cloudBuild": {
+    "buildNumber": {
+      "enabled": false
+    }
+  }
 }

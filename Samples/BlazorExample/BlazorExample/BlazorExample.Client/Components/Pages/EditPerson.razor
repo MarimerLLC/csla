@@ -82,8 +82,8 @@ else
         vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
 
         if (string.IsNullOrWhiteSpace(id))
-            await vm.RefreshAsync(() => personEditPortal.CreateAsync());
+            await vm.RefreshAsync(async () => (PersonEdit?)(await personEditPortal.CreateAsync()));
         else
-            await vm.RefreshAsync(() => personEditPortal.FetchAsync(int.Parse(id)));
+            await vm.RefreshAsync(async () => (PersonEdit?)(await personEditPortal.FetchAsync(int.Parse(id))));
     }
 }

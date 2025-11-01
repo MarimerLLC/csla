@@ -12,8 +12,8 @@ namespace BusinessLibrary
 
     protected override void Execute(IRuleContext context)
     {
-      var text = (string)ReadProperty(context.Target, PrimaryProperty);
-      var count = text.Length;
+      var text = (string?)ReadProperty(context.Target!, PrimaryProperty!);
+      var count = text?.Length ?? 0;
       context.AddOutValue(AffectedProperties[1], count);
     }
   }

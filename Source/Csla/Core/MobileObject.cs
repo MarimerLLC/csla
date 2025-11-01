@@ -16,7 +16,7 @@ namespace Csla.Core
   /// create a serializable class.
   /// </summary>
   [Serializable]
-  public abstract class MobileObject : IMobileObject
+  public abstract class MobileObject : IMobileObject, IMobileObjectMetastate
   {
     #region Serialize
 
@@ -101,6 +101,22 @@ namespace Csla.Core
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     { }
+
+    #endregion
+
+    #region IMobileObjectMetastate Members
+
+    /// <inheritdoc />
+    byte[] IMobileObjectMetastate.GetMetastate()
+    {
+      return MobileObjectMetastateHelper.SerializeMetastate(this);
+    }
+
+    /// <inheritdoc />
+    void IMobileObjectMetastate.SetMetastate(byte[] metastate)
+    {
+      MobileObjectMetastateHelper.DeserializeMetastate(this, metastate);
+    }
 
     #endregion
   }

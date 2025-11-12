@@ -1,4 +1,5 @@
 ﻿using Csla.TestHelpers;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -16,7 +17,7 @@ namespace Csla.Test.DataPortal
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
-    public void ChildInnerExceptionFlowsFromDataPortal()
+    public async Task ChildInnerExceptionFlowsFromDataPortal()
     {
       IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
 
@@ -24,12 +25,25 @@ namespace Csla.Test.DataPortal
       {
         var bo = dataPortal.Create();
 
-        bo.Save();
+        await bo.SaveAsync();
       }
       catch (DataPortalException e)
       {
         Assert.IsInstanceOfType(e.BusinessException, typeof(CustomException));
       }
+    }
+
+    [TestMethod]
+    [TestCategory("SkipWhenLiveUnitTesting")]
+    public async Task ChildInnerExceptionDoesNotGetUnpackedButFlowsFromDataPortal()
+    {
+      IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
+
+      var bo = dataPortal.Create();
+      bo.Child.ThrowWithInnerException = true;
+
+      var exception = await FluentActions.Awaiting(() => bo.SaveAsync()).Should().ThrowAsync<DataPortalException>();
+      exception.Which.BusinessException.Should().BeOfType<CustomException>();
     }
 
     [TestMethod]
@@ -94,9 +108,11 @@ namespace Csla.Test.DataPortal
     }
   }
 
-  [Serializable]
-  public class EditableChild1 : BusinessBase<EditableChild1>
+  [Serializable, CslaImplementProperties]
+  public partial class EditableChild1 : BusinessBase<EditableChild1>
   {
+    public partial bool ThrowWithInnerException { get; set; }
+
     #region Data Access
 
     [CreateChild]
@@ -122,7 +138,7 @@ namespace Csla.Test.DataPortal
     {
       using (BypassPropertyChecks)
       {
-        throw new CustomException("Insert not allowed");
+        throw new CustomException("Insert not allowed", ThrowWithInnerException ? new InvalidOperationException() : null);
       }
     }
 
@@ -131,7 +147,7 @@ namespace Csla.Test.DataPortal
   }
 
   [Serializable]
-  public class EditableChild2: EditableChild1
+  public class EditableChild2 : EditableChild1
   {
     private EditableChild2()
     {
@@ -149,5 +165,7 @@ namespace Csla.Test.DataPortal
   public class CustomException : Exception
   {
     public CustomException(string message) : base(message) { }
+
+    public CustomException(string message, Exception? innerException) : base(message, innerException) { }
   }
 }

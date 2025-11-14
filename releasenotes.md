@@ -7,7 +7,7 @@ CSLA 10 is a substantial update to CSLA .NET, adding support for .NET 10, removi
 Primary changes in this release include:
 
 * Add support for .NET 10
-* Remove support for .NET 8 and 9
+* Add support for C# nullable reference types (NRT) throughout the codebase
 
 ### Supported Platforms
 
@@ -26,12 +26,14 @@ Also expected to work on:
 
 ### Change List
 
-* https://github.com/MarimerLLC/csla/compare/v9.0.9...v10.0.0
+* https://github.com/MarimerLLC/csla/compare/v9.1.0...HEAD
 
 ### Contributors
 
 * @rockfordlhotka
 * @SimonCropp
 * @StefanOssendorf
+* @jasonbock
+* others to be added...
 
 Thank you all so much for your support!

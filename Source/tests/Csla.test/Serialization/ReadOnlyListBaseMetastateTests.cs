@@ -108,15 +108,16 @@ namespace Csla.Test.Serialization
     #region Test Helper Classes
 
     [Serializable]
-    public class TestReadOnlyList : ReadOnlyListBase<TestReadOnlyList, TestReadOnlyChild>
+    public class TestReadOnlyList : ReadOnlyListBase<TestReadOnlyList, string>
     {
       [Fetch]
       private void DataPortal_Fetch()
       {
-        // Populate with some test data
+        // Populate with some simple test data
         IsReadOnly = false;
-        Add(new TestReadOnlyChild { Id = 1, Name = "Item1" });
-        Add(new TestReadOnlyChild { Id = 2, Name = "Item2" });
+        Add("Item1");
+        Add("Item2");
+        Add("Item3");
         IsReadOnly = true;
       }
 
@@ -124,24 +125,6 @@ namespace Csla.Test.Serialization
       public void SetIsReadOnlyForTest(bool value)
       {
         IsReadOnly = value;
-      }
-    }
-
-    [Serializable]
-    public class TestReadOnlyChild : Core.ReadOnlyBase<TestReadOnlyChild>
-    {
-      public static readonly Core.PropertyInfo<int> IdProperty = Core.RegisterProperty<int>(nameof(Id));
-      public int Id
-      {
-        get => GetProperty(IdProperty);
-        set => LoadProperty(IdProperty, value);
-      }
-
-      public static readonly Core.PropertyInfo<string> NameProperty = Core.RegisterProperty<string>(nameof(Name));
-      public string Name
-      {
-        get => GetProperty(NameProperty);
-        set => LoadProperty(NameProperty, value);
       }
     }
 

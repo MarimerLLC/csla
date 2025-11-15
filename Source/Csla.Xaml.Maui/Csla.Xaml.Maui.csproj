@@ -22,9 +22,9 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net10&quot;))">
-    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.0-rc.1.25452.6" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.0-rc.1.25452.6" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0-rc.1.25451.107" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.*" />
+    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.*" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.*" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net9&quot;))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.12" />
@@ -32,7 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Csla" Version="9.1.*" />
+    <PackageReference Include="Csla" Version="10.0.0-beta-0010-g983ce0980c" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'!='Release'">
     <ProjectReference Include="..\Csla\Csla.csproj" />

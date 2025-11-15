@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Properties;
+using Csla.Serialization.Mobile;
 using Csla.Server;
 
 namespace Csla
@@ -30,7 +31,8 @@ namespace Csla
 #endif
     IDataPortalTarget,
     IReadOnlyListBase<C>,
-    IUseApplicationContext
+    IUseApplicationContext,
+    IMobileObjectMetastate
     where T : ReadOnlyListBase<T, C>
   {
     /// <summary>
@@ -249,6 +251,22 @@ namespace Csla
     void IDataPortalTarget.Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
     {
       Child_OnDataPortalException(e, ex);
+    }
+
+    #endregion
+
+    #region IMobileObjectMetastate Members
+
+    /// <inheritdoc />
+    byte[] IMobileObjectMetastate.GetMetastate()
+    {
+      return MobileObjectMetastateHelper.SerializeMetastate(this);
+    }
+
+    /// <inheritdoc />
+    void IMobileObjectMetastate.SetMetastate(byte[] metastate)
+    {
+      MobileObjectMetastateHelper.DeserializeMetastate(this, metastate);
     }
 
     #endregion

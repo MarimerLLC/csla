@@ -93,7 +93,43 @@ namespace Csla.Serialization.Mobile
     {
       foreach (var kvp in values)
       {
-        info.AddValue(kvp.Key, kvp.Value.Value, kvp.Value.IsDirty, kvp.Value.EnumTypeName);
+        var value = kvp.Value.Value;
+        
+        // Convert JsonElement to appropriate type if needed
+        if (value is JsonElement jsonElement)
+        {
+          value = ConvertJsonElement(jsonElement);
+        }
+        
+        info.AddValue(kvp.Key, value, kvp.Value.IsDirty, kvp.Value.EnumTypeName);
+      }
+    }
+
+    private static object? ConvertJsonElement(JsonElement element)
+    {
+      switch (element.ValueKind)
+      {
+        case JsonValueKind.String:
+          return element.GetString();
+        case JsonValueKind.Number:
+          if (element.TryGetInt32(out int intValue))
+            return intValue;
+          if (element.TryGetInt64(out long longValue))
+            return longValue;
+          if (element.TryGetDouble(out double doubleValue))
+            return doubleValue;
+          return element.GetDecimal();
+        case JsonValueKind.True:
+          return true;
+        case JsonValueKind.False:
+          return false;
+        case JsonValueKind.Null:
+        case JsonValueKind.Undefined:
+          return null;
+        default:
+          // For complex types, return the element as-is and let the normal
+          // conversion logic handle it
+          return element;
       }
     }
 

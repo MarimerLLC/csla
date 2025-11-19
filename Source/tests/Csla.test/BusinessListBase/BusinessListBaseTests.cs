@@ -6,9 +6,11 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization;
 using Csla.TestHelpers;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.BusinessListBase
@@ -49,7 +51,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    
+
     public void ChildAddNewCore()
     {
       bool childChanged = false;
@@ -94,7 +96,7 @@ namespace Csla.Test.BusinessListBase
       obj.ApplyEdit();
 
       Assert.IsTrue(obj.IsDirty);
-      
+
       obj = obj.Save();
       Assert.IsFalse(obj.IsDirty);
     }
@@ -200,7 +202,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    public async Task WaitForIdle_WhenAChildIsBusyTheListWillBeNonBusyWhenAllChildsAreNotBusyAnymore() 
+    public async Task WaitForIdle_WhenAChildIsBusyTheListWillBeNonBusyWhenAllChildsAreNotBusyAnymore()
     {
       var obj = CreateRootList();
       var child1 = obj.AddNew();
@@ -213,7 +215,7 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    public async Task WaitForIdle_WhenMultipleChildsAreBusyItShouldOnlyBeIdlingWhenAllChildsAreNotBusyAnymore() 
+    public async Task WaitForIdle_WhenMultipleChildsAreBusyItShouldOnlyBeIdlingWhenAllChildsAreNotBusyAnymore()
     {
       var obj = CreateRootList();
       var child1 = obj.AddNew();
@@ -227,7 +229,7 @@ namespace Csla.Test.BusinessListBase
 
       await obj.WaitForIdle(TimeSpan.FromSeconds(2));
 
-      using (new AssertionScope()) 
+      using (new AssertionScope())
       {
         child2.IsBusy.Should().BeFalse();
         child1.IsBusy.Should().BeFalse();
@@ -235,7 +237,36 @@ namespace Csla.Test.BusinessListBase
       }
     }
 
-    private Root CreateRoot()
+    [TestMethod]
+    public async Task Parent_LocationTransferWithDeletedItemsMustSetParentOnDeletedItems()
+    {
+      var root = CreateRoot();
+
+      for (int i = 0; i < 5; i++)
+      {
+        root.Children.AddNew();
+      }
+
+      root = await root.SaveAsync();
+      root.Children.Clear();
+
+      var transferredGraph = SimulateLocationTransfer(root);
+
+      using (new AssertionScope())
+      {
+        transferredGraph.Children.Parent.Should().BeSameAs(transferredGraph);
+        transferredGraph.Children.DeletedItems.Should().AllSatisfy(c => c.Parent.Should().BeSameAs(transferredGraph.Children));
+      }
+
+
+      static Root SimulateLocationTransfer(Root original)
+      {
+        var serializer = _testDIContext.ServiceProvider.GetRequiredService<ISerializationFormatter>();
+        return (Root)serializer.Deserialize(serializer.Serialize(original));
+      }
+    }
+
+    private static Root CreateRoot()
     {
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
 

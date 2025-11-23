@@ -2,6 +2,7 @@
  <PropertyGroup>
    <LangVersion>latest</LangVersion>
    <ImplicitUsings>enable</ImplicitUsings>
+   <EnableWindowsTargeting>true</EnableWindowsTargeting>
  </PropertyGroup>
  
  <!-- Common Package Settings -->

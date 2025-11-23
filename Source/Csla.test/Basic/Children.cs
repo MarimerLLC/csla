@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Data;
+using Csla.Core;
 
 namespace Csla.Test.Basic
 {
@@ -37,6 +38,8 @@ namespace Csla.Test.Basic
     {
       get { return DeletedList.Count; }
     }
+    
+    public MobileList<Child> DeletedItems => DeletedList;
 
     [Create]
     private void Create()

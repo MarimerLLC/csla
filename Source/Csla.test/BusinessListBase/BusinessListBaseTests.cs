@@ -6,9 +6,11 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization;
 using Csla.TestHelpers;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.BusinessListBase
@@ -232,6 +234,35 @@ namespace Csla.Test.BusinessListBase
         child2.IsBusy.Should().BeFalse();
         child1.IsBusy.Should().BeFalse();
         obj.IsBusy.Should().BeFalse();
+      }
+    }
+    
+    [TestMethod]
+    public async Task Parent_LocationTransferWithDeletedItemsMustSetParentOnDeletedItems()
+    {
+      var root = CreateRoot();
+
+      for (int i = 0; i < 5; i++)
+      {
+        root.Children.AddNew();
+      }
+
+      root = await root.SaveAsync();
+      root.Children.Clear();
+
+      var transferredGraph = SimulateLocationTransfer(root);
+
+      using (new AssertionScope())
+      {
+        transferredGraph.Children.Parent.Should().BeSameAs(transferredGraph);
+        transferredGraph.Children.DeletedItems.Should().AllSatisfy(c => c.Parent.Should().BeSameAs(transferredGraph.Children));
+      }
+
+
+      static Root SimulateLocationTransfer(Root original)
+      {
+        var serializer = _testDIContext.ServiceProvider.GetRequiredService<ISerializationFormatter>();
+        return (Root)serializer.Deserialize(serializer.Serialize(original));
       }
     }
 

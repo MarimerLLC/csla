@@ -690,6 +690,17 @@ namespace Csla
       base.OnSetChildren(info, formatter);
     }
 
+    /// <inheritdoc/>
+    protected override void Deserialized()
+    {
+      base.Deserialized();
+
+      foreach (var item in DeletedList)
+      {
+        item.SetParent(this);
+      }
+    }
+
     #endregion
 
     #region IsChild

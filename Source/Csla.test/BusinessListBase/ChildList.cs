@@ -6,8 +6,13 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
+
 namespace Csla.Test.BusinessListBase
 {
   [Serializable]
-  public class ChildList : BusinessListBase<ChildList, Child>;
+  public class ChildList : BusinessListBase<ChildList, Child>
+  {
+    public MobileList<Child> DeletedItems => DeletedList;
+  }
 }

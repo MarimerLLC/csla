@@ -66,11 +66,10 @@ Add a new property to control async rule execution behavior:
 
 ```csharp
 // In IBusinessRule.cs - add to the IBusinessRuleBase interface
-// Note: IBusinessRuleBase interface is defined in IBusinessRule.cs
-// The IsAsync property is already part of IBusinessRuleBase (line 86 in current file)
+// Note: The IsAsync property already exists in IBusinessRuleBase (see line 86 of IBusinessRule.cs)
 public interface IBusinessRuleBase
 {
-    // ... existing properties ...
+    // ... existing properties including IsAsync ...
     
     /// <summary>
     /// Gets a value indicating whether this async rule should run serially
@@ -141,7 +140,6 @@ The `RunRules` method in `BusinessRules.cs` needs to be modified to:
 For each priority level P (low to high):
     
     # Get all rules at this priority
-    # Note: IsAsync is already a property on IBusinessRuleBase (defined in IBusinessRule.cs)
     rulesAtP = rules.Where(r => r.Priority == P)
     syncRules = rulesAtP.Where(r => !r.IsAsync)
     asyncParallelRules = rulesAtP.Where(r => r.IsAsync && r.AsyncExecutionMode == Parallel)
@@ -182,7 +180,6 @@ For each group in priorityGroups:
     
     parallelTasks = new List<Task>()
     
-    # Note: IsAsync is already a property on IBusinessRuleBase interface
     For each rule in group:
         If rule.IsAsync:
             If rule.AsyncExecutionMode == Serial:
@@ -264,7 +261,7 @@ For each group in priorityGroups:
 1. **Should serial async rules at the same priority run in sequence or can they run in parallel with each other?**
    - Option A: All serial rules at same priority run one after another
    - Option B: Serial rules at same priority can run in parallel, but all must complete before next priority
-   - Recommendation: Option A for maximum control, but could make this configurable
+   - Recommendation: Option A for maximum control
 
 2. **How to handle a mix of sync and async rules at the same priority?**
    - Option A: Run sync first, then async

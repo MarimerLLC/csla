@@ -62,24 +62,12 @@ foreach (var rule in rules)
 
 ### 1. New Property on IBusinessRuleBase
 
-Add a new property to control async rule execution behavior:
+Add a new property to control async rule execution behavior. Both the new enum and the interface property addition would go in `IBusinessRule.cs`:
 
 ```csharp
-// In IBusinessRule.cs - add to the IBusinessRuleBase interface
-// Note: The IsAsync property already exists in IBusinessRuleBase (see line 86 of IBusinessRule.cs)
-public interface IBusinessRuleBase
-{
-    // ... existing properties including IsAsync ...
-    
-    /// <summary>
-    /// Gets a value indicating whether this async rule should run serially
-    /// (respecting priority and short-circuiting) or in parallel with other
-    /// async rules. Only applies to async rules; sync rules always run serially.
-    /// Default is Parallel for backward compatibility.
-    /// </summary>
-    AsyncRuleExecutionMode AsyncExecutionMode { get; }
-}
+// File: Source/Csla/Rules/IBusinessRule.cs
 
+// Add this enum to the file (outside any interface)
 /// <summary>
 /// Defines how an async rule should be executed relative to other rules.
 /// </summary>
@@ -98,6 +86,20 @@ public enum AsyncRuleExecutionMode
     /// priority values. Enables short-circuiting behavior for async rules.
     /// </summary>
     Serial = 1
+}
+
+// Add this property to the existing IBusinessRuleBase interface
+public interface IBusinessRuleBase
+{
+    // ... existing properties including IsAsync, Priority, etc. ...
+    
+    /// <summary>
+    /// Gets a value indicating whether this async rule should run serially
+    /// (respecting priority and short-circuiting) or in parallel with other
+    /// async rules. Only applies to async rules; sync rules always run serially.
+    /// Default is Parallel for backward compatibility.
+    /// </summary>
+    AsyncRuleExecutionMode AsyncExecutionMode { get; }
 }
 ```
 

@@ -65,7 +65,9 @@ foreach (var rule in rules)
 Add a new property to control async rule execution behavior:
 
 ```csharp
-// In IBusinessRule.cs
+// In IBusinessRule.cs - add to the IBusinessRuleBase interface
+// Note: IBusinessRuleBase interface is defined in IBusinessRule.cs
+// The IsAsync property is already part of IBusinessRuleBase (line 86 in current file)
 public interface IBusinessRuleBase
 {
     // ... existing properties ...
@@ -139,6 +141,7 @@ The `RunRules` method in `BusinessRules.cs` needs to be modified to:
 For each priority level P (low to high):
     
     # Get all rules at this priority
+    # Note: IsAsync is already a property on IBusinessRuleBase (defined in IBusinessRule.cs)
     rulesAtP = rules.Where(r => r.Priority == P)
     syncRules = rulesAtP.Where(r => !r.IsAsync)
     asyncParallelRules = rulesAtP.Where(r => r.IsAsync && r.AsyncExecutionMode == Parallel)
@@ -179,6 +182,7 @@ For each group in priorityGroups:
     
     parallelTasks = new List<Task>()
     
+    # Note: IsAsync is already a property on IBusinessRuleBase interface
     For each rule in group:
         If rule.IsAsync:
             If rule.AsyncExecutionMode == Serial:

@@ -5,7 +5,7 @@
     <TargetFramework>net462</TargetFramework>
     <AssemblyName>Csla.Web</AssemblyName>
     <RootNamespace>Csla.Web</RootNamespace>
-    <PackageId>Csla.Web</PackageId>
+    <PackageId>Csla.AspNet</PackageId>
     <SignAssembly>true</SignAssembly>
     <BaseOutputPath>..\..\Bin</BaseOutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>

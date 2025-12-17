@@ -109,23 +109,6 @@ namespace Csla.Serialization.Mobile
       {
         writer.Write((byte)types);
       }
-      else if (target is TimeSpan span)
-      {
-        Write(CslaKnownTypes.TimeSpan, writer);
-        writer.Write(span.Ticks);
-      }
-      else if (target is DateTimeOffset offset)
-      {
-        Write(CslaKnownTypes.DateTimeOffset, writer);
-        writer.Write(offset.Ticks);
-        writer.Write(offset.Offset.Ticks);
-      }
-      else if (target is byte[] bytes)
-      {
-        Write(CslaKnownTypes.ByteArray, writer);
-        writer.Write(bytes.Length);
-        writer.Write(bytes);
-      }
       else if (target is byte[][] outerArray)
       {
         Write(CslaKnownTypes.ByteArrayArray, writer);
@@ -136,17 +119,6 @@ namespace Csla.Serialization.Mobile
           writer.Write(item);
         }
       }
-      else if (target is char[] chars)
-      {
-        Write(CslaKnownTypes.CharArray, writer);
-        writer.Write(chars.Length);
-        writer.Write(chars);
-      }
-      else if (target is Guid guid)
-      {
-        Write(CslaKnownTypes.Guid, writer);
-        writer.Write(guid.ToByteArray());
-      }
       else if (target is List<int> ints)
       {
         Write(CslaKnownTypes.ListOfInt, writer);
@@ -156,94 +128,10 @@ namespace Csla.Serialization.Mobile
           writer.Write(oneInt);
         }
       }
-#if NET8_0_OR_GREATER
-      else if (target is DateOnly dateOnly)
-      {
-        Write(CslaKnownTypes.DateOnly, writer);
-        var value = dateOnly.ToDateTime(TimeOnly.MinValue).Ticks;
-        writer.Write(value);
-      }
-      else if (target is TimeOnly timeOnly)
-      {
-        Write(CslaKnownTypes.TimeOnly, writer);
-        var value = timeOnly.Ticks;
-        writer.Write(value);
-      }
-#endif
       else
       {
-        var typeCode = Type.GetTypeCode(target.GetType());
-        switch (typeCode)
-        {
-          case TypeCode.Boolean:
-            Write(CslaKnownTypes.Boolean, writer);
-            writer.Write((bool)target);
-            break;
-          case TypeCode.Char:
-            Write(CslaKnownTypes.Char, writer);
-            writer.Write((char)target);
-            break;
-          case TypeCode.SByte:
-            Write(CslaKnownTypes.SByte, writer);
-            writer.Write((sbyte)target);
-            break;
-          case TypeCode.Byte:
-            Write(CslaKnownTypes.Byte, writer);
-            writer.Write((byte)target);
-            break;
-          case TypeCode.Int16:
-            Write(CslaKnownTypes.Int16, writer);
-            writer.Write((short)target);
-            break;
-          case TypeCode.UInt16:
-            Write(CslaKnownTypes.UInt16, writer);
-            writer.Write((ushort)target);
-            break;
-          case TypeCode.Int32:
-            Write(CslaKnownTypes.Int32, writer);
-            writer.Write((int)target);
-            break;
-          case TypeCode.UInt32:
-            Write(CslaKnownTypes.UInt32, writer);
-            writer.Write((uint)target);
-            break;
-          case TypeCode.Int64:
-            Write(CslaKnownTypes.Int64, writer);
-            writer.Write((long)target);
-            break;
-          case TypeCode.UInt64:
-            Write(CslaKnownTypes.UInt64, writer);
-            writer.Write((ulong)target);
-            break;
-          case TypeCode.Single:
-            Write(CslaKnownTypes.Single, writer);
-            writer.Write((float)target);
-            break;
-          case TypeCode.Double:
-            Write(CslaKnownTypes.Double, writer);
-            writer.Write((double)target);
-            break;
-          case TypeCode.Decimal:
-            Write(CslaKnownTypes.Decimal, writer);
-            var bits = Decimal.GetBits((decimal)target);
-            foreach (var bit in bits)
-            {
-              writer.Write(bit);
-            }
-            break;
-          case TypeCode.DateTime:
-            Write(CslaKnownTypes.DateTime, writer);
-            var value = ((DateTime)target).Ticks;
-            writer.Write(value);
-            break;
-          case TypeCode.String:
-            Write(CslaKnownTypes.String, writer);
-            writer.Write((string)target);
-            break;
-          default:
-            throw new NotSupportedException(
-              $"{Resources.BinaryWriterObjectSerializationException} ({target.GetType().FullName})");
-        }
+        // Use shared helper for primitive types
+        BinaryValueHelper.WriteValue(target, writer);
       }
     }
   }

@@ -71,8 +71,7 @@ namespace Csla.Serialization.Mobile
       for (int i = 0; i < count; i++)
       {
         string key = reader.ReadString();
-        var fieldData = ReadFieldData(reader);
-        info.AddValue(key, fieldData.Value, fieldData.IsDirty, fieldData.EnumTypeName);
+        ReadFieldDataInto(reader, info, key);
       }
 
       mobileObject.SetState(info);
@@ -98,7 +97,7 @@ namespace Csla.Serialization.Mobile
       BinaryValueHelper.WriteValue(fieldData.Value, writer);
     }
 
-    private static FieldDataResult ReadFieldData(BinaryReader reader)
+    private static void ReadFieldDataInto(BinaryReader reader, SerializationInfo info, string key)
     {
       // Read IsDirty flag
       bool isDirty = reader.ReadBoolean();
@@ -111,25 +110,9 @@ namespace Csla.Serialization.Mobile
         enumTypeName = reader.ReadString();
       }
 
-      // Read the value using shared helper
+      // Read the value using shared helper and add directly to info
       var value = BinaryValueHelper.ReadValue(reader);
-
-      return new FieldDataResult
-      {
-        Value = value,
-        IsDirty = isDirty,
-        EnumTypeName = enumTypeName
-      };
-    }
-
-    /// <summary>
-    /// Represents the result of reading a field value.
-    /// </summary>
-    private struct FieldDataResult
-    {
-      public object? Value { get; set; }
-      public bool IsDirty { get; set; }
-      public string? EnumTypeName { get; set; }
+      info.AddValue(key, value, isDirty, enumTypeName);
     }
   }
 }

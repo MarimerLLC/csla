@@ -790,7 +790,7 @@ namespace Csla.Core.FieldManager
         _stateStack.Clear();
         if (info.Values.ContainsKey("_stateStack"))
         {
-          var stackArray = info.GetValue<byte[][]>("_stateStack");
+          var stackArray = (IEnumerable<byte[]>)info.GetValue<byte[][]>("_stateStack");
           foreach (var item in stackArray.Reverse())
             _stateStack.Push(item);
         }

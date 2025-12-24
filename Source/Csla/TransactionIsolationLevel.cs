@@ -38,7 +38,14 @@ namespace Csla
     /// <summary>
     /// Shared locks are issued and no exclusive locks are honored.
     /// </summary>
-    ReadUncommitted
+    ReadUncommitted,
+    /// <summary>
+    /// Volatile data can be read. Before a transaction modifies data, it verifies if
+    /// another transaction has changed the data after it was initially read. If the
+    /// data has been updated, an error is raised. This allows a transaction to get to
+    /// the previously committed value of the data.
+    /// </summary>
+    Snapshot
   }
 }
 #endif

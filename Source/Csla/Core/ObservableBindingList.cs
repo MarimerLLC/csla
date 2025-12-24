@@ -9,6 +9,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 
@@ -565,6 +566,28 @@ namespace Csla.Core
       AllowRemove = info.GetValue<bool>("Csla.Core.MobileList.AllowRemove");
       RaiseListChangedEvents = info.GetValue<bool>("Csla.Core.MobileList.RaiseListChangedEvents");
       _supportsChangeNotificationCore = info.GetValue<bool>("Csla.Core.MobileList._supportsChangeNotificationCore");
+    }
+
+    /// <inheritdoc />
+    protected override void OnGetMetastate(BinaryWriter writer)
+    {
+      base.OnGetMetastate(writer);
+      writer.Write(_allowEdit);
+      writer.Write(_allowNew);
+      writer.Write(_allowRemove);
+      writer.Write(_raiseListChangedEvents);
+      writer.Write(_supportsChangeNotificationCore);
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetMetastate(BinaryReader reader)
+    {
+      base.OnSetMetastate(reader);
+      _allowEdit = reader.ReadBoolean();
+      _allowNew = reader.ReadBoolean();
+      _allowRemove = reader.ReadBoolean();
+      _raiseListChangedEvents = reader.ReadBoolean();
+      _supportsChangeNotificationCore = reader.ReadBoolean();
     }
 
     #endregion

@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Core
@@ -19,7 +20,7 @@ namespace Csla.Core
   /// Type of object contained in the list.
   /// </typeparam>
   [Serializable]
-  public class MobileList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : List<T>, IMobileObject
+  public class MobileList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : List<T>, IMobileObject, IMobileObjectMetastate
   {
     /// <summary>
     /// Creates an instance of the type.
@@ -124,6 +125,48 @@ namespace Csla.Core
 
         Add(value);
       }
+    }
+
+    #endregion
+
+    #region IMobileObjectMetastate Members
+
+    /// <summary>
+    /// Override this method to write field values directly
+    /// to a binary stream for metastate serialization.
+    /// </summary>
+    /// <param name="writer">Binary writer for the output stream.</param>
+    protected virtual void OnGetMetastate(BinaryWriter writer)
+    { }
+
+    /// <summary>
+    /// Override this method to read field values directly
+    /// from a binary stream for metastate deserialization.
+    /// </summary>
+    /// <param name="reader">Binary reader for the input stream.</param>
+    protected virtual void OnSetMetastate(BinaryReader reader)
+    { }
+
+    /// <inheritdoc />
+    byte[] IMobileObjectMetastate.GetMetastate()
+    {
+      using var stream = new MemoryStream();
+      using var writer = new BinaryWriter(stream);
+      OnGetMetastate(writer);
+      return stream.ToArray();
+    }
+
+    /// <inheritdoc />
+    void IMobileObjectMetastate.SetMetastate(byte[] metastate)
+    {
+      if (metastate == null)
+        throw new ArgumentNullException(nameof(metastate));
+      if (metastate.Length == 0)
+        throw new ArgumentException("Metastate cannot be empty.", nameof(metastate));
+
+      using var stream = new MemoryStream(metastate);
+      using var reader = new BinaryReader(stream);
+      OnSetMetastate(reader);
     }
 
     #endregion

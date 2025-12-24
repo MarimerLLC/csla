@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
@@ -260,13 +261,23 @@ namespace Csla
     /// <inheritdoc />
     byte[] IMobileObjectMetastate.GetMetastate()
     {
-      return MobileObjectMetastateHelper.SerializeMetastate(this);
+      using var stream = new MemoryStream();
+      using var writer = new BinaryWriter(stream);
+      OnGetMetastate(writer);
+      return stream.ToArray();
     }
 
     /// <inheritdoc />
     void IMobileObjectMetastate.SetMetastate(byte[] metastate)
     {
-      MobileObjectMetastateHelper.DeserializeMetastate(this, metastate);
+      if (metastate == null)
+        throw new ArgumentNullException(nameof(metastate));
+      if (metastate.Length == 0)
+        throw new ArgumentException("Metastate cannot be empty.", nameof(metastate));
+
+      using var stream = new MemoryStream(metastate);
+      using var reader = new BinaryReader(stream);
+      OnSetMetastate(reader);
     }
 
     #endregion

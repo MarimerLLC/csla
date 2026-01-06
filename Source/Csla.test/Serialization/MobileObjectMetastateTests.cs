@@ -94,14 +94,66 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void SetMetastate_ThrowsOnEmptyMetastate()
+    public void SetMetastate_AcceptsEmptyMetastate()
     {
-      // Arrange
+      // Arrange - An object with no metastate will produce an empty byte array
       var brokenRule = new BrokenRule();
+      var emptyMetastate = new byte[0];
    
-      // Act
-      ((IMobileObjectMetastate)brokenRule).SetMetastate(new byte[0]);
+      // Act - Setting empty metastate should not throw
+      ((IMobileObjectMetastate)brokenRule).SetMetastate(emptyMetastate);
+      
+      // Assert - The object should still be valid
+      Assert.IsNotNull(brokenRule);
+    }
+
+    [TestMethod]
+    public void CommandBase_GetSetMetastate_EmptyMetastate_RoundTrip()
+    {
+      // Arrange - Create a CommandBase-derived object with no custom metastate
+      // CommandBase objects that don't override OnGetMetastate/OnSetMetastate
+      // will return/accept empty byte arrays
+      var testDIContext = TestHelpers.TestDIContextFactory.CreateDefaultContext();
+      var dataPortal = testDIContext.CreateDataPortal<Test.CommandBase.CommandObject>();
+      var original = dataPortal.Create();
+      
+      // Act - Get the metastate from an object with no field state
+      var metastate = ((IMobileObjectMetastate)original).GetMetastate();
+      
+      // Create a new instance and restore the empty metastate
+      var restored = dataPortal.Create();
+      ((IMobileObjectMetastate)restored).SetMetastate(metastate);
+      
+      // Assert - Should complete without exception
+      // The empty metastate should have been successfully set
+      Assert.IsNotNull(restored);
+      Assert.AreEqual(original.Name, restored.Name);
+      Assert.AreEqual(original.Num, restored.Num);
+    }
+
+    [TestMethod]
+    public void BusinessBase_GetSetMetastate_FetchedObject_FlagPreservation()
+    {
+      // Arrange - Create a simple test object that derives from BusinessBase
+      var original = new Csla.Test.BasicModern.Root();
+      
+      // Simulate a fetched object by marking it as old (not new, not dirty)
+      original.MarkOld();
+      
+      // Verify initial state
+      Assert.IsFalse(original.IsNew, "After MarkOld, object should not be new");
+      Assert.IsFalse(original.IsDirty, "After MarkOld, object should not be dirty");
+      
+      // Act - Get the metastate from the fetched object
+      var metastate = ((IMobileObjectMetastate)original).GetMetastate();
+      
+      // Create a new instance and restore the metastate
+      var restored = new Csla.Test.BasicModern.Root();
+      ((IMobileObjectMetastate)restored).SetMetastate(metastate);
+      
+      // Assert - The flag properties should be preserved after deserialization
+      Assert.IsFalse(restored.IsNew, "Deserialized object should preserve IsNew=false");
+      Assert.IsFalse(restored.IsDirty, "Deserialized object should preserve IsDirty=false");
     }
   }
 }

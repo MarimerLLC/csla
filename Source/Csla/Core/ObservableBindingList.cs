@@ -583,11 +583,16 @@ namespace Csla.Core
     protected override void OnSetMetastate(BinaryReader reader)
     {
       base.OnSetMetastate(reader);
-      _allowEdit = reader.ReadBoolean();
-      _allowNew = reader.ReadBoolean();
-      _allowRemove = reader.ReadBoolean();
-      _raiseListChangedEvents = reader.ReadBoolean();
-      _supportsChangeNotificationCore = reader.ReadBoolean();
+      // Only read if there's data available in the stream
+      // An empty stream means the object has no metastate to restore
+      if (reader.BaseStream.Position < reader.BaseStream.Length)
+      {
+        _allowEdit = reader.ReadBoolean();
+        _allowNew = reader.ReadBoolean();
+        _allowRemove = reader.ReadBoolean();
+        _raiseListChangedEvents = reader.ReadBoolean();
+        _supportsChangeNotificationCore = reader.ReadBoolean();
+      }
     }
 
     #endregion

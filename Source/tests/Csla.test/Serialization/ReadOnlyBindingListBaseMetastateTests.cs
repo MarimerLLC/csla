@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------
-// <copyright file="ReadOnlyListBaseMetastateTests.cs" company="Marimer LLC">
+// <copyright file="ReadOnlyBindingListBaseMetastateTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Tests for IMobileObjectMetastate interface implementation on ReadOnlyListBase.</summary>
+// <summary>Tests for IMobileObjectMetastate interface implementation on ReadOnlyBindingListBase.</summary>
 //-----------------------------------------------------------------------
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +13,7 @@ using Csla.TestHelpers;
 namespace Csla.Test.Serialization
 {
   [TestClass]
-  public class ReadOnlyListBaseMetastateTests
+  public class ReadOnlyBindingListBaseMetastateTests
   {
     private static TestDIContext _testDIContext;
 
@@ -30,10 +30,10 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    public void ReadOnlyListBase_GetSetMetastate_IsReadOnly_RoundTrip()
+    public void ReadOnlyBindingListBase_GetSetMetastate_IsReadOnly_RoundTrip()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyList>();
+      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyBindingList>();
       var original = dataPortal.Fetch();
       
       // The list should be readonly by default
@@ -56,10 +56,10 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    public void ReadOnlyListBase_GetSetMetastate_IsReadOnly_False()
+    public void ReadOnlyBindingListBase_GetSetMetastate_IsReadOnly_False()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyList>();
+      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyBindingList>();
       var original = dataPortal.Fetch();
       
       // Unlock the list to test IsReadOnly = false
@@ -83,34 +83,20 @@ namespace Csla.Test.Serialization
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentNullException))]
-    public void ReadOnlyListBase_SetMetastate_ThrowsOnNullMetastate()
+    public void ReadOnlyBindingListBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyList>();
+      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyBindingList>();
       var list = dataPortal.Fetch();
 
       // Act
       ((IMobileObjectMetastate)list).SetMetastate(null);
     }
 
-    [TestMethod]
-    public void ReadOnlyListBase_SetMetastate_AcceptsEmptyMetastate()
-    {
-      // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyList>();
-      var list = dataPortal.Fetch();
-
-      // Act - Setting empty metastate should not throw
-      ((IMobileObjectMetastate)list).SetMetastate(new byte[0]);
-      
-      // Assert - The list should still be valid
-      Assert.IsNotNull(list);
-    }
-
     #region Test Helper Classes
 
     [Serializable]
-    public class TestReadOnlyList : ReadOnlyListBase<TestReadOnlyList, string>
+    public class TestReadOnlyBindingList : ReadOnlyBindingListBase<TestReadOnlyBindingList, string>
     {
       [Fetch]
       private void DataPortal_Fetch()

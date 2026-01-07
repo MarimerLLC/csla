@@ -260,8 +260,6 @@ namespace Csla.Core
     {
       if (metastate == null)
         throw new ArgumentNullException(nameof(metastate));
-      if (metastate.Length == 0)
-        throw new ArgumentException("Metastate cannot be empty.", nameof(metastate));
 
       using var stream = new MemoryStream(metastate);
       using var reader = new BinaryReader(stream);

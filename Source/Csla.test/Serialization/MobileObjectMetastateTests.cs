@@ -132,6 +132,44 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
+    public void CommandBase_GetSetMetastate_PropertyValues_RoundTrip()
+    {
+      // Arrange - Create a CommandBase-derived object with property values
+      var testDIContext = TestHelpers.TestDIContextFactory.CreateDefaultContext();
+      var dataPortal = testDIContext.CreateDataPortal<Test.CommandBase.CommandObject>();
+      var original = dataPortal.Create();
+      
+      // Set some property values using ObjectFactory pattern
+      var factory = new Test.CommandBase.CommandBaseTest(testDIContext.CreateTestApplicationContext());
+      factory.LoadProperty(original, Test.CommandBase.CommandObject.NameProperty, "Test Command");
+      factory.LoadProperty(original, Test.CommandBase.CommandObject.NumProperty, 123);
+
+      // Act - Get the metastate
+      var metastate = ((IMobileObjectMetastate)original).GetMetastate();
+      
+      // Create a new instance and restore the metastate
+      var restored = dataPortal.Create();
+      ((IMobileObjectMetastate)restored).SetMetastate(metastate);
+      
+      // Assert - Property values should be preserved
+      Assert.AreEqual("Test Command", restored.Name);
+      Assert.AreEqual(123, restored.Num);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void CommandBase_SetMetastate_ThrowsOnNullMetastate()
+    {
+      // Arrange
+      var testDIContext = TestHelpers.TestDIContextFactory.CreateDefaultContext();
+      var dataPortal = testDIContext.CreateDataPortal<Test.CommandBase.CommandObject>();
+      var command = dataPortal.Create();
+
+      // Act
+      ((IMobileObjectMetastate)command).SetMetastate(null);
+    }
+
+    [TestMethod]
     public void BusinessBase_GetSetMetastate_FetchedObject_FlagPreservation()
     {
       // Arrange - Create a simple test object that derives from BusinessBase

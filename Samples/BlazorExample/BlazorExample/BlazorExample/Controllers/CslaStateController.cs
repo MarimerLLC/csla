@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Csla;
 using Csla.State;
+using Csla.Blazor.State.Messages;
 
 namespace BlazorExample.Controllers
 {

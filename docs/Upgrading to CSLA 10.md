@@ -22,8 +22,7 @@ services.Configure<RevalidatingInterceptorOptions>(opts =>
 });
 ```
 
-## Exception from asynchronous rules
-
+## New exception handler for asynchronous rules
 A new API is added to make it possible to handle exceptions thrown by asynchronous rules.
 The new interface to implement is `Csla.Rules.IUnhandledAsyncRuleExceptionHandler` which has two methods
 
@@ -37,11 +36,65 @@ With these methods you can now decide whether to handle the exception and how or
 You can register your implementation in two ways
 
 * Just add the implementation to your service collection `services.AddScoped<IUnhandledAsyncRuleExceptionHandler, YourImplementation>()`
+  * Note: This has to be registered _after_ csla is added to the service collection.
 * Use `services.AddCsla(o => o.UseUnhandledAsyncRuleExceptionHandler<YourImplementation>());`. The handler is registered as scoped.
 
 The _default_ is still no handling of any exception thrown in an asynchronous rule.
 
+## `IDataPortal` / `IChildDataPortal` breaking changes
+
+Both interfaces `IDataPortal` and `IChildDataPortal` got the following changes to improve trimming support:
+* Returning `ICslaObject`instead of `object`.
+* `Update`/`Execute` now expect an `ICslaObject` parameter instead of `object`.
+
+## `InjectAttribute` - AllowNull addition
+
+The `InjectAttribute` got a new property called `AllowNull`. This property controls whether csla will use `GetService` or `GetRequiredService`.  
+With `AllowNull == true` means it's using `GetService` which can return a `null` for a requested object.  
+With `AllowNull == false` means it's using `GetRequiredService` which can not return `null` and will cause an exception.  
+Furthermore you can ignore the new property if you are working with the nullable reference types. In that case the `AllowNull` is implicitly declared by your parameter declaration. For example:  
+```csharp
+#nullable enable // or set by your project
+
+[Fetch]
+private void Fetch([Inject] IService1 service1, [Inject] IService2? service2, [Inject(AllowNull = true)] IService3 service3)
+{
+  // ...
+}
+```
+In the example above `service1` will be resolved with `GetRequiredService` while `service2` will be resolved with `GetService`. You can also set `AllowNull` which will override the nullable reference annotation. The other way around `[Inject(AllowNull = false)] IService4? service4` will _not_ change the parameter to be not-null. In this case the annotation takes precedence.
+
+## `IDataErrorInfo` & `INotifyDataErrorInfo` extension points added
+The `BusinessBase` implementation of [IDataErrorInfo](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.idataerrorinfo?view=net-10.0) and [INotifyDataErrorInfo](https://learn.microsoft.com/en-us/dotnet/api/system.componentmodel.inotifydataerrorinfo?view=net-10.0) now provide `virtual` methods to change the behavior.  
+`IDataErrorInfo`
+* `IDataErrorInfo.Error`-> `protected virtual string GetDataErrorInfoError()`
+* `IDataErrorInfo.Item[string]`-> `protected virtual string GetDataErrorInfoIndexerError(string)`
+
+`INotifyDataErrorInfo`
+* `INotifyDataErrorInfo.GetErrors(string?)` -> `protected virtual IEnumerable GetNotifyDataErrorInfoGetErrors(string?)`
+* `INotifyDataErrorInfo.HasErrors` -> `protected virtual bool GetNotifyDataErrorInfoHasErrors()`
+
 ## Nullable Reference Types
+
+### Important breaking change/note
+Due to this change it is **not** possible anymore to assign a csla property in a constructor. Be it a command or a business object.  
+For example
+```csharp
+public class FooCommand : CommandBase<FooCommand> {
+  public static PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+  public string Data
+  {
+    get { return GetProperty(DataProperty); }
+    set { SetProperty(DataProperty, value); }
+  }
+
+  public FooCommand() {
+    Data = ""; // This will now result in an ArgumentNullException because the needed ApplicationContext is not available yet.
+  }
+}
+```
+
+### Explanation
 
 CSLA 10 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values or returns `null`.
 

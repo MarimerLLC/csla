@@ -89,6 +89,7 @@ namespace Csla.Server
         TransactionIsolationLevel.RepeatableRead => IsolationLevel.RepeatableRead,
         TransactionIsolationLevel.ReadCommitted => IsolationLevel.ReadCommitted,
         TransactionIsolationLevel.ReadUncommitted => IsolationLevel.ReadUncommitted,
+        TransactionIsolationLevel.Snapshot => IsolationLevel.Snapshot,
         _ => IsolationLevel.Unspecified
       };
     }

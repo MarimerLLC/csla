@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
@@ -732,6 +733,35 @@ namespace Csla
         _deletedList = (MobileList<C>?)formatter.GetObject(child.ReferenceId);
       }
       base.OnSetChildren(info, formatter);
+    }
+
+    /// <inheritdoc />
+    protected override void OnGetMetastate(BinaryWriter writer)
+    {
+      base.OnGetMetastate(writer);
+      writer.Write(_isChild);
+      writer.Write(EditLevel);
+      writer.Write(_identity);
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetMetastate(BinaryReader reader)
+    {
+      base.OnSetMetastate(reader);
+      _isChild = reader.ReadBoolean();
+      EditLevel = reader.ReadInt32();
+      _identity = reader.ReadInt32();
+    }
+
+    /// <inheritdoc/>
+    protected override void Deserialized()
+    {
+      base.Deserialized();
+
+      foreach (var item in DeletedList)
+      {
+        item.SetParent(this);
+      }
     }
 
     #endregion

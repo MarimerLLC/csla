@@ -92,9 +92,9 @@ namespace Csla.Blazor.State
     /// at which you know the user is navigating to another
     /// page.
     /// </remarks>
-    public async Task SaveState()
+    public Task SaveState()
     {
-      await SaveState(TimeSpan.FromSeconds(10));
+      return SaveState(TimeSpan.FromSeconds(10));
     }
 
     /// <summary>
@@ -113,6 +113,8 @@ namespace Csla.Blazor.State
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
         await _sessionManager.SendSession(timeout);
+      else
+        _sessionManager.GetSession().Touch();
     }
 
     /// <summary>
@@ -131,6 +133,8 @@ namespace Csla.Blazor.State
       var isBrowser = OperatingSystem.IsBrowser();
       if (isBrowser)
         await _sessionManager.SendSession(ct);
+      else
+        _sessionManager.GetSession().Touch();
     }
   }
 }

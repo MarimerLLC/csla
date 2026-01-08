@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.IO;
 using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization;
@@ -420,6 +421,38 @@ namespace Csla.Core
         }
       }
       base.OnSetState(info, mode);
+    }
+
+    /// <inheritdoc />
+    protected override void OnGetMetastate(BinaryWriter writer)
+    {
+      base.OnGetMetastate(writer);
+      writer.Write(_bindingEdit);
+      writer.Write(_stateStack.Count);
+      foreach (var state in _stateStack)
+      {
+        writer.Write(state.Length);
+        writer.Write(state);
+      }
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetMetastate(BinaryReader reader)
+    {
+      base.OnSetMetastate(reader);
+      _bindingEdit = reader.ReadBoolean();
+      int count = reader.ReadInt32();
+      _stateStack.Clear();
+      var tempStack = new Stack<byte[]>();
+      for (int i = 0; i < count; i++)
+      {
+        int length = reader.ReadInt32();
+        var state = reader.ReadBytes(length);
+        tempStack.Push(state);
+      }
+      // Reverse to restore original order
+      foreach (var item in tempStack)
+        _stateStack.Push(item);
     }
   }
 }

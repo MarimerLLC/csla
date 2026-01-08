@@ -97,6 +97,9 @@ public class ApplicationContextManager : IContextManager, IDisposable
     throw new NotSupportedException(nameof(SetUser));
   }
 
+  private const string _localContextName = "Csla.LocalContext";
+  private const string _clientContextName = "Csla.ClientContext";
+
   /// <summary>
   /// Gets the local context.
   /// </summary>
@@ -106,7 +109,7 @@ public class ApplicationContextManager : IContextManager, IDisposable
 
     var session = GetSession();
     IContextDictionary localContext;
-    if (session.TryGetValue("localContext", out var result) && result is IContextDictionary context)
+    if (session.TryGetValue(_localContextName, out var result) && result is IContextDictionary context)
     {
       localContext = context;
     }
@@ -127,7 +130,7 @@ public class ApplicationContextManager : IContextManager, IDisposable
     ThrowIoeIfApplicationContextIsNull();
 
     var session = GetSession();
-    session["localContext"] = localContext;
+    session[_localContextName] = localContext;
   }
 
   /// <summary>
@@ -140,7 +143,7 @@ public class ApplicationContextManager : IContextManager, IDisposable
 
     IContextDictionary clientContext;
     var session = GetSession();
-    if (session.TryGetValue("clientContext", out var result) && result is IContextDictionary context)
+    if (session.TryGetValue(_clientContextName, out var result) && result is IContextDictionary context)
     {
       clientContext = context;
     }
@@ -160,7 +163,7 @@ public class ApplicationContextManager : IContextManager, IDisposable
   public void SetClientContext(IContextDictionary? clientContext, ApplicationContext.ExecutionLocations executionLocation)
   {
     var session = GetSession();
-    session["clientContext"] = clientContext;
+    session[_clientContextName] = clientContext;
   }
 
   private Session GetSession()

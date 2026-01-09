@@ -1,0 +1,76 @@
+@page "/editresource"
+@page "/editresource/{id:int}"
+
+@rendermode InteractiveAuto
+
+@using Marimer.Blazor.RenderMode
+@using Microsoft.AspNetCore.Components.Authorization
+
+@inject NavigationManager NavigationManager
+@inject Csla.Blazor.State.StateManager StateManager
+@inject RenderModeProvider renderModeProvider
+@inject Csla.IDataPortal<ResourceEdit> resourceEditPortal
+@inject Csla.Blazor.ViewModel<ResourceEdit> vm
+
+<p class="alert-danger">@vm.ViewModelErrorText</p>
+@if (vm.Exception is not null)
+{
+    <p class="alert-danger">@vm.Exception.ToString()</p>
+}
+
+@if (!IsInteractive || vm.Model == null)
+{
+    <h1>Edit Resource</h1>
+    <p class="animated-box"></p>
+    <p class="animated-box"></p>
+    <p class="animated-box"></p>
+}
+else
+{
+    <h1>@vm.Model.FullName</h1>
+    <p>
+        <a href="resources">Resource list</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <LabelRow Property="vm.GetPropertyInfo(() => vm.Model.Id)" />
+            <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.FirstName)" />
+            <TextInputRow Property="vm.GetPropertyInfo(() => vm.Model.LastName)" />
+        </tbody>
+    </table>
+    @if (vm.CanEditObject)
+    {
+        <button @onclick="vm.SaveAsync" disabled="@(!vm.Model.IsSavable && !IsInteractive)">Save</button>
+    }
+}
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    public bool IsInteractive { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+
+        var renderMode = renderModeProvider.GetRenderMode(this);
+        IsInteractive = renderMode.IsInteractive();
+        if (IsInteractive)
+        {
+            vm.Saved += () => NavigationManager.NavigateTo("resources");
+            vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+
+            if (Id.HasValue)
+                await vm.RefreshAsync(() => resourceEditPortal.FetchAsync(Id));
+            else
+                await vm.RefreshAsync(() => resourceEditPortal.CreateAsync());
+        }
+    }
+}

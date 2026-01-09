@@ -4,8 +4,9 @@
 @inject Csla.Blazor.State.StateManager StateManager
 @inject Csla.IDataPortal<ResourceList> resourceListPortal
 @inject Csla.Blazor.ViewModel<ResourceList> vm
+@inject Csla.Blazor.ViewModel<ResourceEdit> revm
 
-<h1>List of Projects</h1>
+<h1>List of Resources</h1>
 
 <p class="alert-danger">@vm.ViewModelErrorText</p>
 
@@ -16,7 +17,10 @@
 else
 {
     <p>
-        <a href="editresource">Add resource</a>
+        @if (revm.CanCreateObject)
+        {
+            <a href="editresource">Add resource</a>
+        }
     </p>
     <table class="table">
         <thead>
@@ -30,7 +34,14 @@ else
             {
                 <tr>
                     <td>@item.Name</td>
-                    <td><a href="editresource/@item.Id">Edit</a></td>
+                    @if (revm.CanEditObject)
+                    {
+                        <td><a href="editresource/@item.Id">Edit</a></td>
+                    }
+                    else if (revm.CanGetObject)
+                    {
+                        <td><a href="editresource/@item.Id">Details</a></td>
+                    }
                 </tr>
             }
         </tbody>

@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMqExample", "RabbitMq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMqService", "RabbitMqService\RabbitMqService.csproj", "{2E538173-7C94-487D-A114-1696E7B9D7C1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla", "..\..\Source\Csla\Csla.csproj", "{AED731F2-DCC1-4751-B942-823CCB6ECF2B}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla.Channels.RabbitMq", "..\..\Source\Csla.Channels.RabbitMq\Csla.Channels.RabbitMq.csproj", "{44B3E82D-6BEF-43F5-867D-1F671EE58ABD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RabbitMqBusiness", "RabbitMqBusiness\RabbitMqBusiness.csproj", "{D9C45CD8-E7D7-4FAE-BE53-FB0F4B815D3B}"
 EndProject
 Global
@@ -27,14 +23,6 @@ Global
 		{2E538173-7C94-487D-A114-1696E7B9D7C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E538173-7C94-487D-A114-1696E7B9D7C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E538173-7C94-487D-A114-1696E7B9D7C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AED731F2-DCC1-4751-B942-823CCB6ECF2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AED731F2-DCC1-4751-B942-823CCB6ECF2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AED731F2-DCC1-4751-B942-823CCB6ECF2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AED731F2-DCC1-4751-B942-823CCB6ECF2B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44B3E82D-6BEF-43F5-867D-1F671EE58ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44B3E82D-6BEF-43F5-867D-1F671EE58ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44B3E82D-6BEF-43F5-867D-1F671EE58ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44B3E82D-6BEF-43F5-867D-1F671EE58ABD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9C45CD8-E7D7-4FAE-BE53-FB0F4B815D3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D9C45CD8-E7D7-4FAE-BE53-FB0F4B815D3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9C45CD8-E7D7-4FAE-BE53-FB0F4B815D3B}.Release|Any CPU.ActiveCfg = Release|Any CPU

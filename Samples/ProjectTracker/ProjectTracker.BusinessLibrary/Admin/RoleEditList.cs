@@ -1,5 +1,4 @@
 using Csla;
-using System;
 using System.Collections.Generic;
 using ProjectTracker.Dal;
 
@@ -11,7 +10,6 @@ namespace ProjectTracker.Library
     /// Used to maintain the list of roles
     /// in the system.
     /// </summary>
-    [Serializable]
     public class RoleEditList : BusinessListBase<RoleEditList, RoleEdit>
     {
       /// <summary>

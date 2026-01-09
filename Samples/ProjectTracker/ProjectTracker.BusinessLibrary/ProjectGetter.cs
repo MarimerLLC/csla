@@ -1,20 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ProjectGetter : ReadOnlyBase<ProjectGetter>
+  [CslaImplementProperties]
+  public partial class ProjectGetter : ReadOnlyBase<ProjectGetter>
   {
-    public static readonly PropertyInfo<ProjectEdit> ProjectProperty = RegisterProperty<ProjectEdit>(nameof(Project));
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public ProjectEdit Project
-    {
-      get { return GetProperty(ProjectProperty)!; }
-      private set { LoadProperty(ProjectProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial ProjectEdit Project { get; private set; }
 
     [Fetch]
     private async Task Fetch(int projectId, [Inject] IDataPortal<ProjectEdit> portal)

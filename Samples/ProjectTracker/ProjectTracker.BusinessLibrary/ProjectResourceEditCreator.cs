@@ -1,22 +1,14 @@
-﻿using System;
-using Csla;
+﻿using Csla;
 
 namespace ProjectTracker.Library
 {
   /// <summary>
   /// Command object that creates a project-resource link.
   /// </summary>
-  [Serializable]
-  public class ProjectResourceEditCreator : CommandBase<ProjectResourceEditCreator>
+  [CslaImplementProperties]
+  public partial class ProjectResourceEditCreator : CommandBase<ProjectResourceEditCreator>
   {
-    public static readonly PropertyInfo<ProjectResourceEdit> ProjectResourceProperty = RegisterProperty<ProjectResourceEdit>(c => c.ProjectResource);
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public ProjectResourceEdit ProjectResource
-    {
-      get { return ReadProperty(ProjectResourceProperty)!; }
-      private set { LoadProperty(ProjectResourceProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial ProjectResourceEdit ProjectResource { get; private set; }
 
     [Execute]
     private void Execute(int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)

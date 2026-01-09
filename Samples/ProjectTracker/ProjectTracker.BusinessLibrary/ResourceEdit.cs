@@ -7,51 +7,25 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ResourceEdit : CslaBaseTypes.BusinessBase<ResourceEdit>
+  [CslaImplementProperties]
+  public partial class ResourceEdit : CslaBaseTypes.BusinessBase<ResourceEdit>
   {
-    public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public byte[] TimeStamp
-    {
-      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
-      set { SetProperty(TimeStampProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial byte[] TimeStamp { get; set; }
 
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     [Display(Name = "Resource id")]
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
-    }
+    public partial int Id { get; set; }
 
-    public static readonly PropertyInfo<string> LastNameProperty = 
-      RegisterProperty<string>(c => c.LastName);
     [Display(Name = "Last name")]
     [Required]
     [StringLength(50)]
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public string LastName
-    {
-      get { return GetProperty(LastNameProperty) ?? string.Empty; }
-      set { SetProperty(LastNameProperty, value); }
-    }
+    public partial string LastName { get; set; }
 
-    public static readonly PropertyInfo<string> FirstNameProperty = 
-      RegisterProperty<string>(c => c.FirstName);
     [Display(Name = "First name")]
     [Required]
     [StringLength(50)]
-    public string FirstName
-    {
-      get { return GetProperty(FirstNameProperty) ?? string.Empty; }
-      set { SetProperty(FirstNameProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial string FirstName { get; set; }
 
     [Display(Name = "Full name")]
     public string FullName
@@ -59,15 +33,7 @@ namespace ProjectTracker.Library
       get { return LastName + ", " + FirstName; }
     }
 
-    public static readonly PropertyInfo<ResourceAssignments> AssignmentsProperty =
-      RegisterProperty<ResourceAssignments>(c => c.Assignments);
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public ResourceAssignments Assignments
-    {
-      get { return GetProperty(AssignmentsProperty)!; }
-      private set { LoadProperty(AssignmentsProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial ResourceAssignments Assignments { get; private set; }
 
     public override string ToString()
     {
@@ -105,10 +71,13 @@ namespace ProjectTracker.Library
     {
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
-        var target = (ResourceEdit)context.Target;
+        if (context.Target is not ResourceEdit target)
+          return;
         try
         {
           var assignments = target.Assignments;
+          if (assignments is null)
+            return;
           foreach (var item in assignments)
           {
             var count = assignments.Count(r => r.ProjectId == item.ProjectId);
@@ -130,22 +99,21 @@ namespace ProjectTracker.Library
     [Create]
     private void Create([Inject] IChildDataPortal<ResourceAssignments> portal)
     {
-      LoadProperty(AssignmentsProperty, portal!.CreateChild()!);
+      LoadProperty(AssignmentsProperty, portal.CreateChild());
       BusinessRules.CheckRules();
     }
 
     [Fetch]
     private void Fetch(int id, [Inject] IResourceDal dal, [Inject] IChildDataPortal<ResourceAssignments> portal)
     {
-        var data = dal.Fetch(id) ?? throw new DataNotFoundException("Resource");
+      var data = dal.Fetch(id) ?? throw new DataNotFoundException("Resource");
       using (BypassPropertyChecks)
       {
         Id = data.Id;
-        FirstName = data.FirstName;
-        LastName = data.LastName;
-        TimeStamp = data.LastChanged;
-        var assignments = portal!.FetchChild(id)!;
-        Assignments = assignments;
+        FirstName = data.FirstName ?? string.Empty;
+        LastName = data.LastName ?? string.Empty;
+        TimeStamp = data.LastChanged ?? [];
+        Assignments = portal.FetchChild(id);
       }
     }
 
@@ -161,7 +129,7 @@ namespace ProjectTracker.Library
         };
         dal.Insert(item);
         Id = item.Id;
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
       FieldManager.UpdateChildren(this);
     }
@@ -179,7 +147,7 @@ namespace ProjectTracker.Library
           LastChanged = this.TimeStamp
         };
         dal.Update(item);
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
       FieldManager.UpdateChildren(this);
     }
@@ -189,7 +157,7 @@ namespace ProjectTracker.Library
     {
       using (BypassPropertyChecks)
       {
-        Assignments.Clear();
+        Assignments?.Clear();
         FieldManager.UpdateChildren(this);
         Delete(this.Id, dal);
       }

@@ -1,27 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using Csla;
+﻿using Csla;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ProjectResourceUpdater : CommandBase<ProjectResourceUpdater>
+  [CslaImplementProperties]
+  public partial class ProjectResourceUpdater : CommandBase<ProjectResourceUpdater>
   {
-    public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
-    public int ProjectId
-    {
-      get { return ReadProperty(ProjectIdProperty); }
-      private set { LoadProperty(ProjectIdProperty, value); }
-    }
+    public partial int ProjectId { get; private set; }
 
-    public static readonly PropertyInfo<ProjectResourceEdit> ProjectResourceProperty = RegisterProperty<ProjectResourceEdit>(c => c.ProjectResource);
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public ProjectResourceEdit ProjectResource
-    {
-      get { return ReadProperty(ProjectResourceProperty)!; }
-      private set { LoadProperty(ProjectResourceProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial ProjectResourceEdit ProjectResource { get; private set; }
 
     [Create]
     [RunLocal]

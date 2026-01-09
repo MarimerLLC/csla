@@ -8,48 +8,21 @@ using System.Linq;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ProjectResourceEdit : BusinessBase<ProjectResourceEdit>
+  [CslaImplementProperties]
+  public partial class ProjectResourceEdit : BusinessBase<ProjectResourceEdit>
   {
-    public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public byte[] TimeStamp
-    {
-      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
-      set { SetProperty(TimeStampProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial byte[] TimeStamp { get; set; }
 
-    public static readonly PropertyInfo<int> ResourceIdProperty = 
-      RegisterProperty<int>(c => c.ResourceId);
     [Display(Name = "Resource id")]
-    public int ResourceId
-    {
-      get { return GetProperty(ResourceIdProperty); }
-      private set { LoadProperty(ResourceIdProperty, value); }
-    }
+    public partial int ResourceId { get; private set; }
 
-    public static readonly PropertyInfo<string> FirstNameProperty =
-      RegisterProperty<string>(c => c.FirstName);
     [Display(Name = "First name")]
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public string FirstName
-    {
-      get { return GetProperty(FirstNameProperty) ?? string.Empty; }
-      private set { LoadProperty(FirstNameProperty, value); }
-    }
+    public partial string FirstName { get; private set; }
 
-    public static readonly PropertyInfo<string> LastNameProperty =
-      RegisterProperty<string>(c => c.LastName);
     [Display(Name = "Last name")]
-    public string LastName
-    {
-      get { return GetProperty(LastNameProperty) ?? string.Empty; }
-      private set { LoadProperty(LastNameProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial string LastName { get; private set; }
 
     [Display(Name = "Full name")]
     public string FullName
@@ -57,38 +30,21 @@ namespace ProjectTracker.Library
       get { return string.Format("{0}, {1}", LastName, FirstName); }
     }
 
-    public static readonly PropertyInfo<DateTime> AssignedProperty =
-      RegisterProperty<DateTime>(c => c.Assigned);
     [Display(Name = "Date assigned")]
-    public DateTime Assigned
-    {
-      get { return GetProperty(AssignedProperty); }
-      private set { LoadProperty(AssignedProperty, value); }
-    }
+    public partial DateTime Assigned { get; private set; }
 
-    public static readonly PropertyInfo<int> RoleProperty = 
-      RegisterProperty<int>(c => c.Role);
     [Display(Name = "Role assigned")]
-    public int Role
-    {
-      get { return GetProperty(RoleProperty); }
-      set { SetProperty(RoleProperty, value); }
-    }
+    public partial int Role { get; set; }
 
-    public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(nameof(RoleList));
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public RoleList RoleList
-    {
-      get => GetProperty(RoleListProperty) ?? throw new InvalidOperationException("Role list has not been loaded.");
-      private set => LoadProperty(RoleListProperty, value);
-    }
-#pragma warning restore CSLA0007
+    public partial RoleList RoleList { get; private set; }
 
     public string RoleName
     {
       get
       {
         var list = RoleList;
+        if (list is null)
+          return string.Empty;
         var role = list.Where(r => r.Key == Role).FirstOrDefault();
         return role?.Value ?? string.Empty;
       }
@@ -109,11 +65,11 @@ namespace ProjectTracker.Library
       using (BypassPropertyChecks)
       {
         ResourceId = resourceId;
-        LoadProperty(AssignedProperty, DateTime.Today);
+        Assigned = DateTime.Today;
         var person = dal.Fetch(resourceId) ?? throw new DataNotFoundException("Resource");
-        FirstName = person.FirstName;
-        LastName = person.LastName;
-        var roles = rolePortal!.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        FirstName = person.FirstName ?? string.Empty;
+        LastName = person.LastName ?? string.Empty;
+        var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         RoleList = roles;
       }
       BusinessRules.CheckRules();
@@ -127,11 +83,11 @@ namespace ProjectTracker.Library
       {
         ResourceId = data.ResourceId;
         Role = data.RoleId;
-        LoadProperty(AssignedProperty, data.Assigned);
-        TimeStamp = data.LastChanged;
+        Assigned = data.Assigned;
+        TimeStamp = data.LastChanged ?? [];
         var person = dal.Fetch(data.ResourceId) ?? throw new DataNotFoundException("Resource");
-        FirstName = person.FirstName;
-        LastName = person.LastName;
+        FirstName = person.FirstName ?? string.Empty;
+        LastName = person.LastName ?? string.Empty;
         var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         RoleList = roles;
       }
@@ -152,11 +108,11 @@ namespace ProjectTracker.Library
         {
           ProjectId = projectId,
           ResourceId = this.ResourceId,
-          Assigned = ReadProperty(AssignedProperty),
+          Assigned = this.Assigned,
           RoleId = this.Role
         };
         dal.Insert(item);
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 
@@ -172,11 +128,11 @@ namespace ProjectTracker.Library
       using (BypassPropertyChecks)
       {
         var item = dal.Fetch(projectId, ResourceId) ?? throw new DataNotFoundException("Assignment");
-        item.Assigned = ReadProperty(AssignedProperty);
+        item.Assigned = this.Assigned;
         item.RoleId = Role;
         item.LastChanged = TimeStamp;
         dal.Update(item);
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 

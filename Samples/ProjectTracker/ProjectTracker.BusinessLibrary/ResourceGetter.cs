@@ -1,20 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Csla;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ResourceGetter : ReadOnlyBase<ResourceGetter>
+  [CslaImplementProperties]
+  public partial class ResourceGetter : ReadOnlyBase<ResourceGetter>
   {
-    public static readonly PropertyInfo<ResourceEdit> ResourceProperty = RegisterProperty<ResourceEdit>(c => c.Resource);
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public ResourceEdit Resource
-    {
-      get { return GetProperty(ResourceProperty)!; }
-      private set { LoadProperty(ResourceProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial ResourceEdit Resource { get; private set; }
 
     [Fetch]
     private async Task Fetch(int resourceId, [Inject] IDataPortal<ResourceEdit> portal)

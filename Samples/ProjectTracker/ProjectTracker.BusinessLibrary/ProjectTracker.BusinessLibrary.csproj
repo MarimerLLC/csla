@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Csla" />
+    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
 

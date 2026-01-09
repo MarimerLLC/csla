@@ -27,18 +27,14 @@ namespace ProjectTracker.Blazor.Client
 
     private async Task<DataPortalResult> GetResultAsync(Type objectType, object criteria, DataPortalOperations operation, Func<Task<DataPortalResult>> portal)
     {
-      DataPortalResult? result;
       var key = GetKey(objectType, criteria, operation);
-      result = await _cache.GetOrCreateAsync(key, async (v) =>
+      var result = await _cache.GetOrCreateAsync(key, async (v) =>
       {
         var obj = await portal();
         v.AbsoluteExpiration = DateTimeOffset.UtcNow + TimeSpan.FromSeconds(5);
         return obj;
       });
-      if (result != null)
-        return result;
-      else
-        return await portal();
+      return result ?? await portal();
     }
 
     private static string GetKey(Type objectType, object criteria, DataPortalOperations operation)
@@ -50,10 +46,13 @@ namespace ProjectTracker.Blazor.Client
 
       // criteria values (each criteria has 'valid' ToString)
       var criteriaList = Csla.Server.DataPortal.GetCriteriaArray(criteria);
-      foreach (var item in criteriaList)
+      if (criteriaList is not null)
       {
-        builder.Append(item?.ToString() ?? string.Empty);
-        builder.Append('|');
+        foreach (var item in criteriaList)
+        {
+          builder.Append(item?.ToString() ?? string.Empty);
+          builder.Append('|');
+        }
       }
 
       // operation

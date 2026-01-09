@@ -1,32 +1,16 @@
-﻿using System;
-using Csla;
+﻿using Csla;
 using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class Dashboard : ReadOnlyBase<Dashboard>
+  [CslaImplementProperties]
+  public partial class Dashboard : ReadOnlyBase<Dashboard>
   {
-    public static readonly PropertyInfo<int> ProjectCountProperty = RegisterProperty<int>(c => c.ProjectCount);
-    public int ProjectCount
-    {
-      get { return GetProperty(ProjectCountProperty); }
-      private set { LoadProperty(ProjectCountProperty, value); }
-    }
+    public partial int ProjectCount { get; private set; }
 
-    public static readonly PropertyInfo<int> OpenProjectCountProperty = RegisterProperty<int>(c => c.OpenProjectCount);
-    public int OpenProjectCount
-    {
-      get { return GetProperty(OpenProjectCountProperty); }
-      private set { LoadProperty(OpenProjectCountProperty, value); }
-    }
+    public partial int OpenProjectCount { get; private set; }
 
-    public static readonly PropertyInfo<int> ResourceCountProperty = RegisterProperty<int>(c => c.ResourceCount);
-    public int ResourceCount
-    {
-      get { return GetProperty(ResourceCountProperty); }
-      private set { LoadProperty(ResourceCountProperty, value); }
-    }
+    public partial int ResourceCount { get; private set; }
 
     [Fetch]
     private void Fetch([Inject] IDashboardDal dal)

@@ -1,13 +1,10 @@
 using Csla;
-using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
   public class ResourceList : ReadOnlyListBase<ResourceList, ResourceInfo>
   {
     public void RemoveChild(int resourceId)

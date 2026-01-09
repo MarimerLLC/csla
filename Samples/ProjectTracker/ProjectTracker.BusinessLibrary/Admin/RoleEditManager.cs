@@ -1,27 +1,14 @@
-﻿using System;
-using Csla;
+﻿using Csla;
 using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library.Admin
 {
-  [Serializable]
-  public class RoleEditManager : CommandBase<RoleEditManager>
+  [CslaImplementProperties]
+  public partial class RoleEditManager : CommandBase<RoleEditManager>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
-    private int Id
-    {
-      get { return ReadProperty(IdProperty); }
-      set { LoadProperty(IdProperty, value); }
-    }
+    private partial int Id { get; set; }
 
-    public static readonly PropertyInfo<RoleEdit> RoleEditProperty = RegisterProperty<RoleEdit>(c => c.RoleEdit);
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    private RoleEdit RoleEdit
-    {
-      get { return ReadProperty(RoleEditProperty)!; }
-      set { LoadProperty(RoleEditProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    private partial RoleEdit RoleEdit { get; set; }
 
     [Create]
     [RunLocal]

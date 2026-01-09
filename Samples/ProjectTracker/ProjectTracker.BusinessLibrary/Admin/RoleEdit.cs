@@ -1,5 +1,4 @@
-using Csla;
-using System;
+﻿using Csla;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Csla.Rules;
@@ -7,41 +6,22 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library.Admin
 {
-  [Serializable]
-  public class RoleEdit : BusinessBase<RoleEdit>
+  [CslaImplementProperties]
+  public partial class RoleEdit : BusinessBase<RoleEdit>
   {
     public RoleEdit()
     {
       MarkAsChild();
     }
 
-    public readonly static PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      private set { LoadProperty(IdProperty, value); }
-    }
+    public partial int Id { get; private set; }
 
-    public readonly static PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public string Name
-    {
-      get { return GetProperty(NameProperty) ?? string.Empty; }
-      set { SetProperty(NameProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial string Name { get; set; }
 
-    public readonly static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(nameof(TimeStamp));
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
-    public byte[] TimeStamp
-    {
-      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
-      set { SetProperty(TimeStampProperty, value); }
-    }
-#pragma warning restore CSLA0007
+    public partial byte[] TimeStamp { get; set; }
 
     protected override void AddBusinessRules()
     {
@@ -57,15 +37,13 @@ namespace ProjectTracker.Library.Admin
     {
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
-        var target = (RoleEdit)context.Target;
-        var parent = (RoleEditList?)target.Parent;
-        if (parent == null)
-        {
+        if (context.Target is not RoleEdit target)
           return;
-        }
+        if (target.Parent is not RoleEditList parent)
+          return;
 
         foreach (RoleEdit item in parent)
-          if (item.Id == target.ReadProperty(IdProperty) && !(ReferenceEquals(item, target)))
+          if (item.Id == target.ReadProperty(IdProperty) && !ReferenceEquals(item, target))
           {
             context.AddErrorResult("Role Id must be unique");
             break;
@@ -85,8 +63,8 @@ namespace ProjectTracker.Library.Admin
       using (BypassPropertyChecks)
       {
         Id = data.Id;
-        Name = data.Name;
-        TimeStamp = data.LastChanged;
+        Name = data.Name ?? string.Empty;
+        TimeStamp = data.LastChanged ?? [];
       }
     }
 
@@ -101,7 +79,7 @@ namespace ProjectTracker.Library.Admin
         };
         dal.Insert(item);
         Id = item.Id;
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 
@@ -118,7 +96,7 @@ namespace ProjectTracker.Library.Admin
         };
         dal.Update(item);
         Id = item.Id;
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 

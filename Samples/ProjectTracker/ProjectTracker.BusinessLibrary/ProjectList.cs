@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Csla;
 using System.Collections.Generic;
@@ -6,7 +5,6 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
   public class ProjectList : ReadOnlyListBase<ProjectList, ProjectInfo>
   {
     public void RemoveChild(int projectId)

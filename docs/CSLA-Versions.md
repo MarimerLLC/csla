@@ -2,6 +2,35 @@
 
 This document lists the versions of CSLA .NET that are considered "primary" versions.
 
+## CSLA 10
+
+* Runtimes
+  * .NET 10
+  * .NET 9
+  * .NET 8
+  * .NET Framework 4.6.2 through 4.8
+* Platform support
+  * ASP.NET Core (Blazor, MVC, Razor Pages, and other app models)
+  * ASP.NET (MVC, Web Forms, and other app models)
+  * MAUI (iOS, Android, Mac, Linux)
+  * Uno Platform
+  * Avalonia
+  * Windows Forms, WPF
+* Operating systems
+  * Windows
+  * Android
+  * iOS
+  * Linux (including containers and Kubernetes)
+  * Mac
+  * WebAssembly
+  * Others (via .NET 8, 9, and 10)
+* New features
+  * Full nullable reference type (NRT) support
+  * OpenTelemetry instrumentation for data portal
+  * Enhanced rules engine with async exception handling
+  * Binary serialization for metastate (improved performance)
+  * IMobileObjectMetastate interface for custom serializers
+
 ## CSLA 9
 
 * Runtimes
@@ -124,6 +153,7 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
 
 Here are some specific upgrade notes for each version:
 
+* [Upgrading to CSLA 10](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%2010.md)
 * [Upgrading to CSLA 9](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%209.md)
 * [Upgrading to CSLA 8](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%208.md)
 * [Upgrading to CSLA 6](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%206.md)
@@ -138,7 +168,9 @@ Here are some general guidelines for upgrading:
    1. From 4.0 – there’ve been some minor breaking changes that don’t affect everyone, but reviewing the release notes to see if a given codebase is affected is required
    1. From 5.0 – CSLA 6 is a major update that embraces dependency injection, so nearly all apps will be affected in their startup code, and in any interaction with the `ApplicationContext` or data portal types (all of which are now available as DI services)
    1. From 6.0 - CSLA 7 is a relatively minor upgrade with some important bug fixes. Check the release notes for breaking changes that may affect your specific scenarios.
-   1. From 7.0 = CLSA 8 includes some important bug fixes and useful enhancements. Check the release notes for breaking changes that may affect your specific scenarios.
+   1. From 7.0 - CSLA 8 includes some important bug fixes and useful enhancements. Check the release notes for breaking changes that may affect your specific scenarios.
+   1. From 8.0 - CSLA 9 removes support for UWP, .NET 6, and the `BinaryFormatter`. It adds support for .NET 9 and code generators for serialization and domain classes.
+   1. From 9.0 - CSLA 10 adds full nullable reference type (NRT) support, OpenTelemetry instrumentation, and supports .NET 8, 9, and 10. Review the upgrade doc for breaking changes related to NRT.
 
 Some older posts with information about upgrading:
 
@@ -174,3 +206,4 @@ The roadmap is [available here](https://github.com/MarimerLLC/csla/issues?q=is%3
 * CSLA 7 implements some important bug fixes and some breaking changes (bug fixes and enhancements) to improve the use of CSLA when building business apps. The most notable change is enhancement around authentication and tightening default security for the data portal.
 * CSLA 8 implements some important bug fixes and some breaking changes (bug fixes and enhancements) to improve the use of CSLA when building business apps. This release supports .NET 8, and also enhances behaviors around the `ObjectFactory` implmenetation in the data portal.
 * CSLA 9 removes support for UWP, .NET 6 and the `BinaryFormatter`. It adds support for .NET 9. There are numerous changes to clean up the configuration API. It also includes a couple of code generators to improve serialization speed and radically reduce the amount of code necessary to create a business domain class. There are also many bug fixes and other enhancements in this release.
+* CSLA 10 adds full nullable reference type (NRT) support throughout the codebase, OpenTelemetry instrumentation for the data portal, and support for .NET 8, 9, and 10. Key new features include async rule exception handling, binary serialization for metastate data, and the `IMobileObjectMetastate` interface for custom serializers. This release supports modern deployment scenarios including Kubernetes and containers, with integration for observability platforms like Prometheus, Grafana, and .NET Aspire.

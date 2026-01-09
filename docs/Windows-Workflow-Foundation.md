@@ -1,8 +1,10 @@
 # Windows Workflow Foundation
 
+> ⚠️ **Deprecated Technology**: Windows Workflow Foundation (WF) is not supported in CSLA 4 or later. Microsoft has discontinued WF, and it is not available in modern .NET. This documentation is retained for historical reference only.
+
 ## Does CSLA .NET work with WF?
 
-Yes, prior to CSLA 4. Microsoft has moved on from Windows Workflow Foundation, and so CSLA 4 and later do not support WF.
+No, not in modern versions. CSLA 4 and later do not support WF.
 
 You can create workflow activities using CSLA .NET objects. This is a very powerful way to create activities, because the business behaviors encapsulated within the activity are implemented as an object-oriented use case and can leverage the power of CSLA .NET (most notably the data portal).
 

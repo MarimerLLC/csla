@@ -8,7 +8,7 @@ If you are upgrading from a version of CSLA prior to 8, you should review the [U
 
 ## Platform Support
 
-TBD
+CSLA 10 continues to support .NET Framework 4.6.2 and later, as well as modern .NET versions. CSLA 10 adds support for .NET 10.
 
 ## RevalidatingInterceptor
 
@@ -131,6 +131,106 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `SessionMessage` now inherits from `MobileObject` instead of `CommandBase`.
 * `DataPortalResponse` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.
 * `UpdateRequest` now uses `[AutoSerializable]` to auto implement `IMobileObject` instead of inheriting from `ReadOnlyBase`.
+
+
+## `ViewModel<T>.SaveAsync` and `CslaDataProvider.Refresh` return `Task`
+
+The `ViewModel<T>.SaveAsync(object sender, ExecuteEventArgs e)` method and `CslaDataProvider.Refresh<T>(Func<Task<T>> factory)` method now return `Task` instead of `async void`. This is a breaking change for any code that calls these methods directly.
+
+If you were calling these methods without awaiting them, you will now need to handle the returned `Task` appropriately:
+
+```csharp
+// Before (async void - fire and forget)
+viewModel.SaveAsync(sender, e);
+
+// After (returns Task - must be handled)
+await viewModel.SaveAsync(sender, e);
+// or if you truly want fire-and-forget behavior:
+_ = viewModel.SaveAsync(sender, e);
+```
+
+## OpenTelemetry Instrumentation
+
+CSLA 10 adds OpenTelemetry instrumentation for the data portal. A new `OpenTelemetryDashboard` class provides metrics for data portal operations including total calls, completed calls, failed calls, and call duration.
+
+To enable OpenTelemetry metrics, register the dashboard:
+
+```csharp
+services.AddCsla(o => o.DataPortal(dp =>
+  dp.RegisterDashboard<OpenTelemetryDashboard>()));
+```
+
+The metrics integrate with standard OpenTelemetry consumers such as Prometheus, Grafana, Azure Monitor, and .NET Aspire dashboards.
+
+## Virtual `Deserialized` Method
+
+A new `protected virtual void Deserialized()` method has been added to `BusinessBase`, `ExtendedBindingList`, and `ObservableBindingList`. This method is called after deserialization completes and provides an extension point for custom post-deserialization logic.
+
+```csharp
+public class MyBusinessObject : BusinessBase<MyBusinessObject>
+{
+  protected override void Deserialized()
+  {
+    base.Deserialized();
+    // Custom post-deserialization logic here
+  }
+}
+```
+
+## `IMobileObjectMetastate` Interface
+
+A new `IMobileObjectMetastate` interface has been added to `Csla.Serialization.Mobile`. This interface is intended for developers creating custom serializers as an alternative to `MobileFormatter`.
+
+The interface defines two methods:
+* `byte[] GetMetastate()` - Gets lightweight serialization of field values (metastate) without child object references
+* `void SetMetastate(byte[] metastate)` - Sets the metastate from a byte array
+
+This interface is implemented on `MobileObject`, `MobileBindingList`, and `ReadOnlyListBase`. The metastate is intended for transitory data serialization, not long-term storage.
+
+## Binary Serialization for Metastate
+
+The internal serialization of metastate data now uses binary serialization instead of JSON. This provides improved performance for data portal operations. Since CSLA requires the same version on both ends of a network connection, this change is transparent to most applications.
+
+## Principal Caching Removed
+
+`ApplicationContextManager.GetUser()` no longer caches the current principal. It now always retrieves the principal from `Thread.CurrentPrincipal`. This improves behavior in multi-threaded scenarios and prevents stale principal references.
+
+If your code relied on the previous caching behavior, you may need to review your authorization logic.
+
+## `TransactionIsolationLevel.Snapshot`
+
+A new `Snapshot` option has been added to the `TransactionIsolationLevel` enum. This allows use of snapshot isolation when using the `Transactional` attribute:
+
+```csharp
+[Transactional(TransactionIsolationLevel.Snapshot)]
+private void DataPortal_Update()
+{
+  // Update logic with snapshot isolation
+}
+```
+
+## `FriendlyName` Property on XAML `PropertyInfo`
+
+The `Csla.Xaml.PropertyInfo` component now includes a `FriendlyName` property that can be used to display a user-friendly property name in WPF/XAML applications.
+
+## `RuleContextModes` for Rule Execution Control
+
+A new `RuleContextModes` enum has been added to provide control over when rules execute. The `RuleContext` now includes an `ExecuteContext` property with the following flags:
+* `Any` - Rule executes in any context
+* `CheckRules` - Rule executes during CheckRules calls
+* `CheckObjectRules` - Rule executes during CheckObjectRules calls
+* `PropertyChanged` - Rule executes when the property changes
+* `AsAffectedProperty` - Rule executes as an affected property
+
+## `ScanForDataAnnotations` Configuration Option
+
+A new configuration option `CslaOptions.ScanForDataAnnotations(bool flag)` allows disabling the automatic scanning for DataAnnotations attributes on business objects.
+
+```csharp
+services.AddCsla(o => o.ScanForDataAnnotations(false));
+```
+
+> **Caution:** Setting this to `false` completely disables DataAnnotations attribute support within CSLA. Only use this option if you are certain your application does not use DataAnnotations attributes for validation and you need the performance benefit of skipping the attribute scan.
 
 ## Breaking changes
 

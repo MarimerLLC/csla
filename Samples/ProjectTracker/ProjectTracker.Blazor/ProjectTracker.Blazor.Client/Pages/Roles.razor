@@ -1,0 +1,63 @@
+@page "/roles"
+
+@using ProjectTracker.Library.Admin
+@inject Csla.Blazor.State.StateManager StateManager
+@inject Csla.IDataPortal<RoleEditList> roleEditListPortal
+@inject Csla.Blazor.ViewModel<RoleEditList> vm
+
+<h1>List of Roles</h1>
+
+<p class="alert-danger">@vm.ViewModelErrorText</p>
+@if (vm.Exception is not null)
+{
+    <p class="alert-danger">@vm.Exception.ToString()</p>
+}
+
+@if (vm.Model == null)
+{
+    <p>Loading List...</p>
+}
+else
+{
+    <p>
+        @if (vm.CanCreateObject)
+        {
+            <a href="editrole">Add role</a>
+        }
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in vm.Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    @if (vm.CanEditObject)
+                    {
+                        <td><a href="editrole/@item.Id">Edit</a></td>
+                    }
+                    else if (vm.CanGetObject)
+                    {
+                        <td><a href="editrole/@item.Id">Details</a></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+        await vm.RefreshAsync(() => roleEditListPortal.FetchAsync()!);
+    }
+}

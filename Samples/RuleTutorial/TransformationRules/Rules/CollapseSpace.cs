@@ -44,13 +44,13 @@ namespace TransformationRules.Rules
     /// </param>
     protected override void Execute(IRuleContext context)
     {
-      var value = (string)context.InputPropertyValues[PrimaryProperty];
+      var value = (string?)(context.InputPropertyValues[PrimaryProperty] ?? throw new InvalidOperationException());
       if (string.IsNullOrEmpty(value)) return;
 
       var newValue = value.Trim(' ');
       var r = new Regex(@" +");
       newValue = r.Replace(newValue, @" ");
-      context.AddOutValue(newValue);
+      context.AddOutValue(PrimaryProperty!, newValue);
 
       if (context.IsCheckRulesContext)
         Console.WriteLine(".... Rule {0} running from CheckRules", this.GetType().Name);

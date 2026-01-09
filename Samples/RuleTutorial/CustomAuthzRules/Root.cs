@@ -41,11 +41,13 @@ namespace AuthzReadWriteProperty
     /// <summary>
     /// Gets or sets Name.
     /// </summary>
+#pragma warning disable CSLA0007
     public string Name
     {
-      get { return GetProperty(NameProperty); }
+      get { return GetProperty(NameProperty) ?? string.Empty; }
       set { SetProperty(NameProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     /// <summary>
     /// The num 1 property.
@@ -83,11 +85,13 @@ namespace AuthzReadWriteProperty
     /// <summary>
     /// Gets or sets Country.
     /// </summary>
+#pragma warning disable CSLA0007
     public string Country
     {
-      get { return GetProperty(CountryProperty); }
+      get { return GetProperty(CountryProperty) ?? string.Empty; }
       set { SetProperty(CountryProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     /// <summary>
     /// The state property.
@@ -98,11 +102,13 @@ namespace AuthzReadWriteProperty
     /// Gets or sets State.
     /// </summary>
     [Required]
+#pragma warning disable CSLA0007
     public string State
     {
-      get { return GetProperty(StateProperty); }
+      get { return GetProperty(StateProperty) ?? string.Empty; }
       set { SetProperty(StateProperty, value); }
     }
+#pragma warning restore CSLA0007
     #endregion
 
     #region Validation Rules

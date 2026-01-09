@@ -57,11 +57,11 @@ namespace TransformationRules.Rules
     protected override void Execute(IRuleContext context)
     {
       // Use linq Sum to calculate the sum value
-      var sum = context.InputPropertyValues.Sum(property => (dynamic)property.Value);
+      var sum = context.InputPropertyValues.Sum(property => (dynamic)(property.Value ?? throw new InvalidOperationException()));
 
       // add calculated value to OutValues
       // When rule is completed the RuleEngine will update businessobject
-      context.AddOutValue(PrimaryProperty, sum);
+      context.AddOutValue(PrimaryProperty!, sum);
 
       if (context.IsCascadeContext)
          Console.WriteLine(".... Rule {0} running from affected property or input property", this.GetType().Name);

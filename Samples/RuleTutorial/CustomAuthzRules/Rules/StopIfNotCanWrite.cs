@@ -37,10 +37,10 @@ namespace CustomAuthzRules.Rules
     /// </param>
     protected override void Execute(IRuleContext context)
     {
-      var target = (Csla.Core.BusinessBase)context.Target;
+      var target = (Csla.Core.BusinessBase?)(context.Target ?? throw new InvalidOperationException());
 
       // Short circuit rule processing for this property if user is not allowed to edit field.
-      if (!target.CanWriteProperty(PrimaryProperty))
+      if (!target!.CanWriteProperty(PrimaryProperty!))
       {
         context.AddSuccessResult(true);
       }

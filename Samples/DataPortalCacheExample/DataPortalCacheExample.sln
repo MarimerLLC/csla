@@ -5,8 +5,6 @@ VisualStudioVersion = 17.9.34511.98
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataPortalCacheExample", "DataPortalCacheExample\DataPortalCacheExample.csproj", "{A3852023-B5D7-41CC-898A-1FC6D994D837}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Csla", "..\..\Source\Csla\Csla.csproj", "{5D480CFE-5F9F-4D84-9B13-22F2BB7E384C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{A3852023-B5D7-41CC-898A-1FC6D994D837}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3852023-B5D7-41CC-898A-1FC6D994D837}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3852023-B5D7-41CC-898A-1FC6D994D837}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D480CFE-5F9F-4D84-9B13-22F2BB7E384C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D480CFE-5F9F-4D84-9B13-22F2BB7E384C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D480CFE-5F9F-4D84-9B13-22F2BB7E384C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D480CFE-5F9F-4D84-9B13-22F2BB7E384C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

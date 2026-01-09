@@ -49,10 +49,13 @@ namespace DataPortalCacheExample
 
       // criteria values (each criteria has 'valid' ToString)
       var criteriaList = Csla.Server.DataPortal.GetCriteriaArray(criteria);
-      foreach (var item in criteriaList)
+      if (criteriaList != null)
       {
-        builder.Append(item.ToString());
-        builder.Append('|');
+        foreach (var item in criteriaList)
+        {
+          builder.Append(item?.ToString() ?? string.Empty);
+          builder.Append('|');
+        }
       }
 
       // operation

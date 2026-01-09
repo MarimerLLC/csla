@@ -1,4 +1,5 @@
 ﻿using BusinessLayer;
+using DataAccessLayer;
 using Csla;
 using Csla.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ namespace CslaFastStart
     {
       var services = new ServiceCollection();
       services.AddCsla();
+      services.AddTransient<PersonDal>();
       ServiceProvider = services.BuildServiceProvider();
 
       var dpFactory = ServiceProvider.GetRequiredService<IDataPortalFactory>();

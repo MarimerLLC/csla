@@ -23,6 +23,7 @@ namespace ProjectTracker.Library
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [ObjectAuthorizationRules]
     public static void AddObjectAuthorizationRules()
     {
       Csla.Rules.BusinessRules.AddRule(

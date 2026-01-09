@@ -30,39 +30,39 @@ namespace ProjectTracker.DalEfCore
     public DateTime Assigned { get; set; }
     public int RoleId { get; set; }
     [Timestamp]
-    public byte[] LastChanged { get; set; }
+    public byte[] LastChanged { get; set; } = Array.Empty<byte>();
   }
 
   public class Project
   {
     [Key]
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public DateTime? Started { get; set; }
     public DateTime? Ended { get; set; }
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
     public List<Assignment> Assignments { get; } = new List<Assignment>();
     [Timestamp]
-    public byte[] LastChanged { get; set; }
+    public byte[] LastChanged { get; set; } = Array.Empty<byte>();
   }
 
   public class Resource
   {
     [Key]
     public int Id { get; set; }
-    public string LastName { get; set; }
-    public string FirstName { get; set; }
+    public string LastName { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
     public List<Assignment> Assignments { get; } = new List<Assignment>();
     [Timestamp]
-    public byte[] LastChanged { get; set; }
+    public byte[] LastChanged { get; set; } = Array.Empty<byte>();
   }
 
   public class Role
   {
     [Key]
     public int Id { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [Timestamp]
-    public byte[] LastChanged { get; set; }
+    public byte[] LastChanged { get; set; } = Array.Empty<byte>();
   }
 }

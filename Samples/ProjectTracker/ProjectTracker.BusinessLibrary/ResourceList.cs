@@ -39,8 +39,7 @@ namespace ProjectTracker.Library
     {
       using (LoadListMode)
       {
-        List<ProjectTracker.Dal.ResourceDto> list = null;
-        list = dal.Fetch();
+        List<ProjectTracker.Dal.ResourceDto> list = dal.Fetch();
         foreach (var item in list)
           Add(portal.FetchChild(item));
       }

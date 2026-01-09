@@ -12,6 +12,12 @@
     protected override async Task OnInitializedAsync()
     {
         var httpContext = httpContextAccessor.HttpContext;
+        if (httpContext is null)
+        {
+            NavigationManager.NavigateTo("/");
+            return;
+        }
+
         var principal = httpContext.User;
         if (principal.Identity is not null && principal.Identity.IsAuthenticated)
         {

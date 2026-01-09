@@ -42,7 +42,7 @@ namespace ProjectTracker.Library
           if (item.Id == id)
             return item;
         }
-        return null;
+        return null!;
       }
 
       [ObjectAuthorizationRules]
@@ -58,8 +58,7 @@ namespace ProjectTracker.Library
       {
         using (LoadListMode)
         {
-          List<ProjectTracker.Dal.RoleDto> list = null;
-          list = dal.Fetch();
+          List<ProjectTracker.Dal.RoleDto> list = dal.Fetch();
           foreach (var item in list)
             Add(roleEditPortal.FetchChild(item));
         }

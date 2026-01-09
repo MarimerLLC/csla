@@ -8,11 +8,13 @@ namespace ProjectTracker.Library
   public class ResourceGetter : ReadOnlyBase<ResourceGetter>
   {
     public static readonly PropertyInfo<ResourceEdit> ResourceProperty = RegisterProperty<ResourceEdit>(c => c.Resource);
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public ResourceEdit Resource
     {
-      get { return GetProperty(ResourceProperty); }
+      get { return GetProperty(ResourceProperty)!; }
       private set { LoadProperty(ResourceProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     [Fetch]
     private async Task Fetch(int resourceId, [Inject] IDataPortal<ResourceEdit> portal)

@@ -42,6 +42,6 @@ else
     {
         // Every page _must_ initialize the state manager
         await StateManager.InitializeAsync();
-        await vm.RefreshAsync(() => resourceListPortal.FetchAsync());
+        await vm.RefreshAsync(() => resourceListPortal.FetchAsync()!);
     }
 }

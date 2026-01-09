@@ -15,11 +15,13 @@ namespace ProjectTracker.Library.Admin
     }
 
     public static readonly PropertyInfo<RoleEdit> RoleEditProperty = RegisterProperty<RoleEdit>(c => c.RoleEdit);
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     private RoleEdit RoleEdit
     {
-      get { return ReadProperty(RoleEditProperty); }
+      get { return ReadProperty(RoleEditProperty)!; }
       set { LoadProperty(RoleEditProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     [Create]
     [RunLocal]
@@ -47,7 +49,7 @@ namespace ProjectTracker.Library.Admin
     private void GetRoleEdit([Inject] IRoleDal dal)
     {
       var portal = ApplicationContext.GetRequiredService<IChildDataPortal<RoleEdit>>();
-      var item = dal.Fetch(Id);
+      var item = dal.Fetch(Id) ?? throw new DataNotFoundException("Role");
       RoleEdit = portal.FetchChild(item);
     }
 

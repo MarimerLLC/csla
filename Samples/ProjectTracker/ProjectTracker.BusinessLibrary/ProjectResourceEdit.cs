@@ -14,11 +14,13 @@ namespace ProjectTracker.Library
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public byte[] TimeStamp
     {
-      get { return GetProperty(TimeStampProperty); }
+      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
       set { SetProperty(TimeStampProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public static readonly PropertyInfo<int> ResourceIdProperty = 
       RegisterProperty<int>(c => c.ResourceId);
@@ -32,9 +34,10 @@ namespace ProjectTracker.Library
     public static readonly PropertyInfo<string> FirstNameProperty =
       RegisterProperty<string>(c => c.FirstName);
     [Display(Name = "First name")]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public string FirstName
     {
-      get { return GetProperty(FirstNameProperty); }
+      get { return GetProperty(FirstNameProperty) ?? string.Empty; }
       private set { LoadProperty(FirstNameProperty, value); }
     }
 
@@ -43,9 +46,10 @@ namespace ProjectTracker.Library
     [Display(Name = "Last name")]
     public string LastName
     {
-      get { return GetProperty(LastNameProperty); }
+      get { return GetProperty(LastNameProperty) ?? string.Empty; }
       private set { LoadProperty(LastNameProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     [Display(Name = "Full name")]
     public string FullName
@@ -72,17 +76,21 @@ namespace ProjectTracker.Library
     }
 
     public static readonly PropertyInfo<RoleList> RoleListProperty = RegisterProperty<RoleList>(nameof(RoleList));
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public RoleList RoleList
     {
-      get => GetProperty(RoleListProperty);
+      get => GetProperty(RoleListProperty) ?? throw new InvalidOperationException("Role list has not been loaded.");
       private set => LoadProperty(RoleListProperty, value);
     }
+#pragma warning restore CSLA0007
 
     public string RoleName
     {
       get
       {
-        return RoleList.Where(r => r.Key == Role).First().Value;
+        var list = RoleList;
+        var role = list.Where(r => r.Key == Role).FirstOrDefault();
+        return role?.Value ?? string.Empty;
       }
     }
 
@@ -102,10 +110,11 @@ namespace ProjectTracker.Library
       {
         ResourceId = resourceId;
         LoadProperty(AssignedProperty, DateTime.Today);
-        var person = dal.Fetch(resourceId);
+        var person = dal.Fetch(resourceId) ?? throw new DataNotFoundException("Resource");
         FirstName = person.FirstName;
         LastName = person.LastName;
-        RoleList = rolePortal.Fetch();
+        var roles = rolePortal!.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        RoleList = roles;
       }
       BusinessRules.CheckRules();
     }
@@ -120,10 +129,11 @@ namespace ProjectTracker.Library
         Role = data.RoleId;
         LoadProperty(AssignedProperty, data.Assigned);
         TimeStamp = data.LastChanged;
-        var person = dal.Fetch(data.ResourceId);
+        var person = dal.Fetch(data.ResourceId) ?? throw new DataNotFoundException("Resource");
         FirstName = person.FirstName;
         LastName = person.LastName;
-        RoleList = rolePortal.Fetch();
+        var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        RoleList = roles;
       }
     }
 
@@ -161,7 +171,7 @@ namespace ProjectTracker.Library
     {
       using (BypassPropertyChecks)
       {
-        var item = dal.Fetch(projectId, ResourceId);
+        var item = dal.Fetch(projectId, ResourceId) ?? throw new DataNotFoundException("Assignment");
         item.Assigned = ReadProperty(AssignedProperty);
         item.RoleId = Role;
         item.LastChanged = TimeStamp;

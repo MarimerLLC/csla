@@ -24,20 +24,24 @@ namespace ProjectTracker.Library.Admin
 
     public readonly static PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public string Name
     {
-      get { return GetProperty(NameProperty); }
+      get { return GetProperty(NameProperty) ?? string.Empty; }
       set { SetProperty(NameProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public readonly static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(nameof(TimeStamp));
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public byte[] TimeStamp
     {
-      get { return GetProperty(TimeStampProperty); }
+      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
       set { SetProperty(TimeStampProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     protected override void AddBusinessRules()
     {
@@ -54,14 +58,18 @@ namespace ProjectTracker.Library.Admin
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (RoleEdit)context.Target;
-        RoleEditList parent = (RoleEditList)target.Parent;
-        if (parent != null)
-          foreach (RoleEdit item in parent)
-            if (item.Id == target.ReadProperty(IdProperty) && !(ReferenceEquals(item, target)))
-            {
-              context.AddErrorResult("Role Id must be unique");
-              break;
-            }
+        var parent = (RoleEditList?)target.Parent;
+        if (parent == null)
+        {
+          return;
+        }
+
+        foreach (RoleEdit item in parent)
+          if (item.Id == target.ReadProperty(IdProperty) && !(ReferenceEquals(item, target)))
+          {
+            context.AddErrorResult("Role Id must be unique");
+            break;
+          }
       }
     }
 

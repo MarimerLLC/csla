@@ -13,11 +13,13 @@ namespace ProjectTracker.Library
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public byte[] TimeStamp
     {
-      get { return GetProperty(TimeStampProperty); }
+      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
       set { SetProperty(TimeStampProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     [Display(Name = "Resource id")]
@@ -32,9 +34,10 @@ namespace ProjectTracker.Library
     [Display(Name = "Last name")]
     [Required]
     [StringLength(50)]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public string LastName
     {
-      get { return GetProperty(LastNameProperty); }
+      get { return GetProperty(LastNameProperty) ?? string.Empty; }
       set { SetProperty(LastNameProperty, value); }
     }
 
@@ -45,9 +48,10 @@ namespace ProjectTracker.Library
     [StringLength(50)]
     public string FirstName
     {
-      get { return GetProperty(FirstNameProperty); }
+      get { return GetProperty(FirstNameProperty) ?? string.Empty; }
       set { SetProperty(FirstNameProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     [Display(Name = "Full name")]
     public string FullName
@@ -57,11 +61,13 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<ResourceAssignments> AssignmentsProperty =
       RegisterProperty<ResourceAssignments>(c => c.Assignments);
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public ResourceAssignments Assignments
     {
-      get { return GetProperty(AssignmentsProperty); }
+      get { return GetProperty(AssignmentsProperty)!; }
       private set { LoadProperty(AssignmentsProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public override string ToString()
     {
@@ -100,14 +106,22 @@ namespace ProjectTracker.Library
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ResourceEdit)context.Target;
-        foreach (var item in target.Assignments)
+        try
         {
-          var count = target.Assignments.Count(r => r.ProjectId == item.ProjectId);
-          if (count > 1)
+          var assignments = target.Assignments;
+          foreach (var item in assignments)
           {
-            context.AddErrorResult("Duplicate projects not allowed");
-            return;
+            var count = assignments.Count(r => r.ProjectId == item.ProjectId);
+            if (count > 1)
+            {
+              context.AddErrorResult("Duplicate projects not allowed");
+              return;
+            }
           }
+        }
+        catch
+        {
+          // Assignments may not be loaded yet
         }
       }
     }
@@ -116,21 +130,22 @@ namespace ProjectTracker.Library
     [Create]
     private void Create([Inject] IChildDataPortal<ResourceAssignments> portal)
     {
-      LoadProperty(AssignmentsProperty, portal.CreateChild());
+      LoadProperty(AssignmentsProperty, portal!.CreateChild()!);
       BusinessRules.CheckRules();
     }
 
     [Fetch]
     private void Fetch(int id, [Inject] IResourceDal dal, [Inject] IChildDataPortal<ResourceAssignments> portal)
     {
-        var data = dal.Fetch(id);
+        var data = dal.Fetch(id) ?? throw new DataNotFoundException("Resource");
       using (BypassPropertyChecks)
       {
         Id = data.Id;
         FirstName = data.FirstName;
         LastName = data.LastName;
         TimeStamp = data.LastChanged;
-        Assignments = portal.FetchChild(id);
+        var assignments = portal!.FetchChild(id)!;
+        Assignments = assignments;
       }
     }
 

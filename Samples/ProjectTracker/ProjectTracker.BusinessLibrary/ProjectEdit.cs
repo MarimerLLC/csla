@@ -15,11 +15,13 @@ namespace ProjectTracker.Library
       RegisterProperty<byte[]>(nameof(TimeStamp));
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public byte[] TimeStamp
     {
-      get { return GetProperty(TimeStampProperty); }
+      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
       set { SetProperty(TimeStampProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public static readonly PropertyInfo<int> IdProperty = 
       RegisterProperty<int>(nameof(Id));
@@ -35,11 +37,13 @@ namespace ProjectTracker.Library
     [Display(Name = "Project name")]
     [Required]
     [StringLength(50)]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public string Name
     {
-      get { return GetProperty(NameProperty); }
+      get { return GetProperty(NameProperty) ?? string.Empty; }
       set { SetProperty(NameProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public static readonly PropertyInfo<DateTime?> StartedProperty = 
       RegisterProperty<DateTime?>(nameof(Started));
@@ -59,19 +63,23 @@ namespace ProjectTracker.Library
 
     public static readonly PropertyInfo<string> DescriptionProperty = 
       RegisterProperty<string>(nameof(Description));
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public string Description
     {
-      get { return GetProperty(DescriptionProperty); }
+      get { return GetProperty(DescriptionProperty) ?? string.Empty; }
       set { SetProperty(DescriptionProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public static readonly PropertyInfo<ProjectResources> ResourcesProperty = 
       RegisterProperty<ProjectResources>(nameof(Resources));
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public ProjectResources Resources
     {
-      get { return GetProperty(ResourcesProperty); }
+      get { return GetProperty(ResourcesProperty)!; }
       private set { LoadProperty(ResourcesProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public override string ToString()
     {
@@ -135,14 +143,22 @@ namespace ProjectTracker.Library
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
         var target = (ProjectEdit)context.Target;
-        foreach (var item in target.Resources)
+        try
         {
-          var count = target.Resources.Count(r => r.ResourceId == item.ResourceId);
-          if (count > 1)
+          var resources = target.Resources;
+          foreach (var item in resources)
           {
-            context.AddErrorResult("Duplicate resources not allowed");
-            return;
+            var count = resources.Count(r => r.ResourceId == item.ResourceId);
+            if (count > 1)
+            {
+              context.AddErrorResult("Duplicate resources not allowed");
+              return;
+            }
           }
+        }
+        catch
+        {
+          // Resources may not be loaded yet
         }
       }
     }
@@ -164,14 +180,15 @@ namespace ProjectTracker.Library
     [RunLocal]
     private void Create([Inject]IChildDataPortal<ProjectResources> portal)
     {
-      LoadProperty(ResourcesProperty, portal.CreateChild());
+      var resources = portal!.CreateChild()!;
+      LoadProperty(ResourcesProperty, resources);
       BusinessRules.CheckRules();
     }
 
     [Fetch]
     private void Fetch(int id, [Inject] IProjectDal dal, [Inject] IChildDataPortal<ProjectResources> portal)
     {
-      var data = dal.Fetch(id);
+      var data = dal.Fetch(id) ?? throw new DataNotFoundException("Project");
       using (BypassPropertyChecks)
       {
         Id = data.Id;
@@ -180,7 +197,8 @@ namespace ProjectTracker.Library
         Started = data.Started;
         Ended = data.Ended;
         TimeStamp = data.LastChanged;
-        Resources = portal.FetchChild(id);
+        var resources = portal!.FetchChild(id)!;
+        Resources = resources;
       }
     }
 

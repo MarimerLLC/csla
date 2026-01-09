@@ -36,9 +36,14 @@
 @code {
 
     [SupplyParameterFromForm]
-    public UserInfo userInfo { get; set; } = new();
+    public UserInfo userInfo { get; set; }
 
     public string Message { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        userInfo ??= new UserInfo();
+    }
 
     private async Task LoginUser()
     {

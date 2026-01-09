@@ -45,14 +45,14 @@ namespace ProjectTracker.Blazor.Client
     {
       var builder = new StringBuilder();
       // requested type
-      builder.Append(objectType.FullName);
+      builder.Append(objectType.FullName ?? objectType.Name);
       builder.Append('|');
 
       // criteria values (each criteria has 'valid' ToString)
       var criteriaList = Csla.Server.DataPortal.GetCriteriaArray(criteria);
       foreach (var item in criteriaList)
       {
-        builder.Append(item.ToString());
+        builder.Append(item?.ToString() ?? string.Empty);
         builder.Append('|');
       }
 

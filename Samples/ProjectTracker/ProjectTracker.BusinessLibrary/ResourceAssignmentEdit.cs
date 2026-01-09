@@ -12,11 +12,13 @@ namespace ProjectTracker.Library
     public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public byte[] TimeStamp
     {
-      get { return GetProperty(TimeStampProperty); }
+      get { return GetProperty(TimeStampProperty) ?? Array.Empty<byte>(); }
       set { SetProperty(TimeStampProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
     [Display(Name = "Project id")]
@@ -29,17 +31,19 @@ namespace ProjectTracker.Library
     public static readonly PropertyInfo<string> ProjectNameProperty = 
       RegisterProperty<string>(c => c.ProjectName);
     [Display(Name = "Project name")]
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public string ProjectName
     {
-      get { return GetProperty(ProjectNameProperty); }
+      get { return GetProperty(ProjectNameProperty) ?? string.Empty; }
       private set { SetProperty(ProjectNameProperty, value); }
     }
+#pragma warning restore CSLA0007
 
     public static readonly PropertyInfo<SmartDate> AssignedProperty = 
       RegisterProperty<SmartDate>(c => c.Assigned);
     public string Assigned
     {
-      get { return GetPropertyConvert<SmartDate, string>(AssignedProperty); }
+      get { return GetPropertyConvert<SmartDate, string>(AssignedProperty) ?? string.Empty; }
     }
 
     public static readonly PropertyInfo<int> RoleProperty = RegisterProperty<int>(c => c.Role);
@@ -71,7 +75,7 @@ namespace ProjectTracker.Library
       {
         ProjectId = projectId;
         LoadProperty(AssignedProperty, DateTime.Today);
-        var project = dal.Fetch(projectId);
+        var project = dal.Fetch(projectId) ?? throw new DataNotFoundException("Project");
         ProjectName = project.Name;
       }
       BusinessRules.CheckRules();
@@ -86,7 +90,7 @@ namespace ProjectTracker.Library
         Role = data.RoleId;
         LoadProperty(AssignedProperty, data.Assigned);
         TimeStamp = data.LastChanged;
-        var project = dal.Fetch(data.ProjectId);
+        var project = dal.Fetch(data.ProjectId) ?? throw new DataNotFoundException("Project");
         ProjectName = project.Name;
       }
     }
@@ -113,7 +117,7 @@ namespace ProjectTracker.Library
     {
       using (BypassPropertyChecks)
       {
-        var item = dal.Fetch(ProjectId, resource.Id);
+        var item = dal.Fetch(ProjectId, resource.Id) ?? throw new DataNotFoundException("Assignment");
         item.Assigned = ReadProperty(AssignedProperty);
         item.RoleId = Role;
         item.LastChanged = TimeStamp;

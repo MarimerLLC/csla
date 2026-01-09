@@ -10,7 +10,8 @@
       "Bash(dotnet list:*)",
       "Bash(findstr:*)",
       "Bash(dir \"S:\\\\src\\\\rdl\\\\csla\\\\Samples\\\\RuleTutorial\\\\AuthzFactoryMethods\\\\*.cs\" /b)",
-      "Bash(powershell:*)"
+      "Bash(powershell:*)",
+      "WebSearch"
     ]
   }
 }

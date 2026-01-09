@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\BusinessLibrary\BusinessLibrary.csproj" />
@@ -11,6 +10,5 @@
   <ItemGroup>
     <PackageReference Include="Csla" />
     <PackageReference Include="Csla.Windows.Forms" />
-    <PackageReference Include="System.Net.Http" />
   </ItemGroup>
 </Project>

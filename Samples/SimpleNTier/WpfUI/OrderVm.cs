@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using BusinessLibrary;
 using Csla;
 using Csla.Xaml;
@@ -18,7 +19,15 @@ namespace WpfUI
         }
         catch (Exception ex)
         {
-          Bxf.Shell.Instance.ShowError(ex.Message, "Error");
+          var fullError = $"Error fetching order:\n{ex.Message}\n\nFull details:\n{ex}";
+          try
+          {
+            Bxf.Shell.Instance.ShowError(fullError, "Data Portal Error");
+          }
+          catch
+          {
+            System.Windows.MessageBox.Show(fullError, "Data Portal Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+          }
           return null;
         }
       });
@@ -37,11 +46,11 @@ namespace WpfUI
       }
     }
 
-    public override void SaveAsync(object sender, ExecuteEventArgs e)
+    public override async Task SaveAsync(object sender, ExecuteEventArgs e)
     {
       try
       {
-        base.SaveAsync(sender, e);
+        await base.SaveAsync(sender, e);
       }
       catch (Exception ex)
       {

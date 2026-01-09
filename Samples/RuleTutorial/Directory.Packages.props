@@ -1,10 +1,11 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CslaVersion>9.0.0-rc4-gc005a93a3c</CslaVersion>
+    <CslaVersion>10.0.0-beta-0022-gbd53196668</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Csla" Version="$(CslaVersion)" />
+    <PackageVersion Include="Csla.Generator.AutoImplementProperties.CSharp" Version="$(CslaVersion)" />
 
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />

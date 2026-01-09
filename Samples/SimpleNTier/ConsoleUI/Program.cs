@@ -11,9 +11,9 @@ var services = new ServiceCollection();
 // use remote data portal
 services.AddTransient<HttpClient>();
 services.AddCsla(o => o
-  .DataPortal(dp => dp.AddClientSideDataPortal(co => co
-    .UseHttpProxy(hp => hp
-      .DataPortalUrl = "https://localhost:44332/api/dataportal"))));
+.DataPortal(dp => dp.AddClientSideDataPortal(co => co
+  .UseHttpProxy(hp => hp
+    .DataPortalUrl = "https://localhost:5001/api/dataportal"))));
 
 var provider = services.BuildServiceProvider();
 var applicationContext = provider.GetRequiredService<ApplicationContext>();

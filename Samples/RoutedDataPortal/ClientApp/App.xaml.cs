@@ -26,6 +26,6 @@ namespace ClientApp
       ApplicationContext = provider.GetRequiredService<ApplicationContext>();
     }
 
-    public static ApplicationContext ApplicationContext { get; private set; }
+    public static ApplicationContext ApplicationContext { get; private set; } = null!;
   }
 }

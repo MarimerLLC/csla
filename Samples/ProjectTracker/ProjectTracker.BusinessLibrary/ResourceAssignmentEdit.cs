@@ -6,49 +6,29 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ResourceAssignmentEdit : BusinessBase<ResourceAssignmentEdit>
+  [CslaImplementProperties]
+  public partial class ResourceAssignmentEdit : BusinessBase<ResourceAssignmentEdit>
   {
-    public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public byte[] TimeStamp
-    {
-      get { return GetProperty(TimeStampProperty); }
-      set { SetProperty(TimeStampProperty, value); }
-    }
+    public partial byte[] TimeStamp { get; set; }
 
-    public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
     [Display(Name = "Project id")]
-    public int ProjectId
-    {
-      get { return GetProperty(ProjectIdProperty); }
-      private set { SetProperty(ProjectIdProperty, value); }
-    }
+    public partial int ProjectId { get; private set; }
 
-    public static readonly PropertyInfo<string> ProjectNameProperty = 
-      RegisterProperty<string>(c => c.ProjectName);
     [Display(Name = "Project name")]
-    public string ProjectName
+    public partial string ProjectName { get; private set; }
+
+    [Display(Name = "Date assigned")]
+    public partial SmartDate Assigned { get; private set; }
+
+    public string AssignedText
     {
-      get { return GetProperty(ProjectNameProperty); }
-      private set { SetProperty(ProjectNameProperty, value); }
+      get { return Assigned.Text; }
     }
 
-    public static readonly PropertyInfo<SmartDate> AssignedProperty = 
-      RegisterProperty<SmartDate>(c => c.Assigned);
-    public string Assigned
-    {
-      get { return GetPropertyConvert<SmartDate, string>(AssignedProperty); }
-    }
-
-    public static readonly PropertyInfo<int> RoleProperty = RegisterProperty<int>(c => c.Role);
     [Display(Name = "Role assigned")]
-    public int Role
-    {
-      get { return GetProperty(RoleProperty); }
-      set { SetProperty(RoleProperty, value); }
-    }
+    public partial int Role { get; set; }
 
     public override string ToString()
     {
@@ -70,9 +50,9 @@ namespace ProjectTracker.Library
       using (BypassPropertyChecks)
       {
         ProjectId = projectId;
-        LoadProperty(AssignedProperty, DateTime.Today);
-        var project = dal.Fetch(projectId);
-        ProjectName = project.Name;
+        Assigned = DateTime.Today;
+        var project = dal.Fetch(projectId) ?? throw new DataNotFoundException("Project");
+        ProjectName = project.Name ?? string.Empty;
       }
       BusinessRules.CheckRules();
     }
@@ -84,10 +64,10 @@ namespace ProjectTracker.Library
       {
         ProjectId = data.ProjectId;
         Role = data.RoleId;
-        LoadProperty(AssignedProperty, data.Assigned);
-        TimeStamp = data.LastChanged;
-        var project = dal.Fetch(data.ProjectId);
-        ProjectName = project.Name;
+        Assigned = data.Assigned;
+        TimeStamp = data.LastChanged ?? [];
+        var project = dal.Fetch(data.ProjectId) ?? throw new DataNotFoundException("Project");
+        ProjectName = project.Name ?? string.Empty;
       }
     }
 
@@ -100,11 +80,11 @@ namespace ProjectTracker.Library
         {
           ProjectId = this.ProjectId,
           ResourceId = resource.Id,
-          Assigned = ReadProperty(AssignedProperty),
+          Assigned = this.Assigned,
           RoleId = this.Role
         };
         dal.Insert(item);
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 
@@ -113,12 +93,12 @@ namespace ProjectTracker.Library
     {
       using (BypassPropertyChecks)
       {
-        var item = dal.Fetch(ProjectId, resource.Id);
-        item.Assigned = ReadProperty(AssignedProperty);
+        var item = dal.Fetch(ProjectId, resource.Id) ?? throw new DataNotFoundException("Assignment");
+        item.Assigned = this.Assigned;
         item.RoleId = Role;
         item.LastChanged = TimeStamp;
         dal.Update(item);
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 

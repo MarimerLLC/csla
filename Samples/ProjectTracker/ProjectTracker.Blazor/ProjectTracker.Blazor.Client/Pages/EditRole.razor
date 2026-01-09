@@ -1,0 +1,105 @@
+@page "/editrole"
+@page "/editrole/{id:int}"
+
+@rendermode InteractiveAuto
+
+@using Marimer.Blazor.RenderMode
+@using ProjectTracker.Library.Admin
+
+@inject NavigationManager NavigationManager
+@inject Csla.Blazor.State.StateManager StateManager
+@inject RenderModeProvider renderModeProvider
+@inject Csla.IDataPortal<RoleEditList> roleEditListPortal
+@inject Csla.Blazor.ViewModel<RoleEditList> vm
+@inject Csla.IChildDataPortal<RoleEdit> roleEditChildPortal
+
+<p class="alert-danger">@vm.ViewModelErrorText</p>
+@if (vm.Exception is not null)
+{
+    <p class="alert-danger">@vm.Exception.ToString()</p>
+}
+
+@if (!IsInteractive || vm.Model == null || _currentRole == null)
+{
+    <h1>Edit Role</h1>
+    <p class="animated-box"></p>
+    <p class="animated-box"></p>
+}
+else
+{
+    <h1>@(_currentRole.IsNew ? "New Role" : _currentRole.Name)</h1>
+    <p>
+        <a href="roles">Role list</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>@_currentRole.Id</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>
+                    @if (vm.CanEditObject)
+                    {
+                        <input type="text" @bind="_currentRole.Name" />
+                    }
+                    else
+                    {
+                        @_currentRole.Name
+                    }
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    @if (vm.CanEditObject)
+    {
+        <button @onclick="SaveAsync" disabled="@(!vm.Model.IsSavable && !IsInteractive)">Save</button>
+    }
+}
+
+@code {
+    #nullable disable
+    [Parameter]
+    public int? Id { get; set; }
+    public bool IsInteractive { get; set; }
+
+    private RoleEdit _currentRole;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Every page _must_ initialize the state manager
+        await StateManager.InitializeAsync();
+
+        var renderMode = renderModeProvider.GetRenderMode(this);
+        IsInteractive = renderMode.IsInteractive();
+        if (IsInteractive)
+        {
+            vm.Saved += () => NavigationManager.NavigateTo("roles");
+            vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
+
+            await vm.RefreshAsync(() => roleEditListPortal.FetchAsync());
+
+            if (Id.HasValue)
+            {
+                _currentRole = vm.Model?.GetRoleById(Id.Value);
+            }
+            else
+            {
+                _currentRole = roleEditChildPortal.CreateChild();
+                vm.Model?.Add(_currentRole);
+            }
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        await vm.SaveAsync();
+    }
+}

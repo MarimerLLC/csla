@@ -8,9 +8,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessLibrary", "Business
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{018E510E-B943-447B-A60C-79165B438FA0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "How to run", "How to run", "{D3E64213-13F7-4A87-9C2B-B86B542722C2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{D3E64213-13F7-4A87-9C2B-B86B542722C2}"
 	ProjectSection(SolutionItems) = preProject
-		How to run.txt = How to run.txt
+		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppServer", "AppServer\AppServer.csproj", "{D4D50B60-A377-4861-8D5E-B10F95D4CCD0}"

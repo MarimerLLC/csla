@@ -5,22 +5,11 @@ using Csla;
 
 namespace WindowsApplication2
 {
-  [Serializable]
-  public class Grandchild : BusinessBase<Grandchild>
+  [CslaImplementProperties]
+  public partial class Grandchild : BusinessBase<Grandchild>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(p => p.Id);
-    public int Id
-    {
-      get { return GetProperty<int>(IdProperty); }
-      set { SetProperty<int>(IdProperty, value); }
-    }
-
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(p => p.Name);
-    public string Name
-    {
-      get { return GetProperty<string>(NameProperty); }
-      set { SetProperty<string>(NameProperty, value); }
-    }
+    public partial int Id { get; set; }
+    public partial string Name { get; set; }
 
     private static int _lastId;
 

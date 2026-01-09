@@ -1,22 +1,16 @@
-﻿using Csla;
-using System;
+using Csla;
 
 namespace BusinessLibrary
 {
-  [Serializable]
-  public class TestClass : ReadOnlyBase<TestClass>
+  [CslaImplementProperties]
+  public partial class TestClass : ReadOnlyBase<TestClass>
   {
-    public static readonly PropertyInfo<string> CreatedFromProperty = RegisterProperty<string>(c => c.CreatedFrom);
-    public string CreatedFrom
-    {
-      get { return GetProperty(CreatedFromProperty); }
-      private set { LoadProperty(CreatedFromProperty, value); }
-    }
+    public partial string? CreatedFrom { get; private set; }
 
     [Fetch]
     private void Fetch()
     {
-      CreatedFrom = $"{Environment.MachineName} - {ApplicationContext.LocalContext["dpv"].ToString()}";
+      CreatedFrom = $"{Environment.MachineName} - {ApplicationContext.LocalContext["dpv"]?.ToString()}";
     }
   }
 }

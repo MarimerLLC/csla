@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Csla;
 
 namespace DataPortalFactoryExample
@@ -16,8 +13,8 @@ namespace DataPortalFactoryExample
       set { SetProperty(IdProperty, value); }
     }
 
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-    public string Name
+    public static readonly PropertyInfo<string?> NameProperty = RegisterProperty<string?>(nameof(Name));
+    public string? Name
     {
       get { return GetProperty(NameProperty); }
       set { SetProperty(NameProperty, value); }

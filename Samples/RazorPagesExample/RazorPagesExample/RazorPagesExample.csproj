@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.AspNetCore" Version="9.0.0-rc4-gc005a93a3c" />
+    <PackageReference Include="Csla.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

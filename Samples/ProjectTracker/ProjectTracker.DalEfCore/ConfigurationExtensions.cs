@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ProjectTracker.DalEfCore;
 using ProjectTracker.Dal;
 
@@ -11,12 +12,14 @@ namespace ProjectTracker.Configuration
   {
     /// <summary>
     /// Add the services for ProjectTracker.Dal that
-    /// use Entity Framework
+    /// use Entity Framework with SQLite
     /// </summary>
     /// <param name="services"></param>
-    public static void AddDalEfCore(this IServiceCollection services)
+    /// <param name="connectionString">SQLite connection string (defaults to Data Source=PTracker.db)</param>
+    public static void AddDalEfCore(this IServiceCollection services, string connectionString = "Data Source=PTracker.db")
     {
-      services.AddScoped<PTrackerContext>();
+      services.AddDbContext<PTrackerContext>(options =>
+        options.UseSqlite(connectionString));
       services.AddTransient<IAssignmentDal, AssignmentDal>();
       services.AddTransient<IDashboardDal, DashboardDal>();
       services.AddTransient<IProjectDal, ProjectDal>();

@@ -1,8 +1,10 @@
-﻿using System.Windows.Forms;
+using System.Runtime.Versioning;
+using System.Windows.Forms;
 using Csla;
 
 namespace BusinessRuleDemo
 {
+  [SupportedOSPlatform("windows")]
   public partial class Form1 : Form
   {
     public Form1()

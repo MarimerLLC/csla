@@ -5,7 +5,6 @@ using Csla;
 
 namespace WindowsApplication2
 {
-  [Serializable]
   public class Root : BusinessBase<Root>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
@@ -23,20 +22,26 @@ namespace WindowsApplication2
     }
 
     public static readonly PropertyInfo<ChildList> RealChildrenProperty = RegisterProperty<ChildList>(nameof(RealChildren), RelationshipTypes.LazyLoad);
+#nullable disable
     public ChildList RealChildren
     {
       get => LazyGetProperty(RealChildrenProperty, 
         () => ApplicationContext.GetRequiredService<IChildDataPortal<ChildList>>().CreateChild());
     }
+#nullable enable
 
     public SortedBindingList<Child> Children
     {
       get { return new SortedBindingList<Child>(RealChildren); }
     }
 
+    private static int _lastId;
+
     [Create]
     private void Create()
-    { }
+    {
+      LoadProperty<int>(IdProperty, System.Threading.Interlocked.Increment(ref _lastId));
+    }
 
     public void DumpEditLevels()
     {

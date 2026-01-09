@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CslaVersion>10.0.0-beta-0022-gbd53196668</CslaVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Csla" Version="$(CslaVersion)" />
+    <PackageVersion Include="Csla.Generator.AutoImplementProperties.CSharp" Version="$(CslaVersion)" />
+    <PackageVersion Include="Csla.Windows.Forms" Version="$(CslaVersion)" />
+
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
+  </ItemGroup>
+</Project>

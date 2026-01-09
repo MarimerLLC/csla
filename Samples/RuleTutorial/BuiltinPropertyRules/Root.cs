@@ -33,7 +33,7 @@ namespace BuiltinPropertyRules
     /// </summary>
     public string Name
     {
-      get { return GetProperty(NameProperty); }
+      get { return GetProperty(NameProperty) ?? string.Empty; }
       set { SetProperty(NameProperty, value); }
     }
 

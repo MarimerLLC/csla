@@ -33,20 +33,20 @@ namespace GatewayRules.Rules
     public FieldExists(IPropertyInfo primaryProperty, IBusinessRule innerRule)
       : base(primaryProperty)
     {
-      if (InputProperties == null)
-        InputProperties = new List<IPropertyInfo>();
       InputProperties.Add(primaryProperty);
       InnerRule = innerRule;
       RuleUri.AddQueryParameter("rule", System.Uri.EscapeUriString(InnerRule.RuleName));
 
-      // merge InnerRule input property list into this rule's list 
+      // merge InnerRule input property list into this rule's list
       if (InnerRule.InputProperties != null)
       {
         InputProperties.AddRange(InnerRule.InputProperties);
       }
 
-      // remove any duplicates 
-      InputProperties = new List<IPropertyInfo>(InputProperties.Distinct());
+      // remove any duplicates
+      var distinctProperties = InputProperties.Distinct().ToList();
+      InputProperties.Clear();
+      InputProperties.AddRange(distinctProperties);
       AffectedProperties.AddRange(innerRule.AffectedProperties);
     }
 

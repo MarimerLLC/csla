@@ -43,7 +43,8 @@ namespace CompareFieldsRules.Rules
       : base(primaryProperty)
     {
       CompareTo = compareToProperty;
-      InputProperties = new List<IPropertyInfo>() { primaryProperty, compareToProperty };
+      InputProperties.Add(primaryProperty);
+      InputProperties.Add(compareToProperty);
       this.RuleUri.AddQueryParameter("compareto", compareToProperty.Name);
     }
 
@@ -66,12 +67,13 @@ namespace CompareFieldsRules.Rules
     /// </param>
     protected override void Execute(IRuleContext context)
     {
-      var value1 = (IComparable)context.InputPropertyValues[PrimaryProperty];
-      var value2 = (IComparable)context.InputPropertyValues[CompareTo];
+      var value1 = (IComparable)context.InputPropertyValues[PrimaryProperty!]!;
+      var value2 = (IComparable)context.InputPropertyValues[CompareTo!]!;
 
       if (value1.CompareTo(value2) < 0)
       {
-        context.Results.Add(new RuleResult(this.RuleName, PrimaryProperty, string.Format(GetMessage(), PrimaryProperty.FriendlyName, CompareTo.FriendlyName)) { Severity = this.Severity });
+        var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, CompareTo.FriendlyName);
+        context.AddErrorResult(PrimaryProperty, message);
       }
     }
   }

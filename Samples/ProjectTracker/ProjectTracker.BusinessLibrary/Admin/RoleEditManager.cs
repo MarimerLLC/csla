@@ -1,25 +1,14 @@
-﻿using System;
-using Csla;
+﻿using Csla;
 using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library.Admin
 {
-  [Serializable]
-  public class RoleEditManager : CommandBase<RoleEditManager>
+  [CslaImplementProperties]
+  public partial class RoleEditManager : CommandBase<RoleEditManager>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
-    private int Id
-    {
-      get { return ReadProperty(IdProperty); }
-      set { LoadProperty(IdProperty, value); }
-    }
+    private partial int Id { get; set; }
 
-    public static readonly PropertyInfo<RoleEdit> RoleEditProperty = RegisterProperty<RoleEdit>(c => c.RoleEdit);
-    private RoleEdit RoleEdit
-    {
-      get { return ReadProperty(RoleEditProperty); }
-      set { LoadProperty(RoleEditProperty, value); }
-    }
+    private partial RoleEdit RoleEdit { get; set; }
 
     [Create]
     [RunLocal]
@@ -47,7 +36,7 @@ namespace ProjectTracker.Library.Admin
     private void GetRoleEdit([Inject] IRoleDal dal)
     {
       var portal = ApplicationContext.GetRequiredService<IChildDataPortal<RoleEdit>>();
-      var item = dal.Fetch(Id);
+      var item = dal.Fetch(Id) ?? throw new DataNotFoundException("Role");
       RoleEdit = portal.FetchChild(item);
     }
 

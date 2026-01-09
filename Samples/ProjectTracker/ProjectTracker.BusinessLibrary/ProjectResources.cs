@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Csla;
@@ -6,7 +5,6 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
   public class ProjectResources : BusinessListBase<ProjectResources, ProjectResourceEdit>
   {
     public async Task<ProjectResourceEdit> AssignAsync(int resourceId)

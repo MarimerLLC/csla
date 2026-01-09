@@ -53,6 +53,6 @@ else
     {
         // Every page _must_ initialize the state manager
         await StateManager.InitializeAsync();
-        await vm.RefreshAsync(() => projectListPortal.FetchAsync());
+        await vm.RefreshAsync(() => projectListPortal.FetchAsync()!);
     }
 }

@@ -50,7 +50,7 @@ namespace CustomAuthzRules.Rules
     /// </param>
     protected override void Execute(IAuthorizationContext context)
     {
-      var value = (string) ReadProperty(context.Target, CountryProperty);
+      var value = (string?)(ReadProperty(context.Target!, CountryProperty) ?? throw new InvalidOperationException());
 
       context.HasPermission = value == "US";
     }

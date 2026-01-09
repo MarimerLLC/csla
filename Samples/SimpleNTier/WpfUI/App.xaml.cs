@@ -16,16 +16,24 @@ namespace WpfUI
 
     protected override void OnStartup(StartupEventArgs e)
     {
-      var services = new ServiceCollection();
-      services.AddTransient<HttpClient>();
-      services.AddCsla(o => o
-        .DataPortal(dp => dp.ClientSideDataPortal(co => co
-          .UseHttpProxy(hp => hp
-            .DataPortalUrl = "https://localhost:44332/api/dataportal"))));
-      var provider = services.BuildServiceProvider();
-      ApplicationContext = provider.GetService<ApplicationContext>();
+      try
+      {
+        var services = new ServiceCollection();
+        services.AddTransient<HttpClient>();
+        services.AddCsla(o => o
+          .DataPortal(dp => dp.AddClientSideDataPortal(co => co
+            .UseHttpProxy(hp => hp
+              .DataPortalUrl = "https://localhost:5001/api/dataportal"))));
+        var provider = services.BuildServiceProvider();
+        ApplicationContext = provider.GetRequiredService<ApplicationContext>();
 
-      base.OnStartup(e);
+        base.OnStartup(e);
+      }
+      catch (Exception ex)
+      {
+        MessageBox.Show($"Startup Error: {ex.Message}\n\n{ex}", "Application Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        Shutdown(1);
+      }
     }
   }
 }

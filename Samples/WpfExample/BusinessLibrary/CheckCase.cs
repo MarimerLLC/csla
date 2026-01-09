@@ -14,7 +14,12 @@ namespace BusinessLibrary
 
     protected override void Execute(IRuleContext context)
     {
-      var text = (string)ReadProperty(context.Target, PrimaryProperty);
+      if (context.Target is null || PrimaryProperty is null)
+      {
+        return;
+      }
+
+      var text = ReadProperty(context.Target, PrimaryProperty) as string;
       if (string.IsNullOrWhiteSpace(text)) return;
       var ideal = text.Substring(0, 1).ToUpper();
       ideal += text.Substring(1).ToLower();

@@ -30,7 +30,7 @@ namespace TransformationRules.Rules
     public ToUpper(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo>(){primaryProperty};
+      InputProperties.Add(primaryProperty);
       AffectedProperties.Add(primaryProperty);
     }
 
@@ -42,10 +42,13 @@ namespace TransformationRules.Rules
     /// </param>
     protected override void Execute(IRuleContext context)
     {
-      var value = (string) context.InputPropertyValues[PrimaryProperty];
-      context.AddOutValue(PrimaryProperty, value.ToUpper());
+      var value = (string?)(context.InputPropertyValues[PrimaryProperty] ?? throw new InvalidOperationException());
+      if (!string.IsNullOrEmpty(value))
+      {
+        context.AddOutValue(PrimaryProperty!, value.ToUpper());
+      }
 
-     if (context.IsCheckRulesContext)
+      if (context.IsCheckRulesContext)
         Console.WriteLine(".... Rule {0} running from CheckRules", this.GetType().Name);
       else
         Console.WriteLine(".... Rule {0} running from {1} was changed", this.GetType().Name, this.PrimaryProperty.Name);

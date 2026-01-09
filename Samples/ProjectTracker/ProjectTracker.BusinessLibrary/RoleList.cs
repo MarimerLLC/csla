@@ -1,10 +1,8 @@
 using Csla;
 using ProjectTracker.Dal;
-using System;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
   public class RoleList : NameValueListBase<int, string>
   {
     [Fetch]

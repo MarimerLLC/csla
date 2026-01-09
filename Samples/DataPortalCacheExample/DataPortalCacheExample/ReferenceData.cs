@@ -11,8 +11,8 @@ namespace DataPortalCacheExample
       get => GetProperty(IdProperty);
       set => SetProperty(IdProperty, value);
     }
-    public static readonly PropertyInfo<string> ValueProperty = RegisterProperty<string>(nameof(Value));
-    public string Value
+    public static readonly PropertyInfo<string?> ValueProperty = RegisterProperty<string?>(nameof(Value));
+    public string? Value
     {
       get => GetProperty(ValueProperty);
       set => SetProperty(ValueProperty, value);

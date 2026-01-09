@@ -16,7 +16,8 @@ var factory = serviceProvider.GetRequiredService<IRabbitMqPortalFactory>();
 var rabbitMqService = factory.CreateRabbitMqPortal();
 using (rabbitMqService)
 {
-  rabbitMqService.StartListening();
+  // Start listening in the background; intentionally not awaited
+  _ = rabbitMqService.StartListening();
   Console.WriteLine("Press any key to exit");
   Console.ReadKey();
 }

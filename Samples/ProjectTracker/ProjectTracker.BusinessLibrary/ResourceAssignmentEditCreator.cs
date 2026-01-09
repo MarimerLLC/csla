@@ -1,18 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Csla;
+﻿using Csla;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ResourceAssignmentEditCreator : ReadOnlyBase<ResourceAssignmentEditCreator>
+  [CslaImplementProperties]
+  public partial class ResourceAssignmentEditCreator : ReadOnlyBase<ResourceAssignmentEditCreator>
   {
-    public static readonly PropertyInfo<ResourceAssignmentEdit> ResultProperty = RegisterProperty<ResourceAssignmentEdit>(c => c.Result);
-    public ResourceAssignmentEdit Result
-    {
-      get { return GetProperty(ResultProperty); }
-      private set { LoadProperty(ResultProperty, value); }
-    }
+    public partial ResourceAssignmentEdit Result { get; private set; }
 
     [Fetch]
     private void Fetch(int projectId, [Inject] IChildDataPortal<ResourceAssignmentEdit> portal)

@@ -4,7 +4,6 @@ using Csla;
 
 namespace WindowsApplication2
 {
-  [Serializable]
   public class Child : BusinessBase<Child>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
@@ -21,12 +20,14 @@ namespace WindowsApplication2
       set => SetProperty(NameProperty, value);
     }
 
-    public static readonly PropertyInfo<GrandchildList> GrandchildrenProperty = RegisterProperty<GrandchildList>(p => p.Grandchildren, RelationshipTypes.LazyLoad);
+    public static readonly PropertyInfo<GrandchildList> GrandchildrenProperty = RegisterProperty<GrandchildList>(nameof(Grandchildren), RelationshipTypes.LazyLoad);
+#nullable disable
     public GrandchildList Grandchildren
     {
       get => LazyGetProperty(GrandchildrenProperty, 
         () => ApplicationContext.GetRequiredService<IChildDataPortal<GrandchildList>>().CreateChild());
     }
+#nullable enable
 
     private static int _lastId;
 

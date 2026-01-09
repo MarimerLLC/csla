@@ -23,18 +23,15 @@ namespace WcfHost
 
     private bool IsSerializable(Exception ex)
     {
-      if (!ex.GetType().IsSerializable) return false;
-      if (ex.InnerException != null)
-      {
-        return IsSerializable(ex.InnerException);
-      }
-      return true;
+      var type = ex.GetType();
+      if (!Attribute.IsDefined(type, typeof(SerializableAttribute))) return false;
+
+      return ex.InnerException == null || IsSerializable(ex.InnerException);
     }
 
 
     private GenericBusinessException ToGenericBusinessException(Exception ex)
     {
-      Exception inner = null;
       if (ex.InnerException != null)
       {
         return new GenericBusinessException(ex, ToGenericBusinessException(ex.InnerException));

@@ -18,25 +18,25 @@
 }
 
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState>? authenticationState { get; set; }
-    private int currentCount = 0;
+	[CascadingParameter]
+	private Task<AuthenticationState>? authenticationState { get; set; }
+	private int currentCount = 0;
 
-    protected override async Task OnInitializedAsync()
-    {
-        // Every page _must_ initialize the state manager
-        await StateManager.InitializeAsync();
-        if (applicationContext.LocalContext.Contains("counter"))
-        {
-            var value = applicationContext.LocalContext["counter"];
-            currentCount = value == null ? 0 : (int)value;
-        }
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		// Every page _must_ initialize the state manager
+		await StateManager.InitializeAsync();
+		if (applicationContext.LocalContext.Contains("counter"))
+		{
+			var value = applicationContext.LocalContext["counter"];
+			currentCount = value == null ? 0 : (int)value;
+		}
+	}
 
-    private void IncrementCount()
-    {
-        currentCount++;
-        applicationContext.LocalContext["counter"] = currentCount;
-        StateManager.SaveState();
-    }
+	private void IncrementCount()
+	{
+		currentCount++;
+		applicationContext.LocalContext["counter"] = currentCount;
+		StateManager.SaveState();
+	}
 }

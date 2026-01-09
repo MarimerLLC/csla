@@ -22,6 +22,6 @@ namespace WinSortFilter
       Application.Run(new Form1());
     }
 
-    public static Csla.ApplicationContext ApplicationContext { get; private set; }
+    public static Csla.ApplicationContext ApplicationContext { get; private set; } = null!;
   }
 }

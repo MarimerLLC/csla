@@ -10,8 +10,8 @@ namespace BusinessLibrary
 
     protected override void Execute(IRuleContext context)
     {
-      var text = (string)ReadProperty(context.Target, PrimaryProperty);
-      if (text.ToLower().Contains("z"))
+      var text = (string?)ReadProperty(context.Target!, PrimaryProperty!);
+      if (!string.IsNullOrEmpty(text) && text.ToLower().Contains("z"))
         context.AddErrorResult("No letter Z allowed");
     }
   }

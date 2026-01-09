@@ -7,47 +7,25 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ResourceEdit : CslaBaseTypes.BusinessBase<ResourceEdit>
+  [CslaImplementProperties]
+  public partial class ResourceEdit : CslaBaseTypes.BusinessBase<ResourceEdit>
   {
-    public static readonly PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(c => c.TimeStamp);
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public byte[] TimeStamp
-    {
-      get { return GetProperty(TimeStampProperty); }
-      set { SetProperty(TimeStampProperty, value); }
-    }
+    public partial byte[] TimeStamp { get; set; }
 
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
     [Display(Name = "Resource id")]
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
-    }
+    public partial int Id { get; set; }
 
-    public static readonly PropertyInfo<string> LastNameProperty = 
-      RegisterProperty<string>(c => c.LastName);
     [Display(Name = "Last name")]
     [Required]
     [StringLength(50)]
-    public string LastName
-    {
-      get { return GetProperty(LastNameProperty); }
-      set { SetProperty(LastNameProperty, value); }
-    }
+    public partial string LastName { get; set; }
 
-    public static readonly PropertyInfo<string> FirstNameProperty = 
-      RegisterProperty<string>(c => c.FirstName);
     [Display(Name = "First name")]
     [Required]
     [StringLength(50)]
-    public string FirstName
-    {
-      get { return GetProperty(FirstNameProperty); }
-      set { SetProperty(FirstNameProperty, value); }
-    }
+    public partial string FirstName { get; set; }
 
     [Display(Name = "Full name")]
     public string FullName
@@ -55,13 +33,7 @@ namespace ProjectTracker.Library
       get { return LastName + ", " + FirstName; }
     }
 
-    public static readonly PropertyInfo<ResourceAssignments> AssignmentsProperty =
-      RegisterProperty<ResourceAssignments>(c => c.Assignments);
-    public ResourceAssignments Assignments
-    {
-      get { return GetProperty(AssignmentsProperty); }
-      private set { LoadProperty(AssignmentsProperty, value); }
-    }
+    public partial ResourceAssignments Assignments { get; private set; }
 
     public override string ToString()
     {
@@ -99,15 +71,26 @@ namespace ProjectTracker.Library
     {
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
-        var target = (ResourceEdit)context.Target;
-        foreach (var item in target.Assignments)
+        if (context.Target is not ResourceEdit target)
+          return;
+        try
         {
-          var count = target.Assignments.Count(r => r.ProjectId == item.ProjectId);
-          if (count > 1)
-          {
-            context.AddErrorResult("Duplicate projects not allowed");
+          var assignments = target.Assignments;
+          if (assignments is null)
             return;
+          foreach (var item in assignments)
+          {
+            var count = assignments.Count(r => r.ProjectId == item.ProjectId);
+            if (count > 1)
+            {
+              context.AddErrorResult("Duplicate projects not allowed");
+              return;
+            }
           }
+        }
+        catch
+        {
+          // Assignments may not be loaded yet
         }
       }
     }
@@ -123,13 +106,13 @@ namespace ProjectTracker.Library
     [Fetch]
     private void Fetch(int id, [Inject] IResourceDal dal, [Inject] IChildDataPortal<ResourceAssignments> portal)
     {
-        var data = dal.Fetch(id);
+      var data = dal.Fetch(id) ?? throw new DataNotFoundException("Resource");
       using (BypassPropertyChecks)
       {
         Id = data.Id;
-        FirstName = data.FirstName;
-        LastName = data.LastName;
-        TimeStamp = data.LastChanged;
+        FirstName = data.FirstName ?? string.Empty;
+        LastName = data.LastName ?? string.Empty;
+        TimeStamp = data.LastChanged ?? [];
         Assignments = portal.FetchChild(id);
       }
     }
@@ -146,7 +129,7 @@ namespace ProjectTracker.Library
         };
         dal.Insert(item);
         Id = item.Id;
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
       FieldManager.UpdateChildren(this);
     }
@@ -164,7 +147,7 @@ namespace ProjectTracker.Library
           LastChanged = this.TimeStamp
         };
         dal.Update(item);
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
       FieldManager.UpdateChildren(this);
     }
@@ -174,7 +157,7 @@ namespace ProjectTracker.Library
     {
       using (BypassPropertyChecks)
       {
-        Assignments.Clear();
+        Assignments?.Clear();
         FieldManager.UpdateChildren(this);
         Delete(this.Id, dal);
       }

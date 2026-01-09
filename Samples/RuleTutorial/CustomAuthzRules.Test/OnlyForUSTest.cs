@@ -20,7 +20,7 @@ namespace CustomAuthzRules.Test
     [TestClass()]
     public class TheExecuteMethod : AuthorizationRuleTest
     {
-      private TestRoot Root { get; set; }
+      private TestRoot Root { get; set; } = null!;
 
       [TestInitialize]
       public void Setup()

@@ -3,75 +3,32 @@ using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using Csla;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ProjectEdit : CslaBaseTypes.BusinessBase<ProjectEdit>
+  [CslaImplementProperties]
+  public partial class ProjectEdit : CslaBaseTypes.BusinessBase<ProjectEdit>
   {
-    public static readonly PropertyInfo<byte[]> TimeStampProperty = 
-      RegisterProperty<byte[]>(nameof(TimeStamp));
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public byte[] TimeStamp
-    {
-      get { return GetProperty(TimeStampProperty); }
-      set { SetProperty(TimeStampProperty, value); }
-    }
+    public partial byte[] TimeStamp { get; private set; }
 
-    public static readonly PropertyInfo<int> IdProperty = 
-      RegisterProperty<int>(nameof(Id));
     [Display(Name = "Project id")]
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      private set { LoadProperty(IdProperty, value); }
-    }
+    public partial int Id { get; private set; }
 
-    public static readonly PropertyInfo<string> NameProperty = 
-      RegisterProperty<string>(nameof(Name));
     [Display(Name = "Project name")]
     [Required]
     [StringLength(50)]
-    public string Name
-    {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
-    }
+    public partial string Name { get; set; }
 
-    public static readonly PropertyInfo<DateTime?> StartedProperty = 
-      RegisterProperty<DateTime?>(nameof(Started));
-    public DateTime? Started
-    {
-      get { return GetProperty(StartedProperty); }
-      set { SetProperty(StartedProperty, value); }
-    }
+    public partial DateTime? Started { get; set; }
 
-    public static readonly PropertyInfo<DateTime?> EndedProperty = 
-      RegisterProperty<DateTime?>(nameof(Ended));
-    public DateTime? Ended
-    {
-      get { return GetProperty(EndedProperty); }
-      set { SetProperty(EndedProperty, value); }
-    }
+    public partial DateTime? Ended { get; set; }
 
-    public static readonly PropertyInfo<string> DescriptionProperty = 
-      RegisterProperty<string>(nameof(Description));
-    public string Description
-    {
-      get { return GetProperty(DescriptionProperty); }
-      set { SetProperty(DescriptionProperty, value); }
-    }
+    public partial string Description { get; set; }
 
-    public static readonly PropertyInfo<ProjectResources> ResourcesProperty = 
-      RegisterProperty<ProjectResources>(nameof(Resources));
-    public ProjectResources Resources
-    {
-      get { return GetProperty(ResourcesProperty); }
-      private set { LoadProperty(ResourcesProperty, value); }
-    }
+    public partial ProjectResources Resources { get; private set; }
 
     public override string ToString()
     {
@@ -134,15 +91,26 @@ namespace ProjectTracker.Library
     {
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
-        var target = (ProjectEdit)context.Target;
-        foreach (var item in target.Resources)
+        if (context.Target is not ProjectEdit target)
+          return;
+        try
         {
-          var count = target.Resources.Count(r => r.ResourceId == item.ResourceId);
-          if (count > 1)
-          {
-            context.AddErrorResult("Duplicate resources not allowed");
+          var resources = target.Resources;
+          if (resources is null)
             return;
+          foreach (var item in resources)
+          {
+            var count = resources.Count(r => r.ResourceId == item.ResourceId);
+            if (count > 1)
+            {
+              context.AddErrorResult("Duplicate resources not allowed");
+              return;
+            }
           }
+        }
+        catch
+        {
+          // Resources may not be loaded yet
         }
       }
     }
@@ -151,11 +119,12 @@ namespace ProjectTracker.Library
     {
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
-        var target = (ProjectEdit)context.Target;
+        if (context.Target is not ProjectEdit target)
+          return;
 
         var started = target.ReadProperty(StartedProperty);
         var ended = target.ReadProperty(EndedProperty);
-        if (started.HasValue && ended.HasValue && started > ended || !started.HasValue && ended.HasValue)
+        if ((started.HasValue && ended.HasValue && started.Value > ended.Value) || (!started.HasValue && ended.HasValue))
           context.AddErrorResult("Start date can't be after end date");
       }
     }
@@ -164,23 +133,23 @@ namespace ProjectTracker.Library
     [RunLocal]
     private void Create([Inject]IChildDataPortal<ProjectResources> portal)
     {
-      LoadProperty(ResourcesProperty, portal.CreateChild());
+      LoadProperty(ResourcesProperty, portal!.CreateChild()!);
       BusinessRules.CheckRules();
     }
 
     [Fetch]
     private void Fetch(int id, [Inject] IProjectDal dal, [Inject] IChildDataPortal<ProjectResources> portal)
     {
-      var data = dal.Fetch(id);
+      var data = dal.Fetch(id) ?? throw new DataNotFoundException("Project");
       using (BypassPropertyChecks)
       {
         Id = data.Id;
-        Name = data.Name;
-        Description = data.Description;
+        Name = data.Name ?? string.Empty;
+        Description = data.Description ?? string.Empty;
         Started = data.Started;
         Ended = data.Ended;
-        TimeStamp = data.LastChanged;
-        Resources = portal.FetchChild(id);
+        TimeStamp = data.LastChanged ?? Array.Empty<byte>();
+        Resources = portal!.FetchChild(id)!;
       }
     }
 
@@ -228,7 +197,7 @@ namespace ProjectTracker.Library
     {
       using (BypassPropertyChecks)
       {
-        Resources.Clear();
+        Resources?.Clear();
         FieldManager.UpdateChildren(this);
         Delete(this.Id, dal);
       }

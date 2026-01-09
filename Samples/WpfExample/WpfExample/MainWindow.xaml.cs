@@ -52,23 +52,24 @@ namespace WpfExample
         loginButton.Content = ApplicationContext.User.Identity.Name;
     }
 
-    public static MainWindow Instance { get; private set; }
+    public static MainWindow Instance { get; private set; } = null!;
 
     public void ShowPage(Type pageType)
     {
       SetPageTitle("");
       SetToolbarContent(null);
       SetStatusbarContent(null);
-      var page = ServiceProvider.GetService(pageType);
+      var page = ServiceProvider.GetService(pageType) ?? throw new InvalidOperationException($"Page '{pageType.Name}' could not be resolved.");
       contentArea.Content = page;
     }
 
-    public void ShowPage(Type pageType, object context)
+    public void ShowPage(Type pageType, object? context)
     {
       SetPageTitle("");
       SetToolbarContent(null);
       SetStatusbarContent(null);
-      var page = ServiceProvider.GetService(pageType) as UserControl;
+      var page = ServiceProvider.GetService(pageType) as UserControl
+        ?? throw new InvalidOperationException($"Page '{pageType.Name}' could not be resolved.");
       if (page is Pages.IUseContext iuc)
         iuc.Context = context;
       contentArea.Content = page;
@@ -82,12 +83,12 @@ namespace WpfExample
         Title = $"WpfExample - {title}";
     }
 
-    public void SetToolbarContent(UserControl userControl)
+    public void SetToolbarContent(UserControl? userControl)
     {
       toolbarContent.Content = userControl;
     }
 
-    public void SetStatusbarContent(UserControl userControl)
+    public void SetStatusbarContent(UserControl? userControl)
     {
       statusbarContent.Content = userControl;
     }

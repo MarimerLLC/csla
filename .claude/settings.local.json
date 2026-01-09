@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet nbgv:*)",
+      "Bash(dotnet build:*)",
+      "Bash(dotnet run)",
+      "Bash(dotnet nuget list:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(dotnet list:*)",
+      "Bash(findstr:*)",
+      "Bash(dir \"S:\\\\src\\\\rdl\\\\csla\\\\Samples\\\\RuleTutorial\\\\AuthzFactoryMethods\\\\*.cs\" /b)",
+      "Bash(powershell:*)"
+    ]
+  }
+}

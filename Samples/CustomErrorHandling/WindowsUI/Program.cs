@@ -20,7 +20,7 @@ namespace WindowsUI
         .AddWindowsForms()
         .DataPortal(dpo => dpo.AddClientSideDataPortal(cso => cso
           .UseHttpProxy(hpo => hpo
-            .DataPortalUrl = "https://localhost:44364/api/dataportal"))));
+            .DataPortalUrl = "https://localhost:5001/api/dataportal"))));
       var provider = services.BuildServiceProvider();
       App.ApplicationContext = provider.GetRequiredService<Csla.ApplicationContext>();
 

@@ -1,9 +1,7 @@
-﻿using Csla;
-
-namespace BusinessRuleDemo
+﻿namespace BusinessRuleDemo
 {
   public static class App
   {
-    public static ApplicationContext ApplicationContext { get; set; }
+    public static Csla.ApplicationContext ApplicationContext { get; set; }
   }
 }

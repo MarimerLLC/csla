@@ -1,29 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using Csla;
 using Csla.Rules;
 
 namespace BusinessLibrary
 {
-  [Serializable]
-  public class PersonEdit : BusinessBase<PersonEdit>
+  [CslaImplementProperties]
+  public partial class PersonEdit : BusinessBase<PersonEdit>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
-    }
+    public partial int Id { get; private set; }
 
-    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]
-    public string Name
-    {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
-    }
+    public partial string? Name { get; set; }
 
     protected override void AddBusinessRules()
     {

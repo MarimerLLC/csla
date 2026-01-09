@@ -3,7 +3,11 @@
     "allow": [
       "Bash(dotnet nbgv:*)",
       "Bash(dotnet build:*)",
-      "Bash(dotnet run)"
+      "Bash(dotnet run)",
+      "Bash(dotnet nuget list:*)",
+      "Bash(dotnet restore:*)",
+      "Bash(dotnet clean:*)",
+      "Bash(dotnet list:*)"
     ]
   }
 }

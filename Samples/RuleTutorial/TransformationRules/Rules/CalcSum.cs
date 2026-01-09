@@ -43,7 +43,6 @@ namespace TransformationRules.Rules
     public CalcSum(IPropertyInfo primaryProperty, params IPropertyInfo[] inputProperties)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo>();
       InputProperties.AddRange(inputProperties);
       this.RuleUri.AddQueryParameter("input", string.Join(",", inputProperties.Select(p => p.Name).ToArray()));
       CanRunOnServer = false;

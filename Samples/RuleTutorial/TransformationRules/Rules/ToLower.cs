@@ -32,7 +32,7 @@ namespace TransformationRules.Rules
     public ToLower(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo>() { primaryProperty };
+      InputProperties.Add(primaryProperty);
       AffectedProperties.Add(primaryProperty);
     }
 

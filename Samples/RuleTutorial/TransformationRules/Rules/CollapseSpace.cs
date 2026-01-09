@@ -33,7 +33,7 @@ namespace TransformationRules.Rules
     public CollapseSpace(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo> { primaryProperty };
+      InputProperties.Add(primaryProperty);
     }
 
     /// <summary>

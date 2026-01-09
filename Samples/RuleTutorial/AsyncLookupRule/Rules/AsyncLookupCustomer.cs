@@ -44,10 +44,7 @@ namespace AsyncLookupRule.Rules
     {
       NameProperty = nameProperty;
 
-      if (InputProperties == null)
-        InputProperties = new List<IPropertyInfo>();
       InputProperties.Add(primaryProperty);
-      
 
       AffectedProperties.Add(nameProperty);
 

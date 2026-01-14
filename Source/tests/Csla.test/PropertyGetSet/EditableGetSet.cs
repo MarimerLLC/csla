@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Test.PropertyGetSet
@@ -294,7 +295,7 @@ namespace Csla.Test.PropertyGetSet
     /// </summary>
     /// <typeparam name="T">The type which is to be accessed</typeparam>
     /// <returns>An instance of IDataPortal for use in data access</returns>
-    private IDataPortal<T> GetDataPortal<T>() where T:class
+    private IDataPortal<T> GetDataPortal<T>() where T : ICslaObject
     {
       return ApplicationContext.GetRequiredService<IDataPortal<T>>();
     }

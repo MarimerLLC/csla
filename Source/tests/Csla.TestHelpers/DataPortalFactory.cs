@@ -6,6 +6,7 @@
 // <summary>Factory for dataportal instances for use in tests</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.TestHelpers
@@ -19,7 +20,7 @@ namespace Csla.TestHelpers
     /// <typeparam name="T">The type which the data portal is to service</typeparam>
     /// <param name="context">The context from which configuration can be retrieved</param>
     /// <returns>An instance of IDataPortal<typeparamref name="T"/> for use in data access during tests</returns>
-    public static IDataPortal<T> CreateDataPortal<T>(TestDIContext context)
+    public static IDataPortal<T> CreateDataPortal<T>(TestDIContext context) where T : ICslaObject
     {
       IDataPortal<T> dataPortal;
 
@@ -33,7 +34,7 @@ namespace Csla.TestHelpers
     /// <typeparam name="T">The type which the child data portal is to service</typeparam>
     /// <param name="context">The context from which configuration can be retrieved</param>
     /// <returns>An instance of IChildDataPortal<typeparamref name="T"/> for use in data access during tests</returns>
-    public static IChildDataPortal<T> CreateChildDataPortal<T>(TestDIContext context)
+    public static IChildDataPortal<T> CreateChildDataPortal<T>(TestDIContext context) where T : ICslaObject
     {
       IChildDataPortal<T> dataPortal;
 

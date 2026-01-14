@@ -9,6 +9,7 @@
 using Microsoft.Extensions.DependencyInjection;
 
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 
 namespace Csla.DataPortalClient
 {
@@ -35,6 +36,7 @@ namespace Csla.DataPortalClient
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
     public IDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
+      where T : ICslaObject
     {
       return (IDataPortal<T>)_serviceProvider.GetRequiredService(typeof(IDataPortal<T>));
     }

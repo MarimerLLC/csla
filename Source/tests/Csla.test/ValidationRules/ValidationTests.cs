@@ -463,21 +463,21 @@ namespace Csla.Test.ValidationRules
       Assert.AreEqual("Check capitalization", root.BrokenRulesCollection.GetFirstBrokenRule("Name").Description, "'Check capitalization' should be broken (GetFirstBrokenRule)");
     }
 
-    private T CreateWithoutCriteria<T>()
+    private T CreateWithoutCriteria<T>() where T : ICslaObject
     {
       IDataPortal<T> dataPortal = _testDIContext.CreateDataPortal<T>();
 
       return dataPortal.Create();
     }
 
-    private async Task<T> CreateWithoutCriteriaAsync<T>()
+    private async Task<T> CreateWithoutCriteriaAsync<T>() where T : ICslaObject
     {
       IDataPortal<T> dataPortal = _testDIContext.CreateDataPortal<T>();
 
       return await dataPortal.CreateAsync();
     }
 
-    private T CreateChildWithoutCriteria<T>()
+    private T CreateChildWithoutCriteria<T>() where T : ICslaObject
     {
       IChildDataPortal<T> dataPortal = _testDIContext.CreateChildDataPortal<T>();
 

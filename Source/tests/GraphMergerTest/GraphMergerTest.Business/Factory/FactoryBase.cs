@@ -1,8 +1,10 @@
 ﻿using Csla;
+using Csla.Core;
 
 namespace GraphMergerTest.Business
 {
   public abstract class FactoryBase<T>
+    where T : ICslaObject
   {
     protected IDataPortal<T> DataPortal { get; set; }
 

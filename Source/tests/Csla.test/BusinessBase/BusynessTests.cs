@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using Csla;
+using Csla.Core;
 using Csla.TestHelpers;
 using Csla.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -97,7 +98,7 @@ namespace cslalighttest.BusyStatus
       }
     }
 
-    private T CreateWithoutCriteria<T>()
+    private T CreateWithoutCriteria<T>() where T : ICslaObject
     {
       IDataPortal<T> dataPortal = _testDIContext.CreateDataPortal<T>();
 

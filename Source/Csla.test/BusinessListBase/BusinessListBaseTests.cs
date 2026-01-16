@@ -266,6 +266,161 @@ namespace Csla.Test.BusinessListBase
       }
     }
 
+    [TestMethod]
+    public void ClonePreservesChildEditLevel()
+    {
+      // Arrange: Create a root with children and begin editing
+      var root = CreateRoot();
+      var child = root.Children.AddNew();
+      child.Data = "original";
+
+      root.BeginEdit();
+
+      // Make changes after BeginEdit
+      child.Data = "modified";
+
+      // Verify edit levels before clone
+      var rootEditLevel = ((Core.IUndoableObject)root).EditLevel;
+      var childEditLevel = ((Core.IUndoableObject)child).EditLevel;
+      var childListEditLevel = ((Core.IUndoableObject)root.Children).EditLevel;
+
+      Assert.AreEqual(1, rootEditLevel, "Root EditLevel should be 1 before clone");
+      Assert.AreEqual(1, childEditLevel, "Child EditLevel should be 1 before clone");
+      Assert.AreEqual(1, childListEditLevel, "ChildList EditLevel should be 1 before clone");
+
+      // Act: Clone the object graph
+      var clonedRoot = root.Clone();
+
+      // Assert: Verify edit levels are preserved after clone
+      var clonedRootEditLevel = ((Core.IUndoableObject)clonedRoot).EditLevel;
+      var clonedChildEditLevel = ((Core.IUndoableObject)clonedRoot.Children[0]).EditLevel;
+      var clonedChildListEditLevel = ((Core.IUndoableObject)clonedRoot.Children).EditLevel;
+
+      Assert.AreEqual(1, clonedRootEditLevel, "Cloned Root EditLevel should be 1");
+      Assert.AreEqual(1, clonedChildEditLevel, "Cloned Child EditLevel should be 1");
+      Assert.AreEqual(1, clonedChildListEditLevel, "Cloned ChildList EditLevel should be 1");
+
+      // Verify the modified data is preserved
+      Assert.AreEqual("modified", clonedRoot.Children[0].Data, "Modified data should be preserved in clone");
+    }
+
+    [TestMethod]
+    public void ClonePreservesUndoStateForCancelEdit()
+    {
+      // Arrange: Create a root with children and begin editing
+      var root = CreateRoot();
+      var child = root.Children.AddNew();
+      child.Data = "original";
+
+      root.BeginEdit();
+
+      // Make changes after BeginEdit
+      child.Data = "modified";
+
+      // Act: Clone the object graph
+      var clonedRoot = root.Clone();
+
+      // Cancel edit on the clone - this should restore the original value
+      clonedRoot.CancelEdit();
+
+      // Assert: The cloned child should revert to original value
+      Assert.AreEqual("original", clonedRoot.Children[0].Data, "CancelEdit on clone should restore original value");
+      Assert.AreEqual(0, ((Core.IUndoableObject)clonedRoot).EditLevel, "Root EditLevel should be 0 after CancelEdit");
+    }
+
+    [TestMethod]
+    public void ClonePreservesUndoStateForApplyEdit()
+    {
+      // Arrange: Create a root with children and begin editing
+      var root = CreateRoot();
+      var child = root.Children.AddNew();
+      child.Data = "original";
+
+      root.BeginEdit();
+
+      // Make changes after BeginEdit
+      child.Data = "modified";
+
+      // Act: Clone the object graph
+      var clonedRoot = root.Clone();
+
+      // Apply edit on the clone
+      clonedRoot.ApplyEdit();
+
+      // Assert: The cloned child should keep the modified value
+      Assert.AreEqual("modified", clonedRoot.Children[0].Data, "ApplyEdit on clone should keep modified value");
+      Assert.AreEqual(0, ((Core.IUndoableObject)clonedRoot).EditLevel, "Root EditLevel should be 0 after ApplyEdit");
+
+      // Should be able to save without errors
+      Assert.IsTrue(clonedRoot.IsDirty, "Clone should be dirty");
+      clonedRoot = clonedRoot.Save();
+      Assert.IsFalse(clonedRoot.IsDirty, "Clone should not be dirty after save");
+    }
+
+    [TestMethod]
+    public void ClonePreservesMultiLevelUndo()
+    {
+      // Arrange: Create a root with children
+      var root = CreateRoot();
+      var child = root.Children.AddNew();
+      child.Data = "level0";
+
+      // First level of editing
+      root.BeginEdit();
+      child.Data = "level1";
+
+      // Second level of editing
+      root.BeginEdit();
+      child.Data = "level2";
+
+      // Verify edit level is 2 before clone
+      Assert.AreEqual(2, ((Core.IUndoableObject)root).EditLevel, "Root EditLevel should be 2");
+      Assert.AreEqual(2, ((Core.IUndoableObject)child).EditLevel, "Child EditLevel should be 2");
+
+      // Act: Clone the object graph
+      var clonedRoot = root.Clone();
+      var clonedChild = clonedRoot.Children[0];
+
+      // Assert: Edit levels preserved
+      Assert.AreEqual(2, ((Core.IUndoableObject)clonedRoot).EditLevel, "Cloned Root EditLevel should be 2");
+      Assert.AreEqual(2, ((Core.IUndoableObject)clonedChild).EditLevel, "Cloned Child EditLevel should be 2");
+
+      // Verify multi-level undo works
+      Assert.AreEqual("level2", clonedChild.Data, "Should be at level2");
+
+      clonedRoot.CancelEdit();
+      Assert.AreEqual("level1", clonedChild.Data, "After first CancelEdit should be at level1");
+      Assert.AreEqual(1, ((Core.IUndoableObject)clonedRoot).EditLevel, "EditLevel should be 1");
+
+      clonedRoot.CancelEdit();
+      Assert.AreEqual("level0", clonedChild.Data, "After second CancelEdit should be at level0");
+      Assert.AreEqual(0, ((Core.IUndoableObject)clonedRoot).EditLevel, "EditLevel should be 0");
+    }
+
+    [TestMethod]
+    public void ClonePreservesChildAddedDuringEdit()
+    {
+      // Arrange: Create a root and begin editing before adding child
+      var root = CreateRoot();
+
+      root.BeginEdit();
+
+      // Add child after BeginEdit - child should have EditLevelAdded = 1
+      var child = root.Children.AddNew();
+      child.Data = "new child";
+
+      // Act: Clone the object graph
+      var clonedRoot = root.Clone();
+
+      // Assert: Clone should have the child
+      Assert.AreEqual(1, clonedRoot.Children.Count, "Clone should have 1 child");
+      Assert.AreEqual("new child", clonedRoot.Children[0].Data, "Clone should have child data");
+
+      // Cancel edit should remove the child (it was added after BeginEdit)
+      clonedRoot.CancelEdit();
+      Assert.AreEqual(0, clonedRoot.Children.Count, "After CancelEdit, child added during edit should be removed");
+    }
+
     private Root CreateRoot()
     {
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();

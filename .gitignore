@@ -181,3 +181,4 @@ Source/Csla.Xaml.Uwp/project.lock.json
 /Samples/ProjectTracker/ProjectTracker.Ui.UWP/ProjectTracker.Ui.UWP.nuget.targets
 .vscode
 .idea
+.claude/settings.local.json

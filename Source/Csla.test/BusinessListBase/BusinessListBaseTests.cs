@@ -421,6 +421,45 @@ namespace Csla.Test.BusinessListBase
       Assert.AreEqual(0, clonedRoot.Children.Count, "After CancelEdit, child added during edit should be removed");
     }
 
+    [TestMethod]
+    public void ClonePreservesChildEditLevelWhenUsingBindingSource()
+    {
+      // Arrange: Create a root with children and begin editing
+      var root = CreateRoot();
+      var child = root.Children.AddNew();
+      child.Data = "original";
+
+      ((System.ComponentModel.IEditableObject)root).BeginEdit();
+      ((System.ComponentModel.IEditableObject)child).BeginEdit();
+
+      // Make changes after BeginEdit
+      child.Data = "modified";
+
+      // Verify edit levels before clone
+      var rootEditLevel = ((Core.IUndoableObject)root).EditLevel;
+      var childEditLevel = ((Core.IUndoableObject)child).EditLevel;
+      var childListEditLevel = ((Core.IUndoableObject)root.Children).EditLevel;
+
+      Assert.AreEqual(1, rootEditLevel, "Root EditLevel should be 1 before clone");
+      Assert.AreEqual(1, childEditLevel, "Child EditLevel should be 1 before clone");
+      Assert.AreEqual(0, childListEditLevel, "ChildList EditLevel should be 0 before clone");
+
+      // Act: Clone the object graph
+      var clonedRoot = root.Clone();
+
+      // Assert: Verify edit levels are preserved after clone
+      var clonedRootEditLevel = ((Core.IUndoableObject)clonedRoot).EditLevel;
+      var clonedChildEditLevel = ((Core.IUndoableObject)clonedRoot.Children[0]).EditLevel;
+      var clonedChildListEditLevel = ((Core.IUndoableObject)clonedRoot.Children).EditLevel;
+
+      Assert.AreEqual(1, clonedRootEditLevel, "Cloned Root EditLevel should be 1");
+      Assert.AreEqual(1, clonedChildEditLevel, "Cloned Child EditLevel should be 1");
+      Assert.AreEqual(0, clonedChildListEditLevel, "Cloned ChildList EditLevel should be 0");
+
+      // Verify the modified data is preserved
+      Assert.AreEqual("modified", clonedRoot.Children[0].Data, "Modified data should be preserved in clone");
+    }
+
     private Root CreateRoot()
     {
       IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();

@@ -72,7 +72,7 @@ Also expected to work on:
 
 ### Change List
 
-* https://github.com/MarimerLLC/csla/compare/v9.1.0...v10.0.0
+* https://github.com/MarimerLLC/csla/compare/v9.1.1...v10.0.0
 
 ### Contributors
 

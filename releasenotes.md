@@ -2,6 +2,22 @@
 
 CSLA 9 is a substantial update to CSLA .NET, adding support for .NET 9, removing .NET 6 and UWP, and many enhancements and bug fixes.
 
+## CSLA .NET version 9.1.1 release
+
+> ⚠️ This release does NOT include support for the `Csla.Maui` NuGet package, because this version targeted .NET 8, which is no longer supported by Microsoft. Current MAUI support exists in CSLA 10.
+
+CSLA .NET version 9.1.1 includes several bug fixes.
+
+https://github.com/MarimerLLC/csla/compare/v9.1.0...v9.1.1
+
+### Contributors
+
+* @ajohnstone-ks
+* @rockfordlhotka
+* @StefanOssendorf
+* @uwefms
+* @xal1983
+
 ## CSLA .NET version 9.1.0 release
 
 CSLA .NET version 9.1.0 includes several enhancements and bug fixes.

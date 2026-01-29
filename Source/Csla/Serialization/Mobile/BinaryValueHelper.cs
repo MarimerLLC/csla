@@ -12,8 +12,7 @@ namespace Csla.Serialization.Mobile
 {
   /// <summary>
   /// Helper class for reading and writing primitive values in binary format.
-  /// Used by <see cref="CslaBinaryReader"/>, <see cref="CslaBinaryWriter"/>,
-  /// and <see cref="MobileObjectMetastateHelper"/>.
+  /// Used by <see cref="CslaBinaryReader"/> and <see cref="CslaBinaryWriter"/>.
   /// </summary>
   internal static class BinaryValueHelper
   {

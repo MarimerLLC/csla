@@ -1,0 +1,6 @@
+var class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_code_fix =
+[
+    [ "GetFixAllProvider", "class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_code_fix.html#a2f811de6c0d5b8a46d00d4050090a811", null ],
+    [ "RegisterCodeFixesAsync", "class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_code_fix.html#a706e433410b7004630fbc29af439a2c2", null ],
+    [ "FixableDiagnosticIds", "class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_code_fix.html#a1ea93b44dcee1703a87441ee9b999450", null ]
+];

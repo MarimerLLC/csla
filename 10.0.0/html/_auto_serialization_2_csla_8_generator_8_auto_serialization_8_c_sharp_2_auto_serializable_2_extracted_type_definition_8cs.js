@@ -1,0 +1,4 @@
+var _auto_serialization_2_csla_8_generator_8_auto_serialization_8_c_sharp_2_auto_serializable_2_extracted_type_definition_8cs =
+[
+    [ "Csla.Generator.AutoSerialization.CSharp.AutoSerialization.ExtractedTypeDefinition", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_type_definition.html", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_type_definition" ]
+];

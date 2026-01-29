@@ -1,0 +1,4 @@
+var _does_operation_have_attribute_add_attribute_code_fix_8cs =
+[
+    [ "Csla.Analyzers.DoesOperationHaveAttributeAddAttributeCodeFix", "class_csla_1_1_analyzers_1_1_does_operation_have_attribute_add_attribute_code_fix.html", "class_csla_1_1_analyzers_1_1_does_operation_have_attribute_add_attribute_code_fix" ]
+];

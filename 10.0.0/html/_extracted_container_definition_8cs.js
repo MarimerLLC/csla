@@ -1,0 +1,4 @@
+var _extracted_container_definition_8cs =
+[
+    [ "Csla.Generator.AutoSerialization.CSharp.AutoSerialization.ExtractedContainerDefinition", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_container_definition.html", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_container_definition" ]
+];

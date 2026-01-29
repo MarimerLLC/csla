@@ -1,0 +1,5 @@
+var class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_generation_results =
+[
+    [ "FullyQualifiedName", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_generation_results.html#aeb781425d59d6bfbb6a42b48c55275be", null ],
+    [ "GeneratedSource", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_generation_results.html#acab09cec4856f27ccdc5d52a51189007", null ]
+];

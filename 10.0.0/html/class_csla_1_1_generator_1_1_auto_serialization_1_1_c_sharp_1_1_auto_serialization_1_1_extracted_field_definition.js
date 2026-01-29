@@ -1,0 +1,5 @@
+var class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_field_definition =
+[
+    [ "FieldName", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_field_definition.html#a6eb16a9db5e3e26dacfce4b9f42d9265", null ],
+    [ "TypeDefinition", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_field_definition.html#a2748cc2bd7a9347749e5e8a0d6ba524a", null ]
+];

@@ -1,0 +1,4 @@
+var _find_save_assignment_issue_analyzer_add_assignment_code_fix_8cs =
+[
+    [ "Csla.Analyzers.FindSaveAssignmentIssueAnalyzerAddAssignmentCodeFix", "class_csla_1_1_analyzers_1_1_find_save_assignment_issue_analyzer_add_assignment_code_fix.html", "class_csla_1_1_analyzers_1_1_find_save_assignment_issue_analyzer_add_assignment_code_fix" ]
+];

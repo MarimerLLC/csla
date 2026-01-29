@@ -1,0 +1,4 @@
+var _is_operation_method_public_make_non_public_code_fix_8cs =
+[
+    [ "Csla.Analyzers.IsOperationMethodPublicMakeNonPublicCodeFix", "class_csla_1_1_analyzers_1_1_is_operation_method_public_make_non_public_code_fix.html", "class_csla_1_1_analyzers_1_1_is_operation_method_public_make_non_public_code_fix" ]
+];

@@ -1,0 +1,5 @@
+var interface_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_i_member_definition =
+[
+    [ "MemberName", "interface_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_i_member_definition.html#ab2f868b54d7e7fe8c1a131e2e24b6adb", null ],
+    [ "TypeDefinition", "interface_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_i_member_definition.html#af6f093e670de8c64faf0b66c16f8326d", null ]
+];

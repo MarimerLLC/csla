@@ -1,0 +1,7 @@
+var class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_member_type_definition =
+[
+    [ "GloballyFullyQualifiedType", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_member_type_definition.html#a9b1872e99849be5a9d48fe60e01b3538", null ],
+    [ "ImplementsIMobileObject", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_member_type_definition.html#ad68f4cac75b770ce1b40e07644c1e5a3", null ],
+    [ "IsAutoSerializable", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_member_type_definition.html#ae686b159b998456759b531015104c2b4", null ],
+    [ "Nullable", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_member_type_definition.html#aec01255a5d4447fb45f47d66a25eb155", null ]
+];

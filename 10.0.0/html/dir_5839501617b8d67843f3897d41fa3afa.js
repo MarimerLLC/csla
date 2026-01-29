@@ -1,0 +1,14 @@
+var dir_5839501617b8d67843f3897d41fa3afa =
+[
+    [ "Discovery", "dir_a92bc3072e6c64dd4dc37a59c9508851.html", "dir_a92bc3072e6c64dd4dc37a59c9508851" ],
+    [ "ExtractedAttributeDefinition.cs", "_extracted_attribute_definition_8cs.html", "_extracted_attribute_definition_8cs" ],
+    [ "ExtractedMemberTypeDefinition.cs", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_imple4974365e8797587df7d1b5f4eae4159c.html", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_imple4974365e8797587df7d1b5f4eae4159c" ],
+    [ "ExtractedPropertyDefinition.cs", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_imple93d664943b4c7d105ca21965400fc298.html", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_imple93d664943b4c7d105ca21965400fc298" ],
+    [ "ExtractedTypeDefinition.cs", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_impled8aa45da9179bb5c145c5eb42b933f1f.html", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_impled8aa45da9179bb5c145c5eb42b933f1f" ],
+    [ "GenerationResults.cs", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_implement_2_generation_results_8cs.html", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_implement_2_generation_results_8cs" ],
+    [ "IMemberDefinition.cs", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_implement_2_i_member_definition_8cs.html", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_implement_2_i_member_definition_8cs" ],
+    [ "IncrementalAutoImplementInterfacePartialsGenerator.cs", "_incremental_auto_implement_interface_partials_generator_8cs.html", "_incremental_auto_implement_interface_partials_generator_8cs" ],
+    [ "IncrementalAutoImplementPropertiesPartialsGenerator.cs", "_incremental_auto_implement_properties_partials_generator_8cs.html", "_incremental_auto_implement_properties_partials_generator_8cs" ],
+    [ "SerializationPartialBuilder.cs", "_auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_impled3619d5aab65786a32213bf8110fbb8f.html", null ],
+    [ "TrackingNames.cs", "_tracking_names_8cs.html", null ]
+];

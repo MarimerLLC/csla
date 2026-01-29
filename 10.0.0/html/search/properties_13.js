@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['unabletoloaddataportalproxyfactory_0',['UnableToLoadDataPortalProxyFactory',['../class_csla_1_1_properties_1_1_resources.html#aafaa8b1482fdad5fb34099b779769489',1,'Csla::Properties::Resources']]],
+  ['unandledknowntypeexception_1',['UnandledKNownTypeException',['../class_csla_1_1_properties_1_1_resources.html#ac2c9918319bf7f734dc6545f8b722f36',1,'Csla::Properties::Resources']]],
+  ['unexpectedserializationinfoobjectdata_2',['UnexpectedSerializationInfoObjectData',['../class_csla_1_1_properties_1_1_resources.html#a987a3f45ceb97eb17ba07055702ad7c3',1,'Csla::Properties::Resources']]],
+  ['unhandledasyncruleexceptionhandlertype_3',['UnhandledAsyncRuleExceptionHandlerType',['../class_csla_1_1_configuration_1_1_csla_options.html#a447afc11857d23c140b0d4ccb2ca6361',1,'Csla::Configuration::CslaOptions']]],
+  ['unsupportedxamllisttypeformodel_4',['UnsupportedXamlListTypeForModel',['../class_csla_1_1_properties_1_1_resources.html#a096600cce4efc927398be8cedc3e4260',1,'Csla::Properties::Resources']]],
+  ['updatemethodname_5',['UpdateMethodName',['../class_csla_1_1_server_1_1_mobile_factory_attribute.html#aa8625266edaaca81d5d05f3fb623b47a',1,'Csla.Server.MobileFactoryAttribute.UpdateMethodName'],['../class_csla_1_1_server_1_1_object_factory_attribute.html#ae6057c1351b2f3e29617301f7bd499e5',1,'Csla.Server.ObjectFactoryAttribute.UpdateMethodName']]],
+  ['updatemethodnamenotspecified_6',['UpdateMethodNameNotSpecified',['../class_csla_1_1_properties_1_1_resources.html#ae619f582d76e62330b2afb5fcf49f591',1,'Csla::Properties::Resources']]],
+  ['updatenotsupportedexception_7',['UpdateNotSupportedException',['../class_csla_1_1_properties_1_1_resources.html#ab0ddd5e2291e5b4f009e3e0054dfd308',1,'Csla::Properties::Resources']]],
+  ['usecslapermissionspolicy_8',['UseCslaPermissionsPolicy',['../class_csla_1_1_configuration_1_1_asp_net_core_configuration_options.html#ac2f0d823fc2e8a768ad0d2e017d91084',1,'Csla.Configuration.AspNetCoreConfigurationOptions.UseCslaPermissionsPolicy'],['../class_csla_1_1_configuration_1_1_blazor_server_configuration_options.html#a21ddb55bc67c89125b570f9a6f4363dd',1,'Csla.Configuration.BlazorServerConfigurationOptions.UseCslaPermissionsPolicy']]],
+  ['useinmemoryapplicationcontextmanager_9',['UseInMemoryApplicationContextManager',['../class_csla_1_1_configuration_1_1_blazor_server_configuration_options.html#a17fc2db98c7847c83e4a80c705ff5820',1,'Csla::Configuration::BlazorServerConfigurationOptions']]],
+  ['uselocalscope_10',['UseLocalScope',['../class_csla_1_1_channels_1_1_local_1_1_local_proxy_options.html#a53e2f441c258d5c7266cbd7c5dbb2600',1,'Csla::Channels::Local::LocalProxyOptions']]],
+  ['user_11',['User',['../class_csla_1_1_application_context.html#a9b38e27d1f8206f401c87ed5ff20c7ee',1,'Csla::ApplicationContext']]],
+  ['usereflectionfallback_12',['UseReflectionFallback',['../class_csla_1_1_application_context.html#a1d43b8c9d29d11d65d65d628e0191726',1,'Csla::ApplicationContext']]],
+  ['username_13',['Username',['../class_csla_1_1_security_1_1_username_criteria.html#af52708fe1568f55d7d03372a3fd389f0',1,'Csla::Security::UsernameCriteria']]],
+  ['usernotauthorizedexception_14',['UserNotAuthorizedException',['../class_csla_1_1_properties_1_1_resources.html#ab8f11860217af3fedf33fe27086a2b8b',1,'Csla::Properties::Resources']]],
+  ['userstate_15',['UserState',['../class_csla_1_1_core_1_1_saved_event_args.html#a2198aa965af48d205f0b3edc465e7212',1,'Csla.Core.SavedEventArgs.UserState'],['../class_csla_1_1_data_portal_result-1-g.html#adf0b2bcc3a9870c7b78c321ca43be169',1,'Csla.DataPortalResult-1-g.UserState'],['../interface_csla_1_1_i_data_portal_result.html#a78bc55835c79ac15ebdc0eaf20ed9db4',1,'Csla.IDataPortalResult.UserState']]],
+  ['usestrongnamescheck_16',['UseStrongNamesCheck',['../class_csla_1_1_configuration_1_1_mobile_formatter_options.html#a20ac9d69a09d30b41aaf74986d0d0dfd',1,'Csla::Configuration::MobileFormatterOptions']]],
+  ['usetextserialization_17',['UseTextSerialization',['../class_csla_1_1_channels_1_1_http_1_1_http_proxy_options.html#a0c75b3956bf6d6223be8034ced620049',1,'Csla::Channels::Http::HttpProxyOptions']]]
+];

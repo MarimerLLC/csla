@@ -1,0 +1,4 @@
+var _asynchronous_business_rule_inheriting_from_business_rule_analyzer_8cs =
+[
+    [ "Csla.Analyzers.AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer", "class_csla_1_1_analyzers_1_1_asynchronous_business_rule_inheriting_from_business_rule_analyzer.html", "class_csla_1_1_analyzers_1_1_asynchronous_business_rule_inheriting_from_business_rule_analyzer" ]
+];

@@ -1,0 +1,4 @@
+var _find_operations_with_non_serializable_arguments_analyzer_8cs =
+[
+    [ "Csla.Analyzers.FindOperationsWithNonSerializableArgumentsAnalyzer", "class_csla_1_1_analyzers_1_1_find_operations_with_non_serializable_arguments_analyzer.html", "class_csla_1_1_analyzers_1_1_find_operations_with_non_serializable_arguments_analyzer" ]
+];

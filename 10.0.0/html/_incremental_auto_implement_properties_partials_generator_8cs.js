@@ -1,0 +1,4 @@
+var _incremental_auto_implement_properties_partials_generator_8cs =
+[
+    [ "Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.IncrementalAutoImplementPropertiesPartialsGenerator", "class_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement_1_1_increm0f0d86dfd4d6bcce1da773fd72542036.html", "class_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement_1_1_increm0f0d86dfd4d6bcce1da773fd72542036" ]
+];

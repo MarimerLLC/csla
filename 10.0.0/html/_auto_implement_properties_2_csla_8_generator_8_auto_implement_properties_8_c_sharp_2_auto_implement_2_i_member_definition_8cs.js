@@ -1,0 +1,4 @@
+var _auto_implement_properties_2_csla_8_generator_8_auto_implement_properties_8_c_sharp_2_auto_implement_2_i_member_definition_8cs =
+[
+    [ "Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.IMemberDefinition", "interface_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement_1_1_i_member_definition.html", "interface_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement_1_1_i_member_definition" ]
+];

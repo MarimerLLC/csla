@@ -1,0 +1,4 @@
+var _is_complete_called_in_asynchronous_business_rule_remove_call_code_fix_8cs =
+[
+    [ "Csla.Analyzers.IsCompleteCalledInAsynchronousBusinessRuleRemoveCallCodeFix", "class_csla_1_1_analyzers_1_1_is_complete_called_in_asynchronous_business_rule_remove_call_code_fix.html", "class_csla_1_1_analyzers_1_1_is_complete_called_in_asynchronous_business_rule_remove_call_code_fix" ]
+];

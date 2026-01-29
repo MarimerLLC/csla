@@ -1,0 +1,4 @@
+var _check_constructors_analyzer_public_constructor_code_fix_8cs =
+[
+    [ "Csla.Analyzers.CheckConstructorsAnalyzerPublicConstructorCodeFix", "class_csla_1_1_analyzers_1_1_check_constructors_analyzer_public_constructor_code_fix.html", "class_csla_1_1_analyzers_1_1_check_constructors_analyzer_public_constructor_code_fix" ]
+];

@@ -1,0 +1,5 @@
+var class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_property_definition =
+[
+    [ "PropertyName", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_property_definition.html#aec9710413f41eb155bbd628e86d32ac0", null ],
+    [ "TypeDefinition", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_property_definition.html#aa6ef1451a239970a7703f20028c1f527", null ]
+];

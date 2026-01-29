@@ -1,0 +1,5 @@
+var class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_container_definition =
+[
+    [ "FullDefinition", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_container_definition.html#a3365f8b99f25ff75297f3c7fb1ec39db", null ],
+    [ "Name", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_container_definition.html#acd3bea588b15de2780e70022294b1a71", null ]
+];

@@ -1,0 +1,4 @@
+var _find_ref_and_out_parameters_in_operations_analyzer_8cs =
+[
+    [ "Csla.Analyzers.FindRefAndOutParametersInOperationsAnalyzer", "class_csla_1_1_analyzers_1_1_find_ref_and_out_parameters_in_operations_analyzer.html", "class_csla_1_1_analyzers_1_1_find_ref_and_out_parameters_in_operations_analyzer" ]
+];

@@ -1,0 +1,5 @@
+var interface_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement_1_1_i_member_definition =
+[
+    [ "MemberName", "interface_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement_1_1_i_member_definition.html#aec3895fbc0f00904e1523d74a4a9a999", null ],
+    [ "TypeDefinition", "interface_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement_1_1_i_member_definition.html#a73690d999f159546d9eaec1bcab2fd96", null ]
+];

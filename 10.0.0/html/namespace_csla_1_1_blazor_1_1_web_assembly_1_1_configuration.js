@@ -1,0 +1,4 @@
+var namespace_csla_1_1_blazor_1_1_web_assembly_1_1_configuration =
+[
+    [ "BlazorWebAssemblyConfigurationOptions", "class_csla_1_1_blazor_1_1_web_assembly_1_1_configuration_1_1_blazor_web_assembly_configuration_options.html", "class_csla_1_1_blazor_1_1_web_assembly_1_1_configuration_1_1_blazor_web_assembly_configuration_options" ]
+];

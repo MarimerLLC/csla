@@ -1,0 +1,25 @@
+var dir_d57eeace3d6595a8dced423078eb9c1c =
+[
+    [ "ApplicationContextManager.cs", "_csla_8_xaml_8_shared_2_application_context_manager_8cs.html", "_csla_8_xaml_8_shared_2_application_context_manager_8cs" ],
+    [ "BrokenRulesSeverityConverter.cs", "_broken_rules_severity_converter_8cs.html", "_broken_rules_severity_converter_8cs" ],
+    [ "BusyAnimation.cs", "_csla_8_xaml_8_shared_2_busy_animation_8cs.html", "_csla_8_xaml_8_shared_2_busy_animation_8cs" ],
+    [ "ConfigurationExtensions.cs", "_csla_8_xaml_8_shared_2_configuration_extensions_8cs.html", null ],
+    [ "CslaDataProvider.cs", "_csla_data_provider_8cs.html", "_csla_data_provider_8cs" ],
+    [ "CslaDataProviderCommandManager.cs", "_csla_data_provider_command_manager_8cs.html", "_csla_data_provider_command_manager_8cs" ],
+    [ "DataDecoratorBase.cs", "_data_decorator_base_8cs.html", "_data_decorator_base_8cs" ],
+    [ "ErrorDialog.cs", "_error_dialog_8cs.html", "_error_dialog_8cs" ],
+    [ "ErrorEventArgs.cs", "_csla_8_xaml_8_shared_2_error_event_args_8cs.html", "_csla_8_xaml_8_shared_2_error_event_args_8cs" ],
+    [ "ExecuteEventArgs.cs", "_execute_event_args_8cs.html", "_execute_event_args_8cs" ],
+    [ "IdentityConverter.cs", "_identity_converter_8cs.html", "_identity_converter_8cs" ],
+    [ "IErrorDialog.cs", "_i_error_dialog_8cs.html", "_i_error_dialog_8cs" ],
+    [ "InvokeMethod.cs", "_invoke_method_8cs.html", "_invoke_method_8cs" ],
+    [ "IsNotConverter.cs", "_is_not_converter_8cs.html", "_is_not_converter_8cs" ],
+    [ "IViewModel.cs", "_csla_8_xaml_8_shared_2_i_view_model_8cs.html", "_csla_8_xaml_8_shared_2_i_view_model_8cs" ],
+    [ "ObjectStatus.cs", "_object_status_8cs.html", "_object_status_8cs" ],
+    [ "PropertyInfo.cs", "_csla_8_xaml_8_shared_2_property_info_8cs.html", "_csla_8_xaml_8_shared_2_property_info_8cs" ],
+    [ "PropertyStatus.cs", "_property_status_8cs.html", "_property_status_8cs" ],
+    [ "TriggerAction.cs", "_trigger_action_8cs.html", "_trigger_action_8cs" ],
+    [ "ViewModel.cs", "_csla_8_xaml_8_shared_2_view_model_8cs.html", "_csla_8_xaml_8_shared_2_view_model_8cs" ],
+    [ "ViewModelBase.cs", "_csla_8_xaml_8_shared_2_view_model_base_8cs.html", "_csla_8_xaml_8_shared_2_view_model_base_8cs" ],
+    [ "XamlOptions.cs", "_xaml_options_8cs.html", null ]
+];

@@ -1,0 +1,12 @@
+var interface_csla_1_1_core_1_1_i_property_info =
+[
+    [ "GetPropertyInfo", "interface_csla_1_1_core_1_1_i_property_info.html#a6f646e941922ce620cd25340ba3972ed", null ],
+    [ "NewFieldData", "interface_csla_1_1_core_1_1_i_property_info.html#af5da060c1d86bba8ad39fc7f20b01389", null ],
+    [ "DefaultValue", "interface_csla_1_1_core_1_1_i_property_info.html#a1421157ae702379a163f3ea8b5ec1ce5", null ],
+    [ "FriendlyName", "interface_csla_1_1_core_1_1_i_property_info.html#a84ac982d078480ed1c525d331d7e62b3", null ],
+    [ "Index", "interface_csla_1_1_core_1_1_i_property_info.html#a063df03d31e98d0d6fdc66c6656bd05c", null ],
+    [ "IsChild", "interface_csla_1_1_core_1_1_i_property_info.html#a923b81bc9be4e8061f3431d6a93cb81b", null ],
+    [ "IsSerializable", "interface_csla_1_1_core_1_1_i_property_info.html#a197f0134a8c6e6a346a6cc327f5a0bcb", null ],
+    [ "RelationshipType", "interface_csla_1_1_core_1_1_i_property_info.html#a42d0b6a3aec67bea06efcb61b7c98cf1", null ],
+    [ "Type", "interface_csla_1_1_core_1_1_i_property_info.html#a866e4fea90cc02bb7ec603eb7a11b0e9", null ]
+];

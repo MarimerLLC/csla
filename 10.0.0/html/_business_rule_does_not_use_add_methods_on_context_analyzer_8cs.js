@@ -1,0 +1,4 @@
+var _business_rule_does_not_use_add_methods_on_context_analyzer_8cs =
+[
+    [ "Csla.Analyzers.BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer", "class_csla_1_1_analyzers_1_1_business_rule_does_not_use_add_methods_on_context_analyzer.html", "class_csla_1_1_analyzers_1_1_business_rule_does_not_use_add_methods_on_context_analyzer" ]
+];

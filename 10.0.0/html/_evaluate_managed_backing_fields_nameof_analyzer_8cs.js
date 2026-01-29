@@ -1,0 +1,4 @@
+var _evaluate_managed_backing_fields_nameof_analyzer_8cs =
+[
+    [ "Csla.Analyzers.ManagedBackingFieldUsesNameof.EvaluateManagedBackingFieldsNameofAnalyzer", "class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_analyzer.html", "class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_analyzer" ]
+];

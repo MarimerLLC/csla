@@ -1,0 +1,4 @@
+var class_csla_1_1_server_1_1_interceptors_1_1_server_side_1_1_revalidating_interceptor_options =
+[
+    [ "IgnoreDeleteOperation", "class_csla_1_1_server_1_1_interceptors_1_1_server_side_1_1_revalidating_interceptor_options.html#a881c870705e7c0a36edef66e0cae6474", null ]
+];

@@ -1,0 +1,5 @@
+var class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_analyzer =
+[
+    [ "Initialize", "class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_analyzer.html#a121778515881ac70c628219363ab2351", null ],
+    [ "SupportedDiagnostics", "class_csla_1_1_analyzers_1_1_managed_backing_field_uses_nameof_1_1_evaluate_managed_backing_fields_nameof_analyzer.html#add53f6009331bb95a587710d72dec271", null ]
+];

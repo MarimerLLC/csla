@@ -1,0 +1,4 @@
+var _incremental_serialization_partials_generator_8cs =
+[
+    [ "Csla.Generator.AutoSerialization.CSharp.AutoSerialization.IncrementalSerializationPartialsGenerator", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_increment729460da7541452786a643d29ca54268.html", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_increment729460da7541452786a643d29ca54268" ]
+];

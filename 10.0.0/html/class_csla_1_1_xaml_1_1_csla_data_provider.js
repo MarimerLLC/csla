@@ -1,0 +1,25 @@
+var class_csla_1_1_xaml_1_1_csla_data_provider =
+[
+    [ "CslaDataProvider", "class_csla_1_1_xaml_1_1_csla_data_provider.html#ac0652923b8bf12513692b0b8cd1f39aa", null ],
+    [ "AddNew", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a2dad2fc1baa4fd8f0d9e3a47e681a6f4", null ],
+    [ "BeginInit", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a754f4b1ae734de548424ec314d51d350", null ],
+    [ "BeginQuery", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a1d53bd0be22b16012699931c0984d9ec", null ],
+    [ "Cancel", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a926964745641384af124ee91bc7d46e0", null ],
+    [ "EndInit", "class_csla_1_1_xaml_1_1_csla_data_provider.html#aafbc6779dc7278065246af6f98d205f4", null ],
+    [ "OnSaved", "class_csla_1_1_xaml_1_1_csla_data_provider.html#aeadb7c450709c31a7b2171c9302a3b28", null ],
+    [ "Rebind", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a5b4aa3989be1278ae9b74e4dbf63a8eb", null ],
+    [ "Refresh< T >", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a06942951d82116a406ec5c96a478e221", null ],
+    [ "Refresh< T >", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a6712bdecfa3cfacacb6f2ce30cb2bfcd", null ],
+    [ "RemoveItem", "class_csla_1_1_xaml_1_1_csla_data_provider.html#ac235cffc7206e3bc2658f247f58900f6", null ],
+    [ "Save", "class_csla_1_1_xaml_1_1_csla_data_provider.html#ad897e2fd5a2de6d8a5b0718885363afd", null ],
+    [ "CommandManager", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a888a92c73383bec8bc58201b2384d75c", null ],
+    [ "DataChangedHandler", "class_csla_1_1_xaml_1_1_csla_data_provider.html#ac9d7c6375588540330fd5e338a13e659", null ],
+    [ "FactoryMethod", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a87f50979759ce73a55ce6e79b1056d9a", null ],
+    [ "FactoryParameters", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a65bd219076747c779a32131f6686668c", null ],
+    [ "IsAsynchronous", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a4d8acc94004c8a6c44140322940278af", null ],
+    [ "IsBusy", "class_csla_1_1_xaml_1_1_csla_data_provider.html#aeb38d92a051e2e3ab69e325ed652e547", null ],
+    [ "ManageObjectLifetime", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a42c5eb5b65697fffe6f37d5c80dd92ac", null ],
+    [ "ObjectInstance", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a217125eccf8628599c677d8379ac5f4c", null ],
+    [ "ObjectType", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a80d7f11fa156e89f490144d44607f402", null ],
+    [ "Saved", "class_csla_1_1_xaml_1_1_csla_data_provider.html#a08e60e9d01963cc77754167532b0b8da", null ]
+];

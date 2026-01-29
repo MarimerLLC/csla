@@ -1,0 +1,4 @@
+var namespace_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp =
+[
+    [ "AutoImplement", "namespace_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement.html", "namespace_csla_1_1_generator_1_1_auto_implement_properties_1_1_c_sharp_1_1_auto_implement" ]
+];

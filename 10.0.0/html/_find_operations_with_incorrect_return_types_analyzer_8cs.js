@@ -1,0 +1,4 @@
+var _find_operations_with_incorrect_return_types_analyzer_8cs =
+[
+    [ "Csla.Analyzers.FindOperationsWithIncorrectReturnTypesAnalyzer", "class_csla_1_1_analyzers_1_1_find_operations_with_incorrect_return_types_analyzer.html", "class_csla_1_1_analyzers_1_1_find_operations_with_incorrect_return_types_analyzer" ]
+];

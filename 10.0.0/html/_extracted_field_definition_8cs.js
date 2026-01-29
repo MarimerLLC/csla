@@ -1,0 +1,4 @@
+var _extracted_field_definition_8cs =
+[
+    [ "Csla.Generator.AutoSerialization.CSharp.AutoSerialization.ExtractedFieldDefinition", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_field_definition.html", "class_csla_1_1_generator_1_1_auto_serialization_1_1_c_sharp_1_1_auto_serialization_1_1_extracted_field_definition" ]
+];

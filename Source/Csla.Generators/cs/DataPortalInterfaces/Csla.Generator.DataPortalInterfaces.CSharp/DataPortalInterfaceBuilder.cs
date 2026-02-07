@@ -39,6 +39,8 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp
       AppendBlockStart(textWriter);
 
       AppendInvokeOperationAsyncMethod(textWriter, typeDefinition);
+      textWriter.WriteLine();
+      AppendInvokeNamedOperationAsyncMethod(textWriter, typeDefinition);
 
       AppendBlockEnd(textWriter);
       AppendContainerDefinitionClosures(textWriter, typeDefinition);
@@ -85,7 +87,7 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp
       textWriter.Write(" partial class ");
       textWriter.Write(typeDefinition.TypeName);
       textWriter.Write(typeDefinition.TypeParameters);
-      textWriter.WriteLine(" : Csla.Server.IDataPortalOperationMapping");
+      textWriter.WriteLine(" : Csla.Server.IDataPortalOperationMapping, Csla.Server.IDataPortalOperationNamedMapping");
     }
 
     private void AppendInvokeOperationAsyncMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
@@ -231,6 +233,42 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp
       }
 
       return result;
+    }
+
+    private void AppendInvokeNamedOperationAsyncMethod(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+    {
+      textWriter.WriteLine("async global::System.Threading.Tasks.Task Csla.Server.IDataPortalOperationNamedMapping.InvokeNamedOperationAsync(");
+      textWriter.Indent++;
+      textWriter.WriteLine("string operationName, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)");
+      textWriter.Indent--;
+      AppendBlockStart(textWriter);
+
+      textWriter.WriteLine("switch (operationName)");
+      AppendBlockStart(textWriter);
+
+      // Collect all unique operation names across all methods
+      var emittedNames = new HashSet<string>();
+      foreach (var method in typeDefinition.OperationMethods)
+      {
+        foreach (var attr in method.OperationAttributeNames)
+        {
+          var operationName = method.GetOperationName(attr);
+          if (emittedNames.Add(operationName))
+          {
+            textWriter.WriteLine($"case \"{operationName}\":");
+            textWriter.Indent++;
+            AppendMethodDispatch(textWriter, method);
+            textWriter.WriteLine("break;");
+            textWriter.Indent--;
+          }
+        }
+      }
+
+      AppendBlockEnd(textWriter);
+
+      textWriter.WriteLine("throw new Csla.Server.DataPortalOperationNotSupportedException(operationName, criteria);");
+
+      AppendBlockEnd(textWriter);
     }
 
     private static string SanitizeTypeName(string typeName)

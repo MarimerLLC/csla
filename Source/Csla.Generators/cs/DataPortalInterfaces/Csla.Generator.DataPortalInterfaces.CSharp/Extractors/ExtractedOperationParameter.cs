@@ -32,6 +32,12 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp.Extractors
     public string TypeDisplayName { get; set; } = string.Empty;
 
     /// <summary>
+    /// The type's metadata name used for operation name computation
+    /// (e.g. "Int32", "String", "List_1_Int32")
+    /// </summary>
+    public string TypeMetadataName { get; set; } = string.Empty;
+
+    /// <summary>
     /// Whether this is an injected parameter
     /// </summary>
     public bool IsInjected { get; set; }

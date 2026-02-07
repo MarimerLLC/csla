@@ -7,6 +7,8 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Generic;
+using System.Linq;
+using Csla.Generator.DataPortalInterfaces.CSharp.Discovery;
 
 namespace Csla.Generator.DataPortalInterfaces.CSharp.Extractors
 {
@@ -43,5 +45,18 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp.Extractors
     /// The injected parameters (marked with [Inject])
     /// </summary>
     public IList<ExtractedOperationParameter> InjectParameters { get; } = new List<ExtractedOperationParameter>();
+
+    /// <summary>
+    /// Computes the deterministic operation name for a given attribute.
+    /// Format: "OperationType" for no criteria, "OperationType__Type1_Type2" for criteria.
+    /// </summary>
+    public string GetOperationName(string attributeFullName)
+    {
+      var baseName = OperationMethodExtractor.GetBaseOperationName(attributeFullName);
+      if (CriteriaParameters.Count == 0)
+        return baseName;
+      var typeKeys = string.Join("_", CriteriaParameters.Select(p => p.TypeMetadataName));
+      return baseName + "__" + typeKeys;
+    }
   }
 }

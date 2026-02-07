@@ -154,9 +154,49 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp.Discovery
         Name = param.Name,
         TypeFullName = param.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
         TypeDisplayName = param.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),
+        TypeMetadataName = GetOperationTypeKey(param.Type),
         IsInjected = isInjected,
         AllowNull = allowNull
       };
+    }
+
+    /// <summary>
+    /// Computes a deterministic type key for use in operation names.
+    /// Arrays: elementType + "Array" (e.g. "Int32Array")
+    /// Generic types: MetadataName with backtick replaced, then type args (e.g. "List_1_Int32")
+    /// Simple types: MetadataName (e.g. "Int32", "String")
+    /// </summary>
+    internal static string GetOperationTypeKey(ITypeSymbol typeSymbol)
+    {
+      if (typeSymbol is IArrayTypeSymbol arrayType)
+      {
+        return GetOperationTypeKey(arrayType.ElementType) + "Array";
+      }
+
+      if (typeSymbol is INamedTypeSymbol namedType && namedType.IsGenericType)
+      {
+        var baseName = namedType.MetadataName.Replace('`', '_');
+        var typeArgs = string.Join("_", namedType.TypeArguments.Select(GetOperationTypeKey));
+        return baseName + "_" + typeArgs;
+      }
+
+      return typeSymbol.MetadataName;
+    }
+
+    /// <summary>
+    /// Gets the base operation name from an attribute fully-qualified name.
+    /// Strips namespace and "Attribute" suffix
+    /// (e.g. "Csla.FetchAttribute" -> "Fetch")
+    /// </summary>
+    internal static string GetBaseOperationName(string attributeFullName)
+    {
+      var name = attributeFullName;
+      var dotIndex = name.LastIndexOf('.');
+      if (dotIndex >= 0)
+        name = name.Substring(dotIndex + 1);
+      if (name.EndsWith("Attribute"))
+        name = name.Substring(0, name.Length - "Attribute".Length);
+      return name;
     }
   }
 }

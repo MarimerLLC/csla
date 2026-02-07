@@ -27,13 +27,17 @@ namespace Csla.Server
 #endif
 
     private readonly IDataPortalTarget? _target;
+    private readonly IDataPortalOperationMapping? _operationMapping;
+    private readonly ApplicationContext _applicationContext;
     private readonly TimeSpan _waitForIdleTimeout;
     private readonly DataPortalMethodNames _methodNames;
 
-    public DataPortalTarget(object obj, Configuration.CslaOptions cslaOptions)
+    public DataPortalTarget(object obj, ApplicationContext applicationContext, Configuration.CslaOptions cslaOptions)
       : base(obj)
     {
       _target = obj as IDataPortalTarget;
+      _operationMapping = obj as IDataPortalOperationMapping;
+      _applicationContext = applicationContext;
       _waitForIdleTimeout = TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds);
 
 #if NET8_0_OR_GREATER
@@ -154,8 +158,44 @@ namespace Csla.Server
     private async Task InvokeOperationAsync<T>(object criteria, bool isSync)
       where T : DataPortalOperationAttribute
     {
+      if (_operationMapping != null)
+      {
+        try
+        {
+          var serviceProvider = _applicationContext.CurrentServiceProvider;
+          await _operationMapping.InvokeOperationAsync(
+            typeof(T), isSync, DataPortal.GetCriteriaArray(criteria), serviceProvider
+          ).ConfigureAwait(false);
+          return;
+        }
+        catch (DataPortalOperationNotSupportedException)
+        {
+          // Fall through to reflection path
+        }
+      }
       object?[] parameters = DataPortal.GetCriteriaArray(criteria)!;
       await CallMethodTryAsyncDI<T>(isSync, parameters).ConfigureAwait(false);
+    }
+
+    private async Task InvokeChildOperationAsync<T>(object?[]? parameters)
+      where T : DataPortalChildOperationAttribute
+    {
+      if (_operationMapping != null)
+      {
+        try
+        {
+          var serviceProvider = _applicationContext.CurrentServiceProvider;
+          await _operationMapping.InvokeOperationAsync(
+            typeof(T), false, parameters, serviceProvider
+          ).ConfigureAwait(false);
+          return;
+        }
+        catch (DataPortalOperationNotSupportedException)
+        {
+          // Fall through to reflection path
+        }
+      }
+      await CallMethodTryAsyncDI<T>(false, parameters).ConfigureAwait(false);
     }
 
     public Task CreateAsync(object criteria, bool isSync)
@@ -165,7 +205,7 @@ namespace Csla.Server
 
     public Task CreateChildAsync(params object?[]? parameters)
     {
-      return CallMethodTryAsyncDI<CreateChildAttribute>(false, parameters);
+      return InvokeChildOperationAsync<CreateChildAttribute>(parameters);
     }
 
     public Task FetchAsync(object criteria, bool isSync)
@@ -175,7 +215,7 @@ namespace Csla.Server
 
     public Task FetchChildAsync(params object?[]? parameters)
     {
-      return CallMethodTryAsyncDI<FetchChildAttribute>(false, parameters);
+      return InvokeChildOperationAsync<FetchChildAttribute>(parameters);
     }
 
     public Task ExecuteAsync(object criteria, bool isSync)
@@ -231,7 +271,7 @@ namespace Csla.Server
           if (!busObj.IsNew)
           {
             // tell the object to delete itself
-            await CallMethodTryAsyncDI<DeleteSelfChildAttribute>(false, parameters).ConfigureAwait(false);
+            await InvokeChildOperationAsync<DeleteSelfChildAttribute>(parameters).ConfigureAwait(false);
             MarkNew();
           }
         }
@@ -240,12 +280,12 @@ namespace Csla.Server
           if (busObj.IsNew)
           {
             // tell the object to insert itself
-            await CallMethodTryAsyncDI<InsertChildAttribute>(false, parameters).ConfigureAwait(false);
+            await InvokeChildOperationAsync<InsertChildAttribute>(parameters).ConfigureAwait(false);
           }
           else
           {
             // tell the object to update itself
-            await CallMethodTryAsyncDI<UpdateChildAttribute>(false, parameters).ConfigureAwait(false);
+            await InvokeChildOperationAsync<UpdateChildAttribute>(parameters).ConfigureAwait(false);
           }
           MarkOld();
         }
@@ -254,14 +294,14 @@ namespace Csla.Server
       else if (Instance is ICommandObject)
       {
         // tell the object to update itself
-        await CallMethodTryAsyncDI<ExecuteChildAttribute>(false, parameters).ConfigureAwait(false);
+        await InvokeChildOperationAsync<ExecuteChildAttribute>(parameters).ConfigureAwait(false);
       }
       else
       {
         // this is an updatable collection or some other
         // non-BusinessBase type of object
         // tell the object to update itself
-        await CallMethodTryAsyncDI<UpdateChildAttribute>(false, parameters).ConfigureAwait(false);
+        await InvokeChildOperationAsync<UpdateChildAttribute>(parameters).ConfigureAwait(false);
         MarkOld();
       }
     }

@@ -183,3 +183,4 @@ Source/Csla.Xaml.Uwp/project.lock.json
 .vscode
 .idea
 Samples/ProjectTracker/ProjectTracker.Blazor/ProjectTracker.Blazor/PTracker.db
+.claude/settings.local.json

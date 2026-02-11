@@ -479,5 +479,10 @@ namespace Csla.Rules
       InformationCount = info.GetValue<int>("_infoCount");
       base.OnSetState(info);
     }
+
+    public BrokenRulesCollection ToThreadsafeList()
+    {
+      return this;
+    }
   }
 }

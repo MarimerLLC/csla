@@ -57,7 +57,7 @@ namespace Csla.Test.BizRules
 
     [TestMethod]
     [TestCategory("ThreadSafety")]
-    public void CheckGetBrokenRulesForThreadSafety()
+    public void CheckToBrokenRulesForThreadSafety()
     {
       var tasks = new List<Task>();
 

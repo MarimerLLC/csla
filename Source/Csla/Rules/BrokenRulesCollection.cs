@@ -446,8 +446,11 @@ namespace Csla.Rules
     {
       if (list is null)
         throw new ArgumentNullException(nameof(list));
-      foreach (var item in list)
-        Add(item);
+      lock (_syncRoot)
+      {
+        foreach (var item in list)
+          Add(item);
+      }
     }
 
     /// <summary>
@@ -480,9 +483,16 @@ namespace Csla.Rules
       base.OnSetState(info);
     }
 
-    public BrokenRulesCollection ToThreadsafeList()
+    /// <summary>
+    /// Returns a thread-safe copy of the current broken rules.
+    /// </summary>
+    /// <returns>A new <see cref="List{BrokenRule}"/> containing the broken rules at the time of the call.</returns>
+    public List<BrokenRule> ToThreadsafeList()
     {
-      return this;
+      lock (_syncRoot)
+      {
+        return this.ToList();
+      }
     }
   }
 }

@@ -494,7 +494,7 @@ namespace Csla.Rules
     {
       lock (_syncRoot)
       {
-        return new ReadOnlyCollection<BrokenRule>(this.ToList());
+        return this.ToList().AsReadOnly();
       }
     }
   }

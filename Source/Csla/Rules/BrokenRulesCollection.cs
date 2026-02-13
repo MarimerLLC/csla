@@ -489,12 +489,12 @@ namespace Csla.Rules
     /// This method should be used instead of ToList() when a copy of the 
     /// broken rules list is desired that 
     /// </summary>
-    /// <returns>A new <see cref="ObservableCollection{BrokenRule}"/> containing the broken rules at the time of the call.</returns>
-    public ObservableCollection<BrokenRule> ToThreadSafeList()
+    /// <returns>A new <see cref="ReadOnlyCollection{BrokenRule}"/> containing the broken rules at the time of the call.</returns>
+    public ReadOnlyCollection<BrokenRule> ToThreadSafeList()
     {
       lock (_syncRoot)
       {
-        return new ObservableCollection<BrokenRule>(this.AsEnumerable());
+        return new ReadOnlyCollection<BrokenRule>(this.ToList());
       }
     }
   }

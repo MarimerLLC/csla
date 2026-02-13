@@ -57,7 +57,7 @@ namespace Csla.Test.BizRules
 
     [TestMethod]
     [TestCategory("ThreadSafety")]
-    public async Task CheckToBrokenRulesForThreadSafety()
+    public async Task ToThreadsafeList_WithConcurrentModification_DoesNotThrowException()
     {
       SetScanForDataAnnotations(true);
 

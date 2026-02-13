@@ -74,7 +74,7 @@ namespace Csla.Test.BizRules
         {
           obj.FirstName = "Drop Dead";
           obj.LastName = "Fred";
-        });
+        }).ConfigureAwait(false);
       }
 
       Assert.AreEqual(2, list.Count);

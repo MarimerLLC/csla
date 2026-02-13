@@ -490,7 +490,7 @@ namespace Csla.Rules
     /// broken rules list is desired that 
     /// </summary>
     /// <returns>A new <see cref="ObservableCollection{BrokenRule}"/> containing the broken rules at the time of the call.</returns>
-    public ObservableCollection<BrokenRule> ToThreadsafeList()
+    public ObservableCollection<BrokenRule> ToThreadSafeList()
     {
       lock (_syncRoot)
       {

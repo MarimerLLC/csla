@@ -57,7 +57,7 @@ namespace Csla.Test.BizRules
 
     [TestMethod]
     [TestCategory("ThreadSafety")]
-    public async Task ToThreadsafeList_WithConcurrentModification_DoesNotThrowException()
+    public async Task ToThreadSafeList_WithConcurrentModification_DoesNotThrowException()
     {
       SetScanForDataAnnotations(true);
 
@@ -66,7 +66,7 @@ namespace Csla.Test.BizRules
 
       obj.FirstName = "";
       obj.LastName = "";
-      var list = obj.GetBrokenRules().ToThreadsafeList();
+      var list = obj.GetBrokenRules().ToThreadSafeList();
 
       foreach (var item in list)
       {

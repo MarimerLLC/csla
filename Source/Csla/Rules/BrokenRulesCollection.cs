@@ -6,6 +6,7 @@
 // <summary>A collection of currently broken rules.</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.ObjectModel;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 
@@ -485,13 +486,15 @@ namespace Csla.Rules
 
     /// <summary>
     /// Returns a thread-safe copy of the current broken rules.
+    /// This method should be used instead of ToList() when a copy of the 
+    /// broken rules list is desired that 
     /// </summary>
-    /// <returns>A new <see cref="List{BrokenRule}"/> containing the broken rules at the time of the call.</returns>
-    public List<BrokenRule> ToThreadsafeList()
+    /// <returns>A new <see cref="ObservableCollection{BrokenRule}"/> containing the broken rules at the time of the call.</returns>
+    public ObservableCollection<BrokenRule> ToThreadsafeList()
     {
       lock (_syncRoot)
       {
-        return this.ToList();
+        return new ObservableCollection<BrokenRule>(this.AsEnumerable());
       }
     }
   }

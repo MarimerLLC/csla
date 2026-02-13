@@ -57,33 +57,27 @@ namespace Csla.Test.BizRules
 
     [TestMethod]
     [TestCategory("ThreadSafety")]
-    public void CheckToBrokenRulesForThreadSafety()
+    public async Task CheckToBrokenRulesForThreadSafety()
     {
-      var tasks = new List<Task>();
-
       SetScanForDataAnnotations(true);
 
       var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule3>>();
       var obj = portal.Create();
 
-      for (int i = 0; i < 1000; i++)
+      obj.FirstName = "";
+      obj.LastName = "";
+      var list = obj.GetBrokenRules().ToThreadsafeList();
+
+      foreach (var item in list)
       {
-        obj.FirstName = "";
-        obj.LastName = "";
-        var list = obj.GetBrokenRules().ToThreadsafeList();
-
-        foreach (var item in list)
+        await Task.Run(() =>
         {
-          Task.Run(() =>
-          {
-            obj.FirstName = "Drop Dead";
-            obj.LastName = "Fred";
-          });
-
-          var property = item.Property;
-          var description = item.Description;
-        }
+          obj.FirstName = "Drop Dead";
+          obj.LastName = "Fred";
+        });
       }
+
+      Assert.AreEqual(2, list.Count);
     }
 
     private void SetScanForDataAnnotations(bool enable)

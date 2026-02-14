@@ -164,7 +164,8 @@ This includes:
 * `Guid`
 * `byte[]`
 * `char[]`
-* `List<int>`
+
+> ⚠️ Standard .NET collection types such as `List<T>` and `Dictionary<K,V>` are _not_ directly serializable by `MobileFormatter`. If you need a serializable list or dictionary as a property, use `MobileList<T>` or `MobileDictionary<K,V>` from `Csla.Core`, or register a custom serializer for your type.
 
 If you look at the implementation of [PocoSerializer](https://github.com/MarimerLLC/csla/blob/main/Source/Csla/Serialization/Mobile/CustomSerializers/PocoSerializer.cs) you'll see that it relies on `System.Text.Json` to serialize and deserialize the object, and stores the JSON string in the `SerializationInfo` instance.
 

@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 
 namespace Csla.Test
 {
@@ -19,7 +19,7 @@ namespace Csla.Test
       _dbPath = Path.Combine(Path.GetTempPath(), $"CslaTest_{Guid.NewGuid():N}.db");
       ConnectionString = $"Data Source={_dbPath}";
 
-      using var connection = new SqliteConnection(ConnectionString);
+      using var connection = new SQLiteConnection(ConnectionString);
       connection.Open();
 
       // Table1: used by SafeDataReaderTests.TestSafeDataReader
@@ -76,7 +76,7 @@ namespace Csla.Test
       }
     }
 
-    private static void ExecuteNonQuery(SqliteConnection connection, string sql)
+    private static void ExecuteNonQuery(SQLiteConnection connection, string sql)
     {
       using var cmd = connection.CreateCommand();
       cmd.CommandText = sql;

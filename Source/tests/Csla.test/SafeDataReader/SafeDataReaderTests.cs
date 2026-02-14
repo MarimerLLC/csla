@@ -8,7 +8,7 @@
 
 using System.Globalization;
 using System.Data;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.SafeDataReader
@@ -28,7 +28,7 @@ namespace Csla.Test.SafeDataReader
 
     public void ClearDataBase()
     {
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
       using var cm = cn.CreateCommand();
       cm.CommandText = "DELETE FROM Table2";
@@ -38,7 +38,7 @@ namespace Csla.Test.SafeDataReader
     [TestMethod]
     public void CloseSafeDataReader()
     {
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
 
       using var cm = cn.CreateCommand();
@@ -55,7 +55,7 @@ namespace Csla.Test.SafeDataReader
     [TestMethod]
     public void TestFieldCount()
     {
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
 
       using var cm = cn.CreateCommand();
@@ -72,7 +72,7 @@ namespace Csla.Test.SafeDataReader
     [TestMethod]
     public void GetSchemaTable()
     {
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
       using var cm = cn.CreateCommand();
       DataTable dtSchema = null;
@@ -91,7 +91,7 @@ namespace Csla.Test.SafeDataReader
     [TestMethod]
     public void IsDBNull()
     {
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
       using var cm = cn.CreateCommand();
       cm.CommandText = "SELECT TEXT, BIGINTFIELD, IMAGEFIELD FROM MultiDataTypes";
@@ -106,7 +106,7 @@ namespace Csla.Test.SafeDataReader
     [TestMethod]
     public void GetDataTypes()
     {
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
       using var cm = cn.CreateCommand();
       cm.CommandText =
@@ -145,10 +145,10 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod]
-    [ExpectedException(typeof(SqliteException))]
+    [ExpectedException(typeof(SQLiteException))]
     public void ThrowSqlException()
     {
-      var cn = new SqliteConnection(CONNECTION_STRING);
+      var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
 
       using var cm = cn.CreateCommand();
@@ -162,7 +162,7 @@ namespace Csla.Test.SafeDataReader
     {
       List<string> list = new List<string>();
 
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
 
       using (var cm = cn.CreateCommand())

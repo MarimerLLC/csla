@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 
 namespace Csla.Test.DataPortal
 {
@@ -116,16 +116,16 @@ namespace Csla.Test.DataPortal
       BusinessRules.CheckRules();
     }
 
+    [Transactional(TransactionalTypes.TransactionScope)]
     [Insert]
     protected void DataPortal_Insert()
     {
-      using var cn = new SqliteConnection(WellKnownValues.DataPortalTestDatabase);
+      using var cn = new SQLiteConnection(WellKnownValues.DataPortalTestDatabase);
       string firstName = FirstName;
       string lastName = LastName;
       string smallColumn = SmallColumn;
 
       cn.Open();
-      using var transaction = cn.BeginTransaction();
 
       //this command will always execute successfully
       //since it inserts a string less than 5 characters
@@ -142,8 +142,6 @@ namespace Csla.Test.DataPortal
 
       cm1.ExecuteNonQuery();
       cm2.ExecuteNonQuery();
-
-      transaction.Commit();
 
       TestResults.Reinitialise();
       TestResults.Add("TransactionalRoot", "Inserted");

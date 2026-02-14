@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Test.DataBinding;
-using Microsoft.Data.Sqlite;
+using System.Data.SQLite;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
@@ -42,7 +42,7 @@ namespace Csla.Test.DataPortal
     private static string CONNECTION_STRING => WellKnownValues.DataPortalTestDatabase;
     public void ClearDataBase()
     {
-      using var cn = new SqliteConnection(CONNECTION_STRING);
+      using var cn = new SQLiteConnection(CONNECTION_STRING);
       cn.Open();
       using var cm = cn.CreateCommand();
       cm.CommandText = "DELETE FROM Table2";
@@ -61,7 +61,7 @@ namespace Csla.Test.DataPortal
 
       tr = tr.Save();
 
-      using (var cn = new SqliteConnection(CONNECTION_STRING))
+      using (var cn = new SQLiteConnection(CONNECTION_STRING))
       {
         cn.Open();
         using var cm = cn.CreateCommand();
@@ -90,7 +90,7 @@ namespace Csla.Test.DataPortal
 
       //within the DataPortal_Insert method, two commands are run to insert data into
       //the database. Here we verify that both commands have been rolled back
-      using (var cn = new SqliteConnection(CONNECTION_STRING))
+      using (var cn = new SQLiteConnection(CONNECTION_STRING))
       {
         cn.Open();
         using var cm = cn.CreateCommand();

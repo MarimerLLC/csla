@@ -568,7 +568,7 @@ namespace Csla.Reflection
                 }
                 else
                 {
-                  throw new InvalidOperationException("Service provider does not support keyed services.");
+                  throw new InvalidOperationException("Service provider must implement IKeyedServiceProvider to support keyed services.");
                 }
               }
               else

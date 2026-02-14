@@ -585,6 +585,7 @@ namespace Csla.Test.DataPortal
       var portal = _diContext.CreateDataPortal<KeyedServiceInjection>();
       
       // This should throw because the keyed service is required but not registered
+      // The exception will be wrapped in DataPortalException
       await FluentActions.Invoking(async () => await portal.CreateAsync())
         .Should().ThrowAsync<Exception>();
     }

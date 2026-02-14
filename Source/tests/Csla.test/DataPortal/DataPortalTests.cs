@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Test.DataBinding;
-using Microsoft.Data.SqlClient;
+using Microsoft.Data.Sqlite;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
@@ -19,7 +19,6 @@ using Csla.Testing.Business.DataPortal;
 using Csla.Server;
 using System.Security.Principal;
 using FluentAssertions.Execution;
-using System.ComponentModel; // added
 
 namespace Csla.Test.DataPortal
 {
@@ -40,30 +39,17 @@ namespace Csla.Test.DataPortal
       TestResults.Reinitialise();
     }
 
-    private static string CONNECTION_STRING = WellKnownValues.DataPortalTestDatabase;
+    private static string CONNECTION_STRING => WellKnownValues.DataPortalTestDatabase;
     public void ClearDataBase()
     {
-      SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-      SqlCommand cm = new SqlCommand("DELETE FROM Table2", cn);
-
-      try
-      {
-        cn.Open();
-        cm.ExecuteNonQuery();
-      }
-      catch (Exception)
-      {
-        //do nothing
-      }
-      finally
-      {
-        cn.Close();
-      }
+      using var cn = new SqliteConnection(CONNECTION_STRING);
+      cn.Open();
+      using var cm = cn.CreateCommand();
+      cm.CommandText = "DELETE FROM Table2";
+      cm.ExecuteNonQuery();
     }
 
-#if DEBUG
     [TestMethod]
-    [TestCategory("SkipOnCIServer")]
     public void TestTransactionScopeUpdate()
     {
       IDataPortal<TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<TransactionalRoot>();
@@ -73,35 +59,17 @@ namespace Csla.Test.DataPortal
       tr.LastName = "Johnson";
       tr.SmallColumn = "abc";
 
-      try
-      {
-        tr = tr.Save();
-      }
-      catch (Exception ex)
-      {
-        if (IsTransactionScopeEnvironmentUnavailable(ex))
-          Assert.Inconclusive("Skipping TransactionScope test: transactional infrastructure (MSDTC / distributed transactions) not available (0x89c5010a).");
-        throw;
-      }
+      tr = tr.Save();
 
-      SqlConnection cn = new SqlConnection(CONNECTION_STRING);
-      SqlCommand cm = new SqlCommand("SELECT * FROM Table2", cn);
-
-      try
+      using (var cn = new SqliteConnection(CONNECTION_STRING))
       {
         cn.Open();
-        SqlDataReader dr = cm.ExecuteReader();
+        using var cm = cn.CreateCommand();
+        cm.CommandText = "SELECT * FROM Table2";
+        using var dr = cm.ExecuteReader();
 
+        //will have rows since no exception was thrown on the insert
         Assert.AreEqual(true, dr.HasRows);
-        dr.Close();
-      }
-      catch (Exception)
-      {
-        //do nothing
-      }
-      finally
-      {
-        cn.Close();
       }
 
       ClearDataBase();
@@ -117,46 +85,23 @@ namespace Csla.Test.DataPortal
       }
       catch (Exception ex)
       {
-        if (IsTransactionScopeEnvironmentUnavailable(ex))
-          Assert.Inconclusive("Skipping TransactionScope test: transactional infrastructure (MSDTC / distributed transactions) not available (0x89c5010a).");
         Assert.IsTrue(ex.Message.StartsWith("DataPortal.Update failed"), "Invalid exception message");
       }
 
-      try
+      //within the DataPortal_Insert method, two commands are run to insert data into
+      //the database. Here we verify that both commands have been rolled back
+      using (var cn = new SqliteConnection(CONNECTION_STRING))
       {
         cn.Open();
-        SqlDataReader dr = cm.ExecuteReader();
+        using var cm = cn.CreateCommand();
+        cm.CommandText = "SELECT * FROM Table2";
+        using var dr = cm.ExecuteReader();
 
+        //should not have rows since both commands were rolled back
         Assert.AreEqual(false, dr.HasRows);
-        dr.Close();
-      }
-      catch (Exception)
-      {
-        //do nothing
-      }
-      finally
-      {
-        cn.Close();
       }
 
       ClearDataBase();
-    }
-#endif
-
-    private static bool IsTransactionScopeEnvironmentUnavailable(Exception ex)
-    {
-      // Walk inner exceptions to find Win32Exception 0x89c5010a
-      while (ex != null)
-      {
-        if (ex is Win32Exception w32)
-        {
-          if (w32.NativeErrorCode == unchecked((int)0x89c5010a) ||
-              w32.Message.Contains("0x89c5010a", StringComparison.OrdinalIgnoreCase))
-            return true;
-        }
-        ex = ex.InnerException;
-      }
-      return false;
     }
 
     [TestMethod]

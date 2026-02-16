@@ -162,6 +162,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -201,6 +202,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -274,6 +276,7 @@ namespace Csla.Channels.RabbitMq
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Delete(objectType, criteria, context, true);
 

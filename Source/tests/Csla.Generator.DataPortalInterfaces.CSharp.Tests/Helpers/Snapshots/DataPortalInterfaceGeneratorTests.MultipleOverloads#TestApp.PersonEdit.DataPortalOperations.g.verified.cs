@@ -4,7 +4,7 @@
 
 namespace TestApp
 {
-  public partial class PersonEdit : Csla.Server.IDataPortalOperationMapping
+  public partial class PersonEdit : Csla.Server.IDataPortalOperationMapping, Csla.Server.IDataPortalOperationNamedMapping
   {
     async global::System.Threading.Tasks.Task Csla.Server.IDataPortalOperationMapping.InvokeOperationAsync(
       global::System.Type operationType, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
@@ -23,6 +23,29 @@ namespace TestApp
         }
       }
       throw new Csla.Server.DataPortalOperationNotSupportedException(operationType, criteria);
+    }
+    
+    async global::System.Threading.Tasks.Task Csla.Server.IDataPortalOperationNamedMapping.InvokeNamedOperationAsync(
+      string operationName, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
+    {
+      switch (operationName)
+      {
+        case "Fetch__String":
+          if (criteria is { Length: 1 } && criteria[0] is string p0_string)
+          {
+            Fetch(p0_string);
+            return;
+          }
+          break;
+        case "Fetch__Int32":
+          if (criteria is { Length: 1 } && criteria[0] is int p0_int)
+          {
+            Fetch(p0_int);
+            return;
+          }
+          break;
+      }
+      throw new Csla.Server.DataPortalOperationNotSupportedException(operationName, criteria);
     }
   }
 }

@@ -28,9 +28,26 @@ namespace Csla.Server
     }
 
     /// <summary>
+    /// Creates a new instance of the exception for name-based dispatch.
+    /// </summary>
+    /// <param name="operationName">The operation name that was not matched</param>
+    /// <param name="criteria">The criteria that was not matched</param>
+    public DataPortalOperationNotSupportedException(string operationName, object?[]? criteria)
+      : base($"No generated dispatch found for operation '{operationName}' with {criteria?.Length ?? 0} criteria parameters.")
+    {
+      OperationName = operationName;
+      Criteria = criteria;
+    }
+
+    /// <summary>
     /// Gets the operation attribute type that was not matched.
     /// </summary>
     public Type? OperationType { get; }
+
+    /// <summary>
+    /// Gets the operation name that was not matched.
+    /// </summary>
+    public string? OperationName { get; }
 
     /// <summary>
     /// Gets the criteria that was not matched.

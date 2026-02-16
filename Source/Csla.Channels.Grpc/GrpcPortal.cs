@@ -131,10 +131,10 @@ namespace Csla.Channels.Grpc
     {
       return operation switch
       {
-        "create" => await Create((CriteriaRequest) request).ConfigureAwait(false),
-        "fetch" => await Fetch((CriteriaRequest) request).ConfigureAwait(false),
-        "update" => await Update((UpdateRequest) request).ConfigureAwait(false),
-        "delete" => await Delete((CriteriaRequest) request).ConfigureAwait(false),
+        "create" => await Create((CriteriaRequest)request).ConfigureAwait(false),
+        "fetch" => await Fetch((CriteriaRequest)request).ConfigureAwait(false),
+        "update" => await Update((UpdateRequest)request).ConfigureAwait(false),
+        "delete" => await Delete((CriteriaRequest)request).ConfigureAwait(false),
         _ => throw new InvalidOperationException(operation)
       };
     }
@@ -174,11 +174,6 @@ namespace Csla.Channels.Grpc
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {
@@ -223,11 +218,6 @@ namespace Csla.Channels.Grpc
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
       }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
-      }
       finally
       {
         result = ConvertResponse(result);
@@ -265,11 +255,6 @@ namespace Csla.Channels.Grpc
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
 
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {
@@ -313,11 +298,6 @@ namespace Csla.Channels.Grpc
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {

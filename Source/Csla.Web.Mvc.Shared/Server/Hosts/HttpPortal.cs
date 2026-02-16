@@ -5,13 +5,13 @@
 // </copyright>
 // <summary>Exposes server-side DataPortal functionality</summary>
 //-----------------------------------------------------------------------
-using Csla.Serialization.Mobile;
-using Csla.Core;
-using System.Security.Principal;
-using Csla.Serialization;
-using Csla.Server.Hosts.DataPortalChannel;
-using Csla.Properties;
 using System.Runtime.Serialization;
+using System.Security.Principal;
+using Csla.Core;
+using Csla.Properties;
+using Csla.Serialization;
+using Csla.Serialization.Mobile;
+using Csla.Server.Hosts.DataPortalChannel;
 
 namespace Csla.Server.Hosts
 {
@@ -71,11 +71,6 @@ namespace Csla.Server.Hosts
           result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
       }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
-        throw;
-      }
       finally
       {
         result = ConvertResponse(result);
@@ -119,11 +114,6 @@ namespace Csla.Server.Hosts
           result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
       }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
-        throw;
-      }
       finally
       {
         result = ConvertResponse(result);
@@ -161,11 +151,6 @@ namespace Csla.Server.Hosts
 
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
       }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
-        throw;
-      }
       finally
       {
         result = ConvertResponse(result);
@@ -197,7 +182,7 @@ namespace Csla.Server.Hosts
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext, 
+          _applicationContext,
           Deserialize<IPrincipal?>(request.Principal),
           true,
           request.ClientCulture,
@@ -209,11 +194,6 @@ namespace Csla.Server.Hosts
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstance<DataPortalErrorInfo>(_applicationContext, ex);
-        throw;
       }
       finally
       {

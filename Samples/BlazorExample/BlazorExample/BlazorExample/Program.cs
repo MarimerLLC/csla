@@ -18,7 +18,8 @@ builder.Services.AddHttpContextAccessor();
 // Add CSLA
 builder.Services.AddCsla(o => o
   .AddAspNetCore()
-  .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
+  .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false)
+  .DataPortal(o => o.AddServerSideDataPortal()));
 
 // configure DAL services for EF or Mock:
 
@@ -46,7 +47,7 @@ else
 
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseAntiforgery();
 
 app.MapControllers();

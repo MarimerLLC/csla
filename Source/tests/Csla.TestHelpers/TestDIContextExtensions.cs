@@ -6,6 +6,8 @@
 // <summary>Extension methods for the TestDIContext type</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
+
 namespace Csla.TestHelpers
 {
 
@@ -30,7 +32,7 @@ namespace Csla.TestHelpers
     /// </summary>
     /// <param name="context">The context from which configuration can be retrieved</param>
     /// <returns>An instance of IDataPortal<typeparamref name="T"/> for use in testing</returns>
-    public static IDataPortal<T> CreateDataPortal<T>(this TestDIContext context)
+    public static IDataPortal<T> CreateDataPortal<T>(this TestDIContext context) where T : ICslaObject
     {
       return DataPortalFactory.CreateDataPortal<T>(context);
     }
@@ -40,7 +42,7 @@ namespace Csla.TestHelpers
     /// </summary>
     /// <param name="context">The context from which configuration can be retrieved</param>
     /// <returns>An instance of IChildDataPortal<typeparamref name="T"/> for use in testing</returns>
-    public static IChildDataPortal<T> CreateChildDataPortal<T>(this TestDIContext context)
+    public static IChildDataPortal<T> CreateChildDataPortal<T>(this TestDIContext context) where T : ICslaObject
     {
       return DataPortalFactory.CreateChildDataPortal<T>(context);
     }

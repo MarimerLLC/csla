@@ -28,8 +28,6 @@ namespace ShortCircuitingRules.Rules
     public StopIfNotFieldExists(IPropertyInfo primaryProperty)
       : base(primaryProperty)
     {
-      if (InputProperties == null)
-        InputProperties = new List<IPropertyInfo>();
       InputProperties.Add(primaryProperty);
     }
 

@@ -2,14 +2,10 @@
 
 namespace RabbitMqBusiness;
 
-public class PersonEdit : BusinessBase<PersonEdit>
+[CslaImplementProperties]
+public partial class PersonEdit : BusinessBase<PersonEdit>
 {
-  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-  public string Name
-  {
-    get => GetProperty(NameProperty);
-    set => SetProperty(NameProperty, value);
-  }
+  public partial string Name { get; set; }
 
   [Create]
   private void Create() 

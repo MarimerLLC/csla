@@ -5,24 +5,15 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
-  public class ProjectCloser : CommandBase<ProjectCloser>
+  [CslaImplementProperties]
+  public partial class ProjectCloser : CommandBase<ProjectCloser>
   {
-    public static readonly PropertyInfo<int> ProjectIdProperty = RegisterProperty<int>(c => c.ProjectId);
-    public int ProjectId
-    {
-      get { return ReadProperty(ProjectIdProperty); }
-      private set { LoadProperty(ProjectIdProperty, value); }
-    }
+    public partial int ProjectId { get; private set; }
 
-    public static readonly PropertyInfo<bool> ClosedProperty = RegisterProperty<bool>(c => c.Closed);
-    public bool Closed
-    {
-      get { return ReadProperty(ClosedProperty); }
-      private set { LoadProperty(ClosedProperty, value); }
-    }
+    public partial bool Closed { get; private set; }
 
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [ObjectAuthorizationRules]
     public static void AddObjectAuthorizationRules()
     {
       Csla.Rules.BusinessRules.AddRule(
@@ -40,7 +31,7 @@ namespace ProjectTracker.Library
     [Execute]
     private void Execute([Inject] IProjectDal dal)
     {
-      var data = dal.Fetch(ProjectId);
+      var data = dal.Fetch(ProjectId) ?? throw new DataNotFoundException("Project");
       if (data.Ended.HasValue)
         throw new InvalidOperationException("Project already closed");
       data.Ended = DateTime.Today;

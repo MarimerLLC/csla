@@ -184,6 +184,7 @@ namespace Csla.AspNetCore.Blazor
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
       session[_localContextName] = localContext;
+      session.Touch();
     }
 
     /// <summary>
@@ -222,6 +223,7 @@ namespace Csla.AspNetCore.Blazor
       var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
       var session = sessionManager.GetSession();
       session[_clientContextName] = clientContext;
+      session.Touch();
     }
 
     /// <summary>

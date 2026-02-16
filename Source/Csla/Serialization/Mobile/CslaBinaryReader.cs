@@ -95,55 +95,12 @@ namespace Csla.Serialization.Mobile
             var obj = formatter.Deserialize(arrayBuffer);
             return obj;
           }
-        case CslaKnownTypes.Boolean:
-          return reader.ReadBoolean();
-        case CslaKnownTypes.Char:
-          return reader.ReadChar();
-        case CslaKnownTypes.SByte:
-          return reader.ReadSByte();
-        case CslaKnownTypes.Byte:
-          return reader.ReadByte();
-        case CslaKnownTypes.Int16:
-          return reader.ReadInt16();
-        case CslaKnownTypes.UInt16:
-          return reader.ReadUInt16();
-        case CslaKnownTypes.Int32:
-          return reader.ReadInt32();
-        case CslaKnownTypes.UInt32:
-          return reader.ReadUInt32();
-        case CslaKnownTypes.Int64:
-          return reader.ReadInt64();
-        case CslaKnownTypes.UInt64:
-          return reader.ReadUInt64();
-        case CslaKnownTypes.Single:
-          return reader.ReadSingle();
-        case CslaKnownTypes.Double:
-          return reader.ReadDouble();
-        case CslaKnownTypes.Decimal:
-          var decimalBits = new int[4];
-          for (var counter = 0; counter < 4; counter++)
-          {
-            decimalBits[counter] = reader.ReadInt32();
-          }
-          return new decimal(decimalBits);
-        case CslaKnownTypes.DateTime:
-          return new DateTime(reader.ReadInt64());
-        case CslaKnownTypes.TimeSpan:
-          return new TimeSpan(reader.ReadInt64());
-        case CslaKnownTypes.DateTimeOffset:
-          return new DateTimeOffset(reader.ReadInt64(), new TimeSpan(reader.ReadInt64()));
-        case CslaKnownTypes.Guid:
-          return new Guid(reader.ReadBytes(16));  // 16 bytes in a Guid
-        case CslaKnownTypes.ByteArray:
-          return reader.ReadBytes(reader.ReadInt32());
         case CslaKnownTypes.ByteArrayArray:
           var count = reader.ReadInt32();
           var result = new byte[count][];
           for (int i = 0; i < count; i++)
             result[i] = reader.ReadBytes(reader.ReadInt32());
           return result;
-        case CslaKnownTypes.CharArray:
-          return reader.ReadChars(reader.ReadInt32());
         case CslaKnownTypes.ListOfInt:
           var total = reader.ReadInt32();
           var buffer = new int[total];
@@ -152,20 +109,12 @@ namespace Csla.Serialization.Mobile
             buffer[counter] = reader.ReadInt32();
           }
           return new List<int>(buffer);
-        case CslaKnownTypes.Null:
-          return null;
-        case CslaKnownTypes.String:
         case CslaKnownTypes.StringWithDictionaryKey:
         case CslaKnownTypes.StringDictionaryKey:
           return ReadString(reader, knownType);
-#if NET8_0_OR_GREATER
-        case CslaKnownTypes.DateOnly:
-          return DateOnly.FromDateTime(new DateTime(reader.ReadInt64()));
-        case CslaKnownTypes.TimeOnly:
-          return new TimeOnly(reader.ReadInt64());
-#endif
         default:
-          throw new ArgumentOutOfRangeException(Resources.UnandledKNownTypeException);
+          // Use shared helper for primitive types
+          return BinaryValueHelper.ReadValue(reader, knownType);
       }
     }
   }

@@ -8,7 +8,7 @@ namespace ProjectTracker.Dal
   public class RoleDto
   {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public byte[] LastChanged { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public byte[] LastChanged { get; set; } = Array.Empty<byte>();
   }
 }

@@ -20,9 +20,9 @@ namespace WpfExample.Pages
       InitializeComponent();
     }
 
-    public object Context { get; set; }
-    private IDataPortal<PersonEdit> _portal;
-    private ViewModel<PersonEdit> ViewModel;
+    public object? Context { get; set; }
+    private readonly IDataPortal<PersonEdit> _portal;
+    private readonly ViewModel<PersonEdit> ViewModel;
 
     private async void UserControl_Loaded(object sender, RoutedEventArgs e)
     {

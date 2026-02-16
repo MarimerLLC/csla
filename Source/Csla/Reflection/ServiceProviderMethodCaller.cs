@@ -553,11 +553,40 @@ namespace Csla.Reflection
             {
               throw new NullReferenceException(nameof(service));
             }
-            // Use GetService for optional (allows null) or GetRequiredService for required (throws if not registered)
-            plist[index] = method.AllowNull[index]
-              ? service.GetService(item.ParameterType)
-              : service.GetRequiredService(item.ParameterType);
-
+            
+            var serviceKey = method.ServiceKeys[index];
+            if (serviceKey != null)
+            {
+#if NET8_0_OR_GREATER
+              // Use keyed service injection for .NET 8+
+              if (method.AllowNull[index])
+              {
+                // For optional keyed services, cast to IKeyedServiceProvider
+                if (service is IKeyedServiceProvider keyedProvider)
+                {
+                  plist[index] = keyedProvider.GetKeyedService(item.ParameterType, serviceKey);
+                }
+                else
+                {
+                  throw new InvalidOperationException("Service provider must implement IKeyedServiceProvider to support keyed services.");
+                }
+              }
+              else
+              {
+                // For required keyed services, use extension method
+                plist[index] = service.GetRequiredKeyedService(item.ParameterType, serviceKey);
+              }
+#else
+              throw new NotSupportedException("Keyed service injection is only supported on .NET 8.0 or higher.");
+#endif
+            }
+            else
+            {
+              // Use GetService for optional (allows null) or GetRequiredService for required (throws if not registered)
+              plist[index] = method.AllowNull[index]
+                ? service.GetService(item.ParameterType)
+                : service.GetRequiredService(item.ParameterType);
+            }
           }
           else
           {

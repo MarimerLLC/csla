@@ -96,7 +96,7 @@ ERLB exists to address one very specific set of requirements: a list of root obj
 
 ## Keeping private fields in a list object?
 
-You should not try to maintain private fields (or public properties) in a BusinessListBase or ReadOnlyListBase object. The serializer used for Silverlight and WP7 won't serialize your property values, and there is no field manager to help you in any list base classes.
+You should not try to maintain private fields (or public properties) in a BusinessListBase or ReadOnlyListBase object. The serializer won't serialize your property values, and there is no field manager to help you in any list base classes.
 
 The recommended solution is to have a parent class that contains the list, and put your fields/properties in that class. [This thread](https://cslanet.com/old-forum/9828.html) has more information.
 

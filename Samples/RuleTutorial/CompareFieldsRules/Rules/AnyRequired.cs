@@ -12,7 +12,7 @@ namespace CompareFieldsRules.Rules
     public AnyRequired(IPropertyInfo primaryProperty, params IPropertyInfo[] additionalProperties)
       : base(primaryProperty)
     {
-      InputProperties = new List<IPropertyInfo>() {primaryProperty};
+      InputProperties.Add(primaryProperty);
       InputProperties.AddRange(additionalProperties);
       this.RuleUri.AddQueryParameter("any", string.Join(",", additionalProperties.Select(p => p.Name).ToArray()));
     }
@@ -25,13 +25,14 @@ namespace CompareFieldsRules.Rules
     protected override void Execute(IRuleContext context)
     {
       // if all values are Null or Empty
-      if (context.InputPropertyValues.Select(keyvalue => keyvalue.Value.ToString().Trim()).All(string.IsNullOrEmpty))
+      if (context.InputPropertyValues.Select(keyvalue => keyvalue.Value?.ToString()?.Trim()).All(string.IsNullOrEmpty))
       {
         var fieldNames = string.Join(", ", context.InputPropertyValues.Select(p =>p.Key.FriendlyName));
+        var message = string.Format(GetMessage(), fieldNames);
 
         foreach (var field in context.InputPropertyValues)
         {
-          context.Results.Add(new RuleResult(this.RuleName, field.Key, string.Format(GetMessage(), fieldNames)) { Severity = this.Severity });
+          context.AddErrorResult(field.Key, message);
         }
       }
     }

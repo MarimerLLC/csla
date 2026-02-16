@@ -1,5 +1,4 @@
-using Csla;
-using System;
+﻿using Csla;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
 using Csla.Rules;
@@ -7,37 +6,22 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library.Admin
 {
-  [Serializable]
-  public class RoleEdit : BusinessBase<RoleEdit>
+  [CslaImplementProperties]
+  public partial class RoleEdit : BusinessBase<RoleEdit>
   {
     public RoleEdit()
     {
       MarkAsChild();
     }
 
-    public readonly static PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      private set { LoadProperty(IdProperty, value); }
-    }
+    public partial int Id { get; private set; }
 
-    public readonly static PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]
-    public string Name
-    {
-      get { return GetProperty(NameProperty); }
-      set { SetProperty(NameProperty, value); }
-    }
+    public partial string Name { get; set; }
 
-    public readonly static PropertyInfo<byte[]> TimeStampProperty = RegisterProperty<byte[]>(nameof(TimeStamp));
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public byte[] TimeStamp
-    {
-      get { return GetProperty(TimeStampProperty); }
-      set { SetProperty(TimeStampProperty, value); }
-    }
+    public partial byte[] TimeStamp { get; set; }
 
     protected override void AddBusinessRules()
     {
@@ -53,15 +37,17 @@ namespace ProjectTracker.Library.Admin
     {
       protected override void Execute(Csla.Rules.IRuleContext context)
       {
-        var target = (RoleEdit)context.Target;
-        RoleEditList parent = (RoleEditList)target.Parent;
-        if (parent != null)
-          foreach (RoleEdit item in parent)
-            if (item.Id == target.ReadProperty(IdProperty) && !(ReferenceEquals(item, target)))
-            {
-              context.AddErrorResult("Role Id must be unique");
-              break;
-            }
+        if (context.Target is not RoleEdit target)
+          return;
+        if (target.Parent is not RoleEditList parent)
+          return;
+
+        foreach (RoleEdit item in parent)
+          if (item.Id == target.ReadProperty(IdProperty) && !ReferenceEquals(item, target))
+          {
+            context.AddErrorResult("Role Id must be unique");
+            break;
+          }
       }
     }
 
@@ -77,8 +63,8 @@ namespace ProjectTracker.Library.Admin
       using (BypassPropertyChecks)
       {
         Id = data.Id;
-        Name = data.Name;
-        TimeStamp = data.LastChanged;
+        Name = data.Name ?? string.Empty;
+        TimeStamp = data.LastChanged ?? [];
       }
     }
 
@@ -93,7 +79,7 @@ namespace ProjectTracker.Library.Admin
         };
         dal.Insert(item);
         Id = item.Id;
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 
@@ -110,7 +96,7 @@ namespace ProjectTracker.Library.Admin
         };
         dal.Update(item);
         Id = item.Id;
-        TimeStamp = item.LastChanged;
+        TimeStamp = item.LastChanged ?? [];
       }
     }
 

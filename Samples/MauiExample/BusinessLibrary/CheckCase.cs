@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 namespace BusinessLibrary
 {
   using Csla.Rules;
@@ -14,7 +11,7 @@ namespace BusinessLibrary
 
     protected override void Execute(IRuleContext context)
     {
-      var text = (string)ReadProperty(context.Target, PrimaryProperty);
+      var text = (string?)ReadProperty(context.Target!, PrimaryProperty!);
       if (string.IsNullOrWhiteSpace(text)) return;
       var ideal = text.Substring(0, 1).ToUpper();
       ideal += text.Substring(1).ToLower();

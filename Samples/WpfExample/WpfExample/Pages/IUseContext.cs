@@ -2,6 +2,6 @@
 {
   public interface IUseContext
   {
-    object Context { get; set; }
+    object? Context { get; set; }
   }
 }

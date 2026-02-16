@@ -299,6 +299,26 @@ namespace Csla.Core
       MarkDirty();
     }
 
+    /// <inheritdoc />
+    protected override void OnGetMetastate(System.IO.BinaryWriter writer)
+    {
+      base.OnGetMetastate(writer);
+      writer.Write(IsNew);
+      writer.Write(IsDeleted);
+      writer.Write(_isDirty);
+      writer.Write(_isChild);
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetMetastate(System.IO.BinaryReader reader)
+    {
+      base.OnSetMetastate(reader);
+      IsNew = reader.ReadBoolean();
+      IsDeleted = reader.ReadBoolean();
+      _isDirty = reader.ReadBoolean();
+      _isChild = reader.ReadBoolean();
+    }
+
     /// <summary>
     /// Marks an object as being dirty, or changed.
     /// </summary>

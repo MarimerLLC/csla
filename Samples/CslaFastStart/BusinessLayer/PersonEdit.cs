@@ -5,36 +5,20 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLayer
 {
-  [Serializable]
-  public class PersonEdit : BusinessBase<PersonEdit>
+  [CslaImplementProperties]
+  public partial class PersonEdit : BusinessBase<PersonEdit>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      private set { LoadProperty(IdProperty, value); }
-    }
+    public partial int Id { get; private set; }
 
-    public static readonly PropertyInfo<string> FirstNameProperty = RegisterProperty<string>(c => c.FirstName);
     [Required]
-    public string FirstName
-    {
-      get { return GetProperty(FirstNameProperty); }
-      set { SetProperty(FirstNameProperty, value); }
-    }
+    public partial string FirstName { get; set; }
 
-    public static readonly PropertyInfo<string> LastNameProperty = RegisterProperty<string>(c => c.LastName);
     [Required]
-    public string LastName
-    {
-      get { return GetProperty(LastNameProperty); }
-      set { SetProperty(LastNameProperty, value); }
-    }
+    public partial string LastName { get; set; }
 
     [Create]
-    private void Create()
+    private void Create([Inject] PersonDal dal)
     {
-      var dal = new PersonDal();
       var dto = dal.Create();
       using (BypassPropertyChecks)
       {
@@ -46,9 +30,8 @@ namespace BusinessLayer
     }
 
     [Fetch]
-    private void Fetch(int id)
+    private void Fetch(int id, [Inject] PersonDal dal)
     {
-      var dal = new PersonDal();
       var dto = dal.GetPerson(id);
       using (BypassPropertyChecks)
       {
@@ -59,9 +42,8 @@ namespace BusinessLayer
     }
 
     [Insert]
-    private void Insert()
+    private void Insert([Inject] PersonDal dal)
     {
-      var dal = new PersonDal();
       using (BypassPropertyChecks)
       {
         var dto = new PersonDto
@@ -74,9 +56,8 @@ namespace BusinessLayer
     }
 
     [Update]
-    private void Update()
+    private void Update([Inject] PersonDal dal)
     {
-      var dal = new PersonDal();
       using (BypassPropertyChecks)
       {
         var dto = new PersonDto
@@ -90,9 +71,8 @@ namespace BusinessLayer
     }
 
     [Delete]
-    private void Delete(int id)
+    private void Delete(int id, [Inject] PersonDal dal)
     {
-      var dal = new PersonDal();
       using (BypassPropertyChecks)
       {
         dal.DeletePerson(id);
@@ -100,9 +80,12 @@ namespace BusinessLayer
     }
 
     [DeleteSelf]
-    private void DeleteSelf()
+    private void DeleteSelf([Inject] PersonDal dal)
     {
-      Delete(Id);
+      using (BypassPropertyChecks)
+      {
+        dal.DeletePerson(Id);
+      }
     }
   }
 }

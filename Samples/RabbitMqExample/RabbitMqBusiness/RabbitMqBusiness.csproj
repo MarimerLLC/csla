@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Source\Csla\Csla.csproj" />
+    <PackageReference Include="Csla" />
+    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" />
   </ItemGroup>
 
 </Project>

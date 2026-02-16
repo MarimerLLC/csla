@@ -4,7 +4,7 @@
 
 namespace TestApp
 {
-  public partial class LineItem : Csla.Server.IDataPortalOperationMapping
+  public partial class LineItem : Csla.Server.IDataPortalOperationMapping, Csla.Server.IDataPortalOperationNamedMapping
   {
     async global::System.Threading.Tasks.Task Csla.Server.IDataPortalOperationMapping.InvokeOperationAsync(
       global::System.Type operationType, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
@@ -53,6 +53,53 @@ namespace TestApp
         }
       }
       throw new Csla.Server.DataPortalOperationNotSupportedException(operationType, criteria);
+    }
+    
+    async global::System.Threading.Tasks.Task Csla.Server.IDataPortalOperationNamedMapping.InvokeNamedOperationAsync(
+      string operationName, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
+    {
+      switch (operationName)
+      {
+        case "CreateChild":
+          if (criteria is null or { Length: 0 })
+          {
+            CreateChild();
+            return;
+          }
+          break;
+        case "FetchChild__Int32":
+          if (criteria is { Length: 1 } && criteria[0] is int p0_int)
+          {
+            FetchChild(p0_int);
+            return;
+          }
+          break;
+        case "InsertChild":
+          if (criteria is null or { Length: 0 })
+          {
+            var dal = (global::TestApp.IDal)(serviceProvider.GetService(typeof(global::TestApp.IDal)) ?? throw new global::System.InvalidOperationException($"No service for type '{typeof(global::TestApp.IDal)}' has been registered."));
+            await InsertChild(dal).ConfigureAwait(false);
+            return;
+          }
+          break;
+        case "UpdateChild":
+          if (criteria is null or { Length: 0 })
+          {
+            var dal = (global::TestApp.IDal)(serviceProvider.GetService(typeof(global::TestApp.IDal)) ?? throw new global::System.InvalidOperationException($"No service for type '{typeof(global::TestApp.IDal)}' has been registered."));
+            await UpdateChild(dal).ConfigureAwait(false);
+            return;
+          }
+          break;
+        case "DeleteSelfChild":
+          if (criteria is null or { Length: 0 })
+          {
+            var dal = (global::TestApp.IDal)(serviceProvider.GetService(typeof(global::TestApp.IDal)) ?? throw new global::System.InvalidOperationException($"No service for type '{typeof(global::TestApp.IDal)}' has been registered."));
+            await DeleteSelfChild(dal).ConfigureAwait(false);
+            return;
+          }
+          break;
+      }
+      throw new Csla.Server.DataPortalOperationNotSupportedException(operationName, criteria);
     }
   }
 }

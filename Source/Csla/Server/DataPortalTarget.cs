@@ -28,6 +28,7 @@ namespace Csla.Server
 
     private readonly IDataPortalTarget? _target;
     private readonly IDataPortalOperationMapping? _operationMapping;
+    private readonly IDataPortalOperationNamedMapping? _namedMapping;
     private readonly ApplicationContext _applicationContext;
     private readonly TimeSpan _waitForIdleTimeout;
     private readonly DataPortalMethodNames _methodNames;
@@ -37,6 +38,7 @@ namespace Csla.Server
     {
       _target = obj as IDataPortalTarget;
       _operationMapping = obj as IDataPortalOperationMapping;
+      _namedMapping = obj as IDataPortalOperationNamedMapping;
       _applicationContext = applicationContext;
       _waitForIdleTimeout = TimeSpan.FromSeconds(cslaOptions.DefaultWaitForIdleTimeoutInSeconds);
 
@@ -155,16 +157,36 @@ namespace Csla.Server
         CallMethodIfImplemented("MarkOld");
     }
 
-    private async Task InvokeOperationAsync<T>(object criteria, bool isSync)
+    private async Task InvokeOperationAsync<T>(object criteria, bool isSync, string? operationName = null)
       where T : DataPortalOperationAttribute
     {
+      var criteriaArray = DataPortal.GetCriteriaArray(criteria);
+
+      // Try name-based dispatch first
+      if (operationName != null && _namedMapping != null)
+      {
+        try
+        {
+          var serviceProvider = _applicationContext.CurrentServiceProvider;
+          await _namedMapping.InvokeNamedOperationAsync(
+            operationName, isSync, criteriaArray, serviceProvider
+          ).ConfigureAwait(false);
+          return;
+        }
+        catch (DataPortalOperationNotSupportedException)
+        {
+          // Fall through to criteria-based path
+        }
+      }
+
+      // Try criteria-based dispatch
       if (_operationMapping != null)
       {
         try
         {
           var serviceProvider = _applicationContext.CurrentServiceProvider;
           await _operationMapping.InvokeOperationAsync(
-            typeof(T), isSync, DataPortal.GetCriteriaArray(criteria), serviceProvider
+            typeof(T), isSync, criteriaArray, serviceProvider
           ).ConfigureAwait(false);
           return;
         }
@@ -173,7 +195,8 @@ namespace Csla.Server
           // Fall through to reflection path
         }
       }
-      object?[] parameters = DataPortal.GetCriteriaArray(criteria)!;
+
+      object?[] parameters = criteriaArray!;
       await CallMethodTryAsyncDI<T>(isSync, parameters).ConfigureAwait(false);
     }
 
@@ -198,9 +221,9 @@ namespace Csla.Server
       await CallMethodTryAsyncDI<T>(false, parameters).ConfigureAwait(false);
     }
 
-    public Task CreateAsync(object criteria, bool isSync)
+    public Task CreateAsync(object criteria, bool isSync, string? operationName = null)
     {
-      return InvokeOperationAsync<CreateAttribute>(criteria, isSync);
+      return InvokeOperationAsync<CreateAttribute>(criteria, isSync, operationName);
     }
 
     public Task CreateChildAsync(params object?[]? parameters)
@@ -208,9 +231,9 @@ namespace Csla.Server
       return InvokeChildOperationAsync<CreateChildAttribute>(parameters);
     }
 
-    public Task FetchAsync(object criteria, bool isSync)
+    public Task FetchAsync(object criteria, bool isSync, string? operationName = null)
     {
-      return InvokeOperationAsync<FetchAttribute>(criteria, isSync);
+      return InvokeOperationAsync<FetchAttribute>(criteria, isSync, operationName);
     }
 
     public Task FetchChildAsync(params object?[]? parameters)
@@ -218,9 +241,9 @@ namespace Csla.Server
       return InvokeChildOperationAsync<FetchChildAttribute>(parameters);
     }
 
-    public Task ExecuteAsync(object criteria, bool isSync)
+    public Task ExecuteAsync(object criteria, bool isSync, string? operationName = null)
     {
-      return InvokeOperationAsync<ExecuteAttribute>(criteria, isSync);
+      return InvokeOperationAsync<ExecuteAttribute>(criteria, isSync, operationName);
     }
 
     public async Task UpdateAsync(bool isSync)
@@ -232,7 +255,7 @@ namespace Csla.Server
           if (!busObj.IsNew)
           {
             // tell the object to delete itself
-            await InvokeOperationAsync<DeleteSelfAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
+            await InvokeOperationAsync<DeleteSelfAttribute>(EmptyCriteria.Instance, isSync, "DeleteSelf").ConfigureAwait(false);
           }
           MarkNew();
         }
@@ -241,12 +264,12 @@ namespace Csla.Server
           if (busObj.IsNew)
           {
             // tell the object to insert itself
-            await InvokeOperationAsync<InsertAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
+            await InvokeOperationAsync<InsertAttribute>(EmptyCriteria.Instance, isSync, "Insert").ConfigureAwait(false);
           }
           else
           {
             // tell the object to update itself
-            await InvokeOperationAsync<UpdateAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
+            await InvokeOperationAsync<UpdateAttribute>(EmptyCriteria.Instance, isSync, "Update").ConfigureAwait(false);
           }
           MarkOld();
         }
@@ -256,7 +279,7 @@ namespace Csla.Server
         // this is an updatable collection or some other
         // non-BusinessBase type of object
         // tell the object to update itself
-        await InvokeOperationAsync<UpdateAttribute>(EmptyCriteria.Instance, isSync).ConfigureAwait(false);
+        await InvokeOperationAsync<UpdateAttribute>(EmptyCriteria.Instance, isSync, "Update").ConfigureAwait(false);
         MarkOld();
       }
     }
@@ -308,12 +331,12 @@ namespace Csla.Server
 
     public Task ExecuteAsync(bool isSync)
     {
-      return InvokeOperationAsync<ExecuteAttribute>(EmptyCriteria.Instance, isSync);
+      return InvokeOperationAsync<ExecuteAttribute>(EmptyCriteria.Instance, isSync, "Execute");
     }
 
-    public Task DeleteAsync(object criteria, bool isSync)
+    public Task DeleteAsync(object criteria, bool isSync, string? operationName = null)
     {
-      return InvokeOperationAsync<DeleteAttribute>(criteria, isSync);
+      return InvokeOperationAsync<DeleteAttribute>(criteria, isSync, operationName);
     }
 
 #if NET8_0_OR_GREATER

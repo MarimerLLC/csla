@@ -51,6 +51,12 @@ namespace Csla.Server
     /// </summary>
     public string ClientUICulture { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the operation name for name-based dispatch.
+    /// Null when sent from legacy clients.
+    /// </summary>
+    public string? OperationName { get; set; }
+
     internal IContextDictionary? ClientContext { get; private set; }
 
     /// <summary>
@@ -148,6 +154,7 @@ namespace Csla.Server
       info.AddValue("clientCulture", ClientCulture);
       info.AddValue("clientUICulture", ClientUICulture);
       info.AddValue("isRemotePortal", IsRemotePortal);
+      info.AddValue("operationName", OperationName);
     }
 
     void Serialization.Mobile.IMobileObject.GetChildren(Serialization.Mobile.SerializationInfo info, Serialization.Mobile.MobileFormatter formatter)
@@ -161,6 +168,7 @@ namespace Csla.Server
       ClientCulture = info.GetValue<string>("clientCulture")!;
       ClientUICulture = info.GetValue<string>("clientUICulture")!;
       IsRemotePortal = info.GetValue<bool>("isRemotePortal");
+      OperationName = info.GetValue<string>("operationName");
     }
 
     void Serialization.Mobile.IMobileObject.SetChildren(Serialization.Mobile.SerializationInfo info, Serialization.Mobile.MobileFormatter formatter)

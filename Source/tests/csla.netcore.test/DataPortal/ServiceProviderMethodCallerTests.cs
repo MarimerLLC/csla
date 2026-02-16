@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System.Reflection;
+using Csla.Configuration;
 using Csla.Reflection;
 using Csla.TestHelpers;
 using FluentAssertions;
@@ -503,6 +504,44 @@ namespace Csla.Test.DataPortal
       // The exception might be wrapped in other exceptions from the data portal
       await FluentActions.Invoking(async () => await portal.CreateAsync())
         .Should().ThrowAsync<Exception>();
+    }
+
+    [TestMethod]
+    public void FindLegacyMethod_DefaultEnabled_FindsLegacyFallback()
+    {
+      // With default settings (legacy enabled), a subclass of a base with private [Execute]
+      // should fall back to the legacy DataPortal_Execute method
+      var method = _systemUnderTest.FindDataPortalMethod<ExecuteAttribute>(typeof(LegacyFallbackConcrete), null);
+
+      method.Should().NotBeNull();
+      method.MethodInfo.Name.Should().Be("DataPortal_Execute");
+    }
+
+    [TestMethod]
+    public void FindLegacyMethod_Disabled_FindsAttributedMethodInstead()
+    {
+      // With legacy disabled, a subclass of a base with private [Execute]
+      // should find the attributed Execute method via recursion, not the legacy DataPortal_Execute
+      var diContext = TestDIContextFactory.CreateContext(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false));
+      var caller = diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+
+      var found = caller.TryFindDataPortalMethod<ExecuteAttribute>(typeof(LegacyDisabledConcrete), null, out var method);
+
+      found.Should().BeTrue();
+      method!.MethodInfo.Name.Should().Be("Execute");
+    }
+
+    [TestMethod]
+    public void FindLegacyOnlyMethod_Disabled_NoFallback()
+    {
+      // A class using only DataPortal_Create (no attributes) should not be found when legacy is disabled
+      var diContext = TestDIContextFactory.CreateContext(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false));
+      var caller = diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+
+      var found = caller.TryFindDataPortalMethod<CreateAttribute>(typeof(LegacyOnlyCreate), null, out var method);
+
+      found.Should().BeFalse();
+      method.Should().BeNull();
     }
 
 #if NET8_0_OR_GREATER
@@ -1003,6 +1042,44 @@ namespace Csla.Test.DataPortal
       {
         Data = requiredService.GetData();
       }
+    }
+  }
+
+  public class LegacyFallbackBase<T> : CommandBase<T>
+    where T : CommandBase<T>
+  {
+    [Execute]
+    private void Execute()
+    { }
+
+    protected virtual void DataPortal_Execute()
+    { }
+  }
+
+  public class LegacyFallbackConcrete : LegacyFallbackBase<LegacyFallbackConcrete>
+  {
+  }
+
+  public class LegacyDisabledBase<T> : CommandBase<T>
+    where T : CommandBase<T>
+  {
+    [Execute]
+    private void Execute()
+    { }
+
+    protected virtual void DataPortal_Execute()
+    { }
+  }
+
+  public class LegacyDisabledConcrete : LegacyDisabledBase<LegacyDisabledConcrete>
+  {
+  }
+
+  public class LegacyOnlyCreate : BusinessBase<LegacyOnlyCreate>
+  {
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
     }
   }
 

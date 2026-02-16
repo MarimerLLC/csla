@@ -13,6 +13,7 @@ using System.Runtime.Loader;
 
 using Csla.Runtime;
 #endif
+using Csla.Configuration;
 using Csla.Properties;
 using Csla.Server;
 using System.Diagnostics.CodeAnalysis;
@@ -117,9 +118,12 @@ namespace Csla.Reflection
       var activator = _applicationContext.GetRequiredService<IDataPortalActivator>();
       targetType = activator.ResolveType(targetType);
 
+      var cslaOptions = _applicationContext.GetRequiredService<CslaOptions>();
+      var useLegacyMethods = cslaOptions.DataPortalOptions.UseLegacyOperationMethods;
+
       var typeOfOperation = typeof(T);
 
-      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
+      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, useLegacyMethods);
 
 #if NET8_0_OR_GREATER
       if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
@@ -203,7 +207,7 @@ namespace Csla.Reflection
         }
 
         // if no attribute-based methods found, look for legacy methods
-        if (!candidates.Any())
+        if (!candidates.Any() && useLegacyMethods)
         {
           var attributeName = typeOfOperation.Name.Substring(0, typeOfOperation.Name.IndexOf("Attribute"));
           var methodName = attributeName.Contains("Child") ?
@@ -427,9 +431,10 @@ namespace Csla.Reflection
       return 0;
     }
 
-    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria)
+    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, bool useLegacyMethods)
     {
-      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}";
+      var legacy = useLegacyMethods ? "" : "|nolegacy";
+      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{legacy}";
     }
 
     private static string GetCriteriaTypeNames(object?[]? criteria)

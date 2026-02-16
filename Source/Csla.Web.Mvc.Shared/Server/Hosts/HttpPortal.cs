@@ -64,6 +64,7 @@ namespace Csla.Server.Hosts
           request.ClientCulture,
           request.ClientUICulture,
           DeserializeRequired<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -107,6 +108,7 @@ namespace Csla.Server.Hosts
           request.ClientCulture,
           request.ClientUICulture,
           DeserializeRequired<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -188,6 +190,7 @@ namespace Csla.Server.Hosts
           request.ClientCulture,
           request.ClientUICulture,
           DeserializeRequired<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 

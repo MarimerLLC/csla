@@ -65,7 +65,8 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest(criteria);
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
-        
+        request.OperationName = context.OperationName;
+
         request = ConvertRequest(request);
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
         serialized = await CallDataPortalServer(serialized, "create", GetRoutingToken(objectType), isSync).ConfigureAwait(false);
@@ -114,6 +115,7 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest(criteria);
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
+        request.OperationName = context.OperationName;
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);
@@ -212,6 +214,7 @@ namespace Csla.DataPortalClient
       {
         var request = GetBaseCriteriaRequest(criteria);
         request.TypeName = AssemblyNameTranslator.GetAssemblyQualifiedName(objectType.AssemblyQualifiedName!);
+        request.OperationName = context.OperationName;
         request = ConvertRequest(request);
 
         var serialized = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(request);

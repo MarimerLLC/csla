@@ -168,6 +168,7 @@ namespace Csla.Channels.Grpc
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
 
@@ -211,6 +212,7 @@ namespace Csla.Channels.Grpc
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
 
@@ -292,6 +294,7 @@ namespace Csla.Channels.Grpc
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
 

@@ -4,7 +4,7 @@
 
 namespace TestApp
 {
-  public partial class PersonEdit : Csla.Server.IDataPortalOperationMapping
+  public partial class PersonEdit : Csla.Server.IDataPortalOperationMapping, Csla.Server.IDataPortalOperationNamedMapping
   {
     async global::System.Threading.Tasks.Task Csla.Server.IDataPortalOperationMapping.InvokeOperationAsync(
       global::System.Type operationType, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
@@ -19,6 +19,23 @@ namespace TestApp
         }
       }
       throw new Csla.Server.DataPortalOperationNotSupportedException(operationType, criteria);
+    }
+    
+    async global::System.Threading.Tasks.Task Csla.Server.IDataPortalOperationNamedMapping.InvokeNamedOperationAsync(
+      string operationName, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
+    {
+      switch (operationName)
+      {
+        case "Insert":
+          if (criteria is null or { Length: 0 })
+          {
+            var dal = (global::TestApp.IDal)(serviceProvider.GetService(typeof(global::TestApp.IDal)) ?? throw new global::System.InvalidOperationException($"No service for type '{typeof(global::TestApp.IDal)}' has been registered."));
+            await Insert(dal).ConfigureAwait(false);
+            return;
+          }
+          break;
+      }
+      throw new Csla.Server.DataPortalOperationNotSupportedException(operationName, criteria);
     }
   }
 }

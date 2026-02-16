@@ -6,7 +6,6 @@
 // <summary>Exposes server-side DataPortal functionality through RabbitMQ</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Security.Principal;
@@ -171,11 +170,6 @@ namespace Csla.Channels.RabbitMq
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
       }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
-      }
       finally
       {
         result = ConvertResponse(result);
@@ -216,11 +210,6 @@ namespace Csla.Channels.RabbitMq
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
       }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
-      }
       finally
       {
         result = ConvertResponse(result);
@@ -254,11 +243,6 @@ namespace Csla.Channels.RabbitMq
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
 
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {
@@ -299,11 +283,6 @@ namespace Csla.Channels.RabbitMq
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {
@@ -355,7 +334,7 @@ namespace Csla.Channels.RabbitMq
 
     #endregion Conversion methods
 
-    private T Deserialize<T>(byte[] data) 
+    private T Deserialize<T>(byte[] data)
     {
       var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
       if (deserializedData is not T castedData)

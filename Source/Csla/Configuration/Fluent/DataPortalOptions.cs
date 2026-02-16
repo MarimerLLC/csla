@@ -60,6 +60,13 @@ namespace Csla.Configuration
     /// </summary>
     internal DataPortalServerOptions DataPortalServerOptions { get; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether legacy DataPortal_XYZ and
+    /// Child_XYZ method names are used as a fallback when no attributed
+    /// data portal operation methods are found. Default is true.
+    /// </summary>
+    public bool UseLegacyOperationMethods { get; set; } = true;
+
     internal CslaOptions CslaOptions { get; }
   }
 }

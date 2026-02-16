@@ -555,7 +555,7 @@ public class RabbitMqPortalIntegrationTests
     }
   }
 
-  private class TestCslaObject : ICslaObject
+  private class TestCslaObject : MobileObject, ICslaObject
   {
   }
 

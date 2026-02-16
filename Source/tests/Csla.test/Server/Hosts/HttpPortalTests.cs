@@ -95,7 +95,7 @@ public class HttpPortalTests
   {
     // Arrange
     var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-    var criteriaData = serializer.Serialize(new FakeMobileObject());
+    var criteriaData = serializer.Serialize(new TestCslaObject());
     var principalData = serializer.Serialize((IPrincipal)null);
     var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
@@ -110,7 +110,7 @@ public class HttpPortalTests
       TypeName = typeof(object).AssemblyQualifiedName
     };
 
-    _fakeDataPortalServer.SetReturnValue(new FakeMobileObject());
+    _fakeDataPortalServer.SetReturnValue(new TestCslaObject());
 
     // Act
     var result = await _systemUnderTest.Create(request);
@@ -126,7 +126,7 @@ public class HttpPortalTests
   {
     // Arrange
     var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-    var criteriaData = serializer.Serialize(new FakeMobileObject());
+    var criteriaData = serializer.Serialize(new TestCslaObject());
     var principalData = serializer.Serialize((IPrincipal)null);
     var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
@@ -174,7 +174,7 @@ public class HttpPortalTests
       TypeName = typeof(object).AssemblyQualifiedName
     };
 
-    var returnObject = new FakeMobileObject();
+    var returnObject = new TestCslaObject();
     _fakeDataPortalServer.SetReturnValue(returnObject);
 
     // Act
@@ -205,7 +205,7 @@ public class HttpPortalTests
   {
     // Arrange
     var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-    var criteriaData = serializer.Serialize(new FakeMobileObject());
+    var criteriaData = serializer.Serialize(new TestCslaObject());
     var principalData = serializer.Serialize((IPrincipal)null);
     var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
@@ -220,7 +220,7 @@ public class HttpPortalTests
       TypeName = typeof(object).AssemblyQualifiedName
     };
 
-    var returnObject = new FakeMobileObject();
+    var returnObject = new TestCslaObject();
     _fakeDataPortalServer.SetReturnValue(returnObject);
 
     // Act
@@ -237,7 +237,7 @@ public class HttpPortalTests
   {
     // Arrange
     var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-    var criteriaData = serializer.Serialize(new FakeMobileObject());
+    var criteriaData = serializer.Serialize(new TestCslaObject());
     var principalData = serializer.Serialize((IPrincipal)null);
     var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
@@ -374,7 +374,7 @@ public class HttpPortalTests
   {
     // Arrange
     var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-    var criteriaData = serializer.Serialize(new FakeMobileObject());
+    var criteriaData = serializer.Serialize(new TestCslaObject());
     var principalData = serializer.Serialize((IPrincipal)null);
     var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
@@ -389,7 +389,7 @@ public class HttpPortalTests
       TypeName = typeof(object).AssemblyQualifiedName
     };
 
-    _fakeDataPortalServer.SetReturnValue(new FakeMobileObject());
+    _fakeDataPortalServer.SetReturnValue(new TestCslaObject());
 
     // Act
     var result = await _systemUnderTest.Delete(request);
@@ -403,7 +403,7 @@ public class HttpPortalTests
   {
     // Arrange
     var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-    var criteriaData = serializer.Serialize(new FakeMobileObject());
+    var criteriaData = serializer.Serialize(new TestCslaObject());
     var principalData = serializer.Serialize((IPrincipal)null);
     var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
@@ -485,11 +485,6 @@ public class HttpPortalTests
         : new DataPortalResult(appContext, _returnValue);
       return Task.FromResult(result);
     }
-  }
-
-  private class FakeMobileObject : MobileObject
-  {
-
   }
 
   private class TestCslaObject : MobileObject, ICslaObject

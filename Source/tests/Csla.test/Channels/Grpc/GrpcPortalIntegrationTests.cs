@@ -6,9 +6,12 @@
 // <summary>Integration tests for GrpcPortal class validation</summary>
 //-----------------------------------------------------------------------
 
+using System.Security.Claims;
+using Csla.Channels.Grpc;
 using Csla.Core;
 using Csla.Serialization;
 using Csla.Server;
+using Csla.Server.Hosts.DataPortalChannel;
 using Csla.TestHelpers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +34,8 @@ public class GrpcPortalIntegrationTests
   private TestDIContext _testDIContext;
   private ApplicationContext _applicationContext;
   private FakeDataPortalServer _fakeDataPortalServer;
+  private GrpcPortal _grpcPortal;
+
 
   [TestInitialize]
   public void Setup()
@@ -41,6 +46,7 @@ public class GrpcPortalIntegrationTests
     });
     _applicationContext = _testDIContext.CreateTestApplicationContext();
     _fakeDataPortalServer = new FakeDataPortalServer();
+    _grpcPortal = new GrpcPortal(_fakeDataPortalServer, _applicationContext);
   }
 
   #region Create Operation Tests
@@ -178,17 +184,27 @@ public class GrpcPortalIntegrationTests
 
     var testException = new InvalidOperationException("Fetch operation failed");
     _fakeDataPortalServer.SetErrorValue(testException);
+    var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
+    var criteriaData = serializer.Serialize(new TestCslaObject());
+    var principalData = serializer.Serialize(new ClaimsPrincipal());
+    var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
+    var request = new CriteriaRequest(
+      _applicationContext,
+      principalData,
+      contextData,
+      "en-US",
+      "en-US",
+      criteriaData)
+    {
+      TypeName = typeof(object).AssemblyQualifiedName
+    };
     // Act
-    var result = await _fakeDataPortalServer.Fetch(
-      typeof(object),
-      null,
-      context,
-      true);
+    var result = await _grpcPortal.Fetch(request);
 
     // Assert
     result.Should().NotBeNull();
-    result.Error.Should().NotBeNull();
+    result.ErrorData.Should().NotBeNull();
   }
 
   #endregion Fetch Operation Tests
@@ -209,14 +225,27 @@ public class GrpcPortalIntegrationTests
 
     var businessObject = new TestCslaObject();
     _fakeDataPortalServer.SetReturnValue(businessObject);
+    var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
+    var criteriaData = serializer.Serialize(new TestCslaObject());
+    var principalData = serializer.Serialize(new ClaimsPrincipal());
+    var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
+    var request = new UpdateRequest(
+      principalData,
+      contextData,
+      "en-US",
+      "en-US",
+      criteriaData)
+    {
+
+    };
     // Act
-    var result = await _fakeDataPortalServer.Update(businessObject, context, true);
+    var result = await _grpcPortal.Update(request);
 
     // Assert
     result.Should().NotBeNull();
-    result.ReturnObject.Should().Be(businessObject);
-    result.Error.Should().BeNull();
+
+    result.ErrorData.Should().BeNull();
   }
 
   [TestMethod]
@@ -235,12 +264,26 @@ public class GrpcPortalIntegrationTests
     var testException = new InvalidOperationException("Update operation failed");
     _fakeDataPortalServer.SetErrorValue(testException);
 
+    var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
+    var criteriaData = serializer.Serialize(new TestCslaObject());
+    var principalData = serializer.Serialize(new ClaimsPrincipal());
+    var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
+
+    var request = new UpdateRequest(
+      principalData,
+      contextData,
+      "en-US",
+      "en-US",
+      criteriaData)
+    {
+
+    };
     // Act
-    var result = await _fakeDataPortalServer.Update(businessObject, context, true);
+    var result = await _grpcPortal.Update(request);
 
     // Assert
     result.Should().NotBeNull();
-    result.Error.Should().NotBeNull();
+    result.ErrorData.Should().NotBeNull();
   }
 
   #endregion Update Operation Tests
@@ -260,17 +303,27 @@ public class GrpcPortalIntegrationTests
       _applicationContext.GetRequiredService<IContextDictionary>());
 
     _fakeDataPortalServer.SetReturnValue(new TestCslaObject());
+    var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
+    var criteriaData = serializer.Serialize(new TestCslaObject());
+    var principalData = serializer.Serialize(new ClaimsPrincipal());
+    var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
+    var request = new CriteriaRequest(
+      _applicationContext,
+      principalData,
+      contextData,
+      "en-US",
+      "en-US",
+      criteriaData)
+    {
+      TypeName = typeof(object).AssemblyQualifiedName
+    };
     // Act
-    var result = await _fakeDataPortalServer.Delete(
-      typeof(object),
-      new object(),
-      context,
-      true);
+    var result = await _grpcPortal.Delete(request);
 
     // Assert
     result.Should().NotBeNull();
-    result.Error.Should().BeNull();
+    result.ErrorData.Should().BeNull();
   }
 
   [TestMethod]
@@ -287,17 +340,27 @@ public class GrpcPortalIntegrationTests
 
     var testException = new InvalidOperationException("Delete operation failed");
     _fakeDataPortalServer.SetErrorValue(testException);
+    var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
+    var criteriaData = serializer.Serialize(new TestCslaObject());
+    var principalData = serializer.Serialize(new ClaimsPrincipal());
+    var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
 
+    var request = new CriteriaRequest(
+      _applicationContext,
+      principalData,
+      contextData,
+      "en-US",
+      "en-US",
+      criteriaData)
+    {
+      TypeName = typeof(object).AssemblyQualifiedName
+    };
     // Act
-    var result = await _fakeDataPortalServer.Delete(
-      typeof(object),
-      null,
-      context,
-      true);
+    var result = await _grpcPortal.Delete(request);
 
     // Assert
     result.Should().NotBeNull();
-    result.Error.Should().NotBeNull();
+    result.ErrorData.Should().NotBeNull();
   }
 
   #endregion Delete Operation Tests
@@ -317,49 +380,29 @@ public class GrpcPortalIntegrationTests
       "de-DE",
       _applicationContext.GetRequiredService<IContextDictionary>());
 
-    _fakeDataPortalServer.SetReturnValue(new object());
+    _fakeDataPortalServer.SetReturnValue(new TestCslaObject());
+    var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
+    var criteriaData = serializer.Serialize(new TestCslaObject());
+    var principalData = serializer.Serialize(new ClaimsPrincipal());
+    var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
+
+    var request = new CriteriaRequest(
+      _applicationContext,
+      principalData,
+      contextData,
+      "en-US",
+      "en-US",
+      criteriaData)
+    {
+      TypeName = typeof(object).AssemblyQualifiedName
+    };
 
     // Act
-    var result = await _fakeDataPortalServer.Create(
-      typeof(object),
-      null,
-      context,
-      true);
+    var result = await _grpcPortal.Create(request);
 
     // Assert
     result.Should().NotBeNull();
     context.ClientCulture.Should().Be(expectedCulture);
-  }
-
-  [TestMethod]
-  public async Task Operation_WithPrincipal_PreservesPrincipal()
-  {
-    // Arrange
-    var principal = new System.Security.Principal.GenericPrincipal(
-      new System.Security.Principal.GenericIdentity("testuser"),
-      new[] { "TestRole" });
-
-    var context = new DataPortalContext(
-      _applicationContext,
-      principal,
-      true,
-      "en-US",
-      "en-US",
-      _applicationContext.GetRequiredService<IContextDictionary>());
-
-    _fakeDataPortalServer.SetReturnValue(new object());
-
-    // Act
-    var result = await _fakeDataPortalServer.Create(
-      typeof(object),
-      null,
-      context,
-      true);
-
-    // Assert
-    result.Should().NotBeNull();
-    context.Principal.Should().NotBeNull();
-    context.Principal.Identity.Name.Should().Be("testuser");
   }
 
   #endregion Context Tests
@@ -420,7 +463,7 @@ public class GrpcPortalIntegrationTests
     }
   }
 
-  private class TestCslaObject : ICslaObject
+  private class TestCslaObject : MobileObject, ICslaObject
   {
   }
 

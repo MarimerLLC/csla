@@ -21,31 +21,31 @@ namespace WindowsApplication2
       var rootPortal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
       Root root = rootPortal.Create();
       Child child;
-      child = root.RealChildren.AddNew();
-      child.Grandchildren.AddNew();
-      child.Grandchildren.AddNew();
-      child.Grandchildren.AddNew();
-      child = root.RealChildren.AddNew();
-      child.Grandchildren.AddNew();
+      child = root.RealChildren!.AddNew();
+      child.Grandchildren!.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
       child = root.RealChildren.AddNew();
-      child.Grandchildren.AddNew();
+      child.Grandchildren!.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
       child = root.RealChildren.AddNew();
+      child.Grandchildren!.AddNew();
       child.Grandchildren.AddNew();
+      child.Grandchildren.AddNew();
+      child = root.RealChildren.AddNew();
+      child.Grandchildren!.AddNew();
       child.Grandchildren.AddNew();
       child.Grandchildren.AddNew();
 
       Rebind(root);
     }
 
-    void grandchildrenBindingSource_CurrentChanged(object sender, EventArgs e)
+    void grandchildrenBindingSource_CurrentChanged(object? sender, EventArgs e)
     {
     }
 
-    void childrenBindingSource_CurrentChanged(object sender, EventArgs e)
+    void childrenBindingSource_CurrentChanged(object? sender, EventArgs e)
     {
       this.grandchildrenBindingSource.EndEdit();
     }
@@ -58,7 +58,7 @@ namespace WindowsApplication2
       this.childrenBindingSource.RaiseListChangedEvents = false;
       this.rootBindingSource.RaiseListChangedEvents = false;
 
-      Root root = (Root)this.rootBindingSource.DataSource;
+      Root root = (Root)this.rootBindingSource.DataSource!;
       UnbindBindingSource(this.grandchildrenBindingSource, false);
       UnbindBindingSource(this.childrenBindingSource, false);
       UnbindBindingSource(this.rootBindingSource, false);
@@ -75,7 +75,7 @@ namespace WindowsApplication2
       this.childrenBindingSource.RaiseListChangedEvents = false;
       this.rootBindingSource.RaiseListChangedEvents = false;
 
-      Root root = (Root)this.rootBindingSource.DataSource;
+      Root root = (Root)this.rootBindingSource.DataSource!;
       UnbindBindingSource(this.grandchildrenBindingSource, true);
       UnbindBindingSource(this.childrenBindingSource, true);
       UnbindBindingSource(this.rootBindingSource, true);
@@ -105,7 +105,7 @@ namespace WindowsApplication2
 
     protected void UnbindBindingSource(BindingSource source, bool apply)
     {
-      System.ComponentModel.IEditableObject current =
+      System.ComponentModel.IEditableObject? current =
         source.Current as System.ComponentModel.IEditableObject;
       if (!(source.DataSource is BindingSource))
         source.DataSource = null;

@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
@@ -271,6 +272,22 @@ namespace Csla
         base.OnSetState(info, mode);
         Key = info.GetValue<K>("NameValuePair._key")!;
         _value = info.GetValue<V>("NameValuePair._value")!;
+      }
+
+      /// <inheritdoc />
+      protected override void OnGetMetastate(BinaryWriter writer)
+      {
+        base.OnGetMetastate(writer);
+        BinaryValueHelper.WriteValue(Key, writer);
+        BinaryValueHelper.WriteValue(_value, writer);
+      }
+
+      /// <inheritdoc />
+      protected override void OnSetMetastate(BinaryReader reader)
+      {
+        base.OnSetMetastate(reader);
+        Key = (K)BinaryValueHelper.ReadValue(reader)!;
+        _value = (V)BinaryValueHelper.ReadValue(reader)!;
       }
 
     }

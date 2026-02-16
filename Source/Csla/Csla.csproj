@@ -136,6 +136,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" ReferenceOutputAssembly="true" OutputItemType="Analyzer" PrivateAssets="all" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Csla.Generators\cs\DataPortalInterfaces\Csla.Generator.DataPortalInterfaces.CSharp\Csla.Generator.DataPortalInterfaces.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Csla.Core;
 using Csla.Serialization.Mobile;
 
@@ -608,6 +609,20 @@ namespace Csla
     {
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
+    }
+
+    /// <inheritdoc />
+    protected override void OnGetMetastate(BinaryWriter writer)
+    {
+      base.OnGetMetastate(writer);
+      writer.Write(_identity);
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetMetastate(BinaryReader reader)
+    {
+      base.OnSetMetastate(reader);
+      _identity = reader.ReadInt32();
     }
 
     #endregion

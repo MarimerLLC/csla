@@ -7,7 +7,7 @@ namespace ProjectTracker.Dal
 {
   public class UserDto
   {
-    public string Username { get; set; }
-    public string[] Roles { get; set; }
+    public string Username { get; set; } = string.Empty;
+    public string[] Roles { get; set; } = Array.Empty<string>();
   }
 }

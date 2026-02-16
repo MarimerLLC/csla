@@ -6,6 +6,7 @@
 // <summary>Implements a data portal service</summary>
 //-----------------------------------------------------------------------
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 
 namespace Csla
 {
@@ -20,6 +21,7 @@ namespace Csla
     /// Get a client-side data portal instance.
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
-    IDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>();
+    IDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
+      where T : ICslaObject;
   }
 }

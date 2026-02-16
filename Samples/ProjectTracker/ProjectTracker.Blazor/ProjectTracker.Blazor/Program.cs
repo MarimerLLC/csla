@@ -3,6 +3,7 @@ using Marimer.Blazor.RenderMode;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ProjectTracker.Blazor.Components;
 using ProjectTracker.Configuration;
+using ProjectTracker.DalEfCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +30,16 @@ builder.Services.AddCsla(o => o
   .AddAspNetCore()
   .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
 
-builder.Services.AddDalMock();
-//builder.Services.AddDalEfCore();
+// Use in-memory mock database DAL
+//builder.Services.AddDalMock();
+
+// Use SQLite-backed EF Core DAL
+builder.Services.AddDalEfCore("Data Source=PTracker.db");
 
 var app = builder.Build();
+
+// Initialize SQLite database and seed data on startup
+PTrackerDatabaseInitializer.Initialize(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -51,7 +58,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseStaticFiles();
+app.MapStaticAssets();
 app.UseAntiforgery();
 
 app.MapControllers();

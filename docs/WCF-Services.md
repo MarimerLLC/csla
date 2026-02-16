@@ -1,5 +1,7 @@
 # WCF Services
 
+> ⚠️ **Deprecated Technology**: WCF is not supported by Microsoft in modern .NET (.NET 6+). CSLA only supports WCF for legacy .NET Framework applications. For modern applications, use the HTTP data portal channel instead. See the [Data Portal](Data-Portal.md) documentation for more information.
+
 ## Can I serialize a CSLA .NET business object with the XmlSerializer?
 
 No, you cannot directly use the Xml Serializer to serialize Csla objects.  There are too many limitations which make this impractical.

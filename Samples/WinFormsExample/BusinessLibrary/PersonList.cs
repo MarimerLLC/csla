@@ -6,7 +6,6 @@ using Csla;
 
 namespace BusinessLibrary
 {
-  [Serializable]
   public class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
   {
     [Create, RunLocal]

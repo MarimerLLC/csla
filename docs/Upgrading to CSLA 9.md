@@ -166,6 +166,8 @@ This includes:
 * `char[]`
 * `List<int>`
 
+> ⚠️ Other generic collection types such as `List<string>`, `Dictionary<K,V>`, etc. are _not_ directly serializable by `SerializationInfo`. For serializable collections in business object properties, use `MobileList<T>` or `MobileDictionary<K,V>` from `Csla.Core`, or register a custom serializer for your type.
+
 If you look at the implementation of [PocoSerializer](https://github.com/MarimerLLC/csla/blob/main/Source/Csla/Serialization/Mobile/CustomSerializers/PocoSerializer.cs) you'll see that it relies on `System.Text.Json` to serialize and deserialize the object, and stores the JSON string in the `SerializationInfo` instance.
 
 The [ClaimsPrincipalSerializer](https://github.com/MarimerLLC/csla/blob/main/Source/Csla/Serialization/Mobile/CustomSerializers/ClaimsPrincipalSerializer.cs) type has two implementations.

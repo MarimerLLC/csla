@@ -8,11 +8,6 @@ The [Expert C# 2008 Business Objects](https://www.apress.com/us/book/97814302101
 
 <!-- Starting with CSLA .NET 4.0, the base collection types will fully support WPF binding. [See this page](WpfCollectionBinding) for more information. -->
 
-## Should I use Silverlight or WPF?
-
-This is a [good forum thread](https://cslanet.com/old-forum/10245.html) on the topic.
-<!-- and you can read [Rocky's thoughts](SilverlightOrWpf). -->
-
 <!-- ##Does CSLA .NET work with the MVVM pattern?
 Yes. [Click here](Mvvm) for more information.
 -->

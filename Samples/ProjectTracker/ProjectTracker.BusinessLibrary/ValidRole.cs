@@ -22,7 +22,21 @@ namespace ProjectTracker.Library
 
     protected override async Task ExecuteAsync(IRuleContext context)
     {
-      int role = (int)context.InputPropertyValues[PrimaryProperty];
+      if (PrimaryProperty is null)
+      {
+        return;
+      }
+
+      if (!context.InputPropertyValues.TryGetValue(PrimaryProperty, out var value) || value is null)
+      {
+        return;
+      }
+
+      if (value is not int role)
+      {
+        return;
+      }
+
       var portal = context.ApplicationContext.GetRequiredService<IDataPortal<RoleList>>();
       var roles = await portal.FetchAsync();
       if (!roles.ContainsKey(role))

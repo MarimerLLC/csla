@@ -27,6 +27,7 @@ These samples are nearly all built using a local data portal, and so effectively
 Other samples include
 
 ### Business Rules
+
 * BusinessRuleDemo - demo showing the use of business rules
 * RuleTutorial - in-depth project showing all uses of the CSLA rules engine
 
@@ -39,7 +40,6 @@ Other samples include
 * DataPortalFactoryExample - shows the use of data portal factories
 * DataPortalInstrumentation - shows the use of the data portal dashboard instrumentation feature
 * RoutedDataPortal - shows the use of the data portal routing capability for versioning and workload routing
-* DataPortalPerf - app designed to test data portal performance
 
 ### Web API
 
@@ -52,4 +52,4 @@ Other samples include
 
 ### WPF
 
-* PropertyStatus - demonstrates the use of the PropertyStatus control
+* PropertyStatus - demonstrates the use of the WPF PropertyStatus control

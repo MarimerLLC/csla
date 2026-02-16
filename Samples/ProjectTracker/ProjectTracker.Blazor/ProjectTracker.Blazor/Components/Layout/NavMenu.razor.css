@@ -1,3 +1,8 @@
+/* ========================================
+   Navigation Menu - Professional Theme
+   Green/Rust color scheme
+   ======================================== */
+
 .navbar-toggler {
     appearance: none;
     cursor: pointer;
@@ -7,31 +12,50 @@
     position: absolute;
     top: 0.5rem;
     right: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.85%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
+}
+
+.navbar-toggler:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .navbar-toggler:checked {
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(184, 92, 56, 0.5);
+    border-color: rgba(184, 92, 56, 0.7);
 }
 
+/* Top row with brand */
 .top-row {
-    height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    height: 3.75rem;
+    background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.2) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
 }
 
 .navbar-brand {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* Navigation Icons */
 .bi {
     display: inline-block;
     position: relative;
     width: 1.25rem;
     height: 1.25rem;
-    margin-right: 0.75rem;
+    margin-right: 0.875rem;
     top: -1px;
     background-size: cover;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
 }
 
 .bi-house-door-fill-nav-menu {
@@ -46,43 +70,65 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-list-nested' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E");
 }
 
+/* Navigation Items */
 .nav-item {
-    font-size: 0.9rem;
-    padding-bottom: 0.5rem;
+    font-size: 0.925rem;
+    padding-bottom: 0.375rem;
 }
 
-    .nav-item:first-of-type {
-        padding-top: 1rem;
-    }
+.nav-item:first-of-type {
+    padding-top: 1.25rem;
+}
 
-    .nav-item:last-of-type {
-        padding-bottom: 1rem;
-    }
+.nav-item:last-of-type {
+    padding-bottom: 1.25rem;
+}
 
-    .nav-item ::deep .nav-link {
-        color: #d7d7d7;
-        background: none;
-        border: none;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
-        width: 100%;
-    }
+.nav-item ::deep .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    background: none;
+    border: none;
+    border-radius: 6px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+    width: 100%;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    letter-spacing: 0.25px;
+    border-left: 3px solid transparent;
+    margin-left: -3px;
+    padding-left: 3px;
+}
 
+/* Active state - rust accent */
 .nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
-    color: white;
+    background: linear-gradient(90deg, rgba(184, 92, 56, 0.4) 0%, rgba(184, 92, 56, 0.15) 100%);
+    color: #ffffff;
+    border-left-color: #d4765a;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
+.nav-item ::deep a.active .bi {
+    opacity: 1;
+}
+
+/* Hover state */
 .nav-item ::deep .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+    color: #ffffff;
+    border-left-color: rgba(255, 255, 255, 0.5);
 }
 
+.nav-item ::deep .nav-link:hover .bi {
+    opacity: 1;
+}
+
+/* Scrollable nav container */
 .nav-scrollable {
     display: none;
+    padding: 0 0.5rem;
 }
 
 .navbar-toggler:checked ~ .nav-scrollable {
@@ -95,11 +141,27 @@
     }
 
     .nav-scrollable {
-        /* Never collapse the sidebar for wide screens */
         display: block;
-
-        /* Allow sidebar to scroll for tall menus */
-        height: calc(100vh - 3.5rem);
+        height: calc(100vh - 3.75rem);
         overflow-y: auto;
+        padding: 0 0.75rem;
+    }
+
+    /* Custom scrollbar for nav */
+    .nav-scrollable::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .nav-scrollable::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-scrollable::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+    }
+
+    .nav-scrollable::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
     }
 }

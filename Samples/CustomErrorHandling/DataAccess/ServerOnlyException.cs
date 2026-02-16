@@ -12,9 +12,11 @@ namespace DataAccess
         {
         }
 
+    #pragma warning disable SYSLIB0051 // Intentional binary-formatter constructor so the sample can demonstrate server-only exceptions
         public ServerOnlyException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
+    #pragma warning restore SYSLIB0051
     }
 }

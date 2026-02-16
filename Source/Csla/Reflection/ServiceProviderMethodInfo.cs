@@ -22,7 +22,7 @@ namespace Csla.Reflection
   /// </summary>
   public class ServiceProviderMethodInfo
   {
-    [MemberNotNullWhen(true, nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(DataPortalMethodInfo))]
+    [MemberNotNullWhen(true, nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(ServiceKeys), nameof(DataPortalMethodInfo))]
     private bool Initialized { get; set; }
 
     /// <summary>
@@ -55,6 +55,11 @@ namespace Csla.Reflection
     /// </summary>
     public bool[]? AllowNull { get; private set; }
     /// <summary>
+    /// Gets an array of keys for injected parameters.
+    /// Null entries indicate non-keyed services.
+    /// </summary>
+    public object?[]? ServiceKeys { get; private set; }
+    /// <summary>
     /// Gets a value indicating whether the method
     /// returns type Task
     /// </summary>
@@ -83,7 +88,7 @@ namespace Csla.Reflection
     /// Initializes and caches the metastate values
     /// necessary to invoke the method
     /// </summary>
-    [MemberNotNull(nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(DataPortalMethodInfo))]
+    [MemberNotNull(nameof(DynamicMethod), nameof(Parameters), nameof(IsInjected), nameof(AllowNull), nameof(ServiceKeys), nameof(DataPortalMethodInfo))]
     public void PrepForInvocation()
     {
       if (!Initialized)
@@ -97,6 +102,7 @@ namespace Csla.Reflection
             TakesParamArray = (Parameters.Length == 1 && Parameters[0].ParameterType.Equals(typeof(object[])));
             IsInjected = new bool[Parameters.Length];
             AllowNull = new bool[Parameters.Length];
+            ServiceKeys = new object?[Parameters.Length];
 
             int index = 0;
             foreach (var item in Parameters)
@@ -106,6 +112,7 @@ namespace Csla.Reflection
               {
                 IsInjected[index] = true;
                 AllowNull[index] = injectAttribute.AllowNull || ParameterAllowsNull(item);
+                ServiceKeys[index] = injectAttribute.Key;
               }
               index++;
             }

@@ -1,51 +1,47 @@
 ﻿using Csla;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DataPortalInstrumentation
 {
-  [Serializable]
-  public class Worker : BusinessBase<Worker>
+  [CslaImplementProperties]
+  public partial class Worker : BusinessBase<Worker>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
-    public int Id
-    {
-      get { return GetProperty(IdProperty); }
-      set { SetProperty(IdProperty, value); }
-    }
+    public partial int Id { get; set; }
 
     [Fetch]
-    private void Fetch(int id)
+    private async Task Fetch(int id)
     {
       // TODO: load values into object
-      System.Threading.Thread.Sleep(300);
+      await Task.Delay(300);
+      LoadProperty(IdProperty, id);
     }
 
     [Insert]
-    private void Insert()
+    private async Task Insert()
     {
       // TODO: insert object's data
+      await Task.CompletedTask;
     }
 
     [Update]
-    private void Update()
+    private async Task Update()
     {
       // TODO: update object's data
+      await Task.CompletedTask;
     }
 
     [DeleteSelf]
-    private void DeleteSelf()
+    private async Task DeleteSelf()
     {
-      Delete(ReadProperty(IdProperty));
+      await Delete(ReadProperty(IdProperty));
     }
 
     [Delete]
-    private void Delete(int id)
+    private async Task Delete(int id)
     {
       // TODO: delete object's data
+      await Task.CompletedTask;
     }
-
   }
 }

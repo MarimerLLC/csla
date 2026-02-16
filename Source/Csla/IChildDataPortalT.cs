@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using Csla.Core;
 
 namespace Csla
 {
@@ -15,6 +16,7 @@ namespace Csla
   /// </summary>
   /// <typeparam name="T"></typeparam>
   public interface IChildDataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>
+    where T : ICslaObject
   {
     /// <summary>
     /// Starts an asynchronous data portal operation to

@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
-
+using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Server
@@ -35,6 +35,7 @@ namespace Csla.Server
     /// </summary>
     /// <typeparam name="T">Root business object type</typeparam>
     public IChildDataPortal<T> GetPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]T>()
+      where T : ICslaObject
     {
       return _serviceProvider.GetRequiredService<IChildDataPortal<T>>();
     }

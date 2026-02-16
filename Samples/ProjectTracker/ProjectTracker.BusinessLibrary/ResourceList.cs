@@ -1,13 +1,10 @@
 using Csla;
-using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  [Serializable]
   public class ResourceList : ReadOnlyListBase<ResourceList, ResourceInfo>
   {
     public void RemoveChild(int resourceId)
@@ -39,8 +36,7 @@ namespace ProjectTracker.Library
     {
       using (LoadListMode)
       {
-        List<ProjectTracker.Dal.ResourceDto> list = null;
-        list = dal.Fetch();
+        List<ProjectTracker.Dal.ResourceDto> list = dal.Fetch();
         foreach (var item in list)
           Add(portal.FetchChild(item));
       }

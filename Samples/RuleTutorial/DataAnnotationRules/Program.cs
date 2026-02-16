@@ -21,7 +21,7 @@ namespace DataAnnotationRules
   /// </summary>
   class Program
   {
-    public static ApplicationContext ApplicationContext { get; set; }
+    public static ApplicationContext ApplicationContext { get; set; } = null!;
 
     /// <summary>
     /// The main.

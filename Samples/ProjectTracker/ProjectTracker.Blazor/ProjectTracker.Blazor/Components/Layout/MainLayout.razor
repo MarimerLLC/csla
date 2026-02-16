@@ -10,7 +10,7 @@
         <div class="top-row px-4">
             <AuthorizeView>
                 <Authorized>
-                    Hello, @context.User.Identity.Name
+                    Hello, @((context?.User?.Identity?.Name) ?? "User")
                     <a href="/logout">Logout</a>
                 </Authorized>
                 <NotAuthorized>

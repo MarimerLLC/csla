@@ -37,7 +37,7 @@ namespace AddonPropertyRules.Rules
     /// Gets or sets the format string used
     /// to format the minimum and maximum values.
     /// </summary>
-    public string Format { get; set; }
+    public string? Format { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Range"/> class. 
@@ -57,9 +57,9 @@ namespace AddonPropertyRules.Rules
     {
       Max = max;
       Min = min;
-      RuleUri.AddQueryParameter("max", max.ToString());
-      RuleUri.AddQueryParameter("min", min.ToString());
-      InputProperties = new List<IPropertyInfo> { primaryProperty };
+      RuleUri.AddQueryParameter("max", max.ToString() ?? string.Empty);
+      RuleUri.AddQueryParameter("min", min.ToString() ?? string.Empty);
+      InputProperties.Add(primaryProperty);
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ namespace AddonPropertyRules.Rules
     /// </param>
     protected override void Execute(IRuleContext context)
     {
-      var value = (IComparable)context.InputPropertyValues[PrimaryProperty];
+      var value = (IComparable)context.InputPropertyValues[PrimaryProperty!]!;
       var minResult = value.CompareTo(Min);
       var maxResult = value.CompareTo(Max);
 
@@ -137,7 +137,7 @@ namespace AddonPropertyRules.Rules
         var maxOutValue = string.IsNullOrEmpty(Format) ? Max.ToString() : string.Format(string.Format("{{0:{0}}}", Format), Max);
 
         var message = string.Format(GetMessage(), PrimaryProperty.FriendlyName, minOutValue, maxOutValue);
-        context.Results.Add(new RuleResult(RuleName, PrimaryProperty, message) { Severity = Severity });
+        context.AddErrorResult(PrimaryProperty, message);
       }
     }
   }

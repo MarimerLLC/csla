@@ -20,6 +20,7 @@ namespace WinFormsExample.Pages
       InitializeComponent();
     }
 
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public object Context { get; set; }
     private IDataPortal<PersonEdit> _portal;
 

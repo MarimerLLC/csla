@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Csla.Properties;
 
 namespace Csla.Core
@@ -225,6 +226,20 @@ namespace Csla.Core
     {
       base.OnSetState(info);
       _isReadOnly = info.GetValue<bool>("Csla.Core.ReadOnlyBindingList._isReadOnly");
+    }
+
+    /// <inheritdoc />
+    protected override void OnGetMetastate(BinaryWriter writer)
+    {
+      base.OnGetMetastate(writer);
+      writer.Write(_isReadOnly);
+    }
+
+    /// <inheritdoc />
+    protected override void OnSetMetastate(BinaryReader reader)
+    {
+      base.OnSetMetastate(reader);
+      _isReadOnly = reader.ReadBoolean();
     }
 
     /// <summary>

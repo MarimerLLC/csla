@@ -25,8 +25,6 @@ namespace AddonPropertyRules.Rules
     public DependencyFrom(Csla.Core.IPropertyInfo primaryProperty, params Csla.Core.IPropertyInfo[] dependencyProperties)
       : base(primaryProperty)
     {
-      if (InputProperties == null) 
-        InputProperties = new List<IPropertyInfo>();
       InputProperties.AddRange(dependencyProperties);
       RuleUri.AddQueryParameter("dependencyfrom", string.Join(",", dependencyProperties.Select(p => p.Name)));
     }
@@ -43,10 +41,8 @@ namespace AddonPropertyRules.Rules
     public DependencyFrom(Csla.Core.IPropertyInfo primaryProperty, Csla.Core.IPropertyInfo dependencyProperty,  bool isBiDirectional)
       : base(primaryProperty)
     {
-      if (InputProperties == null)
-        InputProperties = new List<IPropertyInfo>();
       InputProperties.Add(dependencyProperty);
-      if (isBiDirectional) 
+      if (isBiDirectional)
         AffectedProperties.Add(dependencyProperty);
     }
   }

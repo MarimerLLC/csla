@@ -94,15 +94,17 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
-    public void ReadOnlyListBase_SetMetastate_ThrowsOnEmptyMetastate()
+    public void ReadOnlyListBase_SetMetastate_AcceptsEmptyMetastate()
     {
       // Arrange
       var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyList>();
       var list = dataPortal.Fetch();
 
-      // Act
+      // Act - Setting empty metastate should not throw
       ((IMobileObjectMetastate)list).SetMetastate(new byte[0]);
+      
+      // Assert - The list should still be valid
+      Assert.IsNotNull(list);
     }
 
     #region Test Helper Classes

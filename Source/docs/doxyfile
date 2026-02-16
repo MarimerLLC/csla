@@ -1,7 +1,7 @@
 PROJECT_NAME           = "CSLA .NET"
 PROJECT_NUMBER         = "10.0.0"
 PROJECT_BRIEF          = "A home for your business logic"
-PROJECT_LOGO           = "S:/src/rdl/csla/Support/Logos/csla win8_compact.png"
+PROJECT_LOGO           = "csla/Support/Logos/csla win8_compact.png"
 
 INPUT = csla/Source/Csla \
         csla/Source/Csla.Analyzers \

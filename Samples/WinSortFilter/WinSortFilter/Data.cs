@@ -15,11 +15,13 @@ namespace WinSortFilter
     }
 
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+#pragma warning disable CSLA0007 // Properties that use managed backing fields should only use Get/Set/Read/Load methods and nothing else
     public string Name
     {
-      get => GetProperty(NameProperty);
+      get => GetProperty(NameProperty) ?? string.Empty;
       set => SetProperty(NameProperty, value);
     }
+#pragma warning restore CSLA0007
 
     private static int _lastId;
 

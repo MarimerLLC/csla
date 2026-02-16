@@ -13,6 +13,7 @@ using System.Runtime.Loader;
 
 using Csla.Runtime;
 #endif
+using Csla.Configuration;
 using Csla.Properties;
 using Csla.Server;
 using System.Diagnostics.CodeAnalysis;
@@ -117,9 +118,12 @@ namespace Csla.Reflection
       var activator = _applicationContext.GetRequiredService<IDataPortalActivator>();
       targetType = activator.ResolveType(targetType);
 
+      var cslaOptions = _applicationContext.GetRequiredService<CslaOptions>();
+      var useLegacyMethods = cslaOptions.DataPortalOptions.UseLegacyOperationMethods;
+
       var typeOfOperation = typeof(T);
 
-      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria);
+      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, useLegacyMethods);
 
 #if NET8_0_OR_GREATER
       if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
@@ -203,7 +207,7 @@ namespace Csla.Reflection
         }
 
         // if no attribute-based methods found, look for legacy methods
-        if (!candidates.Any())
+        if (!candidates.Any() && useLegacyMethods)
         {
           var attributeName = typeOfOperation.Name.Substring(0, typeOfOperation.Name.IndexOf("Attribute"));
           var methodName = attributeName.Contains("Child") ?
@@ -427,9 +431,10 @@ namespace Csla.Reflection
       return 0;
     }
 
-    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria)
+    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, bool useLegacyMethods)
     {
-      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}";
+      var legacy = useLegacyMethods ? "" : "|nolegacy";
+      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{legacy}";
     }
 
     private static string GetCriteriaTypeNames(object?[]? criteria)
@@ -553,11 +558,40 @@ namespace Csla.Reflection
             {
               throw new NullReferenceException(nameof(service));
             }
-            // Use GetService for optional (allows null) or GetRequiredService for required (throws if not registered)
-            plist[index] = method.AllowNull[index]
-              ? service.GetService(item.ParameterType)
-              : service.GetRequiredService(item.ParameterType);
-
+            
+            var serviceKey = method.ServiceKeys[index];
+            if (serviceKey != null)
+            {
+#if NET8_0_OR_GREATER
+              // Use keyed service injection for .NET 8+
+              if (method.AllowNull[index])
+              {
+                // For optional keyed services, cast to IKeyedServiceProvider
+                if (service is IKeyedServiceProvider keyedProvider)
+                {
+                  plist[index] = keyedProvider.GetKeyedService(item.ParameterType, serviceKey);
+                }
+                else
+                {
+                  throw new InvalidOperationException("Service provider must implement IKeyedServiceProvider to support keyed services.");
+                }
+              }
+              else
+              {
+                // For required keyed services, use extension method
+                plist[index] = service.GetRequiredKeyedService(item.ParameterType, serviceKey);
+              }
+#else
+              throw new NotSupportedException("Keyed service injection is only supported on .NET 8.0 or higher.");
+#endif
+            }
+            else
+            {
+              // Use GetService for optional (allows null) or GetRequiredService for required (throws if not registered)
+              plist[index] = method.AllowNull[index]
+                ? service.GetService(item.ParameterType)
+                : service.GetRequiredService(item.ParameterType);
+            }
           }
           else
           {

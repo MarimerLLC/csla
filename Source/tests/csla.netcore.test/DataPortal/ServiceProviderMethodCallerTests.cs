@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 using System.Reflection;
+using Csla.Configuration;
 using Csla.Reflection;
 using Csla.TestHelpers;
 using FluentAssertions;
@@ -504,6 +505,130 @@ namespace Csla.Test.DataPortal
       await FluentActions.Invoking(async () => await portal.CreateAsync())
         .Should().ThrowAsync<Exception>();
     }
+
+    [TestMethod]
+    public void FindLegacyMethod_DefaultEnabled_FindsLegacyFallback()
+    {
+      // With default settings (legacy enabled), a subclass of a base with private [Execute]
+      // should fall back to the legacy DataPortal_Execute method
+      var method = _systemUnderTest.FindDataPortalMethod<ExecuteAttribute>(typeof(LegacyFallbackConcrete), null);
+
+      method.Should().NotBeNull();
+      method.MethodInfo.Name.Should().Be("DataPortal_Execute");
+    }
+
+    [TestMethod]
+    public void FindLegacyMethod_Disabled_FindsAttributedMethodInstead()
+    {
+      // With legacy disabled, a subclass of a base with private [Execute]
+      // should find the attributed Execute method via recursion, not the legacy DataPortal_Execute
+      var diContext = TestDIContextFactory.CreateContext(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false));
+      var caller = diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+
+      var found = caller.TryFindDataPortalMethod<ExecuteAttribute>(typeof(LegacyDisabledConcrete), null, out var method);
+
+      found.Should().BeTrue();
+      method!.MethodInfo.Name.Should().Be("Execute");
+    }
+
+    [TestMethod]
+    public void FindLegacyOnlyMethod_Disabled_NoFallback()
+    {
+      // A class using only DataPortal_Create (no attributes) should not be found when legacy is disabled
+      var diContext = TestDIContextFactory.CreateContext(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false));
+      var caller = diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+
+      var found = caller.TryFindDataPortalMethod<CreateAttribute>(typeof(LegacyOnlyCreate), null, out var method);
+
+      found.Should().BeFalse();
+      method.Should().BeNull();
+    }
+
+#if NET8_0_OR_GREATER
+    [TestMethod]
+    public void FindMethodWithKeyedServiceInjection()
+    {
+      var obj = new KeyedServiceInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, null);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(1);
+      method.IsInjected.Should().HaveCount(1);
+      method.IsInjected![0].Should().BeTrue();
+      method.ServiceKeys.Should().HaveCount(1);
+      method.ServiceKeys![0].Should().Be("serviceA");
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithKeyedServiceInjection()
+    {
+      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      {
+        services.AddKeyedTransient<IOptionalService, ServiceAImplementation>("serviceA");
+      });
+
+      var portal = contextWithService.CreateDataPortal<KeyedServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Service A data");
+    }
+
+    [TestMethod]
+    public void FindMethodWithKeyedServiceAndCriteriaInjection()
+    {
+      var obj = new KeyedServiceWithCriteriaInjection();
+      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, [123]);
+
+      method.Should().NotBeNull();
+      method.PrepForInvocation();
+      method.Parameters.Should().HaveCount(2);
+      method.IsInjected.Should().HaveCount(2);
+      method.IsInjected![0].Should().BeFalse(); // First param is criteria
+      method.IsInjected![1].Should().BeTrue();  // Second param is injected
+      method.ServiceKeys.Should().HaveCount(2);
+      method.ServiceKeys![0].Should().BeNull(); // First param is not injected
+      method.ServiceKeys![1].Should().Be("serviceB");
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithKeyedServiceAndCriteriaInjection()
+    {
+      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      {
+        services.AddKeyedTransient<IOptionalService, ServiceBImplementation>("serviceB");
+      });
+
+      var portal = contextWithService.CreateDataPortal<KeyedServiceWithCriteriaInjection>();
+      var obj = await portal.CreateAsync(42);
+
+      obj.Should().NotBeNull();
+      obj.Id.Should().Be(42);
+      obj.Data.Should().Be("Service B data");
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithOptionalKeyedServiceInjection_ServiceNotRegistered()
+    {
+      var portal = _diContext.CreateDataPortal<OptionalKeyedServiceInjection>();
+      var obj = await portal.CreateAsync();
+
+      obj.Should().NotBeNull();
+      obj.Data.Should().Be("Keyed service is null as expected");
+    }
+
+    [TestMethod]
+    public async Task InvokeMethodWithKeyedServiceInjection_ThrowsWhenServiceNotRegistered()
+    {
+      var portal = _diContext.CreateDataPortal<KeyedServiceInjection>();
+      
+      // This should throw because the keyed service is required but not registered
+      // The exception will be wrapped in DataPortalException
+      await FluentActions.Invoking(async () => await portal.CreateAsync())
+        .Should().ThrowAsync<Exception>();
+    }
+#endif
   }
 
   #region Classes for testing various scenarios of loading/finding data portal methods
@@ -919,6 +1044,122 @@ namespace Csla.Test.DataPortal
       }
     }
   }
+
+  public class LegacyFallbackBase<T> : CommandBase<T>
+    where T : CommandBase<T>
+  {
+    [Execute]
+    private void Execute()
+    { }
+
+    protected virtual void DataPortal_Execute()
+    { }
+  }
+
+  public class LegacyFallbackConcrete : LegacyFallbackBase<LegacyFallbackConcrete>
+  {
+  }
+
+  public class LegacyDisabledBase<T> : CommandBase<T>
+    where T : CommandBase<T>
+  {
+    [Execute]
+    private void Execute()
+    { }
+
+    protected virtual void DataPortal_Execute()
+    { }
+  }
+
+  public class LegacyDisabledConcrete : LegacyDisabledBase<LegacyDisabledConcrete>
+  {
+  }
+
+  public class LegacyOnlyCreate : BusinessBase<LegacyOnlyCreate>
+  {
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+#if NET8_0_OR_GREATER
+  // Tests for keyed service injection (NET8+ only)
+  public class KeyedServiceInjection : BusinessBase<KeyedServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject(Key = "serviceA")] IOptionalService keyedService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = keyedService.GetData();
+      }
+    }
+  }
+
+  public class KeyedServiceWithCriteriaInjection : BusinessBase<KeyedServiceWithCriteriaInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+    public int Id
+    {
+      get => GetProperty(IdProperty);
+      set => SetProperty(IdProperty, value);
+    }
+
+    [Create]
+    private void Create(int id, [Inject(Key = "serviceB")] IOptionalService keyedService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Id = id;
+        Data = keyedService.GetData();
+      }
+    }
+  }
+
+  public class OptionalKeyedServiceInjection : BusinessBase<OptionalKeyedServiceInjection>
+  {
+    public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
+    public string Data
+    {
+      get => GetProperty(DataProperty);
+      set => SetProperty(DataProperty, value);
+    }
+
+    [Create]
+    private void Create([Inject(Key = "nonExistent", AllowNull = true)] IOptionalService? keyedService)
+    {
+      using (BypassPropertyChecks)
+      {
+        Data = keyedService == null ? "Keyed service is null as expected" : keyedService.GetData();
+      }
+    }
+  }
+
+  public class ServiceAImplementation : IOptionalService
+  {
+    public string GetData() => "Service A data";
+  }
+
+  public class ServiceBImplementation : IOptionalService
+  {
+    public string GetData() => "Service B data";
+  }
+#endif
 
   #endregion
 }

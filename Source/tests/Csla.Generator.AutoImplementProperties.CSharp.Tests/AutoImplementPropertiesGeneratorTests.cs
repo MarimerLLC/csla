@@ -181,6 +181,29 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
 
+    [TestMethod("Attributes on partial properties are preserved via the compiler's partial property mechanism.")]
+    public async Task Case10()
+    {
+      var source = """
+        using System.ComponentModel;
+        using System.Diagnostics.CodeAnalysis;
+
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class BusinessBaseTestClass : Csla.BusinessBase<BusinessBaseTestClass>
+        {
+          [Description("The name")]
+          public partial string? Name { get; set; }
+
+          [StringSyntax(StringSyntaxAttribute.Regex)]
+          public partial string? Pattern { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
     public static IEnumerable<object[]> Case09TestData()
     {
       var nonNullableBuiltInTypes = new string[] { "bool", "byte", "sbyte", "char", "decimal", "double", "float", "int", "uint", "long", "ulong", "short", "ushort" };

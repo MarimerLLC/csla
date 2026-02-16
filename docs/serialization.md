@@ -10,7 +10,9 @@ The default serializer for CSLA (version 6 and later) is `MobileFormatter`. This
 
 ### Using MobileFormatter
 
-MobileFormatter supports many basic .NET types, including "primitive" types like `int`, `string`, `DateTime`, etc. It also supports `List<T>`, `Dictionary<K,V>`, and other common collection types. It also supports any type that implements `IMobileObject`, which includes all CSLA base types.
+MobileFormatter supports many basic .NET types, including "primitive" types like `int`, `string`, `DateTime`, etc. It also supports any type that implements `IMobileObject`, which includes all CSLA base types.
+
+> ⚠️ Standard .NET collection types such as `List<T>` and `Dictionary<K,V>` are _not_ directly serializable by `MobileFormatter`. Use `MobileList<T>` or `MobileDictionary<K,V>` from `Csla.Core` for serializable collections, or register a custom serializer for your collection type.
 
 If you create your complex types by subclassing CSLA base types and using the managed property syntax, you don't need to do anything special to support serialization.
 

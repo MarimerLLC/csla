@@ -177,7 +177,7 @@ namespace Csla.Test.ValidationRules
 
       await ForceThreadSwitch(bo, TimeSpan.FromMilliseconds(25));
 
-      await tcs.Task.WaitAsync(TimeSpan.FromMilliseconds(150));
+      await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
     }
 
     [TestMethod($"When an async rules exception can be handled by {nameof(IUnhandledAsyncRuleExceptionHandler)} it must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.Handle)}.")]
@@ -191,14 +191,12 @@ namespace Csla.Test.ValidationRules
       var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
       var bo = await cp.CreateAsync();
 
-      bool canHandleInvoked = false;
-      unhandledExceptionHandler.HandleInspector = (_, _, _) => canHandleInvoked = true;
+      var tcs = new TaskCompletionSource();
+      unhandledExceptionHandler.HandleInspector = (_, _, _) => tcs.TrySetResult();
 
       await ForceThreadSwitch(bo, TimeSpan.FromMilliseconds(25));
 
-      await Task.Delay(TimeSpan.FromMilliseconds(150));
-
-      canHandleInvoked.Should().BeTrue();
+      await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
     }
 
     [Ignore("This test can be run but will crash the test host, so this is failing any CI build. But for completness it's here and can be run if necessary.")]

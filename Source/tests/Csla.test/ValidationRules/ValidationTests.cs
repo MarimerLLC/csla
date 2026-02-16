@@ -250,6 +250,30 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    public void RegExMatchHasStringSyntaxAttribute()
+    {
+      var type = typeof(Rules.CommonRules.RegExMatch);
+
+      // Verify the Expression property has [StringSyntax] attribute
+      var expressionProp = type.GetProperty(nameof(Rules.CommonRules.RegExMatch.Expression));
+      Assert.IsNotNull(expressionProp);
+      var propAttr = expressionProp.GetCustomAttributes(typeof(System.Diagnostics.CodeAnalysis.StringSyntaxAttribute), false);
+      Assert.AreEqual(1, propAttr.Length, "Expression property should have [StringSyntax] attribute");
+      Assert.AreEqual(System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Regex, ((System.Diagnostics.CodeAnalysis.StringSyntaxAttribute)propAttr[0]).Syntax);
+
+      // Verify constructor parameters have [StringSyntax] attribute
+      var ctors = type.GetConstructors();
+      foreach (var ctor in ctors)
+      {
+        var exprParam = Array.Find(ctor.GetParameters(), p => p.Name == "expression");
+        Assert.IsNotNull(exprParam, $"Constructor {ctor} should have an 'expression' parameter");
+        var paramAttr = exprParam.GetCustomAttributes(typeof(System.Diagnostics.CodeAnalysis.StringSyntaxAttribute), false);
+        Assert.AreEqual(1, paramAttr.Length, $"Constructor parameter 'expression' should have [StringSyntax] attribute");
+        Assert.AreEqual(System.Diagnostics.CodeAnalysis.StringSyntaxAttribute.Regex, ((System.Diagnostics.CodeAnalysis.StringSyntaxAttribute)paramAttr[0]).Syntax);
+      }
+    }
+
+    [TestMethod]
     public void MergeBrokenRules()
     {
       var root = CreateWithoutCriteria<BrokenRulesMergeRoot>();

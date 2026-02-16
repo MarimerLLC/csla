@@ -6,7 +6,6 @@
 // <summary>Exposes server-side DataPortal functionality through RabbitMQ</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 using System.Security.Principal;
@@ -158,22 +157,18 @@ namespace Csla.Channels.RabbitMq
 
         var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
-          _applicationContext,  Deserialize<IPrincipal>(request.Principal),
+          _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {
@@ -207,17 +202,13 @@ namespace Csla.Channels.RabbitMq
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {
@@ -253,11 +244,6 @@ namespace Csla.Channels.RabbitMq
 
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
       }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
-      }
       finally
       {
         result = ConvertResponse(result);
@@ -290,17 +276,13 @@ namespace Csla.Channels.RabbitMq
           request.ClientCulture,
           request.ClientUICulture,
           Deserialize<IContextDictionary>(request.ClientContext));
+        context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
         result.ObjectData = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(dpr.ReturnObject);
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-        throw;
       }
       finally
       {
@@ -352,7 +334,7 @@ namespace Csla.Channels.RabbitMq
 
     #endregion Conversion methods
 
-    private T Deserialize<T>(byte[] data) 
+    private T Deserialize<T>(byte[] data)
     {
       var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
       if (deserializedData is not T castedData)

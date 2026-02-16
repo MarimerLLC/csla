@@ -1,53 +1,15 @@
-﻿using System.Configuration;
-using System.Reflection;
-
 namespace Csla.Test
 {
   public class WellKnownValues
   {
-    private static System.Configuration.Configuration AppConfig = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
-
-    static WellKnownValues()
+    public static string DataPortalTestDatabase
     {
-      DataDirectory = BuildDataDirectory();
-      DataPortalTestDatabase = GetConnectionString("DataPortalTestDatabase");
-      DataPortalTestDatabaseWithInvalidDBValue = GetConnectionString("DataPortalTestDatabaseWithInvalidDBValue");
-      DataPortalTestDatabaseEntities = GetConnectionString("DataPortalTestDatabaseEntities");
-      EntityConnectionWithMissingDB = GetConnectionString("DataPortalTestDatabaseEntitiesWithInvalidDBValue");
-    }
-
-    public static string DataDirectory { get; }
-
-    public static string EntityConnectionWithMissingDBConnectionStringName = "DataPortalTestDatabaseEntitiesWithInvalidDBValue";
-    public static string EntityConnectionWithMissingDB {get;} 
-    public static string DataPortalTestDatabaseEntities { get; } 
-    public static string DataPortalTestDatabaseWithInvalidDBValue { get; } 
-
-    public static string DataPortalTestDatabase { get; }
-    public static string TestLinqToSqlContextDataContext { get; }
-
-    #region Private Helper Methods
-
-    private static string BuildDataDirectory()
-    {
-      string dataDirectory = AppDomain.CurrentDomain.GetData("DataDirectory")?.ToString() ?? AppDomain.CurrentDomain.BaseDirectory;
-      if (dataDirectory.EndsWith(@"\"))
+      get
       {
-        dataDirectory = dataDirectory.Substring(0, dataDirectory.Length - 1);
+        if (SqliteTestDb.ConnectionString == null)
+          throw new InvalidOperationException("SqliteTestDb has not been initialized. Ensure AssemblyInitialize has run.");
+        return SqliteTestDb.ConnectionString;
       }
-      return dataDirectory;
     }
-
-    private static string GetConnectionString(string connectionName)
-    {
-      string connectionString;
-      ConnectionStringSettingsCollection conStrings = AppConfig.ConnectionStrings.ConnectionStrings;
-
-      connectionString = conStrings[connectionName].ConnectionString;
-      connectionString = connectionString.Replace("|DataDirectory|", DataDirectory);
-      return connectionString;
-    }
-
-    #endregion
   }
 }

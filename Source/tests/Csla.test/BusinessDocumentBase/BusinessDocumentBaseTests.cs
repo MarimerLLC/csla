@@ -657,6 +657,15 @@ namespace Csla.Test.BusinessDocumentBase
       doc.Insert(0, nonChild);
     }
 
+    [TestMethod]
+    [ExpectedException(typeof(InvalidOperationException))]
+    public void IndexerSet_NonChild_ThrowsInvalidOperationException()
+    {
+      var doc = FetchDocument(1);
+      var nonChild = new DocumentLineItem(); // not created via child data portal — IsChild = false
+      doc[0] = nonChild;
+    }
+
     #endregion
 
     #region Save Workflow

@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Microsoft.Data.SqlClient;
+using System.Data.SQLite;
 
 namespace Csla.Test.DataPortal
 {
@@ -119,33 +119,29 @@ namespace Csla.Test.DataPortal
     [Transactional(TransactionalTypes.TransactionScope)]
     [Insert]
     protected void DataPortal_Insert()
-    { 
-      SqlConnection cn = new SqlConnection(WellKnownValues.DataPortalTestDatabase);
+    {
+      using var cn = new SQLiteConnection(WellKnownValues.DataPortalTestDatabase);
       string firstName = FirstName;
       string lastName = LastName;
       string smallColumn = SmallColumn;
 
+      cn.Open();
+
       //this command will always execute successfully
       //since it inserts a string less than 5 characters
       //into SmallColumn
-      SqlCommand cm1 = new SqlCommand();
-      cm1.Connection = cn;
+      using var cm1 = cn.CreateCommand();
       cm1.CommandText = "INSERT INTO Table2(FirstName, LastName, SmallColumn) VALUES('Bill', 'Thompson', 'abc')";
 
       //this command will throw an exception
-      //if SmallColumn is set to a string longer than 
+      //if SmallColumn is set to a string longer than
       //5 characters
-      SqlCommand cm2 = new SqlCommand();
-      cm2.Connection = cn;
-      //use stringbuilder
-      cm2.CommandText = "INSERT INTO Table2(FirstName, LastName, SmallColumn) VALUES('";
-      cm2.CommandText += firstName;
-      cm2.CommandText += "', '" + lastName + "', '" + smallColumn + "')";
+      using var cm2 = cn.CreateCommand();
+      cm2.CommandText = "INSERT INTO Table2(FirstName, LastName, SmallColumn) VALUES('" +
+        firstName + "', '" + lastName + "', '" + smallColumn + "')";
 
-      cn.Open();
       cm1.ExecuteNonQuery();
       cm2.ExecuteNonQuery();
-      cn.Close();
 
       TestResults.Reinitialise();
       TestResults.Add("TransactionalRoot", "Inserted");

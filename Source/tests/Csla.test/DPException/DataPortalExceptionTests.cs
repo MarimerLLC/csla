@@ -28,9 +28,7 @@ namespace Csla.Test.DPException
       TestResults.Reinitialise();
     }
 
-#if DEBUG
     [TestMethod]
-    [TestCategory("SkipOnCIServer")]
     public void CheckInnerExceptionsOnSave()
     {
       IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
@@ -43,7 +41,6 @@ namespace Csla.Test.DPException
       string baseException = string.Empty;
       string baseInnerException = string.Empty;
       string baseInnerInnerException = string.Empty;
-      string exceptionSource = string.Empty;
 
       try
       {
@@ -54,31 +51,23 @@ namespace Csla.Test.DPException
         baseException = ex.Message;
         baseInnerException = ex.InnerException.Message;
         baseInnerInnerException = ex.InnerException.InnerException?.Message;
-        exceptionSource = ex.InnerException.InnerException?.Source;
         Assert.IsNull(ex.BusinessObject, "Business object shouldn't be returned");
       }
 
       //check base exception
       Assert.IsTrue(baseException.StartsWith("DataPortal.Update failed"), "Exception should start with 'DataPortal.Update failed'");
-      Assert.IsTrue(baseException.Contains("String or binary data would be truncated."),
-        "Exception should contain 'String or binary data would be truncated.'");
+      Assert.IsTrue(baseException.Contains("CHECK constraint failed"),
+        "Exception should contain 'CHECK constraint failed'");
       //check inner exception
       Assert.AreEqual("TransactionalRoot.DataPortal_Insert method call failed", baseInnerException);
-      //check inner exception of inner exception
-      Assert.AreEqual("String or binary data would be truncated.\r\nThe statement has been terminated.", baseInnerInnerException);
+      //check inner exception of inner exception (SQLite CHECK constraint violation)
+      Assert.IsTrue(baseInnerInnerException.Contains("CHECK constraint failed"),
+        "Inner inner exception should contain 'CHECK constraint failed'");
 
-      //check what caused inner exception's inner exception (i.e. the root exception)
-#if (NETFRAMEWORK)
-      Assert.AreEqual(".Net SqlClient Data Provider", exceptionSource);
-#else
-      Assert.AreEqual("Core Microsoft SqlClient Data Provider", exceptionSource);
-#endif
-
-      //verify that the implemented method, DataPortal_OnDataPortal 
+      //verify that the implemented method, DataPortal_OnDataPortal
       //was called for the business object that threw the exception
       Assert.AreEqual("Called", TestResults.GetResult("OnDataPortalException"));
     }
-#endif
 
     [TestMethod]
     public void CheckInnerExceptionsOnDelete()

@@ -113,6 +113,8 @@ namespace Csla
       var proxy = GetDataPortalProxy(method);
 
       var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+      if (method != null)
+        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<CreateAttribute>(method.MethodInfo);
 
       Server.DataPortalResult result = default!;
       try
@@ -190,6 +192,8 @@ namespace Csla
 
       var proxy = GetDataPortalProxy(method);
       var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+      if (method != null)
+        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<FetchAttribute>(method.MethodInfo);
 
       Server.DataPortalResult result = default!;
       try
@@ -225,6 +229,8 @@ namespace Csla
       _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<ExecuteAttribute>(objectType, criteria, out var method);
       var proxy = GetDataPortalProxy(method);
       var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+      if (method != null)
+        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<ExecuteAttribute>(method.MethodInfo);
 
       Server.DataPortalResult result = default!;
       try
@@ -510,6 +516,8 @@ namespace Csla
       var proxy = GetDataPortalProxy(method);
 
       var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
+      if (method != null)
+        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<DeleteAttribute>(method.MethodInfo);
       try
       {
         var result = await _cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete,

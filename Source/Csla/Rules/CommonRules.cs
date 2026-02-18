@@ -597,6 +597,7 @@ namespace Csla.Rules.CommonRules
     /// Gets the regular expression
     /// to be evaluated.
     /// </summary>
+    [StringSyntax(StringSyntaxAttribute.Regex)]
     public string Expression { get; }
 
     /// <summary>
@@ -612,7 +613,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="expression">Regular expression.</param>
     /// <exception cref="ArgumentNullException"><paramref name="primaryProperty"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="expression"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public RegExMatch(Core.IPropertyInfo primaryProperty, string expression)
+    public RegExMatch(Core.IPropertyInfo primaryProperty, [StringSyntax(StringSyntaxAttribute.Regex)] string expression)
       : base(primaryProperty)
     {
       if (primaryProperty is null)
@@ -632,7 +633,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="message">The message.</param>
     /// <exception cref="ArgumentNullException"><paramref name="primaryProperty"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="expression"/> or <paramref name="message"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public RegExMatch(Core.IPropertyInfo primaryProperty, string expression, string message)
+    public RegExMatch(Core.IPropertyInfo primaryProperty, [StringSyntax(StringSyntaxAttribute.Regex)] string expression, string message)
       : this(primaryProperty, expression)
     {
       if (string.IsNullOrWhiteSpace(message))
@@ -649,7 +650,7 @@ namespace Csla.Rules.CommonRules
     /// <param name="messageDelegate">The localizable message.</param>
     /// <exception cref="ArgumentNullException"><paramref name="primaryProperty"/> or <paramref name="messageDelegate"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="expression"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public RegExMatch(Core.IPropertyInfo primaryProperty, string expression, Func<string> messageDelegate)
+    public RegExMatch(Core.IPropertyInfo primaryProperty, [StringSyntax(StringSyntaxAttribute.Regex)] string expression, Func<string> messageDelegate)
       : this(primaryProperty, expression)
     {
       if (messageDelegate is null)

@@ -57,7 +57,7 @@ namespace csla.netcore.test.DataPortal
 
       var obj = CreateSimpleType(serviceProvider);
 
-      await Task.Delay(500);
+      await WaitForDashboard(() => dashboard.CompletedCalls >= 1);
 
       Assert.IsTrue(dashboard.FirstCall.Ticks > 0);
       Assert.AreEqual(1, dashboard.TotalCalls, "total");
@@ -131,6 +131,17 @@ namespace csla.netcore.test.DataPortal
     {
       IDataPortal<SimpleType> dataPortal = serviceProvider.GetRequiredService<IDataPortal<SimpleType>>();
       return dataPortal.Fetch(idString);
+    }
+
+    private static async Task WaitForDashboard(Func<bool> condition, int timeoutMs = 5000)
+    {
+      var start = Environment.TickCount;
+      while (!condition())
+      {
+        if (Environment.TickCount - start > timeoutMs)
+          Assert.Fail("Dashboard did not reach expected state within timeout");
+        await Task.Delay(50);
+      }
     }
 
     private IServiceProvider InitialiseServiceProviderUsingRealDashboard()

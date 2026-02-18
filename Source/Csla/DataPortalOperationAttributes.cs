@@ -23,6 +23,13 @@ namespace Csla
     /// service is not registered.
     /// </summary>
     public bool AllowNull { get; set; }
+
+    /// <summary>
+    /// Gets or sets the key used to identify a keyed service registration.
+    /// When specified, the service is retrieved using GetKeyedService or GetRequiredKeyedService.
+    /// Requires .NET 8.0 or higher.
+    /// </summary>
+    public object? Key { get; set; }
   }
 
   /// <summary>

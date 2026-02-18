@@ -303,6 +303,10 @@ namespace Csla
 
     #region Insert, Remove, Clear
 
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isDeserializing;
+
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection. 
@@ -381,12 +385,15 @@ namespace Csla
         // ensure child uses same context as parent
         if (item is IUseApplicationContext iuac)
           iuac.ApplicationContext = ApplicationContext;
-        // set child edit level
-        UndoableBase.ResetChildEditLevel(item, EditLevel, false);
-        // when an object is inserted we assume it is
-        // a new object and so the edit level when it was
-        // added must be set
-        item.EditLevelAdded = EditLevel;
+        if (!_isDeserializing)
+        {
+          // set child edit level
+          UndoableBase.ResetChildEditLevel(item, EditLevel, false);
+          // when an object is inserted we assume it is
+          // a new object and so the edit level when it was
+          // added must be set
+          item.EditLevelAdded = EditLevel;
+        }
         base.InsertItem(index, item);
       }
       else
@@ -732,7 +739,15 @@ namespace Csla
       {
         _deletedList = (MobileList<C>?)formatter.GetObject(child.ReferenceId);
       }
-      base.OnSetChildren(info, formatter);
+      _isDeserializing = true;
+      try
+      {
+        base.OnSetChildren(info, formatter);
+      }
+      finally
+      {
+        _isDeserializing = false;
+      }
     }
 
     /// <inheritdoc />

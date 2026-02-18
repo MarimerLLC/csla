@@ -6,6 +6,7 @@
 // <summary>A collection of currently broken rules.</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.ObjectModel;
 using Csla.Properties;
 using Csla.Serialization.Mobile;
 
@@ -446,8 +447,11 @@ namespace Csla.Rules
     {
       if (list is null)
         throw new ArgumentNullException(nameof(list));
-      foreach (var item in list)
-        Add(item);
+      lock (_syncRoot)
+      {
+        foreach (var item in list)
+          Add(item);
+      }
     }
 
     /// <summary>
@@ -478,6 +482,20 @@ namespace Csla.Rules
       WarningCount = info.GetValue<int>("_warnCount");
       InformationCount = info.GetValue<int>("_infoCount");
       base.OnSetState(info);
+    }
+
+    /// <summary>
+    /// Returns a thread-safe copy of the current broken rules.
+    /// This method should be used instead of ToList() when a copy of the 
+    /// broken rules list is desired that 
+    /// </summary>
+    /// <returns>A new <see cref="ReadOnlyCollection{BrokenRule}"/> containing the broken rules at the time of the call.</returns>
+    public ReadOnlyCollection<BrokenRule> ToThreadSafeList()
+    {
+      lock (_syncRoot)
+      {
+        return this.ToList().AsReadOnly();
+      }
     }
   }
 }

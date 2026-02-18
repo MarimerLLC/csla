@@ -112,6 +112,22 @@ namespace Csla.Server.Hosts.DataPortalChannel
     }
 
     /// <summary>
+    /// The operation name for name-based dispatch.
+    /// Null for legacy clients.
+    /// </summary>
+    public static readonly PropertyInfo<string> OperationNameProperty = RegisterProperty<string>(nameof(OperationName));
+
+    /// <summary>
+    /// The operation name for name-based dispatch.
+    /// Null for legacy clients.
+    /// </summary>
+    public string? OperationName
+    {
+      get => GetProperty(OperationNameProperty);
+      set => LoadProperty(OperationNameProperty, value);
+    }
+
+    /// <summary>
     /// Initializes a new instance of <see cref="CriteriaRequest"/>-object.
     /// </summary>
     /// <param name="applicationContext"></param>

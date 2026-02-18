@@ -25,6 +25,19 @@ namespace Csla.Test.BusinessDocumentBase
       set => SetProperty(DocumentDateProperty, value);
     }
 
+    [NotUndoable]
+    private string _notUndoableData = string.Empty;
+
+    public string NotUndoableData
+    {
+      get => _notUndoableData;
+      set => _notUndoableData = value;
+    }
+
+    public int DeletedCount => DeletedList.Count;
+
+    public void MakeOld() => MarkOld();
+
     [Create]
     private void DataPortal_Create()
     {
@@ -59,6 +72,12 @@ namespace Csla.Test.BusinessDocumentBase
     private void DataPortal_Update()
     {
       FieldManager.UpdateChildren();
+      Child_Update();
+    }
+
+    [DeleteSelf]
+    private void DataPortal_DeleteSelf()
+    {
       Child_Update();
     }
   }

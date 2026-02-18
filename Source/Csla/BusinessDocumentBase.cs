@@ -137,11 +137,17 @@ namespace Csla
     /// Gets or sets a value indicating whether list changed
     /// events should be raised.
     /// </summary>
-    protected bool RaiseListChangedEvents
+    public bool RaiseListChangedEvents
     {
       get => _raiseListChangedEvents;
-      set => _raiseListChangedEvents = value;
+      protected set => _raiseListChangedEvents = value;
     }
+
+    /// <summary>
+    /// Use this object to suppress list changed events
+    /// during bulk operations. Equivalent to <see cref="LoadListMode"/>.
+    /// </summary>
+    public IDisposable SuppressListChangedEvents => LoadListMode;
 
     /// <summary>
     /// Use this object to suppress list changed events
@@ -301,8 +307,10 @@ namespace Csla
         item.EditLevelAdded = EditLevel;
         _items.Insert(index, item);
         OnAddEventHooks((IBusinessObject)item);
+        var collectionArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
         if (RaiseListChangedEvents)
-          OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+          OnCollectionChanged(collectionArgs);
+        OnChildChanged(new Core.ChildChangedEventArgs(item, null, collectionArgs));
       }
       else
       {
@@ -328,8 +336,10 @@ namespace Csla
       {
         DeleteChild(child);
       }
+      var collectionArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index);
       if (RaiseListChangedEvents)
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, child, index));
+        OnCollectionChanged(collectionArgs);
+      OnChildChanged(new Core.ChildChangedEventArgs(child, null, collectionArgs));
     }
 
     /// <summary>
@@ -407,6 +417,20 @@ namespace Csla
       Add(item);
       return item;
     }
+
+    #endregion
+
+    #region AddNew
+
+    /// <summary>
+    /// Creates and adds a new child item to the collection.
+    /// </summary>
+    public C AddNew() => AddNewCore();
+
+    /// <summary>
+    /// Asynchronously creates and adds a new child item to the collection.
+    /// </summary>
+    public Task<C> AddNewAsync() => AddNewCoreAsync();
 
     #endregion
 

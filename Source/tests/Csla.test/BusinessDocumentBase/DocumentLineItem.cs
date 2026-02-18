@@ -6,6 +6,8 @@
 // <summary>Test child object for BusinessDocumentBase tests</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Rules;
+
 namespace Csla.Test.BusinessDocumentBase
 {
   [Serializable]
@@ -23,6 +25,19 @@ namespace Csla.Test.BusinessDocumentBase
     {
       get => GetProperty(AmountProperty);
       set => SetProperty(AmountProperty, value);
+    }
+
+    public static readonly PropertyInfo<string> AsyncRuleTextProperty = RegisterProperty<string>(nameof(AsyncRuleText));
+    public string AsyncRuleText
+    {
+      get => GetProperty(AsyncRuleTextProperty);
+      set => SetProperty(AsyncRuleTextProperty, value);
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new OneSecondAsyncRule(AsyncRuleTextProperty));
     }
 
     [CreateChild]
@@ -44,5 +59,18 @@ namespace Csla.Test.BusinessDocumentBase
 
     [DeleteSelfChild]
     private void Child_DeleteSelf() { }
+
+    private sealed class OneSecondAsyncRule : BusinessRuleAsync
+    {
+      public OneSecondAsyncRule(Core.IPropertyInfo primaryProperty) : base(primaryProperty)
+      {
+        InputProperties.Add(primaryProperty);
+      }
+
+      protected override async Task ExecuteAsync(IRuleContext context)
+      {
+        await Task.Delay(TimeSpan.FromSeconds(1));
+      }
+    }
   }
 }

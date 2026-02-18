@@ -355,6 +355,9 @@ namespace Csla
       if (item is null)
         throw new ArgumentNullException(nameof(item));
 
+      if (!item.IsChild)
+        throw new InvalidOperationException(Resources.ListItemNotAChildException);
+
       C? child = default;
       if (!ReferenceEquals(_items[index], item))
         child = _items[index];
@@ -940,6 +943,77 @@ namespace Csla
 
       System.Reflection.PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property.</typeparam>
+    /// <param name="propertyLambdaExpression">Property expression.</param>
+    /// <param name="relationship">Relationship with property value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      System.Reflection.PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterProperty<P>(reflectedPropertyInfo.Name, relationship);
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property.</typeparam>
+    /// <param name="propertyLambdaExpression">Property expression.</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      System.Reflection.PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName);
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property.</typeparam>
+    /// <param name="propertyLambdaExpression">Property expression.</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding.</param>
+    /// <param name="defaultValue">Default value for the property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue)
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      System.Reflection.PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue);
+    }
+
+    /// <summary>
+    /// Indicates that the specified property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">Type of property.</typeparam>
+    /// <param name="propertyLambdaExpression">Property expression.</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding.</param>
+    /// <param name="defaultValue">Default value for the property.</param>
+    /// <param name="relationship">Relationship with property value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      System.Reflection.PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);
     }
 
     /// <summary>

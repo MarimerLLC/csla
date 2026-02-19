@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Test.State;
 
 [TestClass]
-public class ServerSessionManagerTests
+public class SessionManagerTests
 {
   private FakeSessionIdManager _sessionIdManager = null!;
   private InMemorySessionStore _sessionStore = null!;

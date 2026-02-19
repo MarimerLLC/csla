@@ -66,6 +66,26 @@ public class ServerSessionManagerTests
   }
 
   [TestMethod]
+  public void UpdateSession_DoesNotAffectExistingReferences()
+  {
+    var originalSession = _sessionManager.GetSession();
+    originalSession["key"] = "originalValue";
+
+    var newSession = new Session();
+    newSession["key"] = "newValue";
+
+    _sessionManager.UpdateSession(newSession);
+
+    // The original reference should still see its original data
+    originalSession["key"].Should().Be("originalValue");
+
+    // And subsequent gets should return the updated session instance
+    var retrieved = _sessionManager.GetSession();
+    retrieved.Should().BeSameAs(newSession);
+    retrieved["key"].Should().Be("newValue");
+  }
+
+  [TestMethod]
   public void UpdateSession_ThrowsOnNull()
   {
     var act = () => _sessionManager.UpdateSession(null!);

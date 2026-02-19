@@ -22,6 +22,7 @@ public class InMemorySessionStore : ISessionStore
   /// <inheritdoc />
   public ValueTask<Session?> GetSessionAsync(string key)
   {
+    ArgumentNullException.ThrowIfNull(key);
     _sessions.TryGetValue(key, out var session);
     return new ValueTask<Session?>(session);
   }
@@ -29,6 +30,8 @@ public class InMemorySessionStore : ISessionStore
   /// <inheritdoc />
   public ValueTask AddOrUpdateSessionAsync(string key, Session session)
   {
+    ArgumentNullException.ThrowIfNull(key);
+    ArgumentNullException.ThrowIfNull(session);
     _sessions.AddOrUpdate(key, session, (_, _) => session);
     return ValueTask.CompletedTask;
   }
@@ -36,6 +39,7 @@ public class InMemorySessionStore : ISessionStore
   /// <inheritdoc />
   public ValueTask PurgeExpiredSessionsAsync(TimeSpan expiration)
   {
+    ArgumentOutOfRangeException.ThrowIfNegative(expiration.Ticks, nameof(expiration));
     var expirationTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds() - expiration.TotalSeconds;
     List<string> toRemove = [];
     foreach (var kvp in _sessions)

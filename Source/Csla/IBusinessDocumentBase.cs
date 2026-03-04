@@ -13,7 +13,7 @@ namespace Csla
   /// <summary>
   /// Consolidated interface for the BusinessDocumentBase type,
   /// which combines BusinessBase and BusinessListBase capabilities.
-  /// A business document has its own properties AND contains
+  /// A business document has its own properties AND is
   /// a collection of child items.
   /// </summary>
   /// <typeparam name="C">Type of the child objects contained in the collection.</typeparam>

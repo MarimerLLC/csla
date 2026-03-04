@@ -23,7 +23,7 @@ namespace Csla
 {
   /// <summary>
   /// Base class for an editable business object that has its own
-  /// properties AND contains a collection of child items.
+  /// properties AND is a collection of child items.
   /// Combines the capabilities of both <see cref="BusinessBase{T}"/>
   /// and <see cref="BusinessListBase{T,C}"/>.
   /// </summary>
@@ -41,7 +41,7 @@ namespace Csla
     IList<C>,
     IBusinessDocumentBase<C>
     where T : BusinessDocumentBase<T, C>
-    where C : IEditableBusinessObject
+    where C : notnull, IEditableBusinessObject
   {
     #region Collection Storage
 
@@ -74,7 +74,7 @@ namespace Csla
     #region IContainsDeletedList
 
     IEnumerable<IEditableBusinessObject> IContainsDeletedList.DeletedList
-      => (IEnumerable<IEditableBusinessObject>)DeletedList;
+      => (IEnumerable<IEditableBusinessObject>?)_deletedList ?? Enumerable.Empty<IEditableBusinessObject>();
 
     /// <summary>
     /// Returns true if the internal deleted list
@@ -205,6 +205,9 @@ namespace Csla
     /// <param name="item">The child object to add.</param>
     public void Add(C item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       InsertItem(_items.Count, item);
     }
 
@@ -215,6 +218,9 @@ namespace Csla
     /// <param name="item">The child object to insert.</param>
     public void Insert(int index, C item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       InsertItem(index, item);
     }
 
@@ -225,6 +231,9 @@ namespace Csla
     /// <returns>True if the item was found and removed.</returns>
     public bool Remove(C item)
     {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
       int index = _items.IndexOf(item);
       if (index < 0)
         return false;
@@ -253,20 +262,38 @@ namespace Csla
     /// Determines whether the collection contains a specific item.
     /// </summary>
     /// <param name="item">The item to locate.</param>
-    public bool Contains(C item) => _items.Contains(item);
+    public bool Contains(C item)
+    {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
+      return _items.Contains(item);
+    }
 
     /// <summary>
     /// Determines the index of a specific item in the collection.
     /// </summary>
     /// <param name="item">The item to locate.</param>
-    public int IndexOf(C item) => _items.IndexOf(item);
+    public int IndexOf(C item)
+    {
+      if (item is null)
+        throw new ArgumentNullException(nameof(item));
+
+      return _items.IndexOf(item);
+    }
 
     /// <summary>
     /// Copies the elements to an array starting at the specified index.
     /// </summary>
     /// <param name="array">Destination array.</param>
     /// <param name="arrayIndex">Start index in array.</param>
-    public void CopyTo(C[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
+    public void CopyTo(C[] array, int arrayIndex)
+    {
+      if (array is null)
+        throw new ArgumentNullException(nameof(array));
+
+      _items.CopyTo(array, arrayIndex);
+    }
 
     /// <summary>
     /// Returns an enumerator that iterates through the collection.
@@ -292,6 +319,13 @@ namespace Csla
 
       if (item.IsChild)
       {
+        // if the object is already in the deleted list, restore it
+        if (_deletedList != null && _deletedList.Contains(item))
+        {
+          UnDeleteChild(item);
+          return;
+        }
+
         IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
 
         // set parent reference
@@ -523,7 +557,7 @@ namespace Csla
 
     void IEditableCollection.SetParent(IParent? parent)
     {
-      SetParent(parent!);
+      SetParent(parent);
     }
 
     #endregion
@@ -923,8 +957,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName)
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
 
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName));
     }
@@ -1026,8 +1060,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, RelationshipTypes relationship)
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
 
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, string.Empty, relationship));
     }
@@ -1042,8 +1076,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName)
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
 
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName));
     }
@@ -1059,8 +1093,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName, P? defaultValue)
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
 
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }
@@ -1077,8 +1111,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
     protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
 
       return RegisterProperty(Core.FieldManager.PropertyInfoFactory.Factory.Create<P>(typeof(T), propertyName, friendlyName, defaultValue, relationship));
     }
@@ -1090,8 +1124,8 @@ namespace Csla
     /// <exception cref="ArgumentNullException"><paramref name="methodName"/> is <see langword="null"/>.</exception>
     protected static new MethodInfo RegisterMethod(string methodName)
     {
-      if (methodName is null)
-        throw new ArgumentNullException(nameof(methodName));
+      if (string.IsNullOrWhiteSpace(methodName))
+        throw new ArgumentException("Method name must not be null or empty.", nameof(methodName));
 
       return RegisterMethod(typeof(T), methodName);
     }

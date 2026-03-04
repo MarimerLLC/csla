@@ -66,6 +66,7 @@ namespace Csla.Configuration
       {
         // use Blazor state management
         config.Services.AddTransient(typeof(ISessionIdManager), blazorOptions.SessionIdManagerType);
+        config.Services.AddSingleton(typeof(ISessionStore), blazorOptions.SessionStoreType);
         config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
         config.Services.AddTransient<StateManager>();
       }

@@ -792,9 +792,9 @@ namespace Csla.Core.FieldManager
       if (mode == StateMode.Serialization)
       {
         _stateStack.Clear();
-        if (info.Values.ContainsKey("_stateStack"))
+        if (info.Values.TryGetValue("_stateStack", out var stateStackField))
         {
-          var stackArray = (IEnumerable<byte[]>)info.GetRequiredValue<byte[][]>("_stateStack");
+          var stackArray = (IEnumerable<byte[]>)stateStackField.Value!;
           foreach (var item in stackArray.Reverse())
             _stateStack.Push(item);
         }
@@ -824,7 +824,8 @@ namespace Csla.Core.FieldManager
           IFieldData? data = GetFieldData(property);
           if (data != null)
           {
-            if (!info.Values.ContainsKey("child_" + property.Name) || !info.GetValue<bool>("child_" + property.Name))
+            var childKey = "child_" + property.Name;
+            if (!info.Values.TryGetValue(childKey, out var childField) || childField.Value is not true)
               _fieldData[property.Index] = null;
 
             // We don't want to reset children during an undo.

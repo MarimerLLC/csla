@@ -618,6 +618,22 @@ namespace Csla.Test.BusinessDocumentBase
       Assert.AreEqual(3, doc.Count, "All items restored after CancelEdit");
     }
 
+    [TestMethod]
+    public void RemoveThenReAdd_ChildIsNotDeleted()
+    {
+      var doc = FetchDocument(1);
+      var child = doc[0];
+
+      doc.Remove(child);
+      Assert.IsTrue(doc.ContainsDeleted(child), "Child should be in deleted list after removal");
+      Assert.AreEqual(2, doc.Count);
+
+      doc.Add(child);
+      Assert.IsFalse(doc.ContainsDeleted(child), "Child should not be in deleted list after re-add");
+      Assert.AreEqual(3, doc.Count);
+      Assert.IsFalse(child.IsDeleted, "Child should not be marked as deleted after re-add");
+    }
+
     #endregion
 
     #region Event Suppression

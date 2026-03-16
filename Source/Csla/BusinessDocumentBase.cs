@@ -110,6 +110,9 @@ namespace Csla
       // remove from deleted collection
       DeletedList.Remove(child);
 
+      // reverse the DeleteChild marking
+      child.UnDeleteChild();
+
       // preserve EditLevelAdded value
       int saveLevel = child.EditLevelAdded;
 
@@ -145,7 +148,8 @@ namespace Csla
 
     /// <summary>
     /// Use this object to suppress list changed events
-    /// during bulk operations. Equivalent to <see cref="LoadListMode"/>.
+    /// during bulk operations. This is the public API equivalent
+    /// of the protected <see cref="LoadListMode"/> property.
     /// </summary>
     public IDisposable SuppressListChangedEvents => LoadListMode;
 
@@ -203,6 +207,7 @@ namespace Csla
     /// Adds an item to the collection.
     /// </summary>
     /// <param name="item">The child object to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public void Add(C item)
     {
       if (item is null)
@@ -216,6 +221,7 @@ namespace Csla
     /// </summary>
     /// <param name="index">Zero-based index.</param>
     /// <param name="item">The child object to insert.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public void Insert(int index, C item)
     {
       if (item is null)
@@ -229,6 +235,7 @@ namespace Csla
     /// </summary>
     /// <param name="item">The child object to remove.</param>
     /// <returns>True if the item was found and removed.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Remove(C item)
     {
       if (item is null)
@@ -262,6 +269,7 @@ namespace Csla
     /// Determines whether the collection contains a specific item.
     /// </summary>
     /// <param name="item">The item to locate.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public bool Contains(C item)
     {
       if (item is null)
@@ -274,6 +282,7 @@ namespace Csla
     /// Determines the index of a specific item in the collection.
     /// </summary>
     /// <param name="item">The item to locate.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
     public int IndexOf(C item)
     {
       if (item is null)
@@ -287,6 +296,7 @@ namespace Csla
     /// </summary>
     /// <param name="array">Destination array.</param>
     /// <param name="arrayIndex">Start index in array.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
     public void CopyTo(C[] array, int arrayIndex)
     {
       if (array is null)
@@ -312,6 +322,7 @@ namespace Csla
     /// <param name="index">Index of the item to insert.</param>
     /// <param name="item">Item to insert.</param>
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">The item is not marked as a child object.</exception>
     protected virtual void InsertItem(int index, C item)
     {
       if (item is null)
@@ -384,6 +395,7 @@ namespace Csla
     /// <param name="index">The zero-based index of the item to replace.</param>
     /// <param name="item">The new value for the item at the specified index.</param>
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">The item is not marked as a child object.</exception>
     protected virtual void SetItem(int index, C item)
     {
       if (item is null)
@@ -396,7 +408,8 @@ namespace Csla
       if (!ReferenceEquals(_items[index], item))
         child = _items[index];
 
-      // delete old item
+      // suppress events while deleting old item to avoid
+      // intermediate state notifications
       using (LoadListMode)
       {
         if (child != null)
@@ -417,8 +430,10 @@ namespace Csla
       item.EditLevelAdded = EditLevel;
       _items[index] = item;
       OnAddEventHooks((IBusinessObject)item);
+      var collectionArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, (object?)child, index);
       if (RaiseListChangedEvents)
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, (object?)child, index));
+        OnCollectionChanged(collectionArgs);
+      OnChildChanged(new Core.ChildChangedEventArgs(item, null, collectionArgs));
     }
 
     /// <summary>
@@ -599,11 +614,7 @@ namespace Csla
 
     #region Status Property Overrides
 
-    /// <summary>
-    /// Gets a value indicating whether this object's data has been changed.
-    /// Aggregates the object's own dirty state with the dirty state
-    /// of all collection children.
-    /// </summary>
+    /// <inheritdoc />
     public override bool IsDirty
     {
       get
@@ -931,22 +942,6 @@ namespace Csla
     #endregion
 
     #region Register Properties
-
-    /// <summary>
-    /// Indicates that the specified property belongs
-    /// to the business object type.
-    /// </summary>
-    /// <typeparam name="P">Type of property.</typeparam>
-    /// <param name="info">PropertyInfo object for the property.</param>
-    /// <returns>The provided IPropertyInfo object.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
-    protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> info)
-    {
-      if (info is null)
-        throw new ArgumentNullException(nameof(info));
-
-      return Core.FieldManager.PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
-    }
 
     /// <summary>
     /// Indicates that the specified property belongs

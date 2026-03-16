@@ -63,12 +63,7 @@ namespace Csla.Rules
     private BrokenRulesCollection? _brokenRules;
     private BrokenRulesCollection BrokenRules
     {
-      get
-      {
-        if (_brokenRules == null)
-          _brokenRules = new BrokenRulesCollection(true);
-        return _brokenRules;
-      }
+      get => _brokenRules ??= new BrokenRulesCollection(true);
     }
 
     private bool _suppressRuleChecking;
@@ -129,27 +124,11 @@ namespace Csla.Rules
 
     [NonSerialized]
     private BusinessRuleManager? _typeRules;
-    internal BusinessRuleManager TypeRules
-    {
-      get
-      {
-        if (_typeRules == null)
-          _typeRules = BusinessRuleManager.GetRulesForType(_target.GetType(), _ruleSet);
-        return _typeRules;
-      }
-    }
+    internal BusinessRuleManager TypeRules => _typeRules ??= BusinessRuleManager.GetRulesForType(_target.GetType(), _ruleSet);
 
     [NonSerialized]
     private AuthorizationRuleManager? _typeAuthRules;
-    internal AuthorizationRuleManager TypeAuthRules
-    {
-      get
-      {
-        if (_typeAuthRules == null)
-          _typeAuthRules = AuthorizationRuleManager.GetRulesForType(_applicationContext, _target.GetType(), _ruleSet);
-        return _typeAuthRules;
-      }
-    }
+    internal AuthorizationRuleManager TypeAuthRules => _typeAuthRules ??= AuthorizationRuleManager.GetRulesForType(_applicationContext, _target.GetType(), _ruleSet);
 
     /// <summary>
     /// Gets a list of rule:// URI values for
@@ -302,15 +281,7 @@ namespace Csla.Rules
 
     [NonSerialized]
     private AsyncManualResetEvent? _busyChanged;
-    private AsyncManualResetEvent BusyChanged
-    {
-      get
-      {
-        if (_busyChanged == null)
-          _busyChanged = new AsyncManualResetEvent();
-        return _busyChanged;
-      }
-    }
+    private AsyncManualResetEvent BusyChanged => _busyChanged ??= new AsyncManualResetEvent();
 
     /// <summary>
     /// Gets a value indicating whether any async
@@ -978,15 +949,7 @@ namespace Csla.Rules
 
     private bool _cascadeOnDirtyProperties;
 
-    private List<IPropertyInfo> BusyProperties
-    {
-      get
-      {
-        if (_busyProperties == null)
-          _busyProperties = new List<IPropertyInfo>();
-        return _busyProperties;
-      }
-    }
+    private List<IPropertyInfo> BusyProperties => _busyProperties ??= [];
 
     /// <summary>
     /// Runs the enumerable list of rules.

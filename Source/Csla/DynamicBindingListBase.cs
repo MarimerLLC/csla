@@ -111,8 +111,7 @@ namespace Csla
       }
       else
       {
-        if (_identityManager == null)
-          _identityManager = new IdentityManager();
+        _identityManager ??= new IdentityManager();
         return _identityManager.GetNextIdentity(current);
       }
     }
@@ -428,8 +427,7 @@ namespace Csla
 
     private PropertyDescriptor? GetPropertyDescriptor(string propertyName)
     {
-      if (_propertyDescriptors == null)
-        _propertyDescriptors = TypeDescriptor.GetProperties(GetType());
+      _propertyDescriptors ??= TypeDescriptor.GetProperties(GetType());
       PropertyDescriptor? result = null;
       foreach (PropertyDescriptor desc in _propertyDescriptors)
       {

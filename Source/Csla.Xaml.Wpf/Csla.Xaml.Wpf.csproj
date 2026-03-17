@@ -16,20 +16,15 @@
     <PackageTags>CSLA;WPF;XAML</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-
   <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
+    <Folder Include="Properties\" />
     <Page Include="..\Csla.Xaml.Resources\Themes\Generic.xaml">
       <Link>Themes\Generic.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="..\Csla.Xaml.Resources\Resources\Error.png">
       <Link>Resources\Error.png</Link>
     </Resource>
@@ -39,19 +34,13 @@
     <Resource Include="..\Csla.Xaml.Resources\Resources\Warning.png">
       <Link>Resources\Warning.png</Link>
     </Resource>
+    <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
+    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
   
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net4&quot;))">
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <PackageReference Include="Polyfill" Version="8.9.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
 </Project>

@@ -71,7 +71,7 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp.Discovery
         current = current.Parent as BaseNamespaceDeclarationSyntax;
       }
 
-      return string.Join(".", parts);
+      return string.Join('.', parts);
     }
 
     private static ExtractedContainerDefinition BuildTypeContainer(TypeDeclarationSyntax typeDecl)

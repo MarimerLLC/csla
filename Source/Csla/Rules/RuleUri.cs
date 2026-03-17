@@ -84,15 +84,15 @@ namespace Csla.Rules
     private static string EncodeString(string value)
     {
       var result = value;
-      result = result.Replace("+", "-");
+      result = result.Replace('+', '-');
       result = result.Replace(" ", "");
       result = result.Replace("[", "");
       result = result.Replace("]", "");
-      result = result.Replace("`", "-");
-      result = result.Replace(",", "-");
-      result = result.Replace("=", "-");
+      result = result.Replace('`', '-');
+      result = result.Replace(',', '-');
+      result = result.Replace('=', '-');
       result = Uri.EscapeDataString(result);
-      result = result.Replace("%", "-");
+      result = result.Replace('%', '-');
       return result;
     }
 

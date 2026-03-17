@@ -53,45 +53,6 @@ namespace Csla
       _dataPortalClientOptions = dataPortalOptions.DataPortalClientOptions;
     }
 
-    /// @cond INTERNAL
-    private class DataPortalAsyncRequest
-    {
-      private ApplicationContext _applicationContext;
-
-      public object Argument { get; set; }
-      public IPrincipal Principal { get; set; }
-      public IContextDictionary ClientContext { get; set; }
-      public object UserState { get; set; }
-      // passes CurrentCulture and CurrentUICulture to the async thread
-      public CultureInfo CurrentCulture;
-      public CultureInfo CurrentUICulture;
-
-      public DataPortalAsyncRequest(ApplicationContext applicationContext, object argument, object userState)
-      {
-        _applicationContext = applicationContext;
-        Argument = argument;
-        Principal = _applicationContext.User;
-        ClientContext = _applicationContext.ClientContext;
-        UserState = userState;
-        CurrentCulture = CultureInfo.CurrentCulture;
-        CurrentUICulture = CultureInfo.CurrentUICulture;
-      }
-    }
-
-    private class DataPortalAsyncResult
-    {
-      public T Result { get; set; }
-      public object UserState { get; set; }
-      public Exception Error { get; set; }
-
-      public DataPortalAsyncResult(T result, Exception error, object userState)
-      {
-        Result = result;
-        UserState = userState;
-        Error = error;
-      }
-    }
-
     /// @endcond
     private Reflection.ServiceProviderMethodCaller? _serviceProviderMethodCaller;
     private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller

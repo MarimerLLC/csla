@@ -163,12 +163,7 @@ namespace Csla.Server.Hosts
     /// </summary>
     public HttpPortal Portal
     {
-      get
-      {
-        if (_portal == null)
-          _portal = _applicationContext.CreateInstanceDI<HttpPortal>();
-        return _portal;
-      }
+      get => _portal ??= _applicationContext.CreateInstanceDI<HttpPortal>();
       set => _portal = value;
     }
 

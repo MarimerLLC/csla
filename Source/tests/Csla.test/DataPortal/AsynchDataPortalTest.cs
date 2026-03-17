@@ -77,7 +77,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task CreateAsync_NoCriteria()
     {
-      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+      IDataPortal<AsyncSingle> dataPortal = _testDIContext.CreateDataPortal<AsyncSingle>();
 
       var result = await dataPortal.CreateAsync();
       Assert.IsNotNull(result);

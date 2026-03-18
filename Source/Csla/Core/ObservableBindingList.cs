@@ -640,8 +640,7 @@ namespace Csla.Core
     /// <param name="enabled">Enabled value</param>
     protected override void SetLoadListMode(bool enabled)
     {
-      if (_oldRLCE == null)
-        _oldRLCE = new Stack<bool>();
+      _oldRLCE ??= new Stack<bool>();
       if (enabled)
       {
         _oldRLCE.Push(_raiseListChangedEvents);

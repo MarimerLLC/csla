@@ -110,8 +110,7 @@ namespace Csla
       }
       else
       {
-        if (_identityManager == null)
-          _identityManager = new IdentityManager();
+        _identityManager ??= new IdentityManager();
         return _identityManager.GetNextIdentity(current);
       }
     }

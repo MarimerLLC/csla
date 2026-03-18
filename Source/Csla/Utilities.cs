@@ -120,10 +120,7 @@ namespace Csla
               result = GetPropertyType(prop.PropertyType);
           }
         }
-        if (result == null)
-        {
-          result = listType.GetMethod("get_Item")?.ReturnType;
-        }
+        result ??= listType.GetMethod("get_Item")?.ReturnType;
       }
       return result;
     }
@@ -204,8 +201,7 @@ namespace Csla
 
       if (propertyType.Equals(typeof(SmartDate)) && oldValue != null)
       {
-        if (value == null)
-          value = string.Empty;
+        value ??= string.Empty;
 
         var tmp = (SmartDate)oldValue;
         if (valueType.Equals(typeof(DateTime)))

@@ -375,12 +375,7 @@ namespace Csla
     [AllowNull]
     public string FormatString
     {
-      get
-      {
-        if (_format == null)
-          _format = _defaultFormat;
-        return _format;
-      }
+      get => _format ??= _defaultFormat;
       set => _format = value;
     }
 

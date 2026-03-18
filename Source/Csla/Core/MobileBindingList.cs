@@ -57,8 +57,7 @@ namespace Csla.Core
     {
       _loadListModeObject = null;
       SetLoadListMode(enabled);
-      if (_oldRLCE == null)
-        _oldRLCE = new Stack<bool>();
+      _oldRLCE ??= new Stack<bool>();
       if (enabled)
       {
         _oldRLCE.Push(RaiseListChangedEvents);

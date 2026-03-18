@@ -104,8 +104,7 @@ namespace Csla.Core
       }
       else
       {
-        if (_identityManager == null)
-          _identityManager = new IdentityManager();
+        _identityManager ??= new IdentityManager();
         return _identityManager.GetNextIdentity(current);
       }
     }
@@ -658,12 +657,9 @@ namespace Csla.Core
     [MemberNotNull(nameof(_readResultCache), nameof(_writeResultCache), nameof(_executeResultCache))]
     private void VerifyAuthorizationCache()
     {
-      if (_readResultCache == null)
-        _readResultCache = new ConcurrentDictionary<string, bool>();
-      if (_writeResultCache == null)
-        _writeResultCache = new ConcurrentDictionary<string, bool>();
-      if (_executeResultCache == null)
-        _executeResultCache = new ConcurrentDictionary<string, bool>();
+      _readResultCache ??= new ConcurrentDictionary<string, bool>();
+      _writeResultCache ??= new ConcurrentDictionary<string, bool>();
+      _executeResultCache ??= new ConcurrentDictionary<string, bool>();
       if (!ReferenceEquals(ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
@@ -3941,8 +3937,7 @@ namespace Csla.Core
       {
         lock (_lock)
         {
-          if (businessObject._bypassPropertyChecksObject == null)
-            businessObject._bypassPropertyChecksObject = new BypassPropertyChecksObject(businessObject);
+          businessObject._bypassPropertyChecksObject ??= new BypassPropertyChecksObject(businessObject);
 
           businessObject._bypassPropertyChecksObject.AddRef();
         }

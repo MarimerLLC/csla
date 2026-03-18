@@ -263,19 +263,23 @@ namespace Csla.Core
                 ((IUndoableObject?) value)?.UndoChanges(EditLevel, BindingEdit);
               }
             }
-            else if (value is IMobileObject && state[fieldName] != null)
-            {
-              // this is a mobile object, deserialize the value
-              using MemoryStream buffer = new MemoryStream((byte[])state[fieldName]!);
-              buffer.Position = 0;
-              var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
-              var obj = formatter.Deserialize(buffer);
-              h.MemberSetOrNotSupportedException(this, obj);
-            }
             else
             {
-              // this is a regular field, restore its value
-              h.MemberSetOrNotSupportedException(this, state[fieldName]);
+              var stateValue = state[fieldName];
+              if (value is IMobileObject && stateValue != null)
+              {
+                // this is a mobile object, deserialize the value
+                using MemoryStream buffer = new MemoryStream((byte[])stateValue);
+                buffer.Position = 0;
+                var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
+                var obj = formatter.Deserialize(buffer);
+                h.MemberSetOrNotSupportedException(this, obj);
+              }
+              else
+              {
+                // this is a regular field, restore its value
+                h.MemberSetOrNotSupportedException(this, stateValue);
+              }
             }
           }
 
@@ -412,9 +416,9 @@ namespace Csla.Core
       if (mode != StateMode.Undo)
       {
         _bindingEdit = info.GetValue<bool>("_bindingEdit");
-        if (info.Values.ContainsKey("_stateStack"))
+        if (info.Values.TryGetValue("_stateStack", out var stateStackField))
         {
-          var stackArray = (IEnumerable<byte[]>)info.GetRequiredValue<byte[][]>("_stateStack");
+          var stackArray = (IEnumerable<byte[]>)stateStackField.Value!;
           _stateStack.Clear();
           foreach (var item in stackArray.Reverse())
             _stateStack.Push(item);

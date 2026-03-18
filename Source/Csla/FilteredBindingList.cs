@@ -100,8 +100,7 @@ namespace Csla
       int index = 0;
       _filterIndex.Clear();
 
-      if (FilterProvider == null)
-        FilterProvider = DefaultFilter.Filter;
+      FilterProvider ??= DefaultFilter.Filter;
 
       foreach (T obj in SourceList)
       {

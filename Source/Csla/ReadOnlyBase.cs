@@ -306,10 +306,8 @@ namespace Csla
     [MemberNotNull(nameof(_readResultCache), nameof(_executeResultCache))]
     private void VerifyAuthorizationCache()
     {
-      if (_readResultCache == null)
-        _readResultCache = new ConcurrentDictionary<string, bool>();
-      if (_executeResultCache == null)
-        _executeResultCache = new ConcurrentDictionary<string, bool>();
+      _readResultCache ??= new ConcurrentDictionary<string, bool>();
+      _executeResultCache ??= new ConcurrentDictionary<string, bool>();
       if (!ReferenceEquals(ApplicationContext.User, _lastPrincipal))
       {
         // the principal has changed - reset the cache
@@ -1595,17 +1593,7 @@ namespace Csla
     /// Gets the PropertyManager object for this
     /// business object.
     /// </summary>
-    protected FieldDataManager FieldManager
-    {
-      get
-      {
-        if (_fieldManager == null)
-        {
-          _fieldManager = new FieldDataManager(ApplicationContext, GetType());
-        }
-        return _fieldManager;
-      }
-    }
+    protected FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(ApplicationContext, GetType());
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 

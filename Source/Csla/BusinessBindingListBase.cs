@@ -92,8 +92,7 @@ namespace Csla
       }
       else
       {
-        if (_identityManager == null)
-          _identityManager = new IdentityManager();
+        _identityManager ??= new IdentityManager();
         return _identityManager.GetNextIdentity(current);
       }
     }
@@ -138,15 +137,7 @@ namespace Csla
     /// </summary>
     [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected MobileList<C> DeletedList
-    {
-      get
-      {
-        if (_deletedList == null)
-          _deletedList = new MobileList<C>();
-        return _deletedList;
-      }
-    }
+    protected MobileList<C> DeletedList => _deletedList ??= [];
 
     [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists")]
     [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -1384,8 +1375,7 @@ namespace Csla
 
     private static PropertyDescriptor? GetPropertyDescriptor(string? propertyName)
     {
-      if (_propertyDescriptors == null)
-        _propertyDescriptors = TypeDescriptor.GetProperties(typeof(C));
+      _propertyDescriptors ??= TypeDescriptor.GetProperties(typeof(C));
 
       PropertyDescriptor? result = null;
       foreach (PropertyDescriptor desc in _propertyDescriptors)

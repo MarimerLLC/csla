@@ -35,6 +35,12 @@ namespace Csla.Core
     /// </summary>
     void DeleteChild();
     /// <summary>
+    /// Called by a parent object to reverse a
+    /// previous call to <see cref="DeleteChild"/>,
+    /// restoring the child to a non-deleted state.
+    /// </summary>
+    void UnDeleteChild();
+    /// <summary>
     /// Used by BusinessListBase as a child object is 
     /// created to tell the child object about its
     /// parent.

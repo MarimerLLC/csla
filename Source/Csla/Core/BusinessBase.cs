@@ -994,6 +994,20 @@ namespace Csla.Core
       MarkDeleted();
     }
 
+    /// <summary>
+    /// Called by a parent object to reverse a
+    /// previous call to <see cref="DeleteChild"/>,
+    /// restoring the child to a non-deleted state.
+    /// </summary>
+    internal void UnDeleteChild()
+    {
+      if (!IsChild)
+        throw new NotSupportedException(Resources.NoDeleteRootException);
+
+      IsDeleted = false;
+      MetaPropertyHasChanged("IsDeleted");
+    }
+
     #endregion
 
     #region Edit Level Tracking (child only)
@@ -1560,6 +1574,11 @@ namespace Csla.Core
     void IEditableBusinessObject.DeleteChild()
     {
       DeleteChild();
+    }
+
+    void IEditableBusinessObject.UnDeleteChild()
+    {
+      UnDeleteChild();
     }
 
     void IEditableBusinessObject.SetParent(IParent? parent)

@@ -60,11 +60,9 @@ namespace Csla.Core.FieldManager
           lock (_cacheLock)
           {
 #if NET8_0_OR_GREATER
-            if (_propertyInfoCache == null)
-              _propertyInfoCache = new ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>>();
+            _propertyInfoCache ??= new ConcurrentDictionary<Type, Tuple<string?, PropertyInfoList>>();
 #else
-            if (_propertyInfoCache == null)
-              _propertyInfoCache = new ConcurrentDictionary<Type, PropertyInfoList>();
+            _propertyInfoCache ??= new ConcurrentDictionary<Type, PropertyInfoList>();
 #endif
           }
         }

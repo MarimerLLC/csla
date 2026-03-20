@@ -1253,7 +1253,8 @@ namespace Csla.Reflection
         }
         else if (isAsyncTaskObject)
         {
-          return await ThrowIfNotTaskTReturn(CallMethod(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
+          var taskObjectConversionMethodInfo = TaskConversionHelper.CreateTaskObjectConversionMethodInfo(info.ReturnType.GetGenericArguments()[0]);
+          return await ThrowIfNotTaskTReturn(CallMethod(obj, method, hasParameters, parameters), taskObjectConversionMethodInfo, obj, method).ConfigureAwait(false);
         }
         else
         {
@@ -1272,7 +1273,7 @@ namespace Csla.Reflection
         }
         else if (mh.IsAsyncTaskObject)
         {
-          return await ThrowIfNotTaskTReturn(CallMethod(obj, mh, hasParameters, parameters), obj, method).ConfigureAwait(false);
+          return await ThrowIfNotTaskTReturn(CallMethod(obj, mh, hasParameters, parameters), mh.ConvertToTaskObjectMethod, obj, method).ConfigureAwait(false);
         }
         else
         {
@@ -1290,14 +1291,15 @@ namespace Csla.Reflection
         await t.ConfigureAwait(false);
       }
 
-      static async Task<object?> ThrowIfNotTaskTReturn(object? returnValue, object objectType, string calledMethodName)
+      static async Task<object?> ThrowIfNotTaskTReturn(object? returnValue, System.Reflection.MethodInfo taskObjectConversionMethod, object objectType, string calledMethodName)
       {
-        if (returnValue is not Task<object?> t)
+        if (returnValue is not Task t || returnValue.GetType() is not { IsGenericType: true })
         {
           ThrowNotSupportedException(objectType, calledMethodName);
         }
 
-        return await t.ConfigureAwait(false);
+        var convertedTask = (Task<object?>)taskObjectConversionMethod.Invoke(null, [returnValue])!;
+        return await convertedTask.ConfigureAwait(false);
       }
 
       [DoesNotReturn]

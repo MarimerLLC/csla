@@ -34,7 +34,8 @@ namespace Csla.Reflection
         list.Insert(0, member.Member.Name);
         member = member.Expression as MemberExpression;
       }
-      return string.Join(".", list);
+
+      return string.Join('.', list);
     }
   }
 }

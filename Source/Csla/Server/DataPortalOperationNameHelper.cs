@@ -30,7 +30,7 @@ namespace Csla.Server
       if (criteriaTypeKeys.Length == 0)
         return baseName;
 
-      return baseName + "__" + string.Join("_", criteriaTypeKeys);
+      return baseName + "__" + string.Join('_', criteriaTypeKeys);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace Csla.Server
       {
         // Type.Name for generics looks like "List`1" - same as MetadataName
         var baseName = type.Name.Replace('`', '_');
-        var typeArgs = string.Join("_", type.GetGenericArguments().Select(GetTypeKey));
+        var typeArgs = string.Join('_', type.GetGenericArguments().Select(GetTypeKey));
         return baseName + "_" + typeArgs;
       }
 

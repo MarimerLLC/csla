@@ -92,7 +92,7 @@ namespace Csla.Channels.RabbitMq
       DataPortalResponse result;
       try
       {
-        var request = Deserialize<object>(requestData);
+        var request = DeserializeRequired<object>(requestData);
         result = await CallPortal(ea.BasicProperties.Type ?? throw new InvalidOperationException($"{nameof(BasicDeliverEventArgs.BasicProperties)}.{nameof(IReadOnlyBasicProperties.Type)} == null"), request);
       }
       catch (Exception ex)
@@ -161,7 +161,7 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Create(objectType, criteria, context, true);
@@ -201,7 +201,7 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Fetch(objectType, criteria, context, true);
@@ -235,7 +235,7 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await _dataPortalServer.Update((ICslaObject)obj, context, true);
 
@@ -275,7 +275,7 @@ namespace Csla.Channels.RabbitMq
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
         var dpr = await _dataPortalServer.Delete(objectType, criteria, context, true);
@@ -334,15 +334,15 @@ namespace Csla.Channels.RabbitMq
 
     #endregion Conversion methods
 
-    private T Deserialize<T>(byte[] data)
+    private T? Deserialize<T>(byte[] data)
     {
-      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
-      if (deserializedData is not T castedData)
-      {
-        throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T).FullName));
-      }
+      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data);
+      return (T?)deserializedData;
+    }
 
-      return castedData;
+    private T DeserializeRequired<T>(byte[] data)
+    {
+      return Deserialize<T>(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
     }
 
     /// <summary>

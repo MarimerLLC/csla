@@ -114,7 +114,7 @@ namespace Csla.Channels.Grpc
       var result = new DataPortalResponse();
       try
       {
-        var request = Deserialize<object>(requestData.ToByteArray());
+        var request = DeserializeRequired<object>(requestData.ToByteArray());
         var callResult = await CallPortal(operation, request);
         result.ObjectData = callResult.ObjectData;
       }
@@ -167,7 +167,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
@@ -211,7 +211,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
@@ -249,7 +249,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
 
         var dpr = await dataPortalServer.Update((ICslaObject)obj, context, true);
 
@@ -293,7 +293,7 @@ namespace Csla.Channels.Grpc
           true,
           request.ClientCulture,
           request.ClientUICulture,
-          Deserialize<IContextDictionary>(request.ClientContext));
+          DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
         var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
@@ -352,15 +352,15 @@ namespace Csla.Channels.Grpc
 
     #endregion Extention Method for Requests
 
-    private T Deserialize<T>(byte[] data)
+    private T? Deserialize<T>(byte[] data)
     {
-      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
-      if (deserializedData is not T castedData)
-      {
-        throw new SerializationException(string.Format(Resources.DeserializationFailedDueToWrongData, typeof(T).FullName));
-      }
+      var deserializedData = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize(data);
+      return (T?)deserializedData;
+    }
 
-      return castedData;
+    private T DeserializeRequired<T>(byte[] data)
+    {
+      return Deserialize<T>(data) ?? throw new SerializationException(Resources.ServerSideDataPortalRequestDeserializationFailed);
     }
   }
 }

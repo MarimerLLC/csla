@@ -176,7 +176,7 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp.Discovery
       if (typeSymbol is INamedTypeSymbol namedType && namedType.IsGenericType)
       {
         var baseName = namedType.MetadataName.Replace('`', '_');
-        var typeArgs = string.Join("_", namedType.TypeArguments.Select(GetOperationTypeKey));
+        var typeArgs = string.Join('_', namedType.TypeArguments.Select(GetOperationTypeKey));
         return baseName + "_" + typeArgs;
       }
 

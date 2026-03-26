@@ -55,7 +55,7 @@ namespace Csla.Generator.DataPortalInterfaces.CSharp.Extractors
       var baseName = OperationMethodExtractor.GetBaseOperationName(attributeFullName);
       if (CriteriaParameters.Count == 0)
         return baseName;
-      var typeKeys = string.Join("_", CriteriaParameters.Select(p => p.TypeMetadataName));
+      var typeKeys = string.Join('_', CriteriaParameters.Select(p => p.TypeMetadataName));
       return baseName + "__" + typeKeys;
     }
   }

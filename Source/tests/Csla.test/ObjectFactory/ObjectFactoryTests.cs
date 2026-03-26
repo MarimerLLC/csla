@@ -8,6 +8,8 @@
 
 using Csla.Configuration;
 using Csla.TestHelpers;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ObjectFactory
@@ -311,6 +313,22 @@ namespace Csla.Test.ObjectFactory
         throw;
       }
       Assert.Fail("Should throw exception");
+    }
+
+    [TestMethod("The return type of an business object factory type can be of type Task<T> instead of Task<object>.")]
+    public async Task BusinessObbjectFactory_ReturnTypesOfAsyncMethods()
+    {
+      var testDIContext = TestDIContextFactory.CreateContext(
+        options => options.DataPortal(dp => dp.AddServerSideDataPortal(
+          cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<RootFactoryAsync>>())
+        ));
+      
+      var obj = await testDIContext.CreateDataPortal<AsyncRootFactoryBO>().CreateAsync();
+      using (new AssertionScope())
+      {
+        obj.Should().NotBeNull();
+        obj.Text.Should().NotBeNullOrWhiteSpace();
+      }
     }
   }
 }

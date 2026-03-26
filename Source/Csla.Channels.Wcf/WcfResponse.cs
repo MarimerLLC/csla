@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 namespace Csla.Channels.Wcf
 {
   /// <summary>
-  /// Represents a respose message from a data portal operation that is returned by the data portal server through a 
+  /// Represents a response message from a data portal operation that is returned by the data portal server through a 
   /// WCF channel.
   /// </summary>
   [DataContract]

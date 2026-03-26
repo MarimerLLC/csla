@@ -12,7 +12,7 @@ using Csla.DataPortalClient;
 namespace Csla.Channels.Wcf.Client
 {
   /// <summary>
-  /// Represents a <see cref="DataPortalProxy"/> that communicates with a remote data poral using WCF.
+  /// Represents a <see cref="DataPortalProxy"/> that communicates with a remote data portal using WCF.
   /// </summary>
   /// <param name="applicationContext">
   /// The client side context for the data portal.

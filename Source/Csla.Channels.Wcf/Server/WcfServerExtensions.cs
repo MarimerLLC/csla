@@ -55,7 +55,6 @@ namespace Csla.Channels.Wcf.Server
         var options = provider.GetRequiredService<WcfPortalOptions>();
         var host = new WcfPortalHost(dataPortal, applicationContext, typeof(WcfPortal));
         host.AddServiceEndpoint(typeof(IWcfPortalServer), options.Binding, options.DataPortalUrl);
-        host.Opened += (s, e) => Console.WriteLine($"WCF Data portal host now listening at {options.DataPortalUrl}.");
         return host;
       });
 #else

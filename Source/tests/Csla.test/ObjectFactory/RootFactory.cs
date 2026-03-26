@@ -235,4 +235,19 @@ namespace Csla.Test.ObjectFactory
       _transactionalType = args.DataPortalContext.TransactionalType;
     }
   }
+  
+  public class RootFactoryAsync : Csla.Server.ObjectFactory
+  {
+    public RootFactoryAsync(ApplicationContext applicationContext)
+      : base(applicationContext) { }
+
+    public async Task<AsyncRootFactoryBO> Create()
+    {
+      var obj = ApplicationContext.CreateInstanceDI<AsyncRootFactoryBO>();
+      obj.Text = Guid.NewGuid().ToString();
+      await Task.Yield();
+      MarkOld(obj);
+      return obj;
+    }
+  }
 }

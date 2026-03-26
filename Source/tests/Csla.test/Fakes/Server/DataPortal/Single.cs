@@ -119,6 +119,24 @@ namespace Csla.Test.DataPortalTest
     }
   }
 
+  public class AsyncSingle : BusinessBase<AsyncSingle>
+  {
+    public readonly static PropertyInfo<int> IdProperty = RegisterProperty<int>(c => c.Id);
+    public int Id
+    {
+      get { return GetProperty(IdProperty); }
+      set { SetProperty(IdProperty, value); }
+    }
+
+    [Create]
+    private async Task Create()
+    {
+      Id = 0;
+      await Task.Yield();
+      await BusinessRules.CheckRulesAsync();
+    }
+  }
+
   [Serializable]
   [ObjectFactory(typeof(SingleWithFactoryFactory))]
   public class SingleWithFactory : BusinessBase<SingleWithFactory>;

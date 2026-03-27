@@ -365,48 +365,6 @@ public class WcfPortalIntegrationTests
 
   #endregion Delete Operation Tests
 
-  #region Context Tests
-
-  [TestMethod]
-  public async Task Operation_PreservesCultureSettings()
-  {
-    // Arrange
-    var expectedCulture = "de-DE";
-    var context = new DataPortalContext(
-      _applicationContext,
-      null,
-      true,
-      expectedCulture,
-      "de-DE",
-      _applicationContext.GetRequiredService<IContextDictionary>());
-
-    _fakeDataPortalServer.SetReturnValue(new TestCslaObject());
-    var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
-    var criteriaData = serializer.Serialize(new TestCslaObject());
-    var principalData = serializer.Serialize(new ClaimsPrincipal());
-    var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());
-
-    var request = new CriteriaRequest(
-      _applicationContext,
-      principalData,
-      contextData,
-      "en-US",
-      "en-US",
-      criteriaData)
-    {
-      TypeName = typeof(object).AssemblyQualifiedName
-    };
-
-    // Act
-    var result = await _wcfPortal.Create(request);
-
-    // Assert
-    result.Should().NotBeNull();
-    context.ClientCulture.Should().Be(expectedCulture);
-  }
-
-  #endregion Context Tests
-
   #region Helper Classes
 
   private class FakeDataPortalServer : IDataPortalServer

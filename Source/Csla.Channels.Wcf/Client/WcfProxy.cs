@@ -34,9 +34,7 @@ namespace Csla.Channels.Wcf.Client
 
     protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync)
     {
-      var channelFactory = new ChannelFactory<IWcfPortal>(_options.Binding);
-
-      var client = channelFactory.CreateChannel(new EndpointAddress(_options.DataPortalUrl));
+      var client = new WcfPortalClient(_options.Binding, new EndpointAddress(_options.DataPortalUrl));
 
       var wcfRequest = new WcfRequest
       {
@@ -46,15 +44,25 @@ namespace Csla.Channels.Wcf.Client
 
       //Note: I'm not sure if we need to support routing here.
 
-      // This implementation is following the pattern used in the gRPC channel. I'm not sure it is necessary for the WCF portal.
-      if (isSync)
+      try
       {
-        return client.Invoke(wcfRequest).Body;
+        // This implementation is following the pattern used in the gRPC channel. I'm not sure it is necessary for the WCF portal.
+        if (isSync)
+        {
+          return client.Invoke(wcfRequest).Body;
+        }
+
+        var response = await client.InvokeAsync(wcfRequest);
+
+        client.Close();
+
+        return response.Body;
       }
-
-      var response = await client.InvokeAsync(wcfRequest);
-
-      return response.Body;
+      catch (Exception)
+      {
+        client.Abort();
+        throw;
+      }
     }
   }
 }

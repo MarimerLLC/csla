@@ -23,7 +23,7 @@ namespace Csla.Channels.Wcf.Client
     /// The request that contains the name and parameters necessary to invoke the data portal operation.
     /// </param>
     /// <returns>
-    /// As task containing the response from the remote data portal.
+    /// A task containing the response from the remote data portal.
     /// </returns>
     [OperationContract(Action = "https://cslanet.com/IwcfPortal/Invoke", ReplyAction = "https://cslanet.com/IwcfPortal/InvokeResponse")]
     Task<WcfResponse> InvokeAsync(WcfRequest request);

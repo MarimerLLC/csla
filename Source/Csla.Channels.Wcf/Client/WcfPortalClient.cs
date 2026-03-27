@@ -15,6 +15,17 @@ namespace Csla.Channels.Wcf.Client
   internal class WcfPortalClient(Binding binding, EndpointAddress address) : ClientBase<IWcfPortal>(binding, address), IWcfPortal
   {
     /// <summary>
+    /// Asynchronously invokes an operation on the remote data portal.
+    /// </summary>
+    /// <param name="request">
+    /// The request that contains the name and parameters necessary to invoke the data portal operation.
+    /// </param>
+    /// <returns>
+    /// A task containing the response from the remote data portal.
+    /// </returns>
+    public Task<WcfResponse> InvokeAsync(WcfRequest request) => Channel.InvokeAsync(request);
+
+    /// <summary>
     /// Synchronously invokes an operation on the remote data portal.
     /// </summary>
     /// <param name="request">
@@ -22,17 +33,6 @@ namespace Csla.Channels.Wcf.Client
     /// </param>
     /// <returns>
     /// The response from the remote data portal.
-    /// </returns>
-    public Task<WcfResponse> InvokeAsync(WcfRequest request) => Channel.InvokeAsync(request);
-
-    /// <summary>
-    /// Asynchronously invokes an operation on the remote data portal.
-    /// </summary>
-    /// <param name="request">
-    /// The request that contains the name and parameters necessary to invoke the data portal operation.
-    /// </param>
-    /// <returns>
-    /// As task containing the response from the remote data portal.
     /// </returns>
     public WcfResponse Invoke(WcfRequest request) => Channel.Invoke(request);
   }

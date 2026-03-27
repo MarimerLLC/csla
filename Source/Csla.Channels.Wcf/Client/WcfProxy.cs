@@ -46,13 +46,7 @@ namespace Csla.Channels.Wcf.Client
 
       try
       {
-        // This implementation is following the pattern used in the gRPC channel. I'm not sure it is necessary for the WCF portal.
-        if (isSync)
-        {
-          return client.Invoke(wcfRequest).Body;
-        }
-
-        var response = await client.InvokeAsync(wcfRequest);
+        var response = isSync ? client.Invoke(wcfRequest) : await client.InvokeAsync(wcfRequest);
 
         client.Close();
 

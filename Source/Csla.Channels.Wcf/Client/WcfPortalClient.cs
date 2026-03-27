@@ -1,4 +1,12 @@
-﻿using System.ServiceModel;
+﻿//-----------------------------------------------------------------------
+// <copyright file="WcfPortalClient.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+// <summary>Provides consistent context information between the client</summary>
+//-----------------------------------------------------------------------
+
+using System.ServiceModel;
 using System.ServiceModel.Channels;
 
 namespace Csla.Channels.Wcf.Client

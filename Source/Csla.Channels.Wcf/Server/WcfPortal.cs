@@ -6,6 +6,7 @@
 // <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Channels.Wcf.Client;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization;
@@ -42,6 +43,13 @@ namespace Csla.Channels.Wcf.Server
     private readonly ApplicationContext _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
 
     /// <summary>
+    /// Gets a dictionary containing the URLs for each
+    /// data portal route, where each key is the
+    /// routing tag identifying the route URL.
+    /// </summary>
+    protected static Dictionary<string, string> RoutingTagUrls = [];
+
+    /// <summary>
     /// Asynchronously invokes an operation on the remote data portal.
     /// </summary>
     /// <param name="request">
@@ -56,7 +64,73 @@ namespace Csla.Channels.Wcf.Server
         throw new ArgumentNullException(nameof(request));
 
       var operation = request.Operation;
-      return await InvokePortal(operation, request.Body).ConfigureAwait(false);
+      if (operation.Contains("/"))
+      {
+        var temp = operation.Split('/');
+        return await RouteMessage(temp[0], temp[1], request);
+      }
+      else
+      {
+        return await InvokePortal(operation, request.Body).ConfigureAwait(false);
+      }
+    }
+
+    /// <summary>
+    /// Routes a message using tag based data portal operations.
+    /// </summary>
+    /// <param name="operation">
+    /// Name of the data portal operation to perform
+    /// </param>
+    /// <param name="routingTag">
+    /// Routing tag from caller
+    /// </param>
+    /// <param name="request">
+    /// Request message
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="routingTag"/> or <paramref name="request"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="routingTag"/> is <see langword="null"/>, empty or only consists of white spaces.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// <see cref="WcfPortalOptions.RouterBinding"/> is <see langword="null"/>.
+    /// </exception>
+    protected virtual async Task<WcfResponse> RouteMessage(string operation, string routingTag, WcfRequest request)
+    {
+      if (string.IsNullOrWhiteSpace(operation))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(operation)), nameof(operation));
+      if (routingTag is null)
+        throw new ArgumentNullException(nameof(routingTag));
+      if (request is null)
+        throw new ArgumentNullException(nameof(request));
+
+      if (RoutingTagUrls.TryGetValue(routingTag, out string? route) && route != "localhost")
+      {
+        var portalOptions = _applicationContext.GetRequiredService<WcfPortalOptions>();
+
+        var routerBinding = portalOptions.RouterBinding ?? throw new InvalidOperationException($"The {nameof(WcfPortalOptions)}.{nameof(WcfPortalOptions.RouterBinding)} property must not be null in order to use data portal routing.");
+
+        var proxyOptions = new WcfProxyOptions
+        {
+          Binding = routerBinding,
+          DataPortalUrl = $"{route}?operation={operation}",
+        };
+
+        var dataPortalOptions = _applicationContext.GetRequiredService<Configuration.DataPortalOptions>();
+        var proxy = new WcfProxy(_applicationContext, proxyOptions, dataPortalOptions);
+        var clientRequest = new WcfRequest
+        {
+          Body = request.Body,
+          Operation = operation
+        };
+
+        return await proxy.RouteMessage(clientRequest);
+      }
+      else
+      {
+        return await InvokePortal(operation, request.Body).ConfigureAwait(false);
+      }
     }
 
     private async Task<WcfResponse> InvokePortal(string operation, byte[] requestData)

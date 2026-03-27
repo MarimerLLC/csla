@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ServiceModel;
+using Csla.Configuration;
 using Csla.DataPortalClient;
 
 namespace Csla.Channels.Wcf.Client
@@ -17,15 +18,19 @@ namespace Csla.Channels.Wcf.Client
   /// <param name="applicationContext">
   /// The client side context for the data portal.
   /// </param>
-  /// <param name="options">
+  /// <param name="wcfProxyOptions">
   /// The options that are used to configure the data portal proxy.
   /// </param>
+  /// <param name="dataPortalOptions">
+  /// The options that are used to configure the client side data portal.
+  /// </param>
   /// <exception cref="ArgumentNullException">
-  /// <paramref name="options"/> is <see langword="null"/>.
+  /// <paramref name="wcfProxyOptions"/> is <see langword="null"/>.
   /// </exception>
-  public class WcfProxy(ApplicationContext applicationContext, WcfProxyOptions options) : DataPortalProxy(applicationContext)
+  public class WcfProxy(ApplicationContext applicationContext, WcfProxyOptions wcfProxyOptions, DataPortalOptions dataPortalOptions) : DataPortalProxy(applicationContext)
   {
-    protected WcfProxyOptions _options = options ?? throw new ArgumentNullException(nameof(options));
+    protected WcfProxyOptions _options = wcfProxyOptions ?? throw new ArgumentNullException(nameof(wcfProxyOptions));
+    protected string? _versionRoutingTag = dataPortalOptions.VersionRoutingTag;
 
     /// <summary>
     /// Gets the URL address for the data portal server used by this proxy instance.
@@ -38,11 +43,9 @@ namespace Csla.Channels.Wcf.Client
 
       var wcfRequest = new WcfRequest
       {
-        Operation = operation,
+        Operation = CreateOperationTag(operation, _versionRoutingTag, routingToken),
         Body = serialized
       };
-
-      //Note: I'm not sure if we need to support routing here.
 
       try
       {
@@ -57,6 +60,32 @@ namespace Csla.Channels.Wcf.Client
         client.Abort();
         throw;
       }
+    }
+
+    internal async Task<WcfResponse> RouteMessage(WcfRequest request)
+    {
+      var client = new WcfPortalClient(_options.Binding, new EndpointAddress(_options.DataPortalUrl));
+
+      try
+      {
+        var response = await client.InvokeAsync(request);
+
+        client.Close();
+
+        return response;
+      }
+      catch (Exception)
+      {
+        client.Abort();
+        throw;
+      }
+    }
+
+    private string CreateOperationTag(string operation, string? versionToken, string? routingToken)
+    {
+      if (!string.IsNullOrWhiteSpace(versionToken) || !string.IsNullOrWhiteSpace(routingToken))
+        return $"{operation}/{routingToken}-{versionToken}";
+      return operation;
     }
   }
 }

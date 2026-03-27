@@ -46,7 +46,8 @@ namespace Csla.Channels.Wcf.Client
       {
         var applicationContext = provider.GetRequiredService<ApplicationContext>();
         var options = provider.GetRequiredService<WcfProxyOptions>();
-        var wcfProxy = new WcfProxy(applicationContext, options);
+        var dataPortalOptions = provider.GetRequiredService<DataPortalOptions>();
+        var wcfProxy = new WcfProxy(applicationContext, options, dataPortalOptions);
         return wcfProxy;
       });
 

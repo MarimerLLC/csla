@@ -17,31 +17,17 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public static class AssemblyNameTranslator
   {
-    private static string? _coreLibAssembly = null;
-    private static string CoreLibAssembly
+    private static readonly Lazy<string> CoreLibAssemblyLazy = new(() => GetAssemblyTypeName(typeof(object)), LazyThreadSafetyMode.PublicationOnly);
+    private static string CoreLibAssembly => CoreLibAssemblyLazy.Value;
+    
+    private static readonly Lazy<string> CslaLibAssemblyLazy = new(() => GetAssemblyTypeName(typeof(NullPlaceholder)), LazyThreadSafetyMode.PublicationOnly);
+
+    private static string CslaLibAssembly => CslaLibAssemblyLazy.Value;
+
+    private static string GetAssemblyTypeName(Type type)
     {
-      get
-      {
-        if (_coreLibAssembly == null)
-        {
-          _coreLibAssembly = typeof(object).AssemblyQualifiedName!;
-          _coreLibAssembly = _coreLibAssembly.Substring(_coreLibAssembly.IndexOf(", ") + 2);
-        }
-        return _coreLibAssembly;
-      }
-    }
-    private static string? _cslaLibAssembly = null;
-    private static string CslaLibAssembly
-    {
-      get
-      {
-        if (_cslaLibAssembly == null)
-        {
-          _cslaLibAssembly = typeof(NullPlaceholder).AssemblyQualifiedName!;
-          _cslaLibAssembly = _cslaLibAssembly.Substring(_cslaLibAssembly.IndexOf(", ") + 2);
-        }
-        return _cslaLibAssembly;
-      }
+      var tmp = type.AssemblyQualifiedName!;
+      return tmp[(tmp.IndexOf(", ", StringComparison.Ordinal) + 2)..];
     }
 
     private static readonly string CORELIB = "/n";

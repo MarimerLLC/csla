@@ -1,7 +1,0 @@
-<Solution>
-  <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
-  <Project Path="Csla.Channels.Wcf/Csla.Channels.Wcf.csproj" />
-  <Project Path="WcfAspNetCoreExample/WcfAspNetCoreExample.csproj" />
-  <Project Path="WcfClientExample/WcfClientExample.csproj" />
-  <Project Path="WcfNetFrameworkExample/WcfNetFrameworkExample.csproj" />
-</Solution>

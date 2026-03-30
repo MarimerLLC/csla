@@ -135,19 +135,10 @@ namespace Csla.Channels.Wcf.Server
 
     private async Task<WcfResponse> InvokePortal(string operation, byte[] requestData)
     {
-      var result = new DataPortalResponse();
-      try
-      {
-        var request = DeserializeRequired<object>(requestData);
-        var callResult = await CallPortal(operation, request);
-        result.ObjectData = callResult.ObjectData;
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-      }
-
+      var request = DeserializeRequired<object>(requestData);
+      var result = await CallPortal(operation, request);
       var buffer = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
+
       return new WcfResponse { Body = buffer };
     }
 

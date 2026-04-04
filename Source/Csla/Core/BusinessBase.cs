@@ -994,6 +994,7 @@ namespace Csla.Core
       MarkDeleted();
     }
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Called by a parent object to reverse a
     /// previous call to <see cref="DeleteChild"/>,
@@ -1007,6 +1008,7 @@ namespace Csla.Core
       IsDeleted = false;
       MetaPropertyHasChanged("IsDeleted");
     }
+#endif
 
     #endregion
 
@@ -1576,10 +1578,12 @@ namespace Csla.Core
       DeleteChild();
     }
 
+#if NET8_0_OR_GREATER
     void IEditableBusinessObject.UnDeleteChild()
     {
       UnDeleteChild();
     }
+#endif
 
     void IEditableBusinessObject.SetParent(IParent? parent)
     {

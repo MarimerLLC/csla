@@ -6,6 +6,7 @@
 // <summary>Base class combining BusinessBase and BusinessListBase capabilities.</summary>
 //-----------------------------------------------------------------------
 
+#if NET8_0_OR_GREATER
 using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -1142,3 +1143,4 @@ namespace Csla
     #endregion
   }
 }
+#endif

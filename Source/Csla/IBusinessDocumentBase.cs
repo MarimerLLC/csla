@@ -6,6 +6,7 @@
 // <summary>Consolidated interface for the BusinessDocumentBase type.</summary>
 //-----------------------------------------------------------------------
 
+#if NET8_0_OR_GREATER
 using Csla.Core;
 
 namespace Csla
@@ -24,3 +25,4 @@ namespace Csla
   {
   }
 }
+#endif

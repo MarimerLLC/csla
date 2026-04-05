@@ -49,15 +49,22 @@ namespace Csla.Test.BusinessDocumentBase
     #region MakeOld
 
     [TestMethod]
-        public void MakeOldMetastateEvents()
+    public void MakeOldMetastateEvents()
     {
       var doc = NewDocument();
+
+      // Diagnostic: verify mode is Xaml
+      var appContext = _testDIContext.CreateTestApplicationContext();
+      var mode = appContext.PropertyChangedMode;
+      Assert.AreEqual(ApplicationContext.PropertyChangedModes.Xaml, mode,
+        $"PropertyChangedMode should be Xaml but was {mode}");
+
       var changed = new List<string>();
       doc.PropertyChanged += (_, e) => changed.Add(e.PropertyName!);
 
       doc.MakeOld();
 
-      Assert.IsTrue(changed.Contains("IsNew"), "IsNew should fire");
+      Assert.IsTrue(changed.Contains("IsNew"), $"IsNew should fire. Events: [{string.Join(", ", changed)}]");
       Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty should fire");
       Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty should fire");
       Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable should fire");

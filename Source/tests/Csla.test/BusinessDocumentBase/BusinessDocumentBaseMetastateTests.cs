@@ -53,11 +53,12 @@ namespace Csla.Test.BusinessDocumentBase
     {
       var doc = NewDocument();
 
-      // Diagnostic: verify mode is Xaml
-      var appContext = _testDIContext.CreateTestApplicationContext();
-      var mode = appContext.PropertyChangedMode;
-      Assert.AreEqual(ApplicationContext.PropertyChangedModes.Xaml, mode,
-        $"PropertyChangedMode should be Xaml but was {mode}");
+      // Diagnostic: test if PropertyChanged fires at all for a regular property change
+      var probe = new List<string>();
+      doc.PropertyChanged += (_, e) => probe.Add(e.PropertyName ?? "(null)");
+      doc.Name = "probe";
+      Assert.IsTrue(probe.Count > 0,
+        $"PropertyChanged should fire for Name set, but got 0 events. IsNew={doc.IsNew}, IsDirty={doc.IsDirty}");
 
       var changed = new List<string>();
       doc.PropertyChanged += (_, e) => changed.Add(e.PropertyName!);

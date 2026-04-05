@@ -30,6 +30,9 @@ namespace Csla.Test.BusinessDocumentBase
 
     public void MakeOld() => MarkOld();
 
+    public ApplicationContext.PropertyChangedModes GetPropertyChangedMode()
+      => ApplicationContext.PropertyChangedMode;
+
     [Create]
     private void DataPortal_Create()
     {

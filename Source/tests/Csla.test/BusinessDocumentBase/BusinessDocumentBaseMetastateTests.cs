@@ -31,6 +31,15 @@ namespace Csla.Test.BusinessDocumentBase
       _testDIContext = new TestDIContext(serviceProvider);
     }
 
+    [TestInitialize]
+    public void TestInitialize()
+    {
+      // Resolve ApplicationContext to ensure the Xaml-mode context is set
+      // on the current AsyncLocal flow, preventing contamination from other
+      // test classes in this assembly that use default (Windows) mode.
+      _testDIContext.CreateTestApplicationContext();
+    }
+
     private MetastateDocument NewDocument()
     {
       var portal = _testDIContext.CreateDataPortal<MetastateDocument>();

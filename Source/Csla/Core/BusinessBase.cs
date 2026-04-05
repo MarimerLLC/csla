@@ -1005,6 +1005,9 @@ namespace Csla.Core
       if (!IsChild)
         throw new NotSupportedException(Resources.NoDeleteRootException);
 
+      if (!IsDeleted)
+        return;
+
       IsDeleted = false;
       MetaPropertyHasChanged("IsDeleted");
     }

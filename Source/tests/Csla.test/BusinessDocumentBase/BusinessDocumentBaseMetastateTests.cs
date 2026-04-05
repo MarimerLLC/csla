@@ -5,8 +5,7 @@
 // </copyright>
 // <summary>
 //   Tests for metastate PropertyChanged events on BusinessDocumentBase.
-//   Mirrors BasicModernTests patterns. Requires Xaml PropertyChangedMode
-//   and is skipped on CI server due to timing sensitivity.
+//   Mirrors BasicModernTests patterns. Requires Xaml PropertyChangedMode.
 // </summary>
 //-----------------------------------------------------------------------
 
@@ -41,8 +40,7 @@ namespace Csla.Test.BusinessDocumentBase
     #region MakeOld
 
     [TestMethod]
-    [TestCategory("SkipOnCIServer")]
-    public void MakeOldMetastateEvents()
+        public void MakeOldMetastateEvents()
     {
       var doc = NewDocument();
       var changed = new List<string>();
@@ -65,8 +63,7 @@ namespace Csla.Test.BusinessDocumentBase
     #region MarkDeleted
 
     [TestMethod]
-    [TestCategory("SkipOnCIServer")]
-    public void MarkDeletedMetastateEvents()
+        public void MarkDeletedMetastateEvents()
     {
       var doc = NewDocument();
       doc.Name = "abc";
@@ -91,8 +88,7 @@ namespace Csla.Test.BusinessDocumentBase
     #region Property Changed Metastate
 
     [TestMethod]
-    [TestCategory("SkipOnCIServer")]
-    public void RootChangedMetastateEventsId()
+        public void RootChangedMetastateEventsId()
     {
       // New doc is invalid (Name required) — setting Id (no rule) still triggers metastate events
       var doc = NewDocument();
@@ -112,8 +108,7 @@ namespace Csla.Test.BusinessDocumentBase
     }
 
     [TestMethod]
-    [TestCategory("SkipOnCIServer")]
-    public void RootChangedMetastateEventsName()
+        public void RootChangedMetastateEventsName()
     {
       var doc = NewDocument();
       var changed = new List<string>();
@@ -151,8 +146,7 @@ namespace Csla.Test.BusinessDocumentBase
     }
 
     [TestMethod]
-    [TestCategory("SkipOnCIServer")]
-    public void RootChangedMetastateEventsChild()
+        public void RootChangedMetastateEventsChild()
     {
       var childPortal = _testDIContext.CreateChildDataPortal<MetastateLineItem>();
 

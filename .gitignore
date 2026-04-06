@@ -183,4 +183,6 @@ Source/Csla.Xaml.Uwp/project.lock.json
 .vscode
 .idea
 Samples/ProjectTracker/ProjectTracker.Blazor/ProjectTracker.Blazor/PTracker.db
+Samples/ProjectTracker/ProjectTracker.Blazor/ProjectTracker.Blazor/PTracker.db-shm
+Samples/ProjectTracker/ProjectTracker.Blazor/ProjectTracker.Blazor/PTracker.db-wal
 .claude/settings.local.json

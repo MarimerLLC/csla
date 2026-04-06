@@ -184,6 +184,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
     private string GetGetterMethod(ExtractedTypeDefinition typeDefinition)
     {
+      if (typeDefinition.BaseClassTypeName.Contains("BusinessDocumentBase"))
+      {
+        return "GetProperty";
+      }
       if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
       {
         return "GetProperty";
@@ -200,6 +204,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     }
     private string GetSetterMethod(ExtractedTypeDefinition typeDefinition)
     {
+      if (typeDefinition.BaseClassTypeName.Contains("BusinessDocumentBase"))
+      {
+        return "SetProperty";
+      }
       if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
       {
         return "SetProperty";

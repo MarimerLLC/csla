@@ -10,7 +10,7 @@ namespace ProjectTracker.Library
     /// Used to maintain the list of roles
     /// in the system.
     /// </summary>
-    public class RoleEditList : BusinessListBase<RoleEditList, RoleEdit>
+    public class RoleEditList : CslaBaseTypes.BusinessDocumentBase<RoleEditList, RoleEdit>
     {
       /// <summary>
       /// Remove a role based on the role's
@@ -65,10 +65,7 @@ namespace ProjectTracker.Library
       [Update]
       private void Update()
       {
-        using (LoadListMode)
-        {
-          Child_Update();
-        }
+        Child_Update();
       }
     }
   }

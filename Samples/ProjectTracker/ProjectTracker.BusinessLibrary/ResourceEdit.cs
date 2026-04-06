@@ -8,7 +8,7 @@ using ProjectTracker.Dal;
 namespace ProjectTracker.Library
 {
   [CslaImplementProperties]
-  public partial class ResourceEdit : CslaBaseTypes.BusinessBase<ResourceEdit>
+  public partial class ResourceEdit : CslaBaseTypes.BusinessDocumentBase<ResourceEdit, ResourceAssignmentEdit>
   {
     [Browsable(false)]
     [EditorBrowsable(EditorBrowsableState.Never)]
@@ -33,11 +33,41 @@ namespace ProjectTracker.Library
       get { return LastName + ", " + FirstName; }
     }
 
-    public partial ResourceAssignments Assignments { get; private set; }
-
     public override string ToString()
     {
       return Id.ToString();
+    }
+
+    public async Task<ResourceAssignmentEdit> AssignToAsync(int projectId)
+    {
+      if (!Contains(projectId))
+      {
+        var creator = ApplicationContext.GetRequiredService<IDataPortal<ResourceAssignmentEditCreator>>();
+        var project = await creator.FetchAsync(projectId);
+        this.Add(project.Result);
+        return project.Result;
+      }
+      else
+      {
+        throw new InvalidOperationException("Resource already assigned to project");
+      }
+    }
+
+    public void Remove(int projectId)
+    {
+      var item = this.FirstOrDefault(r => r.ProjectId == projectId);
+      if (item != null)
+        Remove(item);
+    }
+
+    public bool Contains(int projectId)
+    {
+      return this.Any(r => r.ProjectId == projectId);
+    }
+
+    public bool ContainsDeleted(int projectId)
+    {
+      return DeletedList.Any(r => r.ProjectId == projectId);
     }
 
     protected override void AddBusinessRules()
@@ -45,7 +75,6 @@ namespace ProjectTracker.Library
       base.AddBusinessRules();
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, LastNameProperty, Security.Roles.ProjectManager));
       BusinessRules.AddRule(new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.WriteProperty, FirstNameProperty, Security.Roles.ProjectManager));
-      BusinessRules.AddRule(new NoDuplicateProject { PrimaryProperty = AssignmentsProperty });
     }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -57,54 +86,15 @@ namespace ProjectTracker.Library
       Csla.Rules.BusinessRules.AddRule(typeof(ResourceEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.DeleteObject, Security.Roles.ProjectManager, Security.Roles.Administrator));
     }
 
-    protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)
-    {
-      if (e.ChildObject is ResourceAssignments)
-      {
-        BusinessRules.CheckRules(AssignmentsProperty);
-        OnPropertyChanged(AssignmentsProperty);
-      }
-      base.OnChildChanged(e);
-    }
-
-    private class NoDuplicateProject : Csla.Rules.BusinessRule
-    {
-      protected override void Execute(Csla.Rules.IRuleContext context)
-      {
-        if (context.Target is not ResourceEdit target)
-          return;
-        try
-        {
-          var assignments = target.Assignments;
-          if (assignments is null)
-            return;
-          foreach (var item in assignments)
-          {
-            var count = assignments.Count(r => r.ProjectId == item.ProjectId);
-            if (count > 1)
-            {
-              context.AddErrorResult("Duplicate projects not allowed");
-              return;
-            }
-          }
-        }
-        catch
-        {
-          // Assignments may not be loaded yet
-        }
-      }
-    }
-
     [RunLocal]
     [Create]
-    private void Create([Inject] IChildDataPortal<ResourceAssignments> portal)
+    private void Create()
     {
-      LoadProperty(AssignmentsProperty, portal.CreateChild());
       BusinessRules.CheckRules();
     }
 
     [Fetch]
-    private void Fetch(int id, [Inject] IResourceDal dal, [Inject] IChildDataPortal<ResourceAssignments> portal)
+    private void Fetch(int id, [Inject] IResourceDal dal, [Inject] IAssignmentDal assignmentDal, [Inject] IChildDataPortal<ResourceAssignmentEdit> childPortal)
     {
       var data = dal.Fetch(id) ?? throw new DataNotFoundException("Resource");
       using (BypassPropertyChecks)
@@ -113,7 +103,12 @@ namespace ProjectTracker.Library
         FirstName = data.FirstName ?? string.Empty;
         LastName = data.LastName ?? string.Empty;
         TimeStamp = data.LastChanged ?? [];
-        Assignments = portal.FetchChild(id);
+      }
+      using (LoadListMode)
+      {
+        var assignments = assignmentDal.FetchForResource(id);
+        foreach (var item in assignments)
+          Add(childPortal.FetchChild(item));
       }
     }
 
@@ -132,6 +127,7 @@ namespace ProjectTracker.Library
         TimeStamp = item.LastChanged ?? [];
       }
       FieldManager.UpdateChildren(this);
+      Child_Update(this);
     }
 
     [Update]
@@ -150,6 +146,7 @@ namespace ProjectTracker.Library
         TimeStamp = item.LastChanged ?? [];
       }
       FieldManager.UpdateChildren(this);
+      Child_Update(this);
     }
 
     [DeleteSelf]
@@ -157,8 +154,8 @@ namespace ProjectTracker.Library
     {
       using (BypassPropertyChecks)
       {
-        Assignments?.Clear();
-        FieldManager.UpdateChildren(this);
+        Clear();
+        Child_Update(this);
         Delete(this.Id, dal);
       }
     }

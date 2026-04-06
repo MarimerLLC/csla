@@ -49,7 +49,7 @@ namespace ProjectTracker.Library.Admin
         list.Add(RoleEdit);
       else
         item.Name = RoleEdit.Name;
-      list.Save();
+      list = (RoleEditList)list.Save();
     }
   }
 }

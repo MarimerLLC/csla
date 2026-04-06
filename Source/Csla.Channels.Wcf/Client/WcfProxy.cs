@@ -29,7 +29,13 @@ namespace Csla.Channels.Wcf.Client
   /// </exception>
   public class WcfProxy(ApplicationContext applicationContext, WcfProxyOptions wcfProxyOptions, DataPortalOptions dataPortalOptions) : DataPortalProxy(applicationContext)
   {
+    /// <summary>
+    /// Options used to configure the WCF data portal proxy.
+    /// </summary>
     protected WcfProxyOptions _options = wcfProxyOptions ?? throw new ArgumentNullException(nameof(wcfProxyOptions));
+    /// <summary>
+    /// Version routing tag from the data portal options.
+    /// </summary>
     protected string? _versionRoutingTag = dataPortalOptions.VersionRoutingTag;
 
     /// <summary>
@@ -37,6 +43,7 @@ namespace Csla.Channels.Wcf.Client
     /// </summary>
     public override string DataPortalUrl => _options.DataPortalUrl;
 
+    /// <inheritdoc/>
     protected override async Task<byte[]> CallDataPortalServer(byte[] serialized, string operation, string? routingToken, bool isSync)
     {
       var client = new WcfPortalClient(_options.Binding, new EndpointAddress(_options.DataPortalUrl));

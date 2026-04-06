@@ -25,19 +25,14 @@ namespace Csla.Test.BusinessDocumentBase
     public static void ClassInitialize(TestContext context)
     {
       var services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
+      services.AddCsla(o =>
+      {
+        o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml);
+        o.DataPortal(dp => dp.AddClientSideDataPortal(dpo => dpo.UseLocalProxy(lp => lp.UseLocalScope = false)));
+      });
       services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var serviceProvider = services.BuildServiceProvider();
       _testDIContext = new TestDIContext(serviceProvider);
-    }
-
-    [TestInitialize]
-    public void TestInitialize()
-    {
-      // Resolve ApplicationContext to ensure the Xaml-mode context is set
-      // on the current AsyncLocal flow, preventing contamination from other
-      // test classes in this assembly that use default (Windows) mode.
-      _testDIContext.CreateTestApplicationContext();
     }
 
     private MetastateDocument NewDocument()
@@ -53,17 +48,12 @@ namespace Csla.Test.BusinessDocumentBase
     {
       var doc = NewDocument();
 
-      // Diagnostic: verify mode is Xaml on the OBJECT's ApplicationContext
-      var objectMode = doc.GetPropertyChangedMode();
-      Assert.AreEqual(ApplicationContext.PropertyChangedModes.Xaml, objectMode,
-        $"Object's PropertyChangedMode should be Xaml but was {objectMode}");
-
       var changed = new List<string>();
       doc.PropertyChanged += (_, e) => changed.Add(e.PropertyName!);
 
       doc.MakeOld();
 
-      Assert.IsTrue(changed.Contains("IsNew"), $"IsNew should fire. Events: [{string.Join(", ", changed)}]");
+      Assert.IsTrue(changed.Contains("IsNew"), "IsNew should fire");
       Assert.IsTrue(changed.Contains("IsDirty"), "IsDirty should fire");
       Assert.IsTrue(changed.Contains("IsSelfDirty"), "IsSelfDirty should fire");
       Assert.IsTrue(changed.Contains("IsSavable"), "IsSavable should fire");

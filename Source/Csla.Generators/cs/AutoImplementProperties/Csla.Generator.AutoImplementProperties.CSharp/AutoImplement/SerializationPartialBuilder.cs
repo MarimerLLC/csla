@@ -160,7 +160,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
         textWriter.WriteLine($"[{attributeDefinition.AttributeName}({constructorArguments}{separator} {namedProperties})]");
       }
 
-      textWriter.WriteLine($"{string.Join(" ", propertyDefinition.Modifiers)} {propertyDefinition.TypeDefinition.FullyQualifiedType} {propertyDefinition.PropertyName}");
+      textWriter.WriteLine($"{string.Join(' ', propertyDefinition.Modifiers)} {propertyDefinition.TypeDefinition.FullyQualifiedType} {propertyDefinition.PropertyName}");
       AppendBlockStart(textWriter);
       if (propertyDefinition.Getter)
       {
@@ -176,7 +176,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       if (propertyDefinition.Setter)
       {
         var setterseparator = propertyDefinition.SetterModifiers.Any() ? " " : "";
-        textWriter.WriteLine($"{string.Join(" ", propertyDefinition.SetterModifiers)}{setterseparator}set => {setter}({propertyDefinition.PropertyName}Property, value);");
+        textWriter.WriteLine($"{string.Join(' ', propertyDefinition.SetterModifiers)}{setterseparator}set => {setter}({propertyDefinition.PropertyName}Property, value);");
       }
 
       AppendBlockEnd(textWriter);

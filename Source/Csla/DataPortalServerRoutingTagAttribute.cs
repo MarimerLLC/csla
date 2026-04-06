@@ -25,7 +25,7 @@ namespace Csla
       set
       {
         if (!string.IsNullOrWhiteSpace(value))
-          if (value!.Contains("-") || value.Contains("/"))
+          if (value!.Contains('-') || value.Contains('/'))
             throw new ArgumentException(Properties.Resources.RoutingTagInvalidCharacters, nameof(value));
         _routingTag = value;
       }

@@ -1,57 +1,67 @@
 ﻿//-----------------------------------------------------------------------
-// <copyright file="GrpcPortal.cs" company="Marimer LLC">
+// <copyright file="WcfPortal.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Exposes server-side DataPortal functionality</summary>
+// <summary>Provides consistent context information between the client</summary>
 //-----------------------------------------------------------------------
 
-using System.Runtime.Serialization;
-using System.Security.Principal;
+using Csla.Channels.Wcf.Client;
 using Csla.Core;
 using Csla.Properties;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Server;
 using Csla.Server.Hosts.DataPortalChannel;
-using Google.Protobuf;
-using Grpc.Core;
+using System.Runtime.Serialization;
+using System.Security.Principal;
 
-namespace Csla.Channels.Grpc
+#if NETFRAMEWORK
+using System.ServiceModel;
+#else
+using CoreWCF;
+#endif
+
+namespace Csla.Channels.Wcf.Server
 {
   /// <summary>
-  /// Exposes server-side DataPortal functionality
-  /// through gRPC.
+  /// Represents a server side data portal that is called via WCF.
   /// </summary>
-  public class GrpcPortal : GrpcService.GrpcServiceBase
+  /// <param name="dataPortal">
+  /// The server side data portal that processes the data portal requests.
+  /// </param>
+  /// <param name="applicationContext">
+  /// The server side context for the data portal.
+  /// </param>
+  /// <exception cref="ArgumentNullException">
+  /// <paramref name="dataPortal"/> or <paramref name="applicationContext"/> is <see langword="null"/>.
+  /// </exception>
+  [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+  public class WcfPortal(IDataPortalServer dataPortal, ApplicationContext applicationContext) : IWcfPortalServer
   {
-    private IDataPortalServer dataPortalServer;
-    private ApplicationContext _applicationContext;
+    private readonly IDataPortalServer _dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
+    private readonly ApplicationContext _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
 
     /// <summary>
-    /// Creates an instance of the type
+    /// Gets a dictionary containing the URLs for each
+    /// data portal route, where each key is the
+    /// routing tag identifying the route URL.
     /// </summary>
-    /// <param name="dataPortal">Data portal server service</param>
-    /// <param name="applicationContext"></param>
-    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> or <paramref name="dataPortal"/> is <see langword="null"/>.</exception>
-    public GrpcPortal(IDataPortalServer dataPortal, ApplicationContext applicationContext)
-    {
-      dataPortalServer = dataPortal ?? throw new ArgumentNullException(nameof(dataPortal));
-      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
-    }
+    protected static Dictionary<string, string> RoutingTagUrls = [];
 
     /// <summary>
-    /// Handle inbound message.
+    /// Asynchronously invokes an operation on the remote data portal.
     /// </summary>
-    /// <param name="request">Request message</param>
-    /// <param name="context">Server call context</param>
-    /// <exception cref="ArgumentNullException"><paramref name="context"/> or <paramref name="request"/> is <see langword="null"/>.</exception>
-    public override async Task<ResponseMessage> Invoke(RequestMessage request, ServerCallContext context)
+    /// <param name="request">
+    /// The request that contains the name and parameters necessary to invoke the data portal operation.
+    /// </param>
+    /// <returns>
+    /// As task containing the response from the remote data portal.
+    /// </returns>
+    public async Task<WcfResponse> InvokeAsync(WcfRequest request)
     {
       if (request is null)
         throw new ArgumentNullException(nameof(request));
-      if (context is null)
-        throw new ArgumentNullException(nameof(context));
 
       var operation = request.Operation;
       if (operation.Contains("/"))
@@ -66,24 +76,30 @@ namespace Csla.Channels.Grpc
     }
 
     /// <summary>
-    /// Gets a dictionary containing the URLs for each
-    /// data portal route, where each key is the
-    /// routing tag identifying the route URL.
+    /// Routes a message using tag based data portal operations.
     /// </summary>
-    protected static Dictionary<string, string> RoutingTagUrls = [];
-
-    /// <summary>
-    /// Entry point for routing tag based data portal operations.
-    /// </summary>
-    /// <param name="operation">Name of the data portal operation to perform</param>
-    /// <param name="routingTag">Routing tag from caller</param>
-    /// <param name="request">Request message</param>
-    /// <exception cref="ArgumentNullException"><paramref name="routingTag"/> or <paramref name="request"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="routingTag"/> is null, empty or only consists of white spaces.</exception>
-    protected virtual async Task<ResponseMessage> RouteMessage(string operation, string routingTag, RequestMessage request)
+    /// <param name="operation">
+    /// Name of the data portal operation to perform
+    /// </param>
+    /// <param name="routingTag">
+    /// Routing tag from caller
+    /// </param>
+    /// <param name="request">
+    /// Request message
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="routingTag"/> or <paramref name="request"/> is <see langword="null"/>.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="routingTag"/> is <see langword="null"/>, empty or only consists of white spaces.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// <see cref="WcfPortalOptions.RouterBinding"/> is <see langword="null"/>.
+    /// </exception>
+    protected virtual async Task<WcfResponse> RouteMessage(string operation, string routingTag, WcfRequest request)
     {
       if (string.IsNullOrWhiteSpace(operation))
-        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(operation)), nameof(operation));
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(operation)), nameof(operation));
       if (routingTag is null)
         throw new ArgumentNullException(nameof(routingTag));
       if (request is null)
@@ -91,17 +107,25 @@ namespace Csla.Channels.Grpc
 
       if (RoutingTagUrls.TryGetValue(routingTag, out string? route) && route != "localhost")
       {
-        var options = new GrpcProxyOptions { DataPortalUrl = $"{route}?operation={operation}" };
-        var channel = _applicationContext.CreateInstanceDI<global::Grpc.Net.Client.GrpcChannel>();
+        var portalOptions = _applicationContext.GetRequiredService<WcfPortalOptions>();
+
+        var routerBinding = portalOptions.RouterBinding ?? throw new InvalidOperationException($"The {nameof(WcfPortalOptions)}.{nameof(WcfPortalOptions.RouterBinding)} property must not be null in order to use data portal routing.");
+
+        var proxyOptions = new WcfProxyOptions
+        {
+          Binding = routerBinding,
+          DataPortalUrl = $"{route}?operation={operation}",
+        };
+
         var dataPortalOptions = _applicationContext.GetRequiredService<Configuration.DataPortalOptions>();
-        var proxy = new GrpcProxy(_applicationContext, channel, options, dataPortalOptions);
-        var clientRequest = new RequestMessage
+        var proxy = new WcfProxy(_applicationContext, proxyOptions, dataPortalOptions);
+        var clientRequest = new WcfRequest
         {
           Body = request.Body,
           Operation = operation
         };
-        var clientResponse = await proxy.RouteMessage(clientRequest);
-        return new ResponseMessage { Body = clientResponse.Body };
+
+        return await proxy.RouteMessage(clientRequest);
       }
       else
       {
@@ -109,22 +133,13 @@ namespace Csla.Channels.Grpc
       }
     }
 
-    private async Task<ResponseMessage> InvokePortal(string operation, ByteString requestData)
+    private async Task<WcfResponse> InvokePortal(string operation, byte[] requestData)
     {
-      var result = new DataPortalResponse();
-      try
-      {
-        var request = DeserializeRequired<object>(requestData.ToByteArray());
-        var callResult = await CallPortal(operation, request);
-        result.ObjectData = callResult.ObjectData;
-      }
-      catch (Exception ex)
-      {
-        result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(ex);
-      }
-
+      var request = DeserializeRequired<object>(requestData);
+      var result = await CallPortal(operation, request);
       var buffer = _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(result);
-      return new ResponseMessage { Body = ByteString.CopyFrom(buffer) };
+
+      return new WcfResponse { Body = buffer };
     }
 
     private async Task<DataPortalResponse> CallPortal(string operation, object request)
@@ -155,7 +170,7 @@ namespace Csla.Channels.Grpc
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -170,7 +185,7 @@ namespace Csla.Channels.Grpc
           DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
-        var dpr = await dataPortalServer.Create(objectType, criteria, context, true);
+        var dpr = await _dataPortalServer.Create(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
@@ -199,7 +214,7 @@ namespace Csla.Channels.Grpc
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -214,7 +229,7 @@ namespace Csla.Channels.Grpc
           DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
-        var dpr = await dataPortalServer.Fetch(objectType, criteria, context, true);
+        var dpr = await _dataPortalServer.Fetch(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
@@ -242,7 +257,7 @@ namespace Csla.Channels.Grpc
       {
         request = ConvertRequest(request);
         // unpack object
-        object obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
+        var obj = GetCriteria(_applicationContext, request.ObjectData) ?? throw new InvalidOperationException(Resources.ObjectToBeUpdatedCouldNotBeDeserialized);
 
         var context = new DataPortalContext(
           _applicationContext, Deserialize<IPrincipal>(request.Principal),
@@ -251,7 +266,7 @@ namespace Csla.Channels.Grpc
           request.ClientUICulture,
           DeserializeRequired<IContextDictionary>(request.ClientContext));
 
-        var dpr = await dataPortalServer.Update((ICslaObject)obj, context, true);
+        var dpr = await _dataPortalServer.Update((ICslaObject)obj, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
@@ -281,7 +296,7 @@ namespace Csla.Channels.Grpc
         request = ConvertRequest(request);
 
         // unpack criteria data into object
-        object criteria = GetCriteria(_applicationContext, request.CriteriaData);
+        var criteria = GetCriteria(_applicationContext, request.CriteriaData);
         if (criteria is DataPortalClient.PrimitiveCriteria primitiveCriteria)
         {
           criteria = primitiveCriteria.Value;
@@ -296,7 +311,7 @@ namespace Csla.Channels.Grpc
           DeserializeRequired<IContextDictionary>(request.ClientContext));
         context.OperationName = request.OperationName;
 
-        var dpr = await dataPortalServer.Delete(objectType, criteria, context, true);
+        var dpr = await _dataPortalServer.Delete(objectType, criteria, context, true);
 
         if (dpr.Error != null)
           result.ErrorData = _applicationContext.CreateInstanceDI<DataPortalErrorInfo>(dpr.Error);
@@ -318,7 +333,7 @@ namespace Csla.Channels.Grpc
 
     #endregion Criteria
 
-    #region Extention Method for Requests
+    #region Extension Method for Requests
 
     /// <summary>
     /// Override to convert the request data before it
@@ -350,7 +365,7 @@ namespace Csla.Channels.Grpc
       return response;
     }
 
-    #endregion Extention Method for Requests
+    #endregion Extension Method for Requests
 
     private T? Deserialize<T>(byte[] data)
     {

@@ -1,4 +1,6 @@
-﻿#if !IOS
+﻿using System.Diagnostics.CodeAnalysis;
+
+#if !IOS
 //-----------------------------------------------------------------------
 // <copyright file="DynamicMethodHandle.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -10,13 +12,15 @@ namespace Csla.Reflection
 {
   internal class DynamicMethodHandle
   {
-    public string? MethodName { get; private set; }
-    public DynamicMethodDelegate? DynamicMethod { get; private set; }
-    public bool HasFinalArrayParam { get; private set; }
-    public int MethodParamsLength { get; private set; }
-    public Type? FinalArrayElementType { get; private set; }
-    public bool IsAsyncTask { get; private set; }
-    public bool IsAsyncTaskObject { get; private set; }
+    public string? MethodName { get; }
+    public DynamicMethodDelegate? DynamicMethod { get; }
+    public bool HasFinalArrayParam { get; }
+    public int MethodParamsLength { get; }
+    public Type? FinalArrayElementType { get; }
+    public bool IsAsyncTask { get; }
+    [MemberNotNullWhen(true, nameof(ConvertToTaskObjectMethod))]
+    public bool IsAsyncTaskObject { get; }
+    public System.Reflection.MethodInfo? ConvertToTaskObjectMethod { get; }
 
     public DynamicMethodHandle(System.Reflection.MethodInfo? info, params object?[]? parameters)
     {
@@ -50,6 +54,10 @@ namespace Csla.Reflection
         IsAsyncTask = (info.ReturnType == typeof(Task));
         IsAsyncTaskObject = (isgeneric && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
         DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(info);
+        if (IsAsyncTaskObject)
+        {
+          ConvertToTaskObjectMethod = TaskConversionHelper.CreateTaskObjectConversionMethodInfo(info.ReturnType.GetGenericArguments()[0]);
+        }
       }
     }
   }

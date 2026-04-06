@@ -53,6 +53,9 @@ namespace Csla.Server.Tests
     public void CopyState(int parentEditLevel, bool parentBindingEdit) { }
     public void Delete() { }
     public void DeleteChild() { }
+#if NET8_0_OR_GREATER
+    public void UnDeleteChild() { }
+#endif
     public void GetChildren(SerializationInfo info, MobileFormatter formatter) { }
     public void GetState(SerializationInfo info) { }
     public object Save()

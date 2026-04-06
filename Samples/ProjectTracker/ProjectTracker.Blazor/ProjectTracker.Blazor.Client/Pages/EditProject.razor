@@ -126,7 +126,7 @@ else
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in vm.Model.Resources)
+                        @foreach (var item in vm.Model)
                         {
                             <tr>
                                 <td>@item.FirstName</td>
@@ -195,7 +195,7 @@ else
         viewMode = SubViewModes.Select;
         var portal = ApplicationContext.GetRequiredService<IDataPortal<ResourceList>>();
         _resourceList = (await portal.FetchAsync())
-                          .Where(r => !vm.Model.Resources.Contains(r.Id)).ToList();
+                          .Where(r => !vm.Model.Contains(r.Id)).ToList();
         StateHasChanged();
     }
 
@@ -219,14 +219,14 @@ else
     private void AddResource()
     {
         selectedResource.ApplyEdit();
-        if (!vm.Model.Resources.Contains(selectedResource.ResourceId))
-            vm.Model.Resources.Add(selectedResource);
+        if (!vm.Model.Contains(selectedResource.ResourceId))
+            vm.Model.Add(selectedResource);
         ShowDefaultView();
     }
 
     private void EditResource(int resourceId)
     {
-        selectedResource = vm.Model.Resources
+        selectedResource = vm.Model
           .Where(r => r.ResourceId == resourceId).FirstOrDefault();
         if (selectedResource != null)
         {
@@ -237,6 +237,6 @@ else
 
     private void RemoveResource(int resourceId)
     {
-        vm.Model.Resources.Remove(resourceId);
+        vm.Model.Remove(resourceId);
     }
 }

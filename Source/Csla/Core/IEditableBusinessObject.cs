@@ -34,6 +34,14 @@ namespace Csla.Core
     /// for deferred deletion.
     /// </summary>
     void DeleteChild();
+#if NET8_0_OR_GREATER
+    /// <summary>
+    /// Called by a parent object to reverse a
+    /// previous call to <see cref="DeleteChild"/>,
+    /// restoring the child to a non-deleted state.
+    /// </summary>
+    void UnDeleteChild() => throw new NotImplementedException();
+#endif
     /// <summary>
     /// Used by BusinessListBase as a child object is 
     /// created to tell the child object about its

@@ -10,10 +10,6 @@ namespace ProjectTracker.Library
   [CslaImplementProperties]
   public partial class ProjectEdit : CslaBaseTypes.BusinessDocumentBase<ProjectEdit, ProjectResourceEdit>
   {
-    [Browsable(false)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial byte[] TimeStamp { get; private set; }
-
     [Display(Name = "Project id")]
     public partial int Id { get; private set; }
 

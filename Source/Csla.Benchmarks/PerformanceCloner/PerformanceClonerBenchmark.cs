@@ -19,18 +19,20 @@ public class PerformanceClonerBenchmark
 {
   private ServiceProvider _serviceProvider = default!;
   private IDataPortal<TestItem> _listPortal = default!;
-  private TestItem _fetch = new();
+  private TestItem _fetch = default!;
+  private MobileFormatter _formatter = default!;
 
 
   [GlobalSetup]
-  public void GlobalSetup()
+  public async Task GlobalSetup()
   {
     _serviceProvider = new ServiceCollection()
            .AddCsla(o => o.AddConsoleApp().DataPortal(dpo => dpo.AddServerSideDataPortal().AddClientSideDataPortal(co => co.UseLocalProxy())).Serialization(so => so.UseMobileFormatter()))
            .BuildServiceProvider();
 
     _listPortal = _serviceProvider.GetRequiredService<IDataPortal<TestItem>>();
-    _fetch = _listPortal.FetchAsync().Result;
+    _fetch = await _listPortal.FetchAsync();
+    _formatter = (_serviceProvider.GetRequiredService<ISerializationFormatter>() as MobileFormatter)!;
   }
 
   [GlobalCleanup]
@@ -40,21 +42,16 @@ public class PerformanceClonerBenchmark
   }
 
   [Benchmark(Baseline = true)]
-  public async Task FetchAndSerialize()
+  public async Task<object?> FetchAndSerialize()
   {
     var clone = _fetch.Clone();
-
+    return clone;
   }
 
   [Benchmark]
-  public async Task FetchAndCloneInternal()
+  public async Task<object?> FetchAndCloneInternal()
   {
-    var formatter = _serviceProvider.GetRequiredService<ISerializationFormatter>() as MobileFormatter;
-    if (formatter == null)
-    {
-      throw new InvalidOperationException("MobileFormatter not found in service provider");
-    }
-    var clone = formatter.SerializeAsDTO(_fetch);
-    var clone2 = formatter.DeserializeAsDTO(clone);
+    var clone2 = _formatter.DeserializeAsDTO(_formatter.SerializeAsDTO(_fetch));
+    return clone2;
   }
 }

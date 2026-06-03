@@ -41,7 +41,8 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_PrimitiveCriteria_NoExceptionRaised()
     {
       // Arrange
-      var criteria = new PrimitiveCriteria(1);
+      IDataPortal<PrimitiveCriteria> dataPortal = _testDIContext.CreateDataPortal<PrimitiveCriteria>();
+      var criteria = dataPortal.Create(1);
       var args = CreateUpdateArgsOfRoot(criteria);
 
       // Act

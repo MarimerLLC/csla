@@ -42,14 +42,14 @@ public class PerformanceClonerBenchmark
   }
 
   [Benchmark(Baseline = true)]
-  public async Task<object?> FetchAndSerialize()
+  public object? FetchAndSerialize()
   {
     var clone = _fetch.Clone();
     return clone;
   }
 
   [Benchmark]
-  public async Task<object?> FetchAndCloneInternal()
+  public object? FetchAndCloneInternal()
   {
     var clone2 = _formatter.DeserializeAsDTO(_formatter.SerializeAsDTO(_fetch));
     return clone2;

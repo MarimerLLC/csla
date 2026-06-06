@@ -13,22 +13,22 @@ Intel Core i7-10750H CPU 2.60GHz (Max: 2.59GHz), 1 CPU, 4 logical and 2 physical
 
 
 ```
-| Method                | Job                  | Runtime              | Mean     | Error    | StdDev   | Median   | Ratio | RatioSD | Gen0       | Gen1      | Gen2      | Allocated | Alloc Ratio |
-|---------------------- |--------------------- |--------------------- |---------:|---------:|---------:|---------:|------:|--------:|-----------:|----------:|----------:|----------:|------------:|
-| FetchAndSerialize     | .NET 10.0            | .NET 10.0            | 175.3 ms |  9.68 ms | 28.23 ms | 173.7 ms |  1.03 |    0.24 |  1000.0000 |         - |         - | 116.46 MB |        1.00 |
-| FetchAndCloneInternal | .NET 10.0            | .NET 10.0            | 120.5 ms |  2.39 ms |  5.94 ms | 119.4 ms |  0.71 |    0.12 |   500.0000 |         - |         - |  67.28 MB |        0.58 |
-|                       |                      |                      |          |          |          |          |       |         |            |           |           |           |             |
-| FetchAndSerialize     | .NET 8.0             | .NET 8.0             | 223.5 ms | 12.77 ms | 37.67 ms | 225.2 ms |  1.03 |    0.25 |  2000.0000 | 1000.0000 |         - | 130.33 MB |        1.00 |
-| FetchAndCloneInternal | .NET 8.0             | .NET 8.0             | 155.2 ms |  5.08 ms | 14.66 ms | 154.5 ms |  0.72 |    0.14 |   500.0000 |         - |         - |  81.15 MB |        0.62 |
-|                       |                      |                      |          |          |          |          |       |         |            |           |           |           |             |
-| FetchAndSerialize     | .NET 9.0             | .NET 9.0             | 214.3 ms | 13.04 ms | 38.46 ms | 214.8 ms |  1.04 |    0.28 |  2000.0000 | 1000.0000 |         - | 129.79 MB |        1.00 |
-| FetchAndCloneInternal | .NET 9.0             | .NET 9.0             | 145.0 ms |  5.20 ms | 15.16 ms | 143.4 ms |  0.70 |    0.16 |   500.0000 |         - |         - |  80.61 MB |        0.62 |
-|                       |                      |                      |          |          |          |          |       |         |            |           |           |           |             |
-| FetchAndSerialize     | .NET Framework 4.6.2 | .NET Framework 4.6.2 | 556.5 ms | 11.02 ms | 25.53 ms | 554.4 ms |  1.00 |    0.06 | 20000.0000 | 8000.0000 | 1000.0000 | 126.85 MB |        1.00 |
-| FetchAndCloneInternal | .NET Framework 4.6.2 | .NET Framework 4.6.2 | 360.0 ms |  8.81 ms | 25.27 ms | 358.5 ms |  0.65 |    0.05 | 12000.0000 | 4000.0000 |         - |  77.56 MB |        0.61 |
-|                       |                      |                      |          |          |          |          |       |         |            |           |           |           |             |
-| FetchAndSerialize     | .NET Framework 4.7.2 | .NET Framework 4.7.2 | 563.1 ms | 11.17 ms | 18.67 ms | 562.1 ms |  1.00 |    0.05 | 20000.0000 | 8000.0000 | 1000.0000 | 126.85 MB |        1.00 |
-| FetchAndCloneInternal | .NET Framework 4.7.2 | .NET Framework 4.7.2 | 353.6 ms |  7.00 ms | 16.76 ms | 351.2 ms |  0.63 |    0.04 | 12000.0000 | 4000.0000 |         - |  77.56 MB |        0.61 |
-|                       |                      |                      |          |          |          |          |       |         |            |           |           |           |             |
-| FetchAndSerialize     | .NET Framework 4.8   | .NET Framework 4.8   | 579.6 ms | 17.85 ms | 51.79 ms | 562.9 ms |  1.01 |    0.12 | 20000.0000 | 8000.0000 | 1000.0000 | 126.85 MB |        1.00 |
-| FetchAndCloneInternal | .NET Framework 4.8   | .NET Framework 4.8   | 340.3 ms |  6.65 ms |  8.88 ms | 340.6 ms |  0.59 |    0.05 | 12000.0000 | 4000.0000 |         - |  77.56 MB |        0.61 |
+| Method                | Job                  | Runtime              | Mean     | Error    | StdDev   | Ratio | RatioSD | Gen0       | Gen1      | Gen2      | Allocated | Alloc Ratio |
+|---------------------- |--------------------- |--------------------- |---------:|---------:|---------:|------:|--------:|-----------:|----------:|----------:|----------:|------------:|
+| FetchAndSerialize     | .NET 10.0            | .NET 10.0            | 357.6 ms |  7.33 ms | 21.25 ms |  1.00 |    0.08 | 18000.0000 | 9000.0000 | 1000.0000 | 116.48 MB |        1.00 |
+| FetchAndCloneInternal | .NET 10.0            | .NET 10.0            | 204.5 ms |  4.57 ms | 13.20 ms |  0.57 |    0.05 | 10000.0000 | 4000.0000 |         - |  67.29 MB |        0.58 |
+|                       |                      |                      |          |          |          |       |         |            |           |           |           |             |
+| FetchAndSerialize     | .NET 8.0             | .NET 8.0             | 393.9 ms |  7.32 ms | 13.93 ms |  1.00 |    0.05 | 20000.0000 | 9000.0000 | 1000.0000 | 130.34 MB |        1.00 |
+| FetchAndCloneInternal | .NET 8.0             | .NET 8.0             | 243.0 ms |  4.85 ms | 13.37 ms |  0.62 |    0.04 | 13000.0000 | 5000.0000 |         - |  81.16 MB |        0.62 |
+|                       |                      |                      |          |          |          |       |         |            |           |           |           |             |
+| FetchAndSerialize     | .NET 9.0             | .NET 9.0             | 385.5 ms |  7.69 ms | 13.47 ms |  1.00 |    0.05 | 20000.0000 | 9000.0000 | 1000.0000 |  129.8 MB |        1.00 |
+| FetchAndCloneInternal | .NET 9.0             | .NET 9.0             | 238.1 ms |  6.44 ms | 18.79 ms |  0.62 |    0.05 | 13000.0000 | 6000.0000 |         - |  80.63 MB |        0.62 |
+|                       |                      |                      |          |          |          |       |         |            |           |           |           |             |
+| FetchAndSerialize     | .NET Framework 4.6.2 | .NET Framework 4.6.2 | 522.2 ms | 10.23 ms | 24.91 ms |  1.00 |    0.07 | 20000.0000 | 8000.0000 | 1000.0000 | 126.85 MB |        1.00 |
+| FetchAndCloneInternal | .NET Framework 4.6.2 | .NET Framework 4.6.2 | 356.8 ms |  7.60 ms | 22.06 ms |  0.68 |    0.05 | 12000.0000 | 4000.0000 |         - |  77.56 MB |        0.61 |
+|                       |                      |                      |          |          |          |       |         |            |           |           |           |             |
+| FetchAndSerialize     | .NET Framework 4.7.2 | .NET Framework 4.7.2 | 546.0 ms | 10.89 ms | 29.82 ms |  1.00 |    0.08 | 20000.0000 | 8000.0000 | 1000.0000 | 126.85 MB |        1.00 |
+| FetchAndCloneInternal | .NET Framework 4.7.2 | .NET Framework 4.7.2 | 377.3 ms | 10.65 ms | 30.90 ms |  0.69 |    0.07 | 13000.0000 | 5000.0000 |  500.0000 |  77.67 MB |        0.61 |
+|                       |                      |                      |          |          |          |       |         |            |           |           |           |             |
+| FetchAndSerialize     | .NET Framework 4.8   | .NET Framework 4.8   | 516.1 ms | 15.92 ms | 46.17 ms |  1.01 |    0.12 | 20000.0000 | 8000.0000 | 1000.0000 | 126.85 MB |        1.00 |
+| FetchAndCloneInternal | .NET Framework 4.8   | .NET Framework 4.8   | 363.1 ms |  7.91 ms | 22.32 ms |  0.71 |    0.07 | 13000.0000 | 5000.0000 |  500.0000 |  77.67 MB |        0.61 |

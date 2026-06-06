@@ -30,7 +30,6 @@ namespace Csla
     ICloneable,
     IDataPortalTarget,
     IUseApplicationContext
-    where K: notnull
     where V: notnull
   {
     /// <summary>
@@ -56,14 +55,10 @@ namespace Csla
     /// specified key.
     /// </summary>
     /// <param name="key">Key value for which to retrieve a value.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public V? Value(K key)
     {
-      if(key is null) 
-        throw new ArgumentNullException(nameof(key));
-
       foreach (NameValuePair item in this)
-        if (item.Key.Equals(key))
+        if (KeysEqual(item.Key, key))
           return item.Value;
       return default(V);
     }
@@ -91,14 +86,10 @@ namespace Csla
     /// specified key.
     /// </summary>
     /// <param name="key">Key value for which to search.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public bool ContainsKey(K key)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
-
       foreach (NameValuePair item in this)
-        if (item.Key.Equals(key))
+        if (KeysEqual(item.Key, key))
           return true;
       return false;
     }
@@ -154,15 +145,11 @@ namespace Csla
     /// Key to search for in the list.
     /// </param>
     /// <returns>Item from the list.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     public NameValuePair? GetItemByKey(K key)
     {
-      if (key is null)
-        throw new ArgumentNullException(nameof(key));
-
       foreach (NameValuePair item in this)
       {
-        if (item != null && item.Key.Equals(key))
+        if (KeysEqual(item.Key, key))
         {
           return item;
         }
@@ -171,6 +158,11 @@ namespace Csla
 
     }
 
+    private static bool KeysEqual(K key1, K key2)
+    {
+      return EqualityComparer<K>.Default.Equals(key1, key2);
+    }
+    
     #endregion
 
     /// <summary>
@@ -227,11 +219,9 @@ namespace Csla
       /// </summary>
       /// <param name="key">The key.</param>
       /// <param name="value">The value.</param>
-      /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+      /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
       public NameValuePair(K key, V value)
       {
-        if (key is null) 
-          throw new ArgumentNullException(nameof(key));
         if (value is null) 
           throw new ArgumentNullException(nameof(value));
 

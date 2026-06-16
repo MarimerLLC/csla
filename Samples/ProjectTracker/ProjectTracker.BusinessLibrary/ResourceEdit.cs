@@ -10,10 +10,6 @@ namespace ProjectTracker.Library
   [CslaImplementProperties]
   public partial class ResourceEdit : CslaBaseTypes.BusinessDocumentBase<ResourceEdit, ResourceAssignmentEdit>
   {
-    [Browsable(false)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial byte[] TimeStamp { get; set; }
-
     [Display(Name = "Resource id")]
     public partial int Id { get; set; }
 

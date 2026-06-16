@@ -7,12 +7,8 @@ using ProjectTracker.Dal;
 namespace ProjectTracker.Library
 {
   [CslaImplementProperties]
-  public partial class ResourceAssignmentEdit : BusinessBase<ResourceAssignmentEdit>
+  public partial class ResourceAssignmentEdit : CslaBaseTypes.BusinessBase<ResourceAssignmentEdit>
   {
-    [Browsable(false)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial byte[] TimeStamp { get; set; }
-
     [Display(Name = "Project id")]
     public partial int ProjectId { get; private set; }
 

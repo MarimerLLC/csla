@@ -123,7 +123,18 @@ namespace Csla.Reflection
 
       var typeOfOperation = typeof(T);
 
-      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, useLegacyMethods);
+      // Resolve the factory type (if any) up front so it can participate in the cache key.
+      // In production a business type maps to exactly one factory, but a custom
+      // IObjectFactoryLoader can resolve the same FactoryTypeName to different types. The
+      // method cache is process-wide and keyed by business type, so the resolved factory
+      // type must be part of the key to avoid invoking a delegate compiled for a different
+      // factory.
+      var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
+      Type? factoryType = null;
+      if (factoryInfo != null && !TryGetFactoryType(factoryInfo, _applicationContext, throwOnError, out factoryType))
+        return null;
+
+      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, useLegacyMethods, factoryType);
 
 #if NET8_0_OR_GREATER
       if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
@@ -139,32 +150,27 @@ namespace Csla.Reflection
       }
 
       var candidates = new List<ScoredMethodInfo>();
-      var factoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(targetType);
       if (factoryInfo != null)
       {
-        if (!TryGetFactoryType(factoryInfo, _applicationContext, throwOnError, out var factoryType))
-        {
-          return null;
-        }
-
+        var factoryWalkType = factoryType;
         var ftList = new List<System.Reflection.MethodInfo>();
         var level = 0;
-        while (factoryType != null)
+        while (factoryWalkType != null)
         {
           ftList.Clear();
           if (typeOfOperation == typeof(CreateAttribute))
-            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName));
+            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.CreateMethodName));
           else if (typeOfOperation == typeof(FetchAttribute))
-            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName));
+            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.FetchMethodName));
           else if (typeOfOperation == typeof(DeleteAttribute))
-            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName));
+            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName));
           else if (typeOfOperation == typeof(ExecuteAttribute))
-            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName));
+            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName));
           else if (typeOfOperation == typeof(CreateChildAttribute))
-            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create"));
+            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create"));
           else
-            ftList.AddRange(factoryType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName));
-          factoryType = factoryType.BaseType;
+            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName));
+          factoryWalkType = factoryWalkType.BaseType;
           candidates.AddRange(ftList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           level--;
         }
@@ -172,22 +178,6 @@ namespace Csla.Reflection
         {
           var ftlist = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
           candidates.AddRange(ftlist.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
-        }
-
-        static bool TryGetFactoryType(ObjectFactoryAttribute factoryAttribute, ApplicationContext context, bool throwOnError, [NotNullWhen(true)] out Type? factoryType)
-        {
-          try
-          {
-            var factoryLoader = context.CurrentServiceProvider.GetRequiredService<IObjectFactoryLoader>();
-            factoryType = factoryLoader.GetFactoryType(factoryAttribute.FactoryTypeName);
-          }
-          catch when (!throwOnError)
-          {
-            factoryType = null;
-            return false;
-          }
-
-          return factoryType is not null;
         }
       }
       else // not using factory types
@@ -223,6 +213,22 @@ namespace Csla.Reflection
             level--;
           }
         }
+      }
+
+      static bool TryGetFactoryType(ObjectFactoryAttribute factoryAttribute, ApplicationContext context, bool throwOnError, [NotNullWhen(true)] out Type? factoryType)
+      {
+        try
+        {
+          var factoryLoader = context.CurrentServiceProvider.GetRequiredService<IObjectFactoryLoader>();
+          factoryType = factoryLoader.GetFactoryType(factoryAttribute.FactoryTypeName);
+        }
+        catch when (!throwOnError)
+        {
+          factoryType = null;
+          return false;
+        }
+
+        return factoryType is not null;
       }
 
       ScoredMethodInfo? result = null;
@@ -431,10 +437,11 @@ namespace Csla.Reflection
       return 0;
     }
 
-    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, bool useLegacyMethods)
+    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, bool useLegacyMethods, Type? factoryType = null)
     {
       var legacy = useLegacyMethods ? "" : "|nolegacy";
-      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{legacy}";
+      var factory = factoryType is null ? "" : $"|{factoryType.FullName}";
+      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{legacy}{factory}";
     }
 
     private static string GetCriteriaTypeNames(object?[]? criteria)
@@ -619,7 +626,11 @@ namespace Csla.Reflection
         }
         else if (method.IsAsyncTaskObject)
         {
-          return await ((Task<object>)method.DynamicMethod!(obj, plist)).ConfigureAwait(false);
+          // The method returns Task<T>; Task<T> is invariant so it cannot be cast to
+          // Task<object>. Use the conversion helper to await it and extract the result.
+          var returnValue = method.DynamicMethod!(obj, plist);
+          var convertedTask = (Task<object?>)method.ConvertToTaskObjectMethod!.Invoke(null, [returnValue])!;
+          return await convertedTask.ConfigureAwait(false);
         }
         else
         {

@@ -7,7 +7,7 @@ using ProjectTracker.Dal;
 namespace ProjectTracker.Library.Admin
 {
   [CslaImplementProperties]
-  public partial class RoleEdit : BusinessBase<RoleEdit>
+  public partial class RoleEdit : CslaBaseTypes.BusinessBase<RoleEdit>
   {
     public RoleEdit()
     {
@@ -18,10 +18,6 @@ namespace ProjectTracker.Library.Admin
 
     [Required]
     public partial string Name { get; set; }
-
-    [Browsable(false)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial byte[] TimeStamp { get; set; }
 
     protected override void AddBusinessRules()
     {

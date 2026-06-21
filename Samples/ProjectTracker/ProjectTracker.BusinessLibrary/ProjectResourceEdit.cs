@@ -9,12 +9,8 @@ using System.Linq;
 namespace ProjectTracker.Library
 {
   [CslaImplementProperties]
-  public partial class ProjectResourceEdit : BusinessBase<ProjectResourceEdit>
+  public partial class ProjectResourceEdit : CslaBaseTypes.BusinessBase<ProjectResourceEdit>
   {
-    [Browsable(false)]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public partial byte[] TimeStamp { get; set; }
-
     [Display(Name = "Resource id")]
     public partial int ResourceId { get; private set; }
 

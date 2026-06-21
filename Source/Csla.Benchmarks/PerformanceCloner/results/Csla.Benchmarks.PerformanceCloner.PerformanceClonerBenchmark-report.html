@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Csla.Benchmarks.PerformanceCloner.PerformanceClonerBenchmark-20260606-203145</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.15.8, Windows 10 (10.0.19045.6466/22H2/2022Update) (Hyper-V)
+Intel Core i7-10750H CPU 2.60GHz (Max: 2.59GHz), 1 CPU, 4 logical and 2 physical cores
+.NET SDK 10.0.300
+  [Host]               : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v3
+  .NET 10.0            : .NET 10.0.8 (10.0.8, 10.0.826.23019), X64 RyuJIT x86-64-v3
+  .NET 8.0             : .NET 8.0.27 (8.0.27, 8.0.2726.22922), X64 RyuJIT x86-64-v3
+  .NET 9.0             : .NET 9.0.16 (9.0.16, 9.0.1626.22923), X64 RyuJIT x86-64-v3
+  .NET Framework 4.6.2 : .NET Framework 4.8.1 (4.8.9310.0), X64 RyuJIT VectorSize=256
+  .NET Framework 4.7.2 : .NET Framework 4.8.1 (4.8.9310.0), X64 RyuJIT VectorSize=256
+  .NET Framework 4.8   : .NET Framework 4.8.1 (4.8.9310.0), X64 RyuJIT VectorSize=256
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method         </th><th>Job           </th><th>Runtime       </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Gen1</th><th>Gen2</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>FetchAndSerialize</td><td>.NET 10.0</td><td>.NET 10.0</td><td>357.6 ms</td><td>7.33 ms</td><td>21.25 ms</td><td>1.00</td><td>0.08</td><td>18000.0000</td><td>9000.0000</td><td>1000.0000</td><td>116.48 MB</td><td>1.00</td>
+</tr><tr><td>FetchAndCloneInternal</td><td>.NET 10.0</td><td>.NET 10.0</td><td>204.5 ms</td><td>4.57 ms</td><td>13.20 ms</td><td>0.57</td><td>0.05</td><td>10000.0000</td><td>4000.0000</td><td>-</td><td>67.29 MB</td><td>0.58</td>
+</tr><tr><td>FetchAndSerialize</td><td>.NET 8.0</td><td>.NET 8.0</td><td>393.9 ms</td><td>7.32 ms</td><td>13.93 ms</td><td>1.00</td><td>0.05</td><td>20000.0000</td><td>9000.0000</td><td>1000.0000</td><td>130.34 MB</td><td>1.00</td>
+</tr><tr><td>FetchAndCloneInternal</td><td>.NET 8.0</td><td>.NET 8.0</td><td>243.0 ms</td><td>4.85 ms</td><td>13.37 ms</td><td>0.62</td><td>0.04</td><td>13000.0000</td><td>5000.0000</td><td>-</td><td>81.16 MB</td><td>0.62</td>
+</tr><tr><td>FetchAndSerialize</td><td>.NET 9.0</td><td>.NET 9.0</td><td>385.5 ms</td><td>7.69 ms</td><td>13.47 ms</td><td>1.00</td><td>0.05</td><td>20000.0000</td><td>9000.0000</td><td>1000.0000</td><td>129.8 MB</td><td>1.00</td>
+</tr><tr><td>FetchAndCloneInternal</td><td>.NET 9.0</td><td>.NET 9.0</td><td>238.1 ms</td><td>6.44 ms</td><td>18.79 ms</td><td>0.62</td><td>0.05</td><td>13000.0000</td><td>6000.0000</td><td>-</td><td>80.63 MB</td><td>0.62</td>
+</tr><tr><td>FetchAndSerialize</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>522.2 ms</td><td>10.23 ms</td><td>24.91 ms</td><td>1.00</td><td>0.07</td><td>20000.0000</td><td>8000.0000</td><td>1000.0000</td><td>126.85 MB</td><td>1.00</td>
+</tr><tr><td>FetchAndCloneInternal</td><td>.NET Framework 4.6.2</td><td>.NET Framework 4.6.2</td><td>356.8 ms</td><td>7.60 ms</td><td>22.06 ms</td><td>0.68</td><td>0.05</td><td>12000.0000</td><td>4000.0000</td><td>-</td><td>77.56 MB</td><td>0.61</td>
+</tr><tr><td>FetchAndSerialize</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>546.0 ms</td><td>10.89 ms</td><td>29.82 ms</td><td>1.00</td><td>0.08</td><td>20000.0000</td><td>8000.0000</td><td>1000.0000</td><td>126.85 MB</td><td>1.00</td>
+</tr><tr><td>FetchAndCloneInternal</td><td>.NET Framework 4.7.2</td><td>.NET Framework 4.7.2</td><td>377.3 ms</td><td>10.65 ms</td><td>30.90 ms</td><td>0.69</td><td>0.07</td><td>13000.0000</td><td>5000.0000</td><td>500.0000</td><td>77.67 MB</td><td>0.61</td>
+</tr><tr><td>FetchAndSerialize</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>516.1 ms</td><td>15.92 ms</td><td>46.17 ms</td><td>1.01</td><td>0.12</td><td>20000.0000</td><td>8000.0000</td><td>1000.0000</td><td>126.85 MB</td><td>1.00</td>
+</tr><tr><td>FetchAndCloneInternal</td><td>.NET Framework 4.8</td><td>.NET Framework 4.8</td><td>363.1 ms</td><td>7.91 ms</td><td>22.32 ms</td><td>0.71</td><td>0.07</td><td>13000.0000</td><td>5000.0000</td><td>500.0000</td><td>77.67 MB</td><td>0.61</td>
+</tr></tbody></table>
+</body>
+</html>

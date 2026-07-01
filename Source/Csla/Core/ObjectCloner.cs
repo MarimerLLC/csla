@@ -52,11 +52,18 @@ namespace Csla.Core
     [return: NotNullIfNotNull(nameof(obj))]
     public object? Clone(object? obj)
     {
-      using var buffer = new MemoryStream();
       ISerializationFormatter formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
-      formatter.Serialize(buffer, obj);
-      buffer.Position = 0;
-      return formatter.Deserialize(buffer);
+      if (formatter is ISerializationCloner cloner)
+      {
+        return cloner.Clone(obj);
+      }
+      else
+      {
+        using var buffer = new MemoryStream();
+        formatter.Serialize(buffer, obj);
+        buffer.Position = 0;
+        return formatter.Deserialize(buffer);
+      }
     }
   }
 }

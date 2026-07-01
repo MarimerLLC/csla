@@ -1,4 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
-using Csla.Benchmarks.CollectionIdentity;
+using Csla.Benchmarks.PerformanceCloner;
 
-var summary = BenchmarkRunner.Run<CollectionIdentityBenchmark>();
+var summary = BenchmarkRunner.Run<PerformanceClonerBenchmark>();

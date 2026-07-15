@@ -6,8 +6,6 @@
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
 
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
@@ -25,7 +23,7 @@ namespace Csla.Serialization.Mobile
 #if TESTING
   [DebuggerStepThrough]
 #endif
-  public sealed class MobileFormatter(ApplicationContext applicationContext) : ISerializationFormatter
+  public sealed class MobileFormatter(ApplicationContext applicationContext) : ISerializationCloner
   {
     internal const string DefaultCtorObsoleteMessage = $"This ctor is only for internal usage to support {nameof(MobileFormatter)}. User another overload if available.";
 
@@ -386,7 +384,7 @@ namespace Csla.Serialization.Mobile
 
       return DeserializeAsDTO(data);
     }
-    
+
     #endregion
 
     /// <summary>
@@ -400,6 +398,22 @@ namespace Csla.Serialization.Mobile
         return true;
       var options = GetOptions();
       return options.CustomSerializers.Any(s => s.CanSerialize(type));
+    }
+
+    /// <summary>
+    /// Clones an object via serialization into an
+    /// object graph.
+    /// </summary>
+    /// <param name="obj">
+    /// Object to be cloned.</param>
+    /// <returns>A cloned object graph.</returns>
+    public object? Clone(object? obj)
+    {
+      if (obj == null)
+        return null;
+
+      var dto = SerializeAsDTO(obj);
+      return DeserializeAsDTO(dto);
     }
   }
 }

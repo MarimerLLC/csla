@@ -331,7 +331,7 @@ namespace Csla.DataPortalClient
     private CriteriaRequest GetBaseCriteriaRequest(object criteria)
     {
       if (criteria is not IMobileObject)
-        criteria = new PrimitiveCriteria(criteria);
+        criteria = ApplicationContext.GetRequiredService<IDataPortal<PrimitiveCriteria>>().Create(criteria);
       
       var criteriaData = ApplicationContext.GetRequiredService<ISerializationFormatter>().Serialize(criteria);
 

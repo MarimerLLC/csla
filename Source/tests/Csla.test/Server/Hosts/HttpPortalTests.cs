@@ -9,6 +9,7 @@
 using System.Runtime.Serialization;
 using System.Security.Principal;
 using Csla.Core;
+using Csla.DataPortalClient;
 using Csla.Serialization;
 using Csla.Server;
 using Csla.Server.Hosts;
@@ -158,7 +159,8 @@ public class HttpPortalTests
     // Arrange
     var serializer = _applicationContext.GetRequiredService<ISerializationFormatter>();
     var primitiveValue = 42;
-    var primitiveCriteria = new DataPortalClient.PrimitiveCriteria(primitiveValue);
+    IDataPortal<PrimitiveCriteria> dataPortal = _testDIContext.CreateDataPortal<PrimitiveCriteria>();
+    var primitiveCriteria = dataPortal.Create(primitiveValue);
     var criteriaData = serializer.Serialize(primitiveCriteria);
     var principalData = serializer.Serialize((IPrincipal)null);
     var contextData = serializer.Serialize(_applicationContext.GetRequiredService<IContextDictionary>());

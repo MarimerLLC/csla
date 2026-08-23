@@ -13,7 +13,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+#if !ANDROID && !IOS && !XAMARIN && !MAUI && !AVALONIA
 using System.Windows;
+#endif
 using Csla.Core;
 using Csla.Rules;
 #if WINDOWS_UWP

@@ -18,8 +18,6 @@ using Windows.UI.Xaml.Data;
 #elif XAMARIN
 using Xamarin.Forms;
 #elif MAUI
-#elif AVALONIA
-using Avalonia.Layout;
 #else
 using System.Windows;
 using System.Windows.Data;

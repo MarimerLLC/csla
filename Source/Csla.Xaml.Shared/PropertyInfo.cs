@@ -15,10 +15,12 @@ using Csla.Rules;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+#elif AVALONIA
+using Avalonia;
+using Avalonia.Controls;
 #elif XAMARIN
 using Xamarin.Forms;
-#elif MAUI
-#else
+#elif !AVALONIA
 using System.Windows;
 using System.Windows.Data;
 #endif
@@ -106,17 +108,20 @@ namespace Csla.Xaml
     /// Gets the broken rules collection from the
     /// business object.
     /// </summary>
-    public static readonly StyledProperty<BrokenRulesCollection> BrokenRulesProperty =
-      AvaloniaProperty.Register<PropertyInfo, BrokenRulesCollection>(nameof(BrokenRules));
+    public static readonly StyledProperty<ObservableCollection<BrokenRule>> BrokenRulesProperty =
+      AvaloniaProperty.Register<PropertyInfo, ObservableCollection<BrokenRule>>(
+        nameof(BrokenRules));
+
     /// <summary>
     /// Gets the broken rules collection from the
     /// business object.
     /// </summary>
-    /// <exception cref="ArgumentNullException"><see cref="BrokenRules"/> is <see langword="null"/>.</exception>
-    public BrokenRulesCollection BrokenRules
+    public ObservableCollection<BrokenRule> BrokenRules
     {
-      get => this.GetValue(BrokenRulesProperty);
-      set => SetValue(BrokenRulesProperty, value ?? throw new ArgumentNullException(nameof(BrokenRules)));
+      get => GetValue(BrokenRulesProperty);
+      set => SetValue(
+        BrokenRulesProperty,
+        value ?? throw new ArgumentNullException(nameof(BrokenRules)));
     }
 #else
     /// <summary>
@@ -291,7 +296,11 @@ namespace Csla.Xaml
         catch (Exception ex)
         {
           throw new InvalidOperationException(
+#if AVALONIA
+            $"SetSource: DataContext:{DataContext?.GetType().Name ?? "null"}, Path={Path}", ex);
+#else          
             string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
+#endif
         }
       }
       HandleSourceEvents(oldSource, Source);

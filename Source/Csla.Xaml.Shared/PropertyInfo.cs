@@ -8,6 +8,9 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
@@ -18,6 +21,8 @@ using Windows.UI.Xaml.Data;
 #elif XAMARIN
 using Xamarin.Forms;
 #elif MAUI
+#elif AVALONIA
+using Avalonia.Layout;
 #else
 using System.Windows;
 using System.Windows.Data;
@@ -28,13 +33,15 @@ namespace Csla.Xaml
   /// <summary>
   /// Expose metastate information about a property.
   /// </summary>
-#if MAUI
+#if MAUI 
   public class PropertyInfo : ContentView, INotifyPropertyChanged
   {
-#elif XAMARIN
+#elif XAMARIN 
   public class PropertyInfo : View, INotifyPropertyChanged
   {
-
+#elif AVALONIA
+  public class PropertyInfo : UserControl, INotifyPropertyChanged
+  {
 #else
   public class PropertyInfo : FrameworkElement, INotifyPropertyChanged
   {
@@ -51,6 +58,10 @@ namespace Csla.Xaml
 #if XAMARIN || MAUI
       _loading = false;
       BindingContextChanged += (o, e) => SetSource();
+      UpdateState();
+#elif AVALONIA
+      _loading = false;
+      DataContextChanged += (o, e) => SetSource();
       UpdateState();
 #else
       Visibility = Visibility.Collapsed;
@@ -95,6 +106,23 @@ namespace Csla.Xaml
       get => (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty);
       set => SetValue(BrokenRulesProperty, value ?? throw new ArgumentNullException(nameof(BrokenRules)));
     }
+#elif AVALONIA
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
+    public static readonly StyledProperty<BrokenRulesCollection> BrokenRulesProperty =
+      AvaloniaProperty.Register<PropertyInfo, BrokenRulesCollection>(nameof(BrokenRules));
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"><see cref="BrokenRules"/> is <see langword="null"/>.</exception>
+    public BrokenRulesCollection BrokenRules
+    {
+      get => this.GetValue(BrokenRulesProperty);
+      set => SetValue(BrokenRulesProperty, value ?? throw new ArgumentNullException(nameof(BrokenRules)));
+    }
 #else
     /// <summary>
     /// Gets the broken rules collection from the
@@ -121,7 +149,7 @@ namespace Csla.Xaml
 
     #region MyDataContext Property
 
-#if XAMARIN || MAUI
+#if XAMARIN || MAUI || AVALONIA
 #else
     /// <summary>
     /// Used to monitor for changes in the binding path.
@@ -146,7 +174,7 @@ namespace Csla.Xaml
 
     #region RelativeBinding Property
 
-#if XAMARIN || MAUI
+#if XAMARIN || MAUI || AVALONIA
 #else
 
     /// <summary>
@@ -184,7 +212,7 @@ namespace Csla.Xaml
     /// <value>The binding path.</value>
     protected string BindingPath { get; set; } = string.Empty;
 
-#if XAMARIN || MAUI
+#if XAMARIN || MAUI || AVALONIA
     private string? _bindingPath;
     /// <summary>
     /// Gets or sets the binding path used to bind this
@@ -196,10 +224,13 @@ namespace Csla.Xaml
       get => _bindingPath;
       set
       {
-        if (_bindingPath != value)
         {
           _bindingPath = value;
+#if AVALONIA
+          OnPropertyChanged(nameof(Path));
+#else
           OnPropertyChanged();
+#endif
           SetSource();
         }
       }
@@ -243,7 +274,11 @@ namespace Csla.Xaml
         item.DetachHandlers();
       _sources.Clear();
       var oldSource = Source;
+#if AVALONIA
+      Source = DataContext;
+#else
       Source = BindingContext;
+#endif
       BindingPath = Path ?? "";
       if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
       {

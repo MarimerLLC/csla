@@ -33,7 +33,7 @@ namespace Csla.Xaml
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-#if ANDROID || IOS || XAMARIN || MAUI
+#if ANDROID || IOS || XAMARIN || MAUI || AVALONIA
   public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
 #else
   public abstract class ViewModelBase<T> : DependencyObject,
@@ -42,7 +42,7 @@ namespace Csla.Xaml
   {
     private ApplicationContext ApplicationContext => ApplicationContextManager.GetApplicationContext();
 
-#if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI
+#if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI|| AVALONIA
     private T? _model;
     /// <summary>
     /// Gets or sets the Model object.
@@ -88,7 +88,7 @@ namespace Csla.Xaml
     /// ViewModel should automatically managed the
     /// lifetime of the Model.
     /// </summary>
-#if ANDROID || IOS || XAMARIN || MAUI
+#if ANDROID || IOS || XAMARIN || MAUI || AVALONIA
     public bool ManageObjectLifetimeProperty;
 #else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
@@ -104,7 +104,7 @@ namespace Csla.Xaml
     [ScaffoldColumn(false)]
     public bool ManageObjectLifetime
     {
-#if ANDROID || IOS || XAMARIN || MAUI
+#if ANDROID || IOS || XAMARIN || MAUI|| AVALONIA
       get { return (bool)ManageObjectLifetimeProperty; }
       set { ManageObjectLifetimeProperty = value; }
 #else

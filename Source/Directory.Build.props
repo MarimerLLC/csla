@@ -21,7 +21,7 @@
    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
    <NeutralLanguage>en-US</NeutralLanguage>
    <DefaultLanguage>en-US</DefaultLanguage>
-   <AssemblyOriginatorKeyFile>$(SolutionDir)Csla\CslaKey.snk</AssemblyOriginatorKeyFile>
+   <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)Csla/CslaKey.snk</AssemblyOriginatorKeyFile>
  </PropertyGroup>
 
   <ItemGroup>

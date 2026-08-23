@@ -1,4 +1,4 @@
-﻿#if !XAMARIN && !WINDOWS_UWP && !MAUI
+﻿#if !XAMARIN && !WINDOWS_UWP && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="BrokenRulesSeverityConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -10,6 +10,8 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using System.Windows.Resources;
+using Avalonia;
+using Avalonia.Data.Converters;
 using Csla.Rules;
 
 namespace Csla.Xaml
@@ -35,7 +37,7 @@ namespace Csla.Xaml
       {
         throw new ArgumentException($"{value?.GetType().ToString()} != typeof({nameof(RuleSeverity)})", nameof(value));
       }
-
+      
       string uri = $"/Csla.Xaml;component/Resources/{severity}.png";
       StreamResourceInfo sr = Application.GetResourceStream(new Uri(uri, UriKind.Relative));
       BitmapImage bmp = new BitmapImage();

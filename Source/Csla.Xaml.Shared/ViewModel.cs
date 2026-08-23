@@ -1,4 +1,4 @@
-﻿#if !XAMARIN && !NETFX_CORE && !MAUI
+﻿#if !XAMARIN && !NETFX_CORE && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="ViewModel.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

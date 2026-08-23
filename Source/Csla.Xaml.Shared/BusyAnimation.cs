@@ -1,4 +1,4 @@
-﻿#if !XAMARIN && !WINDOWS_UWP && !MAUI
+﻿#if !XAMARIN && !WINDOWS_UWP && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="BusyAnimation.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -11,6 +11,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Threading;
 
 namespace Csla.Xaml
 {

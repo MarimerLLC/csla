@@ -1,4 +1,4 @@
-#if !XAMARIN && !WINDOWS_UWP && !MAUI
+#if !XAMARIN && !WINDOWS_UWP && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="DataDecoratorBase.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -13,6 +13,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Interactivity;
 
 namespace Csla.Xaml
 {

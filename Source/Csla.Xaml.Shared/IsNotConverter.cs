@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !XAMARIN && !MAUI
+﻿#if !NETFX_CORE && !XAMARIN && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="IsNotConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -7,6 +7,7 @@
 // <summary>Converts a Boolean value into its inverse.</summary>
 //-----------------------------------------------------------------------
 using System.Windows.Data;
+using Avalonia.Data.Converters;
 
 namespace Csla.Xaml
 {

@@ -1,0 +1,70 @@
+<ContentPage xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml"
+        xmlns:vms="clr-namespace:CslaAvaloniaExample.ViewModels"
+        xmlns:models="clr-namespace:BusinessLibrary;assembly=BusinessLibrary"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="CslaAvaloniaExample.Views.PersonEditPage"
+        Header="PersonEditPage">
+
+    <StackPanel Orientation="Vertical">
+        <!-- Header Banner -->
+        <StackPanel Orientation="Horizontal" Background="#141414">
+            <TextBlock Text="Person Edit"
+                       Foreground="White"
+                       FontSize="26"
+                       FontWeight="Bold"
+                       Margin="10,0,0,10"/>
+        </StackPanel>
+
+        <!-- Main Form Grid -->
+        <Grid x:DataType="vms:PersonEditViewModel" DataContext="{Binding Model}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Row 1: Label and Input Field -->
+            <TextBlock Text="Name" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+            
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+                <TextBox Text="{Binding Name, x:DataType=models:PersonEdit}" Width="200" />
+                
+                <!-- CSLA Property Info -->
+                <csla:PropertyInfo Path="Name" x:Name="NameInfo" />
+                
+                <!-- Validation Labels targeting NameInfo properties -->
+                <TextBlock Foreground="Red" 
+                           DataContext="{Binding #NameInfo}" 
+                           Text="{Binding ErrorText, x:DataType=csla:PropertyInfo}" 
+                           Margin="3" />
+                <TextBlock Foreground="Yellow" 
+                           DataContext="{Binding #NameInfo}" 
+                           Text="{Binding WarningText, x:DataType=csla:PropertyInfo}" 
+                           Margin="3" />
+                <TextBlock Foreground="LightGreen" 
+                           DataContext="{Binding #NameInfo}" 
+                           Text="{Binding InformationText, x:DataType=csla:PropertyInfo}" 
+                           Margin="3" />
+            </StackPanel>
+
+            <!-- Row 2: Action Buttons -->
+            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                <Button Content="Save" 
+                        IsEnabled="{Binding IsSavable, x:DataType=models:PersonEdit}" 
+                        Click="SavePerson" 
+                        Margin="3" />
+                <Button Content="Close" 
+                        Click="ClosePage" 
+                        Margin="3" />
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</ContentPage>

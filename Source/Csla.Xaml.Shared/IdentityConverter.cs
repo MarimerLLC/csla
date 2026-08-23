@@ -1,4 +1,4 @@
-#if !NETFX_CORE && !XAMARIN && !MAUI
+#if !NETFX_CORE && !XAMARIN && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="IdentityConverter.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

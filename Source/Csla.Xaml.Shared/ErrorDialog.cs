@@ -1,4 +1,4 @@
-﻿#if !NETFX_CORE && !XAMARIN && !MAUI
+﻿#if !NETFX_CORE && !XAMARIN && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="ErrorDialog.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -9,6 +9,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using Avalonia.Controls;
 
 namespace Csla.Xaml
 {

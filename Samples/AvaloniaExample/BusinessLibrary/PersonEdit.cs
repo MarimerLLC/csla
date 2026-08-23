@@ -41,9 +41,10 @@ public sealed class PersonEdit : BusinessBase<PersonEdit>
   }
 
   [Fetch]
-  private void Fetch(int id, IPersonDal dal)
+  private void Fetch(int id, [Inject] IPersonDal dal)
   {
     var data = dal.Get(id);
+
     using (BypassPropertyChecks)
     {
       Id = data.Id;
@@ -52,7 +53,7 @@ public sealed class PersonEdit : BusinessBase<PersonEdit>
   }
 
   [Insert]
-  private void Insert(IPersonDal dal)
+  private void Insert([Inject] IPersonDal dal)
   {
     var result = dal.Insert(new PersonEntity
     {
@@ -65,7 +66,7 @@ public sealed class PersonEdit : BusinessBase<PersonEdit>
   }
 
   [Update]
-  private void Update(IPersonDal dal)
+  private void Update([Inject] IPersonDal dal)
   {
     dal.Update(new PersonEntity
     {
@@ -75,14 +76,14 @@ public sealed class PersonEdit : BusinessBase<PersonEdit>
   }
 
   [DeleteSelf]
-  private void DeleteSelf(IPersonDal dal)
+  private void DeleteSelf([Inject] IPersonDal dal)
   {
     if (Id != 0)
       dal.Delete(Id);
   }
 
   [Delete]
-  private void Delete(int id, IPersonDal dal)
+  private void Delete(int id, [Inject] IPersonDal dal)
   {
     dal.Delete(id);
   }

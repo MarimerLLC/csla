@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Csla.Configuration;
 using CslaAvaloniaExample.ViewModels;
+using CslaAvaloniaExample.Views;
 using DataAccess;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,20 +22,26 @@ public partial class App : Application
   {
     var services = new ServiceCollection();
 
-    // Local data portal: deliberately simple for exercising the Avalonia UI layer.
-    services.AddCsla();
-    // Same DAL abstraction used by the Maui-style BusinessLibrary.
+    services.AddCsla(options => options
+      .AddXaml());
+
     services.AddSingleton<IPersonDal, PersonDal>();
 
-    services.AddScoped<PersonEditViewModel>();
-    services.AddScoped<PersonListViewModel>();
-    
+    services.AddTransient<PersonEditViewModel>();
+    services.AddTransient<PersonListViewModel>();
+    services.AddTransient<PersonEditPage>();
+    services.AddTransient<PersonListPage>();
+    services.AddTransient<MainWindow>();
+
     Services = services.BuildServiceProvider();
 
-    // Make CSLA's ApplicationContext available to code resolved through DI.
-    // UI/view-model code can resolve IDataPortal<T> from Services.
+    // Important: force creation of the CSLA ApplicationContext.
+    // This allows Csla.Xaml.ApplicationContextManager to capture it
+    // for ViewModelBase and the other XAML helpers.
+    _ = Services.GetRequiredService<Csla.ApplicationContext>();
+
     if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-      desktop.MainWindow = new MainWindow();
+      desktop.MainWindow = Services.GetRequiredService<MainWindow>();
 
     base.OnFrameworkInitializationCompleted();
   }

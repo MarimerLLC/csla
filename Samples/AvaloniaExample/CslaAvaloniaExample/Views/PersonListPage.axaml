@@ -1,23 +1,26 @@
-<ContentPage xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        xmlns:vms="clr-namespace:CslaAvaloniaExample.ViewModels"
-        xmlns:models="clr-namespace:BusinessLibrary;assembly=BusinessLibrary"
-        x:Class="CslaAvaloniaExample.Views.PersonListPage"
-        Header="PersonListPage">
-  
-  <Grid>
-    <ListBox ItemsSource="{Binding PersonListViewModel}">
+<UserControl
+    x:Class="CslaAvaloniaExample.Views.PersonListPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <StackPanel Margin="24" Spacing="14">
+    <TextBlock Text="Person List"
+               FontSize="26"
+               FontWeight="Bold" />
+
+    <ListBox ItemsSource="{Binding Model}">
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <Grid ColumnDefinitions="Auto, *">
-            <Label Content="{Binding Name, x:DataType=models:PersonInfo}" Width="100" Margin="5" />
-            <Button Content="Edit" Click="EditPerson"/>
+          <Grid ColumnDefinitions="80,*" Margin="4">
+            <TextBlock Grid.Column="0" Text="{Binding Id}" />
+            <TextBlock Grid.Column="1" Text="{Binding Name}" />
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-  </Grid>
-</ContentPage>
+
+    <Button Content="Refresh"
+            HorizontalAlignment="Left"
+            Click="RefreshList" />
+  </StackPanel>
+</UserControl>

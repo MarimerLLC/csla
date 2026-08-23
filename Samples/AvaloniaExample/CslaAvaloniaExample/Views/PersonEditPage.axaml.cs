@@ -1,46 +1,52 @@
-using System.Net.Security;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using BusinessLibrary;
 using Csla;
 using CslaAvaloniaExample.ViewModels;
 
 namespace CslaAvaloniaExample.Views;
 
-public partial class PersonEditPage : ContentPage
+public partial class PersonEditPage : UserControl
 {
-  private IDataPortal<PersonEdit> _dataPortal;
+  private readonly IDataPortal<PersonEdit> _dataPortal;
   private bool _isLoaded;
-  private int _personId;
-  public PersonEditPage(PersonEditViewModel viewModel, IDataPortal<PersonEdit> dataPortal)
+
+  public PersonEditPage(
+    PersonEditViewModel viewModel,
+    IDataPortal<PersonEdit> dataPortal)
   {
     InitializeComponent();
-    
+
     DataContext = viewModel;
     _dataPortal = dataPortal;
-  }
-  
-  private async Task LoadDataAsync(int id)
-  {
-    var vm = (PersonEditViewModel)DataContext;
-    var person = await _dataPortal.FetchAsync(_personId);
-    if (id < 1)
-      await vm.RefreshAsync<PersonEdit>(async () => await _dataPortal.CreateAsync());
-    else
-      await vm.RefreshAsync<PersonEdit>(async () => await _dataPortal.FetchAsync(id));
+
+    AttachedToVisualTree += async (_, _) =>
+    {
+      if (_isLoaded)
+        return;
+
+      _isLoaded = true;
+      await LoadNewAsync();
+    };
   }
 
-  private async void SavePerson(object sender, EventArgs e)
+  private PersonEditViewModel ViewModel =>
+    (PersonEditViewModel)DataContext!;
+
+  private async Task LoadNewAsync()
   {
-    var vm = (PersonEditViewModel)DataContext;
-    await vm.SaveAsync();
-    //CurrentPage = 
+    await ViewModel.RefreshAsync<PersonEdit>(
+      async () => await _dataPortal.CreateAsync());
   }
-  
-  private async void ClosePage(object sender, EventArgs e)
+
+  private async void SavePerson(object? sender, RoutedEventArgs e)
   {
-    var vm = (PersonEditViewModel)DataContext;
+    if (ViewModel.Model?.IsSavable == true)
+      await ViewModel.SaveAsync();
+  }
+
+  private async void NewPerson(object? sender, RoutedEventArgs e)
+  {
+    await LoadNewAsync();
   }
 }

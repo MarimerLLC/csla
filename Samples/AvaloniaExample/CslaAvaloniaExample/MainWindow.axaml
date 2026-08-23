@@ -8,5 +8,13 @@
     MinWidth="640"
     MinHeight="420">
 
-  
+  <TabControl Margin="12">
+    <TabItem Header="Person Edit">
+      <ContentControl x:Name="PersonEditHost" />
+    </TabItem>
+
+    <TabItem Header="Person List">
+      <ContentControl x:Name="PersonListHost" />
+    </TabItem>
+  </TabControl>
 </Window>

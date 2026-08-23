@@ -2,4 +2,5 @@
   <Project Path="DataAccess/DataAccess.csproj" />
   <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
   <Project Path="CslaAvaloniaExample/CslaAvaloniaExample.csproj" />
+  <Project Path="CslaAvaloniaExample.Tests/CslaAvaloniaExample.Tests.csproj" />
 </Solution>

@@ -7,11 +7,15 @@ namespace BusinessLibrary;
 public sealed class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
 {
   [Fetch]
-  private void Fetch(IPersonDal dal, IChildDataPortal<PersonInfo> childPortal)
+  private void Fetch(
+    [Inject] IPersonDal dal,
+    [Inject] IChildDataPortal<PersonInfo> childPortal)
   {
     IsReadOnly = false;
+
     foreach (var item in dal.Get())
       Add(childPortal.FetchChild(item));
+
     IsReadOnly = true;
   }
 }

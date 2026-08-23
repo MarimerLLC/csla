@@ -1,48 +1,42 @@
-# CSLA Avalonia Example Stub
+# CSLA Avalonia Example
 
-This is a deliberately small Avalonia desktop/Linux shell intended as a test bed for a
-`Csla.Xaml.Avalonia` port.
+This sample is a small Avalonia desktop application used to exercise the
+`Csla.Xaml.Avalonia` implementation against real CSLA business objects.
 
 ## Projects
 
-- `DataAccess` — in-memory `IPersonDal`, patterned after CSLA's `Samples/MauiExample/DataAccess`.
-- `BusinessLibrary` — small CSLA `PersonEdit`, `PersonInfo`, and `PersonList` object set.
-- `CslaAvaloniaExample` — clean Avalonia desktop application with CSLA and DAL DI registration.
+- `DataAccess` — in-memory `IPersonDal` implementation.
+- `BusinessLibrary` — `PersonEdit`, `PersonInfo`, and `PersonList` CSLA objects.
+- `CslaAvaloniaExample` — Avalonia desktop UI using the local `Csla.Xaml.Avalonia` project.
+- `CslaAvaloniaExample.Tests` — Avalonia headless tests for CSLA/Avalonia integration.
 
-The UI project intentionally does **not** reference `Csla.Xaml.Avalonia`. Add your local
-project reference after placing this sample where you want it.
+## Run the sample
 
-Example:
-
-```xml
-<ProjectReference Include="..\..\Source\Csla.Xaml.Avalonia\Csla.Xaml.Avalonia.csproj" />
-```
-
-Adjust that relative path to match your checkout.
-
-## Run
+From `Samples/AvaloniaExample`:
 
 ```bash
 dotnet restore
 dotnet run --project CslaAvaloniaExample/CslaAvaloniaExample.csproj
 ```
 
-## Suggested first integration exercise
+The **Person Edit** tab creates a new `PersonEdit` through the local CSLA data portal.
+`Name` has a required rule and a maximum length rule. `Csla.Xaml.PropertyInfo` displays
+the current validation state next to the editor.
 
-Keep `MainWindow` simple and add one view/view-model that resolves:
+The **Person List** tab exercises the read-only list and the in-memory DAL.
 
-```csharp
-IDataPortal<PersonEdit>
-IDataPortal<PersonList>
+## Run the tests
+
+```bash
+dotnet test CslaAvaloniaExample.Tests/CslaAvaloniaExample.Tests.csproj
 ```
 
-from the application's DI container. That gives you a focused place to validate your
-Avalonia `PropertyInfo`, converters, `ViewModel<T>`, and broken-rules behavior without
-bringing the blog or management applications into the test.
+The first integration test verifies that `PropertyInfo` tracks the required rule on
+`PersonEdit.Name` across invalid → valid → invalid transitions.
 
-## Source note
+The test uses `Avalonia.Headless.XUnit`, so it can run on Linux without a display server.
 
-The project structure and DataAccess naming follow the public CSLA `Samples/MauiExample`
-sample. The UI is a fresh Avalonia desktop shell, and the BusinessLibrary here is a compact
-CSLA 10.1-compatible sample implementation rather than a byte-for-byte copy of the upstream
-sample.
+## Purpose
+
+Keep this sample intentionally small. It is meant to prove the CSLA/Avalonia integration
+layer rather than demonstrate a full application architecture.

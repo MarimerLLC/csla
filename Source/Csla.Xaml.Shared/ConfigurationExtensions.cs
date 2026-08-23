@@ -51,7 +51,7 @@ public static class XamlConfigurationExtensions
     // use correct mode for raising PropertyChanged events
     config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
 
-#if !MAUI && !AVALONIA
+#if !MAUI && !AVALONIA  // MJD TODO -- Test...  I feel like we need this for DI.
     config.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
 #endif
 

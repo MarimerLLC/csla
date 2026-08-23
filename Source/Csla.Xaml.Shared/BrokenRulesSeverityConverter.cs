@@ -10,8 +10,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using System.Windows.Resources;
-using Avalonia;
-using Avalonia.Data.Converters;
 using Csla.Rules;
 
 namespace Csla.Xaml

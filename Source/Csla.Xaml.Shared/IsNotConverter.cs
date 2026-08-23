@@ -7,7 +7,6 @@
 // <summary>Converts a Boolean value into its inverse.</summary>
 //-----------------------------------------------------------------------
 using System.Windows.Data;
-using Avalonia.Data.Converters;
 
 namespace Csla.Xaml
 {

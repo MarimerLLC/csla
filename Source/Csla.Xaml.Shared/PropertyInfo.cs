@@ -922,7 +922,22 @@ namespace Csla.Xaml
 
     #region INotifyPropertyChanged Members
 
-#if !XAMARIN && !MAUI
+#if AVALONIA
+    /// <summary>
+    /// Event raised when a CLR property has changed.
+    /// </summary>
+    public new event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>
+    /// Raises the INotifyPropertyChanged event for CLR properties.
+    /// </summary>
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      PropertyChanged?.Invoke(
+        this,
+        new PropertyChangedEventArgs(propertyName));
+    }
+#elif !XAMARIN && !MAUI && !AVALONIA 
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>

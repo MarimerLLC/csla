@@ -6,7 +6,7 @@ Read this entire document before starting any work.
 
 ## Getting started
 
-1. Review the [Code of Conduct](https://github.com/MarimerLLC/csla/blob/main/CODE_OF_CONDUCT.md)
+1. Review the [Code of Conduct](https://github.com/MarimerLLC/csla/blob/main/.github/CODE_OF_CONDUCT.md)
 1. Make sure you have a [GitHub account](https://github.com/signup/free)
 1. Download, print, sign, scan, and return the contributor agreement (CLA)
 1. Engage
@@ -20,7 +20,7 @@ Read this entire document before starting any work.
 
 ## Contributor Agreement (CLA)
 
-* Print, sign, and email the [contributor agreement](https://github.com/MarimerLLC/csla/blob/main/Support/Contributions/CSLA%20Contributor%20Agreement.pdf?raw=true) document to Marimer LLC
+* Print, sign, and email the [contributor agreement](https://github.com/MarimerLLC/csla/blob/main/Support/Contributions/CSLA%20Contributor%20Agreement.pdf) document to Marimer LLC
    * Email to rocky at marimer dot llc
    * Include your GitHub username in the email
    * You will recieve an email from GitHub inviting you to the organization and repo once we've reviewed your CLA

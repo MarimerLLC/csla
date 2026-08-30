@@ -73,7 +73,7 @@ namespace Csla.Rules
     /// <param name="targetType">Type of the target.</param>
     /// <param name="criteria">The criteria.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/>, <paramref name="rule"/> or <paramref name="targetType"/> is <see langword="null"/>.</exception>
-    internal AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object? target, Type targetType, object?[]? criteria)
+    public AuthorizationContext(ApplicationContext applicationContext, IAuthorizationRuleBase rule, object? target, Type targetType, object?[]? criteria)
     {
       ApplicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       Rule = rule ?? throw new ArgumentNullException(nameof(rule));

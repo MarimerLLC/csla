@@ -12,6 +12,10 @@ For detailed migration guidance, see [Upgrading to CSLA 10](docs/Upgrading%20to%
 
 New `Csla.Testing` NuGet package, a home for supporting code that helps people write unit tests against their CSLA business code: business classes, business rules, authorization rules, and related types. The package is intended for use in test projects only; it is not required by, and is not intended for use in, production application code. This change stands up the project, packaging, and documentation. The helper types themselves are being added on top of this foundation. See [Csla.Testing](docs/Csla-Testing.md) for details.
 
+**Rule testing helpers** ([#1225](https://github.com/MarimerLLC/csla/issues/1225))
+
+The `Csla.Testing.Rules` namespace adds `BusinessRuleTester` and `AuthorizationRuleTester`, fluent helpers that execute a single rule in isolation and return a result object to assert against. A single `ExecuteAsync` method runs synchronous and asynchronous rules alike, so a test no longer has to branch on whether the rule implements `IBusinessRule` or `IBusinessRuleAsync` (or `IAuthorizationRule` or `IAuthorizationRuleAsync`), and no hand-written `ApplicationContext` bootstrap is needed. Input values, the target object, the execution context mode, the principal, and CSLA options or services the rule resolves can all be configured through the builder. Also makes the `AuthorizationContext` constructor that accepts criteria public, so a rule that reads `Criteria` can be tested. See [Csla.Testing](docs/Csla-Testing.md) for details.
+
 ## CSLA .NET version 10.1.0 release
 
 The full list of changes in this release can be found in the [GitHub compare view](https://github.com/MarimerLLC/csla/compare/v10.0.0...v10.1.0).

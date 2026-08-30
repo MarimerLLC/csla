@@ -4,6 +4,14 @@ CSLA 10 is a substantial update to CSLA .NET, adding support for .NET 10 and inc
 
 For detailed migration guidance, see [Upgrading to CSLA 10](docs/Upgrading%20to%20CSLA%2010.md).
 
+## CSLA .NET version 10.2.0 release
+
+### Highlights
+
+**New Csla.Testing package** ([#1225](https://github.com/MarimerLLC/csla/issues/1225), [#4882](https://github.com/MarimerLLC/csla/issues/4882))
+
+New `Csla.Testing` NuGet package, a home for supporting code that helps people write unit tests against their CSLA business code: business classes, business rules, authorization rules, and related types. The package is intended for use in test projects only; it is not required by, and is not intended for use in, production application code. This change stands up the project, packaging, and documentation. The helper types themselves are being added on top of this foundation. See [Csla.Testing](docs/Csla-Testing.md) for details.
+
 ## CSLA .NET version 10.1.0 release
 
 The full list of changes in this release can be found in the [GitHub compare view](https://github.com/MarimerLLC/csla/compare/v10.0.0...v10.1.0).

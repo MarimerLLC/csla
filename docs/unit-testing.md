@@ -1,5 +1,8 @@
 # Unit Testing
 
+The [Csla.Testing](Csla-Testing.md) NuGet package provides supporting code for people
+writing unit tests against their CSLA business code (business classes, rules, and so on).
+
 ## Unit Testing Business Domain Classes
 
 1. Unit testing with CSLA was difficult until CSLA 4

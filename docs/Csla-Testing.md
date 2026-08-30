@@ -21,15 +21,18 @@ framework, so it works with MSTest, NUnit, xUnit, or any other runner.
 
 ## Status
 
-The package exists, but the helper types are still being added. See the
-[unit testing](unit-testing.md) documentation for current guidance on testing CSLA
-business code, and watch the
-[CSLA discussions](https://github.com/MarimerLLC/csla/discussions) for announcements
-as functionality lands.
+The package exists, but the helper types are still being added. Work in progress is
+tracked by [#1225](https://github.com/MarimerLLC/csla/issues/1225) (helpers to
+execute and test rules) and [#4882](https://github.com/MarimerLLC/csla/issues/4882)
+(resetting the per-type rule cache between tests).
+
+See the [unit testing](unit-testing.md) documentation for current guidance on testing
+CSLA business code.
 
 ## Contributing
 
 The project lives in `Source/Csla.Testing` and is part of both `Source/csla.build.sln`
-(the packaging solution) and `Source/csla.test.sln` (the CI solution). Please read the
+(the packaging solution) and `Source/csla.test.sln` (the CI solution). Its unit tests
+live in `Source/tests/Csla.Testing.Tests`. Please read the
 [contribution guidelines](https://github.com/MarimerLLC/csla/blob/main/.github/CONTRIBUTING.md)
 before submitting a pull request.

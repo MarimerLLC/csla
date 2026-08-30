@@ -4,7 +4,7 @@ CSLA 10 is a substantial update to CSLA .NET, adding support for .NET 10 and inc
 
 For detailed migration guidance, see [Upgrading to CSLA 10](docs/Upgrading%20to%20CSLA%2010.md).
 
-## CSLA .NET version 10.2.0 release (in development)
+## CSLA .NET version 10.2.0 release
 
 ### Highlights
 

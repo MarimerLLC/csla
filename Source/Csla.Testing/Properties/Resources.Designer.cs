@@ -61,7 +61,7 @@ namespace Csla.Testing.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Unable to reset the CSLA rule cache. The internal member &apos;{0}&apos; was not found on &apos;{1}&apos;. This build of Csla.Testing may not match the referenced version of CSLA..
+        ///   Looks up a localized string similar to Unable to reset the CSLA rule cache. The non-public member &apos;{0}&apos; was not found on &apos;{1}&apos;. This build of Csla.Testing may not match the referenced version of CSLA..
         /// </summary>
         public static string RuleCacheResetFailed {
             get {
@@ -70,7 +70,7 @@ namespace Csla.Testing.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Unable to reset the CSLA rule cache. The internal member &apos;{0}&apos; on &apos;{1}&apos; was not of the expected type. This build of Csla.Testing may not match the referenced version of CSLA..
+        ///   Looks up a localized string similar to Unable to reset the CSLA rule cache. The non-public member &apos;{0}&apos; on &apos;{1}&apos; was not of the expected type. This build of Csla.Testing may not match the referenced version of CSLA..
         /// </summary>
         public static string RuleCacheResetUnexpectedShape {
             get {

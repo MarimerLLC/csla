@@ -42,6 +42,8 @@ namespace Csla.Testing.Rules
   {
     private const string PerTypeRulesField = "_perTypeRules";
     private const string CleanupMethod = "CleanupRulesForType";
+    private const string IsValueCreatedProperty = "IsValueCreated";
+    private const string ValueProperty = "Value";
 
     /// <summary>
     /// Clears the cached business and authorization rules for every type.
@@ -136,10 +138,18 @@ namespace Csla.Testing.Rules
     /// Empties a manager's per-type cache wholesale.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// The dictionary itself is private on both managers, so there is no way to reach it other
-    /// than reflection. It is held in a <see cref="Lazy{T}"/>, and both managers take a lock on
-    /// the field before mutating it — so the same lock is taken here, rather than clearing
-    /// underneath a registration in progress on another thread.
+    /// than reflection. It is held in a <see cref="Lazy{T}"/>.
+    /// </para>
+    /// <para>
+    /// The lock matches the managers' own <em>removal</em> paths: <c>CleanupRulesForType</c> and
+    /// the assembly-load-context unload handler both lock the field before removing entries.
+    /// It does not order this against <em>registration</em> — <c>GetRulesForType</c> adds through
+    /// <c>ConcurrentDictionary.GetOrAdd</c> and takes no lock, so a registration running
+    /// concurrently with a clear is unsynchronized either way. Tests are expected to clear
+    /// while nothing else is using the cache.
+    /// </para>
     /// </remarks>
     private static void ClearAll(Type managerType)
     {
@@ -150,11 +160,22 @@ namespace Csla.Testing.Rules
       if (lazy is null)
         throw UnexpectedShape(PerTypeRulesField, managerType);
 
-      System.Reflection.PropertyInfo? valueProperty = lazy.GetType().GetProperty("Value");
+      Type lazyType = lazy.GetType();
+
+      System.Reflection.PropertyInfo? isValueCreated = lazyType.GetProperty(IsValueCreatedProperty);
+      if (isValueCreated is null)
+        throw UnexpectedShape(PerTypeRulesField, managerType);
+
+      // Nothing has ever been cached, so there is nothing to clear -- and reading Value below
+      // would only force the dictionary into existence as a side effect of clearing it.
+      if (isValueCreated.GetValue(lazy) is not true)
+        return;
+
+      System.Reflection.PropertyInfo? valueProperty = lazyType.GetProperty(ValueProperty);
       if (valueProperty is null)
         throw UnexpectedShape(PerTypeRulesField, managerType);
 
-      // Both managers lock on the field's value (the Lazy instance) around their own mutations.
+      // Both managers lock on the field's value (the Lazy instance) around their own removals.
       lock (lazy)
       {
         if (valueProperty.GetValue(lazy) is not IDictionary cache)

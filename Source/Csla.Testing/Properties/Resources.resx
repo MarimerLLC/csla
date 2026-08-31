@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RuleCacheResetFailed" xml:space="preserve">
-    <value>Unable to reset the CSLA rule cache. The internal member '{0}' was not found on '{1}'. This build of Csla.Testing may not match the referenced version of CSLA.</value>
+    <value>Unable to reset the CSLA rule cache. The non-public member '{0}' was not found on '{1}'. This build of Csla.Testing may not match the referenced version of CSLA.</value>
     <comment>Thrown when the reflection used to reach a private rule-cache member finds nothing, i.e. the member was renamed or removed. {0} is the member name, {1} the declaring type.</comment>
   </data>
   <data name="RuleCacheResetUnexpectedShape" xml:space="preserve">
-    <value>Unable to reset the CSLA rule cache. The internal member '{0}' on '{1}' was not of the expected type. This build of Csla.Testing may not match the referenced version of CSLA.</value>
+    <value>Unable to reset the CSLA rule cache. The non-public member '{0}' on '{1}' was not of the expected type. This build of Csla.Testing may not match the referenced version of CSLA.</value>
     <comment>Thrown when a private rule-cache member is found but is not the expected type. {0} is the member name, {1} the declaring type.</comment>
   </data>
 </root>

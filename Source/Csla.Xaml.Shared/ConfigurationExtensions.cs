@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using Csla.Xaml;
 
-#if !MAUI
+#if !MAUI && !AVALONIA
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 #endif
@@ -51,14 +51,14 @@ public static class XamlConfigurationExtensions
     // use correct mode for raising PropertyChanged events
     config.BindingOptions.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml;
 
-#if !MAUI && !AVALONIA  // MJD TODO -- Test...  I feel like we need this for DI.
+#if !MAUI && !AVALONIA
     config.Services.AddTransient(typeof(ViewModel<>), typeof(ViewModel<>));
 #endif
 
     return config;
   }
 
-#if !MAUI
+#if !MAUI && !AVALONIA
   /// <summary>
   /// Initializes CSLA for use by Xaml apps.
   /// </summary>

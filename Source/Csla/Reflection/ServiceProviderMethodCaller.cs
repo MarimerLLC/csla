@@ -569,7 +569,6 @@ namespace Csla.Reflection
             var serviceKey = method.ServiceKeys[index];
             if (serviceKey != null)
             {
-#if NET8_0_OR_GREATER
               // Use keyed service injection for .NET 8+
               if (method.AllowNull[index])
               {
@@ -588,9 +587,6 @@ namespace Csla.Reflection
                 // For required keyed services, use extension method
                 plist[index] = service.GetRequiredKeyedService(item.ParameterType, serviceKey);
               }
-#else
-              throw new NotSupportedException("Keyed service injection is only supported on .NET 8.0 or higher.");
-#endif
             }
             else
             {

@@ -70,6 +70,9 @@ The main NuGet package. Key subsystems:
 - `Csla.Channels.Grpc` — gRPC data portal channel
 - `Csla.Channels.RabbitMq` — RabbitMQ data portal channel
 
+### Testing Support
+- `Csla.Testing` — supporting code for unit testing CSLA business classes and rules (test-only package)
+
 ### Analyzers and Generators
 - `Source/Csla.Analyzers/` — Roslyn analyzers shipped inside the Csla NuGet
 - `Source/Csla.Generators/cs/AutoSerialization/` — Source generator for `[AutoSerialization]`

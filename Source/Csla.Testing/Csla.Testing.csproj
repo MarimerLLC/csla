@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Directory.Package.props" />
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <AssemblyName>Csla.Testing</AssemblyName>
+    <RootNamespace>Csla.Testing</RootNamespace>
+    <PackageId>Csla.Testing</PackageId>
+    <Product>CSLA .NET Testing</Product>
+    <Title>CSLA .NET Testing</Title>
+    <Description>Supporting types for unit testing CSLA .NET business classes, business rules, and other business logic. This package is intended for use in test projects; it is not required by, or intended for use in, production application code.</Description>
+    <PackageTags>CSLA;Business;Rules;Testing;UnitTesting</PackageTags>
+    <DelaySign>false</DelaySign>
+    <SignAssembly>true</SignAssembly>
+    <BaseOutputPath>..\..\Bin</BaseOutputPath>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Csla\Csla.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
+  </ItemGroup>
+
+</Project>

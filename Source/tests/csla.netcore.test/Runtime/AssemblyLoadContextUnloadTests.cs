@@ -68,6 +68,7 @@ namespace Csla.Test.Runtime
       (typeof(ServiceProviderMethodCaller), "_methodCache"),
       (typeof(DataPortalMethodCache), "_cache"),
       (typeof(DataPortalTarget), "_methodNameList"),
+      (typeof(ObjectFactoryAttribute), "_cache"),
       (typeof(BusinessRuleManager), "_perTypeRules"),
       (typeof(AuthorizationRuleManager), "_perTypeRules"),
     ];

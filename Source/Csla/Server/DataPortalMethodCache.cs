@@ -76,7 +76,7 @@ namespace Csla.Server
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_cache)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_cache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<MethodCacheKey, Tuple<string?, DataPortalMethodInfo>?>)_cache, context);
     }
 #endif
   }

@@ -100,7 +100,7 @@ namespace Csla.Core
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_undoableFieldCache)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_undoableFieldCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, List<DynamicMemberHandle>>?>)_undoableFieldCache, context);
     }
 #endif
   }

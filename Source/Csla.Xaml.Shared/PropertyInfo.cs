@@ -299,7 +299,7 @@ namespace Csla.Xaml
 #if AVALONIA
             $"SetSource: DataContext:{DataContext?.GetType().Name ?? "null"}, Path={Path}", ex);
 #else          
-            string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
+            string.Format("SetSource: BindingContext:{0}, Path={1}", BindingContext?.GetType().Name ?? "null", Path), ex);
 #endif
         }
       }

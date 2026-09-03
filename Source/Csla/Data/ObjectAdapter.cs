@@ -217,7 +217,7 @@ namespace Csla.Data
     }
 
     private static bool IsBrowsable(PropertyInfo property)
-      => property.GetCustomAttribute<BrowsableAttribute>()?.Browsable != false;
+      => property.GetCustomAttribute<BrowsableAttribute>(inherit: true)?.Browsable != false;
 
     #endregion
 

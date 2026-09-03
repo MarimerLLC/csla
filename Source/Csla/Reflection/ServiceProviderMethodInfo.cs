@@ -70,6 +70,11 @@ namespace Csla.Reflection
     /// </summary>
     public bool IsAsyncTaskObject { get; set; }
     /// <summary>
+    /// Gets the helper method used to convert a Task of T
+    /// return value into a Task of object
+    /// </summary>
+    internal System.Reflection.MethodInfo? ConvertToTaskObjectMethod { get; private set; }
+    /// <summary>
     /// Gets the DataPortalInfo for the method
     /// </summary>
     internal DataPortalMethodInfo? DataPortalMethodInfo { get; private set; }
@@ -118,6 +123,8 @@ namespace Csla.Reflection
             }
             IsAsyncTask = (MethodInfo.ReturnType == typeof(Task));
             IsAsyncTaskObject = (MethodInfo.ReturnType.IsGenericType && (MethodInfo.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
+            if (IsAsyncTaskObject)
+              ConvertToTaskObjectMethod = TaskConversionHelper.CreateTaskObjectConversionMethodInfo(MethodInfo.ReturnType.GetGenericArguments()[0]);
             DataPortalMethodInfo = new DataPortalMethodInfo(MethodInfo);
 
             Initialized = true;

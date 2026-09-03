@@ -888,7 +888,7 @@ namespace Csla.Core.FieldManager
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_consolidatedLists)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, Type>?>)_consolidatedLists, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, List<IPropertyInfo>>?>)_consolidatedLists, context);
     }
 #endif
   }

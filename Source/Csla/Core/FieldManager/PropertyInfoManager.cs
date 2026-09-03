@@ -205,7 +205,7 @@ namespace Csla.Core.FieldManager
       var cache = PropertyInfoCache;
 
       lock (cache)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)cache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, PropertyInfoList>?>)cache, context, true);
     }
 #endif
   }

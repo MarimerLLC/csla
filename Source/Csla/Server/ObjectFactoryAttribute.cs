@@ -6,6 +6,12 @@
 // <summary>Specifies that the data portal</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.Concurrent;
+#if NET8_0_OR_GREATER
+using System.Runtime.Loader;
+using Csla.Runtime;
+#endif
+
 namespace Csla.Server
 {
   /// <summary>
@@ -16,7 +22,46 @@ namespace Csla.Server
   [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false)]
   public class ObjectFactoryAttribute : Attribute
   {
+    /// <summary>
+    /// Cached lookup result for one business type. A wrapper is required
+    /// because most types carry no factory attribute and the cache must
+    /// remember that null result as well.
+    /// </summary>
+    private sealed class CacheEntry
+    {
+      public CacheEntry(ObjectFactoryAttribute? attribute)
+      {
+        Attribute = attribute;
+      }
+
+      public ObjectFactoryAttribute? Attribute { get; }
+    }
+
+#if NET8_0_OR_GREATER
+    private static readonly ConcurrentDictionary<Type, Tuple<string?, CacheEntry>> _cache = new();
+#else
+    private static readonly ConcurrentDictionary<Type, CacheEntry> _cache = new();
+#endif
+
+    /// <summary>
+    /// Gets the <see cref="ObjectFactoryAttribute"/> applied to a business
+    /// type, or null if the type has no factory attribute. Results are
+    /// cached per type because this lookup runs several times on every
+    /// data portal call.
+    /// </summary>
     internal static ObjectFactoryAttribute? GetObjectFactoryAttribute(Type objectType)
+    {
+#if NET8_0_OR_GREATER
+      return _cache.GetOrAdd(
+        objectType,
+        type => AssemblyLoadContextManager.CreateCacheInstance(type, new CacheEntry(FindAttribute(type)), OnAssemblyLoadContextUnload)
+      ).Item2.Attribute;
+#else
+      return _cache.GetOrAdd(objectType, type => new CacheEntry(FindAttribute(type))).Attribute;
+#endif
+    }
+
+    private static ObjectFactoryAttribute? FindAttribute(Type objectType)
     {
       var result = objectType.GetCustomAttributes(typeof(ObjectFactoryAttribute), true);
       if (result != null && result.Length > 0)
@@ -24,6 +69,13 @@ namespace Csla.Server
       else
         return null;
     }
+
+#if NET8_0_OR_GREATER
+    private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
+    {
+      AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, CacheEntry>?>)_cache, context, true);
+    }
+#endif
 
     /// <summary>
     /// Assembly qualified type name of the factory object.

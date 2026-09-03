@@ -6,7 +6,7 @@ Read this entire document before starting any work.
 
 ## Getting started
 
-1. Review the [Code of Conduct](https://github.com/MarimerLLC/csla/blob/master/CODE_OF_CONDUCT.md)
+1. Review the [Code of Conduct](https://github.com/MarimerLLC/csla/blob/main/.github/CODE_OF_CONDUCT.md)
 1. Make sure you have a [GitHub account](https://github.com/signup/free)
 1. Download, print, sign, scan, and return the contributor agreement (CLA)
 1. Engage
@@ -16,11 +16,11 @@ Read this entire document before starting any work.
 1. For beginners we suggest
    1. This online course on [contributing to OSS projects on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
    1. This excellent blog post on [Being a good open source citizen](https://hackernoon.com/being-a-good-open-source-citizen-9060d0ab9732#.4owk5884d)
-   1. Information on the [CSLA git flow](https://github.com/MarimerLLC/csla/blob/master/docs/dev/csla-github-flow.md) used on this project
+   1. Information on the [CSLA git flow](https://github.com/MarimerLLC/csla/blob/main/docs/dev/csla-github-flow.md) used on this project
 
 ## Contributor Agreement (CLA)
 
-* Print, sign, and email the [contributor agreement](https://github.com/MarimerLLC/csla/blob/master/Support/Contributions/CSLA%20Contributor%20Agreement.pdf?raw=true) document to Marimer LLC
+* Print, sign, and email the [contributor agreement](https://github.com/MarimerLLC/csla/blob/main/Support/Contributions/CSLA%20Contributor%20Agreement.pdf) document to Marimer LLC
    * Email to rocky at marimer dot llc
    * Include your GitHub username in the email
    * You will recieve an email from GitHub inviting you to the organization and repo once we've reviewed your CLA
@@ -42,7 +42,7 @@ The rules are detailed below.
 
 ### Using Git
 
-* We have a doc with step-by-step instructions on [how to use git and GitHub to contribute](https://github.com/MarimerLLC/csla/blob/master/docs/dev/csla-github-flow.md) to CSLA .NET
+* We have a doc with step-by-step instructions on [how to use git and GitHub to contribute](https://github.com/MarimerLLC/csla/blob/main/docs/dev/csla-github-flow.md) to CSLA .NET
 * Follow the [CSLA git flow](https://github.com/MarimerLLC/csla/blob/master/docs/dev/csla-github-flow.md) used on this project
 
 ### Using GitHub

@@ -108,6 +108,7 @@ Supporting nullable types means that some APIs have changed to support nullable 
 * `Csla.Reflection.LateBoundObject(Type objectType)` constructor removed (hasn't worked so far anyway)
 * `Csla.Core.UndoException` constructors now throw `ArgumentNullException` on necessary parameters and all public fields changed to readonly properties
 * `Csla.Data.ObjectAdapter.Fill(DataTable dt, object source)` throws an `ArgumentNullException` for source instead of `ArgumentException`.
+* `Csla.Data.ObjectAdapter.Fill(...)` now writes `DBNull.Value` into the cell when a property or field value is `null` (previously the cell contained an "Error reading value" message), and properties marked `[Browsable(false)]` (such as `Parent`, `IsNew`, `IsDirty` on business objects) are no longer emitted as columns.
 * `Csla.Reflection.ServiceProviderMethodInfo` 
   * Now has a constructor requiring a `MethodInfo` parameter
   * Property `MethodInfo` property set removed and replaced by the constructor

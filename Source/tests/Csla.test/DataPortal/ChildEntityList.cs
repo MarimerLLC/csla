@@ -22,7 +22,7 @@ namespace Csla.Test.DataBinding
     #endregion
 
     [Fetch]
-    private void DataPortal_Fetch(object criteria, IChildDataPortal<ChildEntity> childDataPortal)
+    private void DataPortal_Fetch(object criteria, [Inject] IChildDataPortal<ChildEntity> childDataPortal)
     {
       for (var i = 0; i < 10; i++)
         Add(childDataPortal.CreateChild(i, "first" + i, "last" + i));

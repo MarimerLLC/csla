@@ -342,7 +342,7 @@ namespace Csla.Server
 #if NET8_0_OR_GREATER
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
-      AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_methodNameList, context, true);
+      AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, DataPortalMethodNames>?>)_methodNameList, context, true);
     }
 #endif
   }

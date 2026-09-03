@@ -10,6 +10,7 @@ using Csla.Configuration;
 using Csla.TestHelpers;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ObjectFactory
@@ -330,5 +331,103 @@ namespace Csla.Test.ObjectFactory
         obj.Text.Should().NotBeNullOrWhiteSpace();
       }
     }
+
+    #region Multiple parameters and dependency injection (issue #1707)
+
+    private static TestDIContext CreateFactoryContext<TFactory>(Action<IServiceCollection> configureServices = null)
+      where TFactory : class
+    {
+      return TestDIContextFactory.CreateContext(
+        opts => opts.DataPortal(dp => dp.AddServerSideDataPortal(
+          cfg => cfg.RegisterObjectFactoryLoader<ObjectFactoryLoader<TFactory>>())),
+        new System.Security.Claims.ClaimsPrincipal(),
+        configureServices);
+    }
+
+    [TestMethod("Factory Create accepts multiple criteria parameters")]
+    public void CreateWithMultipleParameters()
+    {
+      var testDIContext = CreateFactoryContext<MultiParamRootFactory>();
+      var dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Create("abc", 5);
+
+      Assert.AreEqual("Create abc 5", root.Data);
+      Assert.IsTrue(root.IsNew);
+    }
+
+    [TestMethod("Factory Fetch accepts multiple criteria parameters")]
+    public void FetchWithMultipleParameters()
+    {
+      var testDIContext = CreateFactoryContext<MultiParamRootFactory>();
+      var dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch("abc", 5);
+
+      Assert.AreEqual("Fetch abc 5", root.Data);
+      Assert.IsFalse(root.IsNew);
+    }
+
+    [TestMethod("Factory method resolves [Inject] parameters from the service provider")]
+    public void FetchWithInjectedService()
+    {
+      var testDIContext = CreateFactoryContext<InjectRootFactory>(
+        services => services.AddTransient<IFactoryTestService, FactoryTestService>());
+      var dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch("id7");
+
+      Assert.AreEqual("id7:injected", root.Data);
+    }
+
+    [TestMethod("Factory method supports multiple criteria together with [Inject]")]
+    public void CreateWithMultipleParametersAndInjectedService()
+    {
+      var testDIContext = CreateFactoryContext<InjectRootFactory>(
+        services => services.AddTransient<IFactoryTestService, FactoryTestService>());
+      var dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Create("abc", 5);
+
+      Assert.AreEqual("abc 5 injected", root.Data);
+      Assert.IsTrue(root.IsNew);
+    }
+
+    [TestMethod("Factory overloads are disambiguated by criteria parameter count")]
+    public void FetchOverloadResolution()
+    {
+      var testDIContext = CreateFactoryContext<OverloadRootFactory>();
+      var dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      Assert.AreEqual("Fetch0", dataPortal.Fetch().Data);
+      Assert.AreEqual("Fetch1 abc", dataPortal.Fetch("abc").Data);
+      Assert.AreEqual("Fetch2 abc 5", dataPortal.Fetch("abc", 5).Data);
+    }
+
+    [TestMethod("Object factory supports constructor injection")]
+    public void FetchWithConstructorInjectedService()
+    {
+      var testDIContext = CreateFactoryContext<CtorInjectRootFactory>(
+        services => services.AddTransient<IFactoryTestService, FactoryTestService>());
+      var dataPortal = testDIContext.CreateDataPortal<Root>();
+
+      var root = dataPortal.Fetch();
+
+      Assert.AreEqual("injected", root.Data);
+    }
+
+    [TestMethod("Command object factory Execute supports criteria plus [Inject]")]
+    public void ExecuteCommandWithInjectedService()
+    {
+      var testDIContext = TestDIContextFactory.CreateDefaultContext(
+        services => services.AddTransient<IFactoryTestService, FactoryTestService>());
+      var dataPortal = testDIContext.CreateDataPortal<InjectCommandObject>();
+
+      var result = InjectCommandObject.Execute(dataPortal);
+
+      Assert.AreEqual("injected", result.Value);
+    }
+
+    #endregion
   }
 }

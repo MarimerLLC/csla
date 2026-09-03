@@ -200,11 +200,11 @@ namespace Csla.Data
 
       if (sourceType != null)
       {
-        // retrieve a list of all public properties
+        // retrieve a list of all public, browsable properties
         PropertyInfo[] props = sourceType.GetProperties();
         if (props.Length >= 0)
           for (int column = 0; column < props.Length; column++)
-            if (props[column].CanRead)
+            if (props[column].CanRead && IsBrowsable(props[column]))
               result.Add(props[column].Name);
 
         // retrieve a list of all public fields
@@ -216,17 +216,20 @@ namespace Csla.Data
       return result;
     }
 
+    private static bool IsBrowsable(PropertyInfo property)
+      => property.GetCustomAttribute<BrowsableAttribute>(inherit: true)?.Browsable != false;
+
     #endregion
 
     #region GetField
 
-    private static string GetField(object obj, string fieldName)
+    private static object GetField(object obj, string fieldName)
     {
-      string result;
+      object result;
       if (obj is DataRowView dataRowView)
       {
         // this is a DataRowView from a DataView
-        result = dataRowView[fieldName].ToString()!;
+        result = ToCellValue(dataRowView[fieldName]);
       }
       else if (obj is ValueType && obj.GetType().IsPrimitive)
       {
@@ -262,13 +265,13 @@ namespace Csla.Data
               else
               {
                 // got a field, return its value
-                result = field.GetValue(obj)!.ToString()!;
+                result = ToCellValue(field.GetValue(obj));
               }
             }
             else
             {
               // found a property, return its value
-              result = prop.GetValue(obj, null)!.ToString()!;
+              result = ToCellValue(prop.GetValue(obj, null));
             }
           }
           catch (Exception ex)
@@ -278,6 +281,17 @@ namespace Csla.Data
         }
       }
       return result;
+    }
+
+    /// <summary>
+    /// Converts a member value into the value stored in the DataTable cell:
+    /// null (or DBNull) becomes DBNull, everything else becomes its string representation.
+    /// </summary>
+    private static object ToCellValue(object? value)
+    {
+      if (value is null || value is DBNull)
+        return DBNull.Value;
+      return value.ToString() ?? (object)DBNull.Value;
     }
 
     #endregion

@@ -7,8 +7,9 @@
 //-----------------------------------------------------------------------
 using Csla.Xaml;
 
-#if !MAUI && !AVALONIA
 using Microsoft.Extensions.DependencyInjection;
+
+#if !MAUI && !AVALONIA
 using Microsoft.Extensions.Hosting;
 #endif
 

@@ -15,12 +15,13 @@ using Csla.Rules;
 #if NETFX_CORE
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+#elif XAMARIN
+using Xamarin.Forms;
+#elif MAUI
 #elif AVALONIA
 using Avalonia;
 using Avalonia.Controls;
-#elif XAMARIN
-using Xamarin.Forms;
-#elif !AVALONIA
+#else
 using System.Windows;
 using System.Windows.Data;
 #endif

@@ -44,7 +44,7 @@ namespace Csla.Xaml
   {
     private ApplicationContext ApplicationContext => ApplicationContextManager.GetApplicationContext();
 
-#if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI|| AVALONIA
+#if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI || AVALONIA
     private T? _model;
     /// <summary>
     /// Gets or sets the Model object.
@@ -106,7 +106,7 @@ namespace Csla.Xaml
     [ScaffoldColumn(false)]
     public bool ManageObjectLifetime
     {
-#if ANDROID || IOS || XAMARIN || MAUI|| AVALONIA
+#if ANDROID || IOS || XAMARIN || MAUI || AVALONIA
       get { return (bool)ManageObjectLifetimeProperty; }
       set { ManageObjectLifetimeProperty = value; }
 #else

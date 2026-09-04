@@ -113,8 +113,8 @@ namespace Csla.Test.Serialization
       // Arrange - Create a CommandBase-derived object with no custom metastate
       // CommandBase objects that don't override OnGetMetastate/OnSetMetastate
       // will return/accept empty byte arrays
-      var testDIContext = TestHelpers.TestDIContextFactory.CreateDefaultContext();
-      var dataPortal = testDIContext.CreateDataPortal<Test.CommandBase.CommandObject>();
+      using var testHost = Csla.Testing.CslaTestHost.Create();
+      var dataPortal = testHost.GetDataPortal<Test.CommandBase.CommandObject>();
       var original = dataPortal.Create();
       
       // Act - Get the metastate from an object with no field state
@@ -135,12 +135,12 @@ namespace Csla.Test.Serialization
     public void CommandBase_GetSetMetastate_PropertyValues_RoundTrip()
     {
       // Arrange - Create a CommandBase-derived object with property values
-      var testDIContext = TestHelpers.TestDIContextFactory.CreateDefaultContext();
-      var dataPortal = testDIContext.CreateDataPortal<Test.CommandBase.CommandObject>();
+      using var testHost = Csla.Testing.CslaTestHost.Create();
+      var dataPortal = testHost.GetDataPortal<Test.CommandBase.CommandObject>();
       var original = dataPortal.Create();
       
       // Set some property values using ObjectFactory pattern
-      var factory = new Test.CommandBase.CommandBaseTest(testDIContext.CreateTestApplicationContext());
+      var factory = new Test.CommandBase.CommandBaseTest(testHost.ApplicationContext);
       factory.LoadProperty(original, Test.CommandBase.CommandObject.NameProperty, "Test Command");
       factory.LoadProperty(original, Test.CommandBase.CommandObject.NumProperty, 123);
 
@@ -161,8 +161,8 @@ namespace Csla.Test.Serialization
     public void CommandBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
-      var testDIContext = TestHelpers.TestDIContextFactory.CreateDefaultContext();
-      var dataPortal = testDIContext.CreateDataPortal<Test.CommandBase.CommandObject>();
+      using var testHost = Csla.Testing.CslaTestHost.Create();
+      var dataPortal = testHost.GetDataPortal<Test.CommandBase.CommandObject>();
       var command = dataPortal.Create();
 
       // Act

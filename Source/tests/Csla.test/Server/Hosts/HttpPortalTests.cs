@@ -193,13 +193,13 @@ public class HttpPortalTests
   public async Task Create_WithCustomSerializedCriteria_UnpacksCorrectly()
   {
     // Arrange
-    var testDIContext = TestDIContextFactory.CreateContext(
-      o => o.Serialization(o => o.UseMobileFormatter(o => o.CustomSerializers.Add(
+    using var testHost = CslaTestHost.Create(t => t
+      .ConfigureCsla(o => o.Serialization(o => o.UseMobileFormatter(o => o.CustomSerializers.Add(
         new TypeMap<object, PocoSerializer<Csla.Test.Serialization.SerializablePoco>>(
-          PocoSerializer<Csla.Test.Serialization.SerializablePoco>.CanSerialize)))),
-      new ClaimsPrincipal(new ClaimsIdentity(new GenericIdentity("Fred"))),
-      services => services.AddScoped<IContextDictionary, ContextDictionary>());
-    var applicationContext = testDIContext.CreateTestApplicationContext();
+          PocoSerializer<Csla.Test.Serialization.SerializablePoco>.CanSerialize)))))
+      .AsPrincipal(new ClaimsPrincipal(new ClaimsIdentity(new GenericIdentity("Fred"))))
+      .ConfigureServices(services => services.AddScoped<IContextDictionary, ContextDictionary>()));
+    var applicationContext = testHost.ApplicationContext;
     var fakeDataPortalServer = new FakeDataPortalServer();
     var systemUnderTest = new HttpPortal(applicationContext, fakeDataPortalServer);
 

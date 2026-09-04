@@ -98,7 +98,9 @@ namespace Csla.DataPortalClient
     /// </param>
     public void SetState(SerializationInfo info)
     {
-      if (info.Values.ContainsKey(_valueName))
+      // when the value was serialized as a child it is restored by SetChildren;
+      // otherwise read it here, so a stream that is missing the value still fails fast
+      if (!info.Children.ContainsKey(_valueName))
         _value = info.GetValue<object>(_valueName)!;
     }
 

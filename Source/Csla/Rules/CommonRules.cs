@@ -102,6 +102,18 @@ namespace Csla.Rules.CommonRules
   /// <summary>
   /// Business rule for a required string.
   /// </summary>
+  /// <remarks>
+  /// The rule is broken when the property value is <see langword="null"/>, or when the
+  /// string form of the value is <see langword="null"/>, <see cref="string.Empty"/> or
+  /// consists only of white space.
+  /// <para>
+  /// A non-nullable value type property can therefore never break this rule, because it
+  /// always has a value that produces a non-empty string. For example an
+  /// <see langword="int"/> property with a value of <c>0</c> satisfies the rule. Use a
+  /// nullable property type (such as <see langword="int"/>?) to require that a value was
+  /// supplied, or <see cref="MinValue{T}"/> to require a value within a range.
+  /// </para>
+  /// </remarks>
   public class Required : CommonBusinessRule
   {
     /// <summary>

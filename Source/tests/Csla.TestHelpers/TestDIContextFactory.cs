@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="TestDIContextFactory.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -9,6 +9,7 @@
 using System.Security.Claims;
 using System.Security.Principal;
 using Csla.Configuration;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -18,6 +19,13 @@ namespace Csla.TestHelpers
   /// <summary>
   /// Factory for test DI contexts, for use in unit testing
   /// </summary>
+  /// <remarks>
+  /// Superseded by <see cref="CslaTestHost"/>, the supported public equivalent in the
+  /// Csla.Testing package. This type is now a thin shim over it, so that the existing
+  /// test suite keeps compiling while also exercising the shipped public API. New tests
+  /// should use <see cref="CslaTestHost"/> directly; the remaining call sites here are
+  /// migrated in a follow-up, after which this type is removed.
+  /// </remarks>
   public static class TestDIContextFactory
   {
 
@@ -67,25 +75,31 @@ namespace Csla.TestHelpers
     /// <returns>A TestDIContext that can be used to perform testing dependent upon DI</returns>
     public static TestDIContext CreateContext(Action<CslaOptions> customCslaOptions, ClaimsPrincipal principal, Action<IServiceCollection> configureServices = null)
     {
-      IServiceProvider serviceProvider;
-      ApplicationContext context;
+      var host = CslaTestHost.Create(options =>
+      {
+        // These two registrations are what this suite has always run with, and are
+        // deliberately not what the public API does by default. CslaTestHost applies
+        // the caller's services last, so both win over the defaults.
+        options.ConfigureServices(services =>
+        {
+          // several tests reach for ApplicationContextManagerUnitTests by casting
+          // ApplicationContext.ContextManager, so keep registering it here
+          services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
+          // the public AddCslaTesting leaves the dashboard at the framework default of
+          // NullDashboard; this suite has always run with the real one
+          services.TryAddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
+        });
 
-      // Initialise DI
-      var services = new ServiceCollection();
+        if (customCslaOptions is not null)
+          options.ConfigureCsla(customCslaOptions);
+        if (configureServices is not null)
+          options.ConfigureServices(configureServices);
 
-      // Add Csla
-      services.TryAddSingleton<Server.Dashboard.IDashboard, Server.Dashboard.Dashboard>();
-      services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
-      services.AddCsla(customCslaOptions);
-      configureServices?.Invoke(services);
+        if (principal is not null)
+          options.AsPrincipal(principal);
+      });
 
-      serviceProvider = services.BuildServiceProvider();
-
-      // Initialise CSLA security
-      context = serviceProvider.GetRequiredService<ApplicationContext>();
-      context.Principal = principal;
-
-      return new TestDIContext(serviceProvider);
+      return new TestDIContext(host.Services);
     }
 
     /// <summary>

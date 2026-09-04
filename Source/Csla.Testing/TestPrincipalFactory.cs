@@ -22,6 +22,11 @@ namespace Csla.Testing
     public const string AuthenticationType = "CslaTesting";
 
     /// <summary>
+    /// The name given to the default authenticated test identity.
+    /// </summary>
+    public const string DefaultUserName = "TestUser";
+
+    /// <summary>
     /// Creates an authenticated principal with the specified name and roles.
     /// </summary>
     /// <param name="name">Name of the user.</param>
@@ -43,6 +48,17 @@ namespace Csla.Testing
       }
       return new ClaimsPrincipal(identity);
     }
+
+    /// <summary>
+    /// Creates the default principal for a test: an authenticated user holding
+    /// no roles.
+    /// </summary>
+    /// <remarks>
+    /// Authenticated, so that a first use of the test helpers is not met with a
+    /// confusing authorization failure; without roles, so that a test which
+    /// depends on a role has to say so.
+    /// </remarks>
+    public static IPrincipal CreateDefault() => CreateUser(DefaultUserName);
 
     /// <summary>
     /// Creates an unauthenticated principal.

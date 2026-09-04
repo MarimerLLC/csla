@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using Csla.Core;
+using Csla.Testing;
 using Csla.TestHelpers;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,29 +19,35 @@ namespace Csla.Test.GraphMerge
   [TestClass]
   public class GraphMergerTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
     private ApplicationContext _applicationContext;
     private GraphMerger _systemUnderTest;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
     public void Initialize()
     {
       TestResults.Reinitialise();
-      _applicationContext = _testDIContext.CreateTestApplicationContext();
+      _applicationContext = _testHost.ApplicationContext;
       _systemUnderTest = new GraphMerger(_applicationContext);
     }
 
     [TestMethod]
     public void MergeInsert()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.Name = "1";
@@ -65,8 +72,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeUpdate()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
       
       var obj = dataPortal.Create();
       obj.Name = "1";
@@ -91,8 +98,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeRuleUnbroken()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.Name = "2";
@@ -117,8 +124,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeDelete()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.Name = "1";
@@ -146,8 +153,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildInsert()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.Name = "1";
@@ -176,8 +183,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildUpdate()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.Name = "1";
@@ -207,8 +214,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeNewChildUpdate()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.Name = "1";
@@ -227,8 +234,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildDelete()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.Name = "1";
@@ -260,8 +267,8 @@ namespace Csla.Test.GraphMerge
     
     public void MergeList()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<FooList> dataPortal = _testHost.GetDataPortal<FooList>();
 
       var obj = dataPortal.Create();
       obj.AddNew().Name = "existing";
@@ -296,8 +303,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeListNewChild()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<FooList> dataPortal = _testHost.GetDataPortal<FooList>();
 
       var obj = dataPortal.Create();
       var original = obj;
@@ -333,8 +340,8 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void MergeChildList()
     {
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       // create target childlist
       var target = dataPortal.Create();
@@ -372,7 +379,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public async Task MergeChildsAtDepth2Correctly()
     {
-      var root = await _testDIContext.CreateDataPortal<RootUniqueIdentities>().FetchAsync();
+      var root = await _testHost.GetDataPortal<RootUniqueIdentities>().FetchAsync();
 
       (await root.Branch.Leafs.AddNewAsync()).LeafId = 1337;
 

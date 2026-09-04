@@ -1,4 +1,5 @@
-﻿using Csla.TestHelpers;
+﻿using Csla.Testing;
+using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
@@ -6,12 +7,18 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class CascadeTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialze(TestContext testContext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -25,7 +32,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void BusinessRules_MustCascade_WhenCascadeOnDirtyPropertiesIsTrue()
     {
-      IDataPortal<CascadeRoot> dataPortal = _testDIContext.CreateDataPortal<CascadeRoot>();
+      IDataPortal<CascadeRoot> dataPortal = _testHost.GetDataPortal<CascadeRoot>();
 
       var root = dataPortal.Create();
       root.CascadeOnDirtyProperties = true;
@@ -45,7 +52,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void BusinessRules_MustNotCascade_WhenCanRunAsAffectedIsFalse()
     {
-      IDataPortal<CascadeRoot> dataPortal = _testDIContext.CreateDataPortal<CascadeRoot>();
+      IDataPortal<CascadeRoot> dataPortal = _testHost.GetDataPortal<CascadeRoot>();
 
       var root = dataPortal.Create();
       root.CascadeOnDirtyProperties = true;
@@ -67,7 +74,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void BusinessRules_MustNotCascade_WhenCascadeOnDirtyPropertiesIsFalse()
     {
-      IDataPortal<CascadeRoot> dataPortal = _testDIContext.CreateDataPortal<CascadeRoot>();
+      IDataPortal<CascadeRoot> dataPortal = _testHost.GetDataPortal<CascadeRoot>();
 
       var root = dataPortal.Create();
       root.CascadeOnDirtyProperties = false;
@@ -93,7 +100,7 @@ namespace Csla.Test.ValidationRules
       // copy value of Ac to Ae
       // calculate sum of Ad and Ae to Af
       // copy value of Af to Ag
-      IDataPortal<CascadeRoot> dataPortal = _testDIContext.CreateDataPortal<CascadeRoot>();
+      IDataPortal<CascadeRoot> dataPortal = _testHost.GetDataPortal<CascadeRoot>();
 
       var root = dataPortal.Create();
       root.CascadeOnDirtyProperties = true;
@@ -127,7 +134,7 @@ namespace Csla.Test.ValidationRules
     public void BusinessRules_MustCheckBothSums_WhenCascadeOnDirtyPropertiesIsTrue()
     {
       // check that the sum of Ba and Bb is always 100 (and error message on both properties)
-      IDataPortal<CascadeRoot> dataPortal = _testDIContext.CreateDataPortal<CascadeRoot>();
+      IDataPortal<CascadeRoot> dataPortal = _testHost.GetDataPortal<CascadeRoot>();
 
       var root = dataPortal.Create();
       root.CascadeOnDirtyProperties = true;
@@ -158,7 +165,7 @@ namespace Csla.Test.ValidationRules
       // calculate sum of Ca, Cb, Cc and Cd to Ce
       // calculate fraction of Ce to Cd
       // must then recalculate sum again as Cd was changed.
-      IDataPortal<CascadeRoot> dataPortal = _testDIContext.CreateDataPortal<CascadeRoot>();
+      IDataPortal<CascadeRoot> dataPortal = _testHost.GetDataPortal<CascadeRoot>();
 
       var root = dataPortal.Create();
       root.CascadeOnDirtyProperties = true;

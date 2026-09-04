@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.EditableRootList
   [TestClass]
   public class EditableRootListTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -32,7 +39,7 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void AddItem()
     {
-      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERlist> dataPortal = _testHost.GetDataPortal<ERlist>();
 
       ERlist list = dataPortal.Create();
       ERitem item = list.AddNew();
@@ -43,7 +50,7 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void RemoveNewItem()
     {
-      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERlist> dataPortal = _testHost.GetDataPortal<ERlist>();
 
       _isListSaved = false;
       ERlist list = dataPortal.Create();
@@ -61,8 +68,8 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void RemoveOldItem()
     {
-      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
-      IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
+      IDataPortal<ERlist> dataPortal = _testHost.GetDataPortal<ERlist>();
+      IDataPortal<ERitem> itemDataPortal = _testHost.GetDataPortal<ERitem>();
 
       _isListSaved = false;
 
@@ -98,7 +105,7 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void InsertItem()
     {
-      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERlist> dataPortal = _testHost.GetDataPortal<ERlist>();
 
       _isListSaved = false;
 
@@ -120,8 +127,8 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void UpdateItem()
     {
-      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
-      IDataPortal<ERitem> itemDataPortal = _testDIContext.CreateDataPortal<ERitem>();
+      IDataPortal<ERlist> dataPortal = _testHost.GetDataPortal<ERlist>();
+      IDataPortal<ERitem> itemDataPortal = _testHost.GetDataPortal<ERitem>();
 
       _isListSaved = false;
 
@@ -148,7 +155,7 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void BusyImplemented()
     {
-      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERlist> dataPortal = _testHost.GetDataPortal<ERlist>();
 
       ERlist list = dataPortal.Create();
       Assert.IsFalse(list.IsBusy);
@@ -157,7 +164,7 @@ namespace Csla.Test.EditableRootList
     [TestMethod]
     public void ErrorRecoveryTest()
     {
-      IDataPortal<ERlist> dataPortal = _testDIContext.CreateDataPortal<ERlist>();
+      IDataPortal<ERlist> dataPortal = _testHost.GetDataPortal<ERlist>();
 
       ERlist list = dataPortal.Create();
       bool errorOccurred = false;

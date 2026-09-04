@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.IO
   [TestClass]
   public class IOTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -138,21 +145,21 @@ namespace Csla.Test.IO
 
     private Basic.Root NewRoot()
     {
-      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testHost.GetDataPortal<Basic.Root>();
 
       return dataPortal.Create(new Basic.Root.Criteria());
     }
 
     private Basic.Root GetRoot(string data)
     {
-      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testHost.GetDataPortal<Basic.Root>();
 
       return dataPortal.Fetch(new Basic.Root.Criteria(data));
     }
 
     private void DeleteRoot(string data)
     {
-      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testHost.GetDataPortal<Basic.Root>();
 
       dataPortal.Delete(new Basic.Root.Criteria(data));
     }

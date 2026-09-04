@@ -1581,13 +1581,13 @@ namespace Csla.Reflection
     private static void OnMethodAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_methodCache)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_methodCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<MethodCacheKey, Tuple<string?, DynamicMethodHandle>?>)_methodCache, context);
     }
 
     private static void OnMemberAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_memberCache)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<string, Tuple<string?, DynamicMemberHandle>?>)_memberCache, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<MethodCacheKey, Tuple<string?, DynamicMemberHandle>?>)_memberCache, context);
     }
 #endif
   }

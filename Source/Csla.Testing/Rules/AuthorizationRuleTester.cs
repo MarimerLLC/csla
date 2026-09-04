@@ -193,7 +193,7 @@ namespace Csla.Testing.Rules
     /// <exception cref="ArgumentOutOfRangeException">The rule implements neither <see cref="IAuthorizationRule"/> nor <see cref="IAuthorizationRuleAsync"/>.</exception>
     public async Task<AuthorizationRuleTestResult> ExecuteAsync(CancellationToken ct = default)
     {
-      CslaTestScope? scope = null;
+      CslaTestHost? scope = null;
       try
       {
         var context = CreateContext(ref scope);
@@ -223,7 +223,7 @@ namespace Csla.Testing.Rules
       if (_rule is IAuthorizationRuleAsync)
         throw new InvalidOperationException($"Rule '{_rule.GetType().FullName}' is asynchronous; use {nameof(ExecuteAsync)} instead.");
 
-      CslaTestScope? scope = null;
+      CslaTestHost? scope = null;
       try
       {
         var context = CreateContext(ref scope);
@@ -241,7 +241,7 @@ namespace Csla.Testing.Rules
       }
     }
 
-    private IAuthorizationContext CreateContext(ref CslaTestScope? scope)
+    private IAuthorizationContext CreateContext(ref CslaTestHost? scope)
     {
       var targetType = _targetType ?? _target?.GetType();
       if (targetType is null)
@@ -254,7 +254,7 @@ namespace Csla.Testing.Rules
       }
       else
       {
-        scope = CslaTestServices.CreateScope(_configureCsla, _configureServices);
+        scope = CreateHost();
         applicationContext = scope.ApplicationContext;
       }
 
@@ -262,6 +262,17 @@ namespace Csla.Testing.Rules
         applicationContext.User = _principal;
 
       return new AuthorizationContext(applicationContext, _rule, _target, targetType, _criteria);
+    }
+
+    private CslaTestHost CreateHost()
+    {
+      return CslaTestHost.Create(options =>
+      {
+        if (_configureCsla is not null)
+          options.ConfigureCsla(_configureCsla);
+        if (_configureServices is not null)
+          options.ConfigureServices(_configureServices);
+      });
     }
   }
 }

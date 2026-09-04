@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using Csla;
 using Csla.Configuration;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Csla.Testing.Business.BusyStatus;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,16 +17,23 @@ namespace Csla.Test.DataPortal;
 [TestClass]
 public class AutoCloneOnUpdateTests
 {
-  private static TestDIContext _testDIContext;
-  private static TestDIContext _noCloneOnUpdateDIContext;
+  private static CslaTestHost _testHost;
+  private static CslaTestHost _noCloneOnUpdateHost;
 
   [ClassInitialize]
   public static void ClassInitialize(TestContext context)
   {
-    _testDIContext = TestDIContextFactory.CreateDefaultContext();
-    _noCloneOnUpdateDIContext = TestDIContextFactory.CreateContext(opt => opt.
+    _testHost = CslaTestHost.Create();
+    _noCloneOnUpdateHost = CslaTestHost.Create(t => t.ConfigureCsla(opt => opt.
       DataPortal(dpo => dpo.AddClientSideDataPortal(o => o.
-        AutoCloneOnUpdate = false)));
+        AutoCloneOnUpdate = false))));
+  }
+
+  [ClassCleanup]
+  public static void ClassCleanup()
+  {
+    _testHost?.Dispose();
+    _noCloneOnUpdateHost?.Dispose();
   }
 
   [TestInitialize]
@@ -37,7 +45,7 @@ public class AutoCloneOnUpdateTests
   [TestMethod]
   public async Task SaveWithExceptionReturnsValidGraph()
   {
-    var dataPortal = _noCloneOnUpdateDIContext.CreateDataPortal<TestItem>();
+    var dataPortal = _noCloneOnUpdateHost.GetDataPortal<TestItem>();
     var item = await dataPortal.CreateAsync();
     item.Name = "Test";
     try

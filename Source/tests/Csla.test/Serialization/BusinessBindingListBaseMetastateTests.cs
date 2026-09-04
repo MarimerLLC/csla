@@ -8,6 +8,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
+using Csla.Testing;
 using Csla.TestHelpers;
 
 namespace Csla.Test.Serialization
@@ -15,12 +16,18 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class BusinessBindingListBaseMetastateTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -33,7 +40,7 @@ namespace Csla.Test.Serialization
     public void BusinessBindingListBase_GetSetMetastate_RoundTrip()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestBusinessBindingList>();
+      var dataPortal = _testHost.GetDataPortal<TestBusinessBindingList>();
       var original = dataPortal.Create();
       
       // Add an item
@@ -61,7 +68,7 @@ namespace Csla.Test.Serialization
     public void BusinessBindingListBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestBusinessBindingList>();
+      var dataPortal = _testHost.GetDataPortal<TestBusinessBindingList>();
       var list = dataPortal.Create();
 
       // Act

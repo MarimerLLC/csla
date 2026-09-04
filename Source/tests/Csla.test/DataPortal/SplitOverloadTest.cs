@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.DataPortalTest
   [TestClass]
   public class SplitOverloadTest
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -32,7 +39,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpCreate()
     {
-      IDataPortal<SplitOverload> dataPortal = _testDIContext.CreateDataPortal<SplitOverload>();
+      IDataPortal<SplitOverload> dataPortal = _testHost.GetDataPortal<SplitOverload>();
 
       SplitOverload test = SplitOverload.NewObject(dataPortal);
       Assert.AreEqual("Created", TestResults.GetResult("SplitOverload"));
@@ -40,7 +47,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpCreateWithCriteria()
     {
-      IDataPortal<SplitOverload> dataPortal = _testDIContext.CreateDataPortal<SplitOverload>();
+      IDataPortal<SplitOverload> dataPortal = _testHost.GetDataPortal<SplitOverload>();
 
       SplitOverload test = SplitOverload.NewObjectWithCriteria(dataPortal);
       Assert.AreEqual("Created1", TestResults.GetResult("SplitOverload"));
@@ -48,7 +55,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpFetch()
     {
-      IDataPortal<SplitOverload> dataPortal = _testDIContext.CreateDataPortal<SplitOverload>();
+      IDataPortal<SplitOverload> dataPortal = _testHost.GetDataPortal<SplitOverload>();
 
       SplitOverload test = SplitOverload.GetObject(5, dataPortal);
       Assert.AreEqual("Fetched", TestResults.GetResult("SplitOverload"));
@@ -56,7 +63,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpDelete()
     {
-      IDataPortal<SplitOverload> dataPortal = _testDIContext.CreateDataPortal<SplitOverload>();
+      IDataPortal<SplitOverload> dataPortal = _testHost.GetDataPortal<SplitOverload>();
 
       SplitOverload.DeleteObject(5, dataPortal);
       Assert.AreEqual("Deleted", TestResults.GetResult("SplitOverload"));

@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Security.Claims;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.BypassPropertyChecks
@@ -23,12 +23,18 @@ namespace Csla.Test.BypassPropertyChecks
       return new ClaimsPrincipal(identity);
     }
 
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     // TODO: fix test
@@ -36,8 +42,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadWriteWithRightsTurnNotificationBackOn()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -70,8 +76,8 @@ namespace Csla.Test.BypassPropertyChecks
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassReadWriteNoRightsTurnNotificationBackOn()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       bool propertyChangedFired = false;
 
@@ -96,8 +102,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadWriteNoRights()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       bool propertyChangedFired = false;
 
@@ -118,8 +124,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadWriteWithRights()
     {
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = customDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var customHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = customHost.GetDataPortal<BypassBusinessBase>();
 
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -140,8 +146,8 @@ namespace Csla.Test.BypassPropertyChecks
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassWriteNoRightsDoNotBypass()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       BypassBusinessBase testObj = dataPortal.Fetch();
       bool propertyChangedFired = false;
@@ -161,8 +167,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadNoRightsDoNotBypass()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -184,8 +190,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadWriteNoRightsBackingField()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       bool propertyChangedFired = false;
 
@@ -206,8 +212,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadWriteWithRightsBackingField()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -228,8 +234,8 @@ namespace Csla.Test.BypassPropertyChecks
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassWriteNoRightsDoNotBypassBackingField()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
 
       BypassBusinessBase testObj = dataPortal.Fetch();
       bool propertyChangedFired = false;
@@ -249,8 +255,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadNoRightsDoNotBypassBackingField()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBase> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBase>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
       
       bool propertyChangedFired = false;
       BypassBusinessBase testObj = dataPortal.Fetch();
@@ -272,8 +278,8 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassFactory()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<BypassBusinessBaseUsingFactory> dataPortal = testDIContext.CreateDataPortal<BypassBusinessBaseUsingFactory>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<BypassBusinessBaseUsingFactory> dataPortal = testHost.GetDataPortal<BypassBusinessBaseUsingFactory>();
 
       BypassBusinessBaseUsingFactory obj = BypassBusinessBaseUsingFactory.GetObject(dataPortal);
       Assert.AreEqual(false, obj.IsDirty);

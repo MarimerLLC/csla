@@ -1,6 +1,6 @@
 ﻿using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.TestHelpers;
+using Csla.Testing;
 
 namespace Csla.Test.CommandBase
 {
@@ -10,12 +10,12 @@ namespace Csla.Test.CommandBase
   [TestClass]
   public class CommandBaseTest : Csla.Server.ObjectFactory
   {
-    private static TestDIContext _classDIContext;
-    public CommandBaseTest() : base(_classDIContext.CreateTestApplicationContext())
+    private static CslaTestHost _classHost;
+    public CommandBaseTest() : base(_classHost.ApplicationContext)
     {
     }
 
-    private TestDIContext _testDIContext = TestDIContextFactory.CreateDefaultContext();
+    private CslaTestHost _testHost = CslaTestHost.Create();
 
     /// <summary>
     ///Gets or sets the test context which provides
@@ -27,7 +27,7 @@ namespace Csla.Test.CommandBase
     public static void ClassInitialize(TestContext testContext) 
     {
       _ = testContext;
-      _classDIContext = TestDIContextFactory.CreateDefaultContext();
+      _classHost = CslaTestHost.Create();
     }
 
     #region Additional test attributes
@@ -55,7 +55,7 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_AssertDefaultValues()
     {
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
       Assert.AreEqual(string.Empty, cmd.Name);
@@ -65,7 +65,7 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanLoadProperties_WithObjectFactory()
     {
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
       LoadProperty(cmd, CommandObject.NameProperty, "Rocky");
@@ -79,7 +79,7 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanLoadPropertiesUsingNonGenericPropertyInfo_WithObjectFactory()
     {
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
       IPropertyInfo nameProperty = CommandObject.NameProperty;
@@ -96,7 +96,7 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanReadProperties_WithObjectFactory()
     {
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
       LoadProperty(cmd, CommandObject.NameProperty, "Rocky");
@@ -113,7 +113,7 @@ namespace Csla.Test.CommandBase
     [TestMethod]
     public void CommandBase_CanReadPropertiesUsingNonGenericPropertyInfo_WithObjectFactory()
     {
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
       var cmd = dataPortal.Create();
 
       IPropertyInfo nameProperty = CommandObject.NameProperty;

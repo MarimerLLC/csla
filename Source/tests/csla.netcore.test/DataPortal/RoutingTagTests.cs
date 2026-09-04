@@ -8,7 +8,7 @@
 
 using System.Reflection;
 using Csla;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace csla.netcore.test.DataPortal
@@ -16,12 +16,18 @@ namespace csla.netcore.test.DataPortal
   [TestClass]
   public class RoutingTagTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     // Not sure what the CSLA 6 equivalent of this is - or, for that matter, why it might be useful.
@@ -146,7 +152,7 @@ namespace csla.netcore.test.DataPortal
     [ExpectedException(typeof(ArgumentException))]
     public void VersionRoutingTagWithHyphenThrowsException()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
       var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
       dataPortalOptions.VersionRoutingTag = "v1-beta";
@@ -156,7 +162,7 @@ namespace csla.netcore.test.DataPortal
     [ExpectedException(typeof(ArgumentException))]
     public void VersionRoutingTagWithSlashThrowsException()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
       var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
       dataPortalOptions.VersionRoutingTag = "v1/beta";
@@ -165,7 +171,7 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void VersionRoutingTagWithValidValueSucceeds()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
       var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
       dataPortalOptions.VersionRoutingTag = "v1";
@@ -175,7 +181,7 @@ namespace csla.netcore.test.DataPortal
     [TestMethod]
     public void VersionRoutingTagWithEmptyValueSucceeds()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
       var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
       dataPortalOptions.VersionRoutingTag = "";
@@ -192,7 +198,7 @@ namespace csla.netcore.test.DataPortal
       Csla.Channels.Http.HttpProxyOptions proxyOptions;
       HttpClient httpClient;
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var dataPortalOptions = applicationContext.GetRequiredService<Csla.Configuration.DataPortalOptions>();
       httpClient = new HttpClient();
       proxyOptions = new Csla.Channels.Http.HttpProxyOptions();

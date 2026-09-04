@@ -1,5 +1,5 @@
 ﻿using Csla.Configuration;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -8,16 +8,18 @@ namespace Csla.Test.BasicModern
   [TestClass]
   public class BasicModernTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      var services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
-      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
-      var serviceProvider = services.BuildServiceProvider();
-      _testDIContext = new TestDIContext(serviceProvider);
+      _testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml)));
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -215,7 +217,7 @@ namespace Csla.Test.BasicModern
     public void RootChangedMetastateEventsChild()
     {
 
-      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testHost.GetChildDataPortal<Child>();
 
       var graph = NewRoot();
       var changed = new List<string>();
@@ -263,7 +265,7 @@ namespace Csla.Test.BasicModern
 
     private Root NewRoot()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       return dataPortal.Create();
     }

@@ -8,6 +8,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
+using Csla.Testing;
 using Csla.TestHelpers;
 
 namespace Csla.Test.Serialization
@@ -15,12 +16,18 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class DynamicListBaseMetastateTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -33,11 +40,11 @@ namespace Csla.Test.Serialization
     public void DynamicListBase_GetSetMetastate_RoundTrip()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestDynamicList>();
+      var dataPortal = _testHost.GetDataPortal<TestDynamicList>();
       var original = dataPortal.Create();
       
       // Add an item
-      var childDataPortal = _testDIContext.CreateDataPortal<TestDynamicItem>();
+      var childDataPortal = _testHost.GetDataPortal<TestDynamicItem>();
       var item = childDataPortal.Create();
       item.Name = "Test Item";
       original.Add(item);
@@ -63,7 +70,7 @@ namespace Csla.Test.Serialization
     public void DynamicListBase_GetSetMetastate_EmptyList()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestDynamicList>();
+      var dataPortal = _testHost.GetDataPortal<TestDynamicList>();
       var original = dataPortal.Create();
       
       // Don't add any items - test empty list
@@ -88,7 +95,7 @@ namespace Csla.Test.Serialization
     public void DynamicListBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestDynamicList>();
+      var dataPortal = _testHost.GetDataPortal<TestDynamicList>();
       var list = dataPortal.Create();
 
       // Act

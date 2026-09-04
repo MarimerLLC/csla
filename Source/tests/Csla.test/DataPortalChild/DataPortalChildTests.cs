@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,12 +17,18 @@ namespace Csla.Test.DataPortalChild
   [TestClass]
   public class DataPortalChildTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -33,7 +40,7 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void CreateAndSaveChild()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       Root root = dataPortal.Create();
       root.Data = "a";
@@ -56,7 +63,7 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void CreateAndDeleteChild()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       Root root = dataPortal.Create();
 
@@ -76,8 +83,8 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChild()
     {
-      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IChildDataPortal<Child> childDataPortal = _testHost.GetChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       Root root = dataPortal.Create();
       root.FetchChild(childDataPortal);
@@ -102,8 +109,8 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndDeleteChild()
     {
-      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IChildDataPortal<Child> childDataPortal = _testHost.GetChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       Root root = dataPortal.Create();
       root.FetchChild(childDataPortal);
@@ -128,7 +135,7 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChildList()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       Root root = dataPortal.Fetch();
       var list = root.ChildList;
@@ -155,7 +162,7 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public void FetchAndSaveChildListVerifyParent()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       Root root = dataPortal.Fetch();
       root.Data = "root";
@@ -191,7 +198,7 @@ namespace Csla.Test.DataPortalChild
     [TestMethod]
     public async Task CreateChildMustCanHandleNullValueAsCriteria()
     {
-      var childPortal = _testDIContext.CreateChildDataPortal<ChildList>();
+      var childPortal = _testHost.GetChildDataPortal<ChildList>();
 
       var instance = await childPortal.CreateChildAsync(null);
       instance.Should().NotBeNull();
@@ -199,7 +206,7 @@ namespace Csla.Test.DataPortalChild
 
     private Child NewChild()
     {
-      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testHost.GetChildDataPortal<Child>();
 
       return childDataPortal.CreateChild();
     }

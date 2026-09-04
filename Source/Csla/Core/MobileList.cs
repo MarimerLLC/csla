@@ -73,7 +73,7 @@ namespace Csla.Core
       int count = 0;
       foreach (T child in this)
       {
-        if (mobileChildren)
+        if (mobileChildren || UsesCustomSerializer(child, formatter))
         {
           SerializationInfo si = formatter.SerializeObject(child);
           info.AddChild(_valuePrefix + count, si.ReferenceId);
@@ -85,6 +85,19 @@ namespace Csla.Core
         count++;
       }
       info.AddValue("count", count);
+    }
+
+    /// <summary>
+    /// Determines whether an item must be serialized as a child
+    /// because its type has a registered custom serializer.
+    /// </summary>
+    private static bool UsesCustomSerializer(T child, MobileFormatter formatter)
+    {
+      if (child is null || child is IMobileObject)
+        return false;
+
+      var childType = child.GetType();
+      return !SerializationInfo.IsNativeType(childType) && formatter.IsTypeSerializable(childType);
     }
 
     void IMobileObject.SetState(SerializationInfo info)
@@ -112,14 +125,13 @@ namespace Csla.Core
     /// <param name="formatter">Reference to the current SerializationFormatterFactory.GetFormatter().</param>
     protected virtual void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      bool mobileChildren = typeof(IMobileObject).IsAssignableFrom(typeof(T));
       int count = info.GetValue<int>("count");
 
       for (int index = 0; index < count; index++)
       {
         T value;
-        if (mobileChildren)
-          value = (T)formatter.GetObject(info.Children[_valuePrefix + index].ReferenceId)!;
+        if (info.Children.TryGetValue(_valuePrefix + index, out var childData))
+          value = (T)formatter.GetObject(childData.ReferenceId)!;
         else
           value = info.GetValue<T>(_valuePrefix + index)!;
 

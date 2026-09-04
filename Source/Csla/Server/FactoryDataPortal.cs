@@ -24,6 +24,9 @@ namespace Csla.Server
     private readonly IObjectFactoryLoader _factoryLoader;
     private readonly IDataPortalExceptionInspector _exceptionInspector;
     private readonly DataPortalOptions _dataPortalOptions;
+    private Reflection.ServiceProviderMethodCaller? _serviceProviderMethodCaller;
+    private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller =>
+      _serviceProviderMethodCaller ??= _applicationContext.CreateInstanceDI<Reflection.ServiceProviderMethodCaller>();
 
     /// <summary>
     /// Creates an instance of the type.
@@ -43,18 +46,39 @@ namespace Csla.Server
 
     #region Method invokes
 
-    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> InvokeMethod<T>(string factoryTypeName, DataPortalOperations operation, string methodName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object? e, DataPortalContext context, bool isSync)
+      where T : DataPortalOperationAttribute
     {
       object factory = _factoryLoader.GetFactory(factoryTypeName);
-      var eventArgs = new DataPortalEventArgs(context, objectType, null, operation);
+      // EmptyCriteria is an internal marker for "no criteria"; surface it to the
+      // factory lifecycle hooks as null, matching the historical behavior.
+      var eventArg = e is EmptyCriteria ? null : e;
+      var eventArgs = new DataPortalEventArgs(context, objectType, eventArg, operation);
 
       Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
       object? result;
       try
       {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName);
+        var criteria = DataPortal.GetCriteriaArray(e);
+        if (ServiceProviderMethodCaller.TryFindDataPortalMethod<T>(objectType, criteria, out var method))
+        {
+          // DI-aware path: supports multiple criteria parameters and method-level [Inject]
+          Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, method.MethodInfo);
+          result = await ServiceProviderMethodCaller.CallMethodTryAsync(factory, method, criteria).ConfigureAwait(false);
+        }
+        else if (e is null or EmptyCriteria)
+        {
+          // legacy fallback: parameterless factory method
+          Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName);
+          result = await Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
+        }
+        else
+        {
+          // legacy fallback: single criteria object
+          Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName, e);
+          result = await Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
+        }
 
-        result = await Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
         if (result is Exception error)
           throw error;
 
@@ -66,35 +90,7 @@ namespace Csla.Server
       catch (Exception ex)
       {
         Reflection.MethodCaller.CallMethodIfImplemented(
-          factory, "InvokeError", new DataPortalEventArgs(context, objectType, null, operation, ex));
-        throw;
-      }
-      return new DataPortalResult(_applicationContext, result, null);
-    }
-
-    private async Task<DataPortalResult> InvokeMethod(string factoryTypeName, DataPortalOperations operation, string methodName, Type objectType, object e, DataPortalContext context, bool isSync)
-    {
-      object factory = _factoryLoader.GetFactory(factoryTypeName);
-      var eventArgs = new DataPortalEventArgs(context, objectType, e, operation);
-
-      Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
-      object? result;
-      try
-      {
-        Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName, e);
-
-        result = await Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
-        if (result is Exception error)
-          throw error;
-
-        if (result is Core.ITrackStatus busy && busy.IsBusy)
-          throw new InvalidOperationException($"{objectType.Name}.IsBusy == true");
-
-        Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
-      }
-      catch (Exception ex)
-      {
-        Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeError", new DataPortalEventArgs(context, objectType, e, operation, ex));
+          factory, "InvokeError", new DataPortalEventArgs(context, objectType, eventArg, operation, ex));
         throw;
       }
       return new DataPortalResult(_applicationContext, result, null);
@@ -118,11 +114,7 @@ namespace Csla.Server
 
       try
       {
-        DataPortalResult result;
-        if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, context, isSync).ConfigureAwait(false);
-        else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
+        var result = await InvokeMethod<CreateAttribute>(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Create, context.FactoryInfo.CreateMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)
@@ -153,11 +145,7 @@ namespace Csla.Server
 
       try
       {
-        DataPortalResult result;
-        if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, context, isSync).ConfigureAwait(false);
-        else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
+        var result = await InvokeMethod<FetchAttribute>(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Fetch, context.FactoryInfo.FetchMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)
@@ -169,15 +157,11 @@ namespace Csla.Server
       }
     }
 
-    private async Task<DataPortalResult> Execute(Type objectType, object criteria, DataPortalContext context, bool isSync, ObjectFactoryAttribute factoryInfo)
+    private async Task<DataPortalResult> Execute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync, ObjectFactoryAttribute factoryInfo)
     {
       try
       {
-        DataPortalResult result;
-        if (criteria is EmptyCriteria)
-          result = await InvokeMethod(factoryInfo.FactoryTypeName, DataPortalOperations.Execute, factoryInfo.ExecuteMethodName, objectType, context, isSync).ConfigureAwait(false);
-        else
-          result = await InvokeMethod(factoryInfo.FactoryTypeName, DataPortalOperations.Execute, factoryInfo.ExecuteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
+        var result = await InvokeMethod<ExecuteAttribute>(factoryInfo.FactoryTypeName, DataPortalOperations.Execute, factoryInfo.ExecuteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)
@@ -205,11 +189,15 @@ namespace Csla.Server
       {
         DataPortalResult result;
         if (obj is Core.ICommandObject)
+        {
           methodName = context.FactoryInfo.ExecuteMethodName;
+          result = await InvokeMethod<ExecuteAttribute>(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context, isSync).ConfigureAwait(false);
+        }
         else
+        {
           methodName = context.FactoryInfo.UpdateMethodName;
-
-        result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context, isSync).ConfigureAwait(false);
+          result = await InvokeMethod<UpdateAttribute>(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context, isSync).ConfigureAwait(false);
+        }
         return result;
       }
       catch (Exception ex)
@@ -236,11 +224,7 @@ namespace Csla.Server
 
       try
       {
-        DataPortalResult result;
-        if (criteria is EmptyCriteria)
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, context, isSync).ConfigureAwait(false);
-        else
-          result = await InvokeMethod(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
+        var result = await InvokeMethod<DeleteAttribute>(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Delete, context.FactoryInfo.DeleteMethodName, objectType, criteria, context, isSync).ConfigureAwait(false);
         return result;
       }
       catch (Exception ex)

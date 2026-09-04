@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using Csla;
 using Csla.Core;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Csla.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,12 +16,18 @@ namespace cslalighttest.BusyStatus
   [TestClass]
   public class BusynessTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -100,7 +106,7 @@ namespace cslalighttest.BusyStatus
 
     private T CreateWithoutCriteria<T>() where T : ICslaObject
     {
-      IDataPortal<T> dataPortal = _testDIContext.CreateDataPortal<T>();
+      IDataPortal<T> dataPortal = _testHost.GetDataPortal<T>();
 
       return dataPortal.Create();
     }

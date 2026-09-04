@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.DataPortalTest
   [TestClass]
   public class SplitTest
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -32,7 +39,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpCreate()
     {
-      IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
+      IDataPortal<Split> dataPortal = _testHost.GetDataPortal<Split>();
 
       Split test = Split.NewObject(dataPortal);
       Assert.AreEqual("Created", TestResults.GetResult("Split"));
@@ -40,7 +47,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpFetch()
     {
-      IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
+      IDataPortal<Split> dataPortal = _testHost.GetDataPortal<Split>();
 
       Split test = Split.GetObject(5, dataPortal);
       Assert.AreEqual("Fetched", TestResults.GetResult("Split"));
@@ -48,7 +55,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpInsert()
     {
-      IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
+      IDataPortal<Split> dataPortal = _testHost.GetDataPortal<Split>();
 
       Split test = null;
       try
@@ -62,7 +69,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpUpdate()
     {
-      IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
+      IDataPortal<Split> dataPortal = _testHost.GetDataPortal<Split>();
 
       Split test = null;
       try
@@ -78,7 +85,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpDelete()
     {
-      IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
+      IDataPortal<Split> dataPortal = _testHost.GetDataPortal<Split>();
 
       Split.DeleteObject(5, dataPortal);
       Assert.AreEqual("Deleted", TestResults.GetResult("Split"));
@@ -86,7 +93,7 @@ namespace Csla.Test.DataPortalTest
     [TestMethod]
     public void TestDpDeleteSelf()
     {
-      IDataPortal<Split> dataPortal = _testDIContext.CreateDataPortal<Split>();
+      IDataPortal<Split> dataPortal = _testHost.GetDataPortal<Split>();
 
       Split test = null;
       try

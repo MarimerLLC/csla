@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataMapper
@@ -14,18 +14,24 @@ namespace Csla.Test.DataMapper
   [TestClass]
   public class DataMapperTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public void DictionaryMap()
     {
-      IDataPortal<ManagedTarget> dataPortal = _testDIContext.CreateDataPortal<ManagedTarget>();
+      IDataPortal<ManagedTarget> dataPortal = _testHost.GetDataPortal<ManagedTarget>();
 
       var target = dataPortal.Create();
       var source = new Dictionary<string, object>();

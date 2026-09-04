@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.FieldManager
   [TestClass]
   public class ChildUpdateTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -32,8 +39,8 @@ namespace Csla.Test.FieldManager
     [TestMethod]
     public void FetchAndSaveChild()
     {
-      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IChildDataPortal<Child> childDataPortal = _testHost.GetChildDataPortal<Child>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       Root root = dataPortal.Create();
       root.FetchChild(childDataPortal);
@@ -49,8 +56,8 @@ namespace Csla.Test.FieldManager
     [TestMethod]
     public void FetchAndSaveAnyChild()
     {
-      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
-      IDataPortal<RootUpdateAllChildren> dataPortal = _testDIContext.CreateDataPortal<RootUpdateAllChildren>();
+      IChildDataPortal<Child> childDataPortal = _testHost.GetChildDataPortal<Child>();
+      IDataPortal<RootUpdateAllChildren> dataPortal = _testHost.GetDataPortal<RootUpdateAllChildren>();
 
       var root = dataPortal.Create();
       root.FetchChild(childDataPortal);

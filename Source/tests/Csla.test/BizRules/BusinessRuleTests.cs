@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 using System.ComponentModel.DataAnnotations;
 using Csla.Configuration;
+using Csla.Testing;
 using Csla.TestHelpers;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,12 +18,18 @@ namespace Csla.Test.BizRules
   [TestClass]
   public class BusinessRuleTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -36,7 +43,7 @@ namespace Csla.Test.BizRules
     {
       SetScanForDataAnnotations(true);
 
-      var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule>>();
+      var portal = _testHost.Services.GetRequiredService<IDataPortal<TestBusinessRule>>();
       var obj = portal.Create();
       obj.Name = "";
       obj.IsValid.Should().BeFalse();
@@ -49,7 +56,7 @@ namespace Csla.Test.BizRules
       SetScanForDataAnnotations(false);
 
       // use different type to avoid caching
-      var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule2>>();
+      var portal = _testHost.Services.GetRequiredService<IDataPortal<TestBusinessRule2>>();
       var obj = portal.Create();
       obj.Name = "";
       obj.IsValid.Should().BeTrue();
@@ -61,7 +68,7 @@ namespace Csla.Test.BizRules
     {
       SetScanForDataAnnotations(true);
 
-      var portal = _testDIContext.ServiceProvider.GetRequiredService<IDataPortal<TestBusinessRule3>>();
+      var portal = _testHost.Services.GetRequiredService<IDataPortal<TestBusinessRule3>>();
       var obj = portal.Create();
 
       obj.FirstName = "";
@@ -82,7 +89,7 @@ namespace Csla.Test.BizRules
 
     private void SetScanForDataAnnotations(bool enable)
     {
-      var options = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();
+      var options = _testHost.Services.GetRequiredService<CslaOptions>();
       options.ScanForDataAnnotations(enable);
     }
 

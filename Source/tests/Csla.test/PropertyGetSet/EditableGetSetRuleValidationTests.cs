@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -23,12 +24,18 @@ namespace Csla.Test.PropertyGetSet
 
     #endregion
 
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -42,7 +49,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void InvalidGetValidationRulesOnProperties()
     {
-      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetRuleValidation>();
+      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testHost.GetDataPortal<EditableGetSetRuleValidation>();
 
       EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
@@ -61,7 +68,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void InvalidSetValidationRulesOnProperties()
     {
-      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetRuleValidation>();
+      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testHost.GetDataPortal<EditableGetSetRuleValidation>();
 
       EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
@@ -80,7 +87,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void CheckValidationRulesOnProperties()
     {
-      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetRuleValidation>();
+      IDataPortal<EditableGetSetRuleValidation> dataPortal = _testHost.GetDataPortal<EditableGetSetRuleValidation>();
 
       EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 

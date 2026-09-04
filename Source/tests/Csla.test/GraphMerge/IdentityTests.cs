@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Core;
+using Csla.Testing;
 using Csla.TestHelpers;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,12 +18,18 @@ namespace Csla.Test.GraphMerge
   [TestClass]
   public class IdentityTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -34,7 +41,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityInitializedBusinessBase()
     {
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
@@ -43,7 +50,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityNewBaseChild()
     {
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.AddChild(dataPortal);
@@ -54,7 +61,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityBaseClone()
     {
-      IDataPortal<Foo> dataPortal = _testDIContext.CreateDataPortal<Foo>();
+      IDataPortal<Foo> dataPortal = _testHost.GetDataPortal<Foo>();
 
       var obj = dataPortal.Create();
       obj.AddChild(dataPortal);
@@ -67,7 +74,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityInitializedBusinessListBase()
     {
-      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+      IDataPortal<FooList> dataPortal = _testHost.GetDataPortal<FooList>();
 
       var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
@@ -76,7 +83,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityNewListChild()
     {
-      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+      IDataPortal<FooList> dataPortal = _testHost.GetDataPortal<FooList>();
 
       var obj = dataPortal.Create();
       obj.AddNew();
@@ -87,7 +94,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityListClone()
     {
-      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+      IDataPortal<FooList> dataPortal = _testHost.GetDataPortal<FooList>();
 
       var obj = dataPortal.Create();
       obj.AddNew();
@@ -99,7 +106,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityPostCloneIdentityManager()
     {
-      IDataPortal<FooList> dataPortal = _testDIContext.CreateDataPortal<FooList>();
+      IDataPortal<FooList> dataPortal = _testHost.GetDataPortal<FooList>();
 
       var obj = dataPortal.Create();
       obj.AddNew();
@@ -115,7 +122,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityInitializedBusinessBindingListBase()
     {
-      IDataPortal<FooBindingList> dataPortal = _testDIContext.CreateDataPortal<FooBindingList>();
+      IDataPortal<FooBindingList> dataPortal = _testHost.GetDataPortal<FooBindingList>();
 
       var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
@@ -124,7 +131,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityInitializedDynamicListBase()
     {
-      IDataPortal<FooDynamicList> dataPortal = _testDIContext.CreateDataPortal<FooDynamicList>();
+      IDataPortal<FooDynamicList> dataPortal = _testHost.GetDataPortal<FooDynamicList>();
 
       var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
@@ -133,7 +140,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public void IdentityInitializedDynamicBindingListBase()
     {
-      IDataPortal<FooDynamicBindingList> dataPortal = _testDIContext.CreateDataPortal<FooDynamicBindingList>();
+      IDataPortal<FooDynamicBindingList> dataPortal = _testHost.GetDataPortal<FooDynamicBindingList>();
 
       var obj = dataPortal.Create();
       Assert.IsTrue(((IBusinessObject)obj).Identity >= 0);
@@ -142,7 +149,7 @@ namespace Csla.Test.GraphMerge
     [TestMethod]
     public async Task Identity_WhenAddingANewListItemAfterFetchTheIdentityWithinTheListMustBeUnique()
     {
-      var root = await _testDIContext.CreateDataPortal<RootUniqueIdentities>().FetchAsync();
+      var root = await _testHost.GetDataPortal<RootUniqueIdentities>().FetchAsync();
 
       var newItem = await root.Branch.Leafs.AddNewAsync();
       newItem.LeafId = 1337;

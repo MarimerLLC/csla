@@ -12,7 +12,7 @@ using Csla.Core;
 using Csla.Serialization;
 using Csla.Server;
 using Csla.Server.Hosts.DataPortalChannel;
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -31,7 +31,7 @@ namespace Csla.Test.Channels.Wcf;
 [TestClass]
 public class WcfPortalIntegrationTests
 {
-  private TestDIContext _testDIContext;
+  private CslaTestHost _testHost;
   private ApplicationContext _applicationContext;
   private FakeDataPortalServer _fakeDataPortalServer;
   private WcfPortal _wcfPortal;
@@ -40,11 +40,11 @@ public class WcfPortalIntegrationTests
   [TestInitialize]
   public void Setup()
   {
-    _testDIContext = TestDIContextFactory.CreateDefaultContext(services =>
+    _testHost = CslaTestHost.Create(t => t.ConfigureServices(services =>
     {
       services.AddScoped<IContextDictionary, ContextDictionary>();
-    });
-    _applicationContext = _testDIContext.CreateTestApplicationContext();
+    }));
+    _applicationContext = _testHost.ApplicationContext;
     _fakeDataPortalServer = new FakeDataPortalServer();
     _wcfPortal = new WcfPortal(_fakeDataPortalServer, _applicationContext);
   }

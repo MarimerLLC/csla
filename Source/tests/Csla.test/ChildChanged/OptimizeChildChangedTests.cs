@@ -1,6 +1,6 @@
 ﻿using Csla.Configuration;
 using Csla.Core;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel;
@@ -11,7 +11,7 @@ namespace Csla.Test.ChildChanged
   [TestClass]
   public class OptimizeChildChangedTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     public enum enumBO { SimpleBO, SimpleBOList };
     public enum enumEvent { OnPropertyChanged, OnChildChanged, PropertyChanged, ChildChanged };
@@ -143,7 +143,7 @@ namespace Csla.Test.ChildChanged
 
     private SimpleBO Fetch()
     {
-      IDataPortal<SimpleBO> dataPortal = _testDIContext.CreateDataPortal<SimpleBO>();
+      IDataPortal<SimpleBO> dataPortal = _testHost.GetDataPortal<SimpleBO>();
 
       var result = dataPortal.Fetch();
 
@@ -192,7 +192,13 @@ namespace Csla.Test.ChildChanged
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]

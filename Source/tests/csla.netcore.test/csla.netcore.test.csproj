@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Csla.Testing\Csla.Testing.csproj" />
     <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
     <ProjectReference Include="..\..\Csla\Csla.csproj" />
   </ItemGroup>

@@ -9,7 +9,7 @@
 using Csla.Configuration;
 using Csla.Core;
 using Csla.Server;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Csla.Testing.Business.DataPortal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -19,20 +19,26 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class AuthorizeDataPortalTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     #region SetUp
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateContext(options =>
+      _testHost = CslaTestHost.Create(t => t.ConfigureCsla(options =>
       {
         options.Services.AddTransient<TestableDataPortal>();
         options.DataPortal(dpo => dpo.AddServerSideDataPortal(
             config => config.RegisterAuthorizerProvider<AuthorizeDataPortalStub>())
           );
-      });
+      }));
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
     
     [TestInitialize]
@@ -70,7 +76,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void IfAuthProviderTypeImplements_IAuthorizeDataPortal_Then_authorizerFieldShouldBeAnInstanceOfThatType()
     {
-      var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      var dp = _testHost.Services.GetRequiredService<TestableDataPortal>();
 
       Assert.IsTrue(dp.AuthProviderType == typeof(AuthorizeDataPortalStub));//_authorizer field is set to correct value;
     }
@@ -147,8 +153,8 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task DataPortal_Create_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      var applicationContext = _testHost.ApplicationContext;
+      var dp = _testHost.Services.GetRequiredService<TestableDataPortal>();
       await dp.Create(typeof(TestBO), EmptyCriteria.Instance, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
@@ -161,8 +167,8 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task DataPortal_Fetch_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      var applicationContext = _testHost.ApplicationContext;
+      var dp = _testHost.Services.GetRequiredService<TestableDataPortal>();
       await dp.Fetch(typeof(TestBO), EmptyCriteria.Instance, new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;
@@ -175,8 +181,8 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task DataPortal_Update_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      var applicationContext = _testHost.ApplicationContext;
+      var dp = _testHost.Services.GetRequiredService<TestableDataPortal>();
       await dp.Update((ICslaObject)applicationContext.CreateInstance(typeof(TestBO)), new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
 
@@ -190,8 +196,8 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task DataPortal_Delete_Calls_IAuthorizeDataPortal_Authorize_WithCorrectParameters()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
-      var dp = _testDIContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      var applicationContext = _testHost.ApplicationContext;
+      var dp = _testHost.Services.GetRequiredService<TestableDataPortal>();
       await dp.Delete(typeof(TestBO), new object(), new DataPortalContext(applicationContext, applicationContext.Principal, false, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       var result = (AuthorizeDataPortalStub)dp.AuthProvider;

@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.LogicalExecutionLocation
   [TestClass]
   public class LogicalExecutionLocationTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -34,8 +41,8 @@ namespace Csla.Test.LogicalExecutionLocation
     [TestMethod]
     public void TestLogicalExecutionLocation()
     {
-      IDataPortal<LocationBusinessBase> dataPortal = _testDIContext.CreateDataPortal<LocationBusinessBase>();
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<LocationBusinessBase> dataPortal = _testHost.GetDataPortal<LocationBusinessBase>();
+      var applicationContext = _testHost.ApplicationContext;
 
       Assert.AreEqual(ApplicationContext.LogicalExecutionLocations.Client, applicationContext.LogicalExecutionLocation, "Should be client");
 
@@ -55,7 +62,7 @@ namespace Csla.Test.LogicalExecutionLocation
     [TestMethod]
     public void TestRulesLogicalExecutionLocation()
     {
-      IDataPortal<LocationBusinessBase> dataPortal = _testDIContext.CreateDataPortal<LocationBusinessBase>();
+      IDataPortal<LocationBusinessBase> dataPortal = _testHost.GetDataPortal<LocationBusinessBase>();
 
 #pragma warning disable CS0436 // Type conflicts with imported type
       LocationBusinessBase item = LocationBusinessBase.GetLocationBusinessBase(dataPortal);

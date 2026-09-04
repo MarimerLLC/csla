@@ -6,6 +6,7 @@
 // <summary>Tests for IMobileObjectMetastate interface implementation.</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Rules;
 using Csla.Serialization.Mobile;
 using Csla.Testing;
 using Csla.TestHelpers;
@@ -13,6 +14,15 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Serialization
 {
+  /// <summary>
+  /// Tests for <see cref="IMobileObjectMetastate"/>, the channel an external serializer
+  /// uses to round trip the non-public state of a business object -- its IsNew, IsDirty
+  /// and related bookkeeping -- without reaching for private fields by reflection.
+  /// </summary>
+  /// <remarks>
+  /// The byte array is opaque: a type with no non-public state to carry returns an empty
+  /// one, and an empty array is valid input. See issues #4263 and #4767.
+  /// </remarks>
   [TestClass]
   public class MobileObjectMetastateTests
   {
@@ -39,8 +49,8 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void CommandBase_GetSetMetastate_EmptyMetastate_RoundTrip()
     {
-      // Arrange - a CommandBase object that does not override OnGetMetastate or
-      // OnSetMetastate returns and accepts an empty byte array
+      // Arrange - a CommandBase object has no non-public state to carry, so its
+      // metastate is an empty byte array, which must round trip without complaint
       var dataPortal = _testHost.GetDataPortal<Test.CommandBase.CommandObject>();
       var original = dataPortal.Create();
 
@@ -54,33 +64,6 @@ namespace Csla.Test.Serialization
       Assert.IsNotNull(restored);
       Assert.AreEqual(original.Name, restored.Name);
       Assert.AreEqual(original.Num, restored.Num);
-    }
-
-    // Ignored: asserts that property values survive a metastate round trip, which is what
-    // IMobileObjectMetastate's documentation promises but no implementation does -- see
-    // https://github.com/MarimerLLC/csla/issues/4898. Kept rather than deleted so the
-    // discrepancy is not lost again.
-    [Ignore]
-    [TestMethod]
-    public void CommandBase_GetSetMetastate_PropertyValues_RoundTrip()
-    {
-      // Arrange
-      var dataPortal = _testHost.GetDataPortal<Test.CommandBase.CommandObject>();
-      var original = dataPortal.Create();
-
-      var loader = new PropertyLoader(_testHost.ApplicationContext);
-      loader.Load(original, Test.CommandBase.CommandObject.NameProperty, "Test Command");
-      loader.Load(original, Test.CommandBase.CommandObject.NumProperty, 123);
-
-      // Act
-      var metastate = ((IMobileObjectMetastate)original).GetMetastate();
-
-      var restored = dataPortal.Create();
-      ((IMobileObjectMetastate)restored).SetMetastate(metastate);
-
-      // Assert
-      Assert.AreEqual("Test Command", restored.Name);
-      Assert.AreEqual(123, restored.Num);
     }
 
     [TestMethod]
@@ -98,8 +81,8 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void BusinessBase_GetSetMetastate_FetchedObject_FlagPreservation()
     {
-      // Arrange - a fetched object is old and clean, which is the state whose
-      // preservation across a metastate round trip is under test
+      // Arrange - a fetched object is old and clean, and preserving those flags across
+      // a round trip is the whole point of the interface
       var dataPortal = _testHost.GetDataPortal<MetastateRoot>();
       var original = dataPortal.Fetch(1);
 
@@ -117,22 +100,38 @@ namespace Csla.Test.Serialization
       Assert.IsFalse(restored.IsDirty, "Deserialized object should preserve IsDirty=false");
     }
 
-    /// <summary>
-    /// Exposes the protected <see cref="Csla.Server.ObjectFactory.LoadProperty{P}"/> so a
-    /// test can put a command object into a known state without going through a data portal
-    /// operation that sets the values.
-    /// </summary>
-    private class PropertyLoader : Csla.Server.ObjectFactory
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentNullException))]
+    public void BrokenRule_SetMetastate_ThrowsOnNullMetastate()
     {
-      public PropertyLoader(ApplicationContext applicationContext) : base(applicationContext)
-      {
-      }
+      // Arrange
+      var brokenRule = CreateEmptyBrokenRule();
 
-      public void Load<P>(object obj, PropertyInfo<P> propertyInfo, P newValue)
-      {
-        LoadProperty(obj, propertyInfo, newValue);
-      }
+      // Act
+      ((IMobileObjectMetastate)brokenRule).SetMetastate(null);
     }
+
+    [TestMethod]
+    public void BrokenRule_SetMetastate_AcceptsEmptyMetastate()
+    {
+      // Arrange - a BrokenRule carries no non-public state, so its metastate is empty
+      var brokenRule = CreateEmptyBrokenRule();
+      var emptyMetastate = Array.Empty<byte>();
+
+      // Act - setting an empty metastate must not throw
+      ((IMobileObjectMetastate)brokenRule).SetMetastate(emptyMetastate);
+
+      // Assert
+      Assert.IsNotNull(brokenRule);
+    }
+
+    /// <summary>
+    /// Creates an empty rule the way MobileFormatter does. The parameterless constructor
+    /// is obsolete-as-error, which is a hard compiler error no pragma can suppress, so the
+    /// deserialization path can only be reached by reflection as the formatter reaches it.
+    /// </summary>
+    private static BrokenRule CreateEmptyBrokenRule()
+      => (BrokenRule)Activator.CreateInstance(typeof(BrokenRule), nonPublic: true);
   }
 
   /// <summary>

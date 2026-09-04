@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="HttpPortalTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -7,9 +7,13 @@
 //-----------------------------------------------------------------------
 
 using System.Runtime.Serialization;
+using System.Security.Claims;
 using System.Security.Principal;
+using Csla.Configuration;
 using Csla.Core;
 using Csla.Serialization;
+using Csla.Serialization.Mobile;
+using Csla.Serialization.Mobile.CustomSerializers;
 using Csla.Server;
 using Csla.Server.Hosts;
 using Csla.Server.Hosts.DataPortalChannel;
@@ -183,6 +187,49 @@ public class HttpPortalTests
     // Assert
     result.Should().NotBeNull();
     result.ObjectData.Should().NotBeNull();
+  }
+
+  [TestMethod]
+  public async Task Create_WithCustomSerializedCriteria_UnpacksCorrectly()
+  {
+    // Arrange
+    var testDIContext = TestDIContextFactory.CreateContext(
+      o => o.Serialization(o => o.UseMobileFormatter(o => o.CustomSerializers.Add(
+        new TypeMap<object, PocoSerializer<Csla.Test.Serialization.SerializablePoco>>(
+          PocoSerializer<Csla.Test.Serialization.SerializablePoco>.CanSerialize)))),
+      new ClaimsPrincipal(new ClaimsIdentity(new GenericIdentity("Fred"))),
+      services => services.AddScoped<IContextDictionary, ContextDictionary>());
+    var applicationContext = testDIContext.CreateTestApplicationContext();
+    var fakeDataPortalServer = new FakeDataPortalServer();
+    var systemUnderTest = new HttpPortal(applicationContext, fakeDataPortalServer);
+
+    var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
+    var pocoCriteria = new Csla.Test.Serialization.SerializablePoco { Name = "test" };
+    var criteriaData = serializer.Serialize(new DataPortalClient.PrimitiveCriteria(pocoCriteria));
+    var principalData = serializer.Serialize((IPrincipal)null);
+    var contextData = serializer.Serialize(applicationContext.GetRequiredService<IContextDictionary>());
+
+    var request = new CriteriaRequest(
+      applicationContext,
+      principalData,
+      contextData,
+      "en-US",
+      "en-US",
+      criteriaData)
+    {
+      TypeName = typeof(object).AssemblyQualifiedName
+    };
+
+    fakeDataPortalServer.SetReturnValue(new TestCslaObject());
+
+    // Act
+    var result = await systemUnderTest.Create(request);
+
+    // Assert
+    result.Should().NotBeNull();
+    result.ErrorData.Should().BeNull();
+    fakeDataPortalServer.LastCriteria.Should().BeOfType<Csla.Test.Serialization.SerializablePoco>()
+      .Which.Name.Should().Be("test");
   }
 
   #endregion Create Method Tests
@@ -438,6 +485,8 @@ public class HttpPortalTests
     private object? _returnValue;
     private Exception? _errorValue;
 
+    public object? LastCriteria { get; private set; }
+
     public void SetReturnValue(object? returnValue)
     {
       _returnValue = returnValue;
@@ -452,6 +501,7 @@ public class HttpPortalTests
 
     public Task<DataPortalResult> Create(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
+      LastCriteria = criteria;
       var appContext = ((IUseApplicationContext)context).ApplicationContext;
       var result = _errorValue != null
         ? new DataPortalResult(appContext, null, _errorValue)
@@ -461,6 +511,7 @@ public class HttpPortalTests
 
     public Task<DataPortalResult> Fetch(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
+      LastCriteria = criteria;
       var appContext = ((IUseApplicationContext)context).ApplicationContext;
       var result = _errorValue != null
         ? new DataPortalResult(appContext, null, _errorValue)
@@ -479,6 +530,7 @@ public class HttpPortalTests
 
     public Task<DataPortalResult> Delete(Type objectType, object? criteria, DataPortalContext context, bool isSync)
     {
+      LastCriteria = criteria;
       var appContext = ((IUseApplicationContext)context).ApplicationContext;
       var result = _errorValue != null
         ? new DataPortalResult(appContext, null, _errorValue)

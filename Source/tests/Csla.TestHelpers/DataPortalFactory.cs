@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.TestHelpers
 {
+  [Obsolete("Use Csla.Testing.CslaTestHost.GetDataPortal<T> or GetChildDataPortal<T> instead. This shim is no longer used by the test suite and will be removed in a future release.")]
   public static class DataPortalFactory
   {
 

@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,12 +15,18 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class ShortCircuitTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -31,7 +38,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void ShortCircuitOnNew()
     {
-      IDataPortal<ShortCircuit> dataPortal = _testDIContext.CreateDataPortal<ShortCircuit>();
+      IDataPortal<ShortCircuit> dataPortal = _testHost.GetDataPortal<ShortCircuit>();
 
       ShortCircuit root = dataPortal.Create();
       root.CheckRules();
@@ -42,7 +49,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void ShortCircuitOnPropertySet()
     {
-      IDataPortal<ShortCircuit> dataPortal = _testDIContext.CreateDataPortal<ShortCircuit>();
+      IDataPortal<ShortCircuit> dataPortal = _testHost.GetDataPortal<ShortCircuit>();
 
       ShortCircuit root = dataPortal.Create();
       root.CheckRules();
@@ -57,7 +64,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void HigherThreshold()
     {
-      IDataPortal<ShortCircuit> dataPortal = _testDIContext.CreateDataPortal<ShortCircuit>();
+      IDataPortal<ShortCircuit> dataPortal = _testHost.GetDataPortal<ShortCircuit>();
 
       ShortCircuit root = dataPortal.Create();
       root.CheckRules();

@@ -1,19 +1,25 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Blazor.Test.Fakes;
 using Microsoft.AspNetCore.Components.Forms;
-using Csla.TestHelpers;
+using Csla.Testing;
 
 namespace Csla.Blazor.Test
 {
   [TestClass]
   public class EditContextCslaExtensionsTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
     
     [TestMethod]
@@ -270,7 +276,7 @@ namespace Csla.Blazor.Test
       FakePerson person;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
+      dataPortal = _testHost.GetDataPortal<FakePerson>();
       person = dataPortal.Create();
 
       person.FirstName = "John";

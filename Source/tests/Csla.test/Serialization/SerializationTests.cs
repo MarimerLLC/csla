@@ -12,6 +12,7 @@ using Csla.Configuration;
 using Csla.Serialization;
 using Csla.Serialization.Mobile;
 using Csla.Test.ValidationRules;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -20,7 +21,7 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class SerializationTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [Serializable]
     private class TestCollection : BusinessBindingListBase<TestCollection, TestItem>;
@@ -50,7 +51,13 @@ namespace Csla.Test.Serialization
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -65,7 +72,7 @@ namespace Csla.Test.Serialization
     public void SerializeDataPortalException()
     {
       var obj = new Csla.Server.DataPortalException("test message", new Exception("inner message"), null);
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var cloner = new Core.ObjectCloner(applicationContext);
       var obj2 = (Csla.Server.DataPortalException)cloner.Clone(obj);
       Assert.IsFalse(ReferenceEquals(obj, obj2));
@@ -75,7 +82,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void DateTimeKind()
     {
-      var portal = _testDIContext.CreateDataPortal<DateTimeHolder>();
+      var portal = _testHost.GetDataPortal<DateTimeHolder>();
       var obj = portal.Create();
       DateTime.SpecifyKind(obj.Value, System.DateTimeKind.Local);
       var obj2 = obj.Clone();
@@ -85,7 +92,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void CorrectDefaultSerializer()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
       Assert.IsTrue(serializer.GetType() == typeof(MobileFormatter));
     }
@@ -93,7 +100,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void TestWithoutSerializableHandler()
     {
-      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+      IDataPortal<SerializationRoot> dataPortal = _testHost.GetDataPortal<SerializationRoot>();
 
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       nonSerializableEventHandler handler = new nonSerializableEventHandler();
@@ -122,7 +129,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void Clone()
     {
-      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+      IDataPortal<SerializationRoot> dataPortal = _testHost.GetDataPortal<SerializationRoot>();
 
       SerializationRoot root = dataPortal.Create();
 
@@ -137,7 +144,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void SerializableEvents()
     {
-      IDataPortal<SerializationRoot> dataPortal = _testDIContext.CreateDataPortal<SerializationRoot>();
+      IDataPortal<SerializationRoot> dataPortal = _testHost.GetDataPortal<SerializationRoot>();
 
       SerializationRoot root = SerializationRoot.NewSerializationRoot(dataPortal);
       TestEventSink handler = new TestEventSink();
@@ -205,7 +212,7 @@ namespace Csla.Test.Serialization
     [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task TestValidationRulesAfterSerialization()
     {
-      IDataPortal<HasRulesManager> dataPortal = _testDIContext.CreateDataPortal<HasRulesManager>();
+      IDataPortal<HasRulesManager> dataPortal = _testHost.GetDataPortal<HasRulesManager>();
 
       var root = await dataPortal.CreateAsync(new HasRulesManager.Criteria());
       root.Name = "";
@@ -222,13 +229,13 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void TestSerializationCslaBinaryReaderWriterList()
     {
-      IDataPortal<BinaryReaderWriterTestClassList> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClassList>();
+      IDataPortal<BinaryReaderWriterTestClassList> dataPortal = _testHost.GetDataPortal<BinaryReaderWriterTestClassList>();
 
       var test = BinaryReaderWriterTestClassList.NewBinaryReaderWriterTestClassList(dataPortal);
       BinaryReaderWriterTestClassList result;
       test.Setup();
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       MobileFormatter formatter = new MobileFormatter(applicationContext);
       var serialized = formatter.SerializeToDTO(test);
       CslaBinaryWriter writer = new CslaBinaryWriter(applicationContext);
@@ -285,12 +292,12 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void TestSerializationCslaBinaryReaderWriter()
     {
-      IDataPortal<BinaryReaderWriterTestClass> dataPortal = _testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
+      IDataPortal<BinaryReaderWriterTestClass> dataPortal = _testHost.GetDataPortal<BinaryReaderWriterTestClass>();
 
       var test = BinaryReaderWriterTestClass.NewBinaryReaderWriterTestClass(dataPortal);
       BinaryReaderWriterTestClass result;
       test.Setup();
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
 
       MobileFormatter formatter = new MobileFormatter(applicationContext);
       var serialized = formatter.SerializeToDTO(test);
@@ -357,14 +364,14 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void TestSerializationRoundtripWithoutStrongNameCheck()
     {
-      // Do not use global _testDIContext in the test, since I need to change default mobile formatter options.
-      var testDIContext = TestDIContextFactory.CreateContext(options => options.SerializationOptions.UseMobileFormatter(formatterOptions => formatterOptions.DisableStrongNamesCheck()));
-      IDataPortal<BinaryReaderWriterTestClass> dataPortal = testDIContext.CreateDataPortal<BinaryReaderWriterTestClass>();
+      // Do not use global _testHost in the test, since I need to change default mobile formatter options.
+      using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(options => options.SerializationOptions.UseMobileFormatter(formatterOptions => formatterOptions.DisableStrongNamesCheck())));
+      IDataPortal<BinaryReaderWriterTestClass> dataPortal = testHost.GetDataPortal<BinaryReaderWriterTestClass>();
 
       var test = BinaryReaderWriterTestClass.NewBinaryReaderWriterTestClass(dataPortal);
       BinaryReaderWriterTestClass result;
       test.Setup();
-      ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
+      ApplicationContext applicationContext = testHost.ApplicationContext;
 
       MobileFormatter formatter = new MobileFormatter(applicationContext);
       var serialized = formatter.SerializeToDTO(test);
@@ -445,8 +452,8 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void TestAuthorizationRulesAfterSerialization()
     {
-      TestDIContext adminDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<Security.PermissionsRoot> dataPortal = _testDIContext.CreateDataPortal<Security.PermissionsRoot>();
+      using var adminHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<Security.PermissionsRoot> dataPortal = _testHost.GetDataPortal<Security.PermissionsRoot>();
 
       Security.PermissionsRoot root = dataPortal.Create();
 
@@ -460,7 +467,7 @@ namespace Csla.Test.Serialization
         Assert.AreEqual("Property set not allowed", ex.Message);
       }
 
-      dataPortal = adminDIContext.CreateDataPortal<Security.PermissionsRoot>();
+      dataPortal = adminHost.GetDataPortal<Security.PermissionsRoot>();
       root = dataPortal.Create();
 
       try
@@ -522,7 +529,7 @@ namespace Csla.Test.Serialization
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void DCClone()
     {
-      IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
+      IDataPortal<DCRoot> dataPortal = _testHost.GetDataPortal<DCRoot>();
 
       System.Configuration.ConfigurationManager.AppSettings["CslaSerializationFormatter"] = "MobileSerializer";
 
@@ -541,7 +548,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void DCEditLevels()
     {
-      IDataPortal<DCRoot> dataPortal = _testDIContext.CreateDataPortal<DCRoot>();
+      IDataPortal<DCRoot> dataPortal = _testHost.GetDataPortal<DCRoot>();
 
       DCRoot root = DCRoot.NewDCRoot(dataPortal);
       root.BeginEdit();
@@ -560,8 +567,8 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void AsyncLoadManagerSerializationTest()
     {
-      IDataPortal<Basic.Children> dataPortal = _testDIContext.CreateDataPortal<Basic.Children>();
-      IDataPortal<Basic.Child> childDataPortal = _testDIContext.CreateDataPortal<Basic.Child>();
+      IDataPortal<Basic.Children> dataPortal = _testHost.GetDataPortal<Basic.Children>();
+      IDataPortal<Basic.Child> childDataPortal = _testHost.GetDataPortal<Basic.Child>();
 
       Basic.Children list = Basic.Children.NewChildren(dataPortal);
       list.Add(childDataPortal, "1");
@@ -578,8 +585,8 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void SerializeCommand()
     {
-      IDataPortal<TestCommand> dataPortal = _testDIContext.CreateDataPortal<TestCommand>();
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<TestCommand> dataPortal = _testHost.GetDataPortal<TestCommand>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
 
       var cmd = dataPortal.Create();
       cmd.Name = "test data";
@@ -597,13 +604,12 @@ namespace Csla.Test.Serialization
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void CommandOverDataPortal()
     {
-      TestDIContext customDIContext = TestDIContextFactory.CreateDefaultContext();
+      using var customHost = CslaTestHost.Create();
       // TODO: Get this custom proxy code included and working
-      //TestDIContext customDIContext = TestDIContextFactory.CreateContext(
-      //options => options
+      //CslaTestHost customHost = CslaTestHost.Create(t => t.AsPrincipal(//options => options
       //.Services.AddTransient<DataPortalClient.IDataPortalProxy, Csla.Testing.Business.TestProxies.AppDomainProxy>()
-      //);
-      IDataPortal<TestCommand> dataPortal = customDIContext.CreateDataPortal<TestCommand>();
+      //));
+      IDataPortal<TestCommand> dataPortal = customHost.GetDataPortal<TestCommand>();
 
       var cmd = dataPortal.Create();
       cmd.Name = "test data";
@@ -617,7 +623,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void DateOnlySerialization()
     {
-      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var portal = _testHost.GetDataPortal<DateTimeOnlyHolder>();
       var obj = portal.Create();
       obj.DateOnly = new DateOnly(2020, 1, 1);
       var clone = obj.Clone();
@@ -627,7 +633,7 @@ namespace Csla.Test.Serialization
     [TestMethod]
     public void TimeOnlySerialization()
     {
-      var portal = _testDIContext.CreateDataPortal<DateTimeOnlyHolder>();
+      var portal = _testHost.GetDataPortal<DateTimeOnlyHolder>();
       var obj = portal.Create();
       obj.TimeOnly = new TimeOnly(12, 34, 56);
       var clone = obj.Clone();

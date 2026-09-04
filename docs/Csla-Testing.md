@@ -118,6 +118,11 @@ extension cannot reach into a service provider that does not exist yet.
 held per async flow rather than in static fields. Tests using these helpers do not have to
 be run serially.
 
+Seeding happens once for the lifetime of the manager, not once per async flow. That
+matters because CSLA deliberately leaves the user unset in some places — the server side
+of a data portal call that does not flow the principal, for one — and a principal that
+reappeared in those places would mask exactly the state such a test needs to observe.
+
 ### Rule testers
 
 The `Csla.Testing.Rules` namespace contains helpers that execute a single rule in

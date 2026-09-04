@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using System.Reflection;
 using Csla.Server;
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,13 +16,19 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class OperationNameFlowTests
   {
-    private static TestDIContext _diContext = default!;
+    private static CslaTestHost _testHost = default!;
 
     [ClassInitialize]
     public static void ClassSetup(TestContext context)
     {
       _ = context;
-      _diContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     #region Operation Name Computation Tests
@@ -165,7 +171,7 @@ namespace Csla.Test.DataPortal
     public async Task DataPortal_Fetch_FlowsOperationNameToServer()
     {
       // Arrange & Act
-      var obj = await _diContext.CreateDataPortal<TestRootForFlow>().FetchAsync(123);
+      var obj = await _testHost.GetDataPortal<TestRootForFlow>().FetchAsync(123);
 
       // Assert
       obj.Should().NotBeNull();
@@ -176,7 +182,7 @@ namespace Csla.Test.DataPortal
     public async Task DataPortal_Create_FlowsOperationNameToServer()
     {
       // Arrange & Act
-      var obj = await _diContext.CreateDataPortal<TestRootForFlow>().CreateAsync("test");
+      var obj = await _testHost.GetDataPortal<TestRootForFlow>().CreateAsync("test");
 
       // Assert
       obj.Should().NotBeNull();
@@ -187,7 +193,7 @@ namespace Csla.Test.DataPortal
     public async Task DataPortal_Execute_FlowsOperationNameToServer()
     {
       // Arrange
-      var dp = _diContext.CreateDataPortal<TestCommandForFlow>();
+      var dp = _testHost.GetDataPortal<TestCommandForFlow>();
       var cmd = await dp.CreateAsync();
       
       // Act
@@ -202,10 +208,10 @@ namespace Csla.Test.DataPortal
     public async Task DataPortal_Update_FlowsInsertOperationName()
     {
       // Arrange
-      var obj = await _diContext.CreateDataPortal<TestRootForFlow>().CreateAsync();
+      var obj = await _testHost.GetDataPortal<TestRootForFlow>().CreateAsync();
 
       // Act
-      obj = await _diContext.CreateDataPortal<TestRootForFlow>().UpdateAsync(obj);
+      obj = await _testHost.GetDataPortal<TestRootForFlow>().UpdateAsync(obj);
 
       // Assert
       obj.Should().NotBeNull();
@@ -216,10 +222,10 @@ namespace Csla.Test.DataPortal
     public async Task DataPortal_Update_FlowsUpdateOperationName()
     {
       // Arrange
-      var obj = await _diContext.CreateDataPortal<TestRootForFlow>().FetchAsync(123);
+      var obj = await _testHost.GetDataPortal<TestRootForFlow>().FetchAsync(123);
 
       // Act
-      obj = await _diContext.CreateDataPortal<TestRootForFlow>().UpdateAsync(obj);
+      obj = await _testHost.GetDataPortal<TestRootForFlow>().UpdateAsync(obj);
 
       // Assert
       obj.Should().NotBeNull();
@@ -230,11 +236,11 @@ namespace Csla.Test.DataPortal
     public async Task DataPortal_Update_FlowsDeleteSelfOperationName()
     {
       // Arrange
-      var obj = await _diContext.CreateDataPortal<TestRootForFlow>().FetchAsync(123);
+      var obj = await _testHost.GetDataPortal<TestRootForFlow>().FetchAsync(123);
       obj.Delete();
 
       // Act
-      obj = await _diContext.CreateDataPortal<TestRootForFlow>().UpdateAsync(obj);
+      obj = await _testHost.GetDataPortal<TestRootForFlow>().UpdateAsync(obj);
 
       // Assert
       obj.Should().NotBeNull();

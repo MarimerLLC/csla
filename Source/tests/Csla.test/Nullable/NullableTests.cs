@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.Nullable
   [TestClass]
   public class NullableTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -33,7 +40,7 @@ namespace Csla.Test.Nullable
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableProperty()
     {
-      IDataPortal<NullableObject> dataPortal = _testDIContext.CreateDataPortal<NullableObject>();
+      IDataPortal<NullableObject> dataPortal = _testHost.GetDataPortal<NullableObject>();
 
       NullableObject nullRoot = NullableObject.NewNullableObject(dataPortal);
       nullRoot.NullableInteger = null;
@@ -46,7 +53,7 @@ namespace Csla.Test.Nullable
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableField()
     {
-      IDataPortal<NullableObject> dataPortal = _testDIContext.CreateDataPortal<NullableObject>();
+      IDataPortal<NullableObject> dataPortal = _testHost.GetDataPortal<NullableObject>();
 
       NullableObject nullRoot = NullableObject.NewNullableObject(dataPortal);
       nullRoot._nullableIntMember = null;
@@ -57,7 +64,7 @@ namespace Csla.Test.Nullable
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableAfterClone()
     {
-      IDataPortal<NullableObject> dataPortal = _testDIContext.CreateDataPortal<NullableObject>();
+      IDataPortal<NullableObject> dataPortal = _testHost.GetDataPortal<NullableObject>();
 
       NullableObject nullRoot = NullableObject.NewNullableObject(dataPortal);
       nullRoot._nullableIntMember = null;
@@ -71,7 +78,7 @@ namespace Csla.Test.Nullable
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void TestNullableAfterEditCycle()
     {
-      IDataPortal<NullableObject> dataPortal = _testDIContext.CreateDataPortal<NullableObject>();
+      IDataPortal<NullableObject> dataPortal = _testHost.GetDataPortal<NullableObject>();
 
       NullableObject nullRoot = NullableObject.NewNullableObject(dataPortal);
       nullRoot.NullableInteger = null;

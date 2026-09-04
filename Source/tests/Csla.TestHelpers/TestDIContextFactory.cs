@@ -26,6 +26,7 @@ namespace Csla.TestHelpers
   /// should use <see cref="CslaTestHost"/> directly; the remaining call sites here are
   /// migrated in a follow-up, after which this type is removed.
   /// </remarks>
+  [Obsolete("Use Csla.Testing.CslaTestHost.Create instead. This shim is no longer used by the test suite and will be removed in a future release.")]
   public static class TestDIContextFactory
   {
 

@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.TestHelpers
 {
+  [Obsolete("Use Csla.Testing.CslaTestHost.ApplicationContext instead. This shim is no longer used by the test suite and will be removed in a future release.")]
   public static class ApplicationContextFactory
   {
 

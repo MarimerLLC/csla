@@ -1,6 +1,6 @@
 ﻿using Csla.Blazor.Test.Fakes;
 using Csla.Core;
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,12 +10,18 @@ namespace Csla.Blazor.Test
   [TestClass]
   public class ViewModelSaveAsyncErrorTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -23,7 +29,7 @@ namespace Csla.Blazor.Test
     {
       // Arrange
       var person = GetValidFakePerson();
-      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new ViewModel<FakePerson>(appCntxt)
       {
         Model = person,
@@ -55,7 +61,7 @@ namespace Csla.Blazor.Test
     {
       // Arrange
       var person = GetValidFakePerson();
-      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new ViewModel<FakePerson>(appCntxt)
       {
         Model = person,
@@ -83,7 +89,7 @@ namespace Csla.Blazor.Test
     {
       // Arrange
       var person = GetValidFakePerson();
-      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new ViewModel<FakePerson>(appCntxt)
       {
         Model = person,
@@ -109,7 +115,7 @@ namespace Csla.Blazor.Test
       person.IsBusy = true;
       person.IsSavable = false;
 
-      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new ViewModel<FakeBusy>(appCntxt)
       {
         Model = person,
@@ -174,11 +180,11 @@ namespace Csla.Blazor.Test
       Person person;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = _testDIContext.CreateDataPortal<Person>();
+      dataPortal = _testHost.GetDataPortal<Person>();
       person = dataPortal.Create();
       person.Name = "TestTest";
 
-      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new ViewModel<Person>(appCntxt)
       {
         Model = person,
@@ -197,11 +203,11 @@ namespace Csla.Blazor.Test
       Person person;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = _testDIContext.CreateDataPortal<Person>();
+      dataPortal = _testHost.GetDataPortal<Person>();
       person = dataPortal.Create();
       person.Name = "TestTest";
 
-      var appCntxt = _testDIContext.CreateTestApplicationContext();
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new ViewModel<Person>(appCntxt)
       {
         Model = person,
@@ -221,7 +227,7 @@ namespace Csla.Blazor.Test
       FakePerson person;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
+      dataPortal = _testHost.GetDataPortal<FakePerson>();
       person = dataPortal.Create();
 
       person.FirstName = "John";

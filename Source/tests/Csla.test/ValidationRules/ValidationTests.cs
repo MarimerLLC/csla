@@ -9,6 +9,7 @@
 using System.ComponentModel;
 using Csla.Core;
 using Csla.Rules;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,13 +18,13 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class ValidationTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
       _ = context;
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
     }
 
     [TestInitialize]
@@ -412,7 +413,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
         new Dictionary<IPropertyInfo, object> { 
           { TwoPropertyRules.Value1Property, "a" },
@@ -452,7 +453,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void ObjectDirtyWhenOutputValueChangesPropertyValue()
     {
-      IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testDIContext.CreateDataPortal<DirtyAfterOutValueChangesProperty>();
+      IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testHost.GetDataPortal<DirtyAfterOutValueChangesProperty>();
 
       var root = dataPortal.Fetch();
       Assert.IsFalse(root.IsDirty);
@@ -465,7 +466,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void ObjectNotDirtyWhenOutputValueDoNotChangePropertyValue()
     {
-      IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testDIContext.CreateDataPortal<DirtyAfterOutValueChangesProperty>();
+      IDataPortal<DirtyAfterOutValueChangesProperty> dataPortal = _testHost.GetDataPortal<DirtyAfterOutValueChangesProperty>();
 
       var root = dataPortal.Fetch("CSLA ROCKS");
       Assert.IsFalse(root.IsDirty);
@@ -489,42 +490,42 @@ namespace Csla.Test.ValidationRules
 
     private T CreateWithoutCriteria<T>() where T : ICslaObject
     {
-      IDataPortal<T> dataPortal = _testDIContext.CreateDataPortal<T>();
+      IDataPortal<T> dataPortal = _testHost.GetDataPortal<T>();
 
       return dataPortal.Create();
     }
 
     private async Task<T> CreateWithoutCriteriaAsync<T>() where T : ICslaObject
     {
-      IDataPortal<T> dataPortal = _testDIContext.CreateDataPortal<T>();
+      IDataPortal<T> dataPortal = _testHost.GetDataPortal<T>();
 
       return await dataPortal.CreateAsync();
     }
 
     private T CreateChildWithoutCriteria<T>() where T : ICslaObject
     {
-      IChildDataPortal<T> dataPortal = _testDIContext.CreateChildDataPortal<T>();
+      IChildDataPortal<T> dataPortal = _testHost.GetChildDataPortal<T>();
 
       return dataPortal.CreateChild();
     }
 
     private async Task<HasRulesManager> CreateHasRulesManagerAsync()
     {
-      IDataPortal<HasRulesManager> dataPortal = _testDIContext.CreateDataPortal<HasRulesManager>();
+      IDataPortal<HasRulesManager> dataPortal = _testHost.GetDataPortal<HasRulesManager>();
 
       return await dataPortal.CreateAsync(new HasRulesManager.Criteria());
     }
 
     private async Task<HasRulesManager2> CreateHasRulesManager2Async()
     {
-      IDataPortal<HasRulesManager2> dataPortal = _testDIContext.CreateDataPortal<HasRulesManager2>();
+      IDataPortal<HasRulesManager2> dataPortal = _testHost.GetDataPortal<HasRulesManager2>();
 
       return await dataPortal.CreateAsync();
     }
 
     private async Task<HasRulesManager2> CreateHasRulesManager2Async(string ident)
     {
-      IDataPortal<HasRulesManager2> dataPortal = _testDIContext.CreateDataPortal<HasRulesManager2>();
+      IDataPortal<HasRulesManager2> dataPortal = _testHost.GetDataPortal<HasRulesManager2>();
 
       return await dataPortal.CreateAsync(new HasRulesManager2.Criteria(ident));
     }
@@ -827,12 +828,18 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class RuleContextTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -842,7 +849,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
@@ -860,7 +867,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
@@ -878,7 +885,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
@@ -896,7 +903,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
@@ -914,7 +921,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
@@ -932,7 +939,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {
@@ -950,7 +957,7 @@ namespace Csla.Test.ValidationRules
       var root = new TwoPropertyRules();
       var rule = new TwoProps(TwoPropertyRules.Value1Property, TwoPropertyRules.Value2Property);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var ctx = new RuleContext(applicationContext, RuleContextUtils.DoNothingCompleteHandler, rule, root,
                                            new Dictionary<IPropertyInfo, object>
                                                {

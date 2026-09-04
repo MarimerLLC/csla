@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,29 +16,35 @@ namespace Csla.Test.BusinessDocumentBase
   [TestClass]
   public class BusinessDocumentBaseTests
   {
-    private static TestDIContext _testDIContext = null!;
+    private static CslaTestHost _testHost = null!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     private TestDocument CreateDocument()
     {
-      var portal = _testDIContext.CreateDataPortal<TestDocument>();
+      var portal = _testHost.GetDataPortal<TestDocument>();
       return portal.Create();
     }
 
     private TestDocument FetchDocument(int id)
     {
-      var portal = _testDIContext.CreateDataPortal<TestDocument>();
+      var portal = _testHost.GetDataPortal<TestDocument>();
       return portal.Fetch(id);
     }
 
     private DocumentLineItem CreateLineItem()
     {
-      var portal = _testDIContext.CreateChildDataPortal<DocumentLineItem>();
+      var portal = _testHost.GetChildDataPortal<DocumentLineItem>();
       return portal.CreateChild();
     }
 
@@ -910,7 +916,7 @@ namespace Csla.Test.BusinessDocumentBase
       var doc = FetchDocument(1);
       doc.Clear(); // moves all 3 fetched items to deleted list
 
-      var serializer = _testDIContext.ServiceProvider.GetRequiredService<ISerializationFormatter>();
+      var serializer = _testHost.Services.GetRequiredService<ISerializationFormatter>();
       var transferred = (TestDocument)serializer.Deserialize(serializer.Serialize(doc));
 
       var deletedItems = ((IContainsDeletedList)transferred).DeletedList.Cast<DocumentLineItem>().ToList();

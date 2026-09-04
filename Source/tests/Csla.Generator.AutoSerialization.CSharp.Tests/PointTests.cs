@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 using Csla.Generator.AutoSerialization.CSharp.TestObjects;
 using Csla.Serialization.Mobile;
-using Csla.TestHelpers;
+using Csla.Testing;
 
 namespace Csla.Generator.AutoSerialization.CSharp.Tests
 {
@@ -18,12 +18,18 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
   [TestClass]
   public class PointTests
   {
-    private static TestDIContext _testDIContext = default!;
+    private static CslaTestHost _testHost = default!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     #region Serialize then Deserialize
@@ -74,7 +80,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
 
     private Point SerializeThenDeserialisePoint(Point valueToSerialize)
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
 
       System.IO.MemoryStream serializationStream;
       Point deserializedValue;

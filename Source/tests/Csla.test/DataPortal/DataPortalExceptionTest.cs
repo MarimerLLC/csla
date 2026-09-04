@@ -1,4 +1,4 @@
-﻿using Csla.TestHelpers;
+﻿using Csla.Testing;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,19 +7,25 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class DataPortalExceptionTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task ChildInnerExceptionFlowsFromDataPortal()
     {
-      IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
+      IDataPortal<EditableRoot1> dataPortal = _testHost.GetDataPortal<EditableRoot1>();
 
       try
       {
@@ -37,7 +43,7 @@ namespace Csla.Test.DataPortal
     [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task ChildInnerExceptionDoesNotGetUnpackedButFlowsFromDataPortal()
     {
-      IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
+      IDataPortal<EditableRoot1> dataPortal = _testHost.GetDataPortal<EditableRoot1>();
 
       var bo = dataPortal.Create();
       bo.Child.ThrowWithInnerException = true;
@@ -50,7 +56,7 @@ namespace Csla.Test.DataPortal
     [TestCategory("SkipWhenLiveUnitTesting")]
     public async Task ChildCreationExceptionFlowsFromDataPortalAsync()
     {
-      IDataPortal<EditableRoot1> dataPortal = _testDIContext.CreateDataPortal<EditableRoot1>();
+      IDataPortal<EditableRoot1> dataPortal = _testHost.GetDataPortal<EditableRoot1>();
       string expected = "A suitable constructor for type 'Csla.Test.DataPortal.EditableChild2' could not be located.";
 
       try

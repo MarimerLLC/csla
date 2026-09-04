@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Csla.TestHelpers;
+using Csla.Testing;
 using System.Threading.Tasks;
 using Csla.Core;
 
@@ -24,12 +24,18 @@ namespace Csla.Blazor.Test
   [TestClass]
   public class ViewModelEditChildListSaveEditLevelTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestCleanup]
@@ -46,7 +52,7 @@ namespace Csla.Blazor.Test
       //EditContext editContext = new EditContext(person);
       //editContext.AddCslaValidation();
       var iuo = person as IUndoableObject;
-      var appCntxt = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new ViewModel<FakePerson>(appCntxt);
       vm.ManageObjectLifetime = true;
       vm.Model = person;
@@ -72,7 +78,7 @@ namespace Csla.Blazor.Test
       // Arrange
       //FakePerson person = GetValidFakePerson();
       //var iuo = person as IUndoableObject;
-      var appCntxt = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var appCntxt = _testHost.ApplicationContext;
       var vm = new MyViewModel<FakePerson>(appCntxt);
       await vm.RefreshAsync(FetchFakePerson);
       var id = vm.Model.Id;
@@ -129,7 +135,7 @@ namespace Csla.Blazor.Test
       IDataPortal<FakePerson> dataPortal;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
+      dataPortal = _testHost.GetDataPortal<FakePerson>();
       return await dataPortal.CreateAsync();
     }
 
@@ -139,7 +145,7 @@ namespace Csla.Blazor.Test
       FakePerson person;
 
       // Create an instance of a DataPortal that can be used for instantiating objects
-      dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
+      dataPortal = _testHost.GetDataPortal<FakePerson>();
       person = dataPortal.Create();
 
       person.FirstName = "John";

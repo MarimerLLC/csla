@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization;
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,12 +18,18 @@ namespace Csla.Test.BusinessListBase
   [TestClass]
   public class BusinessBindingListBaseTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -50,14 +56,14 @@ namespace Csla.Test.BusinessListBase
 
       static Basic.Root SimulateLocationTransfer(Basic.Root original)
       {
-        var serializer = _testDIContext.ServiceProvider.GetRequiredService<ISerializationFormatter>();
+        var serializer = _testHost.Services.GetRequiredService<ISerializationFormatter>();
         return (Basic.Root)serializer.Deserialize(serializer.Serialize(original));
       }
     }
 
     private static Basic.Root CreateRoot()
     {
-      var dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+      var dataPortal = _testHost.GetDataPortal<Basic.Root>();
 
       return dataPortal.Create(new Basic.Root.Criteria("Random"));
     }

@@ -8,6 +8,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
+using Csla.Testing;
 using Csla.TestHelpers;
 
 namespace Csla.Test.Serialization
@@ -15,12 +16,18 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class ReadOnlyBaseMetastateTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -33,7 +40,7 @@ namespace Csla.Test.Serialization
     public void ReadOnlyBase_GetSetMetastate_PropertyValues_RoundTrip()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnly>();
+      var dataPortal = _testHost.GetDataPortal<TestReadOnly>();
       var original = dataPortal.Create();
       
       // Verify original values
@@ -61,7 +68,7 @@ namespace Csla.Test.Serialization
     public void ReadOnlyBase_GetSetMetastate_WithNullPropertyValues()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyWithNulls>();
+      var dataPortal = _testHost.GetDataPortal<TestReadOnlyWithNulls>();
       var original = dataPortal.Create();
       
       // Verify original values
@@ -85,7 +92,7 @@ namespace Csla.Test.Serialization
     public void ReadOnlyBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnly>();
+      var dataPortal = _testHost.GetDataPortal<TestReadOnly>();
       var obj = dataPortal.Create();
 
       // Act
@@ -96,7 +103,7 @@ namespace Csla.Test.Serialization
     public void ReadOnlyBase_SetMetastate_AcceptsEmptyMetastate()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnly>();
+      var dataPortal = _testHost.GetDataPortal<TestReadOnly>();
       var obj = dataPortal.Create();
 
       // Act - Setting empty metastate should not throw

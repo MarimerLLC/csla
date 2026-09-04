@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Rules;
+using Csla.Testing;
 using Csla.TestHelpers;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -21,12 +22,18 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class AsyncRuleTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -38,7 +45,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void TestAsyncRulesValid()
     {
-      IDataPortal<HasAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasAsyncRule>();
+      IDataPortal<HasAsyncRule> dataPortal = _testHost.GetDataPortal<HasAsyncRule>();
 
       HasAsyncRule har = dataPortal.Create();
       Assert.IsTrue(har.IsValid, "IsValid 1");
@@ -53,7 +60,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void TestAsyncRuleError()
     {
-      IDataPortal<HasAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasAsyncRule>();
+      IDataPortal<HasAsyncRule> dataPortal = _testHost.GetDataPortal<HasAsyncRule>();
 
       HasAsyncRule har = dataPortal.Create();
       Assert.IsTrue(har.IsValid, "IsValid 1");
@@ -69,7 +76,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void InvalidAsyncRule()
     {
-      IDataPortal<HasInvalidAsyncRule> dataPortal = _testDIContext.CreateDataPortal<HasInvalidAsyncRule>();
+      IDataPortal<HasInvalidAsyncRule> dataPortal = _testHost.GetDataPortal<HasInvalidAsyncRule>();
 
       var root = dataPortal.Create();
       root.ValidationComplete += (_, _) =>
@@ -111,7 +118,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void TestAsyncRulesAndSyncRulesValid()
     {
-      IDataPortal<AsyncRuleRoot> dataPortal = _testDIContext.CreateDataPortal<AsyncRuleRoot>();
+      IDataPortal<AsyncRuleRoot> dataPortal = _testHost.GetDataPortal<AsyncRuleRoot>();
 
       var har = dataPortal.Create();
       Assert.IsTrue(string.IsNullOrEmpty(har.CustomerNumber));
@@ -131,7 +138,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public async Task TestAsyncAwaitRule()
     {
-      IDataPortal<AsyncRuleRoot> dataPortal = _testDIContext.CreateDataPortal<AsyncRuleRoot>();
+      IDataPortal<AsyncRuleRoot> dataPortal = _testHost.GetDataPortal<AsyncRuleRoot>();
 
       var har = dataPortal.Create();
       var tcs = new TaskCompletionSource<bool>();
@@ -148,7 +155,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public async Task MyTestMethod()
     {
-      IDataPortal<AsyncRuleRoot> dataPortal = _testDIContext.CreateDataPortal<AsyncRuleRoot>();
+      IDataPortal<AsyncRuleRoot> dataPortal = _testHost.GetDataPortal<AsyncRuleRoot>();
 
       var har = dataPortal.Create("SomeRandomText");
       await har.WaitForIdle();
@@ -164,12 +171,12 @@ namespace Csla.Test.ValidationRules
     [TestMethod($"When an async rule throws an exception the framework must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.CanHandle)}.")]
     public async Task AsyncRuleException_Testcase01()
     {
-      var diContext = CreateDIContextForAsyncRuleExceptions();
+      var testHost = CreateHostForAsyncRuleExceptions();
 
-      var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+      var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)testHost.Services.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
       unhandledExceptionHandler.CanHandleResult = true; // Otherwise the test host process will be crashed
 
-      var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
+      var cp = testHost.GetDataPortal<DelayedAsyncRuleExceptionRoot>();
       var bo = await cp.CreateAsync();
 
       var tcs = new TaskCompletionSource();
@@ -183,12 +190,12 @@ namespace Csla.Test.ValidationRules
     [TestMethod($"When an async rules exception can be handled by {nameof(IUnhandledAsyncRuleExceptionHandler)} it must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.Handle)}.")]
     public async Task AsyncRuleException_Testcase02()
     {
-      var diContext = CreateDIContextForAsyncRuleExceptions();
+      var testHost = CreateHostForAsyncRuleExceptions();
 
-      var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+      var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)testHost.Services.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
       unhandledExceptionHandler.CanHandleResult = true; // Otherwise the test host process will be crashed
 
-      var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
+      var cp = testHost.GetDataPortal<DelayedAsyncRuleExceptionRoot>();
       var bo = await cp.CreateAsync();
 
       var tcs = new TaskCompletionSource();
@@ -203,15 +210,15 @@ namespace Csla.Test.ValidationRules
     [TestMethod($"When the default {nameof(IUnhandledAsyncRuleExceptionHandler)} is used the exception must be handled by a global unhandled exception handler (for this test it's the {nameof(AppDomain)}.{nameof(AppDomain.CurrentDomain)}.{nameof(AppDomain.CurrentDomain.UnhandledException)} event).")]
     public async Task AsyncRuleException_Testcase03()
     {
-      var diContext = CreateDIContextForAsyncRuleExceptions();
+      var testHost = CreateHostForAsyncRuleExceptions();
 
       bool unobservedTaskExceptionFound = false;
       AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       try
       {
-        var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)diContext.ServiceProvider.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
+        var unhandledExceptionHandler = (TestUnhandledAsyncRuleExceptionHandler)testHost.Services.GetRequiredService<IUnhandledAsyncRuleExceptionHandler>();
         unhandledExceptionHandler.CanHandleResult = false;
-        var cp = diContext.CreateDataPortal<DelayedAsyncRuleExceptionRoot>();
+        var cp = testHost.GetDataPortal<DelayedAsyncRuleExceptionRoot>();
         var bo = await cp.CreateAsync();
 
         await ForceThreadSwitch(bo, TimeSpan.FromMilliseconds(25));
@@ -229,7 +236,7 @@ namespace Csla.Test.ValidationRules
     }
 
 
-    private static TestDIContext CreateDIContextForAsyncRuleExceptions() => TestDIContextFactory.CreateDefaultContext(services => services.AddSingleton<IUnhandledAsyncRuleExceptionHandler, TestUnhandledAsyncRuleExceptionHandler>());
+    private static CslaTestHost CreateHostForAsyncRuleExceptions() => CslaTestHost.Create(t => t.ConfigureServices(services => services.AddSingleton<IUnhandledAsyncRuleExceptionHandler, TestUnhandledAsyncRuleExceptionHandler>()));
     private static async Task ForceThreadSwitch(DelayedAsyncRuleExceptionRoot root, TimeSpan exceptionDelay)
     {
       await Task.CompletedTask.ConfigureAwait(ConfigureAwaitOptions.ForceYielding);

@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ChildrenByInterface
@@ -14,18 +14,24 @@ namespace Csla.Test.ChildrenByInterface
   [TestClass]
   public class ChildInterfaceTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public void AddItems()
     {
-      ItemList list = _testDIContext.CreateDataPortal<ItemList>().Create();
+      ItemList list = _testHost.GetDataPortal<ItemList>().Create();
       list.AddRange([new Item1(), new Item2()]);
 
       Assert.IsTrue(list[0] is Item1, "First element should be Item1");

@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,12 +16,18 @@ namespace Csla.Test.BusinessListBase
   [TestClass]
   public class AddNewAsyncTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -60,14 +66,14 @@ namespace Csla.Test.BusinessListBase
 
     private Root CreateRoot()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       return dataPortal.Create();
     }
 
     private RootList CreateRootList()
     {
-      IDataPortal<RootList> dataPortal = _testDIContext.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _testHost.GetDataPortal<RootList>();
 
       return dataPortal.Create();
     }

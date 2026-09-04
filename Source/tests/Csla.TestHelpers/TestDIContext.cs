@@ -12,6 +12,7 @@ namespace Csla.TestHelpers
   /// <summary>
   /// Type to carry context information for DI in unit tests
   /// </summary>
+  [Obsolete("Use Csla.Testing.CslaTestHost instead. This shim is no longer used by the test suite and will be removed in a future release.")]
   public class TestDIContext
   {
 

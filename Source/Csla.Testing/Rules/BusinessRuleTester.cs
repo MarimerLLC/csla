@@ -203,7 +203,7 @@ namespace Csla.Testing.Rules
     /// <exception cref="ArgumentOutOfRangeException">The rule implements neither <see cref="IBusinessRule"/> nor <see cref="IBusinessRuleAsync"/>.</exception>
     public async Task<BusinessRuleTestResult> ExecuteAsync()
     {
-      CslaTestScope? scope = null;
+      CslaTestHost? scope = null;
       try
       {
         var context = CreateContext(ref scope);
@@ -239,7 +239,7 @@ namespace Csla.Testing.Rules
       if (_rule.IsAsync || _rule is IBusinessRuleAsync)
         throw new InvalidOperationException($"Rule '{_rule.RuleName}' is asynchronous; use {nameof(ExecuteAsync)} instead.");
 
-      CslaTestScope? scope = null;
+      CslaTestHost? scope = null;
       try
       {
         var context = CreateContext(ref scope);
@@ -263,7 +263,7 @@ namespace Csla.Testing.Rules
       }
     }
 
-    private IRuleContext CreateContext(ref CslaTestScope? scope)
+    private IRuleContext CreateContext(ref CslaTestHost? scope)
     {
       ApplicationContext applicationContext;
       if (_applicationContext is not null)
@@ -272,7 +272,7 @@ namespace Csla.Testing.Rules
       }
       else
       {
-        scope = CslaTestServices.CreateScope(_configureCsla, _configureServices);
+        scope = CreateHost();
         applicationContext = scope.ApplicationContext;
       }
 
@@ -285,6 +285,17 @@ namespace Csla.Testing.Rules
         ruleTarget = _target;
 
       return new RuleContext(applicationContext, _ => { }, _rule, ruleTarget, GetInputPropertyValues(), _mode);
+    }
+
+    private CslaTestHost CreateHost()
+    {
+      return CslaTestHost.Create(options =>
+      {
+        if (_configureCsla is not null)
+          options.ConfigureCsla(_configureCsla);
+        if (_configureServices is not null)
+          options.ConfigureServices(_configureServices);
+      });
     }
 
     private Dictionary<IPropertyInfo, object?> GetInputPropertyValues()

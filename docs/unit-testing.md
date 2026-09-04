@@ -3,6 +3,11 @@
 The [Csla.Testing](Csla-Testing.md) NuGet package provides supporting code for people
 writing unit tests against their CSLA business code (business classes, rules, and so on).
 
+The quickest way to stand up CSLA in a test is the
+[test host](Csla-Testing.md#test-host) in that package: `CslaTestHost` builds and owns a
+configured container for a single test, and `AddCslaTesting` adds the supporting services
+to a service collection you build yourself.
+
 ## Unit Testing Business Domain Classes
 
 1. Unit testing with CSLA was difficult until CSLA 4

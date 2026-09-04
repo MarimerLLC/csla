@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Csla\Csla.csproj" />
-    <ProjectReference Include="..\..\Csla.Testing\Csla.Testing.csproj" />
     <ProjectReference Include="..\..\Csla.AspNetCore\Csla.AspNetCore.csproj" />
   </ItemGroup>
 

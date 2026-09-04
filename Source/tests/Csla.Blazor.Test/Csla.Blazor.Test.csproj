@@ -28,6 +28,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Csla.AspNetCore\Csla.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Csla.Blazor\Csla.Blazor.csproj" />
+    <ProjectReference Include="..\..\Csla.Testing\Csla.Testing.csproj" />
     <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
     <ProjectReference Include="..\..\Csla\Csla.csproj" />
   </ItemGroup>

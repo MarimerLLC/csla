@@ -21,6 +21,108 @@ framework, so it works with MSTest, NUnit, xUnit, or any other runner.
 
 ## What is in the package
 
+### Test host
+
+Every test against CSLA business code needs an `ApplicationContext`, and usually a data
+portal. The package offers two ways to get one, so that a test which owns its own service
+collection and a test that just wants a data portal are both served.
+
+#### `CslaTestHost`
+
+`CslaTestHost` is a self-contained, configured CSLA container for a single test. It owns
+the service provider it builds and is disposable:
+
+```csharp
+using Csla.Testing;
+
+using var host = CslaTestHost.Create(t => t
+  .ConfigureCsla(o => o.DataPortal(/* ... */))
+  .AsUser("alice", "Admin")
+  .ConfigureServices(s => s.AddSingleton<IOrderRepository, FakeOrderRepository>()));
+
+var portal = host.GetDataPortal<Order>();
+var order = await portal.FetchAsync(42);
+```
+
+The builder methods are:
+
+| Method | Purpose |
+| --- | --- |
+| `ConfigureCsla(options)` | Configures CSLA, exactly as the argument to `AddCsla` would |
+| `ConfigureServices(services)` | Registers services for the test, such as fakes for your own services |
+| `AsUser(name, roles)` | Runs the test as an authenticated user |
+| `AsUnauthenticated()` | Runs the test as an anonymous user |
+| `AsPrincipal(principal)` | Runs the test as a specific principal |
+
+`ConfigureCsla` and `ConfigureServices` compose across repeated calls rather than replacing
+the previous callback, so a shared base fixture can add to what a test configures.
+
+The host exposes `Services`, `ApplicationContext`, `GetDataPortal<T>()`,
+`GetChildDataPortal<T>()`, and `CreateScope()` for a test that needs to exercise behavior
+that varies by DI scope. It implements both `IDisposable` and `IAsyncDisposable`; disposing
+it disposes the service provider it owns, so loggers and scoped services are cleaned up.
+
+There is no dependency on any test framework, so the host is equally usable from a
+constructor, a `[ClassInitialize]` or `[TestInitialize]` method, or an `IAsyncLifetime`.
+
+#### `AddCslaTesting`
+
+When a test builds its own `IServiceCollection` — commonly because it needs to inject fakes
+for the application's own services — `AddCslaTesting` adds just the supporting services CSLA
+needs in a test:
+
+```csharp
+using Csla.Configuration;
+
+var services = new ServiceCollection();
+services.AddCsla(o => o.DataPortal(/* ... */));
+services.AddCslaTesting(t => t.AsUser("alice", "Admin"));
+services.AddSingleton<IOrderRepository, FakeOrderRepository>();
+```
+
+It is purely additive: **it does not call `AddCsla`**. Adding and configuring CSLA stays
+your job, so you keep full control over how CSLA is set up. `CslaTestHost` is implemented on
+top of this method and calls both.
+
+Every registration uses `TryAdd` semantics, so a registration you have already made wins.
+`CslaTestHost` applies your `ConfigureServices` callback after it adds CSLA's own services,
+so your registrations win there too, whatever order you write them in: a service resolves to
+the last registration for its type, and a `TryAdd` is skipped outright when you have already
+registered that service yourself.
+
+`AddCslaTesting` registers:
+
+- `IHostEnvironment`, as `CslaTestHostEnvironment` — several CSLA configuration paths expect
+  a hosting environment to be available. Its content root is `Path.GetTempPath()`.
+- Logging, so types that take an `ILogger` can be resolved.
+- The configured principal, as a `CslaTestPrincipal`.
+- `IContextManager`, as `CslaTestContextManager`.
+
+Note that it does **not** register a dashboard. The data portal dashboard is left at the
+CSLA default of `NullDashboard`; use `ConfigureCsla` with `RegisterDashboard<Dashboard>()`
+if a test needs the real one.
+
+#### The principal
+
+The default is an authenticated user named `TestUser` holding no roles. Authenticated, so
+that a first use of the helpers is not met with a confusing authorization failure; without
+roles, so that a test which depends on a role has to say so.
+
+The principal is configured *declaratively*: it is registered as a service rather than
+assigned to an `ApplicationContext` after the container is built, and
+`CslaTestContextManager` seeds itself from it the first time the current user is requested.
+This is what allows `AddCslaTesting` to support principals at all — an `IServiceCollection`
+extension cannot reach into a service provider that does not exist yet.
+
+`CslaTestContextManager` derives from `ApplicationContextManagerAsyncLocal`, so its state is
+held per async flow rather than in static fields. Tests using these helpers do not have to
+be run serially.
+
+Seeding happens once for the lifetime of the manager, not once per async flow. That
+matters because CSLA deliberately leaves the user unset in some places — the server side
+of a data portal call that does not flow the principal, for one — and a principal that
+reappeared in those places would mask exactly the state such a test needs to observe.
+
 ### Rule testers
 
 The `Csla.Testing.Rules` namespace contains helpers that execute a single rule in
@@ -109,13 +211,6 @@ above, the builder offers `OnTarget(target)`, `ForType(type)` / `ForType<T>()` a
 when `ForType` is not used, and `ExecuteAsync` throws `InvalidOperationException` if
 neither was supplied. `AsUser` matters more here than for business rules, because
 authorization rules read the principal from `ApplicationContext`.
-
-## Planned functionality
-
-| Functionality | Tracking issue |
-| --- | --- |
-| Test host and `AddCslaTesting` API for standing up CSLA in a unit test | [#4883](https://github.com/MarimerLLC/csla/issues/4883) |
-| Resetting the per-type business rule cache between tests | [#4882](https://github.com/MarimerLLC/csla/issues/4882) |
 
 See the [unit testing](unit-testing.md) documentation for current guidance on testing
 CSLA business code.

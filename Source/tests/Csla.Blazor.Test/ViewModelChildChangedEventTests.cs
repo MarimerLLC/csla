@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Blazor.Test.Fakes;
-using Csla.TestHelpers;
+using Csla.Testing;
 using System.Threading.Tasks;
 using Csla.Core;
 
@@ -9,12 +9,18 @@ namespace Csla.Blazor.Test
   [TestClass]
   public class ViewModelChildChangedEventTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestCleanup]
@@ -27,13 +33,13 @@ namespace Csla.Blazor.Test
     public void ViewModel_WithBusinessBase_ShouldHookChildChangedEvent()
     {
       // Arrange
-      var appContext = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var appContext = _testHost.ApplicationContext;
       var vm = new ViewModel<FakePerson>(appContext);
       bool childChangedCalled = false;
       vm.ModelChildChanged += (sender, e) => childChangedCalled = true;
 
       // Act - Create and set a FakePerson model (BusinessBase)
-      IDataPortal<FakePerson> dataPortal = _testDIContext.CreateDataPortal<FakePerson>();
+      IDataPortal<FakePerson> dataPortal = _testHost.GetDataPortal<FakePerson>();
       var person = dataPortal.Create();
       vm.Model = person;
 
@@ -49,13 +55,13 @@ namespace Csla.Blazor.Test
     public void ViewModel_WithBusinessListBase_ShouldHookChildChangedEvent()
     {
       // Arrange
-      var appContext = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var appContext = _testHost.ApplicationContext;
       var vm = new ViewModel<FakePersonEmailAddresses>(appContext);
       bool childChangedCalled = false;
       vm.ModelChildChanged += (sender, e) => childChangedCalled = true;
 
       // Act - Create and set a FakePersonEmailAddresses model (BusinessListBase)
-      IChildDataPortal<FakePersonEmailAddresses> dataPortal = _testDIContext.CreateChildDataPortal<FakePersonEmailAddresses>();
+      IChildDataPortal<FakePersonEmailAddresses> dataPortal = _testHost.GetChildDataPortal<FakePersonEmailAddresses>();
       var emailAddresses = dataPortal.CreateChild();
       vm.Model = emailAddresses;
 
@@ -71,12 +77,12 @@ namespace Csla.Blazor.Test
     public void ViewModel_WhenModelChanged_ShouldUnhookOldAndHookNewChildChangedEvent()
     {
       // Arrange
-      var appContext = TestDIContextExtensions.CreateTestApplicationContext(_testDIContext);
+      var appContext = _testHost.ApplicationContext;
       var vm = new ViewModel<FakePersonEmailAddresses>(appContext);
       int childChangedCount = 0;
       vm.ModelChildChanged += (sender, e) => childChangedCount++;
 
-      IChildDataPortal<FakePersonEmailAddresses> dataPortal = _testDIContext.CreateChildDataPortal<FakePersonEmailAddresses>();
+      IChildDataPortal<FakePersonEmailAddresses> dataPortal = _testHost.GetChildDataPortal<FakePersonEmailAddresses>();
       var emailAddresses1 = dataPortal.CreateChild();
       var emailAddresses2 = dataPortal.CreateChild();
 

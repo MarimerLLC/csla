@@ -1,4 +1,4 @@
-﻿using Csla.TestHelpers;
+﻿using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
@@ -44,19 +44,25 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class CoerceTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public void CalcSumRole_SavesToStringProperty()
     {
       // Create an instance of a DataPortal that can be used for instantiating objects
-      var dataPortal = _testDIContext.CreateDataPortal<CalculationObject>();
+      var dataPortal = _testHost.GetDataPortal<CalculationObject>();
       var obj = dataPortal.Create();
 
       obj.PropertyA = 10;

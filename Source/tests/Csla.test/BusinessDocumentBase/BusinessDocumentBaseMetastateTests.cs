@@ -12,7 +12,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Configuration;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,21 +21,23 @@ namespace Csla.Test.BusinessDocumentBase
   [TestClass]
   public class BusinessDocumentBaseMetastateTests
   {
-    private static TestDIContext _testDIContext = null!;
+    private static CslaTestHost _testHost = null!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      var services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml));
-      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
-      var serviceProvider = services.BuildServiceProvider();
-      _testDIContext = new TestDIContext(serviceProvider);
+      _testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Xaml)));
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     private MetastateDocument NewDocument()
     {
-      var portal = _testDIContext.CreateDataPortal<MetastateDocument>();
+      var portal = _testHost.GetDataPortal<MetastateDocument>();
       return portal.Create();
     }
 
@@ -155,7 +157,7 @@ namespace Csla.Test.BusinessDocumentBase
     [TestCategory("SkipOnCIServer")]
     public void RootChangedMetastateEventsChild()
     {
-      var childPortal = _testDIContext.CreateChildDataPortal<MetastateLineItem>();
+      var childPortal = _testHost.GetChildDataPortal<MetastateLineItem>();
 
       var doc = NewDocument();
       doc.Name = "abc";

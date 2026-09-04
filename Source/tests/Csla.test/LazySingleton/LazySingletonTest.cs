@@ -1,4 +1,4 @@
-﻿using Csla.TestHelpers;
+﻿using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Csla.Test.LazySingleton
 {
@@ -10,12 +10,18 @@ namespace Csla.Test.LazySingleton
   public class LazySingletonTest
   {
 
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]

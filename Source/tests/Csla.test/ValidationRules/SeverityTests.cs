@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,12 +15,18 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class SeverityTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -31,7 +38,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void AllThree()
     {
-      IDataPortal<SeverityRoot> dataPortal = _testDIContext.CreateDataPortal<SeverityRoot>();
+      IDataPortal<SeverityRoot> dataPortal = _testHost.GetDataPortal<SeverityRoot>();
 
       SeverityRoot root = dataPortal.Create();
       root.Validate();
@@ -54,7 +61,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NoError()
     {
-      IDataPortal<NoErrorRoot> dataPortal = _testDIContext.CreateDataPortal<NoErrorRoot>();
+      IDataPortal<NoErrorRoot> dataPortal = _testHost.GetDataPortal<NoErrorRoot>();
 
       NoErrorRoot root = dataPortal.Create();
       root.Validate();

@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 using Csla.Serialization;
@@ -27,18 +27,24 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class SerializationTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public void CorrectDefaultSerializer()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var serializer = applicationContext.GetRequiredService<ISerializationFormatter>();
       Assert.IsTrue(serializer.GetType() == typeof(MobileFormatter));
     }

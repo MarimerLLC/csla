@@ -8,6 +8,7 @@
 
 using Csla.Configuration;
 using Csla.Core;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -19,12 +20,18 @@ namespace Csla.Test.AppContext
   [TestClass]
   public class AppContextTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -62,7 +69,7 @@ namespace Csla.Test.AppContext
     [TestMethod]
     public void SimpleTest()
     {
-      IDataPortal<SimpleRoot> dataPortal = _testDIContext.CreateDataPortal<SimpleRoot>();
+      IDataPortal<SimpleRoot> dataPortal = _testHost.GetDataPortal<SimpleRoot>();
 
       // TODO: How do we do this test in Csla 6?
       //ApplicationContext.ClientContext["v1"] = "client";
@@ -84,8 +91,8 @@ namespace Csla.Test.AppContext
     [TestCategory("SkipOnCIServer")]
     public void ClientContext()
     {
-      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      IDataPortal<Basic.Root> dataPortal = _testHost.GetDataPortal<Basic.Root>();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
 
       var testContext = "client context data";
       applicationContext.ClientContext.Add("clientcontext", testContext);
@@ -191,7 +198,7 @@ namespace Csla.Test.AppContext
     [TestMethod]
     public void FailCreateContext()
     {
-      IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
+      IDataPortal<ExceptionRoot> dataPortal = _testHost.GetDataPortal<ExceptionRoot>();
       
       ExceptionRoot root;
       try
@@ -216,7 +223,7 @@ namespace Csla.Test.AppContext
     [TestMethod]
     public void FailFetchContext()
     {
-      IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
+      IDataPortal<ExceptionRoot> dataPortal = _testHost.GetDataPortal<ExceptionRoot>();
       
       ExceptionRoot root = null;
       try
@@ -243,11 +250,11 @@ namespace Csla.Test.AppContext
     [TestMethod]
     public void FailUpdateContext()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(opts => opts.
+      using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(opts => opts.
         DataPortal(cfg => cfg.
           AddServerSideDataPortal(dpc => dpc.
-            DataPortalReturnObjectOnException =true)));
-      IDataPortal<ExceptionRoot> dataPortal = testDIContext.CreateDataPortal<ExceptionRoot>();
+            DataPortalReturnObjectOnException =true))));
+      IDataPortal<ExceptionRoot> dataPortal = testHost.GetDataPortal<ExceptionRoot>();
       
       try
       {
@@ -274,7 +281,7 @@ namespace Csla.Test.AppContext
     [TestMethod]
     public void FailDeleteContext()
     {
-      IDataPortal<ExceptionRoot> dataPortal = _testDIContext.CreateDataPortal<ExceptionRoot>();
+      IDataPortal<ExceptionRoot> dataPortal = _testHost.GetDataPortal<ExceptionRoot>();
 
       ExceptionRoot root = null;
       try
@@ -296,7 +303,7 @@ namespace Csla.Test.AppContext
 
     private Basic.Root GetRoot(string data)
     {
-      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testHost.GetDataPortal<Basic.Root>();
 
       return dataPortal.Fetch(new Basic.Root.Criteria(data));
     }

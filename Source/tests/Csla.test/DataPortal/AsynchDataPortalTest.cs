@@ -12,6 +12,7 @@ using System.Globalization;
 using Csla.Testing.Business.DataPortal;
 using Single = Csla.Test.DataPortalTest.Single;
 using Csla.Test.DataPortalTest;
+using Csla.Testing;
 using Csla.TestHelpers;
 using cslalighttest.CslaDataProvider;
 
@@ -22,12 +23,18 @@ namespace Csla.Test.DataPortal
   {
     private CultureInfo CurrentCulture;
     private CultureInfo CurrentUICulture;
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -50,7 +57,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task BeginCreate_overload_without_parameters()
     {
-      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+      IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       var created = await dataPortal.CreateAsync();
       Assert.AreEqual(created.Id, 0);
@@ -59,7 +66,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task BeginCreate_overload_with_Criteria_passed_and_Id_set()
     {
-      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+      IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       var created = await dataPortal.CreateAsync(100);
       Assert.AreEqual(created.Id, 100);
@@ -69,7 +76,7 @@ namespace Csla.Test.DataPortal
     [ExpectedException(typeof(DataPortalException))]
     public async Task BeginCreate_with_exception()
     {
-      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+      IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       await dataPortal.CreateAsync(9999);
     }
@@ -77,7 +84,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task CreateAsync_NoCriteria()
     {
-      IDataPortal<AsyncSingle> dataPortal = _testDIContext.CreateDataPortal<AsyncSingle>();
+      IDataPortal<AsyncSingle> dataPortal = _testHost.GetDataPortal<AsyncSingle>();
 
       var result = await dataPortal.CreateAsync();
       Assert.IsNotNull(result);
@@ -87,7 +94,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task CreateAsync_WithCriteria()
     {
-      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testHost.GetDataPortal<Single2>();
 
       var result = await dataPortal.CreateAsync(123);
       Assert.IsNotNull(result);
@@ -98,7 +105,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task CreateAsync_WithException()
     {
-      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testHost.GetDataPortal<Single2>();
         
       try
       {
@@ -115,7 +122,7 @@ namespace Csla.Test.DataPortal
     [Timeout(1000)]
     public async Task CreateAsync_Parallel()
     {
-      var dataPortal = _testDIContext.CreateDataPortal<SingleWithFactory>();
+      var dataPortal = _testHost.GetDataPortal<SingleWithFactory>();
 
       var testcount = 500;
       var list = new List<int>(testcount);
@@ -135,7 +142,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task FetchAsync_NoCriteria()
     {
-      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testHost.GetDataPortal<Single2>();
 
       var result = await dataPortal.FetchAsync();
       Assert.IsNotNull(result);
@@ -145,7 +152,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task FetchAsync_WithCriteria()
     {
-      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testHost.GetDataPortal<Single2>();
       
       var result = await dataPortal.FetchAsync(123);
       Assert.IsNotNull(result);
@@ -156,7 +163,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task FetchAsync_WithException()
     {
-      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testHost.GetDataPortal<Single2>();
 
       try
       {
@@ -173,7 +180,7 @@ namespace Csla.Test.DataPortal
     [Timeout(1000)]
     public async Task FetchAsync_Parallel()
     {
-      IDataPortal<SingleWithFactory> dataPortal = _testDIContext.CreateDataPortal<SingleWithFactory>();
+      IDataPortal<SingleWithFactory> dataPortal = _testHost.GetDataPortal<SingleWithFactory>();
 
       var list = new List<int>(500);
       for (var i = 0; i < 500; i++)
@@ -192,7 +199,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task SaveAsync()
     {
-      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testHost.GetDataPortal<Single2>();
 
       var result = await dataPortal.CreateAsync(0);
       Assert.IsNotNull(result);
@@ -207,7 +214,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task SaveAsyncWithException()
     {
-      IDataPortal<Single2> dataPortal = _testDIContext.CreateDataPortal<Single2>();
+      IDataPortal<Single2> dataPortal = _testHost.GetDataPortal<Single2>();
 
       var result = await dataPortal.CreateAsync(555);
       Assert.IsNotNull(result);
@@ -233,7 +240,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task ExecuteCommand_called_without_UserState_results_in_UserState_defaulted_to_Null_server()
     {
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
 
       var command = dataPortal.Create();
       var result = await dataPortal.ExecuteAsync(command);
@@ -243,7 +250,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task ExecuteAsync()
     {
-      IDataPortal<SingleCommand> dataPortal = _testDIContext.CreateDataPortal<SingleCommand>();
+      IDataPortal<SingleCommand> dataPortal = _testHost.GetDataPortal<SingleCommand>();
 
       SingleCommand cmd = dataPortal.Create(123);
       var result = await dataPortal.ExecuteAsync(cmd);
@@ -254,7 +261,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task ExecuteAsyncWithException()
     {
-      IDataPortal<SingleCommand> dataPortal = _testDIContext.CreateDataPortal<SingleCommand>();
+      IDataPortal<SingleCommand> dataPortal = _testHost.GetDataPortal<SingleCommand>();
 
       try
       {
@@ -276,7 +283,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task BeginCreate_Calling_BO_Without_DP_CREATE_Returns_no_Error_info()
     {
-      IDataPortal<CustomerWO_DP_XYZ> dataPortal = _testDIContext.CreateDataPortal<CustomerWO_DP_XYZ>();
+      IDataPortal<CustomerWO_DP_XYZ> dataPortal = _testHost.GetDataPortal<CustomerWO_DP_XYZ>();
 
       await dataPortal.CreateAsync();
     }
@@ -284,7 +291,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task BeginFetch_sends_cultureinfo_to_dataportal()
     {
-      IDataPortal<AsyncPortalWithCulture> dataPortal = _testDIContext.CreateDataPortal<AsyncPortalWithCulture>();
+      IDataPortal<AsyncPortalWithCulture> dataPortal = _testHost.GetDataPortal<AsyncPortalWithCulture>();
       
       string expectedCulture = Thread.CurrentThread.CurrentCulture.Name;
       string expectedUICulture = Thread.CurrentThread.CurrentUICulture.Name;

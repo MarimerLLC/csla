@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,12 +15,18 @@ namespace Csla.Test.Basic
   [TestClass]
   public class BasicTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -31,7 +38,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestNotUndoableField()
     {
-      IDataPortal<DataBinding.ParentEntity> dataPortal = _testDIContext.CreateDataPortal<DataBinding.ParentEntity>();
+      IDataPortal<DataBinding.ParentEntity> dataPortal = _testHost.GetDataPortal<DataBinding.ParentEntity>();
 
       DataBinding.ParentEntity p = DataBinding.ParentEntity.NewParentEntity(dataPortal);
 
@@ -58,7 +65,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestNameValueList()
     {
-      IDataPortal<NameValueListObj> dataPortal = _testDIContext.CreateDataPortal<NameValueListObj>();
+      IDataPortal<NameValueListObj> dataPortal = _testHost.GetDataPortal<NameValueListObj>();
 
       NameValueListObj nvList = dataPortal.Fetch();
       Assert.AreEqual("Fetched", TestResults.GetResult("NameValueListObj"));
@@ -77,7 +84,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void TestCommandBase()
     {
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
 
       CommandObject obj = dataPortal.Create();
       obj = dataPortal.Execute(obj);
@@ -129,7 +136,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddChild()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
@@ -140,7 +147,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddRemoveChild()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
@@ -151,7 +158,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddRemoveAddChild()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
@@ -168,7 +175,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddGrandChild()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
@@ -181,7 +188,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void AddRemoveGrandChild()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
@@ -219,7 +226,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void ClearChildList()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "A");
@@ -233,7 +240,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void NestedAddAcceptchild()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.BeginEdit();
@@ -251,7 +258,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void NestedAddDeleteAcceptChild()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.BeginEdit();
@@ -298,7 +305,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void ChildEquality()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "abc");
@@ -328,7 +335,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void DeletedListTest()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
@@ -352,7 +359,7 @@ namespace Csla.Test.Basic
     [TestMethod]
     public void DeletedListTestWithCancel()
     {
-      IDataPortal<Child> childDataPortal = _testDIContext.CreateDataPortal<Child>();
+      IDataPortal<Child> childDataPortal = _testHost.GetDataPortal<Child>();
 
       Root root = NewRoot();
       root.Children.Add(childDataPortal, "1");
@@ -384,7 +391,7 @@ namespace Csla.Test.Basic
     public void SuppressListChangedEventsDoNotRaiseCollectionChanged()
     {
       bool changed = false;
-      var obj = _testDIContext.CreateDataPortal<RootList>().Create();
+      var obj = _testHost.GetDataPortal<RootList>().Create();
       obj.ListChanged += (_, _) =>
       {
         changed = true;
@@ -405,13 +412,13 @@ namespace Csla.Test.Basic
 
     private Root NewRoot()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       return dataPortal.Create(new Root.Criteria());
     }
 
     private GenRoot NewGenRoot()
     {
-      IDataPortal<GenRoot> dataPortal = _testDIContext.CreateDataPortal<GenRoot>();
+      IDataPortal<GenRoot> dataPortal = _testHost.GetDataPortal<GenRoot>();
       return dataPortal.Create(new GenRootBase.Criteria());
     }
   }

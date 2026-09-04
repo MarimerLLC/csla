@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.ValidationRules
@@ -17,9 +17,9 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void CheckDescription()
     {
-      var diContext = TestDIContextFactory.CreateDefaultContext();
+      using var testHost = CslaTestHost.Create();
 
-      var root = diContext.CreateDataPortal<RuleTestClass>().Create();
+      var root = testHost.GetDataPortal<RuleTestClass>().Create();
       foreach (var item in root.Rules)
       {
         var desc = new Rules.RuleUri(item);

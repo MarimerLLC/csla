@@ -8,6 +8,7 @@
 
 using Csla.Serialization.Mobile;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.Testing;
 using Csla.TestHelpers;
 
 namespace Csla.Test.SmartDate
@@ -15,14 +16,20 @@ namespace Csla.Test.SmartDate
   [TestClass]
   public class SmartDateTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
     System.Globalization.CultureInfo CurrentCulture { get; set; }
     System.Globalization.CultureInfo CurrentUICulture { get; set; }
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -401,7 +408,7 @@ namespace Csla.Test.SmartDate
       Csla.SmartDate clone;
       MemoryStream memoryStream;
       MobileFormatter mobileFormatter;
-      ApplicationContext applicationContext = _testDIContext.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _testHost.ApplicationContext;
 
       d2 = new Csla.SmartDate();
       memoryStream = new MemoryStream();
@@ -445,7 +452,7 @@ namespace Csla.Test.SmartDate
     [TestMethod]
     public void DefaultFormat()
     {
-      IDataPortal<SDtest> dataPortal = _testDIContext.CreateDataPortal<SDtest>();
+      IDataPortal<SDtest> dataPortal = _testHost.GetDataPortal<SDtest>();
 
       TestResults.Reinitialise();
 

@@ -1,5 +1,5 @@
 ﻿using Csla.Core;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -7,12 +7,18 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class ParameterOverloadforSync
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
 
@@ -27,7 +33,7 @@ namespace Csla.Test.DataPortal
 
     private bool FetchValid()
     {
-      IDataPortal<UserValidation> portal = _testDIContext.CreateDataPortal<UserValidation>();
+      IDataPortal<UserValidation> portal = _testHost.GetDataPortal<UserValidation>();
 
       var userValidation = portal.Execute("admin", "admin");
       if (userValidation.IsValid)
@@ -39,7 +45,7 @@ namespace Csla.Test.DataPortal
 
     private bool FetchInValid()
     {
-      IDataPortal<UserValidation> portal = _testDIContext.CreateDataPortal<UserValidation>();
+      IDataPortal<UserValidation> portal = _testHost.GetDataPortal<UserValidation>();
 
       var userValidation = portal.Execute("admin", "123");
       if (userValidation.IsValid)

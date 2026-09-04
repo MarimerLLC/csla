@@ -14,6 +14,12 @@ namespace GraphMergerTest.BusinessTests
       TestBaseClassInitialize();
     }
 
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      TestBaseClassCleanup();
+    }
+
     [TestMethod]
     public async Task UpdateWithMergeWidgetTest()
     {

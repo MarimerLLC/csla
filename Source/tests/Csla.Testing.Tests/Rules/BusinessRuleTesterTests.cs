@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Security.Claims;
+using Csla.Configuration;
 using Csla.Rules;
 using Csla.Testing.Rules;
 using FluentAssertions;
@@ -302,6 +303,7 @@ namespace Csla.Testing.Tests.Rules
     public async Task UsingApplicationContextSkipsTheBuiltInBootstrap()
     {
       var services = new ServiceCollection();
+      services.AddCsla();
       services.AddCslaTesting();
       using var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetRequiredService<ApplicationContext>();

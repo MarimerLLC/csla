@@ -1,5 +1,6 @@
 ﻿using Csla.Rules;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Csla.Testing;
 using Csla.TestHelpers;
 
 namespace Csla.Test.ValidationRules
@@ -13,12 +14,18 @@ namespace Csla.Test.ValidationRules
   public class RuleURITests
   {
 
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -64,7 +71,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void LambdaRuleExtensionsAddUniueURIs()
     {
-      IDataPortal<HasLambdaRules> dataPortal = _testDIContext.CreateDataPortal<HasLambdaRules>();
+      IDataPortal<HasLambdaRules> dataPortal = _testHost.GetDataPortal<HasLambdaRules>();
 
       var root = HasLambdaRules.New(dataPortal);
       var ruleUris = root.GetRuleDescriptions();

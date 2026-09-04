@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.ObjectModel;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,12 +20,18 @@ namespace Csla.Test.Linq
   [TestClass]
   public class LinqObservableCollectionTest
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -37,7 +44,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_WhereOnly()
     {
-      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+      IDataPortal<TestList> dataPortal = _testHost.GetDataPortal<TestList>();
 
       var source = dataPortal.Create();
       var synced = source.ToSyncList(c => c.Id > 100);
@@ -48,7 +55,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc()
     {
-      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+      IDataPortal<TestList> dataPortal = _testHost.GetDataPortal<TestList>();
 
       var source = dataPortal.Create();
       var synced = source.ToSyncList(from r in source
@@ -60,7 +67,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_Ordered()
     {
-      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+      IDataPortal<TestList> dataPortal = _testHost.GetDataPortal<TestList>();
 
       var source = dataPortal.Create();
       var synced = source.ToSyncList(from r in source
@@ -73,7 +80,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_ResultToSync()
     {
-      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+      IDataPortal<TestList> dataPortal = _testHost.GetDataPortal<TestList>();
 
       var source = dataPortal.Create();
       var synced = (from r in source
@@ -85,8 +92,8 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_Add()
     {
-      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
-      IChildDataPortal<TestItem> childDataPortal = _testDIContext.CreateChildDataPortal<TestItem>();
+      IDataPortal<TestList> dataPortal = _testHost.GetDataPortal<TestList>();
+      IChildDataPortal<TestItem> childDataPortal = _testHost.GetChildDataPortal<TestItem>();
 
       var source = dataPortal.Create();
       var query = from r in source
@@ -106,7 +113,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_Remove()
     {
-      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+      IDataPortal<TestList> dataPortal = _testHost.GetDataPortal<TestList>();
 
       var source = dataPortal.Create();
       var query = from r in source
@@ -126,7 +133,7 @@ namespace Csla.Test.Linq
     [TestMethod]
     public void Blb2Loc_RemoveOriginal()
     {
-      IDataPortal<TestList> dataPortal = _testDIContext.CreateDataPortal<TestList>();
+      IDataPortal<TestList> dataPortal = _testHost.GetDataPortal<TestList>();
 
       var source = dataPortal.Create();
       var query = from r in source

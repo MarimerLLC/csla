@@ -108,18 +108,30 @@ namespace Csla.Core
     #region IMobileObjectMetastate Members
 
     /// <summary>
-    /// Override this method to write field values directly
-    /// to a binary stream for metastate serialization.
+    /// Override this method to write the type's non-public state directly to a
+    /// binary stream for metastate serialization.
     /// </summary>
+    /// <remarks>
+    /// Write the bookkeeping the type maintains about itself, not its property
+    /// values; a serializer handles those separately. Always call the base
+    /// implementation first, so that the state written by each type in the
+    /// hierarchy is read back in the same order. The base implementation of this
+    /// method writes nothing, which is correct for a type with no non-public
+    /// state to carry.
+    /// </remarks>
     /// <param name="writer">Binary writer for the output stream.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnGetMetastate(BinaryWriter writer)
     { }
 
     /// <summary>
-    /// Override this method to read field values directly
-    /// from a binary stream for metastate deserialization.
+    /// Override this method to read the type's non-public state directly from a
+    /// binary stream for metastate deserialization.
     /// </summary>
+    /// <remarks>
+    /// Read the values written by <see cref="OnGetMetastate"/> in the same
+    /// order, calling the base implementation first.
+    /// </remarks>
     /// <param name="reader">Binary reader for the input stream.</param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
     protected virtual void OnSetMetastate(BinaryReader reader)

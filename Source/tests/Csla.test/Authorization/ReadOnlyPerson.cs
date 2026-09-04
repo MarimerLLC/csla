@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 
 namespace Csla.Test.Authorization
 {
@@ -19,9 +19,9 @@ namespace Csla.Test.Authorization
     private bool _authorizationCheckDisabled;
     protected override bool IsCanReadPropertyAuthorizationCheckDisabled => _authorizationCheckDisabled;
 
-    public static ReadOnlyPerson GetReadOnlyPerson(TestDIContext serviceProvider)
+    public static ReadOnlyPerson GetReadOnlyPerson(CslaTestHost serviceProvider)
     {
-      return serviceProvider.CreateDataPortal<ReadOnlyPerson>().Create();
+      return serviceProvider.GetDataPortal<ReadOnlyPerson>().Create();
     }
 
     [Create, RunLocal]

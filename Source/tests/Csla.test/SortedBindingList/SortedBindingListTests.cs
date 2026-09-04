@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,12 +17,18 @@ namespace Csla.Test.SortedBindingList
   [TestClass]
   public class SortedBindingListTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -205,7 +212,7 @@ namespace Csla.Test.SortedBindingList
     [TestMethod]
     public void SimulateDataBindingAdd()
     {
-      IDataPortal<MyChildren> dataPortal = _testDIContext.CreateDataPortal<MyChildren>();
+      IDataPortal<MyChildren> dataPortal = _testHost.GetDataPortal<MyChildren>();
       
       var source = dataPortal.Create();
       source.BeginEdit();

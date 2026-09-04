@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
@@ -15,12 +15,18 @@ namespace Csla.Test.Basic
   [TestClass]
   public class CollectionTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -48,19 +54,19 @@ namespace Csla.Test.Basic
 
     private TestCollection CreateTestCollection()
     {
-      IDataPortal<TestCollection> dataPortal = _testDIContext.CreateDataPortal<TestCollection>();
+      IDataPortal<TestCollection> dataPortal = _testHost.GetDataPortal<TestCollection>();
       return dataPortal.Create();
     }
 
     private TestItem CreateTestItem()
     {
-      IDataPortal<TestItem> dataPortal = _testDIContext.CreateDataPortal<TestItem>();
+      IDataPortal<TestItem> dataPortal = _testHost.GetDataPortal<TestItem>();
       return dataPortal.Create();
     }
 
     private RootList CreateRootList()
     {
-      IDataPortal<RootList> dataPortal = _testDIContext.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _testHost.GetDataPortal<RootList>();
       return dataPortal.Create();
     }
 

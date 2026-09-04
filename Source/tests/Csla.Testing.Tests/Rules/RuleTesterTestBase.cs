@@ -6,7 +6,7 @@
 // <summary>Shared setup for the rule tester tests</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 
 namespace Csla.Testing.Tests.Rules
 {
@@ -21,6 +21,6 @@ namespace Csla.Testing.Tests.Rules
     /// An application context for creating target business objects.
     /// </summary>
     protected static ApplicationContext TestApplicationContext =>
-      TestDIContextFactory.CreateDefaultContext().CreateTestApplicationContext();
+      CslaTestHost.Create().ApplicationContext;
   }
 }

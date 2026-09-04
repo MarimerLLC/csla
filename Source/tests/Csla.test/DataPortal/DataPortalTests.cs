@@ -8,6 +8,7 @@
 
 using Csla.Test.DataBinding;
 using System.Data.SQLite;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
@@ -25,12 +26,18 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class DataPortalTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -52,7 +59,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void TestTransactionScopeUpdate()
     {
-      IDataPortal<TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<TransactionalRoot>();
+      IDataPortal<TransactionalRoot> dataPortal = _testHost.GetDataPortal<TransactionalRoot>();
 
       TransactionalRoot tr = TransactionalRoot.NewTransactionalRoot(dataPortal);
       tr.FirstName = "Bill";
@@ -107,7 +114,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void StronglyTypedDataPortalMethods()
     {
-      IDataPortal<StronglyTypedDP> dataPortal = _testDIContext.CreateDataPortal<StronglyTypedDP>();
+      IDataPortal<StronglyTypedDP> dataPortal = _testHost.GetDataPortal<StronglyTypedDP>();
 
       //test strongly-typed DataPortal_Fetch method
       StronglyTypedDP root = StronglyTypedDP.GetStronglyTypedDP(456, dataPortal);
@@ -132,8 +139,8 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void EncapsulatedIsBusyFails()
     {
-      _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>().DefaultWaitForIdleTimeoutInSeconds = 1;
-      IDataPortal<EncapsulatedBusy> dataPortal = _testDIContext.CreateDataPortal<EncapsulatedBusy>();
+      _testHost.Services.GetRequiredService<CslaOptions>().DefaultWaitForIdleTimeoutInSeconds = 1;
+      IDataPortal<EncapsulatedBusy> dataPortal = _testHost.GetDataPortal<EncapsulatedBusy>();
 
       dataPortal.Invoking(dp => dp.Fetch()).Should().Throw<DataPortalException>().WithInnerException<TimeoutException>();
     }
@@ -141,7 +148,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void FactoryIsBusyFails()
     {
-      IDataPortal<FactoryBusy> dataPortal = _testDIContext.CreateDataPortal<FactoryBusy>();
+      IDataPortal<FactoryBusy> dataPortal = _testHost.GetDataPortal<FactoryBusy>();
 
       try
       {
@@ -158,7 +165,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public void DataPortalBrokerTests()
     {
-      var dps = _testDIContext.ServiceProvider.GetRequiredService<Server.DataPortalSelector>();
+      var dps = _testHost.Services.GetRequiredService<Server.DataPortalSelector>();
       var oldServer = Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer(dps);
 
       try
@@ -207,7 +214,7 @@ namespace Csla.Test.DataPortal
 
     public void CallDataPortalOverrides()
     {
-      IDataPortal<ParentEntity> dataPortal = _testDIContext.CreateDataPortal<ParentEntity>();
+      IDataPortal<ParentEntity> dataPortal = _testHost.GetDataPortal<ParentEntity>();
 
       ParentEntity parent = ParentEntity.NewParentEntity(dataPortal);
       parent.Data = "something";
@@ -260,13 +267,13 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task WhenCreatingANewObjectThePortalMustWaitAfterCreateUntilTheObjectIsNotBusyAnymore()
     {
-      var cslaOptions = _testDIContext.ServiceProvider.GetRequiredService<CslaOptions>();
+      var cslaOptions = _testHost.Services.GetRequiredService<CslaOptions>();
       int oldTimeout = cslaOptions.DefaultWaitForIdleTimeoutInSeconds;
       try
       {
         cslaOptions.DefaultWaitForIdleTimeoutInSeconds = 5;
 
-        var dataPortal = _testDIContext.CreateDataPortal<ObjectStillBusyAfterCreate>();
+        var dataPortal = _testHost.GetDataPortal<ObjectStillBusyAfterCreate>();
 
         var obj = await dataPortal.CreateAsync();
 
@@ -282,16 +289,18 @@ namespace Csla.Test.DataPortal
     public async Task CleanupShouldSetThePrincipalToAnUnathenticatedOne()
     {
       // We have to use an extra DI context here to setup the TestableDataPortal and set necessary options
-      var diContext = TestDIContextFactory.CreateContext(options =>
+      using var testHost = CslaTestHost.Create(t => t
+        .ConfigureServices(services => services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>())
+        .ConfigureCsla(options =>
       {
         options.Services.AddTransient<TestableDataPortal>();
         options.Security(s => s.FlowSecurityPrincipalFromClient = true);
         options.DataPortal(dpo => dpo.AddServerSideDataPortal());
-      });
+      }));
 
-      var applicationContext = diContext.CreateTestApplicationContext();
+      var applicationContext = testHost.ApplicationContext;
       var contextManager = (ApplicationContextManagerUnitTests)applicationContext.ContextManager;
-      var dp = diContext.ServiceProvider.GetRequiredService<TestableDataPortal>();
+      var dp = testHost.Services.GetRequiredService<TestableDataPortal>();
       _ = await dp.Create(typeof(TestBO), EmptyCriteria.Instance, new DataPortalContext(applicationContext, applicationContext.Principal, true, "en-US", "en-US", new Core.ContextDictionary()), true);
 
       using (new AssertionScope())
@@ -304,7 +313,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task CreateMustCanHandleNullValueAsCriteria()
     {
-      var dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
+      var dataPortal = _testHost.GetDataPortal<DataPortalTest.Single>();
 
       string[] createValue = null;
       var instance = await dataPortal.CreateAsync(createValue);
@@ -321,21 +330,21 @@ namespace Csla.Test.DataPortal
 
     private DataPortalTest.Single NewSingle()
     {
-      IDataPortal<DataPortalTest.Single> dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
+      IDataPortal<DataPortalTest.Single> dataPortal = _testHost.GetDataPortal<DataPortalTest.Single>();
 
       return dataPortal.Create();
     }
 
     private DataPortalTest.Single GetSingle(int id)
     {
-      IDataPortal<DataPortalTest.Single> dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
+      IDataPortal<DataPortalTest.Single> dataPortal = _testHost.GetDataPortal<DataPortalTest.Single>();
 
       return dataPortal.Fetch(id);
     }
 
     private void DeleteSingle(int id)
     {
-      IDataPortal<DataPortalTest.Single> dataPortal = _testDIContext.CreateDataPortal<DataPortalTest.Single>();
+      IDataPortal<DataPortalTest.Single> dataPortal = _testHost.GetDataPortal<DataPortalTest.Single>();
 
       dataPortal.Delete(id);
     }

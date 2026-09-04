@@ -1,6 +1,7 @@
 ﻿using Csla.Channels.Http;
 using Csla.Configuration;
 using Csla.Test.DataPortalTest;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Csla.TestHelpers.Http;
 using FluentAssertions;
@@ -13,7 +14,7 @@ namespace Csla.Test.HttpProxy;
 [TestClass]
 public class HttpProxyTests
 {
-  private TestDIContext _testDIContext;
+  private CslaTestHost _testHost;
   private TestHttpProxy _systemUnderTest;
   private TestHttpClientHandler _testHttClientHandler;
   private static TestServer _server;
@@ -22,8 +23,8 @@ public class HttpProxyTests
   [TestInitialize]
   public void Setup()
   {
-    _testDIContext = TestDIContextFactory.CreateDefaultContext();
-    var applicationContext = _testDIContext.CreateTestApplicationContext();
+    _testHost = CslaTestHost.Create();
+    var applicationContext = _testHost.ApplicationContext;
     var dataPortalOptions = applicationContext.GetRequiredService<DataPortalOptions>();
 
     var proxyOptions = new HttpProxyOptions();

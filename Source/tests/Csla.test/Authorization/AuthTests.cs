@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="AuthTests.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -12,7 +12,9 @@ using System.Security.Claims;
 using Csla.Configuration;
 using Csla.Rules;
 using Csla.Test.Security;
+using Csla.Testing;
 using Csla.TestHelpers;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Authorization
@@ -24,8 +26,8 @@ namespace Csla.Test.Authorization
   [TestClass]
   public class AuthTests
   {
-    private static TestDIContext _anonymousDIContext;
-    private static TestDIContext _adminDIContext;
+    private static CslaTestHost _anonymousHost;
+    private static CslaTestHost _adminHost;
 
     private static ClaimsPrincipal GetPrincipal(params string[] roles)
     {
@@ -35,11 +37,27 @@ namespace Csla.Test.Authorization
       return new ClaimsPrincipal(identity);
     }
 
+    /// <summary>
+    /// DpRoot.DenyReadOnProperty reaches for the unit test context manager, so the
+    /// hosts in this class have to register it.
+    /// </summary>
+    private static void UseUnitTestContextManager(IServiceCollection services)
+    {
+      services.AddSingleton<Core.IContextManager, ApplicationContextManagerUnitTests>();
+    }
+
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _anonymousDIContext = TestDIContextFactory.CreateContext(new ClaimsPrincipal());
-      _adminDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
+      _anonymousHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).AsPrincipal(new ClaimsPrincipal()));
+      _adminHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).AsPrincipal(GetPrincipal("Admin")));
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _anonymousHost?.Dispose();
+      _adminHost?.Dispose();
     }
 
     [TestInitialize]
@@ -52,8 +70,8 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void TestAuthCloneRules()
     {
-      IDataPortal<DataPortal.DpRoot> dataPortal = _adminDIContext.CreateDataPortal<DataPortal.DpRoot>();
-      ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
+      IDataPortal<DataPortal.DpRoot> dataPortal = _adminHost.GetDataPortal<DataPortal.DpRoot>();
+      ApplicationContext applicationContext = _adminHost.ApplicationContext;
 
       DataPortal.DpRoot root = dataPortal.Fetch(new DataPortal.DpRoot.Criteria());
 
@@ -131,9 +149,9 @@ namespace Csla.Test.Authorization
     public void TestAuthBeginEditRules()
     {
       Guid managerInstanceId;
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<DataPortal.DpRoot> dataPortal = customDIContext.CreateDataPortal<DataPortal.DpRoot>();
-      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
+      using var customHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<DataPortal.DpRoot> dataPortal = customHost.GetDataPortal<DataPortal.DpRoot>();
+      ApplicationContext applicationContext = customHost.ApplicationContext;
 
       DataPortal.DpRoot root = dataPortal.Create(new DataPortal.DpRoot.Criteria());
 
@@ -253,9 +271,9 @@ namespace Csla.Test.Authorization
     [TestCategory("SkipOnCIServer")]
     public void TestAuthorizationAfterEditCycle()
     {
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
-      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
+      using var customHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<PermissionsRoot> dataPortal = customHost.GetDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customHost.ApplicationContext;
 
       PermissionsRoot pr = dataPortal.Create();
 
@@ -276,7 +294,7 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void TestUnauthorizedAccessToGet()
     {
-      IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
+      IDataPortal<PermissionsRoot> dataPortal = _anonymousHost.GetDataPortal<PermissionsRoot>();
 
       PermissionsRoot pr = dataPortal.Create();
 
@@ -288,7 +306,7 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void TestUnauthorizedAccessToSet()
     {
-      IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
+      IDataPortal<PermissionsRoot> dataPortal = _anonymousHost.GetDataPortal<PermissionsRoot>();
 
       PermissionsRoot pr = dataPortal.Create();
 
@@ -300,9 +318,9 @@ namespace Csla.Test.Authorization
     [TestCategory("SkipOnCIServer")]
     public void TestAuthorizedAccess()
     {
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
-      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
+      using var customHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<PermissionsRoot> dataPortal = customHost.GetDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customHost.ApplicationContext;
 
       PermissionsRoot pr = dataPortal.Create();
 
@@ -322,9 +340,9 @@ namespace Csla.Test.Authorization
     [TestCategory("SkipOnCIServer")]
     public void TestAuthExecute()
     {
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(GetPrincipal("Admin"));
-      IDataPortal<PermissionsRoot> dataPortal = customDIContext.CreateDataPortal<PermissionsRoot>();
-      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
+      using var customHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).AsPrincipal(GetPrincipal("Admin")));
+      IDataPortal<PermissionsRoot> dataPortal = customHost.GetDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = customHost.ApplicationContext;
 
       PermissionsRoot pr = dataPortal.Create();
       //should work, because we are now logged in as an admin
@@ -342,8 +360,8 @@ namespace Csla.Test.Authorization
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestUnAuthExecute()
     {
-      IDataPortal<PermissionsRoot> dataPortal = _anonymousDIContext.CreateDataPortal<PermissionsRoot>();
-      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+      IDataPortal<PermissionsRoot> dataPortal = _anonymousHost.GetDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = _anonymousHost.ApplicationContext;
 
       Assert.AreEqual(false, applicationContext.User.IsInRole("Admin"));
 
@@ -357,8 +375,8 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetExplicitly()
     {
-      IDataPortal<PermissionsRoot> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot>();
-      ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
+      IDataPortal<PermissionsRoot> dataPortal = _adminHost.GetDataPortal<PermissionsRoot>();
+      ApplicationContext applicationContext = _adminHost.ApplicationContext;
 
       var root = dataPortal.Create();
 
@@ -391,8 +409,8 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task TestAuthRuleSetsOnStaticHasPermissionMethodsWhenAddingAuthzRuleSetUsingApplicationContextRuleSet()
     {
-      IDataPortal<PermissionsRoot2> dataPortal = _adminDIContext.CreateDataPortal<PermissionsRoot2>();
-      ApplicationContext applicationContext = _adminDIContext.CreateTestApplicationContext();
+      IDataPortal<PermissionsRoot2> dataPortal = _adminHost.GetDataPortal<PermissionsRoot2>();
+      ApplicationContext applicationContext = _adminHost.ApplicationContext;
 
       var root = dataPortal.Create();
 
@@ -430,7 +448,7 @@ namespace Csla.Test.Authorization
     public void TestAuthRulesCleanupAndAddAgainWhenExceptionIsThrownInAddObjectBusinessRules()
     {
       RootException.Counter = 0;
-      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _anonymousHost.ApplicationContext;
 
       applicationContext.RuleSet = ApplicationContext.DefaultRuleSet;
       // AddObjectAuthorizations should throw exception
@@ -462,7 +480,7 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public void AuthorizeRemoveFromList()
     {
-      IDataPortal<RootList> dataPortal = _anonymousDIContext.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _anonymousHost.GetDataPortal<RootList>();
 
       var root = dataPortal.Create();
       root.RemoveAt(0);
@@ -471,12 +489,11 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task PerTypeAuthEditObject()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
-        options => options.DataPortal(
+      using var testHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).ConfigureCsla(options => options.DataPortal(
           dp => dp.AddServerSideDataPortal(
             cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
-        ));
-      ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
+        )));
+      ApplicationContext applicationContext = testHost.ApplicationContext;
 
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRoot)));
       Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRoot), CancellationToken.None));
@@ -485,12 +502,11 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task PerTypeAuthEditObjectAsyncThrowsException()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(
-        options => options.DataPortal(
+      using var testHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).ConfigureCsla(options => options.DataPortal(
           dp => dp.AddServerSideDataPortal(
             cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
-        ));
-      ApplicationContext applicationContext = testDIContext.CreateTestApplicationContext();
+        )));
+      ApplicationContext applicationContext = testHost.ApplicationContext;
 
       Assert.ThrowsException<ArgumentOutOfRangeException>(() => BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootAsync)));
       Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootAsync), CancellationToken.None));
@@ -504,11 +520,10 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task PerTypeAuthEditObjectViaInterface()
     {
-      TestDIContext customDIContext = TestDIContextFactory.CreateContext(
-        options => options.DataPortal(
+      using var customHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).ConfigureCsla(options => options.DataPortal(
           dp => dp.AddServerSideDataPortal(cfg => cfg.RegisterActivator<PerTypeAuthDPActivator>())
-      ));
-      ApplicationContext applicationContext = customDIContext.CreateTestApplicationContext();
+      )));
+      ApplicationContext applicationContext = customHost.ApplicationContext;
 
       Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot)));
       Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(IPerTypeAuthRoot), CancellationToken.None));
@@ -517,7 +532,7 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task PerTypeAuthCreateWithCriteria()
     {
-      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _anonymousHost.ApplicationContext;
 
       Assert.IsTrue(
         BusinessRules.HasPermission(
@@ -566,7 +581,7 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task PerTypeAuthFetchWithCriteria()
     {
-      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _anonymousHost.ApplicationContext;
 
       Assert.IsTrue(
         BusinessRules.HasPermission(
@@ -615,7 +630,7 @@ namespace Csla.Test.Authorization
     [TestMethod]
     public async Task PerTypeAuthDeleteWithCriteria()
     {
-      ApplicationContext applicationContext = _anonymousDIContext.CreateTestApplicationContext();
+      ApplicationContext applicationContext = _anonymousHost.ApplicationContext;
 
       Assert.IsTrue(
         BusinessRules.HasPermission(

@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,18 +15,24 @@ namespace Csla.Test.AppDomainTests
   [TestClass]
   public class AppDomainTestClass
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public void AppDomainTestIsCalled()
     {
-      IDataPortal<Basic.Root> dataPortal = _testDIContext.CreateDataPortal<Basic.Root>();
+      IDataPortal<Basic.Root> dataPortal = _testHost.GetDataPortal<Basic.Root>();
 
       TestResults.Reinitialise();
       int local = AppDomain.CurrentDomain.Id;

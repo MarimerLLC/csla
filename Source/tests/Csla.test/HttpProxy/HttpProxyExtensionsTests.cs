@@ -1,6 +1,6 @@
 ﻿using Csla.Channels.Http;
 using Csla.Configuration;
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,17 +20,15 @@ public class HttpProxyExtensionsTests
       return new HttpClient();
     }
 
-    var diContext = TestDIContextFactory.CreateContext(
-      o => o.DataPortal(
+    using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.DataPortal(
         dp => dp.AddClientSideDataPortal(
           cdp => cdp.UseHttpProxy(
             hp => hp.WithHttpClientFactory(CustomFactory)
             )
           )
-        )
-      );
+        )));
 
-    _ = diContext.ServiceProvider.GetRequiredService<DataPortalClient.IDataPortalProxy>();
+    _ = testHost.Services.GetRequiredService<DataPortalClient.IDataPortalProxy>();
 
     hasBeenCalled.Should().BeTrue();
   }

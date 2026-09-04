@@ -8,7 +8,7 @@
 
 using Csla.Rules;
 using System.ComponentModel.DataAnnotations;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataAnnotations
@@ -19,18 +19,24 @@ namespace Csla.Test.DataAnnotations
   [TestClass]
   public class DataAnnotationsTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public async Task SingleAttribute()
     {
-      var dp = _testDIContext.CreateDataPortal<Single>();
+      var dp = _testHost.GetDataPortal<Single>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 
@@ -43,7 +49,7 @@ namespace Csla.Test.DataAnnotations
     [TestMethod]
     public async Task MultipleAttributes()
     {
-      var dp = _testDIContext.CreateDataPortal<Multiple>();
+      var dp = _testHost.GetDataPortal<Multiple>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 
@@ -57,7 +63,7 @@ namespace Csla.Test.DataAnnotations
     [TestMethod]
     public async Task CustomAttribute()
     {
-      var dp = _testDIContext.CreateDataPortal<Custom>();
+      var dp = _testHost.GetDataPortal<Custom>();
       var root = await dp.CreateAsync();
       var rules = root.GetRules();
 
@@ -70,7 +76,7 @@ namespace Csla.Test.DataAnnotations
     [TestMethod]
     public void MultipleMetaRules()
     {
-      IDataPortal<MultipleMeta> dataPortal = _testDIContext.CreateDataPortal<MultipleMeta>();
+      IDataPortal<MultipleMeta> dataPortal = _testHost.GetDataPortal<MultipleMeta>();
 
       var obj = dataPortal.Fetch();
 

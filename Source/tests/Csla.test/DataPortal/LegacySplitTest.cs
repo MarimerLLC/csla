@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.DataPortalTest
   [TestClass]
   public class LegacySplitTest
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -90,21 +97,21 @@ namespace Csla.Test.DataPortalTest
 
     private LegacySplit NewLegacySplit()
     {
-      IDataPortal<LegacySplit> dataPortal = _testDIContext.CreateDataPortal<LegacySplit>();
+      IDataPortal<LegacySplit> dataPortal = _testHost.GetDataPortal<LegacySplit>();
 
       return dataPortal.Create();
     }
 
     private LegacySplit GetLegacySplit(int id)
     {
-      IDataPortal<LegacySplit> dataPortal = _testDIContext.CreateDataPortal<LegacySplit>();
+      IDataPortal<LegacySplit> dataPortal = _testHost.GetDataPortal<LegacySplit>();
 
       return dataPortal.Fetch(new LegacySplitBase<LegacySplit>.Criteria(id));
     }
 
     private void DeleteLegacySplit(int id)
     {
-      IDataPortal<LegacySplit> dataPortal = _testDIContext.CreateDataPortal<LegacySplit>();
+      IDataPortal<LegacySplit> dataPortal = _testHost.GetDataPortal<LegacySplit>();
 
       dataPortal.Delete(new LegacySplitBase<LegacySplit>.Criteria(id));
     }

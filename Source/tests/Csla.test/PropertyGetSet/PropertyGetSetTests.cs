@@ -8,6 +8,7 @@
 
 using System.ComponentModel;
 using Csla.Serialization.Mobile;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
@@ -21,16 +22,18 @@ namespace Csla.Test.PropertyGetSet
   [TestClass]
   public class PropertyGetSetTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      var services = new ServiceCollection();
-      services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows));
-      services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
-      var serviceProvider = services.BuildServiceProvider();
-      _testDIContext = new TestDIContext(serviceProvider);
+      _testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows)));
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -44,7 +47,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ForceStaticInit()
     {
-      IDataPortal<EditableGetSetNFI> dataPortal = _testDIContext.CreateDataPortal<EditableGetSetNFI>();
+      IDataPortal<EditableGetSetNFI> dataPortal = _testHost.GetDataPortal<EditableGetSetNFI>();
 
       EditableGetSetNFI root = dataPortal.Fetch();
       root.Data = "a";
@@ -58,7 +61,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void NullString()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.FieldBackedString = null;
@@ -74,7 +77,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void NonGenericLoadProperty()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.LoadM02(123);
@@ -83,12 +86,12 @@ namespace Csla.Test.PropertyGetSet
       root.LoadInternalAndPrivate("Test");
       Assert.AreEqual("Test", root.M08);
 
-      IDataPortal<Command> commandDataPortal = _testDIContext.CreateDataPortal<Command>();
+      IDataPortal<Command> commandDataPortal = _testHost.GetDataPortal<Command>();
       var cmd = commandDataPortal.Create();
       cmd.Load("abc");
       Assert.AreEqual("abc", cmd.Name);
 
-      IDataPortal<ReadOnly> roDataPortal = _testDIContext.CreateDataPortal<ReadOnly>();
+      IDataPortal<ReadOnly> roDataPortal = _testHost.GetDataPortal<ReadOnly>();
       var ro = roDataPortal.Fetch();
       ro.Load("abc");
       Assert.AreEqual("abc", ro.Name);
@@ -97,7 +100,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ExplicitFieldProperties()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.PropertyChanging += root_PropertyChanging; 
@@ -129,7 +132,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedExplicitFieldProperties()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root = root.Clone();
@@ -150,7 +153,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ManagedFieldProperties()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.PropertyChanging += root_PropertyChanging;
@@ -187,7 +190,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void ManagedFieldBaseProperties()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
@@ -223,7 +226,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedManagedFieldProperties()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root = root.Clone();
@@ -245,7 +248,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void MarkClean()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
@@ -261,7 +264,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SmartDateProperties()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual("", root.F04, "Field should default to string.Empty");
@@ -279,7 +282,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SimpleChildProperties_LazyLoadedChild()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
@@ -321,7 +324,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedSimpleChildProperties()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       EditableGetSet child = root.ManagedChild;
@@ -363,7 +366,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootUndoCancel()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
@@ -393,7 +396,7 @@ namespace Csla.Test.PropertyGetSet
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootUndoApply()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
 
@@ -427,7 +430,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildUndoCancel()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
@@ -451,8 +454,8 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void SerializedEditLevel()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testHost.GetChildDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
@@ -475,7 +478,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildUndoCancelIsDirty()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.BeginEdit();
@@ -497,7 +500,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildUndoApply()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
@@ -525,8 +528,8 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void RootChildListUndoCancel()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testHost.GetChildDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
@@ -556,8 +559,8 @@ namespace Csla.Test.PropertyGetSet
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void RootChildListUndoApply()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testHost.GetChildDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(0, root.EditLevel, "Root edit level before BeginEdit");
@@ -591,7 +594,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void LoadNullProperty()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.AreEqual(Guid.Empty, root.M06, "Guid should be null");
@@ -605,8 +608,8 @@ namespace Csla.Test.PropertyGetSet
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IDataPortal<BadGetSet> badDataPortal = _testDIContext.CreateDataPortal<BadGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IDataPortal<BadGetSet> badDataPortal = _testHost.GetDataPortal<BadGetSet>();
 
       var first = EditableGetSet.GetObject(dataPortal);
       try
@@ -624,7 +627,7 @@ namespace Csla.Test.PropertyGetSet
     [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyRegisteredTwice()
     {
-      IDataPortal<BadGetSetTwo> dataPortal = _testDIContext.CreateDataPortal<BadGetSetTwo>();
+      IDataPortal<BadGetSetTwo> dataPortal = _testHost.GetDataPortal<BadGetSetTwo>();
 
       try
       {
@@ -658,7 +661,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void FieldDirty()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       Assert.IsFalse(root.ManagedStringFieldDirty, "ManagedStringField should not be dirty");
@@ -669,7 +672,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_ManagedStringField_Property_Changes_ChildChanged_Event_Should_Not_Fire()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
       root.ChildChanged += (_, _) => { throw new InvalidOperationException(); };
@@ -679,7 +682,7 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Property_Changes_On_ManagedChild_Then_ChildChanged_Should_Fire_On_Root_ButNot_On_ManagedChild()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
       int changed = 0;
 
       EditableGetSet root = EditableGetSet.GetObject(dataPortal);
@@ -693,8 +696,8 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Property_Changes_On_Item_In_ManagedChildList_Then_ChildChanged_Fires_On_Root_And_On_ManagedChildList()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testHost.GetChildDataPortal<EditableGetSet>();
       
       int rootChanged = 0;
       int listChanged = 0;
@@ -717,8 +720,8 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Changes_On_GrandChild_Then_ChildChanged_Fires_On_GrandChild_Child_and_Root()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testHost.GetChildDataPortal<EditableGetSet>();
 
       int rootChanged = 0;
       int childListChanged = 0;
@@ -754,8 +757,8 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Property_Is_Changed_On_Child_After_CancelEdit_Then_ChildChanged_Fires_On_Root()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testHost.GetChildDataPortal<EditableGetSet>();
 
       var root = EditableGetSet.GetObject(dataPortal);
       var child = EditableGetSet.NewChildObject(childDataPortal);
@@ -776,8 +779,8 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void If_FieldBackedString_Is_Changed_On_GrandChild_List_Item_After_Root_Is_Deserialized_Then_Root_ChildChanged_Event_Fires()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IChildDataPortal<EditableGetSet> childDataPortal = _testDIContext.CreateChildDataPortal<EditableGetSet>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IChildDataPortal<EditableGetSet> childDataPortal = _testHost.GetChildDataPortal<EditableGetSet>();
 
       var root = EditableGetSet.GetObject(dataPortal);
       var child = EditableGetSet.NewChildObject(childDataPortal);
@@ -785,7 +788,7 @@ namespace Csla.Test.PropertyGetSet
       root.ManagedChildList.Add(child);
       child.ManagedChildList.Add(grandChild);
 
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       MemoryStream stream = new MemoryStream();
       MobileFormatter formatter = new MobileFormatter(applicationContext);
       formatter.Serialize(stream, root);
@@ -808,8 +811,8 @@ namespace Csla.Test.PropertyGetSet
     [TestMethod]
     public void LazyLoadChild_GetAfterSet()
     {
-      IDataPortal<EditableGetSet> dataPortal = _testDIContext.CreateDataPortal<EditableGetSet>();
-      IDataPortal<ChildList> childDataPortal = _testDIContext.CreateDataPortal<ChildList>();
+      IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
+      IDataPortal<ChildList> childDataPortal = _testHost.GetDataPortal<ChildList>();
 
       var root = EditableGetSet.GetObject(dataPortal);
       root.LazyChild = ChildList.NewObject(childDataPortal);

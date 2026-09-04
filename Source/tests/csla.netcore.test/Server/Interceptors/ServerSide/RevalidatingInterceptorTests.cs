@@ -1,7 +1,7 @@
 ﻿using Csla.DataPortalClient;
 using Csla.Server;
 using Csla.Server.Interceptors.ServerSide;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -11,21 +11,27 @@ namespace Csla.Test.Server.Interceptors.ServerSide
   [TestClass]
   public class RevalidatingInterceptorTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
     private ApplicationContext _applicationContext;
     private RevalidatingInterceptor _systemUnderTest;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
     public void TestSetup()
     {
-      _applicationContext = _testDIContext.CreateTestApplicationContext();
-      _systemUnderTest = new RevalidatingInterceptor(_applicationContext, _testDIContext.ServiceProvider.GetRequiredService<IOptions<RevalidatingInterceptorOptions>>());
+      _applicationContext = _testHost.ApplicationContext;
+      _systemUnderTest = new RevalidatingInterceptor(_applicationContext, _testHost.Services.GetRequiredService<IOptions<RevalidatingInterceptorOptions>>());
 
       PrepareApplicationContext(_applicationContext);
     }
@@ -52,7 +58,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_ValidRootObjectNoChildren_NoExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       var args = CreateUpdateArgsOfRoot(rootObject);
 
@@ -64,7 +70,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_ValidRootObjectWithChild_NoExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
@@ -78,7 +84,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_ValidRootObjectWithChildAndGrandChild_NoExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       Root rootObject = dataPortal.Fetch(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
@@ -94,7 +100,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_InvalidRootObject_ExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria(""));
       var args = CreateUpdateArgsOfRoot(rootObject);
 
@@ -106,7 +112,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_InvalidChildObject_ExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
       rootObject.Children.AddNew();
       var args = CreateUpdateArgsOfRoot(rootObject);
@@ -119,7 +125,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     public async Task Initialize_InvalidGrandChildObject_ExceptionRaised()
     {
       // Arrange
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria("Test Data"));
       Child childObject = rootObject.Children.AddNew();
       childObject.Data = "Test child data";
@@ -133,18 +139,18 @@ namespace Csla.Test.Server.Interceptors.ServerSide
     [TestMethod]
     public async Task Initialize_DeletingAnInvalidObjectDoesNotThrowWhenRevalidationForDeleteIsDisabled()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       Root rootObject = dataPortal.Create(new Root.Criteria(""));
       var args = new InterceptArgs(rootObject.GetType(), rootObject, DataPortalOperations.Delete, true);
 
-      var diContext = TestDIContextFactory.CreateDefaultContext(services =>
+      using var testHost = CslaTestHost.Create(t => t.ConfigureServices(services =>
       {
         services.Configure<RevalidatingInterceptorOptions>(opts => opts.IgnoreDeleteOperation = true);
-      });
-      var appContext = diContext.CreateTestApplicationContext();
+      }));
+      var appContext = testHost.ApplicationContext;
       PrepareApplicationContext(appContext);
 
-      var sut = new RevalidatingInterceptor(appContext, diContext.ServiceProvider.GetRequiredService<IOptions<RevalidatingInterceptorOptions>>());
+      var sut = new RevalidatingInterceptor(appContext, testHost.Services.GetRequiredService<IOptions<RevalidatingInterceptorOptions>>());
 
       await sut.InitializeAsync(args);
     }

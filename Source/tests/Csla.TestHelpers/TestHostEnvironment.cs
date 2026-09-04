@@ -16,6 +16,7 @@ namespace Csla.TestHelpers
   /// Basic implementation of IHostEnvironment, to support testing of anything 
   /// that is dependent upon there being an implementation available
   /// </summary>
+  [Obsolete("Use Csla.Testing.CslaTestHostEnvironment instead. This shim is no longer used by the test suite and will be removed in a future release.")]
   public class TestHostEnvironment : IHostEnvironment
   {
 

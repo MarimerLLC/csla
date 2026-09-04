@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.Basic
   [TestClass]
   public class BasicTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -76,7 +83,7 @@ namespace Csla.Test.Basic
     {
       TestResults.Reinitialise();
 
-      IDataPortal<CommandObject> dataPortal = _testDIContext.CreateDataPortal<CommandObject>();
+      IDataPortal<CommandObject> dataPortal = _testHost.GetDataPortal<CommandObject>();
       CommandObject obj = dataPortal.Create();
       obj = dataPortal.Execute(obj);
       Assert.AreEqual("Executed", obj.AProperty);
@@ -367,7 +374,7 @@ namespace Csla.Test.Basic
       TestResults.Reinitialise();
 
       bool changed = false;
-      var obj = await _testDIContext.CreateDataPortal<RootList>().CreateAsync();
+      var obj = await _testHost.GetDataPortal<RootList>().CreateAsync();
       obj.ListChanged += (_, _) =>
       {
         changed = true;
@@ -463,43 +470,43 @@ namespace Csla.Test.Basic
 
     private Root CreateRootInstance()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       return dataPortal.Create(new Root.Criteria());
     }
 
     private async Task<Root> CreateRootInstanceAsync()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       return await dataPortal.CreateAsync(new Root.Criteria());
     }
 
     private async Task<Root> CreateRootInstanceAsync(Root.Criteria criteria)
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
       return await dataPortal.CreateAsync(criteria);
     }
 
     private async Task<RootList> CreateRootListInstanceAsync()
     {
-      IDataPortal<RootList> dataPortal = _testDIContext.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _testHost.GetDataPortal<RootList>();
       return await dataPortal.CreateAsync();
     }
 
     private GenRoot CreateGenRootInstance()
     {
-      IDataPortal<GenRoot> dataPortal = _testDIContext.CreateDataPortal<GenRoot>();
+      IDataPortal<GenRoot> dataPortal = _testHost.GetDataPortal<GenRoot>();
       return dataPortal.Create(new GenRootBase.Criteria());
     }
 
     private DataBinding.ParentEntity CreateParentEntityInstance()
     {
-      IDataPortal<DataBinding.ParentEntity> dataPortal = _testDIContext.CreateDataPortal<DataBinding.ParentEntity>();
+      IDataPortal<DataBinding.ParentEntity> dataPortal = _testHost.GetDataPortal<DataBinding.ParentEntity>();
       return dataPortal.Create();
     }
 
     private NameValueListObj GetNameValueListObjInstance()
     {
-      IDataPortal<NameValueListObj> dataPortal = _testDIContext.CreateDataPortal<NameValueListObj>();
+      IDataPortal<NameValueListObj> dataPortal = _testHost.GetDataPortal<NameValueListObj>();
       return dataPortal.Fetch();
     }
 

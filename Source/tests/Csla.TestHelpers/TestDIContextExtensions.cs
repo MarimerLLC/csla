@@ -14,6 +14,7 @@ namespace Csla.TestHelpers
   /// <summary>
   /// Extension methods for the TestDIContext class
   /// </summary>
+  [Obsolete("Use the members on Csla.Testing.CslaTestHost instead. This shim is no longer used by the test suite and will be removed in a future release.")]
   public static class TestDIContextExtensions
   {
 

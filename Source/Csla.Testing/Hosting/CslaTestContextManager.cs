@@ -30,7 +30,7 @@ namespace Csla.Testing
   public class CslaTestContextManager : Core.ApplicationContextManagerAsyncLocal
   {
     private readonly CslaTestPrincipal _testPrincipal;
-    private readonly AsyncLocal<bool> _seeded = new();
+    private bool _seeded;
 
     /// <summary>
     /// Creates a new instance of the type.
@@ -44,11 +44,11 @@ namespace Csla.Testing
 
     /// <summary>
     /// Gets the current user principal, seeding it from the configured test
-    /// principal the first time it is requested in an async flow.
+    /// principal the first time a user is requested.
     /// </summary>
     public override IPrincipal GetUser()
     {
-      if (!_seeded.Value)
+      if (!_seeded)
         SetUser(_testPrincipal.Principal);
       return base.GetUser();
     }
@@ -58,8 +58,8 @@ namespace Csla.Testing
     {
       base.SetUser(principal);
       // set only after the base call, so a null principal throws without
-      // leaving the flow marked as seeded
-      _seeded.Value = true;
+      // marking the manager as seeded
+      _seeded = true;
     }
   }
 }

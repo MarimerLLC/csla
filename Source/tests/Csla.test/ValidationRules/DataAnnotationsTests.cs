@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel.DataAnnotations;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class DataAnnotationsTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void Initialize(TestContext testcontext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -33,7 +40,7 @@ namespace Csla.Test.ValidationRules
     public void BrokenRulesCollection_ValidTestObject_ReturnsZeroBrokenRules()
     {
       // Arrange
-      IDataPortal<TestObject> dataPortal = _testDIContext.CreateDataPortal<TestObject>();
+      IDataPortal<TestObject> dataPortal = _testHost.GetDataPortal<TestObject>();
       TestObject testObject = dataPortal.Create();
       int expected = 0;
       int actual;

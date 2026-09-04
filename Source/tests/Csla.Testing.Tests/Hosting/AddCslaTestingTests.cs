@@ -92,6 +92,22 @@ namespace Csla.Testing.Tests.Hosting
     }
 
     [TestMethod]
+    public void ThePrincipalIsSeededOnlyOnceNotPerAsyncFlow()
+    {
+      // CSLA deliberately leaves the user unset in places such as the server side of a
+      // data portal call that does not flow the principal. If the manager re-seeded
+      // every unseeded flow, the configured principal would reappear there and mask
+      // exactly the state such a test needs to observe.
+      using var provider = BuildProvider(t => t.AsUser("alice"));
+      var contextManager = provider.GetRequiredService<IContextManager>();
+      contextManager.GetUser().Identity!.Name.Should().Be("alice");
+
+      contextManager.SetUser(new ClaimsPrincipal(new ClaimsIdentity()));
+
+      contextManager.GetUser().Identity!.IsAuthenticated.Should().BeFalse();
+    }
+
+    [TestMethod]
     public void AsUserGrantsEveryRequestedRole()
     {
       using var provider = BuildProvider(t => t.AsUser("alice", "Admin", "Users"));

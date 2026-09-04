@@ -6,6 +6,7 @@
 // <summary>This is needed because in Silverlight the tests cannot be run in separate AppDomains</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,18 +18,24 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class PerTypeTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialze(TestContext testContext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public void OnlySharedRules()
     {
-      IDataPortal<HasOnlyPerTypeRules> dataPortal = _testDIContext.CreateDataPortal<HasOnlyPerTypeRules>();
+      IDataPortal<HasOnlyPerTypeRules> dataPortal = _testHost.GetDataPortal<HasOnlyPerTypeRules>();
 
       TestResults.Reinitialise();
       TestResults.Add("Shared", "0");
@@ -48,7 +55,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void StringRequired()
     {
-      IDataPortal<HasPerTypeRules> dataPortal = _testDIContext.CreateDataPortal<HasPerTypeRules>();
+      IDataPortal<HasPerTypeRules> dataPortal = _testHost.GetDataPortal<HasPerTypeRules>();
       
       TestResults.Reinitialise();
       TestResults.Add("Shared", "0");
@@ -74,7 +81,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NoDoubleInit()
     {
-      IDataPortal<HasPerTypeRules2> dataPortal = _testDIContext.CreateDataPortal<HasPerTypeRules2>();
+      IDataPortal<HasPerTypeRules2> dataPortal = _testHost.GetDataPortal<HasPerTypeRules2>();
 
       TestResults.Reinitialise();
       TestResults.Add("Shared", "0");
@@ -91,7 +98,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void LoadRuleSets()
     {
-      IDataPortal<HasRuleSetRules> dataPortal = _testDIContext.CreateDataPortal<HasRuleSetRules>();
+      IDataPortal<HasRuleSetRules> dataPortal = _testHost.GetDataPortal<HasRuleSetRules>();
 
       TestResults.Reinitialise();
 

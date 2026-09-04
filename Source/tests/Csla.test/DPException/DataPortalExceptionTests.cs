@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,12 +15,18 @@ namespace Csla.Test.DPException
   [TestClass]
   public class DataPortalExceptionTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -31,7 +38,7 @@ namespace Csla.Test.DPException
     [TestMethod]
     public void CheckInnerExceptionsOnSave()
     {
-      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testHost.GetDataPortal<DataPortal.TransactionalRoot>();
 
       DataPortal.TransactionalRoot root = DataPortal.TransactionalRoot.NewTransactionalRoot(dataPortal);
       root.FirstName = "Billy";
@@ -72,7 +79,7 @@ namespace Csla.Test.DPException
     [TestMethod]
     public void CheckInnerExceptionsOnDelete()
     {
-      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testHost.GetDataPortal<DataPortal.TransactionalRoot>();
 
       string baseException = string.Empty;
       string baseInnerException = string.Empty;
@@ -103,7 +110,7 @@ namespace Csla.Test.DPException
     [TestMethod]
     public void CheckInnerExceptionsOnFetch()
     {
-      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testHost.GetDataPortal<DataPortal.TransactionalRoot>();
 
       string baseException = string.Empty;
       string baseInnerException = string.Empty;
@@ -135,7 +142,7 @@ namespace Csla.Test.DPException
 
     [TestMethod]
     public void CheckBusinessErrorInfoIsNullWhennErrorInfoIsNull() {
-      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testDIContext.CreateDataPortal<DataPortal.TransactionalRoot>();
+      IDataPortal<DataPortal.TransactionalRoot> dataPortal = _testHost.GetDataPortal<DataPortal.TransactionalRoot>();
 
       try 
       {

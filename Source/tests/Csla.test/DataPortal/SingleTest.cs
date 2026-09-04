@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,12 +16,18 @@ namespace Csla.Test.DataPortalTest
   [TestClass]
   public class SingleTest
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -90,21 +97,21 @@ namespace Csla.Test.DataPortalTest
 
     private Single NewSingle()
     {
-      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+      IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       return dataPortal.Create();
     }
 
     private Single GetSingle(int id)
     {
-      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+      IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       return dataPortal.Fetch(id);
     }
 
     private void DeleteSingle(int id)
     {
-      IDataPortal<Single> dataPortal = _testDIContext.CreateDataPortal<Single>();
+      IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       dataPortal.Delete(id);
     }

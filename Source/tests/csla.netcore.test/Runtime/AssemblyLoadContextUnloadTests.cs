@@ -15,7 +15,7 @@ using Csla.Core.FieldManager;
 using Csla.Reflection;
 using Csla.Rules;
 using Csla.Server;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -85,7 +85,7 @@ namespace Csla.Test.Runtime
     [TestMethod]
     public void UnloadingCollectibleContext_FlushesCachesAndDoesNotThrow()
     {
-      var testDIContext = TestDIContextFactory.CreateDefaultContext();
+      using var testHost = CslaTestHost.Create();
       var context = new CollectibleContext();
       Type rootType;
 
@@ -100,7 +100,7 @@ namespace Csla.Test.Runtime
         // Run a data portal operation plus an undo cycle on the collectible type so
         // the static per-type caches get entries tagged with this context.
         var portalType = typeof(IDataPortal<>).MakeGenericType(rootType);
-        var portal = (IDataPortal)testDIContext.ServiceProvider.GetRequiredService(portalType);
+        var portal = (IDataPortal)testHost.Services.GetRequiredService(portalType);
         var obj = portal.Create();
         Assert.IsInstanceOfType(obj, rootType);
 

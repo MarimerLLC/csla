@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -14,12 +14,18 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class InheritedOperationTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -38,13 +44,13 @@ namespace Csla.Test.DataPortal
 
     private PersonList FetchPersonList()
     {
-      IDataPortal<PersonList> dataPortal = _testDIContext.CreateDataPortal<PersonList>();
+      IDataPortal<PersonList> dataPortal = _testHost.GetDataPortal<PersonList>();
       return dataPortal.Fetch(new PersonListBase.Criteria());
     }
 
     private PersonEdit CreatePersonEdit()
     {
-      IDataPortal<PersonEdit> dataPortal = _testDIContext.CreateDataPortal<PersonEdit>();
+      IDataPortal<PersonEdit> dataPortal = _testHost.GetDataPortal<PersonEdit>();
       return dataPortal.Create();
     }
   }

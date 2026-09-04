@@ -9,6 +9,7 @@
 using System.Data;
 using Csla.Data;
 using Csla.Test.DataBinding;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -19,12 +20,18 @@ namespace Csla.Test.DataAdapter
   {
     private const string ErrorReadingValueText = "Error reading value";
 
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -36,7 +43,7 @@ namespace Csla.Test.DataAdapter
     [TestMethod]
     public void Fill_BusinessObject_DoesNotWriteErrorForNullProperty()
     {
-      var dataPortal = _testDIContext.CreateDataPortal<ParentEntity>();
+      var dataPortal = _testHost.GetDataPortal<ParentEntity>();
       var entity = ParentEntity.NewParentEntity(dataPortal);
       entity.Data = "some data";
       Assert.IsNull(entity.Parent, "test precondition: root object has no parent");
@@ -60,7 +67,7 @@ namespace Csla.Test.DataAdapter
     [TestMethod]
     public void Fill_BusinessObject_SkipsNonBrowsableProperties()
     {
-      var dataPortal = _testDIContext.CreateDataPortal<ParentEntity>();
+      var dataPortal = _testHost.GetDataPortal<ParentEntity>();
       var entity = ParentEntity.NewParentEntity(dataPortal);
 
       var dt = new DataTable();
@@ -93,7 +100,7 @@ namespace Csla.Test.DataAdapter
     [TestMethod]
     public void Fill_BusinessList_ProducesOneRowPerItem()
     {
-      var dataPortal = _testDIContext.CreateDataPortal<ChildEntityList>();
+      var dataPortal = _testHost.GetDataPortal<ChildEntityList>();
       var list = dataPortal.Fetch(new object());
 
       var dt = new DataTable();

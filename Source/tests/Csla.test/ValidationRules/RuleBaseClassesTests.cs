@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Globalization;
 using Csla.Rules;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,7 +16,7 @@ namespace Csla.Test.ValidationRules
   [TestClass]
   public class RuleBaseClassesTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     /// <summary>
     ///Gets or sets the test context which provides
@@ -26,7 +27,13 @@ namespace Csla.Test.ValidationRules
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -79,7 +86,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]    
     public void LessThanSetsErrorOnBothFields()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       // StartDate less than 
       string ruleSet = "Date";
@@ -109,7 +116,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void AsyncLookupDoNotRunServerSide()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Lookup";
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
@@ -123,7 +130,7 @@ namespace Csla.Test.ValidationRules
     [TestCategory("SkipOnCIServer")]
     public void AsyncLookupCustomerSetsCustomerName()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Lookup";
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
@@ -145,7 +152,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NameRequiredIsBrokenOnNewRoot()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       // test that Name has broken rule on new object
       string ruleSet = "LookupAndNameRequired";
@@ -163,7 +170,7 @@ namespace Csla.Test.ValidationRules
     [TestCategory("SkipWhenLiveUnitTesting")]
     public void NameRequiredIsNotBrokenAfterLookupCustomer()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       // test that Name is revalidated as it is an affected property of LookupCustomer rule 
       // that runs when CustomerId is set.
@@ -186,7 +193,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NewObjectWithObjectRulesIsValid()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
@@ -196,7 +203,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NewObjectWithObjectRulesHas3ErrorForCustomerId4()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
@@ -209,7 +216,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NewObjectWithObjectRulesHas3WarningsForCustomerId5()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
@@ -222,7 +229,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void NewObjectWithObjectRulesHas3InfosForCustomerId6()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Object";
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);
@@ -238,7 +245,7 @@ namespace Csla.Test.ValidationRules
     [TestMethod]
     public void MessageDelegateAndResources()
     {
-      IDataPortal<RuleBaseClassesRoot> dataPortal = _testDIContext.CreateDataPortal<RuleBaseClassesRoot>();
+      IDataPortal<RuleBaseClassesRoot> dataPortal = _testHost.GetDataPortal<RuleBaseClassesRoot>();
 
       string ruleSet = "Required";
       var actual = RuleBaseClassesRoot.NewEditableRoot(dataPortal, ruleSet);

@@ -8,6 +8,7 @@
 
 using System.Security.Claims;
 using Csla.Core;
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -20,12 +21,18 @@ namespace Csla.Test.Authorization
   [TestClass]
   public class ReadonlyAuthorizationTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context) {
       _ = context;
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     private static ClaimsPrincipal GetPrincipal(params string[] roles)
@@ -38,8 +45,8 @@ namespace Csla.Test.Authorization
 
     [TestMethod]
     public void WhenReadOnlyBaseHasAuthorizationRuleChecksDisabledThePropertiesShouldBeReadableEvenThoughIDontHaveTheNeededRule() {
-      var person = ReadOnlyPerson.GetReadOnlyPerson(_testDIContext);
-      ((IUseApplicationContext)person).ApplicationContext = _testDIContext.CreateTestApplicationContext();
+      var person = ReadOnlyPerson.GetReadOnlyPerson(_testHost);
+      ((IUseApplicationContext)person).ApplicationContext = _testHost.ApplicationContext;
 
       person.SetDisableCanReadAuthorizationChecks(isCanReadAuthorizationChecksDisabled: true);
 

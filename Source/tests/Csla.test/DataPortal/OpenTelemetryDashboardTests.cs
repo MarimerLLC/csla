@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 using Csla.Server;
 using Csla.Server.Dashboard;
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -11,12 +11,18 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class OpenTelemetryDashboardTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
     [TestMethod]
     public void OpenTelemetryDashboard_CanInstantiate()
@@ -53,7 +59,7 @@ namespace Csla.Test.DataPortal
     {
       // Arrange
       using var dashboard = new OpenTelemetryDashboard();
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       var result = new Server.DataPortalResult(applicationContext);
       var args = new InterceptArgs(
         typeof(string), 
@@ -116,7 +122,7 @@ namespace Csla.Test.DataPortal
     {
       // Arrange
       using var dashboard = new OpenTelemetryDashboard();
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
       
       // Act - Initialize multiple calls
       for (int i = 0; i < 5; i++)

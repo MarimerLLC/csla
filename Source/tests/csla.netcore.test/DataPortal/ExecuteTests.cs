@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.DataPortal
@@ -14,18 +14,24 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class ExecuteTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public async Task ExecuteCommand()
     {
-      var dp = _testDIContext.CreateDataPortal<ExecuteCommand>();
+      var dp = _testHost.GetDataPortal<ExecuteCommand>();
       var cmd = await dp.CreateAsync();
       cmd.Value = "abc";
       cmd = await dp.ExecuteAsync(cmd);
@@ -35,7 +41,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task ExecuteWithParameters()
     {
-      var dp = _testDIContext.CreateDataPortal<ExecuteCommand>();
+      var dp = _testHost.GetDataPortal<ExecuteCommand>();
       var cmd = await dp.ExecuteAsync("xyz");
       Assert.AreEqual("xyz", cmd.Value);
     }
@@ -43,7 +49,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task ExecuteCommandViaFactory()
     {
-      var dp = _testDIContext.CreateDataPortal<ExecuteCommandViaFactory>();
+      var dp = _testHost.GetDataPortal<ExecuteCommandViaFactory>();
       var cmd = await dp.CreateAsync();
       cmd.Value = "abc";
       cmd = await dp.ExecuteAsync(cmd);
@@ -53,7 +59,7 @@ namespace Csla.Test.DataPortal
     //[TestMethod]
     //public async Task ExecuteCommandViaFactoryWithParameters()
     //{
-    //  var dp = _testDIContext.CreateDataPortal<ExecuteCommandViaFactory>();
+    //  var dp = _testHost.GetDataPortal<ExecuteCommandViaFactory>();
     //  var cmd = await dp.ExecuteAsync("xyz");
     //  Assert.AreEqual("xyz", cmd.Value);
     //}

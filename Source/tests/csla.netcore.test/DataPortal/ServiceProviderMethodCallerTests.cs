@@ -8,7 +8,7 @@
 using System.Reflection;
 using Csla.Configuration;
 using Csla.Reflection;
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,20 +18,26 @@ namespace Csla.Test.DataPortal
   [TestClass]
   public class ServiceProviderMethodCallerTests
   {
-    private static TestDIContext _diContext = default!;
+    private static CslaTestHost _testHost = default!;
     private ServiceProviderMethodCaller _systemUnderTest = default!;
 
     [ClassInitialize]
     public static void ClassSetup(TestContext context)
     {
       _ = context;
-      _diContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
     public void TestSetup()
     {
-      _systemUnderTest = _diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+      _systemUnderTest = _testHost.ApplicationContext.CreateInstanceDI<ServiceProviderMethodCaller>();
     }
 
     [TestMethod]
@@ -65,7 +71,7 @@ namespace Csla.Test.DataPortal
     [DataRow(null)]
     public async Task FindMethodNullableCriteriaWithValueViaDataPortal(int? data)
     {
-      var obj = await _diContext.CreateDataPortal<NullableCriteria>().CreateAsync(data);
+      var obj = await _testHost.GetDataPortal<NullableCriteria>().CreateAsync(data);
 
       obj.Should().NotBeNull();
     }
@@ -188,7 +194,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task FindMethod_PrivateBase_Invoke()
     {
-      var portal = _diContext.CreateDataPortal<PrivateMethod>();
+      var portal = _testHost.GetDataPortal<PrivateMethod>();
       var obj = await portal.CreateAsync();
       obj = await portal.ExecuteAsync(obj);
 
@@ -271,18 +277,18 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task FindChildIntUpdate()
     {
-      var obj = await _diContext.CreateChildDataPortal<ModernChild>().CreateChildAsync();
+      var obj = await _testHost.GetChildDataPortal<ModernChild>().CreateChildAsync();
       object[] paramsArray = [123];
       var method = _systemUnderTest.FindDataPortalMethod<UpdateChildAttribute>(obj, paramsArray);
 
       method.Should().NotBeNull();
 
-      var dp = _diContext.CreateChildDataPortal<ModernChild>();
+      var dp = _testHost.GetChildDataPortal<ModernChild>();
       await dp.UpdateChildAsync(obj, 42);
 
       obj.Id.Should().Be(42);
 
-      obj = await _diContext.CreateChildDataPortal<ModernChild>().CreateChildAsync();
+      obj = await _testHost.GetChildDataPortal<ModernChild>().CreateChildAsync();
       await dp.UpdateChildAsync(obj, 123);
 
       obj.Id.Should().Be(123);
@@ -306,7 +312,7 @@ namespace Csla.Test.DataPortal
       method = _systemUnderTest.FindDataPortalMethod<FetchAttribute>(obj, [criteria]);
       Assert.IsNotNull(method, "ICriteriaBase");
 
-      var portal = _diContext.CreateDataPortal<Issue2109List>();
+      var portal = _testHost.GetDataPortal<Issue2109List>();
 
       obj = await portal.FetchAsync(new My2109Criteria());
       obj.Should().NotBeNull("Fetch with criteria.").And.Subject.First().Name.Should().Be("Csla.Test.DataPortal.My2109Criteria");
@@ -381,7 +387,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithIDataPortalFactoryInjection()
     {
-      var portal = _diContext.CreateDataPortal<DataPortalFactoryInjection>();
+      var portal = _testHost.GetDataPortal<DataPortalFactoryInjection>();
       var obj = await portal.CreateAsync();
 
       obj.Should().NotBeNull();
@@ -391,7 +397,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task FetchMethodWithIDataPortalFactoryInjection()
     {
-      var portal = _diContext.CreateDataPortal<DataPortalFactoryInjection>();
+      var portal = _testHost.GetDataPortal<DataPortalFactoryInjection>();
       var obj = await portal.FetchAsync(42);
 
       obj.Should().NotBeNull();
@@ -417,7 +423,7 @@ namespace Csla.Test.DataPortal
     public async Task InvokeMethodWithOptionalServiceInjection()
     {
       // Don't register the service - it should be null since AllowNull = true
-      var portal = _diContext.CreateDataPortal<OptionalServiceInjection>();
+      var portal = _testHost.GetDataPortal<OptionalServiceInjection>();
       var obj = await portal.CreateAsync();
 
       obj.Should().NotBeNull();
@@ -442,7 +448,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithNullableOptionalInjection_ServiceNotRegistered()
     {
-      var portal = _diContext.CreateDataPortal<NullableOptionalServiceInjection>();
+      var portal = _testHost.GetDataPortal<NullableOptionalServiceInjection>();
       var obj = await portal.CreateAsync();
 
       obj.Should().NotBeNull();
@@ -452,12 +458,12 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithNullableOptionalInjection_ServiceRegistered()
     {
-      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      using var hostWithService = CslaTestHost.Create(t => t.ConfigureServices(services =>
       {
         services.AddTransient<IOptionalService, FakeOptionalService>();
-      });
+      }));
 
-      var portal = contextWithService.CreateDataPortal<NullableOptionalServiceInjection>();
+      var portal = hostWithService.GetDataPortal<NullableOptionalServiceInjection>();
       var obj = await portal.CreateAsync();
 
       obj.Should().NotBeNull();
@@ -483,12 +489,12 @@ namespace Csla.Test.DataPortal
     public async Task InvokeMethodWithRequiredServiceInjection_ServiceRegistered()
     {
       // Create a context with the service registered
-      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      using var hostWithService = CslaTestHost.Create(t => t.ConfigureServices(services =>
       {
         services.AddTransient<IOptionalService, FakeOptionalService>();
-      });
+      }));
 
-      var portal = contextWithService.CreateDataPortal<RequiredServiceInjection>();
+      var portal = hostWithService.GetDataPortal<RequiredServiceInjection>();
       var obj = await portal.CreateAsync();
 
       obj.Should().NotBeNull();
@@ -498,7 +504,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithRequiredServiceInjection_ThrowsWhenServiceNotRegistered()
     {
-      var portal = _diContext.CreateDataPortal<RequiredServiceInjection>();
+      var portal = _testHost.GetDataPortal<RequiredServiceInjection>();
       
       // This should throw because the service is required but not registered
       // The exception might be wrapped in other exceptions from the data portal
@@ -522,8 +528,8 @@ namespace Csla.Test.DataPortal
     {
       // With legacy disabled, a subclass of a base with private [Execute]
       // should find the attributed Execute method via recursion, not the legacy DataPortal_Execute
-      var diContext = TestDIContextFactory.CreateContext(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false));
-      var caller = diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+      using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false)));
+      var caller = testHost.ApplicationContext.CreateInstanceDI<ServiceProviderMethodCaller>();
 
       var found = caller.TryFindDataPortalMethod<ExecuteAttribute>(typeof(LegacyDisabledConcrete), null, out var method);
 
@@ -535,8 +541,8 @@ namespace Csla.Test.DataPortal
     public void FindLegacyOnlyMethod_Disabled_NoFallback()
     {
       // A class using only DataPortal_Create (no attributes) should not be found when legacy is disabled
-      var diContext = TestDIContextFactory.CreateContext(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false));
-      var caller = diContext.CreateTestApplicationContext().CreateInstanceDI<ServiceProviderMethodCaller>();
+      using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false)));
+      var caller = testHost.ApplicationContext.CreateInstanceDI<ServiceProviderMethodCaller>();
 
       var found = caller.TryFindDataPortalMethod<CreateAttribute>(typeof(LegacyOnlyCreate), null, out var method);
 
@@ -563,12 +569,12 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithKeyedServiceInjection()
     {
-      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      using var hostWithService = CslaTestHost.Create(t => t.ConfigureServices(services =>
       {
         services.AddKeyedTransient<IOptionalService, ServiceAImplementation>("serviceA");
-      });
+      }));
 
-      var portal = contextWithService.CreateDataPortal<KeyedServiceInjection>();
+      var portal = hostWithService.GetDataPortal<KeyedServiceInjection>();
       var obj = await portal.CreateAsync();
 
       obj.Should().NotBeNull();
@@ -595,12 +601,12 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithKeyedServiceAndCriteriaInjection()
     {
-      var contextWithService = TestDIContextFactory.CreateDefaultContext(services =>
+      using var hostWithService = CslaTestHost.Create(t => t.ConfigureServices(services =>
       {
         services.AddKeyedTransient<IOptionalService, ServiceBImplementation>("serviceB");
-      });
+      }));
 
-      var portal = contextWithService.CreateDataPortal<KeyedServiceWithCriteriaInjection>();
+      var portal = hostWithService.GetDataPortal<KeyedServiceWithCriteriaInjection>();
       var obj = await portal.CreateAsync(42);
 
       obj.Should().NotBeNull();
@@ -611,7 +617,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithOptionalKeyedServiceInjection_ServiceNotRegistered()
     {
-      var portal = _diContext.CreateDataPortal<OptionalKeyedServiceInjection>();
+      var portal = _testHost.GetDataPortal<OptionalKeyedServiceInjection>();
       var obj = await portal.CreateAsync();
 
       obj.Should().NotBeNull();
@@ -621,7 +627,7 @@ namespace Csla.Test.DataPortal
     [TestMethod]
     public async Task InvokeMethodWithKeyedServiceInjection_ThrowsWhenServiceNotRegistered()
     {
-      var portal = _diContext.CreateDataPortal<KeyedServiceInjection>();
+      var portal = _testHost.GetDataPortal<KeyedServiceInjection>();
       
       // This should throw because the keyed service is required but not registered
       // The exception will be wrapped in DataPortalException

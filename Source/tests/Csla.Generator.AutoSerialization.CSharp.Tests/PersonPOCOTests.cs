@@ -8,7 +8,7 @@
 using Csla.Generator.AutoSerialization.CSharp.TestObjects;
 using Csla.Generator.AutoSerialization.CSharp.Tests.Helpers;
 using Csla.Serialization.Mobile;
-using Csla.TestHelpers;
+using Csla.Testing;
 
 namespace Csla.Generator.AutoSerialization.CSharp.Tests
 {
@@ -19,14 +19,20 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
   [TestClass]
   public class PersonPOCOTests
   {
-    private static TestDIContext _testDIContext = default!;
+    private static CslaTestHost _testHost = default!;
 
     private SerializationInfo _serializationInfo = default!;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -350,7 +356,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     [TestMethod]
     public void GetChildren_WithAddress1HighStreet_IncludesAddressKey()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
 
       // Arrange
       bool expected = true;
@@ -373,7 +379,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     [TestMethod]
     public void GetChildren_WithEmailAddress_IncludesEmailAddressKey()
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
 
       // Arrange
       bool expected = true;
@@ -669,7 +675,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
     /// <returns>The PersonPOCO that results from serialization then deserialization</returns>
     private PersonPOCO SerializeThenDeserialisePersonPOCO(PersonPOCO valueToSerialize)
     {
-      var applicationContext = _testDIContext.CreateTestApplicationContext();
+      var applicationContext = _testHost.ApplicationContext;
 
       System.IO.MemoryStream serializationStream;
       PersonPOCO deserializedValue;

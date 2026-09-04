@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Serialization;
-using Csla.TestHelpers;
+using Csla.Testing;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,12 +18,18 @@ namespace Csla.Test.BusinessListBase
   [TestClass]
   public class BusinessListBaseTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
@@ -261,7 +267,7 @@ namespace Csla.Test.BusinessListBase
 
       static Root SimulateLocationTransfer(Root original)
       {
-        var serializer = _testDIContext.ServiceProvider.GetRequiredService<ISerializationFormatter>();
+        var serializer = _testHost.Services.GetRequiredService<ISerializationFormatter>();
         return (Root)serializer.Deserialize(serializer.Serialize(original));
       }
     }
@@ -462,28 +468,28 @@ namespace Csla.Test.BusinessListBase
 
     private static Root CreateRoot()
     {
-      IDataPortal<Root> dataPortal = _testDIContext.CreateDataPortal<Root>();
+      IDataPortal<Root> dataPortal = _testHost.GetDataPortal<Root>();
 
       return dataPortal.Create();
     }
 
     private RootList CreateRootList()
     {
-      IDataPortal<RootList> dataPortal = _testDIContext.CreateDataPortal<RootList>();
+      IDataPortal<RootList> dataPortal = _testHost.GetDataPortal<RootList>();
 
       return dataPortal.Create();
     }
 
     private ChildList CreateChildList()
     {
-      IChildDataPortal<ChildList> childDataPortal = _testDIContext.CreateChildDataPortal<ChildList>();
+      IChildDataPortal<ChildList> childDataPortal = _testHost.GetChildDataPortal<ChildList>();
 
       return childDataPortal.CreateChild();
     }
 
     private Child CreateChild()
     {
-      IChildDataPortal<Child> childDataPortal = _testDIContext.CreateChildDataPortal<Child>();
+      IChildDataPortal<Child> childDataPortal = _testHost.GetChildDataPortal<Child>();
 
       return childDataPortal.CreateChild();
     }

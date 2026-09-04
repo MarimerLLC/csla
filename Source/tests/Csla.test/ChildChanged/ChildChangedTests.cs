@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
 
@@ -19,7 +19,7 @@ namespace Csla.Test.ChildChanged
   [TestClass]
   public class ChildChangedTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
@@ -28,13 +28,19 @@ namespace Csla.Test.ChildChanged
 
       services.AddCsla(o => o.Binding(bo => bo.PropertyChangedMode = ApplicationContext.PropertyChangedModes.Windows));
       services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public void SingleRoot()
     {
-      IDataPortal<SingleRoot> dataPortal = _testDIContext.CreateDataPortal<SingleRoot>();
+      IDataPortal<SingleRoot> dataPortal = _testHost.GetDataPortal<SingleRoot>();
       
       bool pc = false;
       bool cc = false;
@@ -56,7 +62,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void SingleChild()
     {
-      IDataPortal<SingleChild> dataPortal = _testDIContext.CreateDataPortal<SingleChild>();
+      IDataPortal<SingleChild> dataPortal = _testHost.GetDataPortal<SingleChild>();
 
       bool pc = false;
       bool cc = false;
@@ -78,7 +84,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void GrandChild()
     {
-      IDataPortal<Grandchild> dataPortal = _testDIContext.CreateDataPortal<Grandchild>();
+      IDataPortal<Grandchild> dataPortal = _testHost.GetDataPortal<Grandchild>();
 
       bool pc = false;
       bool cc = false;
@@ -115,8 +121,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void SingleList()
     {
-      IDataPortal<SingleList> listDataPortal = _testDIContext.CreateDataPortal<SingleList>();
-      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
+      IDataPortal<SingleList> listDataPortal = _testHost.GetDataPortal<SingleList>();
+      var dataPortal = _testHost.GetChildDataPortal<SingleRoot>();
 
       int lc = 0;
       int cc = 0;
@@ -142,8 +148,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void SingleList_Serialized()
     {
-      var listDataPortal = _testDIContext.CreateDataPortal<SingleList>();
-      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
+      var listDataPortal = _testHost.GetDataPortal<SingleList>();
+      var dataPortal = _testHost.GetChildDataPortal<SingleRoot>();
 
       int lc = 0;
       int cc = 0;
@@ -172,8 +178,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void ContainedList()
     {
-      IDataPortal<ContainsList> listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
-      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
+      IDataPortal<ContainsList> listDataPortal = _testHost.GetDataPortal<ContainsList>();
+      var dataPortal = _testHost.GetChildDataPortal<SingleRoot>();
 
       int lc = 0;
       int rcc = 0;
@@ -209,8 +215,8 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void ContainedList_Serialized()
     {
-      var listDataPortal = _testDIContext.CreateDataPortal<ContainsList>();
-      var singleRootPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
+      var listDataPortal = _testHost.GetDataPortal<ContainsList>();
+      var singleRootPortal = _testHost.GetChildDataPortal<SingleRoot>();
       
       int lc = 0;
       int rcc = 0;
@@ -248,9 +254,9 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void ListOfLists()
     {
-      IDataPortal<ListContainerList> listContainerDataPortal = _testDIContext.CreateDataPortal<ListContainerList>();
-      var listDataPortal = _testDIContext.CreateChildDataPortal<ContainsList>();
-      var dataPortal = _testDIContext.CreateChildDataPortal<SingleRoot>();
+      IDataPortal<ListContainerList> listContainerDataPortal = _testHost.GetDataPortal<ListContainerList>();
+      var listDataPortal = _testHost.GetChildDataPortal<ContainsList>();
+      var dataPortal = _testHost.GetChildDataPortal<SingleRoot>();
       
       bool rcc = false;
       bool ccc = false;
@@ -298,7 +304,7 @@ namespace Csla.Test.ChildChanged
     [TestMethod]
     public void SimpleMetaState()
     {
-      IDataPortal<MetaState> portal = _testDIContext.CreateDataPortal<MetaState>();
+      IDataPortal<MetaState> portal = _testHost.GetDataPortal<MetaState>();
       var obj = portal.Create();
       var propertyCount = 0;
       var childCount = 0;

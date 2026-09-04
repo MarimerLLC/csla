@@ -8,6 +8,7 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Serialization.Mobile;
+using Csla.Testing;
 using Csla.TestHelpers;
 
 namespace Csla.Test.Serialization
@@ -15,12 +16,18 @@ namespace Csla.Test.Serialization
   [TestClass]
   public class ReadOnlyBindingListBaseMetastateTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -33,7 +40,7 @@ namespace Csla.Test.Serialization
     public void ReadOnlyBindingListBase_GetSetMetastate_IsReadOnly_RoundTrip()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyBindingList>();
+      var dataPortal = _testHost.GetDataPortal<TestReadOnlyBindingList>();
       var original = dataPortal.Fetch();
       
       // The list should be readonly by default
@@ -59,7 +66,7 @@ namespace Csla.Test.Serialization
     public void ReadOnlyBindingListBase_GetSetMetastate_IsReadOnly_False()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyBindingList>();
+      var dataPortal = _testHost.GetDataPortal<TestReadOnlyBindingList>();
       var original = dataPortal.Fetch();
       
       // Unlock the list to test IsReadOnly = false
@@ -86,7 +93,7 @@ namespace Csla.Test.Serialization
     public void ReadOnlyBindingListBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
-      var dataPortal = _testDIContext.CreateDataPortal<TestReadOnlyBindingList>();
+      var dataPortal = _testHost.GetDataPortal<TestReadOnlyBindingList>();
       var list = dataPortal.Fetch();
 
       // Act

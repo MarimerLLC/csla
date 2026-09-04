@@ -1,23 +1,29 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Csla.TestHelpers;
+using Csla.Testing;
 
 namespace Csla.Test.ValidationRules
 {
   [TestClass]
   public class RuleTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestMethod]
     public async Task CleanupWhenAddBusinessRulesThrowsException()
     {
-      IDataPortal<RootThrowsException> dataPortal = _testDIContext.CreateDataPortal<RootThrowsException>();
+      IDataPortal<RootThrowsException> dataPortal = _testHost.GetDataPortal<RootThrowsException>();
 
       RootThrowsException.Counter = 0;
 

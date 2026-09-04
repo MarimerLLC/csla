@@ -6,7 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
-using Csla.TestHelpers;
+using Csla.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Authorization
@@ -22,8 +22,8 @@ namespace Csla.Test.Authorization
     [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void DenyWritePerType()
     {
-      TestDIContext testDIContext = TestDIContextFactory.CreateContext(new System.Security.Claims.ClaimsPrincipal());
-      IDataPortal<PerTypeAuthorization> dataPortal = testDIContext.CreateDataPortal<PerTypeAuthorization>();
+      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(new System.Security.Claims.ClaimsPrincipal()));
+      IDataPortal<PerTypeAuthorization> dataPortal = testHost.GetDataPortal<PerTypeAuthorization>();
 
       PerTypeAuthorization root = dataPortal.Create();
       root.Test = "test";

@@ -6,6 +6,7 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,12 +15,18 @@ namespace Csla.Test.PropertyInfo
   [TestClass]
   public class PropertyInfoTests
   {
-    private static TestDIContext _testDIContext;
+    private static CslaTestHost _testHost;
 
     [ClassInitialize]
     public static void ClassInitialize(TestContext context)
     {
-      _testDIContext = TestDIContextFactory.CreateDefaultContext();
+      _testHost = CslaTestHost.Create();
+    }
+
+    [ClassCleanup]
+    public static void ClassCleanup()
+    {
+      _testHost?.Dispose();
     }
 
     [TestInitialize]
@@ -55,7 +62,7 @@ namespace Csla.Test.PropertyInfo
     [TestMethod]
     public void TestDefaultValue()
     {
-      IDataPortal<PropertyInfoRoot> dataPortal = _testDIContext.CreateDataPortal<PropertyInfoRoot>();
+      IDataPortal<PropertyInfoRoot> dataPortal = _testHost.GetDataPortal<PropertyInfoRoot>();
 
       Assert.AreEqual("x", PropertyInfoRoot.NameDefaultValueProperty.DefaultValue);
       Assert.AreEqual("x", PropertyInfoRoot.NewPropertyInfoRoot(dataPortal).NameDefaultValue);
@@ -64,7 +71,7 @@ namespace Csla.Test.PropertyInfo
     [TestMethod]
     public void TestStringNullDefaultValue()
     {
-      IDataPortal<PropertyInfoRoot> dataPortal = _testDIContext.CreateDataPortal<PropertyInfoRoot>();
+      IDataPortal<PropertyInfoRoot> dataPortal = _testHost.GetDataPortal<PropertyInfoRoot>();
 
       Assert.AreEqual(null, PropertyInfoRoot.StringNullDefaultValueProperty.DefaultValue);
       Assert.AreEqual(null, PropertyInfoRoot.NewPropertyInfoRoot(dataPortal).StringNullDefaultValue);

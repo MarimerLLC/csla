@@ -1,0 +1,55 @@
+<UserControl
+    x:Class="CslaAvaloniaExample.Views.PersonEditPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:csla="clr-namespace:Csla.Xaml;assembly=Csla.Xaml">
+
+  <ScrollViewer>
+    <StackPanel Margin="24" Spacing="14" MaxWidth="640">
+
+      <TextBlock Text="Person Edit"
+                 FontSize="26"
+                 FontWeight="Bold" />
+
+      <!--
+        The view DataContext is PersonEditViewModel.
+        This panel switches to the CSLA business object itself so PropertyInfo
+        and the editor share the same DataContext.
+      -->
+      <StackPanel DataContext="{Binding Model}" Spacing="8">
+        <TextBlock Text="Name" FontWeight="SemiBold" />
+
+        <TextBox Text="{Binding Name, Mode=TwoWay}"
+                 Watermark="Name" />
+
+        <csla:PropertyInfo Path="Name" x:Name="NameInfo" />
+
+        <Border Padding="10" BorderThickness="1" CornerRadius="4">
+          <StackPanel Spacing="4">
+            <TextBlock Text="{Binding #NameInfo.ErrorText}" />
+            <TextBlock Text="{Binding #NameInfo.WarningText}" />
+            <TextBlock Text="{Binding #NameInfo.InformationText}" />
+
+            <TextBlock>
+              <Run Text="Valid: " />
+              <Run Text="{Binding #NameInfo.IsValid}" />
+            </TextBlock>
+
+            <TextBlock>
+              <Run Text="Broken rules: " />
+              <Run Text="{Binding #NameInfo.BrokenRules.Count}" />
+            </TextBlock>
+          </StackPanel>
+        </Border>
+
+        <StackPanel Orientation="Horizontal" Spacing="8">
+          <Button Content="Save"
+                  IsEnabled="{Binding IsSavable}"
+                  Click="SavePerson" />
+          <Button Content="New"
+                  Click="NewPerson" />
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

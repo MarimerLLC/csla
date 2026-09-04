@@ -18,6 +18,9 @@ using Windows.UI.Xaml.Data;
 #elif XAMARIN
 using Xamarin.Forms;
 #elif MAUI
+#elif AVALONIA
+using Avalonia;
+using Avalonia.Controls;
 #else
 using System.Windows;
 using System.Windows.Data;
@@ -28,13 +31,15 @@ namespace Csla.Xaml
   /// <summary>
   /// Expose metastate information about a property.
   /// </summary>
-#if MAUI
+#if MAUI 
   public class PropertyInfo : ContentView, INotifyPropertyChanged
   {
-#elif XAMARIN
+#elif XAMARIN 
   public class PropertyInfo : View, INotifyPropertyChanged
   {
-
+#elif AVALONIA
+  public class PropertyInfo : UserControl, INotifyPropertyChanged
+  {
 #else
   public class PropertyInfo : FrameworkElement, INotifyPropertyChanged
   {
@@ -51,6 +56,10 @@ namespace Csla.Xaml
 #if XAMARIN || MAUI
       _loading = false;
       BindingContextChanged += (o, e) => SetSource();
+      UpdateState();
+#elif AVALONIA
+      _loading = false;
+      DataContextChanged += (o, e) => SetSource();
       UpdateState();
 #else
       Visibility = Visibility.Collapsed;
@@ -95,6 +104,26 @@ namespace Csla.Xaml
       get => (ObservableCollection<BrokenRule>)this.GetValue(BrokenRulesProperty);
       set => SetValue(BrokenRulesProperty, value ?? throw new ArgumentNullException(nameof(BrokenRules)));
     }
+#elif AVALONIA
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
+    public static readonly StyledProperty<ObservableCollection<BrokenRule>> BrokenRulesProperty =
+      AvaloniaProperty.Register<PropertyInfo, ObservableCollection<BrokenRule>>(
+        nameof(BrokenRules));
+
+    /// <summary>
+    /// Gets the broken rules collection from the
+    /// business object.
+    /// </summary>
+    public ObservableCollection<BrokenRule> BrokenRules
+    {
+      get => GetValue(BrokenRulesProperty);
+      set => SetValue(
+        BrokenRulesProperty,
+        value ?? throw new ArgumentNullException(nameof(BrokenRules)));
+    }
 #else
     /// <summary>
     /// Gets the broken rules collection from the
@@ -121,7 +150,7 @@ namespace Csla.Xaml
 
     #region MyDataContext Property
 
-#if XAMARIN || MAUI
+#if XAMARIN || MAUI || AVALONIA
 #else
     /// <summary>
     /// Used to monitor for changes in the binding path.
@@ -146,7 +175,7 @@ namespace Csla.Xaml
 
     #region RelativeBinding Property
 
-#if XAMARIN || MAUI
+#if XAMARIN || MAUI || AVALONIA
 #else
 
     /// <summary>
@@ -184,7 +213,7 @@ namespace Csla.Xaml
     /// <value>The binding path.</value>
     protected string BindingPath { get; set; } = string.Empty;
 
-#if XAMARIN || MAUI
+#if XAMARIN || MAUI || AVALONIA
     private string? _bindingPath;
     /// <summary>
     /// Gets or sets the binding path used to bind this
@@ -196,10 +225,13 @@ namespace Csla.Xaml
       get => _bindingPath;
       set
       {
-        if (_bindingPath != value)
         {
           _bindingPath = value;
+#if AVALONIA
+          OnPropertyChanged(nameof(Path));
+#else
           OnPropertyChanged();
+#endif
           SetSource();
         }
       }
@@ -243,7 +275,11 @@ namespace Csla.Xaml
         item.DetachHandlers();
       _sources.Clear();
       var oldSource = Source;
+#if AVALONIA
+      Source = DataContext;
+#else
       Source = BindingContext;
+#endif
       BindingPath = Path ?? "";
       if (Source != null && !string.IsNullOrWhiteSpace(BindingPath))
       {
@@ -261,7 +297,11 @@ namespace Csla.Xaml
         catch (Exception ex)
         {
           throw new InvalidOperationException(
-            string.Format("SetSource: BindingContext:{0}, Path={1}", BindingPath.GetType().Name, Path), ex);
+#if AVALONIA
+            $"SetSource: DataContext:{DataContext?.GetType().Name ?? "null"}, Path={Path}", ex);
+#else          
+            string.Format("SetSource: BindingContext:{0}, Path={1}", BindingContext?.GetType().Name ?? "null", Path), ex);
+#endif
         }
       }
       HandleSourceEvents(oldSource, Source);
@@ -883,7 +923,22 @@ namespace Csla.Xaml
 
     #region INotifyPropertyChanged Members
 
-#if !XAMARIN && !MAUI
+#if AVALONIA
+    /// <summary>
+    /// Event raised when a CLR property has changed.
+    /// </summary>
+    public new event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>
+    /// Raises the INotifyPropertyChanged event for CLR properties.
+    /// </summary>
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+      PropertyChanged?.Invoke(
+        this,
+        new PropertyChangedEventArgs(propertyName));
+    }
+#elif !XAMARIN && !MAUI && !AVALONIA 
     /// <summary>
     /// Event raised when a property has changed.
     /// </summary>

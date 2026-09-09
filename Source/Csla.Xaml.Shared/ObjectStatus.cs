@@ -1,4 +1,4 @@
-#if !XAMARIN && !WINDOWS_UWP && !MAUI
+#if !XAMARIN && !WINDOWS_UWP && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="ObjectStatus.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.

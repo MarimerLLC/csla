@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\Directory.Package.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <AssemblyName>Csla.Xaml</AssemblyName>
+        <RootNamespace>Csla.Xaml</RootNamespace>
+
+        <DefineConstants>$(DefineConstants);AVALONIA</DefineConstants>
+
+        <Title>CSLA .NET for Avalonia</Title>
+        <PackageTags>CSLA;Business;Avalonia;XAML</PackageTags>
+        <PackageId>Csla.Avalonia</PackageId>
+
+        <Nullable>enable</Nullable>
+        <WarningsAsErrors>nullable</WarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="12.1.1" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)'=='Release'">
+        <PackageReference Include="Csla" Version="10.0.0" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)'!='Release'">
+        <ProjectReference Include="..\Csla\Csla.csproj" />
+    </ItemGroup>
+
+    <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems"
+            Label="Shared" />
+
+</Project>

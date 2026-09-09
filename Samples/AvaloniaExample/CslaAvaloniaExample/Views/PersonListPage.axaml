@@ -1,0 +1,26 @@
+<UserControl
+    x:Class="CslaAvaloniaExample.Views.PersonListPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <StackPanel Margin="24" Spacing="14">
+    <TextBlock Text="Person List"
+               FontSize="26"
+               FontWeight="Bold" />
+
+    <ListBox ItemsSource="{Binding Model}">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Grid ColumnDefinitions="80,*" Margin="4">
+            <TextBlock Grid.Column="0" Text="{Binding Id}" />
+            <TextBlock Grid.Column="1" Text="{Binding Name}" />
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <Button Content="Refresh"
+            HorizontalAlignment="Left"
+            Click="RefreshList" />
+  </StackPanel>
+</UserControl>

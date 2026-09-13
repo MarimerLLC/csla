@@ -1,35 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\Directory.Package.props" />
 
-    <Import Project="..\Directory.Package.props" />
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Csla.Xaml</AssemblyName>
+    <RootNamespace>Csla.Xaml</RootNamespace>
+    <PackageId>Csla.Avalonia</PackageId>
+    <Product>CSLA .NET Avalonia</Product>
+    <Description>UI helpers for using CSLA .NET business types with Avalonia.</Description>
+    <SignAssembly>true</SignAssembly>
+    <BaseOutputPath>..\..\Bin</BaseOutputPath>
+    <DefineConstants>$(DefineConstants);AVALONIA</DefineConstants>
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <AssemblyName>Csla.Xaml</AssemblyName>
-        <RootNamespace>Csla.Xaml</RootNamespace>
+    <Title>CSLA .NET Avalonia</Title>
+    <PackageTags>CSLA;Avalonia;XAML</PackageTags>
+  </PropertyGroup>
 
-        <DefineConstants>$(DefineConstants);AVALONIA</DefineConstants>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.1" />
+  </ItemGroup>
 
-        <Title>CSLA .NET for Avalonia</Title>
-        <PackageTags>CSLA;Business;Avalonia;XAML</PackageTags>
-        <PackageId>Csla.Avalonia</PackageId>
+  <ItemGroup>
+    <ProjectReference Include="..\Csla\Csla.csproj" />
+  </ItemGroup>
 
-        <Nullable>enable</Nullable>
-        <WarningsAsErrors>nullable</WarningsAsErrors>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Avalonia" Version="12.1.1" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(Configuration)'=='Release'">
-        <PackageReference Include="Csla" Version="10.0.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(Configuration)'!='Release'">
-        <ProjectReference Include="..\Csla\Csla.csproj" />
-    </ItemGroup>
-
-    <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems"
-            Label="Shared" />
+  <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
 
 </Project>

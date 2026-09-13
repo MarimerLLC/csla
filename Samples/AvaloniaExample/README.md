@@ -1,14 +1,21 @@
 # CSLA Avalonia Example
 
 This sample is a small Avalonia desktop application used to exercise the
-`Csla.Xaml.Avalonia` implementation against real CSLA business objects.
+`Csla.Avalonia` package against real CSLA business objects.
 
 ## Projects
 
 - `DataAccess` — in-memory `IPersonDal` implementation.
 - `BusinessLibrary` — `PersonEdit`, `PersonInfo`, and `PersonList` CSLA objects.
-- `CslaAvaloniaExample` — Avalonia desktop UI using the local `Csla.Xaml.Avalonia` project.
+- `CslaAvaloniaExample` — Avalonia desktop UI using the `Csla.Avalonia` package.
 - `CslaAvaloniaExample.Tests` — Avalonia headless tests for CSLA/Avalonia integration.
+
+## Package versions
+
+Package versions are managed centrally in `Directory.Packages.props`. The CSLA
+packages use the `CslaVersion` property, so to run the sample against a different
+CSLA build (for example, packages you packed locally from `Source/csla.build.sln`),
+change that value and make sure the package source is available to NuGet.
 
 ## Run the sample
 

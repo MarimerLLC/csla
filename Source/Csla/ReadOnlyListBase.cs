@@ -24,7 +24,7 @@ namespace Csla
   /// <typeparam name="C">Type of child objects contained in the list.</typeparam>
   [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class ReadOnlyListBase<T, C> :
+  public abstract partial class ReadOnlyListBase<T, C> :
 #if ANDROID || IOS
     Core.ReadOnlyBindingList<C>,
 #else

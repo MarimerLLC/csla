@@ -1,0 +1,98 @@
+//-----------------------------------------------------------------------
+// <copyright file="DataPortalOperationsTestHelper.cs" company="Marimer LLC">
+//     Copyright (c) Marimer LLC. All rights reserved.
+//     Website: https://cslanet.com
+// </copyright>
+//-----------------------------------------------------------------------
+using FluentAssertions;
+using FluentAssertions.Execution;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+
+namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations
+{
+  public static class DataPortalOperationsTestHelper<T> where T : IIncrementalGenerator, new()
+  {
+    /// <summary>
+    /// Runs the generator and verifies the output against snapshots,
+    /// asserting the generator reports no diagnostics and the resulting
+    /// compilation has no errors or warnings.
+    /// </summary>
+    public static Task Verify(string source, IEnumerable<string>? additionalSources = null)
+    {
+      var (driver, outputCompilation, diagnostics) = Run(source, additionalSources);
+
+      using (new AssertionScope())
+      {
+        outputCompilation.GetDiagnostics()
+          .Where(d => d.Severity == DiagnosticSeverity.Error
+            || (d.Severity == DiagnosticSeverity.Warning && IsGenerated(d)))
+          .Should().BeEmpty();
+        diagnostics.Should().BeEmpty();
+      }
+
+      return Verifier.Verify(driver).UseDirectory("Snapshots");
+    }
+
+    /// <summary>
+    /// Runs the generator and verifies the output, including any generator
+    /// diagnostics, against snapshots. The resulting compilation must have no errors.
+    /// </summary>
+    public static Task VerifyWithDiagnostics(string source, IEnumerable<string>? additionalSources = null)
+    {
+      var (driver, outputCompilation, _) = Run(source, additionalSources);
+
+      outputCompilation.GetDiagnostics()
+        .Where(d => d.Severity == DiagnosticSeverity.Error)
+        .Should().BeEmpty();
+
+      return Verifier.Verify(driver).UseDirectory("Snapshots");
+    }
+
+    /// <summary>
+    /// Creates the compilation and generator driver used by the tests.
+    /// </summary>
+    public static (GeneratorDriver Driver, CSharpCompilation Compilation) Setup(string source, IEnumerable<string>? additionalSources = null, bool trackSteps = false)
+    {
+      var syntaxTrees = new List<SyntaxTree>
+      {
+        CSharpSyntaxTree.ParseText(source, path: "Source0.cs")
+      };
+
+      var index = 1;
+      foreach (var additionalSource in additionalSources ?? [])
+        syntaxTrees.Add(CSharpSyntaxTree.ParseText(additionalSource, path: $"Source{index++}.cs"));
+
+      var references = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
+        .Select(a => MetadataReference.CreateFromFile(a.Location))
+        .Concat([
+          MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location)
+        ]);
+
+      var compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        .WithNullableContextOptions(NullableContextOptions.Enable)
+        .WithSpecificDiagnosticOptions(new Dictionary<string, ReportDiagnostic> { { "CS8019", ReportDiagnostic.Suppress } });
+
+      var compilation = CSharpCompilation.Create(
+        assemblyName: "Tests",
+        syntaxTrees: syntaxTrees,
+        references: references,
+        options: compilationOptions);
+
+      var driverOptions = new GeneratorDriverOptions(IncrementalGeneratorOutputKind.None, trackIncrementalGeneratorSteps: trackSteps);
+      GeneratorDriver driver = CSharpGeneratorDriver.Create([new T().AsSourceGenerator()], driverOptions: driverOptions);
+      return (driver, compilation);
+    }
+
+    private static bool IsGenerated(Diagnostic diagnostic)
+      => diagnostic.Location.SourceTree?.FilePath.EndsWith(".g.cs", StringComparison.Ordinal) == true;
+
+    private static (GeneratorDriver Driver, Compilation OutputCompilation, System.Collections.Immutable.ImmutableArray<Diagnostic> Diagnostics) Run(string source, IEnumerable<string>? additionalSources)
+    {
+      var (driver, compilation) = Setup(source, additionalSources);
+      driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
+      return (driver, outputCompilation, diagnostics);
+    }
+  }
+}

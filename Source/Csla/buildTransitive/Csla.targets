@@ -1,0 +1,15 @@
+<Project>
+  <!--
+    CSLA 11 bundles its source generators in the Csla package.
+    The standalone Csla.Generator.AutoImplementProperties.CSharp package
+    is retired; referencing it alongside Csla would run the generators twice.
+  -->
+  <Target Name="CslaCheckRetiredGeneratorPackage" BeforeTargets="BeforeBuild;CoreCompile">
+    <ItemGroup>
+      <_CslaRetiredGeneratorPackage Include="@(PackageReference)" Condition="'%(Identity)' == 'Csla.Generator.AutoImplementProperties.CSharp'" />
+    </ItemGroup>
+    <Error Condition="'@(_CslaRetiredGeneratorPackage)' != ''"
+           Code="CSLABUILD001"
+           Text="The Csla.Generator.AutoImplementProperties.CSharp package is retired. Starting with CSLA 11 its source generators are included in the Csla package. Remove the PackageReference to Csla.Generator.AutoImplementProperties.CSharp (and any matching PackageVersion entry)." />
+  </Target>
+</Project>

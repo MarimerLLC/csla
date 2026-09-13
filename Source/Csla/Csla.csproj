@@ -116,7 +116,8 @@
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" ReferenceOutputAssembly="true" OutputItemType="Analyzer" PrivateAssets="all" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <None Update="buildTransitive\Csla.targets" Pack="true" PackagePath="buildTransitive\" />
+    <None Remove="buildTransitive\Csla.targets" />
+    <None Include="buildTransitive\Csla.targets" Pack="true" PackagePath="buildTransitive\" />
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

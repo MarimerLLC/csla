@@ -12,6 +12,10 @@ jobs:
 
     runs-on: windows-latest
 
+    # The nuget-release environment only allows release/* branches and requires
+    # approval; the nuget.org trusted publishing policy requires this environment.
+    environment: nuget-release
+
     permissions:
       contents: read
       id-token: write # required for NuGet trusted publishing (OIDC)

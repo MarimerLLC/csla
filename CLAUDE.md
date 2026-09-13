@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-CSLA .NET is a business object framework for .NET. Current version is **10.1.0** (set via Nerdbank.GitVersioning in `Source/version.json`). The core package targets `netstandard2.0`, `net462`, `net472`, `net48`, `net8.0`, `net9.0`, and `net10.0`. Requires **.NET SDK 10.0.100+** (see `Source/global.json`).
+CSLA .NET is a business object framework for .NET. `main` is version **11.0.0** in development (set via Nerdbank.GitVersioning in `Source/version.json`); version 10 maintenance happens on the `v10.x` branch. The core package targets `netstandard2.0`, `net462`, `net472`, `net48`, `net8.0`, `net9.0`, and `net10.0`. Requires **.NET SDK 10.0.100+** (see `Source/global.json`).
 
 ## Build and Test Commands
 

@@ -12,6 +12,10 @@ jobs:
 
     runs-on: windows-latest
 
+    permissions:
+      contents: read
+      id-token: write # required for NuGet trusted publishing (OIDC)
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -28,5 +32,13 @@ jobs:
     - name: Build and Pack
       run: dotnet pack Source\csla.build.sln --configuration Release -p:PublicRelease=true
 
+    # Exchange the GitHub OIDC token for a short-lived (1 hour) nuget.org API key.
+    # Requires a trusted publishing policy on nuget.org for this workflow file.
+    - name: NuGet login
+      uses: NuGet/login@v1
+      id: login
+      with:
+        user: rockfordlhotka
+
     - name: Push NuGet packages
-      run: dotnet nuget push bin\packages\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push bin\packages\*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate

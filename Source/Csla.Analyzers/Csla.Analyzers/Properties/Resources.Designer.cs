@@ -549,5 +549,50 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("Shared_AddAttributeDescription", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Make type partial.
+        /// </summary>
+        internal static string TypeWithOperationsShouldBePartial_AddPartialDescription {
+            get {
+                return ResourceManager.GetString("TypeWithOperationsShouldBePartial_AddPartialDescription", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type &apos;{0}&apos; has data portal operation methods and should be declared partial so the CSLA source generator can implement its operations interface.
+        /// </summary>
+        internal static string TypeWithOperationsShouldBePartial_Message {
+            get {
+                return ResourceManager.GetString("TypeWithOperationsShouldBePartial_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type with data portal operation methods should be partial.
+        /// </summary>
+        internal static string TypeWithOperationsShouldBePartial_Title {
+            get {
+                return ResourceManager.GetString("TypeWithOperationsShouldBePartial_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use the generated data portal extension method for &apos;{0}&apos; instead of calling &apos;{1}&apos; with untyped criteria.
+        /// </summary>
+        internal static string UseGeneratedDataPortalExtension_Message {
+            get {
+                return ResourceManager.GetString("UseGeneratedDataPortalExtension_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use generated data portal extension method.
+        /// </summary>
+        internal static string UseGeneratedDataPortalExtension_Title {
+            get {
+                return ResourceManager.GetString("UseGeneratedDataPortalExtension_Title", resourceCulture);
+            }
+        }
     }
 }

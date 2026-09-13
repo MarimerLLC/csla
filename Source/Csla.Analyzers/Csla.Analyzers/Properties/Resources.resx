@@ -279,4 +279,19 @@
   <data name="ObjectAuthorizationRulesAttribute_RulesStaticMessage" xml:space="preserve">
     <value>Authorization rules should be declared as static methods</value>
   </data>
+  <data name="TypeWithOperationsShouldBePartial_Title" xml:space="preserve">
+    <value>Type with data portal operation methods should be partial</value>
+  </data>
+  <data name="TypeWithOperationsShouldBePartial_Message" xml:space="preserve">
+    <value>Type '{0}' has data portal operation methods and should be declared partial so the CSLA source generator can implement its operations interface</value>
+  </data>
+  <data name="TypeWithOperationsShouldBePartial_AddPartialDescription" xml:space="preserve">
+    <value>Make type partial</value>
+  </data>
+  <data name="UseGeneratedDataPortalExtension_Title" xml:space="preserve">
+    <value>Use generated data portal extension method</value>
+  </data>
+  <data name="UseGeneratedDataPortalExtension_Message" xml:space="preserve">
+    <value>Use the generated data portal extension method for '{0}' instead of calling '{1}' with untyped criteria</value>
+  </data>
 </root>

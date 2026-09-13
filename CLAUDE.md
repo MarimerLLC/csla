@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-CSLA .NET is a business object framework for .NET. `main` is version **11.0.0** in development (set via Nerdbank.GitVersioning in `Source/version.json`); version 10 maintenance happens on the `v10.x` branch. The core package targets `netstandard2.0`, `net462`, `net472`, `net48`, `net8.0`, `net9.0`, and `net10.0`. Requires **.NET SDK 10.0.100+** (see `Source/global.json`).
+CSLA .NET is a business object framework for .NET. `main` is version **11.0.0** in development (set via Nerdbank.GitVersioning in `Source/version.json`); version 10 maintenance happens on the `v10.x` branch. The core package targets `netstandard2.0`, `net462`, `net472`, `net48`, `net10.0`, and `net11.0`. Requires **.NET SDK 11.0.100+** (currently a prerelease; see `Source/global.json`), plus the .NET 10 runtime to run the tests.
 
 ## Build and Test Commands
 
@@ -105,7 +105,7 @@ Include the GitHub issue number: `#999 Description of change`
 
 ## CI Notes
 
-- CI runs on `windows-latest` with .NET 10 SDK
+- CI runs on `windows-latest` with the .NET 11 SDK (pinned by `Source/global.json`) and the .NET 10 SDK
 - Tests use `--settings Source/test.runsettings` which limits `MaxCpuCount` to 1 (tests must not run in parallel)
 - Tests with `[TestCategory("SkipOnCIServer")]` are excluded from CI runs
 - MAUI build only triggers when `Source/Csla.Xaml.Maui/`, `Source/Csla.Xaml.Shared/`, or `Source/csla.maui.test.sln` are modified

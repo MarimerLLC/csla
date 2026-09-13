@@ -8,15 +8,16 @@ Release notes for CSLA 10 are maintained on the [v10.x branch](https://github.co
 
 Primary changes in this release include:
 
-* Add support for .NET 11
+* Add support for .NET 11 ([#4699](https://github.com/MarimerLLC/csla/issues/4699))
+* Remove support for .NET 8 and .NET 9, which Microsoft stops supporting in November 2026 ([#4348](https://github.com/MarimerLLC/csla/issues/4348), [#4581](https://github.com/MarimerLLC/csla/issues/4581))
 
 ### Breaking Changes
 
-None yet.
+* CSLA 11 no longer targets .NET 8 or .NET 9. Applications must target .NET 10 or later (or continue to use .NET Framework 4.6.2 through 4.8, or a `netstandard2.0`-compatible runtime).
 
 ### Supported Platforms
 
-* .NET 8 through 11
+* .NET 10 and 11
 * .NET Framework 4.6.2 through 4.8
 * Blazor (Server, WebAssembly, Auto)
 * MAUI

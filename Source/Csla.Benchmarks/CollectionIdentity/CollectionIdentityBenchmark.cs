@@ -7,8 +7,7 @@ namespace Csla.Benchmarks.CollectionIdentity;
 [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net462)]
 [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net472)]
 [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net48)]
-[SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net80)]
-[SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net90, baseline: true)]
+[SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net10_0, baseline: true)]
 [HtmlExporter, JsonExporterAttribute.FullCompressed]
 public class CollectionIdentityBenchmark
 {

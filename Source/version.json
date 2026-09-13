@@ -4,7 +4,8 @@
   "publicReleaseRefSpec": [
     "^refs/heads/main$",
     "^refs/heads/release$",
-    "^refs/heads/v\\d+(?:\\.\\d+)?$"
+    "^refs/heads/v\\d+(?:\\.\\d+)?$",
+    "^refs/heads/v\\d+\\.x$"
   ],
   "nuGetPackageVersion": {
     "semVer": 2

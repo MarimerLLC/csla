@@ -2,10 +2,10 @@ name: main
 
 on:
   push:
-    branches: [ main, v7.x, v8.x, v9.x ]
+    branches: [ main, v7.x, v8.x, v9.x, v10.x ]
     paths: ['Source/**', '.github/workflows/**']
   pull_request:
-    branches: [ main, v7.x, v8.x, v9.x ]
+    branches: [ main, v7.x, v8.x, v9.x, v10.x ]
     paths: ['Source/**', '.github/workflows/**']
 
 jobs:

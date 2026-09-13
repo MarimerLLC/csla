@@ -1,4 +1,9 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="DataAccess/DataAccess.csproj" />
   <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
   <Project Path="CslaAvaloniaExample/CslaAvaloniaExample.csproj" />

@@ -22,7 +22,8 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0'
+        dotnet-version: '10.0.x'
+        global-json-file: Source/global.json
 
     - name: Build
       run: dotnet build Source\csla.test.sln
@@ -55,7 +56,7 @@ jobs:
     name: 'Build MAUI'
     needs: build
     if: needs.build.outputs.run_maui == 'true'
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
     - uses: actions/checkout@v4
@@ -65,13 +66,14 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0'
+        dotnet-version: '10.0.x'
+        global-json-file: Source/global.json
 
     - name: Install MAUI workload
       run: dotnet workload install maui
   
     - name: "Select a specific version of Xcode"
-      run: sudo xcode-select -s /Applications/Xcode_16.4.app
+      run: sudo xcode-select -s /Applications/Xcode_26.5.app
 
     - name: Build Solution
       run: dotnet build Source/csla.maui.test.sln --configuration Debug

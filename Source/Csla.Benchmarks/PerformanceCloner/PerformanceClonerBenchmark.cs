@@ -10,8 +10,6 @@ namespace Csla.Benchmarks.PerformanceCloner;
 [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net462)]
 [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net472)]
 [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net48)]
-[SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net80)]
-[SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net90)]
 [SimpleJob(BenchmarkDotNet.Jobs.RuntimeMoniker.Net10_0)]
 [HtmlExporter, JsonExporterAttribute.FullCompressed]
 [MemoryDiagnoser(true)]

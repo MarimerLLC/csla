@@ -2,7 +2,7 @@
   <Import Project="..\Directory.Package.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net10.0;net11.0</TargetFrameworks>
     <AssemblyName>Csla.Testing</AssemblyName>
     <RootNamespace>Csla.Testing</RootNamespace>
     <PackageId>Csla.Testing</PackageId>
@@ -36,14 +36,11 @@
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-  </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net11.0'">
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0-rc.1.26425.128" />
   </ItemGroup>
 
 </Project>

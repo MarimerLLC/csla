@@ -28,7 +28,8 @@ jobs:
     - name: Install .NET Core
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '10.0'
+        dotnet-version: '10.0.x'
+        global-json-file: Source/global.json
 
     - name: Install .NET MAUI workloads
       run: dotnet workload install maui

@@ -4,7 +4,7 @@
 
 Starting with CSLA 9, there are code generators available as NuGet packages. These packages are designed to work with the CSLA .NET framework to generate code for your business objects as part of the .NET build process.
 
-* [AutoImplementProperties](https://github.com/MarimerLLC/csla/tree/main/Source/Csla.Generators/cs/AutoImplementProperties) - Uses code generation to radically reduce the amount of code you need to write to declare properties in a business domain class
+* [AutoImplementProperties](https://github.com/MarimerLLC/csla/tree/main/Source/Csla.Generators/cs/AutoImplementProperties) - Uses code generation to radically reduce the amount of code you need to write to declare properties in a business domain class. Starting with CSLA 11 this generator is included in the `Csla` package, along with the data portal operations generator (explicit, reflection-free calls to data portal operation methods) and the `[DataPortalExtensions]` generator (strongly typed data portal extension methods).
 * [AutoSerialization](https://github.com/MarimerLLC/csla/tree/main/Source/Csla.Generators/cs/AutoSerialization) - Uses code generation to improve serialization performance
 
 Other modern code generator tools also exist:

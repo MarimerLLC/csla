@@ -4,6 +4,7 @@
 //     Website: https://cslanet.com
 // </copyright>
 //-----------------------------------------------------------------------
+using System.Runtime.CompilerServices;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.CodeAnalysis;
@@ -18,7 +19,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
     /// asserting the generator reports no diagnostics and the resulting
     /// compilation has no errors or warnings.
     /// </summary>
-    public static Task Verify(string source, IEnumerable<string>? additionalSources = null)
+    public static Task Verify(string source, IEnumerable<string>? additionalSources = null, [CallerFilePath] string sourceFile = "")
     {
       var (driver, outputCompilation, diagnostics) = Run(source, additionalSources);
 
@@ -31,14 +32,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
         diagnostics.Should().BeEmpty();
       }
 
-      return Verifier.Verify(driver).UseDirectory("Snapshots");
+      return Verifier.Verify(driver, sourceFile: sourceFile).UseDirectory("Snapshots");
     }
 
     /// <summary>
     /// Runs the generator and verifies the output, including any generator
     /// diagnostics, against snapshots. The resulting compilation must have no errors.
     /// </summary>
-    public static Task VerifyWithDiagnostics(string source, IEnumerable<string>? additionalSources = null)
+    public static Task VerifyWithDiagnostics(string source, IEnumerable<string>? additionalSources = null, [CallerFilePath] string sourceFile = "")
     {
       var (driver, outputCompilation, _) = Run(source, additionalSources);
 
@@ -46,7 +47,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
         .Where(d => d.Severity == DiagnosticSeverity.Error)
         .Should().BeEmpty();
 
-      return Verifier.Verify(driver).UseDirectory("Snapshots");
+      return Verifier.Verify(driver, sourceFile: sourceFile).UseDirectory("Snapshots");
     }
 
     /// <summary>

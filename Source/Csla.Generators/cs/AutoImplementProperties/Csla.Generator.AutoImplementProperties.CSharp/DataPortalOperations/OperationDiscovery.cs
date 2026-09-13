@@ -310,7 +310,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     private static string GetHintSegment(INamedTypeSymbol type)
       => type.TypeParameters.Length > 0 ? $"{type.Name}_{type.TypeParameters.Length}" : type.Name;
 
-    private static string GetFullMetadataName(INamedTypeSymbol type)
+    internal static string GetFullMetadataName(INamedTypeSymbol type)
     {
       var name = type.MetadataName;
       for (var container = type.ContainingType; container is not null; container = container.ContainingType)

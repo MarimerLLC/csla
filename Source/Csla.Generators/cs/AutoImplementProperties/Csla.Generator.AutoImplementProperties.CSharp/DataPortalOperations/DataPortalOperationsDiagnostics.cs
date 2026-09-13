@@ -23,6 +23,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     public const string InvalidExtensionsTargetId = "CSLADP004";
     public const string ExtensionNameHiddenId = "CSLADP005";
     public const string InaccessibleParameterTypeId = "CSLADP006";
+    public const string DuplicateExtensionMethodId = "CSLADP007";
 
     public static readonly DiagnosticDescriptor DuplicateOperationName = new(
       id: DuplicateOperationNameId,
@@ -64,6 +65,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       defaultSeverity: DiagnosticSeverity.Error,
       isEnabledByDefault: true);
 
+    public static readonly DiagnosticDescriptor DuplicateExtensionMethod = new(
+      id: DuplicateExtensionMethodId,
+      title: "Generated data portal extension would be duplicated",
+      messageFormat: "The data portal extension method '{0}' for '{1}' is not generated for '{2}' because another operation method already produces an extension method with the same signature",
+      category: Category,
+      defaultSeverity: DiagnosticSeverity.Warning,
+      isEnabledByDefault: true);
+
     public static DiagnosticDescriptor GetDescriptor(string id) => id switch
     {
       DuplicateOperationNameId => DuplicateOperationName,
@@ -71,6 +80,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       InvalidExtensionsTargetId => InvalidExtensionsTarget,
       ExtensionNameHiddenId => ExtensionNameHidden,
       InaccessibleParameterTypeId => InaccessibleParameterType,
+      DuplicateExtensionMethodId => DuplicateExtensionMethod,
       _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
     };
   }

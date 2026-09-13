@@ -6,6 +6,7 @@
 // <summary>Invoke data portal methods on child</summary>
 //-----------------------------------------------------------------------
 
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 
@@ -43,7 +44,7 @@ namespace Csla.Server
         throw new ArgumentNullException(nameof(objectType));
 
       return ExecuteWithAggregateExceptionHandling(
-        () => DoCreateAsync(objectType).Result
+        () => DoCreateAsync(objectType, null).Result
       );
     }
 
@@ -61,7 +62,7 @@ namespace Csla.Server
         throw new ArgumentNullException(nameof(objectType));
 
       return ExecuteWithAggregateExceptionHandling(
-        () => DoCreateAsync(objectType, parameters).Result
+        () => DoCreateAsync(objectType, null, parameters).Result
       );
     }
 
@@ -70,7 +71,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
     {
-      return (T) await DoCreateAsync(typeof(T)).ConfigureAwait(false);
+      return (T)await DoCreateAsync(typeof(T), null).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -81,10 +82,45 @@ namespace Csla.Server
     /// </param>
     public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[]? parameters)
     {
-      return (T)await DoCreateAsync(typeof(T), parameters).ConfigureAwait(false);
+      return (T)await DoCreateAsync(typeof(T), null, parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoCreateAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
+    /// <summary>
+    /// Create a new business object using a pre-resolved create child operation.
+    /// </summary>
+    /// <param name="objectType">Type of business object to create.</param>
+    /// <param name="operationName">Generated operation name.</param>
+    /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="operationName"/> is <see langword="null"/>.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public object CreateByOperation([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string operationName, object?[]? parameters)
+    {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (operationName is null)
+        throw new ArgumentNullException(nameof(operationName));
+
+      return ExecuteWithAggregateExceptionHandling(
+        () => DoCreateAsync(objectType, operationName, parameters).Result
+      );
+    }
+
+    /// <summary>
+    /// Create a new business object using a pre-resolved create child operation.
+    /// </summary>
+    /// <param name="operationName">Generated operation name.</param>
+    /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="operationName"/> is <see langword="null"/>.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public async Task<T> CreateByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string operationName, object?[]? parameters)
+    {
+      if (operationName is null)
+        throw new ArgumentNullException(nameof(operationName));
+
+      return (T)await DoCreateAsync(typeof(T), operationName, parameters).ConfigureAwait(false);
+    }
+
+    private async Task<object> DoCreateAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string? operationName, params object?[]? parameters)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Create);
@@ -95,7 +131,7 @@ namespace Csla.Server
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
         obj.MarkNew();
-        await obj.CreateChildAsync(parameters).ConfigureAwait(false);
+        await obj.CreateChildAsync(operationName, parameters).ConfigureAwait(false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
@@ -134,7 +170,7 @@ namespace Csla.Server
         throw new ArgumentNullException(nameof(objectType));
 
       return ExecuteWithAggregateExceptionHandling(
-  () => DoFetchAsync(objectType).Result
+  () => DoFetchAsync(objectType, null).Result
       );
     }
 
@@ -152,7 +188,7 @@ namespace Csla.Server
         throw new ArgumentNullException(nameof(objectType));
 
       return ExecuteWithAggregateExceptionHandling(
-  () => DoFetchAsync(objectType, parameters).Result
+  () => DoFetchAsync(objectType, null, parameters).Result
       );
     }
 
@@ -161,7 +197,7 @@ namespace Csla.Server
     /// </summary>
     public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
     {
-      return (T)await DoFetchAsync(typeof(T)).ConfigureAwait(false);
+      return (T)await DoFetchAsync(typeof(T), null).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -172,10 +208,45 @@ namespace Csla.Server
     /// </param>
     public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[]? parameters)
     {
-      return (T)await DoFetchAsync(typeof(T), parameters).ConfigureAwait(false);
+      return (T)await DoFetchAsync(typeof(T), null, parameters).ConfigureAwait(false);
     }
 
-    private async Task<object> DoFetchAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, params object?[]? parameters)
+    /// <summary>
+    /// Get an existing business object using a pre-resolved fetch child operation.
+    /// </summary>
+    /// <param name="objectType">Type of business object to retrieve.</param>
+    /// <param name="operationName">Generated operation name.</param>
+    /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="operationName"/> is <see langword="null"/>.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public object FetchByOperation([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string operationName, object?[]? parameters)
+    {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (operationName is null)
+        throw new ArgumentNullException(nameof(operationName));
+
+      return ExecuteWithAggregateExceptionHandling(
+        () => DoFetchAsync(objectType, operationName, parameters).Result
+      );
+    }
+
+    /// <summary>
+    /// Get an existing business object using a pre-resolved fetch child operation.
+    /// </summary>
+    /// <param name="operationName">Generated operation name.</param>
+    /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="operationName"/> is <see langword="null"/>.</exception>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public async Task<T> FetchByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string operationName, object?[]? parameters)
+    {
+      if (operationName is null)
+        throw new ArgumentNullException(nameof(operationName));
+
+      return (T)await DoFetchAsync(typeof(T), operationName, parameters).ConfigureAwait(false);
+    }
+
+    private async Task<object> DoFetchAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string? operationName, params object?[]? parameters)
     {
       DataPortalTarget? obj = null;
       var eventArgs = new DataPortalEventArgs(null, objectType, parameters, DataPortalOperations.Fetch);
@@ -188,7 +259,7 @@ namespace Csla.Server
         obj.Child_OnDataPortalInvoke(eventArgs);
         obj.MarkAsChild();
         obj.MarkOld();
-        await obj.FetchChildAsync(parameters).ConfigureAwait(false);
+        await obj.FetchChildAsync(operationName, parameters).ConfigureAwait(false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
       }

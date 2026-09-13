@@ -1,0 +1,17 @@
+﻿{
+  Diagnostics: [
+    {
+      Location: Source0.cs: (15,17)-(15,29),
+      Message: The data portal extension method for 'GetByPrivate(PrivateCriteria)' cannot be generated because parameter 'criteria' has type 'global::TestApp.PersonEdit.PrivateCriteria', which is not accessible outside its containing type,
+      Severity: Error,
+      Descriptor: {
+        Id: CSLADP006,
+        Title: Operation parameter type is not accessible,
+        MessageFormat: The data portal extension method for '{0}' cannot be generated because parameter '{1}' has type '{2}', which is not accessible outside its containing type,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Error,
+        IsEnabledByDefault: true
+      }
+    }
+  ]
+}

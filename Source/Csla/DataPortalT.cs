@@ -25,7 +25,8 @@ namespace Csla
   /// Type of business object.
   /// </typeparam>
   public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> 
-    : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal where T : notnull, ICslaObject
+    : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal,
+      IDataPortalOperationInvoker<T>, IChildDataPortalOperationInvoker<T> where T : notnull, ICslaObject
   {
     /// <summary>
     /// Gets or sets the current ApplicationContext object.
@@ -66,16 +67,21 @@ namespace Csla
 
     private async Task<object> DoCreateAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<CreateAttribute>(objectType, criteria, out var method);
+      var operationName = method != null ? Server.DataPortalOperationNameHelper.ComputeOperationName<CreateAttribute>(method.MethodInfo) : null;
+      return await DoCreateCoreAsync(objectType, criteria, isSync, operationName, method?.MethodInfo.RunLocal() ?? false, ct);
+    }
 
+    private async Task<object> DoCreateCoreAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, string? operationName, bool runLocal, CancellationToken ct = default)
+    {
       if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
         throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "create", objectType.Name));
 
-      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<CreateAttribute>(objectType, criteria, out var method);
-      var proxy = GetDataPortalProxy(method);
-
-      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-      if (method != null)
-        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<CreateAttribute>(method.MethodInfo);
+      var proxy = GetDataPortalProxy(runLocal);
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote)
+      {
+        OperationName = operationName
+      };
 
       Server.DataPortalResult result = default!;
       try
@@ -146,15 +152,21 @@ namespace Csla
         return await DoExecuteAsync(objectType, criteria, isSync);
       }
 
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<FetchAttribute>(objectType, criteria, out var method);
+      var operationName = method != null ? Server.DataPortalOperationNameHelper.ComputeOperationName<FetchAttribute>(method.MethodInfo) : null;
+      return await DoFetchCoreAsync(objectType, criteria, isSync, operationName, method?.MethodInfo.RunLocal() ?? false, ct);
+    }
+
+    private async Task<object> DoFetchCoreAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, string? operationName, bool runLocal, CancellationToken ct = default)
+    {
       if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.GetObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
         throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "get", objectType.Name));
 
-      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<FetchAttribute>(objectType, criteria, out var method);
-
-      var proxy = GetDataPortalProxy(method);
-      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-      if (method != null)
-        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<FetchAttribute>(method.MethodInfo);
+      var proxy = GetDataPortalProxy(runLocal);
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote)
+      {
+        OperationName = operationName
+      };
 
       Server.DataPortalResult result = default!;
       try
@@ -181,17 +193,23 @@ namespace Csla
 
     private async Task<object> DoExecuteAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<ExecuteAttribute>(objectType, criteria, out var method);
+      var operationName = method != null ? Server.DataPortalOperationNameHelper.ComputeOperationName<ExecuteAttribute>(method.MethodInfo) : null;
+      return await DoExecuteCoreAsync(objectType, criteria, isSync, operationName, method?.MethodInfo.RunLocal() ?? false, ct);
+    }
 
+    private async Task<object> DoExecuteCoreAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, string? operationName, bool runLocal, CancellationToken ct = default)
+    {
       if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.EditObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
         throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException,
           "execute",
           objectType.Name));
 
-      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<ExecuteAttribute>(objectType, criteria, out var method);
-      var proxy = GetDataPortalProxy(method);
-      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-      if (method != null)
-        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<ExecuteAttribute>(method.MethodInfo);
+      var proxy = GetDataPortalProxy(runLocal);
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote)
+      {
+        OperationName = operationName
+      };
 
       Server.DataPortalResult result = default!;
       try
@@ -469,16 +487,21 @@ namespace Csla
 
     private async Task DoDeleteAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, CancellationToken ct = default)
     {
+      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<DeleteAttribute>(objectType, criteria, out var method);
+      var operationName = method != null ? Server.DataPortalOperationNameHelper.ComputeOperationName<DeleteAttribute>(method.MethodInfo) : null;
+      await DoDeleteCoreAsync(objectType, criteria, isSync, operationName, method?.MethodInfo.RunLocal() ?? false, ct);
+    }
 
+    private async Task DoDeleteCoreAsync([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, bool isSync, string? operationName, bool runLocal, CancellationToken ct = default)
+    {
       if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.DeleteObject, objectType, Server.DataPortal.GetCriteriaArray(criteria), ct))
         throw new Security.SecurityException(string.Format(Resources.UserNotAuthorizedException, "delete", objectType.Name));
 
-      _ = ServiceProviderMethodCaller.TryGetProviderMethodInfoFor<DeleteAttribute>(objectType, criteria, out var method);
-      var proxy = GetDataPortalProxy(method);
-
-      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote);
-      if (method != null)
-        dpContext.OperationName = Server.DataPortalOperationNameHelper.ComputeOperationName<DeleteAttribute>(method.MethodInfo);
+      var proxy = GetDataPortalProxy(runLocal);
+      var dpContext = new Server.DataPortalContext(_applicationContext, proxy.IsServerRemote)
+      {
+        OperationName = operationName
+      };
       try
       {
         var result = await _cache.GetDataPortalResultAsync(objectType, criteria, DataPortalOperations.Delete,
@@ -571,6 +594,113 @@ namespace Csla
     {
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
+
+    #region Pre-resolved operations
+
+    /// <summary>
+    /// Converts the explicit criteria array supplied by generated code into
+    /// the criteria object used by the data portal. A single criteria value
+    /// that is itself a covariant array (for example string[]) is wrapped so
+    /// it is not expanded into separate criteria values.
+    /// </summary>
+    private static object GetOperationCriteria(object?[]? criteria)
+    {
+      if (criteria is { Length: 1 } && criteria[0] is object[] array && array.GetType() != typeof(object[]))
+        return new Core.MobileList<object?>(criteria);
+      return Server.DataPortal.GetCriteriaFromArray(criteria);
+    }
+
+    private static void WaitSynchronously(Task task)
+    {
+      try
+      {
+        task.Wait();
+      }
+      catch (AggregateException ex)
+      {
+        if (ex.InnerExceptions.Count > 0)
+          throw ex.InnerExceptions[0];
+        else
+          throw;
+      }
+    }
+
+    private static TResult WaitSynchronously<TResult>(Task<TResult> task)
+    {
+      WaitSynchronously((Task)task);
+      return task.Result;
+    }
+
+    /// <inheritdoc />
+    T IDataPortalOperationInvoker<T>.CreateByOperation(string operationName, bool runLocal, object?[]? criteria)
+      => (T)WaitSynchronously(DoCreateCoreAsync(typeof(T), GetOperationCriteria(criteria), true, operationName, runLocal));
+
+    /// <inheritdoc />
+    async Task<T> IDataPortalOperationInvoker<T>.CreateByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
+      => (T)await DoCreateCoreAsync(typeof(T), GetOperationCriteria(criteria), false, operationName, runLocal);
+
+    /// <inheritdoc />
+    T IDataPortalOperationInvoker<T>.FetchByOperation(string operationName, bool runLocal, object?[]? criteria)
+      => (T)WaitSynchronously(DoFetchByOperationAsync(operationName, runLocal, criteria, true));
+
+    /// <inheritdoc />
+    async Task<T> IDataPortalOperationInvoker<T>.FetchByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
+      => (T)await DoFetchByOperationAsync(operationName, runLocal, criteria, false);
+
+    private Task<object> DoFetchByOperationAsync(string operationName, bool runLocal, object?[]? criteria, bool isSync)
+    {
+      // As with FetchAsync, fetching a command object is an execute
+      // operation; the fetch operation name does not apply to it.
+      if (typeof(ICommandObject).IsAssignableFrom(typeof(T)))
+        return DoExecuteCoreAsync(typeof(T), GetOperationCriteria(criteria), isSync, null, runLocal);
+      return DoFetchCoreAsync(typeof(T), GetOperationCriteria(criteria), isSync, operationName, runLocal);
+    }
+
+    /// <inheritdoc />
+    T IDataPortalOperationInvoker<T>.ExecuteByOperation(string operationName, bool runLocal, object?[]? criteria)
+      => (T)WaitSynchronously(DoExecuteCoreAsync(typeof(T), GetOperationCriteria(criteria), true, operationName, runLocal));
+
+    /// <inheritdoc />
+    async Task<T> IDataPortalOperationInvoker<T>.ExecuteByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
+      => (T)await DoExecuteCoreAsync(typeof(T), GetOperationCriteria(criteria), false, operationName, runLocal);
+
+    /// <inheritdoc />
+    void IDataPortalOperationInvoker<T>.DeleteByOperation(string operationName, bool runLocal, object?[]? criteria)
+      => WaitSynchronously(DoDeleteCoreAsync(typeof(T), GetOperationCriteria(criteria), true, operationName, runLocal));
+
+    /// <inheritdoc />
+    Task IDataPortalOperationInvoker<T>.DeleteByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
+      => DoDeleteCoreAsync(typeof(T), GetOperationCriteria(criteria), false, operationName, runLocal);
+
+    /// <inheritdoc />
+    T IChildDataPortalOperationInvoker<T>.CreateChildByOperation(string operationName, object?[]? criteria)
+    {
+      var portal = new Server.ChildDataPortal(_applicationContext);
+      return (T)portal.CreateByOperation(typeof(T), operationName, criteria);
+    }
+
+    /// <inheritdoc />
+    Task<T> IChildDataPortalOperationInvoker<T>.CreateChildByOperationAsync(string operationName, object?[]? criteria)
+    {
+      var portal = new Server.ChildDataPortal(_applicationContext);
+      return portal.CreateByOperationAsync<T>(operationName, criteria);
+    }
+
+    /// <inheritdoc />
+    T IChildDataPortalOperationInvoker<T>.FetchChildByOperation(string operationName, object?[]? criteria)
+    {
+      var portal = new Server.ChildDataPortal(_applicationContext);
+      return (T)portal.FetchByOperation(typeof(T), operationName, criteria);
+    }
+
+    /// <inheritdoc />
+    Task<T> IChildDataPortalOperationInvoker<T>.FetchChildByOperationAsync(string operationName, object?[]? criteria)
+    {
+      var portal = new Server.ChildDataPortal(_applicationContext);
+      return portal.FetchByOperationAsync<T>(operationName, criteria);
+    }
+
+    #endregion
 
     private IDataPortalProxy GetDataPortalProxy(Reflection.ServiceProviderMethodInfo? method)
     {

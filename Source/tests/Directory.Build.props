@@ -5,4 +5,10 @@
    <Nullable>disable</Nullable>
    <NoWarn>$(NoWarn);nullable</NoWarn>
  </PropertyGroup>
+
+  <!-- Version of the runtime-aligned packages (Microsoft.Extensions.*, etc.) that matches each test target framework -->
+  <PropertyGroup>
+    <DotNetPackageVersion>10.0.0</DotNetPackageVersion>
+    <DotNetPackageVersion Condition="$(TargetFramework.StartsWith('net11'))">11.0.0-rc.1.26425.128</DotNetPackageVersion>
+  </PropertyGroup>
 </Project>

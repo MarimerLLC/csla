@@ -15,23 +15,42 @@ namespace TestApp
     internal interface IDataPortalOperations
     {
       void Fetch__Int32(int id, global::TestApp.IDal dal, global::TestApp.IDal? secondary);
+      void Create(global::TestApp.IDal dal, global::TestApp.IDal other);
     }
 
     void IDataPortalOperations.Fetch__Int32(int id, global::TestApp.IDal dal, global::TestApp.IDal? secondary) => Fetch(id, dal, secondary);
+    void IDataPortalOperations.Create(global::TestApp.IDal dal, global::TestApp.IDal other) => Create(dal, other);
 
     async global::System.Threading.Tasks.Task global::Csla.Server.IDataPortalOperationMapping.InvokeOperationAsync(
       global::System.Type operationType, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
     {
       var __operations = (IDataPortalOperations)this;
-      if (operationType == typeof(global::Csla.FetchAttribute))
+      if (operationType == typeof(global::Csla.CreateAttribute))
       {
-        if (criteria is { Length: 1 } && criteria[0] is int __c0p0)
+        if (criteria is null or { Length: 0 })
         {
-          var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary", false))!;
-          var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary, true));
           try
           {
-            __operations.Fetch__Int32(__c0p0, __c0i0, __c0i1);
+            var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (short)(-1), false))!;
+            var __c0i1 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (byte)2, false))!;
+            __operations.Create(__c0i0, __c0i1);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
+          }
+          return;
+        }
+      }
+      else if (operationType == typeof(global::Csla.FetchAttribute))
+      {
+        if (criteria is { Length: 1 } && criteria[0] is int __c1p0)
+        {
+          try
+          {
+            var __c1i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary", false))!;
+            var __c1i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary, true));
+            __operations.Fetch__Int32(__c1p0, __c1i0, __c1i1);
           }
           catch (global::System.Exception __ex)
           {
@@ -52,15 +71,31 @@ namespace TestApp
         case "Fetch__Int32":
           if (criteria is { Length: 1 } && criteria[0] is int __c0p0)
           {
-            var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary", false))!;
-            var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary, true));
             try
             {
+              var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary", false))!;
+              var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary, true));
               __operations.Fetch__Int32(__c0p0, __c0i0, __c0i1);
             }
             catch (global::System.Exception __ex)
             {
               throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
+            return;
+          }
+          break;
+        case "Create":
+          if (criteria is null or { Length: 0 })
+          {
+            try
+            {
+              var __c1i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (short)(-1), false))!;
+              var __c1i1 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (byte)2, false))!;
+              __operations.Create(__c1i0, __c1i1);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
             }
             return;
           }

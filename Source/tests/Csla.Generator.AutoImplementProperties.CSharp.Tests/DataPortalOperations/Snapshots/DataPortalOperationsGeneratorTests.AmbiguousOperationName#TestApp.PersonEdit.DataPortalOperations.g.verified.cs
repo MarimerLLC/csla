@@ -14,10 +14,14 @@ namespace TestApp
     [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
     internal interface IDataPortalOperations
     {
-      void Fetch__Int32_String(global::TestApp.IDal dal, int id, global::TestApp.IDal? backup, string name);
+      void Fetch__Int32(int id, global::TestApp.IDal dal);
+      void Fetch__Int32_2(int id, global::TestApp.IDal dal);
+      void Fetch__String(string name);
     }
 
-    void IDataPortalOperations.Fetch__Int32_String(global::TestApp.IDal dal, int id, global::TestApp.IDal? backup, string name) => Fetch(dal, id, backup, name);
+    void IDataPortalOperations.Fetch__Int32(int id, global::TestApp.IDal dal) => Fetch(id, dal);
+    void IDataPortalOperations.Fetch__Int32_2(int id, global::TestApp.IDal dal) => Load(id, dal);
+    void IDataPortalOperations.Fetch__String(string name) => Fetch(name);
 
     async global::System.Threading.Tasks.Task global::Csla.Server.IDataPortalOperationMapping.InvokeOperationAsync(
       global::System.Type operationType, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
@@ -25,13 +29,11 @@ namespace TestApp
       var __operations = (IDataPortalOperations)this;
       if (operationType == typeof(global::Csla.FetchAttribute))
       {
-        if (criteria is { Length: 2 } && criteria[0] is int __c0p0 && criteria[1] is string __c0p1)
+        if (criteria is { Length: 1 } && criteria[0] is string __c0p0)
         {
           try
           {
-            var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-            var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
-            __operations.Fetch__Int32_String(__c0i0, __c0p0, __c0i1, __c0p1);
+            __operations.Fetch__String(__c0p0);
           }
           catch (global::System.Exception __ex)
           {
@@ -49,14 +51,12 @@ namespace TestApp
       var __operations = (IDataPortalOperations)this;
       switch (operationName)
       {
-        case "Fetch__Int32_String":
-          if (criteria is { Length: 2 } && criteria[0] is int __c0p0 && (criteria[1] is null || criteria[1] is string))
+        case "Fetch__String":
+          if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is string))
           {
             try
             {
-              var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-              var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
-              __operations.Fetch__Int32_String(__c0i0, __c0p0, __c0i1, (string)criteria[1]!);
+              __operations.Fetch__String((string)criteria[0]!);
             }
             catch (global::System.Exception __ex)
             {

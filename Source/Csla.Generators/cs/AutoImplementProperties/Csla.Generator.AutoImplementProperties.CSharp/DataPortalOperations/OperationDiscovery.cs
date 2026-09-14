@@ -438,7 +438,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       long l => l.ToString(CultureInfo.InvariantCulture) + "L",
       ulong ul => ul.ToString(CultureInfo.InvariantCulture) + "UL",
       uint ui => ui.ToString(CultureInfo.InvariantCulture) + "U",
-      int or short or ushort or byte or sbyte => Convert.ToString(value, CultureInfo.InvariantCulture),
+      int i => i.ToString(CultureInfo.InvariantCulture),
+      // Casts keep the type of boxed values such as keyed service keys.
+      short sh => $"(short)({sh.ToString(CultureInfo.InvariantCulture)})",
+      ushort us => $"(ushort){us.ToString(CultureInfo.InvariantCulture)}",
+      byte b8 => $"(byte){b8.ToString(CultureInfo.InvariantCulture)}",
+      sbyte sb => $"(sbyte)({sb.ToString(CultureInfo.InvariantCulture)})",
       _ => null
     };
   }

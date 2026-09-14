@@ -101,7 +101,7 @@ namespace Csla.Analyzers
         return;
       }
 
-      if (!HasGeneratedExtension(businessType, attribute, method.Name, GetCriteriaCount(invocation), symbols))
+      if (!HasGeneratedExtension(businessType, attribute, method.Name, GetCriteriaArguments(invocation), context.Compilation, symbols))
       {
         return;
       }
@@ -151,9 +151,10 @@ namespace Csla.Analyzers
     /// <summary>
     /// Mirrors the data portal extensions generator: returns true when an
     /// extension method is generated for an operation method of the kind
-    /// called that accepts the number of criteria values passed.
+    /// called that accepts the criteria values passed.
     /// </summary>
-    private static bool HasGeneratedExtension(INamedTypeSymbol businessType, AttributeData attribute, string portalMethodName, int? criteriaCount, KnownSymbols symbols)
+    private static bool HasGeneratedExtension(INamedTypeSymbol businessType, AttributeData attribute, string portalMethodName,
+      ImmutableArray<IOperation>? criteriaArguments, Compilation compilation, KnownSymbols symbols)
     {
       if (businessType.IsAbstract || symbols.ICslaObject is null ||
         !businessType.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, symbols.ICslaObject)))
@@ -191,28 +192,31 @@ namespace Csla.Analyzers
         : receiver.GetMembers().Select(m => m.Name).ToImmutableHashSet();
       var operationAttributeName = $"Csla.{kind}Attribute";
 
-      foreach (var operation in businessType.GetMembers().OfType<IMethodSymbol>())
+      // Operation methods of this kind that generated code can dispatch to;
+      // ref/out parameters and a single object[] parameter are only invoked through reflection.
+      var operations = businessType.GetMembers()
+        .OfType<IMethodSymbol>()
+        .Where(m => m.MethodKind == MethodKind.Ordinary && !m.IsStatic && !m.IsGenericMethod)
+        .Where(m => m.GetAttributes().Any(a => a.AttributeClass?.ToDisplayString() == operationAttributeName))
+        .Where(m => !m.Parameters.Any(p => p.RefKind is RefKind.Ref or RefKind.Out))
+        .Where(m => !(m.Parameters.Length == 1 && m.Parameters[0].Type is IArrayTypeSymbol { Rank: 1, ElementType.SpecialType: SpecialType.System_Object }))
+        .Select(m => (Method: m, Criteria: m.Parameters.Where(p => !IsInjected(p, symbols.InjectAttribute)).ToList()))
+        .ToList();
+
+      foreach (var (operation, criteria) in operations)
       {
-        if (operation.MethodKind != MethodKind.Ordinary || operation.IsStatic || operation.IsGenericMethod)
+        if (operation.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, symbols.NoDataPortalExtensionAttribute)))
         {
           continue;
         }
 
-        var attributes = operation.GetAttributes();
-        if (!attributes.Any(a => a.AttributeClass?.ToDisplayString() == operationAttributeName) ||
-          attributes.Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, symbols.NoDataPortalExtensionAttribute)))
+        // Methods with the same criteria types differ only in injected parameters;
+        // the generator only produces an extension for the one the runtime prefers.
+        if (!IsPreferredAmongSameCriteria(operation, criteria, operations))
         {
           continue;
         }
 
-        // ref/out parameters and a single object[] parameter are only invoked through reflection
-        if (operation.Parameters.Any(p => p.RefKind is RefKind.Ref or RefKind.Out) ||
-          (operation.Parameters.Length == 1 && operation.Parameters[0].Type is IArrayTypeSymbol { Rank: 1, ElementType.SpecialType: SpecialType.System_Object }))
-        {
-          continue;
-        }
-
-        var criteria = operation.Parameters.Where(p => !IsInjected(p, symbols.InjectAttribute)).ToList();
         if (criteria.Any(p => IsPrivate(p.Type)))
         {
           continue;
@@ -229,14 +233,9 @@ namespace Csla.Analyzers
           continue;
         }
 
-        if (criteriaCount is { } count)
+        if (criteriaArguments is { } arguments && !AcceptsArguments(criteria, arguments, compilation))
         {
-          var required = criteria.Count(p => !p.HasExplicitDefaultValue && !p.IsParams);
-          var hasParams = criteria.Count > 0 && criteria[criteria.Count - 1].IsParams;
-          if (count < required || (!hasParams && count > criteria.Count))
-          {
-            continue;
-          }
+          continue;
         }
 
         return true;
@@ -245,21 +244,101 @@ namespace Csla.Analyzers
       return false;
     }
 
+    private static bool IsPreferredAmongSameCriteria(IMethodSymbol operation, List<IParameterSymbol> criteria,
+      List<(IMethodSymbol Method, List<IParameterSymbol> Criteria)> operations)
+    {
+      var injectCount = operation.Parameters.Length - criteria.Count;
+      foreach (var (other, otherCriteria) in operations)
+      {
+        if (SymbolEqualityComparer.Default.Equals(other, operation) ||
+          !otherCriteria.Select(p => p.Type).SequenceEqual(criteria.Select(p => p.Type), SymbolEqualityComparer.Default))
+        {
+          continue;
+        }
+
+        var otherInjectCount = other.Parameters.Length - otherCriteria.Count;
+        if (otherInjectCount > injectCount)
+        {
+          return false;
+        }
+
+        // ties go to the first declared method
+        if (otherInjectCount == injectCount &&
+          operations.FindIndex(o => SymbolEqualityComparer.Default.Equals(o.Method, other)) <
+          operations.FindIndex(o => SymbolEqualityComparer.Default.Equals(o.Method, operation)))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     /// <summary>
-    /// The number of criteria values passed to the data portal method, or
-    /// null when they are passed as an existing array.
+    /// The criteria values can be passed to the criteria parameters of the
+    /// generated extension method.
     /// </summary>
-    private static int? GetCriteriaCount(IInvocationOperation invocation)
+    private static bool AcceptsArguments(List<IParameterSymbol> criteria, ImmutableArray<IOperation> arguments, Compilation compilation)
+    {
+      var required = criteria.Count(p => !p.HasExplicitDefaultValue && !p.IsParams);
+      var hasParams = criteria.Count > 0 && criteria[criteria.Count - 1].IsParams;
+      if (arguments.Length < required || (!hasParams && arguments.Length > criteria.Count))
+      {
+        return false;
+      }
+
+      for (var i = 0; i < arguments.Length; i++)
+      {
+        var parameter = criteria[Math.Min(i, criteria.Count - 1)];
+        var argument = arguments[i] is IConversionOperation { IsImplicit: true } conversion ? conversion.Operand : arguments[i];
+        if (parameter.IsParams && parameter.Type is IArrayTypeSymbol paramsArray)
+        {
+          var isLastExpandable = i >= criteria.Count - 1;
+          if (isLastExpandable && (IsConvertible(argument, paramsArray.ElementType, compilation) ||
+            (arguments.Length == criteria.Count && IsConvertible(argument, paramsArray, compilation))))
+          {
+            continue;
+          }
+
+          return false;
+        }
+
+        if (!IsConvertible(argument, parameter.Type, compilation))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    private static bool IsConvertible(IOperation argument, ITypeSymbol target, Compilation compilation)
+    {
+      if (argument.Type is null)
+      {
+        // null literal or a typeless expression
+        return argument.ConstantValue is not { HasValue: true, Value: null } ||
+          target.IsReferenceType || target.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
+      }
+
+      return compilation.ClassifyCommonConversion(argument.Type, target).IsImplicit;
+    }
+
+    /// <summary>
+    /// The criteria values passed to the data portal method, or null when
+    /// they are passed as an existing array.
+    /// </summary>
+    private static ImmutableArray<IOperation>? GetCriteriaArguments(IInvocationOperation invocation)
     {
       if (invocation.Arguments.Length == 0)
       {
-        return 0;
+        return ImmutableArray<IOperation>.Empty;
       }
 
       var argument = invocation.Arguments[invocation.Arguments.Length - 1];
       if (argument.ArgumentKind == ArgumentKind.ParamArray && argument.Value is IArrayCreationOperation { Initializer: { } initializer })
       {
-        return initializer.ElementValues.Length;
+        return initializer.ElementValues;
       }
 
       return null;

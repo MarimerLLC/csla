@@ -9,6 +9,13 @@
 namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Models
 {
   /// <summary>
+  /// Two operation methods that share an operation name. When
+  /// <see cref="IsAmbiguous"/> is true the runtime cannot choose between
+  /// the methods, and <see cref="Winner"/> is only the first declared.
+  /// </summary>
+  internal sealed record OperationCollision(OperationMethodModel Winner, OperationMethodModel Loser, bool IsAmbiguous);
+
+  /// <summary>
   /// A data portal operation method as seen through one operation
   /// attribute. A method carrying several operation attributes
   /// yields one model per attribute.

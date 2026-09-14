@@ -7,7 +7,7 @@ namespace TestApp
   /// <summary>
   /// Strongly typed data portal extension methods for <see cref="global::TestApp.PersonEdit"/>.
   /// </summary>
-  internal static partial class PersonEditDataPortalExtensions
+  static partial class PersonEditDataPortalExtensions
   {
     /// <summary>
     /// Invokes the <c>GetById(int)</c> Fetch operation of <see cref="global::TestApp.PersonEdit"/>.

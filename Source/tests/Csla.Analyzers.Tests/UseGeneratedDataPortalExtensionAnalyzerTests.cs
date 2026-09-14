@@ -256,6 +256,68 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenCriteriaTypesDoNotMatchAnyExtension()
+    {
+      var code = CreateCode(
+        """
+        await portal.FetchAsync("x");
+        childPortal.FetchChild(1.5);
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenCriteriaConvertToExtensionParameters()
+    {
+      var code = CreateCode(
+        """
+        short id = 1;
+        await portal.FetchAsync(id);
+        IDataPortal<D> dPortal = null;
+        await dPortal.FetchAsync(null, "a", "b");
+        """,
+        additionalTypes:
+        """
+        [DataPortalExtensions]
+        [Serializable]
+        public partial class D : BusinessBase<D>
+        {
+          [Fetch]
+          private void GetByNames(string category, params string[] names) { }
+        }
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension, Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenPreferredOverloadHasNoDataPortalExtension()
+    {
+      var code = CreateCode(
+        """
+        IDataPortal<D> dPortal = null;
+        await dPortal.FetchAsync(1);
+        """,
+        additionalTypes:
+        """
+        public interface IDal { }
+
+        [DataPortalExtensions]
+        [Serializable]
+        public partial class D : BusinessBase<D>
+        {
+          [Fetch]
+          private void GetById(int id) { }
+
+          [NoDataPortalExtension]
+          [Fetch]
+          private void GetById(int id, [Inject] IDal dal) { }
+        }
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code, []);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenNoExtensionIsGeneratedForTheOperation()
     {
       var code = CreateCode(

@@ -66,9 +66,9 @@ namespace TestApp
         if (criteria is null or { Length: 0 })
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Insert");
-          var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
           try
           {
+            var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
             await __operations.Insert(__c2i0).ConfigureAwait(false);
           }
           catch (global::System.Exception __ex)
@@ -83,9 +83,9 @@ namespace TestApp
         if (criteria is null or { Length: 0 })
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Update");
-          var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
           try
           {
+            var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
             await __operations.Update(__c3i0).ConfigureAwait(false);
           }
           catch (global::System.Exception __ex)
@@ -100,9 +100,9 @@ namespace TestApp
         if (criteria is null or { Length: 0 })
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "DeleteSelf");
-          var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
           try
           {
+            var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
             await __operations.DeleteSelf(__c4i0).ConfigureAwait(false);
           }
           catch (global::System.Exception __ex)
@@ -153,9 +153,9 @@ namespace TestApp
           if (criteria is null or { Length: 0 })
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Insert");
-            var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
             try
             {
+              var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
               await __operations.Insert(__c2i0).ConfigureAwait(false);
             }
             catch (global::System.Exception __ex)
@@ -169,9 +169,9 @@ namespace TestApp
           if (criteria is null or { Length: 0 })
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Update");
-            var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
             try
             {
+              var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
               await __operations.Update(__c3i0).ConfigureAwait(false);
             }
             catch (global::System.Exception __ex)
@@ -185,9 +185,9 @@ namespace TestApp
           if (criteria is null or { Length: 0 })
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "DeleteSelf");
-            var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
             try
             {
+              var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
               await __operations.DeleteSelf(__c4i0).ConfigureAwait(false);
             }
             catch (global::System.Exception __ex)

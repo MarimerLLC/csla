@@ -91,17 +91,21 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     }
 
     /// <summary>
-    /// Selects the method used for each operation name in name-based
+    /// Selects the method used for each operation name in generated
     /// dispatch. Like the runtime method resolution, when several methods
     /// share an operation name (they differ only in injected parameters)
-    /// the one with the most injected parameters wins; ties go to the
-    /// first declared. Returns the selected methods and any collisions.
+    /// the one with the most injected parameters wins. When several methods
+    /// tie for the most injected parameters the runtime reports an ambiguous
+    /// match, so none of them is selected and the call is left to
+    /// reflection-based dispatch; the first declared of them is reported as
+    /// the winner of an ambiguous collision. Returns the selected methods
+    /// and any collisions.
     /// </summary>
-    public static (List<OperationMethodModel> Selected, List<(OperationMethodModel Winner, OperationMethodModel Loser)> Collisions)
+    public static (List<OperationMethodModel> Selected, List<OperationCollision> Collisions)
       SelectNamedDispatchMethods(EquatableArray<OperationMethodModel> methods)
     {
       var selected = new List<OperationMethodModel>();
-      var collisions = new List<(OperationMethodModel, OperationMethodModel)>();
+      var collisions = new List<OperationCollision>();
       foreach (var group in methods.Where(m => m.CanDispatchByName).GroupBy(m => m.OperationName))
       {
         var ordered = group.ToList();
@@ -111,11 +115,29 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
           if (candidate.InjectCount > winner.InjectCount)
             winner = candidate;
         }
-        selected.Add(winner);
+        var isAmbiguous = ordered.Count(m => m.InjectCount == winner.InjectCount) > 1;
+        if (!isAmbiguous)
+          selected.Add(winner);
         foreach (var loser in ordered.Where(m => !ReferenceEquals(m, winner)))
-          collisions.Add((winner, loser));
+          collisions.Add(new OperationCollision(winner, loser, isAmbiguous));
       }
       return (selected, collisions);
+    }
+
+    /// <summary>
+    /// Methods that do not take part in generated dispatch because another
+    /// method shares their operation name.
+    /// </summary>
+    public static HashSet<OperationMethodModel> GetExcludedFromDispatch(List<OperationCollision> collisions)
+    {
+      var result = new HashSet<OperationMethodModel>(ReferenceEqualityComparer.Instance);
+      foreach (var collision in collisions)
+      {
+        result.Add(collision.Loser);
+        if (collision.IsAmbiguous)
+          result.Add(collision.Winner);
+      }
+      return result;
     }
 
     private static Dictionary<OperationMethodModel, string> GetInterfaceMemberNames(EquatableArray<OperationMethodModel> methods)
@@ -172,8 +194,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       // Methods sharing an operation name differ only in injected parameters;
       // only the one the runtime would select takes part in dispatch.
       var (_, collisions) = SelectNamedDispatchMethods(model.Methods);
-      var losers = new HashSet<OperationMethodModel>(collisions.Select(c => c.Loser), ReferenceEqualityComparer.Instance);
-      var dispatchable = model.Methods.Where(m => m.CanDispatch && !losers.Contains(m)).ToList();
+      var excluded = GetExcludedFromDispatch(collisions);
+      var dispatchable = model.Methods.Where(m => m.CanDispatch && !excluded.Contains(m)).ToList();
       if (dispatchable.Count > 0)
         writer.WriteLine($"var {OperationsLocal} = ({OperationDiscovery.OperationsInterfaceName})this;");
 
@@ -267,6 +289,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       if (method.IsAsync)
         writer.WriteLine($"{HelperType}.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, \"{method.MethodName.TrimStart('@')}\");");
 
+      // Like reflection-based dispatch, exceptions thrown while resolving
+      // injected services or by the operation method are wrapped in
+      // CallMethodException. This also keeps an operation method throwing
+      // DataPortalOperationNotSupportedException from being treated as an
+      // unmatched operation and invoked again through reflection.
+      writer.WriteLine("try");
+      OpenBlock(writer);
+
       var arguments = new List<string>();
       var criteriaIndex = 0;
       var injectIndex = 0;
@@ -303,13 +333,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         }
       }
 
-      // Like reflection-based dispatch, exceptions thrown by the operation
-      // method are wrapped in CallMethodException. This also keeps an operation
-      // method throwing DataPortalOperationNotSupportedException from being
-      // treated as an unmatched operation and invoked again through reflection.
       var call = $"{OperationsLocal}.{memberName}({string.Join(", ", arguments)})";
-      writer.WriteLine("try");
-      OpenBlock(writer);
       writer.WriteLine(method.IsAsync ? $"await {call}.ConfigureAwait(false);" : $"{call};");
       CloseBlock(writer);
       writer.WriteLine($"catch (global::System.Exception {ExceptionLocal})");
@@ -353,7 +377,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       writer.WriteLine("}");
     }
 
-    private sealed class ReferenceEqualityComparer : IEqualityComparer<OperationMethodModel>
+    internal sealed class ReferenceEqualityComparer : IEqualityComparer<OperationMethodModel>
     {
       public static readonly ReferenceEqualityComparer Instance = new();
 

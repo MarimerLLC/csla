@@ -500,6 +500,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
           {
             [Fetch]
             private void Fetch(int id, [Inject(Key = "primary")] IDal dal, [Inject(Key = DalKind.Secondary, AllowNull = true)] IDal? secondary) { }
+
+            [Create]
+            private void Create([Inject(Key = (short)-1)] IDal dal, [Inject(Key = (byte)2)] IDal other) { }
           }
         }
         """;
@@ -527,6 +530,33 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
 
             [Fetch]
             private void Load(int id) { }
+          }
+        }
+        """;
+
+      await DataPortalOperationsTestHelper<IncrementalDataPortalOperationsGenerator>.VerifyWithDiagnostics(source);
+    }
+
+    [TestMethod("Overloads tied on injected parameters are left to reflection and reported")]
+    public async Task AmbiguousOperationName()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public interface IDal { }
+
+          public partial class PersonEdit : Csla.BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(int id, [Inject] IDal dal) { }
+
+            [Fetch]
+            private void Load(int id, [Inject] IDal dal) { }
+
+            [Fetch]
+            private void Fetch(string name) { }
           }
         }
         """;

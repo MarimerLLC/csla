@@ -25,6 +25,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     public const string InaccessibleParameterTypeId = "CSLADP006";
     public const string DuplicateExtensionMethodId = "CSLADP007";
     public const string InvalidExtensionPrefixId = "CSLADP008";
+    public const string AmbiguousOperationNameId = "CSLADP009";
 
     public static readonly DiagnosticDescriptor DuplicateOperationName = new(
       id: DuplicateOperationNameId,
@@ -82,6 +83,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       defaultSeverity: DiagnosticSeverity.Warning,
       isEnabledByDefault: true);
 
+    public static readonly DiagnosticDescriptor AmbiguousOperationName = new(
+      id: AmbiguousOperationNameId,
+      title: "Data portal operation methods are ambiguous",
+      messageFormat: "Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match",
+      category: Category,
+      defaultSeverity: DiagnosticSeverity.Warning,
+      isEnabledByDefault: true);
+
     public static DiagnosticDescriptor GetDescriptor(string id) => id switch
     {
       DuplicateOperationNameId => DuplicateOperationName,
@@ -91,6 +100,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       InaccessibleParameterTypeId => InaccessibleParameterType,
       DuplicateExtensionMethodId => DuplicateExtensionMethod,
       InvalidExtensionPrefixId => InvalidExtensionPrefix,
+      AmbiguousOperationNameId => AmbiguousOperationName,
       _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
     };
   }

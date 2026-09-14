@@ -36,12 +36,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       context.RegisterSourceOutput(types, static (spc, model) =>
       {
         var (_, collisions) = DataPortalOperationsBuilder.SelectNamedDispatchMethods(model.Methods);
-        foreach (var (winner, loser) in collisions)
+        foreach (var collision in collisions)
         {
           spc.ReportDiagnostic(Diagnostic.Create(
-            DataPortalOperationsDiagnostics.DuplicateOperationName,
-            loser.Location?.ToLocation(),
-            winner.MethodDisplay, loser.MethodDisplay, model.Type.TypeName, winner.OperationName));
+            collision.IsAmbiguous ? DataPortalOperationsDiagnostics.AmbiguousOperationName : DataPortalOperationsDiagnostics.DuplicateOperationName,
+            collision.Loser.Location?.ToLocation(),
+            collision.Winner.MethodDisplay, collision.Loser.MethodDisplay, model.Type.TypeName, collision.Winner.OperationName));
         }
 
         spc.AddSource(

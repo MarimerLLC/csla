@@ -77,11 +77,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
         OpenBlock(writer);
       }
 
-      var classVisibility = type.Visibility == TypeVisibility.Public ? "public" : "internal";
+      // Different business types can map to the same class name (for example
+      // a top-level Outer_Inner and a nested Outer.Inner). The partial parts
+      // then merge; only a public business type states the accessibility so
+      // the parts never conflict, and the methods carry their own accessibility.
+      var classModifiers = type.Visibility == TypeVisibility.Public ? "public static partial" : "static partial";
       writer.WriteLine("/// <summary>");
       writer.WriteLine($"/// Strongly typed data portal extension methods for <see cref=\"{type.FullyQualifiedName}\"/>.");
       writer.WriteLine("/// </summary>");
-      writer.WriteLine($"{classVisibility} static partial class {type.ExtensionClassName}");
+      writer.WriteLine($"{classModifiers} class {type.ExtensionClassName}");
       OpenBlock(writer);
 
       var isFirst = true;

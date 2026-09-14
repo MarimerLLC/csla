@@ -321,6 +321,36 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
+    [TestMethod("Business types mapping to the same extension class name merge into one partial class")]
+    public async Task ExtensionClassNameCollision()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class Outer_Inner : BusinessBase<Outer_Inner>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+
+          internal partial class Outer
+          {
+            [DataPortalExtensions]
+            public partial class Inner : BusinessBase<Inner>
+            {
+              [Fetch]
+              private void GetById(int id) { }
+            }
+          }
+        }
+        """;
+
+      await Verify(source);
+    }
+
     [TestMethod("Internal business type generates an internal extension class")]
     public async Task InternalType()
     {

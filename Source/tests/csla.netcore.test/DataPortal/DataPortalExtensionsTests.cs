@@ -146,6 +146,20 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public async Task FetchAsync_MissingRequiredService_WrapsExceptionLikeReflectionDispatch()
+    {
+      var generated = () => _testHost.GetDataPortal<EdgeCaseRoot>().PortalGetRequiredAsync("code");
+      var reflection = () => _testHost.GetDataPortal<ReflectionRoot>().FetchAsync("code");
+
+      var generatedException = (await generated.Should().ThrowAsync<Exception>()).Which;
+      var reflectionException = (await reflection.Should().ThrowAsync<Exception>()).Which;
+
+      ExceptionTypes(generatedException).Should().Equal(ExceptionTypes(reflectionException));
+      ExceptionTypes(generatedException).Should().Contain(typeof(CallMethodException));
+      generatedException.GetBaseException().Should().BeOfType<InvalidOperationException>();
+    }
+
+    [TestMethod]
     public async Task FetchAsync_OperationThrowsNotSupported_IsNotInvokedAgain()
     {
       EdgeCaseRoot.FailCalls = 0;
@@ -531,6 +545,13 @@ namespace Csla.Test.DataPortal
         _ = notSupported;
         throw new InvalidOperationException("fail");
       }
+
+      [Fetch]
+      private void GetRequired(string code, [Inject] IUnregisteredService service)
+      {
+        _ = code;
+        _ = service;
+      }
     }
 
     public interface IUnregisteredService { }
@@ -569,6 +590,13 @@ namespace Csla.Test.DataPortal
       {
         Dispatch = DispatchPath.Current();
         Name = value is object[] array ? $"array:{array.Length}" : "single";
+      }
+
+      [Fetch]
+      private void GetRequired(string code, [Inject] IUnregisteredService service)
+      {
+        _ = code;
+        _ = service;
       }
 
       [Fetch]

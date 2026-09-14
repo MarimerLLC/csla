@@ -29,10 +29,10 @@ namespace TestApp
       {
         if (criteria is null or { Length: 0 })
         {
-          var __c0i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
-          var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
           try
           {
+            var __c0i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
+            var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
             __operations.Create(__c0i0, __c0i1);
           }
           catch (global::System.Exception __ex)
@@ -69,9 +69,9 @@ namespace TestApp
         case "Fetch__String_Int32":
           if (criteria is { Length: 2 } && (criteria[0] is null || criteria[0] is string) && criteria[1] is int __c0p1)
           {
-            var __c0p0 = (string?)criteria[0]!;
             try
             {
+              var __c0p0 = (string?)criteria[0]!;
               __operations.Fetch__String_Int32(in __c0p0, in __c0p1);
             }
             catch (global::System.Exception __ex)
@@ -84,10 +84,10 @@ namespace TestApp
         case "Create":
           if (criteria is null or { Length: 0 })
           {
-            var __c1i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
-            var __c1i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
             try
             {
+              var __c1i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
+              var __c1i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
               __operations.Create(__c1i0, __c1i1);
             }
             catch (global::System.Exception __ex)

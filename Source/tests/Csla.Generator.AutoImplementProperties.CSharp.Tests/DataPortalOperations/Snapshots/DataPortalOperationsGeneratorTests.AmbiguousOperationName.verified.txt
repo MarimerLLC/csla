@@ -1,0 +1,18 @@
+﻿{
+  Diagnostics: [
+    {
+      Location: Source0.cs: (12,17)-(12,21),
+      Message: Methods 'Fetch(int, IDal)' and 'Load(int, IDal)' on 'PersonEdit' both map to data portal operation 'Fetch__Int32' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP009,
+        Title: Data portal operation methods are ambiguous,
+        MessageFormat: Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true
+      }
+    }
+  ]
+}

@@ -28,9 +28,9 @@ namespace TestApp
         if (criteria is { Length: 1 } && criteria[0] is int __c0p0)
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Fetch");
-          var __c0i0 = (global::TestApp.ILogger?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.ILogger), true));
           try
           {
+            var __c0i0 = (global::TestApp.ILogger?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.ILogger), true));
             await __operations.Fetch__Int32(__c0p0, __c0i0).ConfigureAwait(false);
           }
           catch (global::System.Exception __ex)
@@ -53,9 +53,9 @@ namespace TestApp
           if (criteria is { Length: 1 } && criteria[0] is int __c0p0)
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Fetch");
-            var __c0i0 = (global::TestApp.ILogger?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.ILogger), true));
             try
             {
+              var __c0i0 = (global::TestApp.ILogger?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.ILogger), true));
               await __operations.Fetch__Int32(__c0p0, __c0i0).ConfigureAwait(false);
             }
             catch (global::System.Exception __ex)

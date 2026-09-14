@@ -35,27 +35,62 @@ namespace TestApp
       {
         if (criteria is { Length: 1 } && criteria[0] is int[] __c0p0 && __c0p0.GetType() == typeof(int[]))
         {
-          __operations.Fetch__Int32Array(__c0p0);
+          try
+          {
+            __operations.Fetch__Int32Array(__c0p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
           return;
         }
         if (criteria is { Length: 2 } && criteria[0] is int __c1p0 && criteria[1] is string __c1p1)
         {
-          __operations.Fetch__Nullable_1_Int32_String(__c1p0, __c1p1);
+          try
+          {
+            __operations.Fetch__Nullable_1_Int32_String(__c1p0, __c1p1);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
           return;
         }
         if (criteria is { Length: 1 } && criteria[0] is global::System.Collections.Generic.List<int> __c2p0 && __c2p0.GetType() == typeof(global::System.Collections.Generic.List<int>))
         {
-          __operations.Fetch__List_1_Int32(__c2p0);
+          try
+          {
+            __operations.Fetch__List_1_Int32(__c2p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
           return;
         }
         if (criteria is { Length: 1 } && criteria[0] is global::System.ValueTuple<int, string> __c3p0)
         {
-          __operations.Fetch__ValueTuple_2_Int32_String(__c3p0);
+          try
+          {
+            __operations.Fetch__ValueTuple_2_Int32_String(__c3p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
           return;
         }
         if (criteria is { Length: 1 } && criteria[0] is global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[] __c4p0 && __c4p0.GetType() == typeof(global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[]))
         {
-          __operations.Fetch__Dictionary_2_String_List_1_Nullable_1_Int32Array(__c4p0);
+          try
+          {
+            __operations.Fetch__Dictionary_2_String_List_1_Nullable_1_Int32Array(__c4p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
           return;
         }
       }
@@ -71,35 +106,70 @@ namespace TestApp
         case "Fetch__Int32Array":
           if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is int[]))
           {
-            __operations.Fetch__Int32Array((int[])criteria[0]!);
+            try
+            {
+              __operations.Fetch__Int32Array((int[])criteria[0]!);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
             return;
           }
           break;
         case "Fetch__Nullable_1_Int32_String":
           if (criteria is { Length: 2 } && (criteria[0] is null || criteria[0] is int) && (criteria[1] is null || criteria[1] is string))
           {
-            __operations.Fetch__Nullable_1_Int32_String((int?)criteria[0], (string?)criteria[1]!);
+            try
+            {
+              __operations.Fetch__Nullable_1_Int32_String((int?)criteria[0], (string?)criteria[1]!);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
             return;
           }
           break;
         case "Fetch__List_1_Int32":
           if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is global::System.Collections.Generic.List<int>))
           {
-            __operations.Fetch__List_1_Int32((global::System.Collections.Generic.List<int>)criteria[0]!);
+            try
+            {
+              __operations.Fetch__List_1_Int32((global::System.Collections.Generic.List<int>)criteria[0]!);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
             return;
           }
           break;
         case "Fetch__ValueTuple_2_Int32_String":
           if (criteria is { Length: 1 } && criteria[0] is global::System.ValueTuple<int, string> __c3p0)
           {
-            __operations.Fetch__ValueTuple_2_Int32_String(__c3p0);
+            try
+            {
+              __operations.Fetch__ValueTuple_2_Int32_String(__c3p0);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
             return;
           }
           break;
         case "Fetch__Dictionary_2_String_List_1_Nullable_1_Int32Array":
           if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[]))
           {
-            __operations.Fetch__Dictionary_2_String_List_1_Nullable_1_Int32Array((global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[])criteria[0]!);
+            try
+            {
+              __operations.Fetch__Dictionary_2_String_List_1_Nullable_1_Int32Array((global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[])criteria[0]!);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
             return;
           }
           break;

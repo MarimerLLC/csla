@@ -583,6 +583,30 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
+    [TestMethod("In criteria parameters and nullable inject parameters")]
+    public async Task InCriteriaAndNullableInject()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public interface IDal { }
+
+          public partial class PersonEdit : Csla.BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(in string? name, in int id) { }
+
+            [Create]
+            private void Create([Inject] int? count, [Inject] IDal? dal) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
     [TestMethod("Non-partial class generates nothing")]
     public async Task NonPartialClass()
     {

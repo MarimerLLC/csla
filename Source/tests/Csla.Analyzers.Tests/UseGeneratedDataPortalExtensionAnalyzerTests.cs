@@ -13,19 +13,19 @@ namespace Csla.Analyzers.Tests
       public partial class A : BusinessBase<A>
       {
         [Create]
-        private void Create() { }
+        private void New() { }
 
         [Fetch]
-        private void Fetch(int id) { }
+        private void GetById(int id) { }
 
         [Delete]
-        private void Delete(int id) { }
+        private void Remove(int id) { }
 
         [FetchChild]
-        private void FetchChild(int id) { }
+        private void LoadChild(int id) { }
 
         [CreateChild]
-        private void CreateChild() { }
+        private void NewChild() { }
       }
 
       [DataPortalExtensions]
@@ -33,7 +33,7 @@ namespace Csla.Analyzers.Tests
       public partial class C : CommandBase<C>
       {
         [Execute]
-        private void Execute(int id) { }
+        private void Run(int id) { }
       }
 
       [Serializable]
@@ -44,7 +44,7 @@ namespace Csla.Analyzers.Tests
       }
       """;
 
-    private static string CreateCode(string body, string header = "") =>
+    private static string CreateCode(string body, string header = "", string additionalTypes = "") =>
       $$"""
       {{header}}
       using Csla;
@@ -52,6 +52,8 @@ namespace Csla.Analyzers.Tests
       using System.Threading.Tasks;
 
       {{BusinessTypes}}
+
+      {{additionalTypes}}
 
       public class Consumer
       {
@@ -228,6 +230,113 @@ namespace Csla.Analyzers.Tests
       await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code,
         [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension],
         diagnostics => Assert.IsTrue(diagnostics[0].GetMessage().Contains("'CreateAsync'")));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenCriteriaArrayIsPassed()
+    {
+      var code = CreateCode(
+        """
+        object[] criteria = [1];
+        await portal.FetchAsync(criteria);
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenCriteriaCountDoesNotMatchAnyExtension()
+    {
+      var code = CreateCode(
+        """
+        await portal.FetchAsync(1, 2);
+        await portal.CreateAsync(1);
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenNoExtensionIsGeneratedForTheOperation()
+    {
+      var code = CreateCode(
+        """
+        IDataPortal<D> dPortal = null;
+        IChildDataPortal<D> dChildPortal = null;
+        await dPortal.FetchAsync(1);
+        dPortal.Delete(1);
+        await dPortal.CreateAsync("a");
+        await dPortal.ExecuteAsync(1);
+        dChildPortal.CreateChild(1);
+        """,
+        additionalTypes:
+        """
+        [DataPortalExtensions]
+        [Serializable]
+        public partial class D : BusinessBase<D>
+        {
+          private class Secret { }
+
+          [NoDataPortalExtension]
+          [Fetch]
+          private void GetById(int id) { }
+
+          [Delete]
+          private void Delete(int id) { }
+
+          [Create]
+          private void NewWith(Secret secret) { }
+
+          [Create]
+          private void NewByRef(ref string name) { }
+
+          [FetchChild]
+          private void LoadChild(int id) { }
+        }
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenRootOperationNameIsOnlyAChildPortalMember()
+    {
+      var code = CreateCode(
+        """
+        IDataPortal<D> dPortal = null;
+        await dPortal.CreateAsync(1);
+        """,
+        additionalTypes:
+        """
+        [DataPortalExtensions]
+        [Serializable]
+        public partial class D : BusinessBase<D>
+        {
+          [Create]
+          private void CreateChild(int id) { }
+        }
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenPrefixIsInvalid()
+    {
+      var code = CreateCode(
+        """
+        IDataPortal<D> dPortal = null;
+        await dPortal.FetchAsync(1);
+        """,
+        additionalTypes:
+        """
+        [DataPortalExtensions(Prefix = "My-")]
+        [Serializable]
+        public partial class D : BusinessBase<D>
+        {
+          [Fetch]
+          private void GetById(int id) { }
+        }
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code, []);
     }
 
     [TestMethod]

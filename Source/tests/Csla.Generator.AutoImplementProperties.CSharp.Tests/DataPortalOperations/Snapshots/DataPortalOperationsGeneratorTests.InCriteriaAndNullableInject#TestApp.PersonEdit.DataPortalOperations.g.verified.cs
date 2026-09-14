@@ -14,50 +14,41 @@ namespace TestApp
     [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
     internal interface IDataPortalOperations
     {
-      void Fetch__Object(object value);
-      void Fetch__Criteria(global::TestApp.Criteria criteria);
-      void Fetch__Int32(int id);
+      void Fetch__String_Int32(in string? name, in int id);
+      void Create(int? count, global::TestApp.IDal? dal);
     }
 
-    void IDataPortalOperations.Fetch__Object(object value) => Fetch(value);
-    void IDataPortalOperations.Fetch__Criteria(global::TestApp.Criteria criteria) => Fetch(criteria);
-    void IDataPortalOperations.Fetch__Int32(int id) => Fetch(id);
+    void IDataPortalOperations.Fetch__String_Int32(in string? name, in int id) => Fetch(in name, in id);
+    void IDataPortalOperations.Create(int? count, global::TestApp.IDal? dal) => Create(count, dal);
 
     async global::System.Threading.Tasks.Task global::Csla.Server.IDataPortalOperationMapping.InvokeOperationAsync(
       global::System.Type operationType, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
     {
       var __operations = (IDataPortalOperations)this;
-      if (operationType == typeof(global::Csla.FetchAttribute))
+      if (operationType == typeof(global::Csla.CreateAttribute))
       {
-        if (criteria is { Length: 1 } && criteria[0] is object __c0p0 && __c0p0.GetType() == typeof(object))
+        if (criteria is null or { Length: 0 })
         {
+          var __c0i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
+          var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
           try
           {
-            __operations.Fetch__Object(__c0p0);
+            __operations.Create(__c0i0, __c0i1);
           }
           catch (global::System.Exception __ex)
           {
-            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
           }
           return;
         }
-        if (criteria is { Length: 1 } && criteria[0] is global::TestApp.Criteria __c1p0 && __c1p0.GetType() == typeof(global::TestApp.Criteria))
+      }
+      else if (operationType == typeof(global::Csla.FetchAttribute))
+      {
+        if (criteria is { Length: 2 } && criteria[0] is string __c1p0 && criteria[1] is int __c1p1)
         {
           try
           {
-            __operations.Fetch__Criteria(__c1p0);
-          }
-          catch (global::System.Exception __ex)
-          {
-            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
-          }
-          return;
-        }
-        if (criteria is { Length: 1 } && criteria[0] is int __c2p0)
-        {
-          try
-          {
-            __operations.Fetch__Int32(__c2p0);
+            __operations.Fetch__String_Int32(in __c1p0, in __c1p1);
           }
           catch (global::System.Exception __ex)
           {
@@ -75,12 +66,13 @@ namespace TestApp
       var __operations = (IDataPortalOperations)this;
       switch (operationName)
       {
-        case "Fetch__Object":
-          if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is object))
+        case "Fetch__String_Int32":
+          if (criteria is { Length: 2 } && (criteria[0] is null || criteria[0] is string) && criteria[1] is int __c0p1)
           {
+            var __c0p0 = (string?)criteria[0]!;
             try
             {
-              __operations.Fetch__Object((object)criteria[0]!);
+              __operations.Fetch__String_Int32(in __c0p0, in __c0p1);
             }
             catch (global::System.Exception __ex)
             {
@@ -89,30 +81,18 @@ namespace TestApp
             return;
           }
           break;
-        case "Fetch__Criteria":
-          if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is global::TestApp.Criteria))
+        case "Create":
+          if (criteria is null or { Length: 0 })
           {
+            var __c1i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
+            var __c1i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
             try
             {
-              __operations.Fetch__Criteria((global::TestApp.Criteria)criteria[0]!);
+              __operations.Create(__c1i0, __c1i1);
             }
             catch (global::System.Exception __ex)
             {
-              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
-            }
-            return;
-          }
-          break;
-        case "Fetch__Int32":
-          if (criteria is { Length: 1 } && criteria[0] is int __c2p0)
-          {
-            try
-            {
-              __operations.Fetch__Int32(__c2p0);
-            }
-            catch (global::System.Exception __ex)
-            {
-              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
             }
             return;
           }

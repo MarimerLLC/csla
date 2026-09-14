@@ -48,10 +48,16 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
     public LocationInfo? Location { get; init; }
 
     /// <summary>
-    /// Names of instance members of IDataPortal&lt;T&gt; and IChildDataPortal&lt;T&gt;,
-    /// which would hide extension methods with the same name.
+    /// Names of instance members of IDataPortal&lt;T&gt;, which would hide
+    /// root extension methods with the same name.
     /// </summary>
-    public required EquatableArray<string> HiddenNames { get; init; }
+    public required EquatableArray<string> RootHiddenNames { get; init; }
+
+    /// <summary>
+    /// Names of instance members of IChildDataPortal&lt;T&gt;, which would hide
+    /// child extension methods with the same name.
+    /// </summary>
+    public required EquatableArray<string> ChildHiddenNames { get; init; }
   }
 
   /// <summary>

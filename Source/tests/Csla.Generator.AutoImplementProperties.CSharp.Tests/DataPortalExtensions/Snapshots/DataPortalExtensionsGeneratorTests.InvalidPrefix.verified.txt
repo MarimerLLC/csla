@@ -1,0 +1,18 @@
+﻿{
+  Diagnostics: [
+    {
+      Location: Source0.cs: (5,23)-(5,33),
+      Message: Data portal extension methods are not generated for 'PersonEdit' because the prefix 'My-' is not a valid C# identifier,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP008,
+        Title: Invalid DataPortalExtensions prefix,
+        MessageFormat: Data portal extension methods are not generated for '{0}' because the prefix '{1}' is not a valid C# identifier,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true
+      }
+    }
+  ]
+}

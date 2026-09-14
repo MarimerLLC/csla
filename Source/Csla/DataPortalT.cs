@@ -600,12 +600,12 @@ namespace Csla
     /// <summary>
     /// Converts the explicit criteria array supplied by generated code into
     /// the criteria object used by the data portal. A single criteria value
-    /// that is itself a covariant array (for example string[]) is wrapped so
-    /// it is not expanded into separate criteria values.
+    /// that is itself an array of reference types (for example string[] or
+    /// object[]) is wrapped so it is not expanded into separate criteria values.
     /// </summary>
     private static object GetOperationCriteria(object?[]? criteria)
     {
-      if (criteria is { Length: 1 } && criteria[0] is object[] array && array.GetType() != typeof(object[]))
+      if (criteria is { Length: 1 } && criteria[0] is object[])
         return new Core.MobileList<object?>(criteria);
       return Server.DataPortal.GetCriteriaFromArray(criteria);
     }

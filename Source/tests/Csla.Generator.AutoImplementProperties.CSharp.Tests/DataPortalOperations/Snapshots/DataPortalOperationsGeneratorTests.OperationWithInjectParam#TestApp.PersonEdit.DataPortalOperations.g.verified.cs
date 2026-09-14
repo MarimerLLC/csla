@@ -29,7 +29,14 @@ namespace TestApp
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Insert");
           var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-          await __operations.Insert(__c0i0).ConfigureAwait(false);
+          try
+          {
+            await __operations.Insert(__c0i0).ConfigureAwait(false);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Insert", __ex);
+          }
           return;
         }
       }
@@ -47,7 +54,14 @@ namespace TestApp
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Insert");
             var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-            await __operations.Insert(__c0i0).ConfigureAwait(false);
+            try
+            {
+              await __operations.Insert(__c0i0).ConfigureAwait(false);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Insert", __ex);
+            }
             return;
           }
           break;

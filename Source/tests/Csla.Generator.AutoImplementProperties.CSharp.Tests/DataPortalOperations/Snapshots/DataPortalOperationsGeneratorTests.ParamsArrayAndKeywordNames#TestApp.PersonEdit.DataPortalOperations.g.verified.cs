@@ -29,7 +29,14 @@ namespace TestApp
       {
         if (criteria is { Length: 2 } && criteria[0] is int __c0p0 && criteria[1] is string __c0p1)
         {
-          __operations.Create__Int32_String(__c0p0, __c0p1);
+          try
+          {
+            __operations.Create__Int32_String(__c0p0, __c0p1);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
+          }
           return;
         }
       }
@@ -45,7 +52,14 @@ namespace TestApp
         case "Create__Int32_String":
           if (criteria is { Length: 2 } && criteria[0] is int __c0p0 && (criteria[1] is null || criteria[1] is string))
           {
-            __operations.Create__Int32_String(__c0p0, (string)criteria[1]!);
+            try
+            {
+              __operations.Create__Int32_String(__c0p0, (string)criteria[1]!);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
+            }
             return;
           }
           break;

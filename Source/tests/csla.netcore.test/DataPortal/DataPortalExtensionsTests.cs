@@ -10,6 +10,7 @@ using System.Reflection;
 using Csla.Channels.Local;
 using Csla.Core;
 using Csla.DataPortalClient;
+using Csla.Reflection;
 using Csla.Server;
 using Csla.Testing;
 using FluentAssertions;
@@ -128,6 +129,58 @@ namespace Csla.Test.DataPortal
       generatedException.GetType().Should().Be(reflectionException.GetType());
       generatedException.GetBaseException().Should().BeOfType<NotSupportedException>();
       reflectionException.GetBaseException().Should().BeOfType<NotSupportedException>();
+    }
+
+    [TestMethod]
+    public async Task FetchAsync_OperationThrows_WrapsExceptionLikeReflectionDispatch()
+    {
+      var generated = () => _testHost.GetDataPortal<EdgeCaseRoot>().PortalFailAsync(false);
+      var reflection = () => _testHost.GetDataPortal<ReflectionRoot>().FetchAsync(false);
+
+      var generatedException = (await generated.Should().ThrowAsync<Exception>()).Which;
+      var reflectionException = (await reflection.Should().ThrowAsync<Exception>()).Which;
+
+      ExceptionTypes(generatedException).Should().Equal(ExceptionTypes(reflectionException));
+      ExceptionTypes(generatedException).Should().Contain(typeof(CallMethodException));
+      generatedException.GetBaseException().Should().BeOfType<InvalidOperationException>();
+    }
+
+    [TestMethod]
+    public async Task FetchAsync_OperationThrowsNotSupported_IsNotInvokedAgain()
+    {
+      EdgeCaseRoot.FailCalls = 0;
+
+      var act = () => _testHost.GetDataPortal<EdgeCaseRoot>().PortalFailAsync(true);
+
+      (await act.Should().ThrowAsync<Exception>()).Which
+        .GetBaseException().Should().BeOfType<DataPortalOperationNotSupportedException>();
+      EdgeCaseRoot.FailCalls.Should().Be(1);
+    }
+
+    [TestMethod]
+    public async Task FetchAsync_ObjectArrayForSingleObjectCriteria_IsNotSplit()
+    {
+      var obj = await _testHost.GetDataPortal<EdgeCaseRoot>().PortalGetByValueAsync(new object[] { 1, "two" });
+
+      obj.Dispatch.Should().Be(DispatchPath.Named);
+      obj.Name.Should().Be("array:2");
+    }
+
+    [TestMethod]
+    public async Task FetchAsync_NullableInjectedService_IsOptional()
+    {
+      var obj = await _testHost.GetDataPortal<EdgeCaseRoot>().PortalGetOptionalAsync(5);
+
+      obj.Dispatch.Should().Be(DispatchPath.Named);
+      obj.Name.Should().Be("5:<null>");
+    }
+
+    private static List<Type> ExceptionTypes(Exception exception)
+    {
+      var result = new List<Type>();
+      for (var current = exception; current is not null; current = current.InnerException)
+        result.Add(current.GetType());
+      return result;
     }
 
     [TestMethod]
@@ -471,7 +524,61 @@ namespace Csla.Test.DataPortal
         _ = key;
         await Task.Yield();
       }
+
+      [Fetch]
+      private void Fail(bool notSupported)
+      {
+        _ = notSupported;
+        throw new InvalidOperationException("fail");
+      }
     }
+
+    public interface IUnregisteredService { }
+
+#nullable enable
+    [DataPortalExtensions(Prefix = "Portal")]
+    public partial class EdgeCaseRoot : BusinessBase<EdgeCaseRoot>
+    {
+      public static int FailCalls;
+
+      public static readonly PropertyInfo<string> DispatchProperty = RegisterProperty<string>(nameof(Dispatch));
+      public string Dispatch
+      {
+        get => GetProperty(DispatchProperty);
+        private set => LoadProperty(DispatchProperty, value);
+      }
+
+      public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+      public string Name
+      {
+        get => GetProperty(NameProperty);
+        private set => LoadProperty(NameProperty, value);
+      }
+
+      [Fetch]
+      private void Fail(bool notSupported)
+      {
+        Interlocked.Increment(ref FailCalls);
+        if (notSupported)
+          throw new DataPortalOperationNotSupportedException("Fail", null);
+        throw new InvalidOperationException("fail");
+      }
+
+      [Fetch]
+      private void GetByValue(object value)
+      {
+        Dispatch = DispatchPath.Current();
+        Name = value is object[] array ? $"array:{array.Length}" : "single";
+      }
+
+      [Fetch]
+      private void GetOptional(int id, [Inject] IUnregisteredService? service)
+      {
+        Dispatch = DispatchPath.Current();
+        Name = $"{id}:{(service is null ? "<null>" : "service")}";
+      }
+    }
+#nullable restore
 
     [DataPortalExtensions(Prefix = "Portal")]
     public partial class ExtensionCommand : CommandBase<ExtensionCommand>

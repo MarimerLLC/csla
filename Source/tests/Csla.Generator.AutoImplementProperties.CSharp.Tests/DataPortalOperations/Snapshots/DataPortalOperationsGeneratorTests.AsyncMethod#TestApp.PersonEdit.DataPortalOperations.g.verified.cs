@@ -28,7 +28,14 @@ namespace TestApp
         if (criteria is { Length: 1 } && criteria[0] is int __c0p0)
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Fetch");
-          await __operations.Fetch__Int32(__c0p0).ConfigureAwait(false);
+          try
+          {
+            await __operations.Fetch__Int32(__c0p0).ConfigureAwait(false);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
           return;
         }
       }
@@ -45,7 +52,14 @@ namespace TestApp
           if (criteria is { Length: 1 } && criteria[0] is int __c0p0)
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "Fetch");
-            await __operations.Fetch__Int32(__c0p0).ConfigureAwait(false);
+            try
+            {
+              await __operations.Fetch__Int32(__c0p0).ConfigureAwait(false);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
             return;
           }
           break;

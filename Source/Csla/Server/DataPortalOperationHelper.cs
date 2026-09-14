@@ -44,6 +44,24 @@ namespace Csla.Server
     }
 
     /// <summary>
+    /// Wraps an exception thrown by an operation method in a
+    /// <see cref="CallMethodException"/>, matching the behavior of
+    /// reflection-based dispatch. Because the exception is wrapped, an
+    /// operation method that throws <see cref="DataPortalOperationNotSupportedException"/>
+    /// is not mistaken for an unmatched generated dispatch.
+    /// </summary>
+    /// <param name="target">Business object declaring the method.</param>
+    /// <param name="methodName">Name of the operation method.</param>
+    /// <param name="exception">Exception thrown by the operation method.</param>
+    public static Exception CreateCallMethodException(object target, string methodName, Exception exception)
+    {
+      if (target is null)
+        throw new ArgumentNullException(nameof(target));
+
+      return new CallMethodException(target.GetType().Name + "." + methodName + " " + Resources.MethodCallFailed, exception);
+    }
+
+    /// <summary>
     /// Resolves a service for an injected operation method parameter.
     /// </summary>
     /// <param name="serviceProvider">Current service provider.</param>

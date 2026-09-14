@@ -173,6 +173,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         }
       }
 
+      // Like reflection-based dispatch, a nullable parameter type makes the service optional.
+      if (isInjected && (isNullableValueType || (type.IsReferenceType && parameter.NullableAnnotation == NullableAnnotation.Annotated)))
+        allowNull = true;
+
       return new OperationParameterModel
       {
         Name = EscapeIdentifier(parameter.Name),

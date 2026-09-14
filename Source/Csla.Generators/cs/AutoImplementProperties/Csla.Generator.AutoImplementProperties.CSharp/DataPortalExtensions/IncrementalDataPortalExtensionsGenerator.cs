@@ -94,15 +94,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       hintParts.Add(type.Name);
 
       var compilation = context.SemanticModel.Compilation;
-      var hiddenNames = new SortedSet<string>(StringComparer.Ordinal);
-      foreach (var portalInterface in new[] { "Csla.IDataPortal`1", "Csla.IChildDataPortal`1" })
-      {
-        var symbol = compilation.GetTypeByMetadataName(portalInterface);
-        if (symbol is null)
-          continue;
-        foreach (var member in symbol.GetMembers())
-          hiddenNames.Add(member.Name);
-      }
 
       return new ExtensionTypeModel
       {
@@ -118,8 +109,20 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
         IsCslaObject = type.AllInterfaces.Any(i => i.ToDisplayString() == "Csla.Core.ICslaObject"),
         Visibility = OperationDiscovery.GetVisibility(type),
         Location = LocationInfo.From(type.Locations.FirstOrDefault()),
-        HiddenNames = new EquatableArray<string>(hiddenNames)
+        RootHiddenNames = GetMemberNames(compilation, "Csla.IDataPortal`1"),
+        ChildHiddenNames = GetMemberNames(compilation, "Csla.IChildDataPortal`1")
       };
+    }
+
+    private static EquatableArray<string> GetMemberNames(Compilation compilation, string metadataName)
+    {
+      var names = new SortedSet<string>(StringComparer.Ordinal);
+      if (compilation.GetTypeByMetadataName(metadataName) is { } symbol)
+      {
+        foreach (var member in symbol.GetMembers())
+          names.Add(member.Name);
+      }
+      return new EquatableArray<string>(names);
     }
   }
 }

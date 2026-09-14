@@ -27,7 +27,14 @@ namespace TestApp
       {
         if (criteria is { Length: 1 } && criteria[0] is string __c0p0)
         {
-          __operations.Fetch__String(__c0p0);
+          try
+          {
+            __operations.Fetch__String(__c0p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
           return;
         }
       }
@@ -43,7 +50,14 @@ namespace TestApp
         case "Fetch__String":
           if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is string))
           {
-            __operations.Fetch__String((string)criteria[0]!);
+            try
+            {
+              __operations.Fetch__String((string)criteria[0]!);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
             return;
           }
           break;

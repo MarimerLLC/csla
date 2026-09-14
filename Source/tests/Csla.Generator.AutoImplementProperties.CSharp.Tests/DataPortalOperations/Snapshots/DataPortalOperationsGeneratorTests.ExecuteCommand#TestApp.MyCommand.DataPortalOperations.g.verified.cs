@@ -27,7 +27,14 @@ namespace TestApp
       {
         if (criteria is null or { Length: 0 })
         {
-          __operations.Execute();
+          try
+          {
+            __operations.Execute();
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Execute", __ex);
+          }
           return;
         }
       }
@@ -43,7 +50,14 @@ namespace TestApp
         case "Execute":
           if (criteria is null or { Length: 0 })
           {
-            __operations.Execute();
+            try
+            {
+              __operations.Execute();
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Execute", __ex);
+            }
             return;
           }
           break;

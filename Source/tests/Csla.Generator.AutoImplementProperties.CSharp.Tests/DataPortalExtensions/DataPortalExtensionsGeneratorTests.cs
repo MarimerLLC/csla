@@ -139,6 +139,69 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
+    [TestMethod("Hidden names are checked against the receiving portal interface only")]
+    public async Task ReceiverSpecificHiddenNames()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Create]
+            private void CreateChild(int id) { }
+
+            [FetchChild]
+            private void Fetch(int id) { }
+          }
+        }
+        """;
+
+      await Verify(source);
+    }
+
+    [TestMethod("Keyword method names and parameters colliding with generated names")]
+    public async Task KeywordAndCollidingNames()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void @class(int portal, int __portal, int __invoker) { }
+          }
+        }
+        """;
+
+      await Verify(source);
+    }
+
+    [TestMethod("A prefix that is not a valid identifier is reported")]
+    public async Task InvalidPrefix()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions(Prefix = "My-")]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source);
+    }
+
     [TestMethod("NoDataPortalExtension excludes a method")]
     public async Task NoDataPortalExtension()
     {

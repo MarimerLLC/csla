@@ -24,6 +24,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     public const string ExtensionNameHiddenId = "CSLADP005";
     public const string InaccessibleParameterTypeId = "CSLADP006";
     public const string DuplicateExtensionMethodId = "CSLADP007";
+    public const string InvalidExtensionPrefixId = "CSLADP008";
 
     public static readonly DiagnosticDescriptor DuplicateOperationName = new(
       id: DuplicateOperationNameId,
@@ -62,13 +63,21 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       title: "Operation parameter type is not accessible",
       messageFormat: "The data portal extension method for '{0}' cannot be generated because parameter '{1}' has type '{2}', which is not accessible outside its containing type",
       category: Category,
-      defaultSeverity: DiagnosticSeverity.Error,
+      defaultSeverity: DiagnosticSeverity.Warning,
       isEnabledByDefault: true);
 
     public static readonly DiagnosticDescriptor DuplicateExtensionMethod = new(
       id: DuplicateExtensionMethodId,
       title: "Generated data portal extension would be duplicated",
       messageFormat: "The data portal extension method '{0}' for '{1}' is not generated for '{2}' because another operation method already produces an extension method with the same signature",
+      category: Category,
+      defaultSeverity: DiagnosticSeverity.Warning,
+      isEnabledByDefault: true);
+
+    public static readonly DiagnosticDescriptor InvalidExtensionPrefix = new(
+      id: InvalidExtensionPrefixId,
+      title: "Invalid DataPortalExtensions prefix",
+      messageFormat: "Data portal extension methods are not generated for '{0}' because the prefix '{1}' is not a valid C# identifier",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
       isEnabledByDefault: true);
@@ -81,6 +90,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       ExtensionNameHiddenId => ExtensionNameHidden,
       InaccessibleParameterTypeId => InaccessibleParameterType,
       DuplicateExtensionMethodId => DuplicateExtensionMethod,
+      InvalidExtensionPrefixId => InvalidExtensionPrefix,
       _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
     };
   }

@@ -35,7 +35,14 @@ namespace TestApp
       {
         if (criteria is null or { Length: 0 })
         {
-          __operations.CreateChild();
+          try
+          {
+            __operations.CreateChild();
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "CreateChild", __ex);
+          }
           return;
         }
       }
@@ -43,7 +50,14 @@ namespace TestApp
       {
         if (criteria is { Length: 1 } && criteria[0] is int __c1p0)
         {
-          __operations.FetchChild__Int32(__c1p0);
+          try
+          {
+            __operations.FetchChild__Int32(__c1p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "FetchChild", __ex);
+          }
           return;
         }
       }
@@ -53,7 +67,14 @@ namespace TestApp
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "InsertChild");
           var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-          await __operations.InsertChild(__c2i0).ConfigureAwait(false);
+          try
+          {
+            await __operations.InsertChild(__c2i0).ConfigureAwait(false);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "InsertChild", __ex);
+          }
           return;
         }
       }
@@ -63,7 +84,14 @@ namespace TestApp
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "UpdateChild");
           var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-          await __operations.UpdateChild(__c3i0).ConfigureAwait(false);
+          try
+          {
+            await __operations.UpdateChild(__c3i0).ConfigureAwait(false);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "UpdateChild", __ex);
+          }
           return;
         }
       }
@@ -73,7 +101,14 @@ namespace TestApp
         {
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "DeleteSelfChild");
           var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-          await __operations.DeleteSelfChild(__c4i0).ConfigureAwait(false);
+          try
+          {
+            await __operations.DeleteSelfChild(__c4i0).ConfigureAwait(false);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "DeleteSelfChild", __ex);
+          }
           return;
         }
       }
@@ -89,14 +124,28 @@ namespace TestApp
         case "CreateChild":
           if (criteria is null or { Length: 0 })
           {
-            __operations.CreateChild();
+            try
+            {
+              __operations.CreateChild();
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "CreateChild", __ex);
+            }
             return;
           }
           break;
         case "FetchChild__Int32":
           if (criteria is { Length: 1 } && criteria[0] is int __c1p0)
           {
-            __operations.FetchChild__Int32(__c1p0);
+            try
+            {
+              __operations.FetchChild__Int32(__c1p0);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "FetchChild", __ex);
+            }
             return;
           }
           break;
@@ -105,7 +154,14 @@ namespace TestApp
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "InsertChild");
             var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-            await __operations.InsertChild(__c2i0).ConfigureAwait(false);
+            try
+            {
+              await __operations.InsertChild(__c2i0).ConfigureAwait(false);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "InsertChild", __ex);
+            }
             return;
           }
           break;
@@ -114,7 +170,14 @@ namespace TestApp
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "UpdateChild");
             var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-            await __operations.UpdateChild(__c3i0).ConfigureAwait(false);
+            try
+            {
+              await __operations.UpdateChild(__c3i0).ConfigureAwait(false);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "UpdateChild", __ex);
+            }
             return;
           }
           break;
@@ -123,7 +186,14 @@ namespace TestApp
           {
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "DeleteSelfChild");
             var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-            await __operations.DeleteSelfChild(__c4i0).ConfigureAwait(false);
+            try
+            {
+              await __operations.DeleteSelfChild(__c4i0).ConfigureAwait(false);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "DeleteSelfChild", __ex);
+            }
             return;
           }
           break;

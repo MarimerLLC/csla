@@ -29,7 +29,14 @@ namespace TestApp
       {
         if (criteria is null or { Length: 0 })
         {
-          __operations.Create();
+          try
+          {
+            __operations.Create();
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
+          }
           return;
         }
       }
@@ -37,7 +44,14 @@ namespace TestApp
       {
         if (criteria is null or { Length: 0 })
         {
-          __operations.CreateChild();
+          try
+          {
+            __operations.CreateChild();
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
+          }
           return;
         }
       }
@@ -53,14 +67,28 @@ namespace TestApp
         case "Create":
           if (criteria is null or { Length: 0 })
           {
-            __operations.Create();
+            try
+            {
+              __operations.Create();
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
+            }
             return;
           }
           break;
         case "CreateChild":
           if (criteria is null or { Length: 0 })
           {
-            __operations.CreateChild();
+            try
+            {
+              __operations.CreateChild();
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Create", __ex);
+            }
             return;
           }
           break;

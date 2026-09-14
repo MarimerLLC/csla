@@ -21,6 +21,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
   {
     private const string HelperType = "global::Csla.Server.DataPortalOperationHelper";
     private const string OperationsLocal = "__operations";
+    private const string ExceptionLocal = "__ex";
 
     /// <summary>
     /// Build the generated source for a type.
@@ -282,24 +283,49 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
           var i = criteriaIndex++;
           string argument;
           if (byName && parameter.AcceptsNull)
+          {
             argument = parameter.IsNullableValueType
               ? $"({parameter.TypeDisplay})criteria[{i}]"
               : $"({parameter.TypeDisplay})criteria[{i}]!";
+            // An explicit 'in' argument must be a variable, not a cast expression.
+            if (parameter.RefKindPrefix == "in ")
+            {
+              var variable = CriteriaVariable(candidateIndex, i);
+              writer.WriteLine($"var {variable} = {argument};");
+              argument = variable;
+            }
+          }
           else
+          {
             argument = CriteriaVariable(candidateIndex, i);
+          }
           arguments.Add(ArgumentPrefix(parameter) + argument);
         }
       }
 
+      // Like reflection-based dispatch, exceptions thrown by the operation
+      // method are wrapped in CallMethodException. This also keeps an operation
+      // method throwing DataPortalOperationNotSupportedException from being
+      // treated as an unmatched operation and invoked again through reflection.
       var call = $"{OperationsLocal}.{memberName}({string.Join(", ", arguments)})";
+      writer.WriteLine("try");
+      OpenBlock(writer);
       writer.WriteLine(method.IsAsync ? $"await {call}.ConfigureAwait(false);" : $"{call};");
+      CloseBlock(writer);
+      writer.WriteLine($"catch (global::System.Exception {ExceptionLocal})");
+      OpenBlock(writer);
+      writer.WriteLine($"throw {HelperType}.CreateCallMethodException(this, \"{method.MethodName.TrimStart('@')}\", {ExceptionLocal});");
+      CloseBlock(writer);
       writer.WriteLine("return;");
       CloseBlock(writer);
     }
 
     private static string FormatServiceResolution(OperationParameterModel parameter)
     {
-      var serviceType = $"typeof({parameter.PatternTypeDisplay})";
+      // Nullable<T> services are registered and resolved as Nullable<T>, as in reflection-based dispatch.
+      var serviceType = parameter.IsNullableValueType
+        ? $"typeof({parameter.PatternTypeDisplay}?)"
+        : $"typeof({parameter.PatternTypeDisplay})";
       var resolution = parameter.ServiceKeyExpression is null
         ? $"{HelperType}.GetService(serviceProvider, {serviceType}, {(parameter.AllowNull ? "true" : "false")})"
         : $"{HelperType}.GetKeyedService(serviceProvider, {serviceType}, {parameter.ServiceKeyExpression}, {(parameter.AllowNull ? "true" : "false")})";

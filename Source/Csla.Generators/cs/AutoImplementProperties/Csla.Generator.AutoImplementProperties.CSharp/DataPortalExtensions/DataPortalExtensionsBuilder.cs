@@ -13,6 +13,7 @@
 using System.CodeDom.Compiler;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Models;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
 {
@@ -23,6 +24,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
   internal static class DataPortalExtensionsBuilder
   {
     private const string ReceiverName = "portal";
+    private const string InvokerName = "__invoker";
 
     /// <summary>
     /// Build the generated source and diagnostics for a business type.
@@ -49,6 +51,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       if (invalidReason is not null)
       {
         diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionsTargetId, type.Location, type.TypeName, invalidReason));
+        return (null, diagnostics);
+      }
+
+      if (type.Prefix.Length > 0 && !SyntaxFacts.IsValidIdentifier(type.Prefix))
+      {
+        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionPrefixId, type.Location, type.TypeName, type.Prefix));
         return (null, diagnostics);
       }
 
@@ -125,12 +133,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
 
         var isChild = method.Kind is "CreateChild" or "FetchChild";
         var receiverInterface = isChild ? "IChildDataPortal" : "IDataPortal";
+        var hiddenNames = isChild ? type.ChildHiddenNames : type.RootHiddenNames;
         var parameterTypes = string.Join(",", criteria.Select(p => p.PatternTypeDisplay + (p.IsNullableValueType ? "?" : string.Empty)));
 
         foreach (var isAsync in new[] { true, false })
         {
           var name = type.Prefix + baseName + (isAsync ? "Async" : string.Empty);
-          if (type.HiddenNames.Contains(name))
+          if (hiddenNames.Contains(name))
           {
             diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.ExtensionNameHiddenId, method.Location, name, type.TypeName, $"{receiverInterface}<T>.{name}"));
             continue;
@@ -154,7 +163,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       var method = extension.Method;
       var criteria = method.CriteriaParameters.ToList();
       var isDelete = method.Kind == "Delete";
-      var receiver = criteria.Any(p => p.Name == ReceiverName) ? "__" + ReceiverName : ReceiverName;
+      var criteriaNames = new HashSet<string>(criteria.Select(p => p.Name.TrimStart('@')), StringComparer.Ordinal);
+      var receiver = GetUniqueName(ReceiverName, criteriaNames);
+      var invoker = GetUniqueName(InvokerName, criteriaNames);
       var visibility = type.Visibility == TypeVisibility.Public && criteria.All(p => p.Visibility == TypeVisibility.Public)
         ? "public"
         : "internal";
@@ -198,13 +209,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       writer.WriteLine("/// <summary>");
       writer.WriteLine($"/// Invokes the <c>{Escape(method.MethodDisplay)}</c> {method.Kind} operation of <see cref=\"{type.FullyQualifiedName}\"/>.");
       writer.WriteLine("/// </summary>");
-      writer.WriteLine($"{visibility} static {returnType} {extension.Name}({string.Join(", ", parameters)})");
+      writer.WriteLine($"{visibility} static {returnType} {OperationDiscovery.EscapeIdentifier(extension.Name)}({string.Join(", ", parameters)})");
       OpenBlock(writer);
-      writer.WriteLine($"if ({receiver} is {invokerType} __invoker)");
+      writer.WriteLine($"if ({receiver} is {invokerType} {invoker})");
       writer.Indent++;
       if (isDelete && !extension.IsAsync)
       {
-        writer.WriteLine($"__invoker.{invokerMethod}({invokerArguments});");
+        writer.WriteLine($"{invoker}.{invokerMethod}({invokerArguments});");
         writer.Indent--;
         writer.WriteLine("else");
         writer.Indent++;
@@ -213,11 +224,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       }
       else
       {
-        writer.WriteLine($"{returnKeyword}__invoker.{invokerMethod}({invokerArguments});");
+        writer.WriteLine($"{returnKeyword}{invoker}.{invokerMethod}({invokerArguments});");
         writer.Indent--;
         writer.WriteLine($"{returnKeyword}{receiver}.{portalMethod}({fallbackArguments});");
       }
       CloseBlock(writer);
+    }
+
+    /// <summary>
+    /// Returns a name for a generated parameter or local that does not
+    /// collide with any operation parameter name.
+    /// </summary>
+    private static string GetUniqueName(string name, HashSet<string> usedNames)
+    {
+      while (usedNames.Contains(name))
+        name = "__" + name;
+      return name;
     }
 
     private static string Escape(string text) => text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");

@@ -95,6 +95,7 @@ namespace Csla.Test.DataPortalTest
       BusinessRules.CheckRules();
     }
 
+    [Fetch]
     private void DataPortal_Fetch(Criteria criteria)
     {
       using (BypassPropertyChecks)
@@ -102,6 +103,7 @@ namespace Csla.Test.DataPortalTest
       TestResults.Reinitialise();
       TestResults.Add("SingleOverload", "Fetched");
     }
+    [Fetch]
     private void DataPortal_Fetch(OtherCriteria criteria)
     {
       using (BypassPropertyChecks)

@@ -39,6 +39,7 @@ namespace Csla.Test.BasicModern
       BusinessRules.CheckRules();
     }
 
+    [Fetch]
     private void DataPortal_Fetch(int id, [Inject] IChildDataPortal<ChildList> childDataPortal)
     {
       Children = childDataPortal.CreateChild();

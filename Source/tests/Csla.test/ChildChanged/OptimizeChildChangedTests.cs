@@ -75,6 +75,7 @@ namespace Csla.Test.ChildChanged
 
       }
 
+      [Fetch]
       private void DataPortal_Fetch([Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBOList> simpleBOListPortal)
       {
         Depth = 0;
@@ -86,6 +87,7 @@ namespace Csla.Test.ChildChanged
 
       }
 
+      [FetchChild]
       private void Child_Fetch(int depth, [Inject] IChildDataPortal<SimpleBO> simpleBOPortal, [Inject] IChildDataPortal<SimpleBOList> simpleBOListPortal)
       {
         Depth = depth;
@@ -121,6 +123,7 @@ namespace Csla.Test.ChildChanged
       public int Depth { get; private set; }
       public int UniqueID = NextUniqueID();
 
+      [FetchChild]
       private void Child_Fetch(int depth, [Inject] IChildDataPortal<SimpleBO> childDataPortal)
       {
         Depth = depth;

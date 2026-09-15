@@ -118,9 +118,6 @@ namespace Csla.Reflection
       var activator = _applicationContext.GetRequiredService<IDataPortalActivator>();
       targetType = activator.ResolveType(targetType);
 
-      var cslaOptions = _applicationContext.GetRequiredService<CslaOptions>();
-      var useLegacyMethods = cslaOptions.DataPortalOptions.UseLegacyOperationMethods;
-
       var typeOfOperation = typeof(T);
 
       // Resolve the factory type (if any) up front so it can participate in the cache key.
@@ -134,7 +131,7 @@ namespace Csla.Reflection
       if (factoryInfo != null && !TryGetFactoryType(factoryInfo, _applicationContext, throwOnError, out factoryType))
         return null;
 
-      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, useLegacyMethods, factoryType);
+      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, factoryType);
 
 #if NET8_0_OR_GREATER
       if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
@@ -194,24 +191,6 @@ namespace Csla.Reflection
           candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           tt = tt.BaseType;
           level--;
-        }
-
-        // if no attribute-based methods found, look for legacy methods
-        if (!candidates.Any() && useLegacyMethods)
-        {
-          var attributeName = typeOfOperation.Name.Substring(0, typeOfOperation.Name.IndexOf("Attribute"));
-          var methodName = attributeName.Contains("Child") ?
-              "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child")) :
-              "DataPortal_" + attributeName;
-          tt = targetType;
-          level = 0;
-          while (tt != null)
-          {
-            var ttList = tt.GetMethods(_bindingAttr).Where(m => m.Name == methodName);
-            candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
-            tt = tt.BaseType;
-            level--;
-          }
         }
       }
 
@@ -437,11 +416,10 @@ namespace Csla.Reflection
       return 0;
     }
 
-    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, bool useLegacyMethods, Type? factoryType = null)
+    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, Type? factoryType = null)
     {
-      var legacy = useLegacyMethods ? "" : "|nolegacy";
       var factory = factoryType is null ? "" : $"|{factoryType.FullName}";
-      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{legacy}{factory}";
+      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{factory}";
     }
 
     private static string GetCriteriaTypeNames(object?[]? criteria)

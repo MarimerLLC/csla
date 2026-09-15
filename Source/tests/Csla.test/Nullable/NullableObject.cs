@@ -81,6 +81,7 @@ namespace Csla.Test.Nullable
       TestResults.Add("NullableObject", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

@@ -51,6 +51,7 @@ namespace Csla.Test.FieldManager
       MarkDeleted();
     }
 
+    [CreateChild]
     protected override void Child_Create()
     {
       LoadProperty(StatusProperty, "Created");

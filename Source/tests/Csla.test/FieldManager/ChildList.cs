@@ -34,6 +34,7 @@ namespace Csla.Test.FieldManager
       Status = "Fetched";
     }
 
+    [UpdateChild]
     protected override void Child_Update(params object[] p)
     {
       base.Child_Update();

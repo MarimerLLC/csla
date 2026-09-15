@@ -84,12 +84,14 @@ namespace Csla.Test.DataPortalTest
       BusinessRules.CheckRules();
     }
 
+    [Fetch]
     private void DataPortal_Fetch(Criteria criteria)
     {
       _id = criteria.Id;
       TestResults.Reinitialise();
       TestResults.Add("SplitOverload", "Fetched");
     }
+    [Fetch]
     private void DataPortal_Fetch(Criteria1 criteria)
     {
       _id = criteria.Id;

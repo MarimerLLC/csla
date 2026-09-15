@@ -36,6 +36,7 @@ namespace Csla.Test.Basic
 
     #region "Data access"
 
+        [Fetch]
         protected override void DataPortal_Fetch(object criteria)
         {
             TestResults.Reinitialise();

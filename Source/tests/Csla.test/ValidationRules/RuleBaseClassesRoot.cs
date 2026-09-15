@@ -121,6 +121,7 @@ namespace Csla.Test.ValidationRules
     #endregion
 
     [RunLocal]
+    [Create]
     protected void DataPortal_Create(string ruleSet)
     {
       BusinessRules.RuleSet = ruleSet;

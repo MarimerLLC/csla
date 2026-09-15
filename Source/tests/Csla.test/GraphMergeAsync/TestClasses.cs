@@ -138,6 +138,7 @@ namespace Csla.Test.GraphMergeAsync
   [Serializable]
   public class FooDynamicList : DynamicListBase<Foo>
   {
+    [Create]
     private void DataPortal_Create()
     { }
   }
@@ -145,6 +146,7 @@ namespace Csla.Test.GraphMergeAsync
   [Serializable]
   public class FooDynamicBindingList : DynamicBindingListBase<Foo>
   {
+    [Create]
     private void DataPortal_Create()
     { }
   }

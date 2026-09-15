@@ -202,11 +202,13 @@ namespace Csla.Test.IO
       BusinessRules.CheckRules();
     }
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       TestResults.Add("Fetch", "No criteria");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       if (criteria == null)
@@ -215,6 +217,7 @@ namespace Csla.Test.IO
         TestResults.Add("Fetch", "Other criteria");
     }
 
+    [Fetch]
     private void DataPortal_Fetch(Criteria criteria)
     {
       TestResults.Add("Fetch", "Criteria");

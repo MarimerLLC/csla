@@ -361,6 +361,7 @@ namespace Csla.Test.DataPortal
       MarkBusy();
     }
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       MarkBusy();

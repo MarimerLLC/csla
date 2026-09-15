@@ -13,6 +13,7 @@ namespace Csla.Test.Basic
   {
     #region "Data Access"
 
+    [Fetch]
     protected void DataPortal_Fetch()
     {
       TestResults.Reinitialise();

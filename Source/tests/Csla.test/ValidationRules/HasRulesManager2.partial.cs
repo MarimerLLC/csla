@@ -26,6 +26,7 @@ namespace Csla.Test.ValidationRules
       BusinessRules.CheckRules();
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

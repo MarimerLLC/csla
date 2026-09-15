@@ -17,6 +17,10 @@ CSLA 11 includes all of the changes released in CSLA 10.2.0. The full list of ch
 * `netstandard2.0` and .NET Framework 4.6.2 through 4.8 targets are unchanged
 * `Csla.Maui` targets `net11.0-android`, `net11.0-ios`, `net11.0-maccatalyst`, and `net11.0-windows` alongside the .NET 10 targets
 
+**Attribute-only data portal operations** ([#4828](https://github.com/MarimerLLC/csla/issues/4828))
+
+The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `Child_Update`, and so on). Only methods marked with an operation attribute are invoked. Matching by name could call an unrelated method that happened to have an operation name ([#4595](https://github.com/MarimerLLC/csla/issues/4595)).
+
 ### Changes
 
 **Build and Release**
@@ -27,6 +31,8 @@ CSLA 11 includes all of the changes released in CSLA 10.2.0. The full list of ch
 
 * CSLA 11 no longer targets .NET 8 or .NET 9. Applications must target .NET 10 or later (or continue to use .NET Framework 4.6.2 through 4.8, or a `netstandard2.0`-compatible runtime).
 * On .NET 11, Android apps using `Csla.Maui` require Android API level 24 or later, because .NET 11 for Android requires it. The `net10.0-android` target still supports API level 21.
+* The data portal no longer finds operation methods by name. Only methods with an operation attribute (such as `[Fetch]`, `[Update]`, or `[UpdateChild]`) are invoked, and the `DataPortalOptions.UseLegacyOperationMethods` option is removed. Add the matching attribute to any `DataPortal_XYZ` or `Child_XYZ` method that doesn't have one. The `CSLA0014` analyzer is now a warning and its code fix adds the attribute for you. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md) ([#4828](https://github.com/MarimerLLC/csla/issues/4828)).
+  <!-- TODO(#4828 Stage B): add the D1-D4 base class behavior changes (default Child_Create / CheckRules, not-supported stubs, ObjectFactory Child_Create, sync Child_Update). -->
 
 ### Supported Platforms
 

@@ -257,7 +257,7 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public void FindChildLegacyUpdate()
+    public void FindChildNoParamsUpdate()
     {
       var obj = new BasicChild();
       var method = _systemUnderTest.FindDataPortalMethod<UpdateChildAttribute>(obj, null);
@@ -513,38 +513,21 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    public void FindLegacyMethod_DefaultEnabled_FindsLegacyFallback()
+    public void FindMethod_PrivateBaseWithLegacyNamedMethod_FindsAttributedMethod()
     {
-      // With default settings (legacy enabled), a subclass of a base with private [Execute]
-      // should fall back to the legacy DataPortal_Execute method
-      var method = _systemUnderTest.FindDataPortalMethod<ExecuteAttribute>(typeof(LegacyFallbackConcrete), null);
+      // A subclass of a base with private [Execute] and an unattributed
+      // DataPortal_Execute must find the attributed Execute method (#4595)
+      var method = _systemUnderTest.FindDataPortalMethod<ExecuteAttribute>(typeof(LegacyNamedConcrete), null);
 
       method.Should().NotBeNull();
-      method.MethodInfo.Name.Should().Be("DataPortal_Execute");
+      method.MethodInfo.Name.Should().Be("Execute");
     }
 
     [TestMethod]
-    public void FindLegacyMethod_Disabled_FindsAttributedMethodInstead()
+    public void FindLegacyNamedMethodWithoutAttribute_NotFound()
     {
-      // With legacy disabled, a subclass of a base with private [Execute]
-      // should find the attributed Execute method via recursion, not the legacy DataPortal_Execute
-      using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false)));
-      var caller = testHost.ApplicationContext.CreateInstanceDI<ServiceProviderMethodCaller>();
-
-      var found = caller.TryFindDataPortalMethod<ExecuteAttribute>(typeof(LegacyDisabledConcrete), null, out var method);
-
-      found.Should().BeTrue();
-      method!.MethodInfo.Name.Should().Be("Execute");
-    }
-
-    [TestMethod]
-    public void FindLegacyOnlyMethod_Disabled_NoFallback()
-    {
-      // A class using only DataPortal_Create (no attributes) should not be found when legacy is disabled
-      using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(o => o.DataPortal(dp => dp.UseLegacyOperationMethods = false)));
-      var caller = testHost.ApplicationContext.CreateInstanceDI<ServiceProviderMethodCaller>();
-
-      var found = caller.TryFindDataPortalMethod<CreateAttribute>(typeof(LegacyOnlyCreate), null, out var method);
+      // A DataPortal_Create method without an operation attribute is never used
+      var found = _systemUnderTest.TryFindDataPortalMethod<CreateAttribute>(typeof(LegacyOnlyCreate), null, out var method);
 
       found.Should().BeFalse();
       method.Should().BeNull();
@@ -798,6 +781,7 @@ namespace Csla.Test.DataPortal
 
   public class BasicChild : BusinessBase<BasicChild>
   {
+    [UpdateChild]
     private void Child_Update()
     {
       // nada
@@ -806,6 +790,7 @@ namespace Csla.Test.DataPortal
 
   public class ParamsChild : BusinessBase<ParamsChild>
   {
+    [UpdateChild]
     private void Child_Update(params object[] parameters)
     {
       // nada
@@ -866,6 +851,7 @@ namespace Csla.Test.DataPortal
 
   public class Issue2109List : ReadOnlyListBase<Issue2109List, Issue2109>
   {
+    [Fetch]
     private void DataPortal_Fetch(ICriteriaBase criteria, [Inject] IDataPortal<Issue2109> dp)
     {
       using (LoadListMode)
@@ -874,6 +860,7 @@ namespace Csla.Test.DataPortal
       }
     }
 
+    [Fetch]
     private void DataPortal_Fetch(IEnumerable<string> criteria, [Inject] IDataPortal<Issue2109> dp)
     {
       using (LoadListMode)
@@ -892,6 +879,7 @@ namespace Csla.Test.DataPortal
       set => SetProperty(NameProperty, value);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(string name)
     {
       using (BypassPropertyChecks)
@@ -914,6 +902,7 @@ namespace Csla.Test.DataPortal
 
   public class Issue2287ListBase : Csla.BusinessBindingListBase<Issue2287List, Issue2287Edit>
   {
+    [Fetch]
     private void DataPortal_Fetch(Criteria criteria)
     {
     }
@@ -925,6 +914,7 @@ namespace Csla.Test.DataPortal
 
   public class Issue2287Edit : Issue2287EditBase<Issue2287Edit>
   {
+    [Create]
     private new void DataPortal_Create()
     {
       BusinessRules.CheckRules();
@@ -933,6 +923,7 @@ namespace Csla.Test.DataPortal
 
   public class Issue2287EditBase<T> : BusinessBase<Issue2287EditBase<T>>
   {
+    [Create]
     protected void DataPortal_Create()
     {
     }
@@ -1051,7 +1042,7 @@ namespace Csla.Test.DataPortal
     }
   }
 
-  public class LegacyFallbackBase<T> : CommandBase<T>
+  public class LegacyNamedBase<T> : CommandBase<T>
     where T : CommandBase<T>
   {
     [Execute]
@@ -1062,22 +1053,7 @@ namespace Csla.Test.DataPortal
     { }
   }
 
-  public class LegacyFallbackConcrete : LegacyFallbackBase<LegacyFallbackConcrete>
-  {
-  }
-
-  public class LegacyDisabledBase<T> : CommandBase<T>
-    where T : CommandBase<T>
-  {
-    [Execute]
-    private void Execute()
-    { }
-
-    protected virtual void DataPortal_Execute()
-    { }
-  }
-
-  public class LegacyDisabledConcrete : LegacyDisabledBase<LegacyDisabledConcrete>
+  public class LegacyNamedConcrete : LegacyNamedBase<LegacyNamedConcrete>
   {
   }
 

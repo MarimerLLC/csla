@@ -22,6 +22,7 @@ namespace Csla.Web.Mvc.Test.ModelBinderTest
     {
       return DataPortal.Fetch<RootList>(new SingleCriteria<RootList, int>(itemsCount));
     }
+    [Fetch]
     private void DataPortal_Fetch(SingleCriteria<RootList, int> criteria)
     {
       for (int i = 0; i < criteria.Value; i++)

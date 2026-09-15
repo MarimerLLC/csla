@@ -32,6 +32,7 @@ namespace Csla.Web.Mvc.Test.ModelBinderTest
     private Child()
     {}
 
+    [FetchChild]
     private void Child_Fetch(int idx)
     {
       using (BypassPropertyChecks)

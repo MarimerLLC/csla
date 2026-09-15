@@ -1,7 +1,7 @@
 # Operations should have the appropriate operation attribute
 
 ## Issue
-This analyzer is tripped if an operation uses the correct method name (e.g. `DataPortal_Fetch`), but doesn't have the correct attribute:
+This analyzer is tripped if a method uses a legacy data portal operation method name (e.g. `DataPortal_Fetch` or `Child_Update`), but doesn't have an operation attribute:
 
 ```
 using Csla;
@@ -15,7 +15,7 @@ public class Customer
 }
 ```
 
-For now (CSLA version 5), this is only an informational analyzer. Future versions may change this to a warning and subsequently an error.
+Starting with CSLA 11, the data portal only invokes methods that have an operation attribute (such as `[Fetch]` or `[UpdateChild]`). It no longer finds operation methods by name, so a method like the one above is never called. For this reason, this analyzer is a warning in CSLA 11 (it was informational in earlier versions).
 
 ## Code Fix
 A code fix will show up to add the correct attribute to the operation.

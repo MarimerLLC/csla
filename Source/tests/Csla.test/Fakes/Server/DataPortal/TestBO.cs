@@ -19,16 +19,19 @@ namespace Csla.Testing.Business.DataPortal
       //base.DataPortal_Create();
       string x = ConfigurationManager.AppSettings["CslaAuthorizationProvider"];
     }
+    [Fetch]
     protected void DataPortal_Fetch(int criteria)
     {
 
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object citeria)
     {
 
     }
 
+    [Fetch]
     protected void DataPortal_Fetch()
     {
 

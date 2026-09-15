@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\..\..\Directory.Package.props" />
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -13,33 +13,20 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <NoWarn>$(NoWarn);RS2008</NoWarn>
     <BaseOutputPath>..\..\..\..\..\Bin</BaseOutputPath>
     <OutputPath>..\..\..\..\..\bin\packages\</OutputPath>
     <AssemblyName>Csla.Generator.AutoImplementProperties.CSharp</AssemblyName>
     <RootNamespace>Csla.Generator.AutoImplementProperties.CSharp</RootNamespace>
-    <PackageId>Csla.Generator.AutoImplementProperties.CSharp</PackageId>
-    <Description>CSLA .NET Generator AutoImplementProperties for CSharp</Description>
+    <Description>CSLA .NET source generators for CSharp (bundled in the Csla package)</Description>
     <SignAssembly>true</SignAssembly>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <Title>CSLA .NET Generators</Title>
-    <PackageTags>CSLA;Roslyn;Generator</PackageTags>
-
-    <!-- Add these properties for correct NuGet consumption -->
-    <IsPackable>true</IsPackable>
-    <DevelopmentDependency>false</DevelopmentDependency>
-    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <!-- Bundled into the Csla package under analyzers/dotnet/cs; not published on its own -->
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" GeneratePathProperty="true" />
-    <None Include="$(PkgMicrosoft_Bcl_HashCode)\lib\netstandard2.0\Microsoft.Bcl.HashCode.dll" CopyToOutputDirectory="PreserveNewest" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.9.2" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" PrivateAssets="all" />
-    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="$(OutputPath)\Csla.Generator.AutoImplementProperties.Attributes.CSharp.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
-
-    <!-- Include dependencies needed by the generator at compile time -->
-    <None Include="$(OutputPath)\Microsoft.Bcl.HashCode.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <ProjectReference Include="..\Csla.Generator.AutoImplementProperties.Attributes.CSharp\Csla.Generator.AutoImplementProperties.Attributes.CSharp.csproj" PrivateAssets="All" />
     <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
   </ItemGroup>
 </Project>

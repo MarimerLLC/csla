@@ -41,7 +41,7 @@ namespace Csla
   /// </remarks>
   [Serializable]
   [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
-  public abstract class DynamicBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> :
+  public abstract partial class DynamicBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> :
     ExtendedBindingList<T>,
     IParent,
     Server.IDataPortalTarget,

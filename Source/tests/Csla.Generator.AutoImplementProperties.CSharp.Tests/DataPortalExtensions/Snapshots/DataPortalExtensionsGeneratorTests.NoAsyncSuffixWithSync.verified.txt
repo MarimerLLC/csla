@@ -1,0 +1,21 @@
+﻿{
+  target: null,
+  Diagnostics: [
+    {
+      Message: Synchronous data portal extension methods are not generated because CslaDataPortalExtensionsAsyncSuffix is 'none', so they would have the same names as the async methods; set CslaGenerateSyncDataPortalExtensions to false,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP011,
+        Title: Synchronous data portal extensions are not generated without an async suffix,
+        MessageFormat: Synchronous data portal extension methods are not generated because CslaDataPortalExtensionsAsyncSuffix is 'none', so they would have the same names as the async methods; set CslaGenerateSyncDataPortalExtensions to false,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true,
+        CustomTags: [
+          CompilationEnd
+        ]
+      }
+    }
+  ]
+}

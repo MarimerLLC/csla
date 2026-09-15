@@ -1,0 +1,21 @@
+﻿{
+  target: null,
+  Diagnostics: [
+    {
+      Message: The CslaDataPortalExtensionsAsyncSuffix value 'As-ync' is not valid in a C# identifier; generated async data portal extension methods use the 'Async' suffix,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP010,
+        Title: Invalid data portal extensions async suffix,
+        MessageFormat: The CslaDataPortalExtensionsAsyncSuffix value '{0}' is not valid in a C# identifier; generated async data portal extension methods use the 'Async' suffix,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true,
+        CustomTags: [
+          CompilationEnd
+        ]
+      }
+    }
+  ]
+}

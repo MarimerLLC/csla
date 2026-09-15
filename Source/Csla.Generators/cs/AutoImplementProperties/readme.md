@@ -5,8 +5,7 @@ This guide provides a step-by-step approach to using the source generator in the
 ## Prerequisites
 
 - Visual Studio 2019 or later with the .NET Core development workload installed.
-- The CSLA.NET NuGet package added to your project.
-- Ths CSLA.NET Source Generator NuGet package added to your project.
+- The CSLA.NET NuGet package added to your project. Starting with CSLA 11 the source generators are included in the `Csla` package; the separate `Csla.Generator.AutoImplementProperties.CSharp` package is no longer used.
 
 ## Step 1: Define Your POCO Class
 

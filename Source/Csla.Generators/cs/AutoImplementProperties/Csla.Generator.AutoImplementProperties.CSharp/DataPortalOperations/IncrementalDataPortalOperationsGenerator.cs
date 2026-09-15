@@ -33,17 +33,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         .Where(static t => t.Type.IsPartial)
         .WithTrackingName(TrackingNames.OperationTypes);
 
+      // Diagnostics for these types are reported by DataPortalOperationsAnalyzer.
       context.RegisterSourceOutput(types, static (spc, model) =>
       {
-        var (_, collisions) = DataPortalOperationsBuilder.SelectNamedDispatchMethods(model.Methods);
-        foreach (var collision in collisions)
-        {
-          spc.ReportDiagnostic(Diagnostic.Create(
-            collision.IsAmbiguous ? DataPortalOperationsDiagnostics.AmbiguousOperationName : DataPortalOperationsDiagnostics.DuplicateOperationName,
-            collision.Loser.Location?.ToLocation(),
-            collision.Winner.MethodDisplay, collision.Loser.MethodDisplay, model.Type.TypeName, collision.Winner.OperationName));
-        }
-
         spc.AddSource(
           $"{model.Type.HintName}.DataPortalOperations.g.cs",
           SourceText.From(DataPortalOperationsBuilder.Build(model), Encoding.UTF8));
@@ -74,25 +66,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       }
 
       return all!.Value
-        .Select(static (entries, ct) => GroupByType(entries, ct))
+        .Select(static (entries, ct) => OperationDiscovery.GroupByType(entries, ct))
         .WithTrackingName(TrackingNames.GroupOperationTypes);
-    }
-
-    private static EquatableArray<OperationTypeModel> GroupByType(ImmutableArray<OperationMethodEntry> entries, CancellationToken ct)
-    {
-      var result = new List<OperationTypeModel>();
-      foreach (var group in entries.GroupBy(e => e.Type.MetadataName).OrderBy(g => g.Key, StringComparer.Ordinal))
-      {
-        ct.ThrowIfCancellationRequested();
-        var header = group.First().Type with { IsPartial = group.All(e => e.Type.IsPartial) };
-        var methods = group
-          .Select(e => e.Method)
-          .OrderBy(m => m.Location?.FilePath ?? string.Empty, StringComparer.Ordinal)
-          .ThenBy(m => m.Location?.TextSpan.Start ?? 0)
-          .ThenBy(m => Array.IndexOf(OperationDiscovery.OperationKinds, m.Kind));
-        result.Add(new OperationTypeModel(header, new EquatableArray<OperationMethodModel>(methods)));
-      }
-      return new EquatableArray<OperationTypeModel>(result);
     }
   }
 }

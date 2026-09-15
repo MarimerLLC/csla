@@ -465,10 +465,46 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       StageCachingTester.VerifyStageCaching<IncrementalDataPortalExtensionsGenerator>(source, typeof(TrackingNames));
     }
 
+    [TestMethod("Only async extensions are generated when CslaGenerateSyncDataPortalExtensions is false")]
+    public async Task AsyncOnly()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Create]
+            private void Create() { }
+
+            [Fetch]
+            private void GetById(int id) { }
+
+            [Delete]
+            private void Remove(int id) { }
+
+            [FetchChild]
+            private void LoadChild(int id) { }
+
+            [Fetch]
+            private void Fetch(string name) { }
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source, SyncDisabled);
+    }
+
+    private static TestAnalyzerConfigOptionsProvider SyncDisabled { get; } =
+      new(new Dictionary<string, string> { ["build_property.CslaGenerateSyncDataPortalExtensions"] = "false" });
+
     private static Task Verify(string source, [System.Runtime.CompilerServices.CallerFilePath] string sourceFile = "")
       => DataPortalOperationsTestHelper<IncrementalDataPortalExtensionsGenerator>.Verify(source, sourceFile: sourceFile);
 
-    private static Task VerifyWithDiagnostics(string source, [System.Runtime.CompilerServices.CallerFilePath] string sourceFile = "")
-      => DataPortalOperationsTestHelper<IncrementalDataPortalExtensionsGenerator>.VerifyWithDiagnostics(source, sourceFile: sourceFile);
+    private static Task VerifyWithDiagnostics(string source, TestAnalyzerConfigOptionsProvider? optionsProvider = null,
+      [System.Runtime.CompilerServices.CallerFilePath] string sourceFile = "")
+      => DataPortalOperationsTestHelper<IncrementalDataPortalExtensionsGenerator>.VerifyWithDiagnostics(source, optionsProvider: optionsProvider, sourceFile: sourceFile);
   }
 }

@@ -5,10 +5,13 @@
 // </copyright>
 //-----------------------------------------------------------------------
 using System.Runtime.CompilerServices;
+using Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions;
+using Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations
 {
@@ -19,9 +22,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
     /// asserting the generator reports no diagnostics and the resulting
     /// compilation has no errors or warnings.
     /// </summary>
-    public static Task Verify(string source, IEnumerable<string>? additionalSources = null, [CallerFilePath] string sourceFile = "")
+    public static Task Verify(string source, IEnumerable<string>? additionalSources = null,
+      AnalyzerConfigOptionsProvider? optionsProvider = null, [CallerFilePath] string sourceFile = "")
     {
-      var (driver, outputCompilation, diagnostics) = Run(source, additionalSources);
+      var (driver, outputCompilation, diagnostics) = Run(source, additionalSources, optionsProvider);
 
       using (new AssertionScope())
       {
@@ -36,24 +40,56 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
     }
 
     /// <summary>
-    /// Runs the generator and verifies the output, including any generator
-    /// diagnostics, against snapshots. The resulting compilation must have no errors.
+    /// Runs the generator and the data portal analyzers, and verifies the
+    /// generated output and the analyzer diagnostics against snapshots. The
+    /// generator must report no diagnostics and the resulting compilation
+    /// must have no errors.
     /// </summary>
-    public static Task VerifyWithDiagnostics(string source, IEnumerable<string>? additionalSources = null, [CallerFilePath] string sourceFile = "")
+    public static Task VerifyWithDiagnostics(string source, IEnumerable<string>? additionalSources = null,
+      AnalyzerConfigOptionsProvider? optionsProvider = null, [CallerFilePath] string sourceFile = "")
     {
-      var (driver, outputCompilation, _) = Run(source, additionalSources);
+      var (driver, outputCompilation, diagnostics) = Run(source, additionalSources, optionsProvider);
 
-      outputCompilation.GetDiagnostics()
-        .Where(d => d.Severity == DiagnosticSeverity.Error)
-        .Should().BeEmpty();
+      using (new AssertionScope())
+      {
+        outputCompilation.GetDiagnostics()
+          .Where(d => d.Severity == DiagnosticSeverity.Error)
+          .Should().BeEmpty();
+        diagnostics.Should().BeEmpty();
+      }
 
-      return Verifier.Verify(driver, sourceFile: sourceFile).UseDirectory("Snapshots");
+      var analyzerDiagnostics = GetAnalyzerDiagnosticsAsync(outputCompilation, optionsProvider).GetAwaiter().GetResult();
+
+      return Verifier.Verify(driver, sourceFile: sourceFile)
+        .AppendValue("Diagnostics", analyzerDiagnostics)
+        .UseDirectory("Snapshots");
+    }
+
+    /// <summary>
+    /// Runs the data portal analyzers over a compilation and returns their
+    /// diagnostics in source order.
+    /// </summary>
+    public static async Task<List<Diagnostic>> GetAnalyzerDiagnosticsAsync(Compilation compilation, AnalyzerConfigOptionsProvider? optionsProvider = null)
+    {
+      System.Collections.Immutable.ImmutableArray<DiagnosticAnalyzer> analyzers =
+        [new DataPortalOperationsAnalyzer(), new DataPortalExtensionsAnalyzer()];
+      var options = new CompilationWithAnalyzersOptions(
+        new AnalyzerOptions([], optionsProvider ?? TestAnalyzerConfigOptionsProvider.Empty),
+        onAnalyzerException: null, concurrentAnalysis: false, logAnalyzerExecutionTime: false, reportSuppressedDiagnostics: false);
+      var diagnostics = await compilation.WithAnalyzers(analyzers, options).GetAnalyzerDiagnosticsAsync();
+      return diagnostics
+        .OrderBy(d => d.Location.SourceTree?.FilePath, StringComparer.Ordinal)
+        .ThenBy(d => d.Location.SourceSpan.Start)
+        .ThenBy(d => d.Id, StringComparer.Ordinal)
+        .ThenBy(d => d.GetMessage(System.Globalization.CultureInfo.InvariantCulture), StringComparer.Ordinal)
+        .ToList();
     }
 
     /// <summary>
     /// Creates the compilation and generator driver used by the tests.
     /// </summary>
-    public static (GeneratorDriver Driver, CSharpCompilation Compilation) Setup(string source, IEnumerable<string>? additionalSources = null, bool trackSteps = false)
+    public static (GeneratorDriver Driver, CSharpCompilation Compilation) Setup(string source, IEnumerable<string>? additionalSources = null, bool trackSteps = false,
+      AnalyzerConfigOptionsProvider? optionsProvider = null)
     {
       var syntaxTrees = new List<SyntaxTree>
       {
@@ -82,16 +118,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
         options: compilationOptions);
 
       var driverOptions = new GeneratorDriverOptions(IncrementalGeneratorOutputKind.None, trackIncrementalGeneratorSteps: trackSteps);
-      GeneratorDriver driver = CSharpGeneratorDriver.Create([new T().AsSourceGenerator()], driverOptions: driverOptions);
+      GeneratorDriver driver = CSharpGeneratorDriver.Create([new T().AsSourceGenerator()], optionsProvider: optionsProvider, driverOptions: driverOptions);
       return (driver, compilation);
     }
 
     private static bool IsGenerated(Diagnostic diagnostic)
       => diagnostic.Location.SourceTree?.FilePath.EndsWith(".g.cs", StringComparison.Ordinal) == true;
 
-    private static (GeneratorDriver Driver, Compilation OutputCompilation, System.Collections.Immutable.ImmutableArray<Diagnostic> Diagnostics) Run(string source, IEnumerable<string>? additionalSources)
+    private static (GeneratorDriver Driver, Compilation OutputCompilation, System.Collections.Immutable.ImmutableArray<Diagnostic> Diagnostics) Run(string source, IEnumerable<string>? additionalSources,
+      AnalyzerConfigOptionsProvider? optionsProvider)
     {
-      var (driver, compilation) = Setup(source, additionalSources);
+      var (driver, compilation) = Setup(source, additionalSources, optionsProvider: optionsProvider);
       driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
       return (driver, outputCompilation, diagnostics);
     }

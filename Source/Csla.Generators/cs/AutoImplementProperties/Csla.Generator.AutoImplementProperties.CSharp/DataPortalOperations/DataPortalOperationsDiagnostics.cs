@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Diagnostics reported by the data portal generators</summary>
+// <summary>Diagnostics reported by the data portal analyzers</summary>
 //-----------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
@@ -11,8 +11,9 @@ using Microsoft.CodeAnalysis;
 namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
 {
   /// <summary>
-  /// Diagnostic descriptors reported by the data portal operations
-  /// and data portal extensions generators.
+  /// Diagnostic descriptors reported by the data portal operations and data
+  /// portal extensions analyzers, which apply the same rules as the generators.
+  /// The generators themselves report no diagnostics.
   /// </summary>
   internal static class DataPortalOperationsDiagnostics
   {

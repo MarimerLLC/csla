@@ -1,7 +1,14 @@
 ﻿{
+  target: null,
   Diagnostics: [
     {
-      Location: Source0.cs: (5,23)-(5,33),
+      Location: /*
+  [DataPortalExtensions(Prefix = "My-")]
+  public partial class PersonEdit : BusinessBase<PersonEdit>
+                       ^^^^^^^^^^
+  {
+*/
+ Source0.cs: (5,23)-(5,33),
       Message: Data portal extension methods are not generated for 'PersonEdit' because the prefix 'My-' is not a valid C# identifier,
       Severity: Warning,
       WarningLevel: 1,

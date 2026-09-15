@@ -62,6 +62,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
 
   /// <summary>
   /// A business type marked with <c>[DataPortalExtensions]</c> and its operation methods.
+  /// When <paramref name="GenerateSync"/> is false only async extension methods are generated.
   /// </summary>
-  internal sealed record ExtensionGenerationModel(ExtensionTypeModel Type, EquatableArray<OperationMethodModel> Methods);
+  internal sealed record ExtensionGenerationModel(ExtensionTypeModel Type, EquatableArray<OperationMethodModel> Methods, bool GenerateSync);
 }

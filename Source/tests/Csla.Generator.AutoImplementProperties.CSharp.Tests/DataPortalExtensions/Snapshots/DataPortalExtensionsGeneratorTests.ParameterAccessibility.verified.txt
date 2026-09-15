@@ -1,7 +1,14 @@
 ﻿{
+  target: null,
   Diagnostics: [
     {
-      Location: Source0.cs: (15,17)-(15,29),
+      Location: /*
+    [Fetch]
+    private void GetByPrivate(PrivateCriteria criteria) { }
+                 ^^^^^^^^^^^^
+  }
+*/
+ Source0.cs: (15,17)-(15,29),
       Message: The data portal extension method for 'GetByPrivate(PrivateCriteria)' cannot be generated because parameter 'criteria' has type 'global::TestApp.PersonEdit.PrivateCriteria', which is not accessible outside its containing type,
       Severity: Warning,
       WarningLevel: 1,

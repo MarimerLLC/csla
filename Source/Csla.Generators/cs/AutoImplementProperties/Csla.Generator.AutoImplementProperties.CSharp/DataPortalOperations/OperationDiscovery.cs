@@ -89,6 +89,70 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     }
 
     /// <summary>
+    /// Build the model for a type's operation methods from its symbol, as
+    /// the generator pipeline does from the attributed method declarations.
+    /// Used by the analyzers. Returns null when the type declares no
+    /// operation methods.
+    /// </summary>
+    /// <param name="type">The type to inspect.</param>
+    /// <param name="attributeKinds">The operation attribute types, mapped to their operation kind.</param>
+    /// <param name="compilation">The compilation containing the type.</param>
+    /// <param name="ct">Cancellation token.</param>
+    public static OperationTypeModel? GetOperationType(INamedTypeSymbol type, IReadOnlyDictionary<INamedTypeSymbol, string> attributeKinds, Compilation compilation, CancellationToken ct)
+    {
+      if (type.TypeKind != TypeKind.Class)
+        return null;
+
+      OperationTypeHeader? header = null;
+      var entries = new List<OperationMethodEntry>();
+      foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
+      {
+        if (!IsCandidateMethod(method))
+          continue;
+
+        foreach (var attribute in method.GetAttributes())
+        {
+          if (attribute.AttributeClass is null || !attributeKinds.TryGetValue(attribute.AttributeClass, out var kind))
+            continue;
+
+          var node = method.DeclaringSyntaxReferences
+            .Select(r => r.GetSyntax(ct))
+            .OfType<MethodDeclarationSyntax>()
+            .FirstOrDefault(n => n.AttributeLists.SelectMany(l => l.Attributes).Any());
+          if (node is null)
+            continue;
+
+          ct.ThrowIfCancellationRequested();
+          header ??= BuildHeader(type, node, compilation);
+          entries.Add(new OperationMethodEntry(header with { IsPartial = IsPartialAllTheWay(node) }, BuildMethod(method, kind)));
+        }
+      }
+
+      return entries.Count == 0 ? null : GroupByType(entries, ct)[0];
+    }
+
+    /// <summary>
+    /// Groups discovered operation methods by type so a partial class
+    /// spread across several files yields one model.
+    /// </summary>
+    public static EquatableArray<OperationTypeModel> GroupByType(IEnumerable<OperationMethodEntry> entries, CancellationToken ct)
+    {
+      var result = new List<OperationTypeModel>();
+      foreach (var group in entries.GroupBy(e => e.Type.MetadataName).OrderBy(g => g.Key, StringComparer.Ordinal))
+      {
+        ct.ThrowIfCancellationRequested();
+        var header = group.First().Type with { IsPartial = group.All(e => e.Type.IsPartial) };
+        var methods = group
+          .Select(e => e.Method)
+          .OrderBy(m => m.Location?.FilePath ?? string.Empty, StringComparer.Ordinal)
+          .ThenBy(m => m.Location?.TextSpan.Start ?? 0)
+          .ThenBy(m => Array.IndexOf(OperationKinds, m.Kind));
+        result.Add(new OperationTypeModel(header, new EquatableArray<OperationMethodModel>(methods)));
+      }
+      return new EquatableArray<OperationTypeModel>(result);
+    }
+
+    /// <summary>
     /// A method that the generator includes in the operations interface.
     /// </summary>
     internal static bool IsCandidateMethod(IMethodSymbol method)

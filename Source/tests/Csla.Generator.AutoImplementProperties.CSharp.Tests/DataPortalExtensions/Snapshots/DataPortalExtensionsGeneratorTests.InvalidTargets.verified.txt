@@ -1,7 +1,14 @@
 ﻿{
+  target: null,
   Diagnostics: [
     {
-      Location: Source0.cs: (5,32)-(5,42),
+      Location: /*
+  [DataPortalExtensions]
+  public abstract partial class PersonBase : BusinessBase<PersonBase>
+                                ^^^^^^^^^^
+  {
+*/
+ Source0.cs: (5,32)-(5,42),
       Message: Data portal extension methods are not generated for 'PersonBase': the type is abstract,
       Severity: Warning,
       WarningLevel: 1,
@@ -15,7 +22,13 @@
       }
     },
     {
-      Location: Source0.cs: (12,15)-(12,33),
+      Location: /*
+  [DataPortalExtensions]
+  public class NotABusinessObject
+               ^^^^^^^^^^^^^^^^^^
+  {
+*/
+ Source0.cs: (12,15)-(12,33),
       Message: Data portal extension methods are not generated for 'NotABusinessObject': the type does not implement Csla.Core.ICslaObject,
       Severity: Warning,
       WarningLevel: 1,

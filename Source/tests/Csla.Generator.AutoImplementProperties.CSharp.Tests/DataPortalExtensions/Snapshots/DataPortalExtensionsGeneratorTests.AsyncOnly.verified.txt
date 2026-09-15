@@ -1,0 +1,45 @@
+﻿{
+  target: null,
+  Diagnostics: [
+    {
+      Location: /*
+    [Create]
+    private void Create() { }
+                 ^^^^^^
+
+*/
+ Source0.cs: (8,17)-(8,23),
+      Message: The data portal extension method 'CreateAsync' for 'PersonEdit' is not generated because it would be hidden by the 'IDataPortal<T>.CreateAsync' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP005,
+        Title: Generated data portal extension would be hidden,
+        MessageFormat: The data portal extension method '{0}' for '{1}' is not generated because it would be hidden by the '{2}' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true
+      }
+    },
+    {
+      Location: /*
+    [Fetch]
+    private void Fetch(string name) { }
+                 ^^^^^
+  }
+*/
+ Source0.cs: (20,17)-(20,22),
+      Message: The data portal extension method 'FetchAsync' for 'PersonEdit' is not generated because it would be hidden by the 'IDataPortal<T>.FetchAsync' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP005,
+        Title: Generated data portal extension would be hidden,
+        MessageFormat: The data portal extension method '{0}' for '{1}' is not generated because it would be hidden by the '{2}' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true
+      }
+    }
+  ]
+}

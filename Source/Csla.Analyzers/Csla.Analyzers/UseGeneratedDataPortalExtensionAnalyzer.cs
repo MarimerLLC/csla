@@ -56,6 +56,7 @@ namespace Csla.Analyzers
         }
 
         var symbols = new KnownSymbols(
+          GenerateSync(compilationContext.Options.AnalyzerConfigOptionsProvider.GlobalOptions),
           extensionsAttribute,
           compilation.GetTypeByMetadataName("Csla.IDataPortal`1"),
           compilation.GetTypeByMetadataName("Csla.IChildDataPortal`1"),
@@ -185,6 +186,11 @@ namespace Csla.Analyzers
       }
 
       var isAsync = portalMethodName.EndsWith("Async", StringComparison.Ordinal);
+      if (!isAsync && !symbols.GenerateSync)
+      {
+        return false;
+      }
+
       var kind = isAsync ? portalMethodName.Substring(0, portalMethodName.Length - "Async".Length) : portalMethodName;
       var receiver = kind is "CreateChild" or "FetchChild" ? symbols.IChildDataPortal : symbols.IDataPortal;
       var hiddenNames = receiver is null
@@ -405,7 +411,18 @@ namespace Csla.Analyzers
       return invocation.Syntax.GetLocation();
     }
 
+    /// <summary>
+    /// Mirrors the generator: synchronous extension methods are generated unless
+    /// the CslaGenerateSyncDataPortalExtensions MSBuild property is false.
+    /// </summary>
+    private static bool GenerateSync(AnalyzerConfigOptions options)
+    {
+      return !(options.TryGetValue("build_property.CslaGenerateSyncDataPortalExtensions", out var value) &&
+        string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase));
+    }
+
     private sealed class KnownSymbols(
+      bool generateSync,
       INamedTypeSymbol dataPortalExtensionsAttribute,
       INamedTypeSymbol? iDataPortal,
       INamedTypeSymbol? iChildDataPortal,
@@ -414,6 +431,7 @@ namespace Csla.Analyzers
       INamedTypeSymbol? injectAttribute,
       INamedTypeSymbol? iCslaObject)
     {
+      public bool GenerateSync { get; } = generateSync;
       public INamedTypeSymbol DataPortalExtensionsAttribute { get; } = dataPortalExtensionsAttribute;
       public INamedTypeSymbol? IDataPortal { get; } = iDataPortal;
       public INamedTypeSymbol? IChildDataPortal { get; } = iChildDataPortal;

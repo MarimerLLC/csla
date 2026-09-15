@@ -1,7 +1,14 @@
 ﻿{
+  target: null,
   Diagnostics: [
     {
-      Location: Source0.cs: (9,17)-(9,22),
+      Location: /*
+    [Fetch]
+    private void Fetch(int id) { }
+                 ^^^^^
+
+*/
+ Source0.cs: (9,17)-(9,22),
       Message: Methods 'Fetch(int, IDal)' and 'Fetch(int)' on 'PersonEdit' both map to data portal operation 'Fetch__Int32'; name-based dispatch uses 'Fetch(int, IDal)',
       Severity: Info,
       WarningLevel: 1,
@@ -15,7 +22,13 @@
       }
     },
     {
-      Location: Source0.cs: (15,17)-(15,21),
+      Location: /*
+    [Fetch]
+    private void Load(int id) { }
+                 ^^^^
+  }
+*/
+ Source0.cs: (15,17)-(15,21),
       Message: Methods 'Fetch(int, IDal)' and 'Load(int)' on 'PersonEdit' both map to data portal operation 'Fetch__Int32'; name-based dispatch uses 'Fetch(int, IDal)',
       Severity: Info,
       WarningLevel: 1,

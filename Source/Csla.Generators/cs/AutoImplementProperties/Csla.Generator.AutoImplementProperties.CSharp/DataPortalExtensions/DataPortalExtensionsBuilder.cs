@@ -27,42 +27,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
     private const string InvokerName = "__invoker";
 
     /// <summary>
-    /// Build the generated source and diagnostics for a business type.
-    /// Returns a null source when nothing is generated.
+    /// Build the generated source for a business type.
+    /// Returns null when nothing is generated.
     /// </summary>
-    public static (string? Source, List<DiagnosticInfo> Diagnostics) Build(ExtensionGenerationModel model)
+    public static string? Build(ExtensionGenerationModel model)
     {
       var type = model.Type;
-      var diagnostics = new List<DiagnosticInfo>();
-
-      if (type.IsGeneric)
-      {
-        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.GenericExtensionsNotGeneratedId, type.Location, type.TypeName));
-        return (null, diagnostics);
-      }
-
-      var invalidReason = type switch
-      {
-        { IsCslaObject: false } => "the type does not implement Csla.Core.ICslaObject",
-        { IsAbstract: true } => "the type is abstract",
-        { Visibility: TypeVisibility.Private } => "the type is not accessible outside its containing type",
-        _ => null
-      };
-      if (invalidReason is not null)
-      {
-        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionsTargetId, type.Location, type.TypeName, invalidReason));
-        return (null, diagnostics);
-      }
-
-      if (type.Prefix.Length > 0 && !SyntaxFacts.IsValidIdentifier(type.Prefix))
-      {
-        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionPrefixId, type.Location, type.TypeName, type.Prefix));
-        return (null, diagnostics);
-      }
-
-      var methods = SelectMethods(model, diagnostics);
+      var (methods, _) = Analyze(model);
       if (methods.Count == 0)
-        return (null, diagnostics);
+        return null;
 
       using var stringWriter = new StringWriter();
       var writer = new IndentedTextWriter(stringWriter, "  ");
@@ -102,7 +75,47 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       if (type.Namespace.Length > 0)
         CloseBlock(writer);
 
-      return (stringWriter.ToString(), diagnostics);
+      return stringWriter.ToString();
+    }
+
+    /// <summary>
+    /// Selects the extension methods generated for a business type, and
+    /// explains, as diagnostics, why any are not generated. The generator
+    /// uses the methods and the analyzer reports the diagnostics, so both
+    /// apply the same rules.
+    /// </summary>
+    public static (List<ExtensionMethod> Methods, List<DiagnosticInfo> Diagnostics) Analyze(ExtensionGenerationModel model)
+    {
+      var type = model.Type;
+      var diagnostics = new List<DiagnosticInfo>();
+      var none = new List<ExtensionMethod>();
+
+      if (type.IsGeneric)
+      {
+        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.GenericExtensionsNotGeneratedId, type.Location, type.TypeName));
+        return (none, diagnostics);
+      }
+
+      var invalidReason = type switch
+      {
+        { IsCslaObject: false } => "the type does not implement Csla.Core.ICslaObject",
+        { IsAbstract: true } => "the type is abstract",
+        { Visibility: TypeVisibility.Private } => "the type is not accessible outside its containing type",
+        _ => null
+      };
+      if (invalidReason is not null)
+      {
+        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionsTargetId, type.Location, type.TypeName, invalidReason));
+        return (none, diagnostics);
+      }
+
+      if (type.Prefix.Length > 0 && !SyntaxFacts.IsValidIdentifier(type.Prefix))
+      {
+        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionPrefixId, type.Location, type.TypeName, type.Prefix));
+        return (none, diagnostics);
+      }
+
+      return (SelectMethods(model, diagnostics), diagnostics);
     }
 
     private static List<ExtensionMethod> SelectMethods(ExtensionGenerationModel model, List<DiagnosticInfo> diagnostics)
@@ -119,7 +132,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
 
         // Methods sharing an operation name differ only in injected parameters,
         // so they would produce identical extension methods; the runtime's
-        // choice is reported by the operations generator.
+        // choice is reported by the operations analyzer.
         if (collisions.Any(c => ReferenceEquals(c.Loser, method)))
           continue;
 
@@ -140,7 +153,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
         var hiddenNames = isChild ? type.ChildHiddenNames : type.RootHiddenNames;
         var parameterTypes = string.Join(",", criteria.Select(p => p.PatternTypeDisplay + (p.IsNullableValueType ? "?" : string.Empty)));
 
-        foreach (var isAsync in new[] { true, false })
+        foreach (var isAsync in model.GenerateSync ? new[] { true, false } : new[] { true })
         {
           var name = type.Prefix + baseName + (isAsync ? "Async" : string.Empty);
           if (hiddenNames.Contains(name))
@@ -263,6 +276,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       writer.WriteLine("}");
     }
 
-    private sealed record ExtensionMethod(OperationMethodModel Method, string Name, bool IsAsync, bool IsChild);
+    /// <summary>
+    /// A generated extension method for an operation method.
+    /// </summary>
+    internal sealed record ExtensionMethod(OperationMethodModel Method, string Name, bool IsAsync, bool IsChild);
   }
 }

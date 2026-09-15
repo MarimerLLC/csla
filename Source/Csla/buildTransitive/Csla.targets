@@ -1,5 +1,14 @@
 <Project>
   <!--
+    Build properties read by the CSLA source generators and analyzers:
+    CslaGenerateSyncDataPortalExtensions - set to false to generate only the
+    async [DataPortalExtensions] methods (default true).
+  -->
+  <ItemGroup>
+    <CompilerVisibleProperty Include="CslaGenerateSyncDataPortalExtensions" />
+  </ItemGroup>
+
+  <!--
     CSLA 11 bundles its source generators in the Csla package.
     The standalone Csla.Generator.AutoImplementProperties.CSharp package
     is retired; referencing it alongside Csla would run the generators twice.

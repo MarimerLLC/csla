@@ -402,6 +402,22 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenSyncExtensionsAreNotGenerated()
+    {
+      var code = CreateCode(
+        """
+        portal.Fetch(1);
+        childPortal.FetchChild(1);
+        commandPortal.Execute(1);
+        await portal.FetchAsync(1);
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension],
+        diagnostics => StringAssert.Contains(diagnostics[0].GetMessage(), "'FetchAsync'"),
+        new Dictionary<string, string> { ["build_property.CslaGenerateSyncDataPortalExtensions"] = "false" });
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenCodeIsGenerated()
     {
       var code = CreateCode(

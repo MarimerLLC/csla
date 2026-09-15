@@ -17,7 +17,19 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
   /// </summary>
   internal sealed record LocationInfo(string FilePath, TextSpan TextSpan, LinePositionSpan LineSpan)
   {
-    public Location ToLocation() => Location.Create(FilePath, TextSpan, LineSpan);
+    /// <summary>
+    /// The location in the compilation's syntax tree for the file, so the
+    /// diagnostic can be suppressed in source; otherwise a file location.
+    /// </summary>
+    public Location ToLocation(Compilation compilation)
+    {
+      foreach (var tree in compilation.SyntaxTrees)
+      {
+        if (tree.FilePath == FilePath)
+          return Location.Create(tree, TextSpan);
+      }
+      return Location.Create(FilePath, TextSpan, LineSpan);
+    }
 
     public static LocationInfo? From(Location? location)
     {
@@ -28,14 +40,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
   }
 
   /// <summary>
-  /// An equatable diagnostic to be reported by a generator.
+  /// An equatable diagnostic about data portal operations or extensions,
+  /// reported by the analyzers.
   /// </summary>
   internal sealed record DiagnosticInfo(string Id, LocationInfo? Location, EquatableArray<string> MessageArgs)
   {
-    public Diagnostic ToDiagnostic()
+    public Diagnostic ToDiagnostic(Compilation compilation)
     {
       var descriptor = DataPortalOperationsDiagnostics.GetDescriptor(Id);
-      return Diagnostic.Create(descriptor, Location?.ToLocation(), MessageArgs.Cast<object>().ToArray());
+      return Diagnostic.Create(descriptor, Location?.ToLocation(compilation), MessageArgs.Cast<object>().ToArray());
     }
   }
 }

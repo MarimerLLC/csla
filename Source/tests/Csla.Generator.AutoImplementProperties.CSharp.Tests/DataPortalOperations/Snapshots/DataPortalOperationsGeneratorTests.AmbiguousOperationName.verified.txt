@@ -1,7 +1,14 @@
 ﻿{
+  target: null,
   Diagnostics: [
     {
-      Location: Source0.cs: (12,17)-(12,21),
+      Location: /*
+    [Fetch]
+    private void Load(int id, [Inject] IDal dal) { }
+                 ^^^^
+
+*/
+ Source0.cs: (12,17)-(12,21),
       Message: Methods 'Fetch(int, IDal)' and 'Load(int, IDal)' on 'PersonEdit' both map to data portal operation 'Fetch__Int32' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match,
       Severity: Warning,
       WarningLevel: 1,

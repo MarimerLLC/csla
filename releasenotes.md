@@ -38,6 +38,13 @@ var person = await portal.PortalFetchAsync(42);
 * Generated methods take only the criteria parameters (`[Inject]` parameters are omitted), and pass the pre-computed operation name and `[RunLocal]` setting to the data portal, so the client no longer searches for the operation method using reflection.
 * Because `IDataPortal<T>` instance methods such as `FetchAsync` take precedence over extension methods, a generated name that matches one is not generated and is reported as a warning. Use `Prefix` to give the generated methods distinct names.
 * Use `[NoDataPortalExtension]` to exclude an operation method.
+* To generate only the async methods, set the `CslaGenerateSyncDataPortalExtensions` MSBuild property to `false` in the project file:
+
+  ```xml
+  <PropertyGroup>
+    <CslaGenerateSyncDataPortalExtensions>false</CslaGenerateSyncDataPortalExtensions>
+  </PropertyGroup>
+  ```
 * Custom or mock `IDataPortal<T>` implementations continue to work; the generated methods fall back to the existing `params object[]` methods.
 * Analyzer **CSLA0025** suggests using the generated extension methods instead of calling `IDataPortal<T>` methods with untyped criteria for classes marked `[DataPortalExtensions]`.
 

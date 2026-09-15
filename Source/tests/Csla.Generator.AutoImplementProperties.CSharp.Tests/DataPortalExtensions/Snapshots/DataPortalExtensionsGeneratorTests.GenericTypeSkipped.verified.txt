@@ -1,7 +1,14 @@
 ﻿{
+  target: null,
   Diagnostics: [
     {
-      Location: Source0.cs: (5,23)-(5,29),
+      Location: /*
+  [DataPortalExtensions]
+  public partial class Lookup<TKey> : ReadOnlyBase<Lookup<TKey>>
+                       ^^^^^^
+  {
+*/
+ Source0.cs: (5,23)-(5,29),
       Message: Data portal extension methods are not generated for 'Lookup' because it is generic or nested in a generic type,
       Severity: Info,
       WarningLevel: 1,

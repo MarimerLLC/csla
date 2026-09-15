@@ -1,8 +1,15 @@
 ﻿{
+  target: null,
   Diagnostics: [
     {
-      Location: Source0.cs: (11,17)-(11,20),
-      Message: The data portal extension method 'GetAsync' for 'PersonEdit' is not generated for 'Get(int, IServiceProvider)' because another operation method already produces an extension method with the same signature,
+      Location: /*
+    [Create]
+    private void Get(int id, [Inject] System.IServiceProvider services) { }
+                 ^^^
+  }
+*/
+ Source0.cs: (11,17)-(11,20),
+      Message: The data portal extension method 'Get' for 'PersonEdit' is not generated for 'Get(int, IServiceProvider)' because another operation method already produces an extension method with the same signature,
       Severity: Warning,
       WarningLevel: 1,
       Descriptor: {
@@ -15,8 +22,14 @@
       }
     },
     {
-      Location: Source0.cs: (11,17)-(11,20),
-      Message: The data portal extension method 'Get' for 'PersonEdit' is not generated for 'Get(int, IServiceProvider)' because another operation method already produces an extension method with the same signature,
+      Location: /*
+    [Create]
+    private void Get(int id, [Inject] System.IServiceProvider services) { }
+                 ^^^
+  }
+*/
+ Source0.cs: (11,17)-(11,20),
+      Message: The data portal extension method 'GetAsync' for 'PersonEdit' is not generated for 'Get(int, IServiceProvider)' because another operation method already produces an extension method with the same signature,
       Severity: Warning,
       WarningLevel: 1,
       Descriptor: {

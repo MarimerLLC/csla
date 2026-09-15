@@ -44,12 +44,14 @@ namespace Csla.Analyzers.Tests
       }
       """;
 
-    private static string CreateCode(string body, string header = "", string additionalTypes = "") =>
+    private static string CreateCode(string body, string header = "", string additionalTypes = "", string assemblyAttributes = "") =>
       $$"""
       {{header}}
       using Csla;
       using System;
       using System.Threading.Tasks;
+
+      {{assemblyAttributes}}
 
       {{BusinessTypes}}
 
@@ -415,6 +417,70 @@ namespace Csla.Analyzers.Tests
         [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension],
         diagnostics => StringAssert.Contains(diagnostics[0].GetMessage(), "'FetchAsync'"),
         new Dictionary<string, string> { ["build_property.CslaGenerateSyncDataPortalExtensions"] = "false" });
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenAssemblyHasDataPortalExtensionsAttribute()
+    {
+      var code = CreateCode(
+        """
+        IDataPortal<D> dPortal = null;
+        IDataPortal<E> ePortal = null;
+        IDataPortal<F> fPortal = null;
+        await dPortal.FetchAsync(1);
+        await ePortal.FetchAsync(1);
+        await fPortal.FetchAsync(1);
+        """,
+        assemblyAttributes: """[assembly: DataPortalExtensions(Prefix = "Portal")]""",
+        additionalTypes:
+        """
+        [Serializable]
+        public partial class D : BusinessBase<D>
+        {
+          [Fetch]
+          private void Fetch(int id) { }
+        }
+
+        [NoDataPortalExtension]
+        [Serializable]
+        public partial class E : BusinessBase<E>
+        {
+          [Fetch]
+          private void Fetch(int id) { }
+        }
+
+        [DataPortalExtensions(Prefix = "My")]
+        [Serializable]
+        public partial class F : BusinessBase<F>
+        {
+          [Fetch]
+          private void Fetch(int id) { }
+        }
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension, Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension],
+        diagnostics =>
+        {
+          var names = diagnostics
+            .Select(d => d.Properties[UseGeneratedDataPortalExtensionAnalyzer.ExtensionNamesProperty])
+            .OrderBy(n => n)
+            .ToList();
+          CollectionAssert.AreEqual(new[] { "MyFetchAsync", "PortalFetchAsync" }, names);
+        });
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenAsyncSuffixIsConfigured()
+    {
+      var code = CreateCode(
+        """
+        await portal.FetchAsync(1);
+        portal.Fetch(1);
+        """);
+      await TestHelpers.RunAnalysisAsync<UseGeneratedDataPortalExtensionAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension],
+        diagnostics => Assert.AreEqual("GetById", diagnostics[0].Properties[UseGeneratedDataPortalExtensionAnalyzer.ExtensionNamesProperty]),
+        new Dictionary<string, string> { ["build_property.CslaDataPortalExtensionsAsyncSuffix"] = "none" });
     }
 
     [TestMethod]

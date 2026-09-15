@@ -43,6 +43,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     public const string InjectAttributeName = "Csla.InjectAttribute";
     public const string RunLocalAttributeName = "Csla.RunLocalAttribute";
     public const string NoDataPortalExtensionAttributeName = "Csla.NoDataPortalExtensionAttribute";
+    public const string DataPortalExtensionsAttributeName = "Csla.DataPortalExtensionsAttribute";
+    public const string CslaObjectInterfaceName = "Csla.Core.ICslaObject";
     public const string OperationsInterfaceName = "IDataPortalOperations";
 
     private const string OperationMappingName = "Csla.Server.IDataPortalOperationMapping";
@@ -132,6 +134,19 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     }
 
     /// <summary>
+    /// Build the type header for a type that may declare no operation
+    /// methods. Used by the analyzers. Returns null when the type has no
+    /// source declaration.
+    /// </summary>
+    public static OperationTypeHeader? BuildTypeHeader(INamedTypeSymbol type, Compilation compilation, CancellationToken ct)
+    {
+      var nodes = type.DeclaringSyntaxReferences.Select(r => r.GetSyntax(ct)).ToList();
+      if (nodes.Count == 0)
+        return null;
+      return BuildHeader(type, nodes[0], compilation) with { IsPartial = nodes.All(IsPartialAllTheWay) };
+    }
+
+    /// <summary>
     /// Groups discovered operation methods by type so a partial class
     /// spread across several files yields one model.
     /// </summary>
@@ -173,6 +188,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       hintParts.Add(GetHintSegment(type));
 
       var isGeneric = type.TypeParameters.Length > 0 || containers.Any(c => c.TypeParameters.Length > 0);
+      var extensionsAttribute = type.GetAttributes().FirstOrDefault(a => a.AttributeClass?.ToDisplayString() == DataPortalExtensionsAttributeName);
 
       return new OperationTypeHeader
       {
@@ -189,8 +205,29 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         IsGeneric = isGeneric,
         HidesInheritedOperationsInterface = HidesInheritedOperationsInterface(type, compilation),
         ImplementsOperationMapping = type.Interfaces.Any(i => i.ToDisplayString() == OperationMappingName),
-        ImplementsNamedOperationMapping = type.Interfaces.Any(i => i.ToDisplayString() == NamedOperationMappingName)
+        ImplementsNamedOperationMapping = type.Interfaces.Any(i => i.ToDisplayString() == NamedOperationMappingName),
+        IsRecord = type.IsRecord,
+        IsCslaObject = type.AllInterfaces.Any(i => i.ToDisplayString() == CslaObjectInterfaceName),
+        Visibility = GetVisibility(type),
+        HasExtensionsAttribute = extensionsAttribute is not null,
+        ExtensionsPrefix = GetPrefix(extensionsAttribute),
+        NoExtensions = HasAttribute(type, NoDataPortalExtensionAttributeName)
       };
+    }
+
+    /// <summary>
+    /// The Prefix set by a DataPortalExtensions attribute, or null when it is not set.
+    /// </summary>
+    internal static string? GetPrefix(AttributeData? extensionsAttribute)
+    {
+      if (extensionsAttribute is null)
+        return null;
+      foreach (var namedArgument in extensionsAttribute.NamedArguments)
+      {
+        if (namedArgument.Key == "Prefix")
+          return namedArgument.Value.Value as string ?? string.Empty;
+      }
+      return null;
     }
 
     private static OperationMethodModel BuildMethod(IMethodSymbol method, string kind)

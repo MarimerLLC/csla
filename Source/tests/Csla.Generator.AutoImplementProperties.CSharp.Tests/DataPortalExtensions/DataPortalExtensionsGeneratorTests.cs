@@ -497,6 +497,179 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source, SyncDisabled);
     }
 
+    [TestMethod("The assembly attribute requests extensions for every eligible type")]
+    public async Task AssemblyAttribute()
+    {
+      var source = """
+        using Csla;
+
+        [assembly: DataPortalExtensions(Prefix = "Portal")]
+
+        namespace TestApp
+        {
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+
+          [DataPortalExtensions(Prefix = "My")]
+          public partial class OrderEdit : BusinessBase<OrderEdit>
+          {
+            [Create]
+            private void Create() { }
+          }
+
+          [DataPortalExtensions]
+          public partial class CustomerEdit : BusinessBase<CustomerEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+
+          [NoDataPortalExtension]
+          public partial class Excluded : BusinessBase<Excluded>
+          {
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+
+          public abstract partial class PersonBase : BusinessBase<PersonBase>
+          {
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+
+          public partial class Lookup<TKey> : ReadOnlyBase<Lookup<TKey>>
+          {
+            [Fetch]
+            private void Fetch(TKey key) { }
+          }
+
+          public class NotABusinessObject
+          {
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source);
+    }
+
+    [TestMethod("An invalid assembly prefix is reported on the assembly attribute")]
+    public async Task AssemblyAttributeInvalidPrefix()
+    {
+      var source = """
+        using Csla;
+
+        [assembly: DataPortalExtensions(Prefix = "My-")]
+
+        namespace TestApp
+        {
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+
+          public partial class OrderEdit : BusinessBase<OrderEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source);
+    }
+
+    [TestMethod("CslaDataPortalExtensionsAsyncSuffix sets the async method name suffix")]
+    public async Task CustomAsyncSuffix()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source, Options(("CslaDataPortalExtensionsAsyncSuffix", "Task")));
+    }
+
+    [TestMethod("With no async suffix and sync methods turned off, async methods have no suffix")]
+    public async Task NoAsyncSuffix()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+
+            [FetchChild]
+            private System.Threading.Tasks.Task LoadAsync(int id) => System.Threading.Tasks.Task.CompletedTask;
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source, Options(("CslaDataPortalExtensionsAsyncSuffix", "none"), ("CslaGenerateSyncDataPortalExtensions", "false")));
+    }
+
+    [TestMethod("With no async suffix, sync methods are not generated and a warning is reported")]
+    public async Task NoAsyncSuffixWithSync()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source, Options(("CslaDataPortalExtensionsAsyncSuffix", "none")));
+    }
+
+    [TestMethod("An invalid async suffix is reported and the Async suffix is used")]
+    public async Task InvalidAsyncSuffix()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          [DataPortalExtensions]
+          public partial class PersonEdit : BusinessBase<PersonEdit>
+          {
+            [Fetch]
+            private void GetById(int id) { }
+          }
+        }
+        """;
+
+      await VerifyWithDiagnostics(source, Options(("CslaDataPortalExtensionsAsyncSuffix", "As-ync")));
+    }
+
+    private static TestAnalyzerConfigOptionsProvider Options(params (string Name, string Value)[] properties)
+      => new(properties.ToDictionary(p => "build_property." + p.Name, p => p.Value));
+
     private static TestAnalyzerConfigOptionsProvider SyncDisabled { get; } =
       new(new Dictionary<string, string> { ["build_property.CslaGenerateSyncDataPortalExtensions"] = "false" });
 

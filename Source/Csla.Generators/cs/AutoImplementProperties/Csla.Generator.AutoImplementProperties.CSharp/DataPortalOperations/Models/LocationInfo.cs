@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Equatable source location for generator diagnostics</summary>
+// <summary>Equatable source location for operation models and diagnostics</summary>
 //-----------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
@@ -33,22 +33,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
 
     public static LocationInfo? From(Location? location)
     {
-      if (location is null || location.SourceTree is null)
+      if (location?.SourceTree is null)
         return null;
       return new LocationInfo(location.SourceTree.FilePath, location.SourceSpan, location.GetLineSpan().Span);
-    }
-  }
-
-  /// <summary>
-  /// An equatable diagnostic about data portal operations or extensions,
-  /// reported by the analyzers.
-  /// </summary>
-  internal sealed record DiagnosticInfo(string Id, LocationInfo? Location, EquatableArray<string> MessageArgs)
-  {
-    public Diagnostic ToDiagnostic(Compilation compilation)
-    {
-      var descriptor = DataPortalOperationsDiagnostics.GetDescriptor(Id);
-      return Diagnostic.Create(descriptor, Location?.ToLocation(compilation), MessageArgs.Cast<object>().ToArray());
     }
   }
 }

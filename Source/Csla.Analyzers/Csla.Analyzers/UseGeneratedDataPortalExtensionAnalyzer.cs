@@ -14,7 +14,7 @@ namespace Csla.Analyzers
   /// <summary>
   /// Reports calls to the untyped, criteria-based methods of
   /// <c>IDataPortal&lt;T&gt;</c>, <c>IChildDataPortal&lt;T&gt;</c>, and
-  /// <c>DataPortal&lt;T&gt;</c> when <c>T</c> is marked with
+  /// <c>DataPortal&lt;T&gt;</c> when <c>T</c> or its assembly is marked with
   /// <c>[DataPortalExtensions]</c>, meaning strongly typed extension
   /// methods are generated and should be used instead. The diagnostic is
   /// only reported when the generator produces an extension method that
@@ -24,6 +24,12 @@ namespace Csla.Analyzers
   public sealed class UseGeneratedDataPortalExtensionAnalyzer
     : DiagnosticAnalyzer
   {
+    /// <summary>
+    /// Diagnostic property holding the names of the generated extension
+    /// methods that can replace the call, separated by semicolons.
+    /// </summary>
+    public const string ExtensionNamesProperty = "ExtensionNames";
+
     private static readonly DiagnosticDescriptor useExtensionRule =
       new(
         Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension, UseGeneratedDataPortalExtensionAnalyzerConstants.Title,
@@ -55,8 +61,10 @@ namespace Csla.Analyzers
           return;
         }
 
+        var globalOptions = compilationContext.Options.AnalyzerConfigOptionsProvider.GlobalOptions;
         var symbols = new KnownSymbols(
-          GenerateSync(compilationContext.Options.AnalyzerConfigOptionsProvider.GlobalOptions),
+          GetAsyncSuffix(globalOptions),
+          GenerateSync(globalOptions),
           extensionsAttribute,
           compilation.GetTypeByMetadataName("Csla.IDataPortal`1"),
           compilation.GetTypeByMetadataName("Csla.IChildDataPortal`1"),
@@ -97,18 +105,20 @@ namespace Csla.Analyzers
       context.CancellationToken.ThrowIfCancellationRequested();
 
       if (containingType.TypeArguments[0] is not INamedTypeSymbol businessType ||
-        GetDataPortalExtensionsAttribute(businessType, symbols.DataPortalExtensionsAttribute) is not { } attribute)
+        GetPrefix(businessType, symbols) is not { } prefix)
       {
         return;
       }
 
-      if (!HasGeneratedExtension(businessType, attribute, method.Name, GetCriteriaArguments(invocation), context.Compilation, symbols))
+      var extensionNames = GetGeneratedExtensionNames(businessType, prefix, method.Name, GetCriteriaArguments(invocation), context.Compilation, symbols);
+      if (extensionNames.Count == 0)
       {
         return;
       }
 
+      var properties = ImmutableDictionary<string, string?>.Empty.Add(ExtensionNamesProperty, string.Join(";", extensionNames));
       context.ReportDiagnostic(Diagnostic.Create(
-        useExtensionRule, GetLocation(invocation), businessType.Name, method.Name));
+        useExtensionRule, GetLocation(invocation), properties, businessType.Name, method.Name));
     }
 
     private static bool IsCriteriaMethod(IMethodSymbol method, bool isRootPortal, bool isChildPortal)
@@ -136,11 +146,35 @@ namespace Csla.Analyzers
       }
     }
 
-    private static AttributeData? GetDataPortalExtensionsAttribute(INamedTypeSymbol businessType, INamedTypeSymbol attributeType)
+    /// <summary>
+    /// Mirrors the data portal extensions generator: returns the prefix of the
+    /// extension methods requested for the business type by its own
+    /// [DataPortalExtensions] attribute or by the attribute on its assembly,
+    /// or null when no extension methods are requested.
+    /// </summary>
+    private static string? GetPrefix(INamedTypeSymbol businessType, KnownSymbols symbols)
     {
-      foreach (var attribute in businessType.GetAttributes())
+      if (businessType.IsRecord ||
+        FindAttribute(businessType.GetAttributes(), symbols.NoDataPortalExtensionAttribute) is not null)
       {
-        if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, attributeType))
+        return null;
+      }
+
+      var typeAttribute = FindAttribute(businessType.GetAttributes(), symbols.DataPortalExtensionsAttribute);
+      var assemblyAttribute = FindAttribute(businessType.ContainingAssembly.GetAttributes(), symbols.DataPortalExtensionsAttribute);
+      if (typeAttribute is null && assemblyAttribute is null)
+      {
+        return null;
+      }
+
+      return GetPrefix(typeAttribute) ?? GetPrefix(assemblyAttribute) ?? string.Empty;
+    }
+
+    private static AttributeData? FindAttribute(ImmutableArray<AttributeData> attributes, INamedTypeSymbol? attributeType)
+    {
+      foreach (var attribute in attributes)
+      {
+        if (attributeType is not null && SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, attributeType))
         {
           return attribute;
         }
@@ -149,46 +183,61 @@ namespace Csla.Analyzers
       return null;
     }
 
+    private static string? GetPrefix(AttributeData? attribute)
+    {
+      if (attribute is null)
+      {
+        return null;
+      }
+
+      foreach (var namedArgument in attribute.NamedArguments)
+      {
+        if (namedArgument.Key == "Prefix")
+        {
+          return namedArgument.Value.Value as string ?? string.Empty;
+        }
+      }
+
+      return null;
+    }
+
     /// <summary>
-    /// Mirrors the data portal extensions generator: returns true when an
-    /// extension method is generated for an operation method of the kind
-    /// called that accepts the criteria values passed.
+    /// Mirrors the data portal extensions generator: returns the names of the
+    /// extension methods generated for operation methods of the kind called
+    /// that accept the criteria values passed.
     /// </summary>
-    private static bool HasGeneratedExtension(INamedTypeSymbol businessType, AttributeData attribute, string portalMethodName,
+    private static List<string> GetGeneratedExtensionNames(INamedTypeSymbol businessType, string prefix, string portalMethodName,
       ImmutableArray<IOperation>? criteriaArguments, Compilation compilation, KnownSymbols symbols)
     {
+      var names = new List<string>();
       if (businessType.IsAbstract || symbols.ICslaObject is null ||
         !businessType.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, symbols.ICslaObject)))
       {
-        return false;
+        return names;
       }
 
       for (var type = businessType; type is not null; type = type.ContainingType)
       {
         if (type.TypeParameters.Length > 0)
         {
-          return false;
+          return names;
         }
       }
 
       if (IsPrivate(businessType))
       {
-        return false;
+        return names;
       }
 
-      var prefix = attribute.NamedArguments
-        .Where(a => a.Key == "Prefix")
-        .Select(a => a.Value.Value as string)
-        .FirstOrDefault() ?? string.Empty;
       if (prefix.Length > 0 && !SyntaxFacts.IsValidIdentifier(prefix))
       {
-        return false;
+        return names;
       }
 
       var isAsync = portalMethodName.EndsWith("Async", StringComparison.Ordinal);
       if (!isAsync && !symbols.GenerateSync)
       {
-        return false;
+        return names;
       }
 
       var kind = isAsync ? portalMethodName.Substring(0, portalMethodName.Length - "Async".Length) : portalMethodName;
@@ -234,7 +283,8 @@ namespace Csla.Analyzers
           baseName = baseName.Substring(0, baseName.Length - "Async".Length);
         }
 
-        if (hiddenNames.Contains(prefix + baseName + (isAsync ? "Async" : string.Empty)))
+        var name = prefix + baseName + (isAsync ? symbols.AsyncSuffix : string.Empty);
+        if (hiddenNames.Contains(name))
         {
           continue;
         }
@@ -244,10 +294,13 @@ namespace Csla.Analyzers
           continue;
         }
 
-        return true;
+        if (!names.Contains(name))
+        {
+          names.Add(name);
+        }
       }
 
-      return false;
+      return names;
     }
 
     private static bool IsPreferredAmongSameCriteria(IMethodSymbol operation, List<IParameterSymbol> criteria,
@@ -413,15 +466,41 @@ namespace Csla.Analyzers
 
     /// <summary>
     /// Mirrors the generator: synchronous extension methods are generated unless
-    /// the CslaGenerateSyncDataPortalExtensions MSBuild property is false.
+    /// the CslaGenerateSyncDataPortalExtensions MSBuild property is false, or
+    /// there is no async suffix so they would have the same names as the async methods.
     /// </summary>
     private static bool GenerateSync(AnalyzerConfigOptions options)
     {
-      return !(options.TryGetValue("build_property.CslaGenerateSyncDataPortalExtensions", out var value) &&
+      return GetAsyncSuffix(options).Length > 0 &&
+        !(options.TryGetValue("build_property.CslaGenerateSyncDataPortalExtensions", out var value) &&
         string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase));
     }
 
+    /// <summary>
+    /// Mirrors the generator: async extension method names end with the
+    /// CslaDataPortalExtensionsAsyncSuffix MSBuild property, which defaults
+    /// to Async, is none for no suffix, and is ignored when it is not valid in an identifier.
+    /// </summary>
+    private static string GetAsyncSuffix(AnalyzerConfigOptions options)
+    {
+      if (options.TryGetValue("build_property.CslaDataPortalExtensionsAsyncSuffix", out var value) && value?.Trim() is { Length: > 0 } suffix)
+      {
+        if (string.Equals(suffix, "none", StringComparison.OrdinalIgnoreCase))
+        {
+          return string.Empty;
+        }
+
+        if (SyntaxFacts.IsValidIdentifier("_" + suffix))
+        {
+          return suffix;
+        }
+      }
+
+      return "Async";
+    }
+
     private sealed class KnownSymbols(
+      string asyncSuffix,
       bool generateSync,
       INamedTypeSymbol dataPortalExtensionsAttribute,
       INamedTypeSymbol? iDataPortal,
@@ -431,6 +510,7 @@ namespace Csla.Analyzers
       INamedTypeSymbol? injectAttribute,
       INamedTypeSymbol? iCslaObject)
     {
+      public string AsyncSuffix { get; } = asyncSuffix;
       public bool GenerateSync { get; } = generateSync;
       public INamedTypeSymbol DataPortalExtensionsAttribute { get; } = dataPortalExtensionsAttribute;
       public INamedTypeSymbol? IDataPortal { get; } = iDataPortal;

@@ -594,5 +594,14 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("UseGeneratedDataPortalExtension_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use &apos;{0}&apos;.
+        /// </summary>
+        internal static string UseGeneratedDataPortalExtension_UseExtensionDescription {
+            get {
+                return ResourceManager.GetString("UseGeneratedDataPortalExtension_UseExtensionDescription", resourceCulture);
+            }
+        }
     }
 }

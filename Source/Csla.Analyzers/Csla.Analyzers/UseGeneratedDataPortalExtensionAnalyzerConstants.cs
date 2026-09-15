@@ -17,4 +17,15 @@ namespace Csla.Analyzers
     /// </summary>
     public static readonly LocalizableResourceString Message = new(nameof(Resources.UseGeneratedDataPortalExtension_Message), Resources.ResourceManager, typeof(Resources));
   }
+
+  /// <summary>
+  ///
+  /// </summary>
+  public static class UseGeneratedDataPortalExtensionCodeFixConstants
+  {
+    /// <summary>
+    ///
+    /// </summary>
+    public static string UseExtensionDescription => Resources.UseGeneratedDataPortalExtension_UseExtensionDescription;
+  }
 }

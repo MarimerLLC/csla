@@ -27,6 +27,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     public const string DuplicateExtensionMethodId = "CSLADP007";
     public const string InvalidExtensionPrefixId = "CSLADP008";
     public const string AmbiguousOperationNameId = "CSLADP009";
+    public const string InvalidAsyncSuffixId = "CSLADP010";
+    public const string SyncExtensionsNotGeneratedId = "CSLADP011";
 
     public static readonly DiagnosticDescriptor DuplicateOperationName = new(
       id: DuplicateOperationNameId,
@@ -92,17 +94,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       defaultSeverity: DiagnosticSeverity.Warning,
       isEnabledByDefault: true);
 
-    public static DiagnosticDescriptor GetDescriptor(string id) => id switch
-    {
-      DuplicateOperationNameId => DuplicateOperationName,
-      GenericExtensionsNotGeneratedId => GenericExtensionsNotGenerated,
-      InvalidExtensionsTargetId => InvalidExtensionsTarget,
-      ExtensionNameHiddenId => ExtensionNameHidden,
-      InaccessibleParameterTypeId => InaccessibleParameterType,
-      DuplicateExtensionMethodId => DuplicateExtensionMethod,
-      InvalidExtensionPrefixId => InvalidExtensionPrefix,
-      AmbiguousOperationNameId => AmbiguousOperationName,
-      _ => throw new ArgumentOutOfRangeException(nameof(id), id, null)
-    };
+    public static readonly DiagnosticDescriptor InvalidAsyncSuffix = new(
+      id: InvalidAsyncSuffixId,
+      title: "Invalid data portal extensions async suffix",
+      messageFormat: "The CslaDataPortalExtensionsAsyncSuffix value '{0}' is not valid in a C# identifier; generated async data portal extension methods use the 'Async' suffix",
+      category: Category,
+      defaultSeverity: DiagnosticSeverity.Warning,
+      isEnabledByDefault: true,
+      customTags: WellKnownDiagnosticTags.CompilationEnd);
+
+    public static readonly DiagnosticDescriptor SyncExtensionsNotGenerated = new(
+      id: SyncExtensionsNotGeneratedId,
+      title: "Synchronous data portal extensions are not generated without an async suffix",
+      messageFormat: "Synchronous data portal extension methods are not generated because CslaDataPortalExtensionsAsyncSuffix is 'none', so they would have the same names as the async methods; set CslaGenerateSyncDataPortalExtensions to false",
+      category: Category,
+      defaultSeverity: DiagnosticSeverity.Warning,
+      isEnabledByDefault: true,
+      customTags: WellKnownDiagnosticTags.CompilationEnd);
   }
 }

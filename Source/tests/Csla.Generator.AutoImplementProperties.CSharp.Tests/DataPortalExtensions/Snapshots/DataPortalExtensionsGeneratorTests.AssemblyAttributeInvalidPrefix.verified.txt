@@ -1,0 +1,25 @@
+﻿{
+  target: null,
+  Diagnostics: [
+    {
+      Location: /*
+
+[assembly: DataPortalExtensions(Prefix = "My-")]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*/
+ Source0.cs: (2,11)-(2,47),
+      Message: Data portal extension methods are not generated for 'Tests' because the prefix 'My-' is not a valid C# identifier,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP008,
+        Title: Invalid DataPortalExtensions prefix,
+        MessageFormat: Data portal extension methods are not generated for '{0}' because the prefix '{1}' is not a valid C# identifier,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true
+      }
+    }
+  ]
+}

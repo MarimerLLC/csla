@@ -13,6 +13,7 @@
 using System.CodeDom.Compiler;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Models;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
@@ -33,7 +34,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
     public static string? Build(ExtensionGenerationModel model)
     {
       var type = model.Type;
-      var (methods, _) = Analyze(model);
+      var methods = Analyze(model);
       if (methods.Count == 0)
         return null;
 
@@ -79,21 +80,25 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
     }
 
     /// <summary>
-    /// Selects the extension methods generated for a business type, and
-    /// explains, as diagnostics, why any are not generated. The generator
-    /// uses the methods and the analyzer reports the diagnostics, so both
-    /// apply the same rules.
+    /// Reports a diagnostic about a data portal extension method that is not generated.
     /// </summary>
-    public static (List<ExtensionMethod> Methods, List<DiagnosticInfo> Diagnostics) Analyze(ExtensionGenerationModel model)
+    public delegate void DiagnosticReporter(DiagnosticDescriptor descriptor, LocationInfo? location, params object[] messageArgs);
+
+    /// <summary>
+    /// Selects the extension methods generated for a business type. When
+    /// <paramref name="report"/> is supplied, also reports why any are not
+    /// generated. The generator passes no reporter, and the analyzer reports
+    /// the diagnostics, so both apply the same rules.
+    /// </summary>
+    public static List<ExtensionMethod> Analyze(ExtensionGenerationModel model, DiagnosticReporter? report = null)
     {
       var type = model.Type;
-      var diagnostics = new List<DiagnosticInfo>();
       var none = new List<ExtensionMethod>();
 
       if (type.IsGeneric)
       {
-        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.GenericExtensionsNotGeneratedId, type.Location, type.TypeName));
-        return (none, diagnostics);
+        report?.Invoke(DataPortalOperationsDiagnostics.GenericExtensionsNotGenerated, type.Location, type.TypeName);
+        return none;
       }
 
       var invalidReason = type switch
@@ -105,22 +110,25 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       };
       if (invalidReason is not null)
       {
-        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionsTargetId, type.Location, type.TypeName, invalidReason));
-        return (none, diagnostics);
+        report?.Invoke(DataPortalOperationsDiagnostics.InvalidExtensionsTarget, type.Location, type.TypeName, invalidReason);
+        return none;
       }
 
       if (type.Prefix.Length > 0 && !SyntaxFacts.IsValidIdentifier(type.Prefix))
       {
-        diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InvalidExtensionPrefixId, type.Location, type.TypeName, type.Prefix));
-        return (none, diagnostics);
+        // An invalid assembly prefix is reported once, on the assembly attribute.
+        if (!type.FromAssembly)
+          report?.Invoke(DataPortalOperationsDiagnostics.InvalidExtensionPrefix, type.Location, type.TypeName, type.Prefix);
+        return none;
       }
 
-      return (SelectMethods(model, diagnostics), diagnostics);
+      return SelectMethods(model, report);
     }
 
-    private static List<ExtensionMethod> SelectMethods(ExtensionGenerationModel model, List<DiagnosticInfo> diagnostics)
+    private static List<ExtensionMethod> SelectMethods(ExtensionGenerationModel model, DiagnosticReporter? report)
     {
       var type = model.Type;
+      var options = model.Options;
       var result = new List<ExtensionMethod>();
       var signatures = new HashSet<string>(StringComparer.Ordinal);
       var (_, collisions) = DataPortalOperationsBuilder.SelectNamedDispatchMethods(model.Methods);
@@ -140,31 +148,28 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
         var inaccessible = criteria.FirstOrDefault(p => p.Visibility == TypeVisibility.Private);
         if (inaccessible is not null)
         {
-          diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.InaccessibleParameterTypeId, method.Location, method.MethodDisplay, inaccessible.Name.TrimStart('@'), inaccessible.PatternTypeDisplay));
+          report?.Invoke(DataPortalOperationsDiagnostics.InaccessibleParameterType, method.Location, method.MethodDisplay, inaccessible.Name.TrimStart('@'), inaccessible.PatternTypeDisplay);
           continue;
         }
 
-        var baseName = method.MethodName.TrimStart('@');
-        if (baseName.EndsWith("Async", StringComparison.Ordinal) && baseName.Length > "Async".Length)
-          baseName = baseName.Substring(0, baseName.Length - "Async".Length);
-
+        var baseName = GetBaseName(method.MethodName.TrimStart('@'));
         var isChild = method.Kind is "CreateChild" or "FetchChild";
         var receiverInterface = isChild ? "IChildDataPortal" : "IDataPortal";
-        var hiddenNames = isChild ? type.ChildHiddenNames : type.RootHiddenNames;
+        var hiddenNames = isChild ? options.ChildHiddenNames : options.RootHiddenNames;
         var parameterTypes = string.Join(",", criteria.Select(p => p.PatternTypeDisplay + (p.IsNullableValueType ? "?" : string.Empty)));
 
-        foreach (var isAsync in model.GenerateSync ? new[] { true, false } : new[] { true })
+        foreach (var isAsync in options.GenerateSync ? new[] { true, false } : new[] { true })
         {
-          var name = type.Prefix + baseName + (isAsync ? "Async" : string.Empty);
+          var name = type.Prefix + baseName + (isAsync ? options.AsyncSuffix : string.Empty);
           if (hiddenNames.Contains(name))
           {
-            diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.ExtensionNameHiddenId, method.Location, name, type.TypeName, $"{receiverInterface}<T>.{name}"));
+            report?.Invoke(DataPortalOperationsDiagnostics.ExtensionNameHidden, method.Location, name, type.TypeName, $"{receiverInterface}<T>.{name}");
             continue;
           }
 
           if (!signatures.Add($"{receiverInterface}.{name}({parameterTypes})"))
           {
-            diagnostics.Add(Diagnostic(DataPortalOperationsDiagnostics.DuplicateExtensionMethodId, method.Location, name, type.TypeName, method.MethodDisplay));
+            report?.Invoke(DataPortalOperationsDiagnostics.DuplicateExtensionMethod, method.Location, name, type.TypeName, method.MethodDisplay);
             continue;
           }
 
@@ -174,6 +179,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
 
       return result;
     }
+
+    /// <summary>
+    /// The operation method name without an Async suffix.
+    /// </summary>
+    internal static string GetBaseName(string methodName)
+      => methodName.EndsWith("Async", StringComparison.Ordinal) && methodName.Length > "Async".Length
+        ? methodName.Substring(0, methodName.Length - "Async".Length)
+        : methodName;
 
     private static void AppendMethod(IndentedTextWriter writer, ExtensionTypeModel type, ExtensionMethod extension)
     {
@@ -260,9 +273,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
     }
 
     private static string Escape(string text) => text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
-
-    private static DiagnosticInfo Diagnostic(string id, LocationInfo? location, params string[] args)
-      => new(id, location, new EquatableArray<string>(args));
 
     private static void OpenBlock(IndentedTextWriter writer)
     {

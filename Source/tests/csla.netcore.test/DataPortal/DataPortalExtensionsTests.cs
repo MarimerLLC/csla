@@ -331,6 +331,56 @@ namespace Csla.Test.DataPortal
 
     #endregion
 
+    #region Argument validation
+
+    [TestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    public async Task RootInvoker_InvalidOperationName_Throws(string? operationName)
+    {
+      var invoker = (IDataPortalOperationInvoker<ExtensionRoot>)_testHost.GetDataPortal<ExtensionRoot>();
+
+      await FluentActions.Awaiting(() => invoker.FetchByOperationAsync(operationName!, false, [1]))
+        .Should().ThrowAsync<ArgumentException>().WithParameterName("operationName");
+      FluentActions.Invoking(() => invoker.CreateByOperation(operationName!, false, []))
+        .Should().Throw<ArgumentException>().WithParameterName("operationName");
+      await FluentActions.Awaiting(() => invoker.DeleteByOperationAsync(operationName!, false, [1]))
+        .Should().ThrowAsync<ArgumentException>().WithParameterName("operationName");
+    }
+
+    [TestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    public async Task ChildInvoker_InvalidOperationName_Throws(string? operationName)
+    {
+      var invoker = (IChildDataPortalOperationInvoker<ExtensionChild>)_testHost.GetChildDataPortal<ExtensionChild>();
+
+      await FluentActions.Awaiting(() => invoker.CreateChildByOperationAsync(operationName!, ["kid"]))
+        .Should().ThrowAsync<ArgumentException>().WithParameterName("operationName");
+      FluentActions.Invoking(() => invoker.FetchChildByOperation(operationName!, [1, new[] { "x" }]))
+        .Should().Throw<ArgumentException>().WithParameterName("operationName");
+    }
+
+    [TestMethod]
+    public void OperationHelper_NullArguments_Throw()
+    {
+      var services = _testHost.Services;
+      var target = new object();
+
+      FluentActions.Invoking(() => DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(null!, true, services, "Fetch"))
+        .Should().Throw<ArgumentNullException>().WithParameterName("target");
+      FluentActions.Invoking(() => DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(target, true, null!, "Fetch"))
+        .Should().Throw<ArgumentNullException>().WithParameterName("serviceProvider");
+      FluentActions.Invoking(() => DataPortalOperationHelper.GetService(services, null!, true))
+        .Should().Throw<ArgumentNullException>().WithParameterName("serviceType");
+      FluentActions.Invoking(() => DataPortalOperationHelper.GetKeyedService(services, null!, "key", true))
+        .Should().Throw<ArgumentNullException>().WithParameterName("serviceType");
+    }
+
+    #endregion
+
     #region Name consistency
 
     [TestMethod]

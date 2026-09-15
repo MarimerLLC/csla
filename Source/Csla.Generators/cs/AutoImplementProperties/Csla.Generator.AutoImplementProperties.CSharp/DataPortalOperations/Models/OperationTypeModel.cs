@@ -53,6 +53,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
     public bool ImplementsOperationMapping { get; init; }
 
     public bool ImplementsNamedOperationMapping { get; init; }
+
+    public bool IsRecord { get; init; }
+
+    /// <summary>The type implements Csla.Core.ICslaObject.</summary>
+    public bool IsCslaObject { get; init; }
+
+    public TypeVisibility Visibility { get; init; }
+
+    /// <summary>The type has the DataPortalExtensions attribute.</summary>
+    public bool HasExtensionsAttribute { get; init; }
+
+    /// <summary>The Prefix set by the type's DataPortalExtensions attribute, or null when not set.</summary>
+    public string? ExtensionsPrefix { get; init; }
+
+    /// <summary>The type has the NoDataPortalExtension attribute.</summary>
+    public bool NoExtensions { get; init; }
   }
 
   /// <summary>

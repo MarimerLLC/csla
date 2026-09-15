@@ -37,16 +37,23 @@ var person = await portal.PortalFetchAsync(42);
 
 * Generated methods take only the criteria parameters (`[Inject]` parameters are omitted), and pass the pre-computed operation name and `[RunLocal]` setting to the data portal, so the client no longer searches for the operation method using reflection.
 * Because `IDataPortal<T>` instance methods such as `FetchAsync` take precedence over extension methods, a generated name that matches one is not generated and is reported as a warning. Use `Prefix` to give the generated methods distinct names.
-* Use `[NoDataPortalExtension]` to exclude an operation method.
-* To generate only the async methods, set the `CslaGenerateSyncDataPortalExtensions` MSBuild property to `false` in the project file:
+* Add `[assembly: DataPortalExtensions]` to generate extension methods for every business class in the assembly that can have them (non-abstract, non-generic classes that implement `ICslaObject` and are accessible outside their containing type). A `Prefix` on a class attribute takes precedence over the assembly `Prefix`.
+* Use `[NoDataPortalExtension]` to exclude a class or an operation method.
+* MSBuild properties control the generated names and forms:
 
   ```xml
   <PropertyGroup>
+    <!-- generate only the async methods (default true) -->
     <CslaGenerateSyncDataPortalExtensions>false</CslaGenerateSyncDataPortalExtensions>
+    <!-- suffix of the async method names (default Async); none for no suffix -->
+    <CslaDataPortalExtensionsAsyncSuffix>none</CslaDataPortalExtensionsAsyncSuffix>
   </PropertyGroup>
   ```
+
+  With no async suffix, the sync methods would have the same names as the async methods, so they are not generated.
+* The `CSLADP002` to `CSLADP011` diagnostics, about operation methods that share an operation name and about extension methods that are not generated, are reported by analyzers rather than by the source generators, so they can be suppressed in source.
 * Custom or mock `IDataPortal<T>` implementations continue to work; the generated methods fall back to the existing `params object[]` methods.
-* Analyzer **CSLA0025** suggests using the generated extension methods instead of calling `IDataPortal<T>` methods with untyped criteria for classes marked `[DataPortalExtensions]`.
+* Analyzer **CSLA0025** suggests using the generated extension methods instead of calling `IDataPortal<T>` methods with untyped criteria, and provides a code fix that replaces the call.
 
 The data portal extension generator and the CSLA0025 analyzer are adapted from [Csla.DataPortalExtensions](https://github.com/StefanOssendorf/Csla.DataPortalExtensions) by [Stefan Ossendorf](https://github.com/StefanOssendorf), used under the MIT License. Thank you, Stefan!
 

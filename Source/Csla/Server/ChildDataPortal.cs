@@ -9,6 +9,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
+using Csla.Properties;
 
 namespace Csla.Server
 {
@@ -92,6 +93,7 @@ namespace Csla.Server
     /// <param name="operationName">Generated operation name.</param>
     /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="operationName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="operationName"/> is <see cref="string.Empty"/> or only consists of white spaces.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public object CreateByOperation([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string operationName, object?[]? parameters)
     {
@@ -99,6 +101,8 @@ namespace Csla.Server
         throw new ArgumentNullException(nameof(objectType));
       if (operationName is null)
         throw new ArgumentNullException(nameof(operationName));
+      if (string.IsNullOrWhiteSpace(operationName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(operationName)), nameof(operationName));
 
       return ExecuteWithAggregateExceptionHandling(
         () => DoCreateAsync(objectType, operationName, parameters).Result
@@ -111,11 +115,14 @@ namespace Csla.Server
     /// <param name="operationName">Generated operation name.</param>
     /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
     /// <exception cref="ArgumentNullException"><paramref name="operationName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="operationName"/> is <see cref="string.Empty"/> or only consists of white spaces.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public async Task<T> CreateByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string operationName, object?[]? parameters)
     {
       if (operationName is null)
         throw new ArgumentNullException(nameof(operationName));
+      if (string.IsNullOrWhiteSpace(operationName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(operationName)), nameof(operationName));
 
       return (T)await DoCreateAsync(typeof(T), operationName, parameters).ConfigureAwait(false);
     }
@@ -218,6 +225,7 @@ namespace Csla.Server
     /// <param name="operationName">Generated operation name.</param>
     /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="operationName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="operationName"/> is <see cref="string.Empty"/> or only consists of white spaces.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public object FetchByOperation([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, string operationName, object?[]? parameters)
     {
@@ -225,6 +233,8 @@ namespace Csla.Server
         throw new ArgumentNullException(nameof(objectType));
       if (operationName is null)
         throw new ArgumentNullException(nameof(operationName));
+      if (string.IsNullOrWhiteSpace(operationName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(operationName)), nameof(operationName));
 
       return ExecuteWithAggregateExceptionHandling(
         () => DoFetchAsync(objectType, operationName, parameters).Result
@@ -237,11 +247,14 @@ namespace Csla.Server
     /// <param name="operationName">Generated operation name.</param>
     /// <param name="parameters">Criteria values, one element per criteria parameter.</param>
     /// <exception cref="ArgumentNullException"><paramref name="operationName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="operationName"/> is <see cref="string.Empty"/> or only consists of white spaces.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
     public async Task<T> FetchByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string operationName, object?[]? parameters)
     {
       if (operationName is null)
         throw new ArgumentNullException(nameof(operationName));
+      if (string.IsNullOrWhiteSpace(operationName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(operationName)), nameof(operationName));
 
       return (T)await DoFetchAsync(typeof(T), operationName, parameters).ConfigureAwait(false);
     }

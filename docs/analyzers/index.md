@@ -31,7 +31,7 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 * [CSLA0006](CSLA0006-FindSaveAssignmentIssueAnalyzer.md) - Do not ignore the result of `SaveAsync()`
 * [CSLA0007](CSLA0007-EvaluatePropertiesForSimplicityAnalyzer.md) - Properties that use managed backing fields should only use Get/Set/Read/Load methods
 * [CSLA0008](CSLA0008-EvaluateManagedBackingFieldsAnalayzer.md) - Managed backing fields must be public, static and read-only
-* [CSLA0009](CSLA0009-IsOperationMethodPublicAnalyzer.md) - CSLA operations should not be public
+* [CSLA0009](CSLA0009-IsOperationMethodPublicAnalyzer.md) - CSLA operations should not be public on an interface
 * [CSLA0010](CSLA0010-FindOperationsWithNonSerializableArgumentsAnalyzer.md) - Operation argument types should be serializable
 * [CSLA0011](CSLA0011-FindBusinessObjectCreationAnalyzer.md) - CSLA business objects should not be created outside of an `ObjectFactory` instance
 * [CSLA0012](CSLA0012-FindOperationsWithIncorrectReturnTypesAnalyzer.md) - The return type from an operation should be either `void` or `Task`

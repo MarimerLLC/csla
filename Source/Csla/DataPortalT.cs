@@ -598,6 +598,18 @@ namespace Csla
     #region Pre-resolved operations
 
     /// <summary>
+    /// Returns the operation name supplied by generated code, after checking it is not null, empty or white space.
+    /// </summary>
+    private static string ValidateOperationName(string operationName)
+    {
+      if (operationName is null)
+        throw new ArgumentNullException(nameof(operationName));
+      if (string.IsNullOrWhiteSpace(operationName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(operationName)), nameof(operationName));
+      return operationName;
+    }
+
+    /// <summary>
     /// Converts the explicit criteria array supplied by generated code into
     /// the criteria object used by the data portal. A single criteria value
     /// that is itself an array of reference types (for example string[] or
@@ -633,19 +645,19 @@ namespace Csla
 
     /// <inheritdoc />
     T IDataPortalOperationInvoker<T>.CreateByOperation(string operationName, bool runLocal, object?[]? criteria)
-      => (T)WaitSynchronously(DoCreateCoreAsync(typeof(T), GetOperationCriteria(criteria), true, operationName, runLocal));
+      => (T)WaitSynchronously(DoCreateCoreAsync(typeof(T), GetOperationCriteria(criteria), true, ValidateOperationName(operationName), runLocal));
 
     /// <inheritdoc />
     async Task<T> IDataPortalOperationInvoker<T>.CreateByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
-      => (T)await DoCreateCoreAsync(typeof(T), GetOperationCriteria(criteria), false, operationName, runLocal);
+      => (T)await DoCreateCoreAsync(typeof(T), GetOperationCriteria(criteria), false, ValidateOperationName(operationName), runLocal);
 
     /// <inheritdoc />
     T IDataPortalOperationInvoker<T>.FetchByOperation(string operationName, bool runLocal, object?[]? criteria)
-      => (T)WaitSynchronously(DoFetchByOperationAsync(operationName, runLocal, criteria, true));
+      => (T)WaitSynchronously(DoFetchByOperationAsync(ValidateOperationName(operationName), runLocal, criteria, true));
 
     /// <inheritdoc />
     async Task<T> IDataPortalOperationInvoker<T>.FetchByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
-      => (T)await DoFetchByOperationAsync(operationName, runLocal, criteria, false);
+      => (T)await DoFetchByOperationAsync(ValidateOperationName(operationName), runLocal, criteria, false);
 
     private Task<object> DoFetchByOperationAsync(string operationName, bool runLocal, object?[]? criteria, bool isSync)
     {
@@ -658,19 +670,19 @@ namespace Csla
 
     /// <inheritdoc />
     T IDataPortalOperationInvoker<T>.ExecuteByOperation(string operationName, bool runLocal, object?[]? criteria)
-      => (T)WaitSynchronously(DoExecuteCoreAsync(typeof(T), GetOperationCriteria(criteria), true, operationName, runLocal));
+      => (T)WaitSynchronously(DoExecuteCoreAsync(typeof(T), GetOperationCriteria(criteria), true, ValidateOperationName(operationName), runLocal));
 
     /// <inheritdoc />
     async Task<T> IDataPortalOperationInvoker<T>.ExecuteByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
-      => (T)await DoExecuteCoreAsync(typeof(T), GetOperationCriteria(criteria), false, operationName, runLocal);
+      => (T)await DoExecuteCoreAsync(typeof(T), GetOperationCriteria(criteria), false, ValidateOperationName(operationName), runLocal);
 
     /// <inheritdoc />
     void IDataPortalOperationInvoker<T>.DeleteByOperation(string operationName, bool runLocal, object?[]? criteria)
-      => WaitSynchronously(DoDeleteCoreAsync(typeof(T), GetOperationCriteria(criteria), true, operationName, runLocal));
+      => WaitSynchronously(DoDeleteCoreAsync(typeof(T), GetOperationCriteria(criteria), true, ValidateOperationName(operationName), runLocal));
 
     /// <inheritdoc />
     Task IDataPortalOperationInvoker<T>.DeleteByOperationAsync(string operationName, bool runLocal, object?[]? criteria)
-      => DoDeleteCoreAsync(typeof(T), GetOperationCriteria(criteria), false, operationName, runLocal);
+      => DoDeleteCoreAsync(typeof(T), GetOperationCriteria(criteria), false, ValidateOperationName(operationName), runLocal);
 
     /// <inheritdoc />
     T IChildDataPortalOperationInvoker<T>.CreateChildByOperation(string operationName, object?[]? criteria)

@@ -22,9 +22,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     /// <summary>Per-type models for operations generation.</summary>
     public const string OperationTypes = nameof(OperationTypes);
 
-    /// <summary>Extraction of types marked with DataPortalExtensions.</summary>
-    public const string ExtractExtensionTypes = nameof(ExtractExtensionTypes);
-
     /// <summary>Build options for extension generation.</summary>
     public const string ExtensionOptions = nameof(ExtensionOptions);
 

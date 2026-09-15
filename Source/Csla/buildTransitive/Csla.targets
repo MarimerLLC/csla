@@ -3,9 +3,12 @@
     Build properties read by the CSLA source generators and analyzers:
     CslaGenerateSyncDataPortalExtensions - set to false to generate only the
     async [DataPortalExtensions] methods (default true).
+    CslaDataPortalExtensionsAsyncSuffix - suffix of the async [DataPortalExtensions]
+    method names (default Async); set to none for no suffix.
   -->
   <ItemGroup>
     <CompilerVisibleProperty Include="CslaGenerateSyncDataPortalExtensions" />
+    <CompilerVisibleProperty Include="CslaDataPortalExtensionsAsyncSuffix" />
   </ItemGroup>
 
   <!--

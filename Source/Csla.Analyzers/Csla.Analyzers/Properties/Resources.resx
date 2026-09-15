@@ -294,4 +294,7 @@
   <data name="UseGeneratedDataPortalExtension_Message" xml:space="preserve">
     <value>Use the generated data portal extension method for '{0}' instead of calling '{1}' with untyped criteria</value>
   </data>
+  <data name="UseGeneratedDataPortalExtension_UseExtensionDescription" xml:space="preserve">
+    <value>Use '{0}'</value>
+  </data>
 </root>

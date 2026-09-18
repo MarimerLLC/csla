@@ -6,7 +6,13 @@ For detailed migration guidance, see [Upgrading to CSLA 10](docs/Upgrading%20to%
 
 ## CSLA .NET version 10.2.0 release
 
+The full list of changes in this release can be found in the [GitHub compare view](https://github.com/MarimerLLC/csla/compare/v10.1.0...v10.2.0).
+
 ### Highlights
+
+**New Csla.Avalonia package** ([#4880](https://github.com/MarimerLLC/csla/issues/4880), [#4887](https://github.com/MarimerLLC/csla/pull/4887))
+
+New `Csla.Avalonia` NuGet package bringing the CSLA XAML UI helpers to [Avalonia](https://avaloniaui.net). The package builds from the same `Csla.Xaml.Shared` code used by the WPF and MAUI packages, so `PropertyInfo`, `PropertyStatus`, `ObjectStatus`, `CslaDataProvider`, `ViewModel<T>`, and the related converters and behaviors are available to an Avalonia app, including broken rule display and authorization-driven enable/disable. A new `Samples/AvaloniaExample` solution demonstrates the pattern end to end. `Csla.Avalonia` ships alongside the other framework packages as of [#4906](https://github.com/MarimerLLC/csla/pull/4906).
 
 **New Csla.Testing package** ([#1225](https://github.com/MarimerLLC/csla/issues/1225), [#4882](https://github.com/MarimerLLC/csla/issues/4882))
 
@@ -19,6 +25,55 @@ New `Csla.Testing` NuGet package, a home for supporting code that helps people w
 **Rule testing helpers** ([#1225](https://github.com/MarimerLLC/csla/issues/1225))
 
 The `Csla.Testing.Rules` namespace adds `BusinessRuleTester` and `AuthorizationRuleTester`, fluent helpers that execute a single rule in isolation and return a result object to assert against. A single `ExecuteAsync` method runs synchronous and asynchronous rules alike, so a test no longer has to branch on whether the rule implements `IBusinessRule` or `IBusinessRuleAsync` (or `IAuthorizationRule` or `IAuthorizationRuleAsync`), and no hand-written `ApplicationContext` bootstrap is needed. Input values, the target object, the execution context mode, the principal, and CSLA options or services the rule resolves can all be configured through the builder. Also makes the `AuthorizationContext` constructor that accepts criteria public, so a rule that reads `Criteria` can be tested. See [Csla.Testing](docs/Csla-Testing.md) for details.
+
+### Changes
+
+**Data Portal**
+
+* [#4865](https://github.com/MarimerLLC/csla/issues/4865) Support custom serializers for data portal criteria objects ([#4890](https://github.com/MarimerLLC/csla/pull/4890))
+* [#1707](https://github.com/MarimerLLC/csla/issues/1707) Support multiple criteria parameters and method-level `[Inject]` in the `ObjectFactory` data portal ([#4868](https://github.com/MarimerLLC/csla/pull/4868))
+
+**Business Object Model**
+
+* [#4861](https://github.com/MarimerLLC/csla/issues/4861) Allow a `null` key value in `NameValueListBase` ([#4862](https://github.com/MarimerLLC/csla/pull/4862))
+
+**Performance**
+
+* [#4272](https://github.com/MarimerLLC/csla/issues/4272) Improve `Clone` performance; adds `ISerializationCloner` and reduces allocations in `ObjectCloner` and `MobileFormatter` ([#4863](https://github.com/MarimerLLC/csla/pull/4863))
+
+**Testing**
+
+* [#4882](https://github.com/MarimerLLC/csla/issues/4882) Add `Csla.Testing.Rules.RuleCache` to reset the per-type business and authorization rule caches between tests ([#4886](https://github.com/MarimerLLC/csla/pull/4886))
+
+**Bug Fixes**
+
+* [#4879](https://github.com/MarimerLLC/csla/issues/4879) `ObjectAdapter` handles null property values and skips `[Browsable(false)]` properties ([#4889](https://github.com/MarimerLLC/csla/pull/4889))
+
+**Security and Dependencies**
+
+* [#4904](https://github.com/MarimerLLC/csla/pull/4904) Reference a patched `System.Security.Cryptography.Xml` in `Csla.Channels.Wcf`
+* [#4907](https://github.com/MarimerLLC/csla/issues/4907) Remove the vulnerable `Microsoft.Build.Tasks.Git` reference from `Csla.Web.Mvc` ([#4908](https://github.com/MarimerLLC/csla/pull/4908))
+* [#4870](https://github.com/MarimerLLC/csla/pull/4870) Bump `CoreWCF.Primitives` from 1.8.0 to 1.8.1
+* [#4874](https://github.com/MarimerLLC/csla/pull/4874) Update `Microsoft.Extensions.DependencyInjection` package references for the netstandard and net4x targets
+
+**Code Quality**
+
+* [#4894](https://github.com/MarimerLLC/csla/issues/4894) Migrate the test suite off the `TestDIContext` shims ([#4895](https://github.com/MarimerLLC/csla/pull/4895)) and remove them ([#4896](https://github.com/MarimerLLC/csla/issues/4896), [#4897](https://github.com/MarimerLLC/csla/pull/4897))
+* [#4898](https://github.com/MarimerLLC/csla/issues/4898) Clarify that `IMobileObjectMetastate` carries non-public state ([#4901](https://github.com/MarimerLLC/csla/pull/4901))
+* [#4899](https://github.com/MarimerLLC/csla/issues/4899) Recover the orphaned `MobileObjectMetastate` tests ([#4900](https://github.com/MarimerLLC/csla/pull/4900))
+* [#4856](https://github.com/MarimerLLC/csla/issues/4856) Add regression tests for the `Required` rule on value type properties ([#4892](https://github.com/MarimerLLC/csla/pull/4892))
+* [#4902](https://github.com/MarimerLLC/csla/issues/4902) Remove orphaned `packages.config` files from the samples ([#4903](https://github.com/MarimerLLC/csla/pull/4903))
+* [#4859](https://github.com/MarimerLLC/csla/pull/4859) ProjectTracker: lift `TimeStamp` into intermediate base classes
+
+### Contributors
+
+* [@rockfordlhotka](https://github.com/rockfordlhotka)
+* [@mjdingman](https://github.com/mjdingman)
+* [@gem4511](https://github.com/gem4511)
+* [@b-higginbotham](https://github.com/b-higginbotham)
+* [@luizfbicalho](https://github.com/luizfbicalho)
+* [@StefanOssendorf](https://github.com/StefanOssendorf)
+* [@Bowman74](https://github.com/Bowman74)
 
 ## CSLA .NET version 10.1.0 release
 

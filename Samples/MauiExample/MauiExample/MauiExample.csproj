@@ -98,9 +98,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Maui" Version="10.0.0-beta-0010-g983ce0980c" />
+    <PackageReference Include="Csla.Maui" Version="10.2.0-beta.1" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.12" />
   </ItemGroup>
 
 	<ItemGroup>

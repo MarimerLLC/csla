@@ -101,6 +101,7 @@ namespace Csla.Test.DataPortal
       Console.WriteLine("DataPortal_Create");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

@@ -21,6 +21,7 @@ namespace cslalighttest.CslaDataProvider
 
     private CustomerContactList() { }
 
+    [FetchChild]
     private void Child_Fetch(int customerID, [Inject] IChildDataPortal<CustomerContact> childDataPortal)
     {
       RaiseListChangedEvents = false;

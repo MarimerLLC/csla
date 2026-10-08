@@ -10,7 +10,8 @@ using Csla;
 public inteface ICustomer
   : IBusinessObject
 { 
-  void DataPortal_Fetch();
+  [Fetch]
+  void Fetch();
 }
 ```
 

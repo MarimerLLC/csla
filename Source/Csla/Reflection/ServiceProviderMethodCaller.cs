@@ -118,9 +118,6 @@ namespace Csla.Reflection
       var activator = _applicationContext.GetRequiredService<IDataPortalActivator>();
       targetType = activator.ResolveType(targetType);
 
-      var cslaOptions = _applicationContext.GetRequiredService<CslaOptions>();
-      var useLegacyMethods = cslaOptions.DataPortalOptions.UseLegacyOperationMethods;
-
       var typeOfOperation = typeof(T);
 
       // Resolve the factory type (if any) up front so it can participate in the cache key.
@@ -134,7 +131,7 @@ namespace Csla.Reflection
       if (factoryInfo != null && !TryGetFactoryType(factoryInfo, _applicationContext, throwOnError, out factoryType))
         return null;
 
-      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, useLegacyMethods, factoryType);
+      var cacheKey = GetCacheKeyName(targetType, typeOfOperation, criteria, factoryType);
 
 #if NET8_0_OR_GREATER
       if (_methodCache.TryGetValue(cacheKey, out var unloadableCachedMethodInfo))
@@ -150,7 +147,9 @@ namespace Csla.Reflection
       }
 
       var candidates = new List<ScoredMethodInfo>();
-      if (factoryInfo != null)
+      // A factory has no create child method; child create always
+      // uses the [CreateChild] method on the business type.
+      if (factoryInfo != null && typeOfOperation != typeof(CreateChildAttribute))
       {
         var factoryWalkType = factoryType;
         var ftList = new List<System.Reflection.MethodInfo>();
@@ -166,21 +165,14 @@ namespace Csla.Reflection
             ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName));
           else if (typeOfOperation == typeof(ExecuteAttribute))
             ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName));
-          else if (typeOfOperation == typeof(CreateChildAttribute))
-            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create"));
           else
             ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName));
           factoryWalkType = factoryWalkType.BaseType;
           candidates.AddRange(ftList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           level--;
         }
-        if (!candidates.Any() && typeOfOperation == typeof(CreateChildAttribute))
-        {
-          var ftlist = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
-          candidates.AddRange(ftlist.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
-        }
       }
-      else // not using factory types
+      else // not using factory types, or child create
       {
         var tt = targetType;
         var level = 0;
@@ -194,24 +186,6 @@ namespace Csla.Reflection
           candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           tt = tt.BaseType;
           level--;
-        }
-
-        // if no attribute-based methods found, look for legacy methods
-        if (!candidates.Any() && useLegacyMethods)
-        {
-          var attributeName = typeOfOperation.Name.Substring(0, typeOfOperation.Name.IndexOf("Attribute"));
-          var methodName = attributeName.Contains("Child") ?
-              "Child_" + attributeName.Substring(0, attributeName.IndexOf("Child")) :
-              "DataPortal_" + attributeName;
-          tt = targetType;
-          level = 0;
-          while (tt != null)
-          {
-            var ttList = tt.GetMethods(_bindingAttr).Where(m => m.Name == methodName);
-            candidates.AddRange(ttList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
-            tt = tt.BaseType;
-            level--;
-          }
         }
       }
 
@@ -437,11 +411,10 @@ namespace Csla.Reflection
       return 0;
     }
 
-    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, bool useLegacyMethods, Type? factoryType = null)
+    private static string GetCacheKeyName(Type targetType, Type operationType, object?[]? criteria, Type? factoryType = null)
     {
-      var legacy = useLegacyMethods ? "" : "|nolegacy";
       var factory = factoryType is null ? "" : $"|{factoryType.FullName}";
-      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{legacy}{factory}";
+      return $"{targetType.FullName}.[{operationType.Name.Replace("Attribute", "")}]{GetCriteriaTypeNames(criteria)}{factory}";
     }
 
     private static string GetCriteriaTypeNames(object?[]? criteria)

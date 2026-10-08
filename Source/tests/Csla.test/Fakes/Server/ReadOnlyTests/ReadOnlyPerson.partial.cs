@@ -12,6 +12,7 @@ namespace Csla.Testing.Business.ReadOnlyTest
   {
     private ReadOnlyPerson() { }
 
+    [Fetch]
     private void DataPortal_Fetch(Guid criteria)
     {
       LoadProperty<Guid>(IdProperty, criteria);

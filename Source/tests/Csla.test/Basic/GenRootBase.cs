@@ -47,6 +47,7 @@ namespace Csla.Test.Basic
       }
     }
 
+    [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -54,6 +55,7 @@ namespace Csla.Test.Basic
       TestResults.Add("GenRoot", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       var crit = (Criteria)(criteria);

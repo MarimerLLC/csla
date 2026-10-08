@@ -927,6 +927,7 @@ namespace Csla
     /// with default values.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [CreateChild]
     protected virtual void Child_Create()
     { /* do nothing - list self-initializes */ }
 

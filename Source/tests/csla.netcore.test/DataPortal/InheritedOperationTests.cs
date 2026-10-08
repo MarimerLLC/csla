@@ -61,6 +61,7 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class PersonListBase : BusinessBindingListBase<PersonList, PersonEdit>
   {
+    [Fetch]
     private void DataPortal_Fetch(Criteria criteria)
     {
     }
@@ -72,6 +73,7 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class PersonEdit : PersonEditBase<PersonEdit>
   {
+    [Create]
     private new void DataPortal_Create()
     {
       BusinessRules.CheckRules();
@@ -81,6 +83,7 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class PersonEditBase<T> : BusinessBase<PersonEditBase<T>>
   {
+    [Create]
     protected void DataPortal_Create()
     {
     }

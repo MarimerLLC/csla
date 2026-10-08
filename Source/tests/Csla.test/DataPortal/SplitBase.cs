@@ -63,6 +63,7 @@ namespace Csla.Test.DataPortalTest
       TestResults.Add("Split", "Created");
     }
 
+    [Fetch]
     private void DataPortal_Fetch(Criteria criteria)
     {
       _id = criteria.Id;

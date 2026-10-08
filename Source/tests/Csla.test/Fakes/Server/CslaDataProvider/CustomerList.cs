@@ -16,6 +16,7 @@ namespace cslalighttest.CslaDataProvider
   {
     private CustomerList() { }
 
+    [Fetch]
     protected void DataPortal_Fetch([Inject] IDataPortal<Customer> customerDataPortal)
     {
       int maxCustomer = (new Random()).Next(3, 10);

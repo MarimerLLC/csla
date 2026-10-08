@@ -11,8 +11,9 @@ using System;
 public class Customer
   : BusinessBase<Customer> 
 { 
+  [FetchChild]
   [RunLocal]
-  private void Child_Fetch() => /* ... */
+  private void FetchChild() => /* ... */
 }
 ```
 

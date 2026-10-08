@@ -51,6 +51,7 @@ namespace Csla.Web.Mvc.Test.ModelBinderTest
     {
       return DataPortal.Create<RootWithValidation>();
     }
+    [Create]
     protected override void DataPortal_Create()
     {
 

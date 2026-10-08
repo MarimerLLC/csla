@@ -68,6 +68,7 @@ namespace Csla.Test.AppContext
     /// Handles new DataPortal Create calls
     /// </summary>
     /// <param name="criteria"></param>
+    [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = criteria as Criteria;
@@ -80,6 +81,7 @@ namespace Csla.Test.AppContext
     /// Handles DataPortal fetch calls
     /// </summary>
     /// <param name="criteria"></param>
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = criteria as Criteria;

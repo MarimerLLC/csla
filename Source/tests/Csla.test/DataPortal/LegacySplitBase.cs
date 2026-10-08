@@ -43,6 +43,7 @@ namespace Csla.Test.DataPortalTest
       TestResults.Add("LegacySplit", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       _id = ((Criteria)criteria).Id;

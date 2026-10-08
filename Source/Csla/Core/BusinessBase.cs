@@ -240,8 +240,8 @@ namespace Csla.Core
     /// <remarks>
     /// <para>
     /// Newly created objects are marked new by default. You should call
-    /// this method in the implementation of DataPortal_Update when the
-    /// object is deleted (due to being marked for deletion) to indicate
+    /// this method in the implementation of your <see cref="UpdateAttribute"/>
+    /// or <see cref="DeleteSelfAttribute"/> method when the object is deleted (due to being marked for deletion) to indicate
     /// that the object no longer reflects data in the database.
     /// </para><para>
     /// If you override this method, make sure to call the base
@@ -263,12 +263,12 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// <para>
-    /// You should call this method in the implementation of
-    /// DataPortal_Fetch to indicate that an existing object has been
+    /// You should call this method in the implementation of your
+    /// <see cref="FetchAttribute"/> method to indicate that an existing object has been
     /// successfully retrieved from the database.
     /// </para><para>
-    /// You should call this method in the implementation of 
-    /// DataPortal_Update to indicate that a new object has been successfully
+    /// You should call this method in the implementation of your
+    /// <see cref="InsertAttribute"/> method to indicate that a new object has been successfully
     /// inserted into the database.
     /// </para><para>
     /// If you override this method, make sure to call the base
@@ -1312,14 +1312,17 @@ namespace Csla.Core
     { }
 
     /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
+    /// Initializes a new child object with default values
+    /// and checks its business rules.
     /// </summary>
     /// <remarks>
-    /// Normally you will overload this method to accept a strongly-typed
-    /// criteria parameter, rather than overriding the method with a
-    /// loosely-typed criteria parameter.
+    /// The child data portal calls this method when a create child
+    /// operation has no criteria and the business class doesn't
+    /// declare a better matching <see cref="CreateChildAttribute"/>
+    /// method. Normally you will implement your own method marked with
+    /// <see cref="CreateChildAttribute"/>, rather than overriding this one.
     /// </remarks>
+    [CreateChild]
     protected virtual void Child_Create()
     {
       BusinessRules.CheckRules();

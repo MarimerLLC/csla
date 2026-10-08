@@ -26,8 +26,8 @@ namespace Csla
   /// <remarks>
   /// <para>
   /// Your subclass should implement a factory method
-  /// and should override or overload
-  /// DataPortal_Fetch() to implement data retrieval.
+  /// and a method marked with the <see cref="FetchAttribute"/>
+  /// to implement data retrieval.
   /// </para><para>
   /// Saving (inserts or updates) of items in the collection
   /// should be handled through the SaveItem() method on
@@ -443,18 +443,6 @@ namespace Csla
     #endregion
 
     #region  Data Access
-
-    private void DataPortal_Update()
-    {
-      throw new NotSupportedException(Properties.Resources.UpdateNotSupportedException);
-    }
-
-    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
-    [Delete]
-    private void DataPortal_Delete(object criteria)
-    {
-      throw new NotSupportedException(Properties.Resources.DeleteNotSupportedException);
-    }
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 

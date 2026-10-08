@@ -83,6 +83,7 @@ namespace Csla.Test.DataPortal
 
     #region "DataPortal"
 
+    [Create]
     private void DataPortal_Create(object criteria)
     {
       Criteria crit = (Criteria)(criteria);
@@ -90,6 +91,7 @@ namespace Csla.Test.DataPortal
         Data = crit.Data;
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(object criteria)
     {
       Criteria crit = (Criteria)(criteria);

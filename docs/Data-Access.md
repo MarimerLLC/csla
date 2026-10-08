@@ -4,10 +4,10 @@
 
 There are actually four data access models you can use with CSLA:
 
-1. Encapsulated invoke: DataPortal_XYZ to abstract DAL
+1. Encapsulated invoke: data portal operation methods (such as `[Fetch]`) to abstract DAL
 2. Factory implementation: ObjectFactory direct to data source
 3. Factory invoke: ObjectFactory to abstract DAL
-4. Encapsulated implementation: DataPortal_XYZ direct to data source
+4. Encapsulated implementation: data portal operation methods (such as `[Fetch]`) direct to data source
 
 These are listed in my general order of preference.
 

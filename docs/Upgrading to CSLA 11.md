@@ -65,15 +65,20 @@ public class Customer : BusinessBase<Customer>
 
 Once a method has an attribute, you can rename it to anything you like (for example `Fetch`).
 
-A method with a legacy name and no attribute is never called. Instead, the data portal throws an exception at runtime because it can't find a matching operation method.
+A method with a legacy name and no attribute is never called. Usually the data portal then throws an exception at runtime because it can't find a matching operation method. But when a CSLA base class has its own operation method, the base class method runs instead and your method is silently skipped. For example:
+
+* A child class with an attribute-less `Child_Create()` gets `BusinessBase.Child_Create()`, which only checks business rules.
+* A list class that overrides `Child_Update(params object[])` without `[UpdateChild]` gets the base `Child_UpdateAsync`, which updates the child items but not anything else your override did.
+
+Use the `CSLA0014` analyzer (below) to find these methods rather than relying on runtime errors.
 
 ### Finding affected methods
 
 The `CSLA0014` analyzer finds methods that use a legacy operation name but have no operation attribute. In CSLA 11 it reports a warning instead of an informational message. The analyzer's code fix adds the correct attribute for you. See [CSLA0014](analyzers/CSLA0014-DoesOperationHaveAttributeAnalyzer.md).
 
-<!-- TODO(#4828 Stage B): document the base class behavior changes once decided:
-  - D1: "not supported" DataPortal_XYZ stubs in CommandBase, ReadOnlyBase, ReadOnlyListBase, etc.
-  - D2: default Child_Create in BusinessBase (calls BusinessRules.CheckRules), BusinessListBase, BusinessBindingListBase
-  - D3: Child_Create lookup for ObjectFactory types
-  - D4: sync Child_Update(params object[]) in BusinessListBase, BusinessBindingListBase, BusinessDocumentBase
--->
+### Base class changes
+
+* **Default child create:** `BusinessBase`, `BusinessListBase`, and `BusinessBindingListBase` each have a `protected virtual Child_Create()` method that is now marked with `[CreateChild]`. It's still called when you create a child with no criteria and your class has no better matching `[CreateChild]` method. `BusinessBase.Child_Create()` checks the object's business rules. If you override `Child_Create()`, the override inherits the attribute, so you don't need to add one.
+* **"Not supported" operations:** `CommandBase`, `ReadOnlyBase`, `ReadOnlyListBase`, `ReadOnlyBindingListBase`, `NameValueListBase`, `DynamicListBase`, and `DynamicBindingListBase` no longer have private `DataPortal_XYZ` methods that throw `NotSupportedException` (for example, calling update on a read-only object). Those calls now fail with the data portal's normal "method not found" error.
+* **ObjectFactory child create:** creating a child of a type that uses `[ObjectFactory]` no longer looks for a method named `Child_Create` on the factory or the business class. The data portal calls the business class's `[CreateChild]` method (or the base class default described above).
+* **Sync `Child_Update`:** the synchronous `Child_Update(params object[])` helper on `BusinessListBase`, `BusinessBindingListBase`, and `BusinessDocumentBase` has no operation attribute. You can still call it from your own synchronous `[Update]`, `[Insert]`, or `[DeleteSelf]` methods. The data portal itself calls `Child_UpdateAsync`, which is marked with `[UpdateChild]`. If you override `Child_Update` so the data portal calls your override, add `[UpdateChild]` to it, or override `Child_UpdateAsync` instead.

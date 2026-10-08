@@ -90,7 +90,7 @@ namespace Csla
     /// different object from the original, and all object references MUST be updated
     /// to use this new object.
     /// </para><para>
-    /// On the server, the Command object's DataPortal_Execute() method will
+    /// On the server, the Command object's <see cref="ExecuteAttribute"/> method will
     /// be invoked and on an ObjectFactory the Execute method will be invoked. 
     /// Write any server-side code in that method. 
     /// </para>

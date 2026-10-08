@@ -32,7 +32,9 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
 * CSLA 11 no longer targets .NET 8 or .NET 9. Applications must target .NET 10 or later (or continue to use .NET Framework 4.6.2 through 4.8, or a `netstandard2.0`-compatible runtime).
 * On .NET 11, Android apps using `Csla.Maui` require Android API level 24 or later, because .NET 11 for Android requires it. The `net10.0-android` target still supports API level 21.
 * The data portal no longer finds operation methods by name. Only methods with an operation attribute (such as `[Fetch]`, `[Update]`, or `[UpdateChild]`) are invoked, and the `DataPortalOptions.UseLegacyOperationMethods` option is removed. Add the matching attribute to any `DataPortal_XYZ` or `Child_XYZ` method that doesn't have one. The `CSLA0014` analyzer is now a warning and its code fix adds the attribute for you. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md) ([#4828](https://github.com/MarimerLLC/csla/issues/4828)).
-  <!-- TODO(#4828 Stage B): add the D1-D4 base class behavior changes (default Child_Create / CheckRules, not-supported stubs, ObjectFactory Child_Create, sync Child_Update). -->
+  * The default `Child_Create()` methods on `BusinessBase`, `BusinessListBase`, and `BusinessBindingListBase` are now marked with `[CreateChild]`, so a child with no create method of its own still gets its business rules checked.
+  * The private "not supported" `DataPortal_XYZ` methods on `CommandBase`, `ReadOnlyBase`, and the read-only, name/value, and dynamic list base classes are removed. Unsupported operations now fail with the data portal's normal "method not found" error.
+  * Creating a child of an `[ObjectFactory]` type no longer looks for a method named `Child_Create`. It calls the business class's `[CreateChild]` method.
 
 ### Supported Platforms
 

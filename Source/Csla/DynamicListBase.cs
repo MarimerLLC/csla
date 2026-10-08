@@ -28,8 +28,8 @@ namespace Csla
   /// <remarks>
   /// <para>
   /// Your subclass should implement a factory method
-  /// and should override or overload
-  /// DataPortal_Fetch() to implement data retrieval.
+  /// and a method marked with the <see cref="FetchAttribute"/>
+  /// to implement data retrieval.
   /// </para><para>
   /// Saving (inserts or updates) of items in the collection
   /// should be handled through the SaveItem() method on

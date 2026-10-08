@@ -240,8 +240,8 @@ namespace Csla.Core
     /// <remarks>
     /// <para>
     /// Newly created objects are marked new by default. You should call
-    /// this method in the implementation of DataPortal_Update when the
-    /// object is deleted (due to being marked for deletion) to indicate
+    /// this method in the implementation of your <see cref="UpdateAttribute"/>
+    /// or <see cref="DeleteSelfAttribute"/> method when the object is deleted (due to being marked for deletion) to indicate
     /// that the object no longer reflects data in the database.
     /// </para><para>
     /// If you override this method, make sure to call the base
@@ -263,12 +263,12 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>
     /// <para>
-    /// You should call this method in the implementation of
-    /// DataPortal_Fetch to indicate that an existing object has been
+    /// You should call this method in the implementation of your
+    /// <see cref="FetchAttribute"/> method to indicate that an existing object has been
     /// successfully retrieved from the database.
     /// </para><para>
-    /// You should call this method in the implementation of 
-    /// DataPortal_Update to indicate that a new object has been successfully
+    /// You should call this method in the implementation of your
+    /// <see cref="InsertAttribute"/> method to indicate that a new object has been successfully
     /// inserted into the database.
     /// </para><para>
     /// If you override this method, make sure to call the base

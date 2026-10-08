@@ -533,6 +533,51 @@ namespace Csla.Test.DataPortal
       method.Should().BeNull();
     }
 
+    [TestMethod]
+    public void FindCreateChild_NoCreateChildMethod_FindsBaseChildCreate()
+    {
+      var method = _systemUnderTest.FindDataPortalMethod<CreateChildAttribute>(new ChildWithoutCreate(), null);
+
+      method.MethodInfo.Name.Should().Be("Child_Create");
+      method.MethodInfo.DeclaringType.Should().Be(typeof(Csla.Core.BusinessBase));
+    }
+
+    [TestMethod]
+    public void FindCreateChild_OwnCreateChildMethod_WinsOverBaseChildCreate()
+    {
+      var method = _systemUnderTest.FindDataPortalMethod<CreateChildAttribute>(new ChildWithCreate(), null);
+
+      method.MethodInfo.Name.Should().Be("Create");
+      method.MethodInfo.DeclaringType.Should().Be(typeof(ChildWithCreate));
+    }
+
+    [TestMethod]
+    public void FindCreateChild_ListWithoutCreateChildMethod_FindsBaseChildCreate()
+    {
+      var method = _systemUnderTest.FindDataPortalMethod<CreateChildAttribute>(new ListWithoutCreate(), null);
+
+      method.MethodInfo.Name.Should().Be("Child_Create");
+      method.MethodInfo.DeclaringType.Should().Be(typeof(BusinessListBase<ListWithoutCreate, ChildWithoutCreate>));
+    }
+
+    [TestMethod]
+    public void FindCreateChild_ObjectFactoryType_FindsCreateChildOnBusinessType()
+    {
+      var method = _systemUnderTest.FindDataPortalMethod<CreateChildAttribute>(new FactoryChildWithCreate(), [123]);
+
+      method.MethodInfo.Name.Should().Be("Create");
+      method.MethodInfo.DeclaringType.Should().Be(typeof(FactoryChildWithCreate));
+    }
+
+    [TestMethod]
+    public void FindCreateChild_ObjectFactoryType_IgnoresFactoryChildCreateMethod()
+    {
+      var method = _systemUnderTest.FindDataPortalMethod<CreateChildAttribute>(new FactoryChildWithoutCreate(), null);
+
+      method.MethodInfo.Name.Should().Be("Child_Create");
+      method.MethodInfo.DeclaringType.Should().Be(typeof(Csla.Core.BusinessBase));
+    }
+
 #if NET8_0_OR_GREATER
     [TestMethod]
     public void FindMethodWithKeyedServiceInjection()
@@ -1063,6 +1108,51 @@ namespace Csla.Test.DataPortal
     {
       BusinessRules.CheckRules();
     }
+  }
+
+  public class ChildWithoutCreate : BusinessBase<ChildWithoutCreate>
+  {
+  }
+
+  public class ChildWithCreate : BusinessBase<ChildWithCreate>
+  {
+    [CreateChild]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  public class ListWithoutCreate : BusinessListBase<ListWithoutCreate, ChildWithoutCreate>
+  {
+  }
+
+  [Csla.Server.ObjectFactory(typeof(ChildCreateFactory))]
+  public class FactoryChildWithCreate : BusinessBase<FactoryChildWithCreate>
+  {
+    [CreateChild]
+    private void Create(int id)
+    {
+      BusinessRules.CheckRules();
+    }
+  }
+
+  [Csla.Server.ObjectFactory(typeof(ChildCreateFactory))]
+  public class FactoryChildWithoutCreate : BusinessBase<FactoryChildWithoutCreate>
+  {
+  }
+
+  public class ChildCreateFactory : Csla.Server.ObjectFactory
+  {
+    public ChildCreateFactory(ApplicationContext applicationContext)
+      : base(applicationContext)
+    { }
+
+    // Before CSLA 11 the data portal looked for a factory method with this
+    // name for child create. It is now never used.
+    public object Child_Create() => throw new NotSupportedException();
+
+    public object Child_Create(int id) => throw new NotSupportedException();
   }
 
 #if NET8_0_OR_GREATER

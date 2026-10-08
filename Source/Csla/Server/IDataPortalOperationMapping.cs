@@ -23,7 +23,10 @@ namespace Csla.Server
     /// <param name="serviceProvider">Service provider for resolving injected dependencies</param>
     /// <returns>A Task representing the async operation</returns>
     /// <exception cref="DataPortalOperationNotSupportedException">
-    /// Thrown when the operation/criteria combination is not handled by the generated code
+    /// Thrown when the operation/criteria combination is not handled by the generated code.
+    /// Exceptions thrown by the operation method itself must be wrapped (as
+    /// <see cref="DataPortalOperationHelper.CreateCallMethodException"/> does) so they
+    /// are not mistaken for an unmatched operation, which would invoke it again through reflection.
     /// </exception>
     Task InvokeOperationAsync(Type operationType, bool isSync, object?[]? criteria, IServiceProvider serviceProvider);
   }

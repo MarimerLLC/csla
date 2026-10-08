@@ -36,7 +36,7 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object.</typeparam>
   [Serializable]
-  public abstract class ReadOnlyBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindableBase,
+  public abstract partial class ReadOnlyBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindableBase,
     IDataPortalTarget,
     IManageProperties,
     IReadOnlyBase,

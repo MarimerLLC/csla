@@ -23,10 +23,10 @@ namespace Csla.Analyzers.Tests
     }
 
     internal static async Task RunAnalysisAsync<T>(string code, string[] diagnosticIds,
-      Action<List<Diagnostic>> diagnosticInspector = null)
+      Action<List<Diagnostic>> diagnosticInspector = null, Dictionary<string, string> globalOptions = null)
       where T : DiagnosticAnalyzer, new()
     {
-      var diagnostics = await GetDiagnosticsAsync(code, new T());
+      var diagnostics = await GetDiagnosticsAsync(code, new T(), globalOptions);
       Assert.AreEqual(diagnosticIds.Length, diagnostics.Count, nameof(diagnostics.Count));
 
       foreach (var diagnosticId in diagnosticIds)
@@ -37,12 +37,31 @@ namespace Csla.Analyzers.Tests
       diagnosticInspector?.Invoke(diagnostics);
     }
 
-    internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer)
+    internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer,
+      Dictionary<string, string> globalOptions = null)
     {
       var document = Create(code);
+      var options = new AnalyzerOptions([], new GlobalOptionsProvider(globalOptions ?? []));
       var compilation = (await document.Project.GetCompilationAsync())
-        .WithAnalyzers([analyzer]);
+        .WithAnalyzers([analyzer], options);
       return (await compilation.GetAnalyzerDiagnosticsAsync()).ToList();
+    }
+
+    /// <summary>
+    /// Supplies global build properties, such as <c>build_property.*</c> values, to analyzers.
+    /// </summary>
+    private sealed class GlobalOptionsProvider(Dictionary<string, string> values) : AnalyzerConfigOptionsProvider
+    {
+      public override AnalyzerConfigOptions GlobalOptions { get; } = new Options(values);
+
+      public override AnalyzerConfigOptions GetOptions(SyntaxTree tree) => GlobalOptions;
+
+      public override AnalyzerConfigOptions GetOptions(AdditionalText textFile) => GlobalOptions;
+
+      private sealed class Options(Dictionary<string, string> values) : AnalyzerConfigOptions
+      {
+        public override bool TryGetValue(string key, out string value) => values.TryGetValue(key, out value);
+      }
     }
 
     internal static Document Create(string code)

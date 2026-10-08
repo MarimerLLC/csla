@@ -98,6 +98,14 @@
       /// 
       /// </summary>
       public const string EvaluateManagedBackingFieldsNameof = "CSLA0023";
+      /// <summary>
+      ///
+      /// </summary>
+      public const string TypeWithOperationsShouldBePartial = "CSLA0024";
+      /// <summary>
+      ///
+      /// </summary>
+      public const string UseGeneratedDataPortalExtension = "CSLA0025";
 
     }
 

@@ -10,6 +10,6 @@
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageReference Include="Csla" Version="10.1.0" />
-    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" Version="10.1.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+
   </ItemGroup>
 </Project>

@@ -26,3 +26,5 @@ CSLA0020 | Usage | Warning | ObjectAuthorizationRulesAttributeMissing
 CSLA0021 | Usage | Info | ObjectAuthorizationRulesPublic
 CSLA0022 | Usage | Warning | ObjectAuthorizationRulesStatic
 CSLA0023 | Refactoring | Info | EvaluateManagedBackingFieldsNameofAnalyzer
+CSLA0024 | Usage | Warning | TypeWithOperationsShouldBePartialAnalyzer
+CSLA0025 | Usage | Warning | UseGeneratedDataPortalExtensionAnalyzer

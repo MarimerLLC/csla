@@ -64,6 +64,14 @@ The `Csla.Testing.Rules` namespace adds `BusinessRuleTester` and `AuthorizationR
 * [#4856](https://github.com/MarimerLLC/csla/issues/4856) Add regression tests for the `Required` rule on value type properties ([#4892](https://github.com/MarimerLLC/csla/pull/4892))
 * [#4902](https://github.com/MarimerLLC/csla/issues/4902) Remove orphaned `packages.config` files from the samples ([#4903](https://github.com/MarimerLLC/csla/pull/4903))
 * [#4859](https://github.com/MarimerLLC/csla/pull/4859) ProjectTracker: lift `TimeStamp` into intermediate base classes
+* [#4931](https://github.com/MarimerLLC/csla/pull/4931) Update the samples to the CSLA 10.2.0 packages
+
+**Build and Release**
+
+* [#4923](https://github.com/MarimerLLC/csla/issues/4923) Build and ship `Csla.Maui` for 10.2.0 ([#4926](https://github.com/MarimerLLC/csla/pull/4926), [#4927](https://github.com/MarimerLLC/csla/issues/4927), [#4928](https://github.com/MarimerLLC/csla/pull/4928))
+* [#4909](https://github.com/MarimerLLC/csla/issues/4909) Publish NuGet packages using NuGet trusted publishing (OIDC) instead of a stored API key ([#4910](https://github.com/MarimerLLC/csla/pull/4910)), gated by an approval-required `nuget-release` environment ([#4919](https://github.com/MarimerLLC/csla/issues/4919), [#4921](https://github.com/MarimerLLC/csla/pull/4921))
+* [#4914](https://github.com/MarimerLLC/csla/issues/4914) Add the `v10.x` maintenance branch to CI and to the public release branches ([#4916](https://github.com/MarimerLLC/csla/pull/4916))
+* [#4911](https://github.com/MarimerLLC/csla/issues/4911) Add a script to unlist old prerelease packages on nuget.org ([#4912](https://github.com/MarimerLLC/csla/pull/4912))
 
 ### Contributors
 

@@ -169,7 +169,7 @@
     <value>Find Operations That Do Not Have an Operation Attribute</value>
   </data>
   <data name="DoesOperationHaveAttribute_Message" xml:space="preserve">
-    <value>Operations should have the appropriate operation attribute</value>
+    <value>This method is named like a data portal operation but has no operation attribute, so the data portal never calls it. Add the operation attribute.</value>
   </data>
   <data name="Shared_AddAttributeAndUsingDescription" xml:space="preserve">
     <value>Add attribute and using statement</value>

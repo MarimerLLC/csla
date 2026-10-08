@@ -16,7 +16,7 @@ CSLA0010 | Design | Warning | FindOperationsWithNonSerializableArgumentsAnalyzer
 CSLA0011 | Usage | Error | FindBusinessObjectCreationAnalyzer
 CSLA0012 | Design | Error | FindOperationsWithIncorrectReturnTypesAnalyzer
 CSLA0013 | Usage | Warning | DoesChildOperationHaveRunLocalAnalyzer
-CSLA0014 | Usage | Info | DoesOperationHaveAttributeAnalyzer
+CSLA0014 | Usage | Warning | DoesOperationHaveAttributeAnalyzer
 CSLA0015 | Usage | Error | EvaluateOperationAttributeUsageAnalyzer
 CSLA0016 | Usage | Error | AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer
 CSLA0017 | Usage | Warning | BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer

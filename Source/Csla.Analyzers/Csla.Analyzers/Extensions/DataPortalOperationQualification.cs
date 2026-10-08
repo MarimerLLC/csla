@@ -20,10 +20,13 @@
         qualification.ByAttribute | ByAttribute);
 
     /// <summary>
-    /// 
+    /// The data portal only invokes methods that have an operation attribute,
+    /// so a method qualifies as an operation only by attribute.
+    /// <see cref="ByNamingConvention"/> is used only to find methods that
+    /// look like legacy operations but are missing their attribute.
     /// </summary>
     public static implicit operator bool(DataPortalOperationQualification qualification) =>
-      qualification.ByAttribute | qualification.ByNamingConvention;
+      qualification.ByAttribute;
 
     /// <summary>
     /// 

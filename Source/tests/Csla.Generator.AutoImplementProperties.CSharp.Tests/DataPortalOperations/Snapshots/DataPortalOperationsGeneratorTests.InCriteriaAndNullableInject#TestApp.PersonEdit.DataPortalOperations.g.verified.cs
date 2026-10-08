@@ -31,8 +31,8 @@ namespace TestApp
         {
           try
           {
-            var __c0i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
-            var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
+            var __c0i0 = (int?)(serviceProvider.GetService(typeof(int?)));
+            var __c0i1 = (global::TestApp.IDal?)(serviceProvider.GetService(typeof(global::TestApp.IDal)));
             __operations.Create(__c0i0, __c0i1);
           }
           catch (global::System.Exception __ex)
@@ -86,8 +86,8 @@ namespace TestApp
           {
             try
             {
-              var __c1i0 = (int?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(int?), true));
-              var __c1i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
+              var __c1i0 = (int?)(serviceProvider.GetService(typeof(int?)));
+              var __c1i1 = (global::TestApp.IDal?)(serviceProvider.GetService(typeof(global::TestApp.IDal)));
               __operations.Create(__c1i0, __c1i1);
             }
             catch (global::System.Exception __ex)

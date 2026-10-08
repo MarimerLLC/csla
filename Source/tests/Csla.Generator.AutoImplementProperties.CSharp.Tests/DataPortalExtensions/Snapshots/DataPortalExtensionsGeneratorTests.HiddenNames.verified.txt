@@ -15,6 +15,7 @@
       Descriptor: {
         Id: CSLADP005,
         Title: Generated data portal extension would be hidden,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP005-ExtensionNameHidden.md,
         MessageFormat: The data portal extension method '{0}' for '{1}' is not generated because it would be hidden by the '{2}' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,
@@ -35,6 +36,7 @@
       Descriptor: {
         Id: CSLADP005,
         Title: Generated data portal extension would be hidden,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP005-ExtensionNameHidden.md,
         MessageFormat: The data portal extension method '{0}' for '{1}' is not generated because it would be hidden by the '{2}' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,
@@ -55,6 +57,7 @@
       Descriptor: {
         Id: CSLADP005,
         Title: Generated data portal extension would be hidden,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP005-ExtensionNameHidden.md,
         MessageFormat: The data portal extension method '{0}' for '{1}' is not generated because it would be hidden by the '{2}' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,
@@ -75,6 +78,7 @@
       Descriptor: {
         Id: CSLADP005,
         Title: Generated data portal extension would be hidden,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP005-ExtensionNameHidden.md,
         MessageFormat: The data portal extension method '{0}' for '{1}' is not generated because it would be hidden by the '{2}' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,

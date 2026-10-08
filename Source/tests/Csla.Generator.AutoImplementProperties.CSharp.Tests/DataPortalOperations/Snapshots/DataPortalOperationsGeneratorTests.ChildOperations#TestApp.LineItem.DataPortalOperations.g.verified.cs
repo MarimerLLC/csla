@@ -68,7 +68,7 @@ namespace TestApp
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "InsertChild");
           try
           {
-            var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+            var __c2i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
             await __operations.InsertChild(__c2i0).ConfigureAwait(false);
           }
           catch (global::System.Exception __ex)
@@ -85,7 +85,7 @@ namespace TestApp
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "UpdateChild");
           try
           {
-            var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+            var __c3i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
             await __operations.UpdateChild(__c3i0).ConfigureAwait(false);
           }
           catch (global::System.Exception __ex)
@@ -102,7 +102,7 @@ namespace TestApp
           global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "DeleteSelfChild");
           try
           {
-            var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+            var __c4i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
             await __operations.DeleteSelfChild(__c4i0).ConfigureAwait(false);
           }
           catch (global::System.Exception __ex)
@@ -155,7 +155,7 @@ namespace TestApp
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "InsertChild");
             try
             {
-              var __c2i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+              var __c2i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
               await __operations.InsertChild(__c2i0).ConfigureAwait(false);
             }
             catch (global::System.Exception __ex)
@@ -171,7 +171,7 @@ namespace TestApp
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "UpdateChild");
             try
             {
-              var __c3i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+              var __c3i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
               await __operations.UpdateChild(__c3i0).ConfigureAwait(false);
             }
             catch (global::System.Exception __ex)
@@ -187,7 +187,7 @@ namespace TestApp
             global::Csla.Server.DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(this, isSync, serviceProvider, "DeleteSelfChild");
             try
             {
-              var __c4i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+              var __c4i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
               await __operations.DeleteSelfChild(__c4i0).ConfigureAwait(false);
             }
             catch (global::System.Exception __ex)

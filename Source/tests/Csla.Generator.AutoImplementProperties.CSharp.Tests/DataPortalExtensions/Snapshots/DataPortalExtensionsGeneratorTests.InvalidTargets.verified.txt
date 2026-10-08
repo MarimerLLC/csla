@@ -15,6 +15,7 @@
       Descriptor: {
         Id: CSLADP004,
         Title: Invalid target for DataPortalExtensions,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP004-InvalidExtensionsTarget.md,
         MessageFormat: Data portal extension methods are not generated for '{0}': {1},
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,
@@ -35,6 +36,7 @@
       Descriptor: {
         Id: CSLADP004,
         Title: Invalid target for DataPortalExtensions,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP004-InvalidExtensionsTarget.md,
         MessageFormat: Data portal extension methods are not generated for '{0}': {1},
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,

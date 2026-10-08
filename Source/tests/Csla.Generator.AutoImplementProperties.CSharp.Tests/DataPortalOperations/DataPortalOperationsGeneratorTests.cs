@@ -656,6 +656,28 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
+    [TestMethod("Business objects without operation methods generate nothing")]
+    public async Task NoOperationMethods()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public partial class PersonEdit : Csla.BusinessBase<PersonEdit>
+          {
+          }
+
+          public partial class PersonList : Csla.ReadOnlyListBase<PersonList, PersonEdit>
+          {
+            private void Fetch(int id) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
     [TestMethod("Class that implements the named mapping itself only gets the operations interface and type mapping")]
     public async Task ExistingNamedMapping()
     {

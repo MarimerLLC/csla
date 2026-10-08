@@ -373,10 +373,6 @@ namespace Csla.Test.DataPortal
         .Should().Throw<ArgumentNullException>().WithParameterName("target");
       FluentActions.Invoking(() => DataPortalOperationHelper.ThrowIfAsyncMethodOnSyncClient(target, true, null!, "Fetch"))
         .Should().Throw<ArgumentNullException>().WithParameterName("serviceProvider");
-      FluentActions.Invoking(() => DataPortalOperationHelper.GetService(services, null!, true))
-        .Should().Throw<ArgumentNullException>().WithParameterName("serviceType");
-      FluentActions.Invoking(() => DataPortalOperationHelper.GetKeyedService(services, null!, "key", true))
-        .Should().Throw<ArgumentNullException>().WithParameterName("serviceType");
     }
 
     #endregion

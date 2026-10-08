@@ -20,6 +20,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
   internal static class DataPortalOperationsBuilder
   {
     private const string HelperType = "global::Csla.Server.DataPortalOperationHelper";
+    private const string ServiceProviderExtensionsType = "global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions";
+    private const string KeyedServiceProviderExtensionsType = "global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions";
     private const string OperationsLocal = "__operations";
     private const string ExceptionLocal = "__ex";
 
@@ -350,9 +352,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       var serviceType = parameter.IsNullableValueType
         ? $"typeof({parameter.PatternTypeDisplay}?)"
         : $"typeof({parameter.PatternTypeDisplay})";
-      var resolution = parameter.ServiceKeyExpression is null
-        ? $"{HelperType}.GetService(serviceProvider, {serviceType}, {(parameter.AllowNull ? "true" : "false")})"
-        : $"{HelperType}.GetKeyedService(serviceProvider, {serviceType}, {parameter.ServiceKeyExpression}, {(parameter.AllowNull ? "true" : "false")})";
+      // Same resolution calls as reflection-based dispatch.
+      var resolution = (parameter.ServiceKeyExpression, parameter.AllowNull) switch
+      {
+        (null, true) => $"serviceProvider.GetService({serviceType})",
+        (null, false) => $"{ServiceProviderExtensionsType}.GetRequiredService(serviceProvider, {serviceType})",
+        (var key, true) => $"{KeyedServiceProviderExtensionsType}.GetKeyedService(serviceProvider, {serviceType}, {key})",
+        (var key, false) => $"{KeyedServiceProviderExtensionsType}.GetRequiredKeyedService(serviceProvider, {serviceType}, {key})",
+      };
       return parameter.AllowNull
         ? $"({parameter.TypeDisplay})({resolution})"
         : $"({parameter.TypeDisplay})({resolution})!";

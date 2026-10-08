@@ -15,6 +15,7 @@
       Descriptor: {
         Id: CSLADP008,
         Title: Invalid DataPortalExtensions prefix,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP008-InvalidExtensionPrefix.md,
         MessageFormat: Data portal extension methods are not generated for '{0}' because the prefix '{1}' is not a valid C# identifier,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,

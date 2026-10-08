@@ -48,26 +48,28 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     /// </summary>
     internal static IncrementalValueProvider<EquatableArray<OperationTypeModel>> GetOperationTypes(IncrementalGeneratorInitializationContext context)
     {
-      IncrementalValueProvider<ImmutableArray<OperationMethodEntry>>? all = null;
-      foreach (var kind in OperationDiscovery.OperationKinds)
+      // A compilation without operation methods yields an empty array, not null.
+      var kinds = OperationDiscovery.OperationKinds;
+      var all = GetOperationMethods(context, kinds[0]);
+      for (var i = 1; i < kinds.Length; i++)
       {
-        var entries = context.SyntaxProvider.ForAttributeWithMetadataName(
-            OperationDiscovery.GetAttributeMetadataName(kind),
-            predicate: static (node, _) => node is MethodDeclarationSyntax,
-            transform: (ctx, ct) => OperationDiscovery.ExtractMethod(ctx, kind, ct))
-          .Where(static e => e is not null)
-          .Select(static (e, _) => e!)
-          .WithTrackingName(TrackingNames.ExtractOperationMethods)
-          .Collect();
-
-        all = all is null
-          ? entries
-          : all.Value.Combine(entries).Select(static (pair, _) => pair.Left.AddRange(pair.Right));
+        all = all.Combine(GetOperationMethods(context, kinds[i]))
+          .Select(static (pair, _) => pair.Left.AddRange(pair.Right));
       }
 
-      return all!.Value
+      return all
         .Select(static (entries, ct) => OperationDiscovery.GroupByType(entries, ct))
         .WithTrackingName(TrackingNames.GroupOperationTypes);
     }
+
+    private static IncrementalValueProvider<ImmutableArray<OperationMethodEntry>> GetOperationMethods(IncrementalGeneratorInitializationContext context, string kind)
+      => context.SyntaxProvider.ForAttributeWithMetadataName(
+          OperationDiscovery.GetAttributeMetadataName(kind),
+          predicate: static (node, _) => node is MethodDeclarationSyntax,
+          transform: (ctx, ct) => OperationDiscovery.ExtractMethod(ctx, kind, ct))
+        .Where(static e => e is not null)
+        .Select(static (e, _) => e!)
+        .WithTrackingName(TrackingNames.ExtractOperationMethods)
+        .Collect();
   }
 }

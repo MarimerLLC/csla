@@ -33,7 +33,7 @@ namespace TestApp
         {
           try
           {
-            var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+            var __c0i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
             __operations.Fetch__Int32(__c0p0, __c0i0);
           }
           catch (global::System.Exception __ex)
@@ -57,7 +57,7 @@ namespace TestApp
           {
             try
             {
-              var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
+              var __c0i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
               __operations.Fetch__Int32(__c0p0, __c0i0);
             }
             catch (global::System.Exception __ex)

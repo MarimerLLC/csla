@@ -43,15 +43,15 @@ var person = await portal.PortalFetchAsync(42);
 
   ```xml
   <PropertyGroup>
-    <!-- generate only the async methods (default true) -->
+    <!-- Generate extensions for sync methods (default true) -->
     <CslaGenerateSyncDataPortalExtensions>false</CslaGenerateSyncDataPortalExtensions>
-    <!-- suffix of the async method names (default Async); none for no suffix -->
+    <!-- Suffix of the async method names (default Async); none for no suffix -->
     <CslaDataPortalExtensionsAsyncSuffix>none</CslaDataPortalExtensionsAsyncSuffix>
   </PropertyGroup>
   ```
 
   With no async suffix, the sync methods would have the same names as the async methods, so they are not generated.
-* The `CSLADP002` to `CSLADP011` diagnostics, about operation methods that share an operation name and about extension methods that are not generated, are reported by analyzers rather than by the source generators, so they can be suppressed in source.
+* The `CSLADP002` to `CSLADP011` diagnostics, about operation methods that share an operation name and about extension methods that are not generated, are reported by analyzers rather than by the source generators, so they can be suppressed in source. They are described in the [analyzer documentation](docs/analyzers/index.md#data-portal-generator-diagnostics).
 * Custom or mock `IDataPortal<T>` implementations continue to work; the generated methods fall back to the existing `params object[]` methods.
 * Analyzer **CSLA0025** suggests using the generated extension methods instead of calling `IDataPortal<T>` methods with untyped criteria, and provides a code fix that replaces the call.
 
@@ -61,7 +61,6 @@ The data portal extension generator and the CSLA0025 analyzer are adapted from [
 
 * CSLA 11 no longer targets .NET 8 or .NET 9. Applications must target .NET 10 or later (or continue to use .NET Framework 4.6.2 through 4.8, or a `netstandard2.0`-compatible runtime).
 * The `Csla.Generator.AutoImplementProperties.CSharp` package is retired because its generators are now included in the `Csla` package. Remove any `PackageReference` (and `PackageVersion`) for it; a build error (`CSLABUILD001`) is reported while the reference remains.
-* Csla's abstract base classes that declare data portal operation methods (`BusinessListBase`, `CommandBase`, `ReadOnlyBase`, and others) are now `partial`.
 
 ### Supported Platforms
 

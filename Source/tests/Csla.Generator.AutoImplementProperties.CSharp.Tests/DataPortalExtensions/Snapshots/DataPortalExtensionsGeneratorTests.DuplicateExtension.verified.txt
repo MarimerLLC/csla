@@ -15,6 +15,7 @@
       Descriptor: {
         Id: CSLADP007,
         Title: Generated data portal extension would be duplicated,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP007-DuplicateExtensionMethod.md,
         MessageFormat: The data portal extension method '{0}' for '{1}' is not generated for '{2}' because another operation method already produces an extension method with the same signature,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,
@@ -35,6 +36,7 @@
       Descriptor: {
         Id: CSLADP007,
         Title: Generated data portal extension would be duplicated,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP007-DuplicateExtensionMethod.md,
         MessageFormat: The data portal extension method '{0}' for '{1}' is not generated for '{2}' because another operation method already produces an extension method with the same signature,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,

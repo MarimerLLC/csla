@@ -31,8 +31,8 @@ namespace TestApp
         {
           try
           {
-            var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (short)(-1), false))!;
-            var __c0i1 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (byte)2, false))!;
+            var __c0i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetRequiredKeyedService(serviceProvider, typeof(global::TestApp.IDal), (short)(-1)))!;
+            var __c0i1 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetRequiredKeyedService(serviceProvider, typeof(global::TestApp.IDal), (byte)2))!;
             __operations.Create(__c0i0, __c0i1);
           }
           catch (global::System.Exception __ex)
@@ -48,8 +48,8 @@ namespace TestApp
         {
           try
           {
-            var __c1i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary", false))!;
-            var __c1i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary, true));
+            var __c1i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetRequiredKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary"))!;
+            var __c1i1 = (global::TestApp.IDal?)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary));
             __operations.Fetch__Int32(__c1p0, __c1i0, __c1i1);
           }
           catch (global::System.Exception __ex)
@@ -73,8 +73,8 @@ namespace TestApp
           {
             try
             {
-              var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary", false))!;
-              var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary, true));
+              var __c0i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetRequiredKeyedService(serviceProvider, typeof(global::TestApp.IDal), "primary"))!;
+              var __c0i1 = (global::TestApp.IDal?)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), global::TestApp.DalKind.Secondary));
               __operations.Fetch__Int32(__c0p0, __c0i0, __c0i1);
             }
             catch (global::System.Exception __ex)
@@ -89,8 +89,8 @@ namespace TestApp
           {
             try
             {
-              var __c1i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (short)(-1), false))!;
-              var __c1i1 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetKeyedService(serviceProvider, typeof(global::TestApp.IDal), (byte)2, false))!;
+              var __c1i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetRequiredKeyedService(serviceProvider, typeof(global::TestApp.IDal), (short)(-1)))!;
+              var __c1i1 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderKeyedServiceExtensions.GetRequiredKeyedService(serviceProvider, typeof(global::TestApp.IDal), (byte)2))!;
               __operations.Create(__c1i0, __c1i1);
             }
             catch (global::System.Exception __ex)

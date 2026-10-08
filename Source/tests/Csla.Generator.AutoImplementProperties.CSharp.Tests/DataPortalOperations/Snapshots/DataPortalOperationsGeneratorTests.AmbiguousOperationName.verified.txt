@@ -15,6 +15,7 @@
       Descriptor: {
         Id: CSLADP009,
         Title: Data portal operation methods are ambiguous,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP009-AmbiguousOperationName.md,
         MessageFormat: Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,

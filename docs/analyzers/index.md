@@ -47,3 +47,17 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 * [CSLA0022](CSLA0022-ObjectAuthorizationRulesStatic.md) - Object authorization rules configuration should be declared as static
 * [CSLA0024](CSLA0024-TypeWithOperationsShouldBePartialAnalyzer.md) - Types with data portal operation methods should be partial
 * [CSLA0025](CSLA0025-UseGeneratedDataPortalExtensionAnalyzer.md) - Use the generated data portal extension method
+
+## Data Portal Generator Diagnostics
+These diagnostics come from the data portal operations and data portal extensions source generators included in the `Csla` package. They report operation methods that the generated code handles differently from what you might expect, and data portal extension methods that are not generated. They are reported by analyzers, so you can suppress them in source or in an `.editorconfig` file.
+
+* [CSLADP002](CSLADP002-DuplicateOperationName.md) - Data portal operation methods share an operation name
+* [CSLADP003](CSLADP003-GenericExtensionsNotGenerated.md) - Data portal extensions are not generated for generic types
+* [CSLADP004](CSLADP004-InvalidExtensionsTarget.md) - Invalid target for `[DataPortalExtensions]`
+* [CSLADP005](CSLADP005-ExtensionNameHidden.md) - Generated data portal extension would be hidden
+* [CSLADP006](CSLADP006-InaccessibleParameterType.md) - Operation parameter type is not accessible
+* [CSLADP007](CSLADP007-DuplicateExtensionMethod.md) - Generated data portal extension would be duplicated
+* [CSLADP008](CSLADP008-InvalidExtensionPrefix.md) - Invalid `[DataPortalExtensions]` prefix
+* [CSLADP009](CSLADP009-AmbiguousOperationName.md) - Data portal operation methods are ambiguous
+* [CSLADP010](CSLADP010-InvalidAsyncSuffix.md) - Invalid data portal extensions async suffix
+* [CSLADP011](CSLADP011-SyncExtensionsNotGenerated.md) - Synchronous data portal extensions are not generated without an async suffix

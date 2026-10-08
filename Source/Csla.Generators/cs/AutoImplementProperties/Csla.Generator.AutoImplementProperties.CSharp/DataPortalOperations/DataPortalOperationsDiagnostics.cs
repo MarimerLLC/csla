@@ -19,6 +19,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
   {
     private const string Category = "Csla.DataPortal";
 
+    private static string HelpLink(string id, string name) =>
+      $"https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/{id}-{name}.md";
+
     public const string DuplicateOperationNameId = "CSLADP002";
     public const string GenericExtensionsNotGeneratedId = "CSLADP003";
     public const string InvalidExtensionsTargetId = "CSLADP004";
@@ -36,7 +39,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}'; name-based dispatch uses '{0}'",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Info,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(DuplicateOperationNameId, nameof(DuplicateOperationName)));
 
     public static readonly DiagnosticDescriptor GenericExtensionsNotGenerated = new(
       id: GenericExtensionsNotGeneratedId,
@@ -44,7 +48,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "Data portal extension methods are not generated for '{0}' because it is generic or nested in a generic type",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Info,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(GenericExtensionsNotGeneratedId, nameof(GenericExtensionsNotGenerated)));
 
     public static readonly DiagnosticDescriptor InvalidExtensionsTarget = new(
       id: InvalidExtensionsTargetId,
@@ -52,7 +57,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "Data portal extension methods are not generated for '{0}': {1}",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(InvalidExtensionsTargetId, nameof(InvalidExtensionsTarget)));
 
     public static readonly DiagnosticDescriptor ExtensionNameHidden = new(
       id: ExtensionNameHiddenId,
@@ -60,7 +66,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "The data portal extension method '{0}' for '{1}' is not generated because it would be hidden by the '{2}' instance method; set DataPortalExtensions.Prefix to give the generated methods distinct names",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(ExtensionNameHiddenId, nameof(ExtensionNameHidden)));
 
     public static readonly DiagnosticDescriptor InaccessibleParameterType = new(
       id: InaccessibleParameterTypeId,
@@ -68,7 +75,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "The data portal extension method for '{0}' cannot be generated because parameter '{1}' has type '{2}', which is not accessible outside its containing type",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(InaccessibleParameterTypeId, nameof(InaccessibleParameterType)));
 
     public static readonly DiagnosticDescriptor DuplicateExtensionMethod = new(
       id: DuplicateExtensionMethodId,
@@ -76,7 +84,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "The data portal extension method '{0}' for '{1}' is not generated for '{2}' because another operation method already produces an extension method with the same signature",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(DuplicateExtensionMethodId, nameof(DuplicateExtensionMethod)));
 
     public static readonly DiagnosticDescriptor InvalidExtensionPrefix = new(
       id: InvalidExtensionPrefixId,
@@ -84,7 +93,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "Data portal extension methods are not generated for '{0}' because the prefix '{1}' is not a valid C# identifier",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(InvalidExtensionPrefixId, nameof(InvalidExtensionPrefix)));
 
     public static readonly DiagnosticDescriptor AmbiguousOperationName = new(
       id: AmbiguousOperationNameId,
@@ -92,7 +102,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       messageFormat: "Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match",
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
-      isEnabledByDefault: true);
+      isEnabledByDefault: true,
+      helpLinkUri: HelpLink(AmbiguousOperationNameId, nameof(AmbiguousOperationName)));
 
     public static readonly DiagnosticDescriptor InvalidAsyncSuffix = new(
       id: InvalidAsyncSuffixId,
@@ -101,6 +112,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
       isEnabledByDefault: true,
+      helpLinkUri: HelpLink(InvalidAsyncSuffixId, nameof(InvalidAsyncSuffix)),
       customTags: WellKnownDiagnosticTags.CompilationEnd);
 
     public static readonly DiagnosticDescriptor SyncExtensionsNotGenerated = new(
@@ -110,6 +122,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       category: Category,
       defaultSeverity: DiagnosticSeverity.Warning,
       isEnabledByDefault: true,
+      helpLinkUri: HelpLink(SyncExtensionsNotGeneratedId, nameof(SyncExtensionsNotGenerated)),
       customTags: WellKnownDiagnosticTags.CompilationEnd);
   }
 }

@@ -15,6 +15,7 @@
       Descriptor: {
         Id: CSLADP006,
         Title: Operation parameter type is not accessible,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP006-InaccessibleParameterType.md,
         MessageFormat: The data portal extension method for '{0}' cannot be generated because parameter '{1}' has type '{2}', which is not accessible outside its containing type,
         Category: Csla.DataPortal,
         DefaultSeverity: Warning,

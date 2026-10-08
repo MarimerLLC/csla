@@ -104,7 +104,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
         .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
         .Select(a => MetadataReference.CreateFromFile(a.Location))
         .Concat([
-          MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location)
+          MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
+          // Generated dispatch resolves [Inject] parameters with these extension methods.
+          MetadataReference.CreateFromFile(typeof(Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions).Assembly.Location)
         ]);
 
       var compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)

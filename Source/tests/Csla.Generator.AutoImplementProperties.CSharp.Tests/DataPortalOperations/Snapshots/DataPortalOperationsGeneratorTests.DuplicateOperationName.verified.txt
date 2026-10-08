@@ -15,6 +15,7 @@
       Descriptor: {
         Id: CSLADP002,
         Title: Data portal operation methods share an operation name,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP002-DuplicateOperationName.md,
         MessageFormat: Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}'; name-based dispatch uses '{0}',
         Category: Csla.DataPortal,
         DefaultSeverity: Info,
@@ -35,6 +36,7 @@
       Descriptor: {
         Id: CSLADP002,
         Title: Data portal operation methods share an operation name,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP002-DuplicateOperationName.md,
         MessageFormat: Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}'; name-based dispatch uses '{0}',
         Category: Csla.DataPortal,
         DefaultSeverity: Info,

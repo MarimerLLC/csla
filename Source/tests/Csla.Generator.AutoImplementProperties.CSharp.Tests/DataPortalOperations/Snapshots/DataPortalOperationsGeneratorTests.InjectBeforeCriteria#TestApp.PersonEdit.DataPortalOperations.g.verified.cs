@@ -29,8 +29,8 @@ namespace TestApp
         {
           try
           {
-            var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-            var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
+            var __c0i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
+            var __c0i1 = (global::TestApp.IDal?)(serviceProvider.GetService(typeof(global::TestApp.IDal)));
             __operations.Fetch__Int32_String(__c0i0, __c0p0, __c0i1, __c0p1);
           }
           catch (global::System.Exception __ex)
@@ -54,8 +54,8 @@ namespace TestApp
           {
             try
             {
-              var __c0i0 = (global::TestApp.IDal)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), false))!;
-              var __c0i1 = (global::TestApp.IDal?)(global::Csla.Server.DataPortalOperationHelper.GetService(serviceProvider, typeof(global::TestApp.IDal), true));
+              var __c0i0 = (global::TestApp.IDal)(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService(serviceProvider, typeof(global::TestApp.IDal)))!;
+              var __c0i1 = (global::TestApp.IDal?)(serviceProvider.GetService(typeof(global::TestApp.IDal)));
               __operations.Fetch__Int32_String(__c0i0, __c0p0, __c0i1, (string)criteria[1]!);
             }
             catch (global::System.Exception __ex)

@@ -1312,14 +1312,17 @@ namespace Csla.Core
     { }
 
     /// <summary>
-    /// Override this method to load a new business object with default
-    /// values from the database.
+    /// Initializes a new child object with default values
+    /// and checks its business rules.
     /// </summary>
     /// <remarks>
-    /// Normally you will overload this method to accept a strongly-typed
-    /// criteria parameter, rather than overriding the method with a
-    /// loosely-typed criteria parameter.
+    /// The child data portal calls this method when a create child
+    /// operation has no criteria and the business class doesn't
+    /// declare a better matching <see cref="CreateChildAttribute"/>
+    /// method. Normally you will implement your own method marked with
+    /// <see cref="CreateChildAttribute"/>, rather than overriding this one.
     /// </remarks>
+    [CreateChild]
     protected virtual void Child_Create()
     {
       BusinessRules.CheckRules();

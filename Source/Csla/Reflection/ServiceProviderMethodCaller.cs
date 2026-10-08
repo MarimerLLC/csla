@@ -147,7 +147,9 @@ namespace Csla.Reflection
       }
 
       var candidates = new List<ScoredMethodInfo>();
-      if (factoryInfo != null)
+      // A factory has no create child method; child create always
+      // uses the [CreateChild] method on the business type.
+      if (factoryInfo != null && typeOfOperation != typeof(CreateChildAttribute))
       {
         var factoryWalkType = factoryType;
         var ftList = new List<System.Reflection.MethodInfo>();
@@ -163,21 +165,14 @@ namespace Csla.Reflection
             ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.DeleteMethodName));
           else if (typeOfOperation == typeof(ExecuteAttribute))
             ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.ExecuteMethodName));
-          else if (typeOfOperation == typeof(CreateChildAttribute))
-            ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == "Child_Create"));
           else
             ftList.AddRange(factoryWalkType.GetMethods(_factoryBindingAttr).Where(m => m.Name == factoryInfo.UpdateMethodName));
           factoryWalkType = factoryWalkType.BaseType;
           candidates.AddRange(ftList.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = level }));
           level--;
         }
-        if (!candidates.Any() && typeOfOperation == typeof(CreateChildAttribute))
-        {
-          var ftlist = targetType.GetMethods(_bindingAttr).Where(m => m.Name == "Child_Create");
-          candidates.AddRange(ftlist.Select(r => new ScoredMethodInfo { MethodInfo = r, Score = 0 }));
-        }
       }
-      else // not using factory types
+      else // not using factory types, or child create
       {
         var tt = targetType;
         var level = 0;

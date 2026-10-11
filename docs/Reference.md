@@ -8,6 +8,7 @@ Here are some reference documents that provide a high-level overview of CSLA .NE
 * [CSLA Versions](CSLA-Versions.md)
 * [Books and Videos](Books-and-videos.md)
 * [OpenTelemetry Dashboard](OpenTelemetry-Dashboard.md)
+* [Upgrading to CSLA 11](Upgrading%20to%20CSLA%2011.md)
 * [Upgrading to CSLA 10](Upgrading%20to%20CSLA%2010.md)
 
 ## Historical Reference

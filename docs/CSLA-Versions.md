@@ -153,6 +153,7 @@ Older versions of CSLA .NET provide support for older versions of Microsoft .NET
 
 Here are some specific upgrade notes for each version:
 
+* [Upgrading to CSLA 11](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%2011.md)
 * [Upgrading to CSLA 10](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%2010.md)
 * [Upgrading to CSLA 9](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%209.md)
 * [Upgrading to CSLA 8](https://github.com/MarimerLLC/csla/blob/main/docs/Upgrading%20to%20CSLA%208.md)

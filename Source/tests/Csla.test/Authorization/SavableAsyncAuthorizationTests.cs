@@ -48,9 +48,7 @@ namespace Csla.Test.Authorization
 
       Assert.IsTrue(root.IsSavable);
       CollectionAssert.AreEqual(new[] { true, false }, busyChanges);
-      // meta property changes are only raised outside Windows Forms mode
-      if (GetApplicationContext(root).PropertyChangedMode != ApplicationContext.PropertyChangedModes.Windows)
-        CollectionAssert.Contains(changed, nameof(root.IsSavable));
+      CollectionAssert.Contains(changed, nameof(root.IsSavable));
     }
 
     [TestMethod]
@@ -72,7 +70,7 @@ namespace Csla.Test.Authorization
     public async Task AsyncRule_IsReevaluatedWhenUserChanges()
     {
       var root = await _testHost.GetDataPortal<SavableAsyncDenyRoot>().CreateAsync();
-      var applicationContext = GetApplicationContext(root);
+      var applicationContext = _testHost.ApplicationContext;
       var originalUser = applicationContext.User;
       try
       {
@@ -144,10 +142,6 @@ namespace Csla.Test.Authorization
       CollectionAssert.AreEqual(new[] { true, false }, busyChanges);
       CollectionAssert.Contains(changed, nameof(list.IsSavable));
     }
-
-    // IsSavable uses the business object's own ApplicationContext
-    private static ApplicationContext GetApplicationContext(object obj)
-      => ((IUseApplicationContext)obj).ApplicationContext;
 
     private static async Task WaitForIdleAsync(INotifyBusy obj)
     {

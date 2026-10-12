@@ -109,13 +109,13 @@
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
-    <None Include="..\..\bin\Release\netstandard2.0\Csla.Analyzers.dll">
-      <Pack>true</Pack>
-      <PackagePath>analyzers/dotnet/cs/</PackagePath>
-    </None>
+    <!-- Build order only; the analyzers are packed by CslaPackBundledAnalyzers -->
+    <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" ReferenceOutputAssembly="true" OutputItemType="Analyzer" PrivateAssets="all" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\Csla.Generators\cs\DataPortalInterfaces\Csla.Generator.DataPortalInterfaces.CSharp\Csla.Generator.DataPortalInterfaces.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <None Remove="buildTransitive\Csla.targets" />
+    <None Include="buildTransitive\Csla.targets" Pack="true" PackagePath="buildTransitive\" />
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -126,5 +126,20 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
+  <!-- Bundle the CSLA analyzers and source generators into the Csla package as default analyzers.
+       The paths come from the projects, so they are correct on case-sensitive file systems and in any configuration. -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);CslaPackBundledAnalyzers</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <Target Name="CslaPackBundledAnalyzers" Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <MSBuild Projects="..\Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj;..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" ItemName="_CslaBundledAnalyzerPath" />
+    </MSBuild>
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="@(_CslaBundledAnalyzerPath)" PackagePath="analyzers/dotnet/cs/" />
+    </ItemGroup>
+  </Target>
 
 </Project>

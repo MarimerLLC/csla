@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\Csla.Testing\Csla.Testing.csproj" />
     <ProjectReference Include="..\Csla.TestHelpers\Csla.TestHelpers.csproj" />
     <ProjectReference Include="..\..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
   </ItemGroup>
 
   <ItemGroup>

@@ -821,6 +821,15 @@ namespace Csla
     /// <summary>
     /// Returns true if this object is both dirty and valid.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// IsSavable checks the per-type authorization rules synchronously.
+    /// An <see cref="Rules.IAuthorizationRuleAsync"/> rule for the
+    /// CreateObject, EditObject or DeleteObject action must complete
+    /// synchronously, otherwise an <see cref="InvalidOperationException"/>
+    /// is thrown.
+    /// </para>
+    /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]

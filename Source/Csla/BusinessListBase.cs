@@ -876,6 +876,15 @@ namespace Csla
     /// Returns true if this object has changes, is valid,
     /// the user is authorized and the object is not busy.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// IsSavable checks the per-type authorization rules synchronously.
+    /// An <see cref="Rules.IAuthorizationRuleAsync"/> rule for the
+    /// CreateObject, EditObject or DeleteObject action must complete
+    /// synchronously, otherwise an <see cref="InvalidOperationException"/>
+    /// is thrown.
+    /// </para>
+    /// </remarks>
     public virtual bool IsSavable
     {
       get

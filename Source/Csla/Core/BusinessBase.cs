@@ -453,6 +453,13 @@ namespace Csla.Core
     /// considered valid if IsValid
     /// returns true. The IsSavable property is
     /// a combination of these two properties. 
+    /// <para>
+    /// IsSavable checks the per-type authorization rules synchronously.
+    /// An <see cref="Rules.IAuthorizationRuleAsync"/> rule for the
+    /// CreateObject, EditObject or DeleteObject action must complete
+    /// synchronously, otherwise an <see cref="InvalidOperationException"/>
+    /// is thrown.
+    /// </para>
     /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]

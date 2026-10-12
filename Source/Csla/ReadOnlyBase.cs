@@ -429,7 +429,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_xyz method.
+    /// requested data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -441,7 +441,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_xyz method.
+    /// requested data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -466,7 +466,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_XYZ method.
+    /// requested child data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -477,7 +477,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_XYZ method.
+    /// requested child data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]

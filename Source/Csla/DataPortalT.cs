@@ -309,7 +309,7 @@ namespace Csla
               if (factoryType != null)
                 method = Server.DataPortalMethodCache.GetMethodInfo(factoryType, factoryInfo.DeleteMethodName, [obj]);
             }
-            // must check the same authorization rules as for DataPortal_XYZ methods 
+            // must check the same authorization rules as for data portal operation methods
             else if (bbase.IsNew)
             {
               if (!await Rules.BusinessRules.HasPermissionAsync(_applicationContext, Rules.AuthorizationActions.CreateObject, obj, ct))

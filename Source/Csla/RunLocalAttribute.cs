@@ -3,13 +3,13 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Marks a DataPortal_XYZ method to</summary>
+// <summary>Marks a data portal operation method to</summary>
 //-----------------------------------------------------------------------
 
 namespace Csla
 {
   /// <summary>
-  /// Marks a DataPortal_XYZ method to
+  /// Marks a data portal operation method to
   /// be run on the client even if the server-side
   /// DataPortal is configured for remote use.
   /// </summary>

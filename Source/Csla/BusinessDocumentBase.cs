@@ -31,7 +31,7 @@ namespace Csla
   /// <typeparam name="T">Type of the business object being defined.</typeparam>
   /// <typeparam name="C">Type of the child objects contained in the collection.</typeparam>
   [Serializable]
-  public abstract class BusinessDocumentBase<
+  public abstract partial class BusinessDocumentBase<
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T,
     [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
     BusinessBase<T>,

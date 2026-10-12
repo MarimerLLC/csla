@@ -41,7 +41,7 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable]
-  public abstract class CommandBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]T> : ManagedObjectBase,
+  public abstract partial class CommandBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]T> : ManagedObjectBase,
       IDataPortalTarget,
       IManageProperties,
       ICommandBase

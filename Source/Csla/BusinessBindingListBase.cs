@@ -23,7 +23,7 @@ namespace Csla
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
   [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract class BusinessBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
+  public abstract partial class BusinessBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
       ExtendedBindingList<C>, IContainsDeletedList,
       IEditableCollection, IUndoableObject, ICloneable,
       ISavable, ISavable<T>, IParent, IDataPortalTarget,

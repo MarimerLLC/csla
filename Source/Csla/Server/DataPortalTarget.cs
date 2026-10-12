@@ -200,9 +200,26 @@ namespace Csla.Server
       await CallMethodTryAsyncDI<T>(isSync, parameters).ConfigureAwait(false);
     }
 
-    private async Task InvokeChildOperationAsync<T>(object?[]? parameters)
+    private async Task InvokeChildOperationAsync<T>(object?[]? parameters, string? operationName = null)
       where T : DataPortalChildOperationAttribute
     {
+      // Try name-based dispatch first
+      if (operationName != null && _namedMapping != null)
+      {
+        try
+        {
+          var serviceProvider = _applicationContext.CurrentServiceProvider;
+          await _namedMapping.InvokeNamedOperationAsync(
+            operationName, false, parameters, serviceProvider
+          ).ConfigureAwait(false);
+          return;
+        }
+        catch (DataPortalOperationNotSupportedException)
+        {
+          // Fall through to criteria-based path
+        }
+      }
+
       if (_operationMapping != null)
       {
         try
@@ -231,6 +248,11 @@ namespace Csla.Server
       return InvokeChildOperationAsync<CreateChildAttribute>(parameters);
     }
 
+    public Task CreateChildAsync(string? operationName, object?[]? parameters)
+    {
+      return InvokeChildOperationAsync<CreateChildAttribute>(parameters, operationName);
+    }
+
     public Task FetchAsync(object criteria, bool isSync, string? operationName = null)
     {
       return InvokeOperationAsync<FetchAttribute>(criteria, isSync, operationName);
@@ -239,6 +261,11 @@ namespace Csla.Server
     public Task FetchChildAsync(params object?[]? parameters)
     {
       return InvokeChildOperationAsync<FetchChildAttribute>(parameters);
+    }
+
+    public Task FetchChildAsync(string? operationName, object?[]? parameters)
+    {
+      return InvokeChildOperationAsync<FetchChildAttribute>(parameters, operationName);
     }
 
     public Task ExecuteAsync(object criteria, bool isSync, string? operationName = null)

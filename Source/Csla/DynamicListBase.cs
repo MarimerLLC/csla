@@ -42,7 +42,7 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable]
-  public abstract class DynamicListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> :
+  public abstract partial class DynamicListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> :
 #if ANDROID || IOS
     ExtendedBindingList<T>,
 #else

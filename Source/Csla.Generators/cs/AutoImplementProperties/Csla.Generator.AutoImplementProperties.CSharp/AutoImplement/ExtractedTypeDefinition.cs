@@ -1,4 +1,5 @@
-﻿using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
+﻿using Csla.Generator.AutoImplementProperties.CSharp;
+using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
 
 /// <summary>
 /// The definition of a type, extracted from the syntax tree provided by Roslyn

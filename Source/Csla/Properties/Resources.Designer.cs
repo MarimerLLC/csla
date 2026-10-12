@@ -160,6 +160,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorization rule {0} is asynchronous and did not complete synchronously; use BusinessRules.HasPermissionAsync instead.
+        /// </summary>
+        public static string AsyncAuthorizationRuleRequiresHasPermissionAsync {
+            get {
+                return ResourceManager.GetString("AsyncAuthorizationRuleRequiresHasPermissionAsync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot synchronously call {0} which is an asynchronous method.
         /// </summary>
         public static string AsyncMethodOnSyncClientNotAllowed {

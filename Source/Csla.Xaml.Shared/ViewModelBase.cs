@@ -308,29 +308,60 @@ namespace Csla.Xaml
       }
     }
 
-    private void SetProperties()
+    private int _setPropertiesVersion;
+
+    private async void SetProperties()
     {
+      // async void so exceptions surface on the SynchronizationContext,
+      // just as a synchronous exception would
+      await SetPropertiesAsync();
+    }
+
+    private async Task SetPropertiesAsync()
+    {
+      var version = ++_setPropertiesVersion;
+      var model = Model;
+
+      // evaluate authorization rules first; when all rules are synchronous
+      // these tasks are already complete and no thread switch occurs
+      var canDeleteInstance = false;
+      var canRemoveItem = false;
+      var canAddNewItem = false;
+      Type? itemType = null;
+      if (model is ITrackStatus targetObject)
+        canDeleteInstance = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, targetObject, CancellationToken.None);
+      if (model is ICollection)
+      {
+        itemType = Utilities.GetChildItemType(model.GetType());
+        if (itemType != null)
+        {
+          canRemoveItem = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, itemType, CancellationToken.None);
+          canAddNewItem = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.CreateObject, itemType, CancellationToken.None);
+        }
+      }
+
+      // a newer call has started (or the model changed) while awaiting
+      if (version != _setPropertiesVersion || !ReferenceEquals(model, Model))
+        return;
+
       bool isObjectBusy = false;
       if (Model is INotifyBusy busyObject && busyObject.IsBusy)
         isObjectBusy = true;
 
       // Does Model instance implement ITrackStatus 
-      if (Model is ITrackStatus targetObject)
+      if (Model is ITrackStatus trackStatus)
       {
-        var canDeleteInstance = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, targetObject);
-
-        IsDirty = targetObject.IsDirty;
-        IsValid = targetObject.IsValid;
-        CanSave = CanEditObject && targetObject.IsSavable && !isObjectBusy;
-        CanCancel = CanEditObject && targetObject.IsDirty && !isObjectBusy;
-        CanCreate = CanCreateObject && !targetObject.IsDirty && !isObjectBusy;
+        IsDirty = trackStatus.IsDirty;
+        IsValid = trackStatus.IsValid;
+        CanSave = CanEditObject && trackStatus.IsSavable && !isObjectBusy;
+        CanCancel = CanEditObject && trackStatus.IsDirty && !isObjectBusy;
+        CanCreate = CanCreateObject && !trackStatus.IsDirty && !isObjectBusy;
         CanDelete = CanDeleteObject && !isObjectBusy && canDeleteInstance;
-        CanFetch = CanGetObject && !targetObject.IsDirty && !isObjectBusy;
+        CanFetch = CanGetObject && !trackStatus.IsDirty && !isObjectBusy;
 
         // Set properties for List 
         if (Model is ICollection list)
         {
-          Type? itemType = Utilities.GetChildItemType(Model.GetType());
           if (itemType == null)
           {
             CanAddNew = false;
@@ -338,10 +369,8 @@ namespace Csla.Xaml
           }
           else
           {
-            CanRemove = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, itemType) &&
-                        list.Count > 0 && !isObjectBusy;
-            CanAddNew = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, itemType) &&
-                        !isObjectBusy;
+            CanRemove = canRemoveItem && list.Count > 0 && !isObjectBusy;
+            CanAddNew = canAddNewItem && !isObjectBusy;
           }
         }
         else
@@ -354,7 +383,6 @@ namespace Csla.Xaml
       // Else if Model instance implement ICollection
       else if (Model is ICollection list)
       {
-        Type? itemType = Utilities.GetChildItemType(Model.GetType());
         if (itemType == null)
         {
           CanAddNew = false;
@@ -362,10 +390,8 @@ namespace Csla.Xaml
         }
         else
         {
-          CanRemove = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, itemType) &&
-                      list.Count > 0 && !isObjectBusy;
-          CanAddNew = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, itemType) &&
-                      !isObjectBusy;
+          CanRemove = canRemoveItem && list.Count > 0 && !isObjectBusy;
+          CanAddNew = canAddNewItem && !isObjectBusy;
         }
       }
       else
@@ -481,18 +507,27 @@ namespace Csla.Xaml
     /// <summary>
     /// Sets the properties at object level.
     /// </summary>
-    private void SetPropertiesAtObjectLevel()
+    private async void SetPropertiesAtObjectLevel()
     {
       if (ObjectPropertiesSet)
         return;
       ObjectPropertiesSet = true;
 
+      // async void so exceptions surface on the SynchronizationContext,
+      // just as a synchronous exception would
+      await SetPropertiesAtObjectLevelAsync();
+    }
+
+    private async Task SetPropertiesAtObjectLevelAsync()
+    {
       Type sourceType = typeof(T);
 
-      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, sourceType);
-      CanGetObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, sourceType);
-      CanEditObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, sourceType);
-      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, sourceType);
+      // when all rules are synchronous these tasks are already complete,
+      // so the values are set before the property getter returns
+      CanCreateObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.CreateObject, sourceType, CancellationToken.None);
+      CanGetObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.GetObject, sourceType, CancellationToken.None);
+      CanEditObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.EditObject, sourceType, CancellationToken.None);
+      CanDeleteObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, sourceType, CancellationToken.None);
 
       // call SetProperties to set "instance" values 
       OnSetProperties();
@@ -739,6 +774,13 @@ namespace Csla.Xaml
     /// Override this method to hook into to logic of setting 
     /// properties when model is changed or edited. 
     /// </summary>
+    /// <remarks>
+    /// Authorization rules are evaluated with
+    /// <see cref="BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions, object, CancellationToken)"/>.
+    /// When a rule is asynchronous, the permission-based properties
+    /// (such as CanDelete or CanAddNew) may be updated after this
+    /// method returns; PropertyChanged is raised when they change.
+    /// </remarks>
     protected virtual void OnSetProperties()
     {
       SetProperties();

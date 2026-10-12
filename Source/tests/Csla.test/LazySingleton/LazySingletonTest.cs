@@ -25,13 +25,6 @@ namespace Csla.Test.LazySingleton
     }
 
     [TestMethod]
-    public void LazySingletonDefaultConstructorCreatesObject()
-    {
-      var lazy = new LazySingleton<Dictionary<string, object>>();
-      Assert.IsNotNull(lazy, "new LazySingleton can not be null.");
-    }
-
-    [TestMethod]
     public void LazySingletonConstructorWithOverloadConstructorCreatesObject()
     {
       var lazy = new LazySingleton<Dictionary<string, object>>(() => new Dictionary<string, object>());
@@ -39,12 +32,10 @@ namespace Csla.Test.LazySingleton
     }
 
     [TestMethod]
-    public void IsValueCreatedWithDefaultConstructorIsFalseTest()
+    public void NullDelegateThrowsArgumentNullException()
     {
-      var lazy = new LazySingleton<Dictionary<string, object>>();
-      Assert.IsFalse(lazy.IsValueCreated, "IsValueCreated must be false by default.");
+      Assert.ThrowsException<ArgumentNullException>(() => new LazySingleton<Dictionary<string, object>>(null));
     }
-
 
     [TestMethod]
     public void IsValueCreatedWithOverloadConstructorIsFalseTest()
@@ -63,13 +54,34 @@ namespace Csla.Test.LazySingleton
       Assert.AreEqual(typeof(Dictionary<string, object>), lazy.Value.GetType());
     }
 
-    #region Private Helper Methods
-
-    private LazySingleton<T> CreateLazySingleton<T>() where T:class
+    [TestMethod]
+    public void ValueIsCreatedOnlyOnce()
     {
-      return new LazySingleton<T>();
+      var calls = 0;
+      var lazy = new LazySingleton<Dictionary<string, object>>(() =>
+      {
+        calls++;
+        return new Dictionary<string, object>();
+      });
+
+      var first = lazy.Value;
+      var second = lazy.Value;
+
+      Assert.AreEqual(1, calls, "Delegate must be invoked exactly once.");
+      Assert.AreSame(first, second);
     }
 
-    #endregion
+    [TestMethod]
+    public void CreateInstanceDICreatesLazySingletonWithDelegate()
+    {
+      var applicationContext = _testHost.ApplicationContext;
+      Func<Dictionary<string, object>> factory = () => new Dictionary<string, object>();
+
+      var lazy = (LazySingleton<Dictionary<string, object>>)applicationContext.CreateInstanceDI(
+        typeof(LazySingleton<Dictionary<string, object>>), factory);
+
+      Assert.IsNotNull(lazy.Value);
+      Assert.IsTrue(lazy.IsValueCreated);
+    }
   }
 }

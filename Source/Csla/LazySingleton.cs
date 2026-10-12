@@ -3,10 +3,11 @@
 namespace Csla
 {
   /// <summary>
-  /// An alternative to Lazy&lt;T&gt; 
+  /// An alternative to Lazy&lt;T&gt; that creates its value
+  /// on first access by invoking a factory delegate.
   /// </summary>
-  /// <typeparam name="T"></typeparam>
-  public sealed class LazySingleton<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Core.IUseApplicationContext
+  /// <typeparam name="T">Type of the value.</typeparam>
+  public sealed class LazySingleton<T>
     where T : class
   {
 #if NET9_0_OR_GREATER
@@ -17,25 +18,11 @@ namespace Csla
     private T? _value;
     private readonly Func<T> _delegate;
 
-    private ApplicationContext _applicationContext = default!;
-
-    /// <inheritdoc />
-    ApplicationContext Core.IUseApplicationContext.ApplicationContext { get => _applicationContext; set => _applicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext)); }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
-    /// Will use the default public constructor to create an instance of T (the value)
-    /// </summary>
-    public LazySingleton()
-    {
-      _delegate = () => (T)_applicationContext.CreateInstanceDI(typeof(T));
-    }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingleton&lt;T&gt;"/> class.
     /// Will call the supplied delegate to create an instance of T (the value)
     /// </summary>
-  /// <param name="delegate">Factory delegate used to create the singleton value.</param>
+    /// <param name="delegate">Factory delegate used to create the singleton value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="delegate"/> is <see langword="null"/>.</exception>
     public LazySingleton(Func<T> @delegate)
     {

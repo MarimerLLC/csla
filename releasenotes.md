@@ -1,18 +1,23 @@
 # CSLA 11 releases
 
-CSLA 11 is the next major version of CSLA .NET, currently in development on the `main` branch.
+CSLA 11 is the next major version of CSLA .NET, adding support for .NET 11 and removing support for .NET 8 and .NET 9. It is currently in development on the `main` branch.
 
 Release notes for CSLA 10 are maintained on the [v10.x branch](https://github.com/MarimerLLC/csla/blob/v10.x/releasenotes.md), which is the maintenance branch for version 10.
 
 ## CSLA .NET version 11.0.0 release
 
-Primary changes in this release include:
+CSLA 11 includes all of the changes released in CSLA 10.2.0. The full list of changes made since that release can be found in the [GitHub compare view](https://github.com/MarimerLLC/csla/compare/v10.2.0...main).
 
-* Add support for .NET 11 ([#4699](https://github.com/MarimerLLC/csla/issues/4699))
-* Remove support for .NET 8 and .NET 9, which Microsoft stops supporting in November 2026 ([#4348](https://github.com/MarimerLLC/csla/issues/4348), [#4581](https://github.com/MarimerLLC/csla/issues/4581))
-* Call data portal operation methods explicitly instead of through reflection ([#4359](https://github.com/MarimerLLC/csla/issues/4359))
+### Highlights
 
-### Source generators bundled in the Csla package
+**Platform Updates** ([#4699](https://github.com/MarimerLLC/csla/issues/4699), [#4348](https://github.com/MarimerLLC/csla/issues/4348), [#4581](https://github.com/MarimerLLC/csla/issues/4581), [#4922](https://github.com/MarimerLLC/csla/pull/4922))
+
+* Add support for .NET 11
+* Remove support for .NET 8 and .NET 9, which Microsoft stops supporting in November 2026
+* `netstandard2.0` and .NET Framework 4.6.2 through 4.8 targets are unchanged
+* `Csla.Maui` targets `net11.0-android`, `net11.0-ios`, `net11.0-maccatalyst`, and `net11.0-windows` alongside the .NET 10 targets
+
+**Source generators bundled in the Csla package** ([#4359](https://github.com/MarimerLLC/csla/issues/4359), [#4925](https://github.com/MarimerLLC/csla/pull/4925))
 
 The CSLA source generators now ship inside the `Csla` NuGet package and run automatically in any C# project that references `Csla`. There is no separate generator package to install.
 
@@ -20,7 +25,7 @@ The CSLA source generators now ship inside the `Csla` NuGet package and run auto
 * For every `partial` class that declares data portal operation methods (`[Create]`, `[Fetch]`, `[Insert]`, `[Update]`, `[Execute]`, `[Delete]`, `[DeleteSelf]` and the child equivalents), the generator emits an internal nested `IDataPortalOperations` interface that names each operation method, plus implementations of `IDataPortalOperationMapping` and `IDataPortalOperationNamedMapping` for concrete classes. The data portal then calls operation methods directly instead of using reflection, and IDEs, analyzers and the trimmer see private operation methods as used.
 * Business classes with data portal operation methods should be declared `partial`. Analyzer **CSLA0024** reports classes (or containing types) that are not partial and provides a code fix that adds the `partial` modifier. Non-partial classes continue to work through reflection.
 
-### Strongly typed data portal extension methods
+**Strongly typed data portal extension methods** ([#4359](https://github.com/MarimerLLC/csla/issues/4359), [#4925](https://github.com/MarimerLLC/csla/pull/4925))
 
 Add `[DataPortalExtensions]` to a business class to generate strongly typed extension methods on `IDataPortal<T>` and `IChildDataPortal<T>` for its `[Create]`, `[Fetch]`, `[Execute]`, `[Delete]`, `[CreateChild]` and `[FetchChild]` methods, in both async and sync forms:
 
@@ -57,9 +62,20 @@ var person = await portal.PortalFetchAsync(42);
 
 The data portal extension generator and the CSLA0025 analyzer are adapted from [Csla.DataPortalExtensions](https://github.com/StefanOssendorf/Csla.DataPortalExtensions) by [Stefan Ossendorf](https://github.com/StefanOssendorf), used under the MIT License. Thank you, Stefan!
 
+### Changes
+
+**Data Portal**
+
+* [#4359](https://github.com/MarimerLLC/csla/issues/4359) Call data portal operation methods explicitly instead of through reflection, using source generators bundled in the `Csla` package ([#4925](https://github.com/MarimerLLC/csla/pull/4925))
+
+**Build and Release**
+
+* [#4917](https://github.com/MarimerLLC/csla/issues/4917) Set the `main` version to 11.0.0 and start the CSLA 11 release notes ([#4918](https://github.com/MarimerLLC/csla/pull/4918))
+
 ### Breaking Changes
 
 * CSLA 11 no longer targets .NET 8 or .NET 9. Applications must target .NET 10 or later (or continue to use .NET Framework 4.6.2 through 4.8, or a `netstandard2.0`-compatible runtime).
+* On .NET 11, Android apps using `Csla.Maui` require Android API level 24 or later, because .NET 11 for Android requires it. The `net10.0-android` target still supports API level 21.
 * The `Csla.Generator.AutoImplementProperties.CSharp` package is retired because its generators are now included in the `Csla` package. Remove any `PackageReference` (and `PackageVersion`) for it; a build error (`CSLABUILD001`) is reported while the reference remains.
 
 ### Supported Platforms
@@ -76,10 +92,6 @@ The data portal extension generator and the CSLA0025 analyzer are adapted from [
 Also expected to work on:
 
 * Uno Platform
-
-### Change List
-
-* https://github.com/MarimerLLC/csla/compare/v10.1.0...main
 
 ### Contributors
 

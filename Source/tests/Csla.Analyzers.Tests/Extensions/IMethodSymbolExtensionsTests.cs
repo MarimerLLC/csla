@@ -672,6 +672,60 @@ namespace Csla.Analyzers.Tests.Extensions
       return (compilation.GetSemanticModel(tree), await tree.GetRootAsync().ConfigureAwait(false));
     }
 
+    private const string InheritedOperationCode =
+      """
+      using Csla;
+
+      namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
+      {
+        public abstract class OperationBase<T> : BusinessBase<T>
+          where T : OperationBase<T>
+        {
+          [Fetch]
+          protected virtual void Fetch(int id) { }
+        }
+
+        public class InheritedOperations : OperationBase<InheritedOperations>
+        {
+          protected override void Fetch(int id) { }
+          protected override void Child_Create() { }
+        }
+
+        public class InheritedListOperations : BusinessListBase<InheritedListOperations, InheritedOperations>
+        {
+          protected override void Child_Update(params object[] parameters) { }
+        }
+      }
+      """;
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForOverrideOfAttributedBaseMethod()
+    {
+      var method = await GetMethodSymbolAsync(InheritedOperationCode, "Fetch");
+      Assert.IsTrue(method.IsRootDataPortalOperation());
+      Assert.IsTrue(method.IsDataPortalOperation());
+    }
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForOverrideOfAttributedCslaBaseMethod()
+    {
+      var method = await GetMethodSymbolAsync(InheritedOperationCode, CslaMemberConstants.Operations.ChildCreate);
+      var (byNamingConvention, byAttribute) = method.IsChildDataPortalOperation();
+      Assert.IsTrue(byNamingConvention);
+      Assert.IsTrue(byAttribute);
+      Assert.IsTrue(method.IsDataPortalOperation());
+    }
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForOverrideOfBaseMethodWithoutAttribute()
+    {
+      var method = await GetMethodSymbolAsync(InheritedOperationCode, CslaMemberConstants.Operations.ChildUpdate);
+      var (byNamingConvention, byAttribute) = method.IsChildDataPortalOperation();
+      Assert.IsTrue(byNamingConvention);
+      Assert.IsFalse(byAttribute);
+      Assert.IsFalse(method.IsDataPortalOperation());
+    }
+
     private async Task<IMethodSymbol> GetMethodSymbolAsync(string code, string name)
     {
       var (model, root) = await ParseFileAsync(code);

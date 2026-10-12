@@ -52,26 +52,14 @@ namespace Csla.Analyzers
       {
         var qualification = methodSymbol.IsDataPortalOperation();
 
-        if (qualification.ByNamingConvention && !qualification.ByAttribute && !OverridesOperation(methodSymbol))
+        // ByAttribute includes attributes inherited from an overridden method
+        // (such as BusinessBase.Child_Create), which the data portal still calls.
+        if (qualification.ByNamingConvention && !qualification.ByAttribute)
         {
           context.ReportDiagnostic(Diagnostic.Create(
             operationAttributeRule, methodSymbol.Locations[0]));
         }
       }
-    }
-
-    // An override inherits the operation attribute of the method it overrides
-    // (such as BusinessBase.Child_Create), so the data portal still calls it.
-    private static bool OverridesOperation(IMethodSymbol methodSymbol)
-    {
-      for (var overridden = methodSymbol.OverriddenMethod; overridden is not null; overridden = overridden.OverriddenMethod)
-      {
-        if (overridden.IsDataPortalOperation().ByAttribute)
-        {
-          return true;
-        }
-      }
-      return false;
     }
   }
 }

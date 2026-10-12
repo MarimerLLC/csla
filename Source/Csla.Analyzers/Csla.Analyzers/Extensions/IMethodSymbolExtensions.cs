@@ -53,7 +53,7 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Operations.DataPortalDelete ||
           @this.Name == CslaMemberConstants.Operations.DataPortalDeleteSelf ||
           @this.Name == CslaMemberConstants.Operations.DataPortalExecute;
-        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalRootOperationAttribute());
+        var byAttribute = @this.HasOperationAttribute(_ => _.IsDataPortalRootOperationAttribute());
         return new DataPortalOperationQualification(byNamingConvention, byAttribute);
       }
     }
@@ -73,9 +73,24 @@ namespace Csla.Analyzers.Extensions
           @this.Name == CslaMemberConstants.Operations.ChildUpdate ||
           @this.Name == CslaMemberConstants.Operations.ChildDeleteSelf ||
           @this.Name == CslaMemberConstants.Operations.ChildExecute;
-        var byAttribute = @this.GetAttributes().Any(_ => _.AttributeClass.IsDataPortalChildOperationAttribute());
+        var byAttribute = @this.HasOperationAttribute(_ => _.IsDataPortalChildOperationAttribute());
         return new DataPortalOperationQualification(byNamingConvention, byAttribute);
       }
+    }
+
+    // The data portal reads operation attributes with inherit: true, so an
+    // override (such as of BusinessBase.Child_Create) inherits the attribute
+    // of the method it overrides.
+    private static bool HasOperationAttribute(this IMethodSymbol @this, Func<INamedTypeSymbol?, bool> isOperationAttribute)
+    {
+      for (var method = @this; method is not null; method = method.OverriddenMethod)
+      {
+        if (method.GetAttributes().Any(_ => isOperationAttribute(_.AttributeClass)))
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     internal static CslaOperationQualification IsAddObjectAuthorizationRulesOperation(this IMethodSymbol @this)

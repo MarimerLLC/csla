@@ -86,5 +86,22 @@ namespace Csla.Analyzers.Tests
       await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal]);
     }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassIsMobileObjectAndInheritedChildOperationHasRunLocal()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          [RunLocal]
+          protected override void Child_Create() { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<DoesChildOperationHaveRunLocalAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal]);
+    }
   }
 }

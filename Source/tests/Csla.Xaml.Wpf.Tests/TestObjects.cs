@@ -32,28 +32,6 @@ namespace Csla.Xaml.Wpf.Tests
     }
   }
 
-  /// <summary>
-  /// Async rule that completes synchronously. IsSavable checks
-  /// the Create/Edit/Delete rules synchronously, so those rules
-  /// must complete synchronously.
-  /// </summary>
-  public class CompletedAuthRule : AuthorizationRuleAsync
-  {
-    private readonly bool _hasPermission;
-
-    public CompletedAuthRule(AuthorizationActions action, bool hasPermission)
-      : base(action)
-    {
-      _hasPermission = hasPermission;
-    }
-
-    protected override Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
-    {
-      context.HasPermission = _hasPermission;
-      return Task.CompletedTask;
-    }
-  }
-
   public class SyncAuthRule : AuthorizationRule
   {
     private readonly bool _hasPermission;
@@ -76,8 +54,7 @@ namespace Csla.Xaml.Wpf.Tests
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static void AddObjectAuthorizationRules()
     {
-      // new objects check CreateObject from IsSavable
-      BusinessRules.AddRule(typeof(AsyncAllowRoot), new CompletedAuthRule(AuthorizationActions.CreateObject, true));
+      BusinessRules.AddRule(typeof(AsyncAllowRoot), new DelayedAuthRule(AuthorizationActions.CreateObject, true));
       BusinessRules.AddRule(typeof(AsyncAllowRoot), new DelayedAuthRule(AuthorizationActions.GetObject, true));
       BusinessRules.AddRule(typeof(AsyncAllowRoot), new DelayedAuthRule(AuthorizationActions.EditObject, true));
       BusinessRules.AddRule(typeof(AsyncAllowRoot), new DelayedAuthRule(AuthorizationActions.DeleteObject, true));
@@ -96,8 +73,7 @@ namespace Csla.Xaml.Wpf.Tests
     [EditorBrowsable(EditorBrowsableState.Never)]
     public static void AddObjectAuthorizationRules()
     {
-      // new objects check CreateObject from IsSavable
-      BusinessRules.AddRule(typeof(AsyncDenyRoot), new CompletedAuthRule(AuthorizationActions.CreateObject, true));
+      BusinessRules.AddRule(typeof(AsyncDenyRoot), new DelayedAuthRule(AuthorizationActions.CreateObject, true));
       BusinessRules.AddRule(typeof(AsyncDenyRoot), new DelayedAuthRule(AuthorizationActions.GetObject, true));
       BusinessRules.AddRule(typeof(AsyncDenyRoot), new DelayedAuthRule(AuthorizationActions.EditObject, false));
       BusinessRules.AddRule(typeof(AsyncDenyRoot), new DelayedAuthRule(AuthorizationActions.DeleteObject, false));

@@ -454,11 +454,13 @@ namespace Csla.Core
     /// returns true. The IsSavable property is
     /// a combination of these two properties. 
     /// <para>
-    /// IsSavable checks the per-type authorization rules synchronously.
-    /// An <see cref="Rules.IAuthorizationRuleAsync"/> rule for the
-    /// CreateObject, EditObject or DeleteObject action must complete
-    /// synchronously, otherwise an <see cref="InvalidOperationException"/>
-    /// is thrown.
+    /// IsSavable also checks the CreateObject, EditObject or DeleteObject
+    /// per-type authorization rule. If that rule is an
+    /// <see cref="Rules.IAuthorizationRuleAsync"/> that does not complete
+    /// synchronously, the object is marked busy and IsSavable returns
+    /// false until the rule completes. The result is then cached for
+    /// the current action and user, the object is marked idle and
+    /// PropertyChanged is raised for IsSavable.
     /// </para>
     /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
@@ -473,15 +475,33 @@ namespace Csla.Core
         if (result)
         {
           if (IsDeleted)
-            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, this);
+            result = HasSavablePermission(AuthorizationActions.DeleteObject);
           else if (IsNew)
-            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, this);
+            result = HasSavablePermission(AuthorizationActions.CreateObject);
           else
-            result = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, this);
+            result = HasSavablePermission(AuthorizationActions.EditObject);
         }
 
         return result;
       }
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private SavablePermission? _savablePermission;
+
+    private bool HasSavablePermission(AuthorizationActions action)
+    {
+      _savablePermission ??= new SavablePermission();
+      return _savablePermission.HasPermission(ApplicationContext, action, this, MarkBusy, OnSavablePermissionCompleted);
+    }
+
+    private void OnSavablePermissionCompleted(Exception? error)
+    {
+      MarkIdle();
+      MetaPropertyHasChanged("IsSavable");
+      if (error != null)
+        OnUnhandledAsyncException(this, error);
     }
 
     #endregion

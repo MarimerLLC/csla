@@ -43,6 +43,46 @@ namespace Csla.Blazor.Test
       // the rule has not completed yet, so the default value is returned
       Assert.IsFalse(vm.CanCreateObject);
     }
+
+    [TestMethod]
+    public async Task SaveAsync_WithPendingAsyncIsSavableRule_WaitsAndSaves()
+    {
+      var model = await _testHost.GetDataPortal<AsyncSavableRoot>().CreateAsync();
+      var vm = new ViewModel<AsyncSavableRoot>(_testHost.ApplicationContext)
+      {
+        ManageObjectLifetime = false,
+        Model = model,
+      };
+      var saved = false;
+      vm.Saved += () => saved = true;
+
+      await vm.SaveAsync();
+
+      Assert.IsNull(vm.Exception, vm.Exception?.ToString());
+      Assert.IsTrue(saved);
+      Assert.IsFalse(vm.Model.IsNew);
+    }
+  }
+
+  [Serializable]
+  public class AsyncSavableRoot : BusinessBase<AsyncSavableRoot>
+  {
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      // IsSavable checks CreateObject for a new object
+      BusinessRules.AddRule(typeof(AsyncSavableRoot), new AsyncAuthRoot.DelayedAuthRule(AuthorizationActions.CreateObject, true));
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+    }
+
+    [Insert]
+    private void Insert()
+    { }
   }
 
   [Serializable]
@@ -56,7 +96,7 @@ namespace Csla.Blazor.Test
       BusinessRules.AddRule(typeof(AsyncAuthRoot), new DelayedAuthRule(AuthorizationActions.DeleteObject, false));
     }
 
-    private class DelayedAuthRule : AuthorizationRuleAsync
+    internal class DelayedAuthRule : AuthorizationRuleAsync
     {
       private readonly bool _hasPermission;
 

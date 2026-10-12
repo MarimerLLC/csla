@@ -38,7 +38,7 @@ namespace Csla.Xaml.Wpf.Tests
         var vm = new ViewModel<AsyncAllowRoot>();
 
         vm.Model = model;
-        await DispatcherContext.WaitUntilAsync(() => vm.CanDelete);
+        await DispatcherContext.WaitUntilAsync(() => vm.CanDelete && vm.CanSave);
 
         Assert.IsTrue(vm.CanCreateObject);
         Assert.IsTrue(vm.CanGetObject);
@@ -83,11 +83,35 @@ namespace Csla.Xaml.Wpf.Tests
         vm.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
         vm.Model = model;
-        await DispatcherContext.WaitUntilAsync(() => vm.CanDelete);
+        await DispatcherContext.WaitUntilAsync(() => vm.CanDelete && vm.CanSave);
 
         CollectionAssert.Contains(changed, nameof(vm.CanEditObject));
         CollectionAssert.Contains(changed, nameof(vm.CanSave));
         CollectionAssert.Contains(changed, nameof(vm.CanDelete));
+      });
+    }
+
+    [TestMethod]
+    public void AsyncCreateRule_CanSaveIsSetWhenIsSavableRuleCompletes()
+    {
+      DispatcherContext.Run(async () =>
+      {
+        var model = await _testHost.GetDataPortal<AsyncAllowRoot>().CreateAsync();
+        var vm = new ViewModel<AsyncAllowRoot>();
+        var modelBusy = new List<bool>();
+        model.BusyChanged += (_, e) => modelBusy.Add(e.Busy);
+
+        vm.Model = model;
+        Assert.IsFalse(vm.CanSave);
+
+        await DispatcherContext.WaitUntilAsync(() => vm.CanSave);
+
+        // IsSavable ran the async CreateObject rule, so the model was
+        // busy until the rule completed
+        CollectionAssert.AreEqual(new[] { true, false }, modelBusy);
+        Assert.IsFalse(model.IsBusy);
+        Assert.IsFalse(vm.IsBusy);
+        Assert.IsTrue(model.IsSavable);
       });
     }
 

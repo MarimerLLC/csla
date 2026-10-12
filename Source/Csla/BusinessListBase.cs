@@ -878,11 +878,11 @@ namespace Csla
     /// </summary>
     /// <remarks>
     /// <para>
-    /// IsSavable checks the per-type authorization rules synchronously.
-    /// An <see cref="Rules.IAuthorizationRuleAsync"/> rule for the
-    /// CreateObject, EditObject or DeleteObject action must complete
-    /// synchronously, otherwise an <see cref="InvalidOperationException"/>
-    /// is thrown.
+    /// IsSavable also checks the EditObject per-type authorization rule.
+    /// If that rule is an <see cref="Rules.IAuthorizationRuleAsync"/> that
+    /// does not complete synchronously, the object is busy and IsSavable
+    /// returns false until the rule completes. The result is then cached
+    /// for the current user and BusyChanged is raised.
     /// </para>
     /// </remarks>
     public virtual bool IsSavable
@@ -891,10 +891,26 @@ namespace Csla
       {
         var result = IsDirty && IsValid && !IsBusy;
         if (result)
-          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+        {
+          _savablePermission ??= new Rules.SavablePermission();
+          result = _savablePermission.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this,
+            () => OnBusyChanged(new BusyChangedEventArgs("", true)), OnSavablePermissionCompleted);
+        }
 
         return result;
       }
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private Rules.SavablePermission? _savablePermission;
+
+    private void OnSavablePermissionCompleted(Exception? error)
+    {
+      OnBusyChanged(new BusyChangedEventArgs("", false));
+      OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsSavable)));
+      if (error != null)
+        OnUnhandledAsyncException(this, error);
     }
 
     /// <summary>
@@ -904,6 +920,9 @@ namespace Csla
     {
       get
       {
+        if (_savablePermission?.IsPending == true)
+          return true;
+
         // run through all the child objects
         // and if any are busy then then
         // collection is busy

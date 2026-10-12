@@ -180,14 +180,18 @@ namespace Csla.Core
           deleted.Add(item);
       }
 
-      // add items not in target
-      foreach (var item in source)
-        if (!target.Any(_ => _.Identity == item.Identity))
-          target.Add(item);
+      // merging is not a user change, so ignore AllowNew/AllowRemove
+      target.WithoutAllowChecks(() =>
+      {
+        // add items not in target
+        foreach (var item in source)
+          if (!target.Any(_ => _.Identity == item.Identity))
+            target.Add(item);
 
-      // remove items not in source
-      foreach (var item in deleted)
-        target.Remove(item);
+        // remove items not in source
+        foreach (var item in deleted)
+          target.Remove(item);
+      });
       GetDeletedList<C>(target).Clear();
     }
 
@@ -216,14 +220,18 @@ namespace Csla.Core
           deleted.Add(item);
       }
 
-      // add items not in target
-      foreach (var item in source)
-        if (!target.Any(_ => _.Identity == item.Identity))
-          target.Add(item);
+      // merging is not a user change, so ignore AllowNew/AllowRemove
+      target.WithoutAllowChecks(() =>
+      {
+        // add items not in target
+        foreach (var item in source)
+          if (!target.Any(_ => _.Identity == item.Identity))
+            target.Add(item);
 
-      // remove items not in source
-      foreach (var item in deleted)
-        target.Remove(item);
+        // remove items not in source
+        foreach (var item in deleted)
+          target.Remove(item);
+      });
       GetDeletedList<C>(target).Clear();
     }
 
@@ -374,14 +382,18 @@ namespace Csla.Core
           deleted.Add(item);
       }
 
-      // add items not in target
-      foreach (var item in source)
-        if (!target.Any(_ => _.Identity == item.Identity))
-          target.Add(item);
+      // merging is not a user change, so ignore AllowNew/AllowRemove
+      target.WithoutAllowChecks(() =>
+      {
+        // add items not in target
+        foreach (var item in source)
+          if (!target.Any(_ => _.Identity == item.Identity))
+            target.Add(item);
 
-      // remove items not in source
-      foreach (var item in deleted)
-        target.Remove(item);
+        // remove items not in source
+        foreach (var item in deleted)
+          target.Remove(item);
+      });
       GetDeletedList<C>(target).Clear();
     }
 
@@ -410,14 +422,18 @@ namespace Csla.Core
           deleted.Add(item);
       }
 
-      // add items not in target
-      foreach (var item in source)
-        if (!target.Any(_ => _.Identity == item.Identity))
-          target.Add(item);
+      // merging is not a user change, so ignore AllowNew/AllowRemove
+      target.WithoutAllowChecks(() =>
+      {
+        // add items not in target
+        foreach (var item in source)
+          if (!target.Any(_ => _.Identity == item.Identity))
+            target.Add(item);
 
-      // remove items not in source
-      foreach (var item in deleted)
-        target.Remove(item);
+        // remove items not in source
+        foreach (var item in deleted)
+          target.Remove(item);
+      });
       GetDeletedList<C>(target).Clear();
     }
 

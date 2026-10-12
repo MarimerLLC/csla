@@ -149,7 +149,25 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("AddNewCoreMustBeOverriden", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Items cannot be added to this list because AllowNew is false.
+        /// </summary>
+        public static string AllowNewFalseException {
+            get {
+                return ResourceManager.GetString("AllowNewFalseException", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Items cannot be removed from this list because AllowRemove is false.
+        /// </summary>
+        public static string AllowRemoveFalseException {
+            get {
+                return ResourceManager.GetString("AllowRemoveFalseException", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Failed on async load of property {0}.
         /// </summary>

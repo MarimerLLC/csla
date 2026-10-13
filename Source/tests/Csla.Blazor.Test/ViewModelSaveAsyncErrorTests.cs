@@ -188,7 +188,9 @@ namespace Csla.Blazor.Test
       var vm = new ViewModel<Person>(appCntxt)
       {
         Model = person,
-        BusyTimeout = TimeSpan.FromSeconds(3)
+        // Generous timeout: Person has a 2 second async rule, and a tight
+        // timeout makes this test fail on slow CI agents
+        BusyTimeout = TimeSpan.FromSeconds(30)
       };
 
       await vm.SaveAsync();

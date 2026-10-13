@@ -164,8 +164,6 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
 
-    // TODO: fix test
-    [Ignore]
     [TestMethod]
     public void UpdateTransactionScope()
     {
@@ -185,8 +183,6 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsDirty, "Should not be dirty");
     }
 
-    // TODO: fix test
-    [Ignore]
     [TestMethod]
     public void UpdateTransactionScopeUsingCustomTransactionLevelAndTimeout()
     {
@@ -217,8 +213,6 @@ namespace Csla.Test.ObjectFactory
     }
 
 
-    // TODO: fix test
-    [Ignore]
     [TestMethod]
     public void UpdateTransactionScopeUsingDefaultTransactionLevelAndTimeout()
     {

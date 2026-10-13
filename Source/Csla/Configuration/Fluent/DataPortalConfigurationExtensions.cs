@@ -111,6 +111,7 @@ namespace Csla.Configuration
       services.TryAddScoped(typeof(IObjectFactoryLoader), config.DataPortalOptions.DataPortalServerOptions.ObjectFactoryLoaderType);
       services.TryAddScoped(typeof(IDataPortalActivator), config.DataPortalOptions.DataPortalServerOptions.ActivatorType);
       services.TryAddScoped(typeof(IDataPortalExceptionInspector), config.DataPortalOptions.DataPortalServerOptions.ExceptionInspectorType);
+      services.TryAddScoped(typeof(ITransactionScopeFactory), config.DataPortalOptions.DataPortalServerOptions.TransactionScopeFactoryType);
 
       services.TryAddScoped<DataPortalExceptionHandler>();
       services.TryAddTransient(typeof(IDataPortalServer), typeof(DataPortal));

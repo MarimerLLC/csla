@@ -142,6 +142,26 @@ namespace Csla.Configuration
     }
 
     /// <summary>
+    /// Gets or sets the type of the transaction scope factory
+    /// used to create the TransactionScope for data portal
+    /// operations that use <see cref="TransactionalTypes.TransactionScope"/>.
+    /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    internal Type TransactionScopeFactoryType { get; private set; } = typeof(DefaultTransactionScopeFactory);
+
+    /// <summary>
+    /// Sets the type of the transaction scope factory
+    /// used to create the TransactionScope for data portal
+    /// operations that use <see cref="TransactionalTypes.TransactionScope"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public DataPortalServerOptions RegisterTransactionScopeFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T: ITransactionScopeFactory
+    {
+      TransactionScopeFactoryType = typeof(T);
+      return this;
+    }
+
+    /// <summary>
     /// Gets or sets the type name of the factor loader used to create
     /// server-side instances of business object factories when using
     /// the FactoryDataPortal model. Type must implement

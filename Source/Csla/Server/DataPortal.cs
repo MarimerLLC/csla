@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Versioning;
 using System.Security.Principal;
 using Csla.Configuration;
 using Csla.Core;
@@ -39,6 +40,9 @@ namespace Csla.Server
     private readonly InterceptorManager _interceptorManager;
     private readonly DataPortalExceptionHandler _dataPortalExceptionHandler;
     private readonly SecurityOptions _securityOptions;
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
+    private readonly DataOptions _dataOptions;
+#endif
 
     /// <summary>
     /// Creates an instance of the type.
@@ -65,6 +69,9 @@ namespace Csla.Server
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
       _dashboard = dashboard ?? throw new ArgumentNullException(nameof(dashboard));
       _dataPortalOptions = options.DataPortalOptions;
+#if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
+      _dataOptions = options.DataOptions;
+#endif
       _authorizer = authorizer ?? throw new ArgumentNullException(nameof(authorizer));
       _interceptorManager = interceptors ?? throw new ArgumentNullException(nameof(interceptors));
       _dataPortalExceptionHandler = exceptionHandler ?? throw new ArgumentNullException(nameof(exceptionHandler));
@@ -76,8 +83,12 @@ namespace Csla.Server
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
     private IDataPortalServer GetServicedComponentPortal(TransactionalAttribute transactionalAttribute)
     {
-      switch (transactionalAttribute.TransactionIsolationLevel)
+      var isolationLevel = transactionalAttribute.TransactionIsolationLevel;
+      if (isolationLevel == TransactionIsolationLevel.Unspecified)
+        isolationLevel = _dataOptions.DefaultTransactionIsolationLevel;
+      switch (isolationLevel)
       {
+        case TransactionIsolationLevel.Unspecified:
         case TransactionIsolationLevel.Serializable:
           return _applicationContext.CreateInstanceDI<ServicedDataPortalSerializable>();
         case TransactionIsolationLevel.RepeatableRead:
@@ -91,6 +102,15 @@ namespace Csla.Server
       }
     }
 #endif
+
+    [UnsupportedOSPlatform("browser")]
+    private TransactionalDataPortal CreateTransactionalDataPortal(Type objectType, DataPortalOperations operation, DataPortalMethodInfo method)
+    {
+      var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
+      var transactionScopeFactory = _applicationContext.CurrentServiceProvider.GetRequiredService<ITransactionScopeFactory>();
+      var transactionScopeFactoryContext = new TransactionScopeFactoryContext(objectType, operation, method.MethodInfo, method.TransactionalAttribute);
+      return new TransactionalDataPortal(broker, transactionScopeFactory, transactionScopeFactoryContext);
+    }
 
     private Reflection.ServiceProviderMethodCaller? _serviceProviderMethodCaller;
     private Reflection.ServiceProviderMethodCaller ServiceProviderMethodCaller
@@ -147,8 +167,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Create, method);
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -233,8 +252,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Fetch, method);
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -315,8 +333,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Execute, method);
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -435,8 +452,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+            portal = CreateTransactionalDataPortal(objectType, operation, method);
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -528,8 +544,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
-            portal = new TransactionalDataPortal(broker, method.TransactionalAttribute);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Delete, method);
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:

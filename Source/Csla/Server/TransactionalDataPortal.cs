@@ -21,20 +21,23 @@ namespace Csla.Server
   public class TransactionalDataPortal : IDataPortalServer
   {
     private readonly DataPortalBroker _portal;
-    private readonly TransactionalAttribute _transactionalAttribute;
+    private readonly ITransactionScopeFactory _transactionScopeFactory;
+    private readonly TransactionScopeFactoryContext _transactionScopeFactoryContext;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TransactionalDataPortal" /> class.
     /// </summary>
     /// <param name="dataPortalBroker">The broker that is used to perform the data access operation</param>
-    /// <param name="transactionalAttribute">
-    /// The transactional attribute that defines transaction options to be used with transactions.
+    /// <param name="transactionScopeFactory">The factory used to create the transaction scope.</param>
+    /// <param name="transactionScopeFactoryContext">
+    /// Information about the data portal operation, passed to the <paramref name="transactionScopeFactory"/>.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/> or <paramref name="transactionalAttribute"/> is <see langword="null"/>.</exception>
-    public TransactionalDataPortal(DataPortalBroker dataPortalBroker, TransactionalAttribute transactionalAttribute)
+    /// <exception cref="ArgumentNullException"><paramref name="dataPortalBroker"/>, <paramref name="transactionScopeFactory"/> or <paramref name="transactionScopeFactoryContext"/> is <see langword="null"/>.</exception>
+    public TransactionalDataPortal(DataPortalBroker dataPortalBroker, ITransactionScopeFactory transactionScopeFactory, TransactionScopeFactoryContext transactionScopeFactoryContext)
     {
       _portal = dataPortalBroker ?? throw new ArgumentNullException(nameof(dataPortalBroker));
-      _transactionalAttribute = transactionalAttribute ?? throw new ArgumentNullException(nameof(transactionalAttribute));
+      _transactionScopeFactory = transactionScopeFactory ?? throw new ArgumentNullException(nameof(transactionScopeFactory));
+      _transactionScopeFactoryContext = transactionScopeFactoryContext ?? throw new ArgumentNullException(nameof(transactionScopeFactoryContext));
     }
 
     /// <summary>
@@ -66,33 +69,7 @@ namespace Csla.Server
     }
 
     private TransactionScope CreateTransactionScope()
-    {
-      return new TransactionScope(TransactionScopeOption.Required, GetTransactionOptions(), _transactionalAttribute.AsyncFlowOption);
-    }
-
-    private TransactionOptions GetTransactionOptions()
-    {
-      var option = new TransactionOptions
-                     {
-                       IsolationLevel = GetIsolationLevel(_transactionalAttribute.TransactionIsolationLevel),
-                       Timeout = TimeSpan.FromSeconds(_transactionalAttribute.TimeoutInSeconds)
-                     };
-      return option;
-    }
-
-    private IsolationLevel GetIsolationLevel(TransactionIsolationLevel transactionIsolationLevel)
-    {
-      return transactionIsolationLevel switch
-      {
-        TransactionIsolationLevel.Unspecified => IsolationLevel.Unspecified,
-        TransactionIsolationLevel.Serializable => IsolationLevel.Serializable,
-        TransactionIsolationLevel.RepeatableRead => IsolationLevel.RepeatableRead,
-        TransactionIsolationLevel.ReadCommitted => IsolationLevel.ReadCommitted,
-        TransactionIsolationLevel.ReadUncommitted => IsolationLevel.ReadUncommitted,
-        TransactionIsolationLevel.Snapshot => IsolationLevel.Snapshot,
-        _ => IsolationLevel.Unspecified
-      };
-    }
+      => _transactionScopeFactory.CreateTransactionScope(_transactionScopeFactoryContext);
 
     /// <summary>
     /// Called by the client-side DataPortal to retrieve an object.

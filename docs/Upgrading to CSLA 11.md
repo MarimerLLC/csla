@@ -158,3 +158,36 @@ The factory receives a `TransactionScopeFactoryContext` describing the operation
 These let a factory adjust the transaction to the data involved. For example, it can use a longer timeout for a large batch. `BusinessObject` is the server-side instance before the operation runs. Treat it as read-only.
 
 The `TransactionalDataPortal` constructor now takes `(DataPortalBroker, ITransactionScopeFactory, TransactionScopeFactoryContext)` instead of `(DataPortalBroker, TransactionalAttribute)`.
+
+## Required properties
+
+CSLA 11 adds a `RelationshipTypes.Required` flag ([#4351](https://github.com/MarimerLLC/csla/issues/4351)). It's opt-in, so existing code is not affected. Use it in place of guard code in each data portal operation method that checks a property has been set.
+
+Register the property with the flag, using the existing `RegisterProperty` overloads:
+
+```csharp
+public static readonly PropertyInfo<Address> AddressProperty =
+  RegisterProperty<Address>(nameof(Address), RelationshipTypes.Required);
+```
+
+When a create, fetch, insert, update or execute operation completes, the data portal checks each required property. If any of them is null, it throws `RequiredPropertyNotSetException`, wrapped in a `DataPortalException`. The exception's `ObjectType` and `PropertyNames` properties identify the object and properties, and the message includes them too, so they are still available when the exception comes from a remote data portal.
+
+* Root objects, child objects (through the child data portal) and objects created by an `ObjectFactory` are all checked. Delete operations are not checked.
+* A property can be null while the operation runs. Only the value at the end of the operation is checked.
+* `Required` can be combined with other flags. A `LazyLoad | Required` property is only checked after it has been loaded. A `PrivateField | Required` property is read through its property getter.
+* `SetProperty` converts a null `string` to `string.Empty`, so a required `string` property can only be null if it is loaded with `LoadProperty(..., null)`.
+* An object whose operation didn't read or write any managed property has no field manager yet, and is not checked.
+
+### Data binding
+
+Property setters never throw for a null value, so data binding isn't affected. Setting a required property to null is caught on the next save.
+
+There is one case where the check can run inside data binding. When a Windows Forms grid adds a row to an editable list, `AddNew` creates the item through the child data portal. If the child's `[CreateChild]` method leaves a required property null, the exception is thrown inside the grid's `AddNew`. Child classes used this way must set their required properties in `[CreateChild]`:
+
+```csharp
+[CreateChild]
+private void Create([Inject] IChildDataPortal<Address> addressPortal)
+{
+  LoadProperty(AddressProperty, addressPortal.CreateChild());
+}
+```

@@ -381,6 +381,12 @@
   <data name="AddNewCoreMustBeOverriden" xml:space="preserve">
     <value>AddNewCore must be overridden</value>
   </data>
+  <data name="AllowNewFalseException" xml:space="preserve">
+    <value>Items cannot be added to this list because AllowNew is false</value>
+  </data>
+  <data name="AllowRemoveFalseException" xml:space="preserve">
+    <value>Items cannot be removed from this list because AllowRemove is false</value>
+  </data>
   <data name="ChangeReadOnlyListInvalid" xml:space="preserve">
     <value>Can not change a read-only list or collection</value>
   </data>

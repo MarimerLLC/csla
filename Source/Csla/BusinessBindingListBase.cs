@@ -37,6 +37,7 @@ namespace Csla
     protected BusinessBindingListBase()
     {
       ApplicationContext = default!;
+      AllowNew = true;
     }
 
     /// <summary>
@@ -53,7 +54,6 @@ namespace Csla
         ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         InitializeIdentity();
         Initialize();
-        AllowNew = true;
       }
     }
 
@@ -165,7 +165,9 @@ namespace Csla
       // because it will be changed by the normal add process
       int saveLevel = child.EditLevelAdded;
 
-      Add(child);
+      // restoring a deleted child is not a user add, so
+      // it must succeed even if AllowNew is false
+      WithoutAllowChecks(() => Add(child));
       child.EditLevelAdded = saveLevel;
     }
 
@@ -286,12 +288,39 @@ namespace Csla
     [NotUndoable]
     private bool _isDeserializing;
 
+    [NonSerialized]
+    [NotUndoable]
+    private bool _suppressAllowChecks;
+
+    /// <summary>
+    /// Invokes an action that changes the list on behalf of
+    /// the framework, ignoring AllowNew and AllowRemove.
+    /// </summary>
+    /// <param name="action">Action that changes the list.</param>
+    internal void WithoutAllowChecks(Action action)
+    {
+      var old = _suppressAllowChecks;
+      _suppressAllowChecks = true;
+      try
+      {
+        action();
+      }
+      finally
+      {
+        _suppressAllowChecks = old;
+      }
+    }
+
     /// <summary>
     /// Override this method to create a new object that is added
     /// to the collection.
     /// </summary>
+    /// <exception cref="NotSupportedException"><see cref="System.ComponentModel.BindingList{T}.AllowNew"/> is <see langword="false"/>.</exception>
     protected override object AddNewCore()
     {
+      if (!AllowNew)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
+
       var dp = ApplicationContext.CreateInstanceDI<DataPortal<C>>();
       var item = dp.CreateChild();
       Add(item);
@@ -333,10 +362,13 @@ namespace Csla
     /// <param name="index">Index of the item to insert.</param>
     /// <param name="item">Item to insert.</param>
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><see cref="System.ComponentModel.BindingList{T}.AllowNew"/> is <see langword="false"/>.</exception>
     protected override void InsertItem(int index, C item)
     {
       if (item is null)
         throw new ArgumentNullException(nameof(item));
+      if (!AllowNew && !_isDeserializing && !_suppressAllowChecks)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
 
       if (item.IsChild)
       {
@@ -370,14 +402,29 @@ namespace Csla
     /// the collection of deleted objects.
     /// </summary>
     /// <param name="index">Index of the item to remove.</param>
+    /// <exception cref="NotSupportedException"><see cref="System.ComponentModel.BindingList{T}.AllowRemove"/> is <see langword="false"/>.</exception>
     protected override void RemoveItem(int index)
     {
+      if (!AllowRemove && !_suppressAllowChecks)
+        throw new NotSupportedException(Resources.AllowRemoveFalseException);
+
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
       C child = this[index];
       using (LoadListMode)
       {
-        base.RemoveItem(index);
+        // BindingList<T> enforces AllowRemove itself, so lift it
+        // while the framework is changing the list
+        bool oldAllowRemove = AllowRemove;
+        try
+        {
+          AllowRemove = true;
+          base.RemoveItem(index);
+        }
+        finally
+        {
+          AllowRemove = oldAllowRemove;
+        }
       }
       if (!_completelyRemoveChild)
       {
@@ -387,6 +434,18 @@ namespace Csla
       }
       if (RaiseListChangedEvents)
         OnListChanged(new ListChangedEventArgs(ListChangedType.ItemDeleted, index));
+    }
+
+    /// <summary>
+    /// Discards a new item added through AddNew that
+    /// has not yet been committed.
+    /// </summary>
+    /// <param name="itemIndex">Index of the new item to discard.</param>
+    public override void CancelNew(int itemIndex)
+    {
+      // canceling a pending AddNew is not a user remove, so
+      // it must succeed even if AllowRemove is false
+      WithoutAllowChecks(() => base.CancelNew(itemIndex));
     }
 
     /// <summary>

@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Csla.Core;
+using Csla.Properties;
 using Csla.Serialization.Mobile;
 
 namespace Csla
@@ -54,8 +55,10 @@ namespace Csla
     /// </summary>
 #pragma warning disable CS8618 // It must be available for derived classes to be de-/serialized
     protected DynamicBindingListBase()
-#pragma warning restore CS8618 
-    { }
+#pragma warning restore CS8618
+    {
+      AllowNew = true;
+    }
 
     /// <summary>
     /// Gets the current ApplicationContext
@@ -71,7 +74,6 @@ namespace Csla
         ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         InitializeIdentity();
         Initialize();
-        AllowNew = true;
       }
     }
 
@@ -275,14 +277,22 @@ namespace Csla
     /// Adds a new item to the list.
     /// </summary>
     /// <returns>The added object</returns>
+    /// <exception cref="NotSupportedException"><see cref="System.ComponentModel.BindingList{T}.AllowNew"/> is <see langword="false"/>.</exception>
     protected override object AddNewCore()
     {
+      if (!AllowNew)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
+
       var dp = ApplicationContext.CreateInstanceDI<DataPortal<T>>();
       T item = dp.Create();
       Add(item);
       OnAddingNew(new AddingNewEventArgs(item));
       return item;
     }
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isDeserializing;
 
     /// <summary>
     /// Gives the new object a parent reference to this
@@ -291,10 +301,13 @@ namespace Csla
     /// <param name="index">Index at which to insert the item.</param>
     /// <param name="item">Item to insert.</param>
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><see cref="System.ComponentModel.BindingList{T}.AllowNew"/> is <see langword="false"/>.</exception>
     protected override void InsertItem(int index, T item)
     {
       if (item is null)
         throw new ArgumentNullException(nameof(item));
+      if (!AllowNew && !_isDeserializing)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
 
       IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
       item.SetParent(this);
@@ -306,8 +319,13 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index of the item
     /// to be removed.</param>
+    /// <exception cref="NotSupportedException"><see cref="System.ComponentModel.BindingList{T}.AllowRemove"/> is <see langword="false"/>.</exception>
     protected override void RemoveItem(int index)
     {
+      // check before the item is deleted from the database
+      if (!AllowRemove && !_isCancelingNew)
+        throw new NotSupportedException(Resources.AllowRemoveFalseException);
+
       // delete item from database
       T item = this[index];
 
@@ -328,6 +346,31 @@ namespace Csla
         OnSaved(item, null);
     }
 
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isCancelingNew;
+
+    /// <summary>
+    /// Discards a new item added through AddNew that
+    /// has not yet been committed.
+    /// </summary>
+    /// <param name="itemIndex">Index of the new item to discard.</param>
+    public override void CancelNew(int itemIndex)
+    {
+      // canceling a pending AddNew is not a user remove, so
+      // it must succeed even if AllowRemove is false
+      var old = _isCancelingNew;
+      _isCancelingNew = true;
+      try
+      {
+        base.CancelNew(itemIndex);
+      }
+      finally
+      {
+        _isCancelingNew = old;
+      }
+    }
+
     /// <summary>
     /// Replaces item in the list.
     /// </summary>
@@ -342,6 +385,18 @@ namespace Csla
 
       item.SetParent(this);
       base.SetItem(index, item);
+    }
+
+    /// <summary>
+    /// Clears the list.
+    /// </summary>
+    /// <exception cref="NotSupportedException"><see cref="System.ComponentModel.BindingList{T}.AllowRemove"/> is <see langword="false"/>.</exception>
+    protected override void ClearItems()
+    {
+      if (!AllowRemove && Count > 0)
+        throw new NotSupportedException(Resources.AllowRemoveFalseException);
+
+      base.ClearItems();
     }
 
     #endregion
@@ -607,6 +662,30 @@ namespace Csla
     {
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialization stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      _isDeserializing = true;
+      try
+      {
+        base.OnSetChildren(info, formatter);
+      }
+      finally
+      {
+        _isDeserializing = false;
+      }
     }
 
     /// <inheritdoc />

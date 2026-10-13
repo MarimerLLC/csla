@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using Csla.Core;
+using Csla.Properties;
 using Csla.Reflection;
 using Csla.Serialization.Mobile;
 
@@ -64,6 +65,7 @@ namespace Csla
       InitializeIdentity();
       Initialize();
       AllowNew = true;
+      AllowRemove = true;
     }
 
     /// <summary>
@@ -292,10 +294,13 @@ namespace Csla
     /// <param name="index">Index at which to insert the item.</param>
     /// <param name="item">Item to insert.</param>
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><see cref="Core.ObservableBindingList{T}.AllowNew"/> is <see langword="false"/>.</exception>
     protected override void InsertItem(int index, T item)
     {
       if (item is null)
         throw new ArgumentNullException(nameof(item));
+      if (!AllowNew && !_isDeserializing)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
 
       IdentityManager.EnsureNextIdentityValueIsUnique(this, item);
       item.SetParent(this);
@@ -310,8 +315,12 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index of the item
     /// to be removed.</param>
+    /// <exception cref="NotSupportedException"><see cref="Core.ObservableBindingList{T}.AllowRemove"/> is <see langword="false"/>.</exception>
     public virtual async Task RemoveItemAsync(int index)
     {
+      if (!AllowRemove)
+        throw new NotSupportedException(Resources.AllowRemoveFalseException);
+
       T item = this[index];
       if (item.IsDeleted == false)
       {
@@ -343,10 +352,36 @@ namespace Csla
     /// </summary>
     /// <param name="index">Index of the item
     /// to be removed.</param>
-    protected override async void RemoveItem(int index)
+    /// <exception cref="NotSupportedException"><see cref="Core.ObservableBindingList{T}.AllowRemove"/> is <see langword="false"/>.</exception>
+    protected override void RemoveItem(int index)
+    {
+      // check synchronously so the exception reaches the caller
+      if (!AllowRemove)
+        throw new NotSupportedException(Resources.AllowRemoveFalseException);
+
+      RemoveItemAndForget(index);
+    }
+
+    private async void RemoveItemAndForget(int index)
     {
       await RemoveItemAsync(index);
     }
+
+    /// <summary>
+    /// Clears the list.
+    /// </summary>
+    /// <exception cref="NotSupportedException"><see cref="Core.ObservableBindingList{T}.AllowRemove"/> is <see langword="false"/>.</exception>
+    protected override void ClearItems()
+    {
+      if (!AllowRemove && Count > 0)
+        throw new NotSupportedException(Resources.AllowRemoveFalseException);
+
+      base.ClearItems();
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isDeserializing;
 
     /// <summary>
     /// Replaces item in the list.
@@ -599,6 +634,30 @@ namespace Csla
 
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
       base.OnSetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your child object
+    /// references from the MobileFormatter serialization stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    /// <param name="formatter">
+    /// Reference to MobileFormatter instance. Use this to
+    /// convert child references to/from reference id values.
+    /// </param>
+    protected override void OnSetChildren(SerializationInfo info, MobileFormatter formatter)
+    {
+      _isDeserializing = true;
+      try
+      {
+        base.OnSetChildren(info, formatter);
+      }
+      finally
+      {
+        _isDeserializing = false;
+      }
     }
 
     /// <inheritdoc />

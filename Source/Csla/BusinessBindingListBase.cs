@@ -437,6 +437,18 @@ namespace Csla
     }
 
     /// <summary>
+    /// Discards a new item added through AddNew that
+    /// has not yet been committed.
+    /// </summary>
+    /// <param name="itemIndex">Index of the new item to discard.</param>
+    public override void CancelNew(int itemIndex)
+    {
+      // canceling a pending AddNew is not a user remove, so
+      // it must succeed even if AllowRemove is false
+      WithoutAllowChecks(() => base.CancelNew(itemIndex));
+    }
+
+    /// <summary>
     /// Replaces the item at the specified index with
     /// the specified item, first moving the original
     /// item to the deleted list.

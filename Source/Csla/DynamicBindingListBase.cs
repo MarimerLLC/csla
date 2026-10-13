@@ -323,7 +323,7 @@ namespace Csla
     protected override void RemoveItem(int index)
     {
       // check before the item is deleted from the database
-      if (!AllowRemove)
+      if (!AllowRemove && !_isCancelingNew)
         throw new NotSupportedException(Resources.AllowRemoveFalseException);
 
       // delete item from database
@@ -344,6 +344,31 @@ namespace Csla
       base.RemoveItem(index);
       if (raiseEventForNewItem)
         OnSaved(item, null);
+    }
+
+    [NonSerialized]
+    [NotUndoable]
+    private bool _isCancelingNew;
+
+    /// <summary>
+    /// Discards a new item added through AddNew that
+    /// has not yet been committed.
+    /// </summary>
+    /// <param name="itemIndex">Index of the new item to discard.</param>
+    public override void CancelNew(int itemIndex)
+    {
+      // canceling a pending AddNew is not a user remove, so
+      // it must succeed even if AllowRemove is false
+      var old = _isCancelingNew;
+      _isCancelingNew = true;
+      try
+      {
+        base.CancelNew(itemIndex);
+      }
+      finally
+      {
+        _isCancelingNew = old;
+      }
     }
 
     /// <summary>
@@ -641,7 +666,7 @@ namespace Csla
 
     /// <summary>
     /// Override this method to retrieve your child object
-    /// references from the MobileFormatter serialzation stream.
+    /// references from the MobileFormatter serialization stream.
     /// </summary>
     /// <param name="info">
     /// Object containing the data to serialize.

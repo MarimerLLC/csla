@@ -235,6 +235,20 @@ namespace Csla.Test.Basic
     }
 
     [TestMethod]
+    public void BusinessBindingList_AllowRemoveFalse_CancelNewAllowed()
+    {
+      var list = FetchBindingList(true, false);
+
+      var newItem = list.AddNew();
+      list.Count.Should().Be(4);
+      list.CancelNew(list.IndexOf(newItem));
+
+      list.Count.Should().Be(3);
+      list.Should().NotContain(newItem);
+      FluentActions.Invoking(() => list.RemoveAt(0)).Should().Throw<NotSupportedException>();
+    }
+
+    [TestMethod]
     public void BusinessBindingList_FlagsFalse_ReplaceAllowed()
     {
       var list = FetchBindingList(false, false);
@@ -334,6 +348,53 @@ namespace Csla.Test.Basic
       FluentActions.Invoking(() => list.Clear()).Should().Throw<NotSupportedException>();
       list.Count.Should().Be(1);
       item.IsDeleted.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void DynamicBindingList_AllowRemoveFalse_CancelNewAllowed()
+    {
+      var list = _testHost.GetDataPortal<AllowDynamicBindingList>().Create();
+      list.Add(_testHost.GetDataPortal<AllowRoot>().Fetch(1));
+      list.AllowRemove = false;
+
+      var newItem = list.AddNew();
+      list.Count.Should().Be(2);
+      list.CancelNew(list.IndexOf(newItem));
+
+      list.Count.Should().Be(1);
+      list.Should().NotContain(newItem);
+      FluentActions.Invoking(() => list.RemoveAt(0)).Should().Throw<NotSupportedException>();
+    }
+
+    [TestMethod]
+    public void DynamicList_CloneKeepsFlagsAndItems()
+    {
+      var list = _testHost.GetDataPortal<AllowDynamicList>().Create();
+      list.Add(_testHost.GetDataPortal<AllowRoot>().Fetch(1));
+      list.Add(_testHost.GetDataPortal<AllowRoot>().Fetch(2));
+      list.SetFlags(false, false);
+
+      var clone = (AllowDynamicList)new ObjectCloner(_testHost.ApplicationContext).Clone(list);
+
+      clone.Count.Should().Be(2);
+      clone.AllowNew.Should().BeFalse();
+      clone.AllowRemove.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void DynamicBindingList_CloneKeepsFlagsAndItems()
+    {
+      var list = _testHost.GetDataPortal<AllowDynamicBindingList>().Create();
+      list.Add(_testHost.GetDataPortal<AllowRoot>().Fetch(1));
+      list.Add(_testHost.GetDataPortal<AllowRoot>().Fetch(2));
+      list.AllowNew = false;
+      list.AllowRemove = false;
+
+      var clone = (AllowDynamicBindingList)new ObjectCloner(_testHost.ApplicationContext).Clone(list);
+
+      clone.Count.Should().Be(2);
+      clone.AllowNew.Should().BeFalse();
+      clone.AllowRemove.Should().BeFalse();
     }
 
     #endregion

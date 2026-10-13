@@ -75,7 +75,7 @@ public static readonly PropertyInfo<Address> AddressProperty =
   RegisterProperty<Address>(nameof(Address), RelationshipTypes.Required);
 ```
 
-* After a create, fetch, insert, update or execute operation (root, child or object factory), the data portal throws `RequiredPropertyNotSetException` if a required property is null. The exception names the type and the properties. Delete operations are not checked.
+* After a create, fetch, insert, update or execute operation (root, child or object factory), the data portal throws `RequiredPropertyNotSetException` if a required property is null. The exception names the type and the properties. Delete operations, including saving an object marked for deletion, are not checked.
 * A property can be null while the operation runs. Only the value at the end of the operation is checked.
 * `Required` can be combined with `LazyLoad` (checked only once loaded) and `PrivateField`.
 * `SetProperty` already converts a null `string` to `string.Empty`, so a required `string` is only null if it is loaded with `LoadProperty(..., null)`.

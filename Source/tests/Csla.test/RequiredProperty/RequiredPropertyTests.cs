@@ -153,6 +153,25 @@ namespace Csla.Test.RequiredProperty
     }
 
     [TestMethod]
+    public void DeleteSelf_RequiredPropertyNull_DoesNotCheck()
+    {
+      var dataPortal = _testHost.GetDataPortal<RequiredRoot>();
+      var obj = dataPortal.Fetch(true, false);
+      obj.Data = null;
+      obj.Delete();
+
+      dataPortal.Invoking(dp => dp.Update(obj)).Should().NotThrow();
+    }
+
+    [TestMethod]
+    public void CommandCreate_NoManagedPropertyUsed_NotChecked()
+    {
+      var dataPortal = _testHost.GetDataPortal<RequiredUntouchedCommand>();
+
+      dataPortal.Invoking(dp => dp.Create()).Should().NotThrow();
+    }
+
+    [TestMethod]
     public void Delete_DoesNotCheckRequiredProperties()
     {
       var dataPortal = _testHost.GetDataPortal<RequiredRoot>();
@@ -256,6 +275,39 @@ namespace Csla.Test.RequiredProperty
       var ex = childPortal.Invoking(dp => dp.UpdateChild(child)).Should().Throw<DataPortalException>().Which;
 
       AssertRequiredPropertyNotSet(ex, typeof(RequiredChild), nameof(RequiredChild.Data));
+    }
+
+    [TestMethod]
+    public void ChildDeleteSelf_RequiredPropertyNull_DoesNotCheck()
+    {
+      var childPortal = _testHost.GetChildDataPortal<RequiredChild>();
+      var child = childPortal.FetchChild(true);
+      child.Data = null;
+      ((Csla.Core.IEditableBusinessObject)child).DeleteChild();
+
+      childPortal.Invoking(dp => dp.UpdateChild(child)).Should().NotThrow();
+    }
+
+    [TestMethod]
+    public void ObjectFactoryUpdate_RequiredPropertyNull_Throws()
+    {
+      var dataPortal = _testHost.GetDataPortal<RequiredFactoryRoot>();
+      var obj = dataPortal.Fetch(true);
+      obj.Name = "changed";
+
+      var ex = dataPortal.Invoking(dp => dp.Update(obj)).Should().Throw<DataPortalException>().Which;
+
+      AssertRequiredPropertyNotSet(ex, typeof(RequiredFactoryRoot), nameof(RequiredFactoryRoot.Name));
+    }
+
+    [TestMethod]
+    public void ObjectFactoryDeleteSelf_RequiredPropertyNull_DoesNotCheck()
+    {
+      var dataPortal = _testHost.GetDataPortal<RequiredFactoryRoot>();
+      var obj = dataPortal.Fetch(true);
+      obj.Delete();
+
+      dataPortal.Invoking(dp => dp.Update(obj)).Should().NotThrow();
     }
 
     [TestMethod]

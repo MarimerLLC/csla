@@ -64,6 +64,10 @@ namespace Csla.Test.RequiredProperty
     [Delete]
     private void Delete(bool criteria)
     { }
+
+    [DeleteSelf]
+    private void DeleteSelf()
+    { }
   }
 
   [Serializable]
@@ -126,6 +130,10 @@ namespace Csla.Test.RequiredProperty
     [UpdateChild]
     private void Update()
     { }
+
+    [DeleteSelfChild]
+    private void DeleteSelf()
+    { }
   }
 
   [Serializable]
@@ -168,6 +176,21 @@ namespace Csla.Test.RequiredProperty
   }
 
   [Serializable]
+  public class RequiredUntouchedCommand : CommandBase<RequiredUntouchedCommand>
+  {
+    public static readonly PropertyInfo<byte[]> DataProperty = RegisterProperty<byte[]>(nameof(Data), RelationshipTypes.Required);
+    public byte[] Data => ReadProperty(DataProperty);
+
+    [Create]
+    private void Create()
+    { }
+
+    [Execute]
+    private void Execute()
+    { }
+  }
+
+  [Serializable]
   [Csla.Server.ObjectFactory("Csla.Test.RequiredProperty.RequiredFactoryRootFactory, Csla.Tests")]
   public class RequiredFactoryRoot : BusinessBase<RequiredFactoryRoot>
   {
@@ -191,5 +214,21 @@ namespace Csla.Test.RequiredProperty
       MarkOld(obj);
       return obj;
     }
+
+    public object Update(RequiredFactoryRoot obj)
+    {
+      // simulate a factory whose update or delete leaves a required property null
+      LoadProperty(obj, RequiredFactoryRoot.NameProperty, null);
+      if (obj.IsDeleted)
+        MarkNew(obj);
+      else
+        MarkOld(obj);
+      return obj;
+    }
+
+    // the client looks this method up for a deleted object, but the
+    // server-side data portal calls Update, which handles the delete
+    public void Delete(RequiredFactoryRoot obj)
+    { }
   }
 }

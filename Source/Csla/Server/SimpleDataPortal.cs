@@ -210,10 +210,14 @@ namespace Csla.Server
       {
         _activator.InitializeInstance(lb.Instance);
         lb.OnDataPortalInvoke(eventArgs);
+        // UpdateAsync marks a deleted object as new, so capture the
+        // delete state first; deletes don't check required properties
+        var isDelete = obj is Core.BusinessBase { IsDeleted: true };
         await lb.UpdateAsync(isSync).ConfigureAwait(false);
         await lb.WaitForIdle().ConfigureAwait(false);
         lb.ThrowIfBusy();
-        lb.ThrowIfRequiredPropertiesNotSet();
+        if (!isDelete)
+          lb.ThrowIfRequiredPropertiesNotSet();
         lb.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(_applicationContext, lb.Instance);
       }

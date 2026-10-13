@@ -388,7 +388,7 @@ namespace Csla
 
     #region IManageProperties Members
 
-    bool IManageProperties.HasManagedProperties => FieldManager.HasFields;
+    bool IManageProperties.HasManagedProperties => (HasFieldManager && FieldManager.HasFields);
 
     List<IPropertyInfo> IManageProperties.GetManagedProperties()
     {

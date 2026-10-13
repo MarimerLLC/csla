@@ -172,7 +172,7 @@ public static readonly PropertyInfo<Address> AddressProperty =
 
 When a create, fetch, insert, update or execute operation completes, the data portal checks each required property. If any of them is null, it throws `RequiredPropertyNotSetException`, wrapped in a `DataPortalException`. The exception's `ObjectType` and `PropertyNames` properties identify the object and properties, and the message includes them too, so they are still available when the exception comes from a remote data portal.
 
-* Root objects, child objects (through the child data portal) and objects created by an `ObjectFactory` are all checked. Delete operations are not checked.
+* Root objects, child objects (through the child data portal) and objects created by an `ObjectFactory` are all checked. Delete operations, including saving an object marked for deletion, are not checked.
 * A property can be null while the operation runs. Only the value at the end of the operation is checked.
 * `Required` can be combined with other flags. A `LazyLoad | Required` property is only checked after it has been loaded. A `PrivateField | Required` property is read through its property getter.
 * `SetProperty` converts a null `string` to `string.Empty`, so a required `string` property can only be null if it is loaded with `LoadProperty(..., null)`.

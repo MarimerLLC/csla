@@ -51,6 +51,12 @@ namespace Csla
     /// An object whose operation didn't read or write
     /// any managed property has no field manager yet
     /// and is not checked.
+    /// Property setters never throw for a null value,
+    /// so data binding is not affected. However, when a
+    /// Windows Forms grid adds a row to an editable list,
+    /// the list calls the child data portal to create the
+    /// item, so a CreateChild method that leaves a required
+    /// property null throws during the grid's AddNew.
     /// </remarks>
     Required=0x8,
   }

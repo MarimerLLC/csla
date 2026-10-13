@@ -80,6 +80,7 @@ public static readonly PropertyInfo<Address> AddressProperty =
 * `Required` can be combined with `LazyLoad` (checked only once loaded) and `PrivateField`.
 * `SetProperty` already converts a null `string` to `string.Empty`, so a required `string` is only null if it is loaded with `LoadProperty(..., null)`.
 * An object whose operation didn't read or write any managed property has no field manager yet, and is not checked.
+* Property setters never throw for a null value, so data binding is not affected. However, when a Windows Forms grid adds a row to an editable list, `AddNew` creates the item through the child data portal. A `[CreateChild]` method that leaves a required property null throws inside the grid's `AddNew`, so child classes used this way must set their required properties in `CreateChild`.
 
 ### Changes
 

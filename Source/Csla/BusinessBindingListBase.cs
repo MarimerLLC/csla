@@ -868,6 +868,15 @@ namespace Csla
     /// <summary>
     /// Returns true if this object is both dirty and valid.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// IsSavable also checks the EditObject per-type authorization rule.
+    /// If that rule is an <see cref="Rules.IAuthorizationRuleAsync"/> that
+    /// does not complete synchronously, the object is busy and IsSavable
+    /// returns false until the rule completes. The result is then cached
+    /// for the current user and BusyChanged is raised.
+    /// </para>
+    /// </remarks>
     /// <returns>A value indicating if this object is both dirty and valid.</returns>
     [Browsable(false)]
     [Display(AutoGenerateField = false)]
@@ -877,10 +886,25 @@ namespace Csla
       {
         var result = IsDirty && IsValid && !IsBusy;
         if (result)
-          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+        {
+          _savablePermission ??= new Rules.SavablePermission();
+          result = _savablePermission.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this,
+            () => OnBusyChanged(new BusyChangedEventArgs("", true)), OnSavablePermissionCompleted);
+        }
 
         return result;
       }
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private Rules.SavablePermission? _savablePermission;
+
+    private void OnSavablePermissionCompleted(Exception? error)
+    {
+      OnBusyChanged(new BusyChangedEventArgs("", false));
+      if (error != null)
+        OnUnhandledAsyncException(this, error);
     }
 
     /// <summary>
@@ -890,6 +914,9 @@ namespace Csla
     {
       get
       {
+        if (_savablePermission?.IsPending == true)
+          return true;
+
         // run through all the child objects
         // and if any are busy then then
         // collection is busy

@@ -909,16 +909,41 @@ namespace Csla
     /// Returns true if this object has changes, is valid,
     /// the user is authorized and the object is not busy.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// IsSavable also checks the EditObject per-type authorization rule.
+    /// If that rule is an <see cref="Rules.IAuthorizationRuleAsync"/> that
+    /// does not complete synchronously, the object is busy and IsSavable
+    /// returns false until the rule completes. The result is then cached
+    /// for the current user and BusyChanged is raised.
+    /// </para>
+    /// </remarks>
     public virtual bool IsSavable
     {
       get
       {
         var result = IsDirty && IsValid && !IsBusy;
         if (result)
-          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+        {
+          _savablePermission ??= new Rules.SavablePermission();
+          result = _savablePermission.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this,
+            () => OnBusyChanged(new BusyChangedEventArgs("", true)), OnSavablePermissionCompleted);
+        }
 
         return result;
       }
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private Rules.SavablePermission? _savablePermission;
+
+    private void OnSavablePermissionCompleted(Exception? error)
+    {
+      OnBusyChanged(new BusyChangedEventArgs("", false));
+      OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsSavable)));
+      if (error != null)
+        OnUnhandledAsyncException(this, error);
     }
 
     /// <summary>
@@ -928,6 +953,9 @@ namespace Csla
     {
       get
       {
+        if (_savablePermission?.IsPending == true)
+          return true;
+
         // run through all the child objects
         // and if any are busy then then
         // collection is busy

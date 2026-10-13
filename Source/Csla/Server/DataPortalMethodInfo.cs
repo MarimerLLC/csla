@@ -10,6 +10,7 @@ namespace Csla.Server
 {
   internal class DataPortalMethodInfo
   {
+    public System.Reflection.MethodInfo MethodInfo { get; }
     public bool RunLocal { get; }
 #if !(ANDROID || IOS) 
     public TransactionalAttribute TransactionalAttribute { get; }
@@ -20,6 +21,7 @@ namespace Csla.Server
 
     public DataPortalMethodInfo(System.Reflection.MethodInfo info)
     {
+      MethodInfo = info;
       RunLocal = IsRunLocal(info);
 #if !(ANDROID || IOS) 
       TransactionalAttribute = GetTransactionalAttribute(info);

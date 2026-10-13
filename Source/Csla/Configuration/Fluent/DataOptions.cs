@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="DataOptions.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -17,57 +17,24 @@ namespace Csla.Configuration
   public class DataOptions
   {
     /// <summary>
-    /// Sets the default transaction isolation level.
+    /// Gets or sets the default transaction isolation level,
+    /// used when a <see cref="TransactionalAttribute"/> does
+    /// not specify an isolation level.
     /// </summary>
-    public TransactionIsolationLevel DefaultTransactionIsolationLevel
-    {
-      get => _defaultTransactionIsolationLevel;
-      set => _defaultTransactionIsolationLevel = value;
-    }
+    public TransactionIsolationLevel DefaultTransactionIsolationLevel { get; set; } = TransactionIsolationLevel.Unspecified;
 
     /// <summary>
-    /// Sets the default transaction timeout in seconds.
+    /// Gets or sets the default transaction timeout in seconds,
+    /// used when a <see cref="TransactionalAttribute"/> does
+    /// not specify a timeout.
     /// </summary>
-    public int DefaultTransactionTimeoutInSeconds
-    {
-      get => _defaultTransactionTimeoutInSeconds;
-      set => _defaultTransactionTimeoutInSeconds = value;
-    }
+    public int DefaultTransactionTimeoutInSeconds { get; set; } = 30;
 
     /// <summary>
-    /// Sets the default transaction async flow option
-    /// used to create new TransactionScope objects.
+    /// Gets or sets the default transaction async flow option
+    /// used to create new TransactionScope objects when a
+    /// <see cref="TransactionalAttribute"/> does not specify one.
     /// </summary>
-    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption
-    {
-      get => _defaultTransactionScopeAsyncFlowOption;
-      set => _defaultTransactionScopeAsyncFlowOption = value;
-    }
-
-    private static TransactionIsolationLevel _defaultTransactionIsolationLevel = TransactionIsolationLevel.Unspecified;
-    private static int _defaultTransactionTimeoutInSeconds = 30;
-    private static TransactionScopeAsyncFlowOption _defaultTransactionScopeAsyncFlowOption = TransactionScopeAsyncFlowOption.Suppress;
-
-    /// <summary>
-    /// Gets the default transaction isolation level.
-    /// </summary>
-    /// <value>
-    /// The default transaction isolation level.
-    /// </value>
-    internal static TransactionIsolationLevel GetDefaultTransactionIsolationLevel() => _defaultTransactionIsolationLevel;
-
-    /// <summary>
-    /// Gets default transaction timeout in seconds.
-    /// </summary>
-    /// <value>
-    /// The default transaction timeout in seconds.
-    /// </value>
-    internal static int GetDefaultTransactionTimeoutInSeconds() => _defaultTransactionTimeoutInSeconds;
-
-    /// <summary>
-    /// Gets the default transaction scope async flow option.
-    /// </summary>
-    /// <returns>The default transaction scope async flow option.</returns>
-    internal static TransactionScopeAsyncFlowOption GetDefaultTransactionScopeAsyncFlowOption() => _defaultTransactionScopeAsyncFlowOption;
+    public TransactionScopeAsyncFlowOption DefaultTransactionAsyncFlowOption { get; set; } = TransactionScopeAsyncFlowOption.Suppress;
   }
 }

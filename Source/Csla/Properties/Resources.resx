@@ -457,6 +457,9 @@
   <data name="ActionExtenderObjectIsValidMessagePropertyDefault" xml:space="preserve">
     <value>Object is valid</value>
   </data>
+  <data name="AsyncAuthorizationRuleRequiresHasPermissionAsync" xml:space="preserve">
+    <value>Authorization rule {0} is asynchronous and did not complete synchronously; use BusinessRules.HasPermissionAsync instead</value>
+  </data>
   <data name="AsyncMethodOnSyncClientNotAllowed" xml:space="preserve">
     <value>Cannot synchronously call {0} which is an asynchronous method</value>
   </data>

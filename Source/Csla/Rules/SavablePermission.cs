@@ -15,11 +15,14 @@ namespace Csla.Rules
   /// supporting async rules that do not complete synchronously.
   /// </summary>
   /// <remarks>
-  /// Rules that complete synchronously are evaluated on every call.
+  /// Rules that complete successfully and synchronously are
+  /// evaluated on every call.
   /// When a rule is still running, false is returned and the owner
   /// is notified so it can mark itself busy; when the rule completes,
   /// its result is cached for the same action and principal, and the
-  /// owner is notified again.
+  /// owner is notified again. A rule that fails, whether synchronously
+  /// or asynchronously, is handled the same way: false is cached and
+  /// the exception is passed to the owner.
   /// </remarks>
   internal sealed class SavablePermission
   {
@@ -52,8 +55,11 @@ namespace Csla.Rules
         return _result;
 
       var task = BusinessRules.HasPermissionAsync(applicationContext, action, target, CancellationToken.None);
-      if (task.IsCompleted)
-        return task.GetAwaiter().GetResult();
+      // only fast-path success; a faulted or canceled task (e.g. a rule
+      // that throws before its first await) goes through CompleteAsync
+      // so the failure is handled the same way as a later failure
+      if (task.Status == TaskStatus.RanToCompletion)
+        return task.Result;
 
       _action = action;
       _principal = principal;

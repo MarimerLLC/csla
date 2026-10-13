@@ -108,6 +108,35 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
+    public async Task AsyncRuleFaultsImmediately_IsSavableIsFalseAndUnhandledAsyncExceptionIsRaised()
+    {
+      var root = await _testHost.GetDataPortal<SavableAsyncImmediateThrowRoot>().CreateAsync();
+      var errors = new List<Csla.Core.ErrorEventArgs>();
+      root.UnhandledAsyncException += (_, e) => errors.Add(e);
+
+      Assert.IsFalse(root.IsSavable);
+      Assert.IsFalse(root.IsSavable);
+
+      Assert.IsFalse(root.IsBusy);
+      Assert.AreEqual(1, errors.Count);
+      Assert.IsInstanceOfType(errors[0].Error, typeof(InvalidOperationException));
+    }
+
+    [TestMethod]
+    public async Task SyncRuleThrows_IsSavableIsFalseAndUnhandledAsyncExceptionIsRaised()
+    {
+      var root = await _testHost.GetDataPortal<SavableSyncThrowRoot>().CreateAsync();
+      var errors = new List<Csla.Core.ErrorEventArgs>();
+      root.UnhandledAsyncException += (_, e) => errors.Add(e);
+
+      Assert.IsFalse(root.IsSavable);
+
+      Assert.IsFalse(root.IsBusy);
+      Assert.AreEqual(1, errors.Count);
+      Assert.IsInstanceOfType(errors[0].Error, typeof(InvalidOperationException));
+    }
+
+    [TestMethod]
     public async Task SyncRule_IsEvaluatedOnEveryReadAndNeverBusy()
     {
       var root = await _testHost.GetDataPortal<SavableSyncRoot>().CreateAsync();
@@ -180,6 +209,27 @@ namespace Csla.Test.Authorization
     }
   }
 
+  public class ImmediatelyFaultingAuthRule : AuthorizationRuleAsync
+  {
+    public ImmediatelyFaultingAuthRule(AuthorizationActions action)
+      : base(action)
+    { }
+
+    // not async, so the exception is thrown before any await
+    protected override Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
+      => throw new InvalidOperationException("Rule failed");
+  }
+
+  public class ThrowingSyncAuthRule : AuthorizationRule
+  {
+    public ThrowingSyncAuthRule(AuthorizationActions action)
+      : base(action)
+    { }
+
+    protected override void Execute(IAuthorizationContext context)
+      => throw new InvalidOperationException("Rule failed");
+  }
+
   public class CountingSyncAuthRule : AuthorizationRule
   {
     private int _invocations;
@@ -242,6 +292,42 @@ namespace Csla.Test.Authorization
     public static void AddObjectAuthorizationRules()
     {
       BusinessRules.AddRule(typeof(SavableAsyncThrowRoot), new CountingDelayedAuthRule(AuthorizationActions.EditObject, true, throwException: true));
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+      MarkOld();
+      MarkDirty();
+    }
+  }
+
+  [Serializable]
+  public class SavableAsyncImmediateThrowRoot : BusinessBase<SavableAsyncImmediateThrowRoot>
+  {
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      BusinessRules.AddRule(typeof(SavableAsyncImmediateThrowRoot), new ImmediatelyFaultingAuthRule(AuthorizationActions.EditObject));
+    }
+
+    [Create]
+    private void Create()
+    {
+      BusinessRules.CheckRules();
+      MarkOld();
+      MarkDirty();
+    }
+  }
+
+  [Serializable]
+  public class SavableSyncThrowRoot : BusinessBase<SavableSyncThrowRoot>
+  {
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      BusinessRules.AddRule(typeof(SavableSyncThrowRoot), new ThrowingSyncAuthRule(AuthorizationActions.EditObject));
     }
 
     [Create]

@@ -36,5 +36,22 @@ namespace Csla
     /// property get/set methods. 
     /// </summary>
     PrivateField=0x4,
+    /// <summary>
+    /// Property must have a non-null value when a
+    /// data portal operation (create, fetch, update
+    /// or execute) completes. If the value is null
+    /// a <see cref="RequiredPropertyNotSetException"/>
+    /// is thrown. A lazy loaded property is only
+    /// checked once it has been loaded.
+    /// </summary>
+    /// <remarks>
+    /// SetProperty converts a null string to
+    /// <see cref="string.Empty"/>, so a required string
+    /// property is only null if it is loaded with null.
+    /// An object whose operation didn't read or write
+    /// any managed property has no field manager yet
+    /// and is not checked.
+    /// </remarks>
+    Required=0x8,
   }
 }

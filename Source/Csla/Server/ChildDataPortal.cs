@@ -139,6 +139,7 @@ namespace Csla.Server
         obj.MarkAsChild();
         obj.MarkNew();
         await obj.CreateChildAsync(operationName, parameters).ConfigureAwait(false);
+        obj.ThrowIfRequiredPropertiesNotSet();
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
@@ -273,6 +274,7 @@ namespace Csla.Server
         obj.MarkAsChild();
         obj.MarkOld();
         await obj.FetchChildAsync(operationName, parameters).ConfigureAwait(false);
+        obj.ThrowIfRequiredPropertiesNotSet();
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
       }
@@ -439,6 +441,7 @@ namespace Csla.Server
       {
         lb.Child_OnDataPortalInvoke(new DataPortalEventArgs(null, objectType, obj, operation));
         await lb.UpdateChildAsync(parameters).ConfigureAwait(false);
+        lb.ThrowIfRequiredPropertiesNotSet();
         lb.Child_OnDataPortalInvokeComplete(new DataPortalEventArgs(null, objectType, obj, operation));
       }
       catch (Exception ex)

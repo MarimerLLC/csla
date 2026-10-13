@@ -85,6 +85,9 @@ namespace Csla.Server
         if (result is Core.ITrackStatus busy && busy.IsBusy)
           throw new InvalidOperationException($"{objectType.Name}.IsBusy == true");
 
+        if (operation != DataPortalOperations.Delete)
+          RequiredPropertyValidator.ThrowIfNotSet(result);
+
         Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
       }
       catch (Exception ex)

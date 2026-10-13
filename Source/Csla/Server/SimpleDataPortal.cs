@@ -61,6 +61,7 @@ namespace Csla.Server
         await obj.CreateAsync(criteria, isSync, context.OperationName).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
+        obj.ThrowIfRequiredPropertiesNotSet();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(_applicationContext, obj.Instance);
       }
@@ -118,6 +119,7 @@ namespace Csla.Server
         await obj.FetchAsync(criteria, isSync, context.OperationName).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
+        obj.ThrowIfRequiredPropertiesNotSet();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(_applicationContext, obj.Instance);
       }
@@ -159,6 +161,7 @@ namespace Csla.Server
         await obj.ExecuteAsync(criteria, isSync, context.OperationName).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
+        obj.ThrowIfRequiredPropertiesNotSet();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(_applicationContext, obj.Instance);
       }
@@ -210,6 +213,7 @@ namespace Csla.Server
         await lb.UpdateAsync(isSync).ConfigureAwait(false);
         await lb.WaitForIdle().ConfigureAwait(false);
         lb.ThrowIfBusy();
+        lb.ThrowIfRequiredPropertiesNotSet();
         lb.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(_applicationContext, lb.Instance);
       }
@@ -246,6 +250,7 @@ namespace Csla.Server
         await obj.ExecuteAsync(isSync).ConfigureAwait(false);
         await obj.WaitForIdle().ConfigureAwait(false);
         obj.ThrowIfBusy();
+        obj.ThrowIfRequiredPropertiesNotSet();
         obj.OnDataPortalInvokeComplete(eventArgs);
         return new DataPortalResult(_applicationContext, obj.Instance);
       }

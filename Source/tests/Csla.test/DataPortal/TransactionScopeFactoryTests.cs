@@ -109,6 +109,36 @@ namespace Csla.Test.DataPortal
       context.MethodName.Should().Be("Fetch");
       context.Method.GetParameters().Should().BeEmpty();
       context.TransactionalAttribute.TransactionType.Should().Be(TransactionalTypes.TransactionScope);
+      context.BusinessObject.Should().BeNull();
+      context.Criteria.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    public void DataPortal_PassesCriteriaToTransactionScopeFactory()
+    {
+      var recorder = new TransactionScopeFactoryRecorder();
+      using var testHost = CreateRecordingHost(recorder);
+
+      testHost.GetDataPortal<TransactionScopeFactoryRoot>().Fetch(42);
+
+      recorder.Contexts.Should().ContainSingle();
+      recorder.Contexts[0].Operation.Should().Be(DataPortalOperations.Fetch);
+      recorder.Contexts[0].Criteria.Should().Equal(42);
+      recorder.Contexts[0].BusinessObject.Should().BeNull();
+    }
+
+    [TestMethod]
+    public void DataPortal_PassesMultipleCriteriaToTransactionScopeFactory()
+    {
+      var recorder = new TransactionScopeFactoryRecorder();
+      using var testHost = CreateRecordingHost(recorder);
+
+      testHost.GetDataPortal<TransactionScopeFactoryRoot>().Delete(42, "batch");
+
+      recorder.Contexts.Should().ContainSingle();
+      recorder.Contexts[0].Operation.Should().Be(DataPortalOperations.Delete);
+      recorder.Contexts[0].Criteria.Should().Equal(42, "batch");
+      recorder.Contexts[0].BusinessObject.Should().BeNull();
     }
 
     [TestMethod]
@@ -129,7 +159,16 @@ namespace Csla.Test.DataPortal
       recorder.Contexts.Should().ContainSingle();
       recorder.Contexts[0].Operation.Should().Be(DataPortalOperations.Update);
       recorder.Contexts[0].MethodName.Should().Be("Insert");
+      recorder.Contexts[0].BusinessObject.Should().BeOfType<TransactionScopeFactoryRoot>()
+        .Which.Name.Should().Be("new");
+      recorder.Contexts[0].Criteria.Should().BeEmpty();
     }
+
+    private static CslaTestHost CreateRecordingHost(TransactionScopeFactoryRecorder recorder)
+      => CslaTestHost.Create(t => t
+        .ConfigureServices(s => s.AddSingleton(recorder))
+        .ConfigureCsla(o => o.DataPortal(dp => dp.AddServerSideDataPortal(
+          cfg => cfg.RegisterTransactionScopeFactory<RecordingTransactionScopeFactory>()))));
 
     private static TransactionScopeFactoryContext CreateContext(TransactionalAttribute attribute)
       => new(typeof(TransactionScopeFactoryRoot), DataPortalOperations.Fetch, typeof(TransactionScopeFactoryTests).GetMethod(nameof(CreateContext), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static), attribute);
@@ -185,6 +224,12 @@ namespace Csla.Test.DataPortal
     private void Fetch(int id)
     {
       IsolationLevel = Transaction.Current?.IsolationLevel.ToString();
+    }
+
+    [Transactional(TransactionalTypes.TransactionScope)]
+    [Delete]
+    private void Delete(int id, string reason)
+    {
     }
 
     [Transactional(TransactionalTypes.TransactionScope)]

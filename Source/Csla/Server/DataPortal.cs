@@ -104,11 +104,19 @@ namespace Csla.Server
 #endif
 
     [UnsupportedOSPlatform("browser")]
-    private TransactionalDataPortal CreateTransactionalDataPortal(Type objectType, DataPortalOperations operation, DataPortalMethodInfo method)
+    private TransactionalDataPortal CreateTransactionalDataPortal(Type objectType, DataPortalOperations operation, DataPortalMethodInfo method, object criteria)
+      => CreateTransactionalDataPortal(objectType, operation, method, null, GetCriteriaArray(criteria));
+
+    [UnsupportedOSPlatform("browser")]
+    private TransactionalDataPortal CreateTransactionalDataPortal(Type objectType, DataPortalOperations operation, DataPortalMethodInfo method, ICslaObject obj)
+      => CreateTransactionalDataPortal(objectType, operation, method, obj, null);
+
+    [UnsupportedOSPlatform("browser")]
+    private TransactionalDataPortal CreateTransactionalDataPortal(Type objectType, DataPortalOperations operation, DataPortalMethodInfo method, ICslaObject? obj, object?[]? criteria)
     {
       var broker = _applicationContext.CreateInstanceDI<DataPortalBroker>();
       var transactionScopeFactory = _applicationContext.CurrentServiceProvider.GetRequiredService<ITransactionScopeFactory>();
-      var transactionScopeFactoryContext = new TransactionScopeFactoryContext(objectType, operation, method.MethodInfo, method.TransactionalAttribute);
+      var transactionScopeFactoryContext = new TransactionScopeFactoryContext(objectType, operation, method.MethodInfo, method.TransactionalAttribute, obj, criteria);
       return new TransactionalDataPortal(broker, transactionScopeFactory, transactionScopeFactoryContext);
     }
 
@@ -167,7 +175,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Create, method);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Create, method, criteria);
             result = await portal.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -252,7 +260,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Fetch, method);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Fetch, method, criteria);
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -333,7 +341,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Execute, method);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Execute, method, criteria);
             result = await portal.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -452,7 +460,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            portal = CreateTransactionalDataPortal(objectType, operation, method);
+            portal = CreateTransactionalDataPortal(objectType, operation, method, obj);
             result = await portal.Update(obj, context, isSync).ConfigureAwait(false);
             break;
           default:
@@ -544,7 +552,7 @@ namespace Csla.Server
               throw new PlatformNotSupportedException(Resources.TransactionScopeTransactionNotSupportedException);
             }
 #endif
-            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Delete, method);
+            portal = CreateTransactionalDataPortal(objectType, DataPortalOperations.Delete, method, criteria);
             result = await portal.Delete(objectType, criteria, context, isSync).ConfigureAwait(false);
             break;
           default:

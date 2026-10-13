@@ -6,6 +6,8 @@
 // <summary>Information passed to an ITransactionScopeFactory</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Core;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -22,13 +24,17 @@ namespace Csla.Server
     /// <param name="operation">The data portal operation.</param>
     /// <param name="method">The method that implements the operation.</param>
     /// <param name="transactionalAttribute">The transactional attribute applied to the method.</param>
+    /// <param name="businessObject">The business object being inserted, updated, deleted or executed, if any.</param>
+    /// <param name="criteria">The criteria values passed to the operation, if any.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/>, <paramref name="method"/> or <paramref name="transactionalAttribute"/> is <see langword="null"/>.</exception>
-    public TransactionScopeFactoryContext(Type objectType, DataPortalOperations operation, System.Reflection.MethodInfo method, TransactionalAttribute transactionalAttribute)
+    public TransactionScopeFactoryContext(Type objectType, DataPortalOperations operation, System.Reflection.MethodInfo method, TransactionalAttribute transactionalAttribute, ICslaObject? businessObject = null, IReadOnlyList<object?>? criteria = null)
     {
       ObjectType = objectType ?? throw new ArgumentNullException(nameof(objectType));
       Operation = operation;
       Method = method ?? throw new ArgumentNullException(nameof(method));
       TransactionalAttribute = transactionalAttribute ?? throw new ArgumentNullException(nameof(transactionalAttribute));
+      BusinessObject = businessObject;
+      Criteria = criteria ?? [];
     }
 
     /// <summary>
@@ -57,5 +63,24 @@ namespace Csla.Server
     /// Gets the transactional attribute applied to the method.
     /// </summary>
     public TransactionalAttribute TransactionalAttribute { get; }
+
+    /// <summary>
+    /// Gets the business object being inserted, updated,
+    /// deleted or executed, or <see langword="null"/> for
+    /// operations that are based on criteria.
+    /// </summary>
+    /// <remarks>
+    /// This is the server-side instance (including its child
+    /// objects) before the operation runs. It must not be changed
+    /// by the transaction scope factory.
+    /// </remarks>
+    public ICslaObject? BusinessObject { get; }
+
+    /// <summary>
+    /// Gets the criteria values passed to a create, fetch,
+    /// execute or delete operation. The list is empty if the
+    /// operation has no criteria, or is based on a business object.
+    /// </summary>
+    public IReadOnlyList<object?> Criteria { get; }
   }
 }

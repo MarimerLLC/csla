@@ -49,6 +49,12 @@ services.AddCsla(o => o
     .RegisterTransactionScopeFactory<MyTransactionScopeFactory>())));
 ```
 
-The factory receives a `TransactionScopeFactoryContext` describing the operation: `ObjectType`, `Operation`, `Method` / `MethodName`, and the `TransactionalAttribute`.
+The factory receives a `TransactionScopeFactoryContext` describing the operation:
+
+* `ObjectType`, `Operation`, `Method` / `MethodName`, and the `TransactionalAttribute`.
+* `BusinessObject`: the object being inserted, updated, deleted or executed. It is `null` for operations that use criteria.
+* `Criteria`: the criteria values for create, fetch, execute and delete operations. The list is empty when there are no criteria.
+
+These let a factory adjust the transaction to the data involved. For example, it can use a longer timeout for a large batch. `BusinessObject` is the server-side instance before the operation runs. Treat it as read-only.
 
 The `TransactionalDataPortal` constructor now takes `(DataPortalBroker, ITransactionScopeFactory, TransactionScopeFactoryContext)` instead of `(DataPortalBroker, TransactionalAttribute)`.

@@ -18,7 +18,7 @@ namespace Csla.Analyzers
       new(
         Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute, DoesOperationHaveAttributeAnalyzerConstants.Title,
         DoesOperationHaveAttributeAnalyzerConstants.Message, Constants.Categories.Usage,
-        DiagnosticSeverity.Info, true,
+        DiagnosticSeverity.Warning, true,
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute, nameof(DoesOperationHaveAttributeAnalyzer)));
 
@@ -52,7 +52,9 @@ namespace Csla.Analyzers
       {
         var qualification = methodSymbol.IsDataPortalOperation();
 
-        if(qualification.ByNamingConvention && !qualification.ByAttribute)
+        // ByAttribute includes attributes inherited from an overridden method
+        // (such as BusinessBase.Child_Create), which the data portal still calls.
+        if (qualification.ByNamingConvention && !qualification.ByAttribute)
         {
           context.ReportDiagnostic(Diagnostic.Create(
             operationAttributeRule, methodSymbol.Locations[0]));

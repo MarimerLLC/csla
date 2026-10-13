@@ -30,13 +30,13 @@ namespace Csla
   /// type of stateless, atomic call to the server instead.
   /// </para><para>
   /// To implement a command object, inherit from CommandBase and
-  /// override the DataPortal_Execute method. In this method you can
-  /// implement any server-side code as required.
+  /// implement a method marked with the <see cref="ExecuteAttribute"/>.
+  /// In this method you can implement any server-side code as required.
   /// </para><para>
   /// To pass data to/from the server, use instance variables within
   /// the command object itself. The command object is instantiated on
   /// the client, and is passed by value to the server where the 
-  /// DataPortal_Execute method is invoked. The command object is then
+  /// <see cref="ExecuteAttribute"/> method is invoked. The command object is then
   /// returned to the client by value.
   /// </para>
   /// </remarks>
@@ -75,41 +75,9 @@ namespace Csla
 
     #region Data Access
 
-    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
-    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    private void DataPortal_Create(object criteria)
-    {
-      throw new NotSupportedException(Resources.CreateNotSupportedException);
-    }
-
-    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
-    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    private void DataPortal_Fetch(object criteria)
-    {
-      throw new NotSupportedException(Resources.FetchNotSupportedException);
-    }
-
-    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    private void DataPortal_Update()
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
-
-    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
-    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    [Delete]
-    private void DataPortal_Delete(object criteria)
-    {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
-    }
-
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_xyz method.
+    /// requested data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -121,7 +89,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_xyz method.
+    /// requested data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]

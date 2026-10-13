@@ -3,7 +3,7 @@
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
 // </copyright>
-// <summary>Marks a DataPortal_XYZ method to run within</summary>
+// <summary>Marks a data portal operation method to run within</summary>
 //-----------------------------------------------------------------------
 
 using System.Transactions;
@@ -11,7 +11,7 @@ using System.Transactions;
 namespace Csla
 {
   /// <summary>
-  /// Marks a DataPortal_XYZ method to run within
+  /// Marks a data portal operation method to run within
   /// the specified transactional context.
   /// </summary>
   /// <remarks>
@@ -23,7 +23,7 @@ namespace Csla
   /// <see cref="TransactionalTypes">TransactionalTypes</see> enum.
   /// </para><para>
   /// If the Transactional attribute is not applied to a
-  /// DataPortal_XYZ method then the
+  /// data portal operation method then the
   /// <see cref="TransactionalTypes.Manual">Manual</see> option
   /// is assumed.
   /// </para><para>

@@ -37,6 +37,7 @@ namespace Csla.Web.Mvc.Test.ModelBinderTest
     {
       return DataPortal.Fetch<RootWithChildren>(new SingleCriteria<RootList, int>(childCount));
     }
+    [Fetch]
     private void DataPortal_Fetch(SingleCriteria<RootList, int> criteria)
     {
       using (BypassPropertyChecks)
@@ -53,6 +54,7 @@ namespace Csla.Web.Mvc.Test.ModelBinderTest
     private ChildList()
     {}
 
+    [FetchChild]
     private void Child_Fetch(int childCount)
     {
       for (int i = 0; i < childCount; i++)

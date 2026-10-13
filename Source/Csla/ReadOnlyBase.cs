@@ -427,33 +427,9 @@ namespace Csla
 
     #region Data Access
 
-    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
-    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    private void DataPortal_Create(object criteria)
-    {
-      throw new NotSupportedException(Resources.CreateNotSupportedException);
-    }
-
-    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    private void DataPortal_Update()
-    {
-      throw new NotSupportedException(Resources.UpdateNotSupportedException);
-    }
-
-    [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "criteria")]
-    [SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-    [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-    [Delete]
-    private void DataPortal_Delete(object criteria)
-    {
-      throw new NotSupportedException(Resources.DeleteNotSupportedException);
-    }
-
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_xyz method.
+    /// requested data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -465,7 +441,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_xyz method.
+    /// requested data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -490,7 +466,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal prior to calling the 
-    /// requested DataPortal_XYZ method.
+    /// requested child data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]
@@ -501,7 +477,7 @@ namespace Csla
 
     /// <summary>
     /// Called by the server-side DataPortal after calling the 
-    /// requested DataPortal_XYZ method.
+    /// requested child data portal operation method.
     /// </summary>
     /// <param name="e">The DataPortalContext object passed to the DataPortal.</param>
     [SuppressMessage("Microsoft.Naming", "CA1707:IdentifiersShouldNotContainUnderscores", MessageId = "Member")]

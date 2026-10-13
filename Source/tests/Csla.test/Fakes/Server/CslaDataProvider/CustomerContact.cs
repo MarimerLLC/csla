@@ -107,11 +107,13 @@ namespace cslalighttest.CslaDataProvider
       BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(LastNameProperty, 50));
     }
 
+    [DeleteSelfChild]
     protected void Child_DeleteSelf()
     {
       TestResults.Add("CustomerContactDelete", "Deleted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
     }
 
+    [InsertChild]
     protected void Child_Insert()
     {
       TestResults.Add("CustomerContactInsert", "Inserted Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
@@ -119,6 +121,7 @@ namespace cslalighttest.CslaDataProvider
       Customer grandParent = parent.MyParent;
       LoadProperty(ParentNameProperty, grandParent.Name);
     }
+    [UpdateChild]
     protected void Child_Update()
     {
       TestResults.Add("CustomerContactUpdate", "Updated  Customer Contact" + GetProperty<string>(FirstNameProperty) + ", " + GetProperty<string>(LastNameProperty));
@@ -127,6 +130,7 @@ namespace cslalighttest.CslaDataProvider
       LoadProperty(ParentNameProperty,grandParent.Name);
     }
 
+    [FetchChild]
     private void Child_Fetch(int customerId, int id, string firstName, string lastName, DateTime birthday)
     {
       LoadProperty(CustomerIdProperty, customerId);

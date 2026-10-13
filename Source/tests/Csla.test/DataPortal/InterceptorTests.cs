@@ -178,16 +178,19 @@ namespace Csla.Test.DataPortal
       set { SetProperty(NameProperty, value); }
     }
 
+    [Create]
     private void DataPortal_Create(string name)
     {
       Fetch(name);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(string name)
     {
       Fetch(name);
     }
 
+    [FetchChild]
     private void Child_Fetch(string name)
     {
       Fetch(name);
@@ -209,6 +212,7 @@ namespace Csla.Test.DataPortal
     {
     }
 
+    [UpdateChild]
     private void Child_Update()
     {
     }
@@ -217,6 +221,7 @@ namespace Csla.Test.DataPortal
   [Serializable]
   public class InitializeListRoot : BusinessListBase<InitializeListRoot, InitializeRoot>
   {
+    [Fetch]
     private void DataPortal_Fetch([Inject] IChildDataPortal<InitializeRoot> childDataPortal)
     {
       using (SuppressListChangedEvents)

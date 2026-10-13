@@ -62,6 +62,7 @@ namespace Csla.Test.Basic
     {
     }
 
+    [Fetch]
     private void DataPortal_Fetch([Inject] IChildDataPortal<TestItem> childDataPortal)
     {
       Add(childDataPortal.FetchChild(123));

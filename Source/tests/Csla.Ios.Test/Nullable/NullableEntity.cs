@@ -63,6 +63,7 @@ namespace Csla.Ios.Test
       return Csla.DataPortal.Create<NullableEntity>();
     }
 
+    [Create]
     protected override void DataPortal_Create()
     {
       Csla.ApplicationContext.GlobalContext.Add("NullableObject", "Created");

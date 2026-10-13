@@ -18,11 +18,11 @@ namespace Csla.Analyzers.Tests
         nameof(DiagnosticDescriptor.Id));
       Assert.AreEqual("Find Operations That Do Not Have an Operation Attribute", diagnostic.Title.ToString(),
         nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual("Operations should have the appropriate operation attribute", diagnostic.MessageFormat.ToString(),
+      Assert.AreEqual("This method is named like a data portal operation but has no operation attribute, so the data portal never calls it. Add the operation attribute.", diagnostic.MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
         nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(DiagnosticSeverity.Info, diagnostic.DefaultSeverity,
+      Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity,
         nameof(DiagnosticDescriptor.DefaultSeverity));
       Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute, nameof(DoesOperationHaveAttributeAnalyzer)),
         diagnostic.HelpLinkUri,
@@ -79,6 +79,39 @@ namespace Csla.Analyzers.Tests
         {
           private void DataPortal_Fetch() { }
         }
+        """;
+      await TestHelpers.RunAnalysisAsync<DoesOperationHaveAttributeAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenOperationOverridesAttributedBaseOperation()
+    {
+      var code = 
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          protected override void Child_Create() { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<DoesOperationHaveAttributeAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenOperationOverridesBaseMethodWithoutAttribute()
+    {
+      var code = 
+        """
+        using Csla;
+
+        public class A : BusinessListBase<A, B>
+        {
+          protected override void Child_Update(params object[] parameters) { }
+        }
+
+        public class B : BusinessBase<B> { }
         """;
       await TestHelpers.RunAnalysisAsync<DoesOperationHaveAttributeAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute]);

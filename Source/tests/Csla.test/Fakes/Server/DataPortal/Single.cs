@@ -61,11 +61,13 @@ namespace Csla.Test.DataPortalTest
         throw new Exception("Bad data");
     }
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       DoFetch(0);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(int id)
     {
       DoFetch(id);
@@ -180,6 +182,7 @@ namespace Csla.Test.DataPortalTest
       set { SetProperty(IdProperty, value); }
     }
 
+    [Create]
     private void DataPortal_Create(int id)
     {
       if (id == 9999)
@@ -188,11 +191,13 @@ namespace Csla.Test.DataPortalTest
       BusinessRules.CheckRules();
     }
 
+    [Fetch]
     private void DataPortal_Fetch()
     {
       DataPortal_Fetch(0);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(int id)
     {
       if (id == 9999)

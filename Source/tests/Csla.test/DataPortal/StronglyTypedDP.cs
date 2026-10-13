@@ -61,6 +61,7 @@ namespace Csla.Test.DataPortal
       dataPortal.Delete(new Criteria(id));
     }
 
+    [Create]
     protected void DataPortal_Create(Criteria criteria)
     {
       using (BypassPropertyChecks)
@@ -71,6 +72,7 @@ namespace Csla.Test.DataPortal
       TestResults.Add("StronglyTypedDP", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(Criteria criteria)
     {
       using (BypassPropertyChecks)

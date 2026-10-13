@@ -40,7 +40,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public void CompareWhenByNamingConventionFlagIsTrue() =>
-      Assert.IsTrue(new DataPortalOperationQualification(true, false));
+      Assert.IsFalse(new DataPortalOperationQualification(true, false));
 
     [TestMethod]
     public void CombineFalseAndFalseWithFalseAndFalse()

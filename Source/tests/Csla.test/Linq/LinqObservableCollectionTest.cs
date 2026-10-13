@@ -487,6 +487,7 @@ namespace Csla.Test.Linq
       set { SetProperty(NameProperty, value); }
     }
 
+    [FetchChild]
     private void Child_Fetch(int id, string name)
     {
       using (BypassPropertyChecks)

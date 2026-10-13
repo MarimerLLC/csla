@@ -66,12 +66,14 @@ namespace Csla.Test.RollBack
       dataPortal.Delete(new Criteria(data));
     }
 
+    [Create]
     private void DataPortal_Create(Criteria criteria)
     {
       Data = criteria.Data;
       TestResults.AddOrOverwrite("Root", "Created");
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(Criteria criteria)
     {
       Data = criteria.Data;

@@ -14,7 +14,8 @@ public class NotSerializable { }
 public class Customer
   : BusinessBase<Customer>
 { 
-  private void DataPortal_Fetch(NotSerializable a);
+  [Fetch]
+  private void Fetch(NotSerializable a) { }
 }
 ```
 

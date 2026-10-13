@@ -12,7 +12,8 @@ using System;
 public class Customer
   : BusinessBase<Customer> 
 { 
-  public void DataPortal_Fetch(int id) { }	
+  [Fetch]
+  public void Fetch(int id) { }
 }
 ```
 

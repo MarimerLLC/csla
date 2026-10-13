@@ -41,6 +41,7 @@ namespace Csla.Test.DataPortalTest
 
     #region DataPortal_Create
 
+    [Create]
     protected void DataPortal_Create(int id)
     {
       DoCreate(id);
@@ -61,16 +62,19 @@ namespace Csla.Test.DataPortalTest
     #region DataPortal_Fetch
 
 
+    [Fetch]
     private void DataPortal_Fetch(int id)
     {
       DoFetch(id);
     }
 
+    [Fetch]
     private void DataPortal_Fetch(string id)
     {
       DoFetch(int.Parse(id));
     }
 
+    [Fetch]
     private void DataPortal_Fetch(Guid id)
     {
       DoFetch(1234);

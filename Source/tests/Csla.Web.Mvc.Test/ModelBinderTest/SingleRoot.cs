@@ -41,10 +41,12 @@ namespace Csla.Web.Mvc.Test.ModelBinderTest
     {
       return DataPortal.Fetch<SingleRoot>(new SingleCriteria<SingleRoot, int>(id));
     }
+    [Create]
     protected override void DataPortal_Create()
     {
       ID = 1;
     }
+    [Fetch]
     private void DataPortal_Fetch(SingleCriteria<SingleRoot, int> criteria)
     {
       using (BypassPropertyChecks)

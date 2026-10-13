@@ -16,6 +16,7 @@ namespace cslalighttest.CslaDataProvider
   {
     private CustomerWithErrorList() { }
 
+    [Fetch]
     protected void DataPortal_Fetch()
     {
       int maxCustomerWithError = (new Random()).Next(3, 10);

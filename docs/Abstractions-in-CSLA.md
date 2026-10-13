@@ -326,10 +326,11 @@ public interface IDependentPerson
 internal sealed class DependentPerson
 	: BusinessBaseScopeCore<DependentPerson>, IDependentPerson
 {
-	protected override void DataPortal_Create()
+	[Create]
+	private void Create()
 	{
-		base.DataPortal_Create();
-		this.logger.Log("DataPortal_Create on DependentPerson invoked.");
+		this.BusinessRules.CheckRules();
+		this.logger.Log("Create on DependentPerson invoked.");
 	}
 
 	public static readonly PropertyInfo<uint> AgeProperty =
@@ -409,7 +410,7 @@ As you can see, the dependency automatically got injected into the DependentPers
 
 To close out this article, I’ll demonstrate how you write unit tests for BOs to ensure dependencies are used correctly, and how you can use a CSLA BO as an injected dependency in the UI and write tests for that too.
 
-The first half is to write a test for DependentPerson. This test will ensure that the logger is called in DataPortal_Create():
+The first half is to write a test for DependentPerson. This test will ensure that the logger is called in the `[Create]` operation method:
 
 ```c#
 public void Create()

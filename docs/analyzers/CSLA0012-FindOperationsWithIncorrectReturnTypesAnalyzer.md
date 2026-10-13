@@ -11,7 +11,8 @@ using System;
 public class Customer
   : BusinessBase<Customer> 
 { 
-  private string DataPortal_Fetch(int id) => string.Empty;
+  [Fetch]
+  private string Fetch(int id) => string.Empty;
 }
 ```
 

@@ -11,6 +11,7 @@ namespace Csla.Testing.Business.ReadOnlyTest
   [Serializable]
   public class ReadOnlyPersonList : ReadOnlyBindingListBase<ReadOnlyPersonList, ReadOnlyPerson>
   {
+    [Fetch]
     private void DataPortal_Fetch()
     {
       RaiseListChangedEvents = false;

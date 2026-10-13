@@ -125,6 +125,7 @@ namespace cslalighttest.CslaDataProvider
       return newCustomerWithError;
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(int criteria)
     {
       LoadProperty(IdProperty, criteria);
@@ -134,6 +135,7 @@ namespace cslalighttest.CslaDataProvider
         throw new ApplicationException("Test for Silverlight DataSource Error!");
     }
 
+    [Create]
     protected void DataPortal_Create(int criteria)
     {
       LoadProperty(IdProperty, criteria);

@@ -204,6 +204,7 @@ namespace cslalighttest.CslaDataProvider
       }
     }
 
+    [Fetch]
     protected void DataPortal_Fetch(int criteria, [Inject] IChildDataPortal<CustomerContactList> childDataPortal)
     {
       LoadProperty(IdProperty, criteria);
@@ -217,6 +218,7 @@ namespace cslalighttest.CslaDataProvider
         throw new ApplicationException("Test for Silverlight DataSource Error!");
     }
 
+    [Create]
     protected void DataPortal_Create(int criteria, [Inject] IChildDataPortal<CustomerContactList> childDataPortal)
     {
       LoadProperty(IdProperty, criteria);

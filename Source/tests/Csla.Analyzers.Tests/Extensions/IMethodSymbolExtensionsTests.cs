@@ -283,12 +283,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalCreate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalCreate)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForDataPortalCreate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalCreate)).IsRootDataPortalOperation());
 
     [TestMethod]
@@ -313,12 +313,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalFetch() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalFetch)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForDataPortalFetch() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalFetch)).IsRootDataPortalOperation());
 
     [TestMethod]
@@ -343,12 +343,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalInsert() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalInsert)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForDataPortalInsert() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalInsert)).IsRootDataPortalOperation());
 
     [TestMethod]
@@ -373,12 +373,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalUpdate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalUpdate)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForDataPortalUpdate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalUpdate)).IsRootDataPortalOperation());
 
     [TestMethod]
@@ -403,12 +403,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalDelete() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalDelete)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForDataPortalDelete() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalDelete)).IsRootDataPortalOperation());
 
     [TestMethod]
@@ -433,12 +433,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalDeleteSelf() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalDeleteSelf)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForDataPortalDeleteSelf() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalDeleteSelf)).IsRootDataPortalOperation());
 
     [TestMethod]
@@ -463,12 +463,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForDataPortalExecute() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalExecute)).IsDataPortalOperation());
 
     [TestMethod]
     public async Task IsRootDataPortalOperationForDataPortalExecute() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.DataPortalExecute)).IsRootDataPortalOperation());
 
     [TestMethod]
@@ -493,7 +493,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildCreate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildCreate)).IsDataPortalOperation());
 
     [TestMethod]
@@ -503,7 +503,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsChildDataPortalOperationForChildCreate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildCreate)).IsChildDataPortalOperation());
 
     [TestMethod]
@@ -523,7 +523,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildFetch() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildFetch)).IsDataPortalOperation());
 
     [TestMethod]
@@ -533,7 +533,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsChildDataPortalOperationForChildFetch() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildFetch)).IsChildDataPortalOperation());
 
     [TestMethod]
@@ -553,7 +553,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildInsert() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildInsert)).IsDataPortalOperation());
 
     [TestMethod]
@@ -563,7 +563,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsChildDataPortalOperationForChildInsert() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildInsert)).IsChildDataPortalOperation());
 
     [TestMethod]
@@ -583,7 +583,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildUpdate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildUpdate)).IsDataPortalOperation());
 
     [TestMethod]
@@ -593,7 +593,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsChildDataPortalOperationForChildUpdate() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildUpdate)).IsChildDataPortalOperation());
 
     [TestMethod]
@@ -613,7 +613,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildDeleteSelf() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildDeleteSelf)).IsDataPortalOperation());
 
     [TestMethod]
@@ -623,12 +623,12 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsChildDataPortalOperationForChildDeleteSelf() => 
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildDeleteSelf)).IsChildDataPortalOperation());
 
     [TestMethod]
     public async Task IsDataPortalOperationForChildExecute() =>
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildExecute)).IsDataPortalOperation());
 
     [TestMethod]
@@ -638,7 +638,7 @@ namespace Csla.Analyzers.Tests.Extensions
 
     [TestMethod]
     public async Task IsChildDataPortalOperationForChildExecute() =>
-      Assert.IsTrue((await GetMethodSymbolAsync(
+      Assert.IsFalse((await GetMethodSymbolAsync(
         DataPortalOperationCode, CslaMemberConstants.Operations.ChildExecute)).IsChildDataPortalOperation());
 
     [TestMethod]
@@ -670,6 +670,60 @@ namespace Csla.Analyzers.Tests.Extensions
         }));
 
       return (compilation.GetSemanticModel(tree), await tree.GetRootAsync().ConfigureAwait(false));
+    }
+
+    private const string InheritedOperationCode =
+      """
+      using Csla;
+
+      namespace Csla.Analyzers.Tests.Targets.IMethodSymbolExtensionsTests
+      {
+        public abstract class OperationBase<T> : BusinessBase<T>
+          where T : OperationBase<T>
+        {
+          [Fetch]
+          protected virtual void Fetch(int id) { }
+        }
+
+        public class InheritedOperations : OperationBase<InheritedOperations>
+        {
+          protected override void Fetch(int id) { }
+          protected override void Child_Create() { }
+        }
+
+        public class InheritedListOperations : BusinessListBase<InheritedListOperations, InheritedOperations>
+        {
+          protected override void Child_Update(params object[] parameters) { }
+        }
+      }
+      """;
+
+    [TestMethod]
+    public async Task IsRootDataPortalOperationForOverrideOfAttributedBaseMethod()
+    {
+      var method = await GetMethodSymbolAsync(InheritedOperationCode, "Fetch");
+      Assert.IsTrue(method.IsRootDataPortalOperation());
+      Assert.IsTrue(method.IsDataPortalOperation());
+    }
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForOverrideOfAttributedCslaBaseMethod()
+    {
+      var method = await GetMethodSymbolAsync(InheritedOperationCode, CslaMemberConstants.Operations.ChildCreate);
+      var (byNamingConvention, byAttribute) = method.IsChildDataPortalOperation();
+      Assert.IsTrue(byNamingConvention);
+      Assert.IsTrue(byAttribute);
+      Assert.IsTrue(method.IsDataPortalOperation());
+    }
+
+    [TestMethod]
+    public async Task IsChildDataPortalOperationForOverrideOfBaseMethodWithoutAttribute()
+    {
+      var method = await GetMethodSymbolAsync(InheritedOperationCode, CslaMemberConstants.Operations.ChildUpdate);
+      var (byNamingConvention, byAttribute) = method.IsChildDataPortalOperation();
+      Assert.IsTrue(byNamingConvention);
+      Assert.IsFalse(byAttribute);
+      Assert.IsFalse(method.IsDataPortalOperation());
     }
 
     private async Task<IMethodSymbol> GetMethodSymbolAsync(string code, string name)

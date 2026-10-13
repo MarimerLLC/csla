@@ -77,6 +77,10 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
 
 * [#4891](https://github.com/MarimerLLC/csla/issues/4891) Remove the unusable parameterless constructor of `LazySingleton<T>` ([#4944](https://github.com/MarimerLLC/csla/pull/4944))
 
+**Collections**
+
+* [#4848](https://github.com/MarimerLLC/csla/issues/4848) Editable lists enforce `AllowNew` and `AllowRemove`: adding or removing items when the matching property is `false` throws `NotSupportedException`
+
 **Build and Release**
 
 * [#4917](https://github.com/MarimerLLC/csla/issues/4917) Set the `main` version to 11.0.0 and start the CSLA 11 release notes ([#4918](https://github.com/MarimerLLC/csla/pull/4918))
@@ -91,6 +95,7 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
   * The private "not supported" `DataPortal_XYZ` methods on `CommandBase`, `ReadOnlyBase`, and the read-only, name/value, and dynamic list base classes are removed. Unsupported operations now fail with the data portal's normal "method not found" error.
   * Creating a child of an `[ObjectFactory]` type no longer looks for a method named `Child_Create`. It calls the business class's `[CreateChild]` method.
 * The parameterless constructor of `LazySingleton<T>` is removed, and `LazySingleton<T>` no longer implements `IUseApplicationContext`. Pass a factory delegate to `LazySingleton(Func<T>)`, or use `System.Lazy<T>`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md) ([#4891](https://github.com/MarimerLLC/csla/issues/4891)).
+* `BusinessListBase`, `BusinessBindingListBase`, `DynamicListBase` and `DynamicBindingListBase` throw `NotSupportedException` when items are added while `AllowNew` is `false`, or removed while `AllowRemove` is `false`. `AllowRemove` now defaults to `true` for `BusinessListBase` and `DynamicListBase`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#allownew-and-allowremove-are-enforced).
 
 ### Supported Platforms
 

@@ -1,4 +1,4 @@
-#if !XAMARIN && !WINDOWS_UWP && !MAUI && !AVALONIA
+﻿#if !XAMARIN && !WINDOWS_UWP && !MAUI && !AVALONIA
 //-----------------------------------------------------------------------
 // <copyright file="ObjectStatus.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -259,28 +259,7 @@ namespace Csla.Xaml
     public void Refresh()
     {
       // per-type rules
-      if (DataObject != null)
-      {
-        var newValue = Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.CreateObject, DataObject);
-        if (CanCreateObject != newValue)
-          CanCreateObject = newValue;
-        newValue = Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.GetObject, DataObject);
-        if (CanGetObject != newValue)
-          CanGetObject = newValue;
-        newValue = Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.EditObject, DataObject);
-        if (CanEditObject != newValue)
-          CanEditObject = newValue;
-        newValue = Rules.BusinessRules.HasPermission(ApplicationContextManager.GetApplicationContext(), Rules.AuthorizationActions.DeleteObject, DataObject);
-        if (CanDeleteObject != newValue)
-          CanDeleteObject = newValue;
-      }
-      else
-      {
-        CanCreateObject = false;
-        CanGetObject = false;
-        CanEditObject = false;
-        CanDeleteObject = false;
-      }
+      RefreshPermissions();
 
       if (DataObject is IEditableBusinessObject source)
       {
@@ -309,6 +288,50 @@ namespace Csla.Xaml
           IsNew = false;
         }
       }
+    }
+
+    private int _refreshPermissionsVersion;
+
+    private async void RefreshPermissions()
+    {
+      // async void so exceptions surface on the SynchronizationContext,
+      // just as a synchronous exception would
+      await RefreshPermissionsAsync();
+    }
+
+    private async Task RefreshPermissionsAsync()
+    {
+      var version = ++_refreshPermissionsVersion;
+      var dataObject = DataObject;
+      if (dataObject == null)
+      {
+        CanCreateObject = false;
+        CanGetObject = false;
+        CanEditObject = false;
+        CanDeleteObject = false;
+        return;
+      }
+
+      // when all rules are synchronous these tasks are already complete,
+      // so the values are set before Refresh returns
+      var applicationContext = ApplicationContextManager.GetApplicationContext();
+      var canCreate = await Rules.BusinessRules.HasPermissionAsync(applicationContext, Rules.AuthorizationActions.CreateObject, dataObject, CancellationToken.None);
+      var canGet = await Rules.BusinessRules.HasPermissionAsync(applicationContext, Rules.AuthorizationActions.GetObject, dataObject, CancellationToken.None);
+      var canEdit = await Rules.BusinessRules.HasPermissionAsync(applicationContext, Rules.AuthorizationActions.EditObject, dataObject, CancellationToken.None);
+      var canDelete = await Rules.BusinessRules.HasPermissionAsync(applicationContext, Rules.AuthorizationActions.DeleteObject, dataObject, CancellationToken.None);
+
+      // a newer refresh has started while awaiting
+      if (version != _refreshPermissionsVersion)
+        return;
+
+      if (CanCreateObject != canCreate)
+        CanCreateObject = canCreate;
+      if (CanGetObject != canGet)
+        CanGetObject = canGet;
+      if (CanEditObject != canEdit)
+        CanEditObject = canEdit;
+      if (CanDeleteObject != canDelete)
+        CanDeleteObject = canDelete;
     }
 
     #endregion

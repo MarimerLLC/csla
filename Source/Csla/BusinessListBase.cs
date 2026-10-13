@@ -44,6 +44,8 @@ namespace Csla
     protected BusinessListBase()
     {
       ApplicationContext = default!;
+      AllowNew = true;
+      AllowRemove = true;
     }
 
     /// <summary>
@@ -60,7 +62,6 @@ namespace Csla
         ApplicationContext = value ?? throw new ArgumentNullException(nameof(ApplicationContext));
         InitializeIdentity();
         Initialize();
-        AllowNew = true;
       }
     }
 
@@ -172,7 +173,9 @@ namespace Csla
       // because it will be changed by the normal add process
       int saveLevel = child.EditLevelAdded;
 
-      Add(child);
+      // restoring a deleted child is not a user add, so
+      // it must succeed even if AllowNew is false
+      WithoutAllowChecks(() => Add(child));
       child.EditLevelAdded = saveLevel;
     }
 
@@ -298,9 +301,32 @@ namespace Csla
     [NotUndoable]
     private bool _isDeserializing;
 
+    [NonSerialized]
+    [NotUndoable]
+    private bool _suppressAllowChecks;
+
+    /// <summary>
+    /// Invokes an action that changes the list on behalf of
+    /// the framework, ignoring AllowNew and AllowRemove.
+    /// </summary>
+    /// <param name="action">Action that changes the list.</param>
+    internal void WithoutAllowChecks(Action action)
+    {
+      var old = _suppressAllowChecks;
+      _suppressAllowChecks = true;
+      try
+      {
+        action();
+      }
+      finally
+      {
+        _suppressAllowChecks = old;
+      }
+    }
+
     /// <summary>
     /// Override this method to create a new object that is added
-    /// to the collection. 
+    /// to the collection.
     /// </summary>
     protected override C AddNewCore()
     {
@@ -362,10 +388,13 @@ namespace Csla
     /// <param name="index">Index of the item to insert.</param>
     /// <param name="item">Item to insert.</param>
     /// <exception cref="ArgumentNullException"><paramref name="item"/> is <see langword="null"/>.</exception>
+    /// <exception cref="NotSupportedException"><see cref="Core.ObservableBindingList{T}.AllowNew"/> is <see langword="false"/>.</exception>
     protected override void InsertItem(int index, C item)
     {
       if (item is null)
         throw new ArgumentNullException(nameof(item));
+      if (!AllowNew && !_isDeserializing && !_suppressAllowChecks)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
 
       if (item.IsChild)
       {
@@ -399,8 +428,12 @@ namespace Csla
     /// the collection of deleted objects.
     /// </summary>
     /// <param name="index">Index of the item to remove.</param>
+    /// <exception cref="NotSupportedException"><see cref="Core.ObservableBindingList{T}.AllowRemove"/> is <see langword="false"/>.</exception>
     protected override void RemoveItem(int index)
     {
+      if (!AllowRemove && !_suppressAllowChecks)
+        throw new NotSupportedException(Resources.AllowRemoveFalseException);
+
       // when an object is 'removed' it is really
       // being deleted, so do the deletion work
       C child = this[index];
@@ -876,16 +909,41 @@ namespace Csla
     /// Returns true if this object has changes, is valid,
     /// the user is authorized and the object is not busy.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// IsSavable also checks the EditObject per-type authorization rule.
+    /// If that rule is an <see cref="Rules.IAuthorizationRuleAsync"/> that
+    /// does not complete synchronously, the object is busy and IsSavable
+    /// returns false until the rule completes. The result is then cached
+    /// for the current user and BusyChanged is raised.
+    /// </para>
+    /// </remarks>
     public virtual bool IsSavable
     {
       get
       {
         var result = IsDirty && IsValid && !IsBusy;
         if (result)
-          result = Rules.BusinessRules.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this);
+        {
+          _savablePermission ??= new Rules.SavablePermission();
+          result = _savablePermission.HasPermission(ApplicationContext, Rules.AuthorizationActions.EditObject, this,
+            () => OnBusyChanged(new BusyChangedEventArgs("", true)), OnSavablePermissionCompleted);
+        }
 
         return result;
       }
+    }
+
+    [NotUndoable]
+    [NonSerialized]
+    private Rules.SavablePermission? _savablePermission;
+
+    private void OnSavablePermissionCompleted(Exception? error)
+    {
+      OnBusyChanged(new BusyChangedEventArgs("", false));
+      OnPropertyChanged(new PropertyChangedEventArgs(nameof(IsSavable)));
+      if (error != null)
+        OnUnhandledAsyncException(this, error);
     }
 
     /// <summary>
@@ -895,6 +953,9 @@ namespace Csla
     {
       get
       {
+        if (_savablePermission?.IsPending == true)
+          return true;
+
         // run through all the child objects
         // and if any are busy then then
         // collection is busy

@@ -201,6 +201,7 @@ namespace Csla.Blazor
       try
       {
         IsBusy = true;
+        await SetPropertiesAtObjectLevelAsync();
         Model = await factory();
       }
       catch (DataPortalException ex)
@@ -625,23 +626,44 @@ namespace Csla.Blazor
       }
     }
 
-    private bool ObjectPropertiesSet;
+    private Task? _objectLevelPermissionsTask;
 
     /// <summary>
     /// Sets the properties at object level.
     /// </summary>
+    /// <remarks>
+    /// When all authorization rules are synchronous the values are
+    /// set before this method returns. If a rule is asynchronous the
+    /// values are set when it completes; call RefreshAsync to ensure
+    /// they are available.
+    /// </remarks>
     private void SetPropertiesAtObjectLevel()
     {
-      if (ObjectPropertiesSet)
+      if (_objectLevelPermissionsTask != null)
         return;
-      ObjectPropertiesSet = true;
+      var task = SetPropertiesAtObjectLevelAsync();
+      // surface exceptions from synchronous rules, as before
+      if (task.IsCompleted)
+        task.GetAwaiter().GetResult();
+    }
 
+    /// <summary>
+    /// Sets the properties at object level, evaluating
+    /// authorization rules only once.
+    /// </summary>
+    private Task SetPropertiesAtObjectLevelAsync()
+    {
+      return _objectLevelPermissionsTask ??= LoadObjectLevelPermissionsAsync();
+    }
+
+    private async Task LoadObjectLevelPermissionsAsync()
+    {
       Type sourceType = typeof(T);
 
-      CanCreateObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.CreateObject, sourceType);
-      CanGetObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.GetObject, sourceType);
-      CanEditObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.EditObject, sourceType);
-      CanDeleteObject = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.DeleteObject, sourceType);
+      CanCreateObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.CreateObject, sourceType, CancellationToken.None);
+      CanGetObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.GetObject, sourceType, CancellationToken.None);
+      CanEditObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.EditObject, sourceType, CancellationToken.None);
+      CanDeleteObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, sourceType, CancellationToken.None);
     }
 
     #endregion

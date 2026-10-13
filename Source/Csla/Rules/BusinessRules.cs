@@ -405,6 +405,12 @@ namespace Csla.Rules
           sync.Execute(context);
           result = context.HasPermission;
         }
+        else if (rule is IAuthorizationRuleAsync nsync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, obj, objType, criteria);
+          ExecuteAsyncRuleSynchronously(nsync, context);
+          result = context.HasPermission;
+        }
         else
           throw new ArgumentOutOfRangeException(rule.GetType().FullName);
       }
@@ -444,10 +450,30 @@ namespace Csla.Rules
           sync.Execute(context);
           result = context.HasPermission;
         }
+        else if (rule is IAuthorizationRuleAsync nsync)
+        {
+          var context = new AuthorizationContext(applicationContext, rule, Target, Target.GetType());
+          ExecuteAsyncRuleSynchronously(nsync, context);
+          result = context.HasPermission;
+        }
         else
           throw new ArgumentOutOfRangeException(rule.GetType().FullName);
       }
       return result;
+    }
+
+    /// <summary>
+    /// Executes an async authorization rule from a synchronous
+    /// HasPermission call. Rules that complete synchronously are
+    /// supported; the task is never blocked on, so a rule that
+    /// is still running results in an exception.
+    /// </summary>
+    private static void ExecuteAsyncRuleSynchronously(IAuthorizationRuleAsync rule, IAuthorizationContext context)
+    {
+      var task = rule.ExecuteAsync(context, CancellationToken.None);
+      if (!task.IsCompleted)
+        throw new InvalidOperationException(string.Format(Properties.Resources.AsyncAuthorizationRuleRequiresHasPermissionAsync, rule.GetType().FullName));
+      task.GetAwaiter().GetResult();
     }
 
     /// <summary>

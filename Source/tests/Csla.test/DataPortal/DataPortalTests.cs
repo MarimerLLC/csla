@@ -166,7 +166,8 @@ namespace Csla.Test.DataPortal
     public void DataPortalBrokerTests()
     {
       var dps = _testHost.Services.GetRequiredService<Server.DataPortalSelector>();
-      var oldServer = Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer(dps);
+      var oldServer = Server.DataPortalBroker.DataPortalServer;
+      Server.DataPortalBroker.DataPortalServer = new CustomDataPortalServer(dps);
 
       try
       {

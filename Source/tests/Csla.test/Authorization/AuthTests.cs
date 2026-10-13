@@ -500,7 +500,7 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
-    public async Task PerTypeAuthEditObjectAsyncThrowsException()
+    public async Task PerTypeAuthEditObjectAsyncCompletedSynchronously()
     {
       using var testHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager).ConfigureCsla(options => options.DataPortal(
           dp => dp.AddServerSideDataPortal(
@@ -508,8 +508,18 @@ namespace Csla.Test.Authorization
         )));
       ApplicationContext applicationContext = testHost.ApplicationContext;
 
-      Assert.ThrowsException<ArgumentOutOfRangeException>(() => BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootAsync)));
+      Assert.IsFalse(BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootAsync)));
       Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootAsync), CancellationToken.None));
+    }
+
+    [TestMethod]
+    public async Task PerTypeAuthEditObjectAsyncNotCompletedSynchronouslyThrowsException()
+    {
+      using var testHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager));
+      ApplicationContext applicationContext = testHost.ApplicationContext;
+
+      Assert.ThrowsException<InvalidOperationException>(() => BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootDelayedAsync)));
+      Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootDelayedAsync), CancellationToken.None));
     }
 
     /// <summary>
@@ -723,6 +733,30 @@ namespace Csla.Test.Authorization
       {
         context.HasPermission = false;
         return Task.CompletedTask;
+      }
+    }
+  }
+
+  [Serializable]
+  public class PerTypeAuthRootDelayedAsync : BusinessBase<PerTypeAuthRootDelayedAsync>
+  {
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      BusinessRules.AddRule(
+        typeof(PerTypeAuthRootDelayedAsync),
+        new DelayedNoAuthAsync(AuthorizationActions.EditObject));
+    }
+    private class DelayedNoAuthAsync : AuthorizationRuleAsync
+    {
+      public DelayedNoAuthAsync(AuthorizationActions action) : base(action)
+      {
+      }
+
+      protected override async Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
+      {
+        await Task.Delay(10, ct);
+        context.HasPermission = false;
       }
     }
   }

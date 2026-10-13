@@ -85,8 +85,12 @@ namespace Csla.Core
     /// <summary>
     /// Adds a new item to this collection.
     /// </summary>
+    /// <exception cref="NotSupportedException"><see cref="AllowNew"/> is <see langword="false"/>.</exception>
     public T AddNew()
     {
+      if (!AllowNew)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
+
       var result = AddNewCore();
       OnAddedNew(result);
       return result;
@@ -100,8 +104,12 @@ namespace Csla.Core
     /// <summary>
     /// Adds a new item to this collection.
     /// </summary>
+    /// <exception cref="NotSupportedException"><see cref="AllowNew"/> is <see langword="false"/>.</exception>
     public async Task<T> AddNewAsync()
     {
+      if (!AllowNew)
+        throw new NotSupportedException(Resources.AllowNewFalseException);
+
       var result = await AddNewCoreAsync();
       OnAddedNew(result);
       return result!;

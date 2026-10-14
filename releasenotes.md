@@ -72,6 +72,12 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
 
 * [#4359](https://github.com/MarimerLLC/csla/issues/4359) Call data portal operation methods explicitly instead of through reflection, using source generators bundled in the `Csla` package ([#4925](https://github.com/MarimerLLC/csla/pull/4925))
 * [#4828](https://github.com/MarimerLLC/csla/issues/4828) Remove the data portal's fallback of finding operation methods by name; only methods with an operation attribute are invoked ([#4943](https://github.com/MarimerLLC/csla/pull/4943))
+* [#4780](https://github.com/MarimerLLC/csla/issues/4780) Resolve transaction settings when the transaction is created, and add `ITransactionScopeFactory` to control how the data portal creates `TransactionScope` instances ([#4949](https://github.com/MarimerLLC/csla/pull/4949))
+
+**Authorization**
+
+* [#4707](https://github.com/MarimerLLC/csla/issues/4707) XAML and Blazor view models support async authorization rules, and `HasPermission` reports a still-running async rule with an `InvalidOperationException` that points to `HasPermissionAsync` ([#4948](https://github.com/MarimerLLC/csla/pull/4948))
+* [#4947](https://github.com/MarimerLLC/csla/issues/4947) `IsSavable` supports async per-type authorization rules: the object is busy while the rule runs, and the result is cached per action and user ([#4948](https://github.com/MarimerLLC/csla/pull/4948))
 
 **Bug Fixes**
 
@@ -79,7 +85,7 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
 
 **Collections**
 
-* [#4848](https://github.com/MarimerLLC/csla/issues/4848) Editable lists enforce `AllowNew` and `AllowRemove`: adding or removing items when the matching property is `false` throws `NotSupportedException`
+* [#4848](https://github.com/MarimerLLC/csla/issues/4848) Editable lists enforce `AllowNew` and `AllowRemove`: adding or removing items when the matching property is `false` throws `NotSupportedException` ([#4945](https://github.com/MarimerLLC/csla/pull/4945))
 
 **Build and Release**
 
@@ -89,13 +95,15 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
 
 * CSLA 11 no longer targets .NET 8 or .NET 9. Applications must target .NET 10 or later (or continue to use .NET Framework 4.6.2 through 4.8, or a `netstandard2.0`-compatible runtime).
 * On .NET 11, Android apps using `Csla.Maui` require Android API level 24 or later, because .NET 11 for Android requires it. The `net10.0-android` target still supports API level 21.
-* The `Csla.Generator.AutoImplementProperties.CSharp` package is retired because its generators are now included in the `Csla` package. Remove any `PackageReference` (and `PackageVersion`) for it; a build error (`CSLABUILD001`) is reported while the reference remains.
+* The `Csla.Generator.AutoImplementProperties.CSharp` package is retired because its generators are now included in the `Csla` package. Remove any `PackageReference` (and `PackageVersion`) for it; a build error (`CSLABUILD001`) is reported while the reference remains. Business classes with data portal operation methods should be `partial`; the new `CSLA0024` analyzer warns for classes that aren't. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#source-generators-bundled-in-the-csla-package).
 * The data portal no longer finds operation methods by name. Only methods with an operation attribute (such as `[Fetch]`, `[Update]`, or `[UpdateChild]`) are invoked, and the `DataPortalOptions.UseLegacyOperationMethods` option is removed. Add the matching attribute to any `DataPortal_XYZ` or `Child_XYZ` method that doesn't have one. The `CSLA0014` analyzer is now a warning and its code fix adds the attribute for you. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md) ([#4828](https://github.com/MarimerLLC/csla/issues/4828)).
   * The default `Child_Create()` methods on `BusinessBase`, `BusinessListBase`, and `BusinessBindingListBase` are now marked with `[CreateChild]`, so a child with no create method of its own still gets its business rules checked.
   * The private "not supported" `DataPortal_XYZ` methods on `CommandBase`, `ReadOnlyBase`, and the read-only, name/value, and dynamic list base classes are removed. Unsupported operations now fail with the data portal's normal "method not found" error.
   * Creating a child of an `[ObjectFactory]` type no longer looks for a method named `Child_Create`. It calls the business class's `[CreateChild]` method.
 * The parameterless constructor of `LazySingleton<T>` is removed, and `LazySingleton<T>` no longer implements `IUseApplicationContext`. Pass a factory delegate to `LazySingleton(Func<T>)`, or use `System.Lazy<T>`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md) ([#4891](https://github.com/MarimerLLC/csla/issues/4891)).
 * `BusinessListBase`, `BusinessBindingListBase`, `DynamicListBase` and `DynamicBindingListBase` throw `NotSupportedException` when items are added while `AllowNew` is `false`, or removed while `AllowRemove` is `false`. `AllowRemove` now defaults to `true` for `BusinessListBase` and `DynamicListBase`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#allownew-and-allowremove-are-enforced).
+* With async authorization rules, view model permission properties (such as `CanCreateObject`) start out `false` and update when the rules complete. Reading `IsSavable` while an async `CreateObject`, `EditObject` or `DeleteObject` rule is running marks the object busy and returns `false`, and calling `Save` before the rule completes throws. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-authorization-rules-in-view-models-and-issavable) ([#4707](https://github.com/MarimerLLC/csla/issues/4707), [#4947](https://github.com/MarimerLLC/csla/issues/4947)).
+* `TransactionalAttribute` no longer copies defaults from `DataOptions`: `TimeoutInSeconds` is now `int?` and `AsyncFlowOption` is now `TransactionScopeAsyncFlowOption?`, and the `TransactionalDataPortal` constructor takes an `ITransactionScopeFactory` and `TransactionScopeFactoryContext`. The `DataOptions` transaction defaults are now per-instance instead of static. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#transaction-settings-resolved-at-runtime-and-itransactionscopefactory) ([#4780](https://github.com/MarimerLLC/csla/issues/4780)).
 
 ### Supported Platforms
 

@@ -10,6 +10,47 @@ If you are upgrading from a version of CSLA prior to 10, you should review the [
 
 CSLA 11 supports .NET 10 and .NET 11, and continues to support .NET Framework 4.6.2 and later. CSLA 11 no longer targets .NET 8 or .NET 9.
 
+On .NET 11, Android apps that use `Csla.Maui` require Android API level 24 or later, because .NET 11 for Android requires it. The `net10.0-android` target still supports API level 21.
+
+## Source Generators Bundled in the Csla Package
+
+The CSLA source generators now ship inside the `Csla` NuGet package and run automatically in any C# project that references `Csla` ([#4359](https://github.com/MarimerLLC/csla/issues/4359), [#4925](https://github.com/MarimerLLC/csla/pull/4925)).
+
+### Remove the retired generator package
+
+The `Csla.Generator.AutoImplementProperties.CSharp` package is retired. Referencing it alongside `Csla` 11 would run the generators twice, so the build fails with `CSLABUILD001` while the reference remains. Remove its `PackageReference`, and its `PackageVersion` entry if you use central package management:
+
+```xml
+<!-- Remove -->
+<PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" Version="10.*" />
+```
+
+The `[CslaImplementProperties]`, `[CslaImplementPropertiesInterface<T>]` and `[CslaIgnoreProperty]` attributes are now part of `Csla.dll`, in the same `Csla` namespace, so code that uses them doesn't change.
+
+### Make business classes `partial`
+
+For each `partial` class that declares data portal operation methods, the generator adds code that lets the data portal call those methods directly instead of using reflection. This also means IDEs, analyzers and the trimmer see private operation methods as used.
+
+Classes that aren't `partial` still work through reflection, but the new `CSLA0024` analyzer reports a warning for each class (or containing type) with operation methods that isn't `partial`. If your projects treat warnings as errors, the build fails until you fix them. The analyzer's code fix adds the `partial` modifier to the class and its containing types. See [CSLA0024](analyzers/CSLA0024-TypeWithOperationsShouldBePartialAnalyzer.md).
+
+```csharp
+[Serializable]
+public partial class Customer : BusinessBase<Customer>
+{
+  [Fetch]
+  private void Fetch(int id)
+  {
+    // ...
+  }
+}
+```
+
+Because the data portal now calls operation methods through generated code, stack traces from operation methods go through generated `IDataPortalOperations` members, not reflection.
+
+### Strongly typed data portal extension methods
+
+You can mark a class (or an assembly) with `[DataPortalExtensions]` to generate strongly typed extension methods on `IDataPortal<T>` and `IChildDataPortal<T>`. See the [release notes](../releasenotes.md) for details. This is opt-in. Once you use it, the `CSLA0025` analyzer warns when code calls the untyped `params object[]` data portal methods for that type when a generated method could be used instead. See [CSLA0025](analyzers/CSLA0025-UseGeneratedDataPortalExtensionAnalyzer.md).
+
 ## Legacy Data Portal Operation Method Names Removed
 
 In earlier versions, if the data portal couldn't find a method with an operation attribute (such as `[Fetch]`), it fell back to looking for a method by name (such as `DataPortal_Fetch` or `Child_Update`). This fallback was controlled by the `DataPortalOptions.UseLegacyOperationMethods` option.
@@ -129,6 +170,30 @@ private void Fetch([Inject] IChildDataPortal<LineItem> childPortal, [Inject] ILi
   AllowRemove = false;
 }
 ```
+
+## Async Authorization Rules in View Models and `IsSavable`
+
+Async authorization rules (`IAuthorizationRuleAsync`) are now supported in view models and in `IsSavable` ([#4707](https://github.com/MarimerLLC/csla/issues/4707), [#4947](https://github.com/MarimerLLC/csla/issues/4947), [#4948](https://github.com/MarimerLLC/csla/pull/4948)). Synchronous rules behave as before. If you use async rules, these behavior changes affect your UI code.
+
+### View models
+
+* The XAML `ViewModelBase` and `ObjectStatus`, and the Blazor `ViewModel`, evaluate authorization rules with `HasPermissionAsync`.
+* With async rules, the permission-based properties (such as `CanCreateObject` and `CanEditObject`, and in XAML `CanCreate`, `CanDelete`, `CanAddNew` and `CanRemove`) start out `false` and update when the rules complete, raising `PropertyChanged`.
+* The Blazor `ViewModel.RefreshAsync` waits for the object-level permissions, and the `Can*Object` getters no longer throw for async rules.
+
+### `IsSavable`
+
+`IsSavable` on `BusinessBase`, `BusinessListBase` and `BusinessBindingListBase` checks the per-type `CreateObject`, `EditObject` or `DeleteObject` rule:
+
+* A rule that completes synchronously (a sync rule, or an async rule that doesn't await) is evaluated on every read, as before.
+* A rule that is still running marks the object busy, and `IsSavable` returns `false`. Reading `IsSavable` can therefore raise `BusyChanged`.
+* When the rule completes, the result is cached for that action (new, existing or deleted) and user. The object is marked idle, and `PropertyChanged` is raised for `IsSavable`. The result is re-evaluated when the action or the user changes, but not when other properties change.
+* If the rule fails, `IsSavable` is `false` and `UnhandledAsyncException` is raised.
+* Calling `Save` while the check is still running throws, the same as saving an object with running async business rules. Wait for the object to become idle first (for example with `WaitForIdle`). The XAML view model and the Blazor `SaveAsync` already wait for it.
+
+### `HasPermission` with async rules
+
+The synchronous `BusinessRules.HasPermission` now accepts an async rule if its task has already completed. If the rule is still running, `HasPermission` throws an `InvalidOperationException` that tells you to use `HasPermissionAsync`. Previously any async rule threw `ArgumentOutOfRangeException`.
 
 ## Transaction settings resolved at runtime and `ITransactionScopeFactory`
 

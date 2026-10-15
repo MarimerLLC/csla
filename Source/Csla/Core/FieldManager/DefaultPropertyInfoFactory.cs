@@ -75,6 +75,7 @@ namespace Csla.Core.FieldManager
       return Create<T>(containingType, name, friendlyName, defaultValue, relationship, (bool?)isSerializable);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = TrimmingMessages.BusinessTypeJustification)]
     private PropertyInfo<T> Create<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(Type containingType, string name, string ?friendlyName, T? defaultValue, RelationshipTypes relationship, bool? isSerializable)
     {
       if (containingType is null)

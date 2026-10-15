@@ -127,6 +127,7 @@ namespace Csla.Reflection
       return GetCachedMethod(obj, method, true, parameters);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     private static DynamicMethodHandle GetCachedMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       var objectType = obj.GetType();
@@ -189,7 +190,7 @@ namespace Csla.Reflection
 
     private readonly static Dictionary<Type, DynamicCtorDelegate> _ctorCache = new();
 
-    private static DynamicCtorDelegate GetCachedConstructor(Type objectType) 
+    private static DynamicCtorDelegate GetCachedConstructor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type objectType)
     {
       if (objectType == null)
         throw new ArgumentNullException(nameof(objectType));
@@ -343,7 +344,7 @@ namespace Csla.Reflection
     private static readonly Dictionary<MethodCacheKey, DynamicMemberHandle> _memberCache = [];
 #endif
 
-    internal static DynamicMemberHandle GetCachedProperty(Type objectType, string propertyName)
+    internal static DynamicMemberHandle GetCachedProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type objectType, string propertyName)
     {
       if (objectType.FullName is null)
         throw new InvalidOperationException($"Full type name of {objectType} could not be retrieved by {nameof(Type)}.{nameof(Type.FullName)}.");
@@ -395,7 +396,7 @@ namespace Csla.Reflection
       return mh;
     }
 
-    internal static DynamicMemberHandle GetCachedField(Type objectType, string fieldName)
+    internal static DynamicMemberHandle GetCachedField([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type objectType, string fieldName)
     {
       if (objectType.FullName is null)
         throw new InvalidOperationException($"Full type name of {objectType} could not be retrieved by {nameof(Type)}.{nameof(Type.FullName)}.");
@@ -456,6 +457,8 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     /// <exception cref="InvalidOperationException"><paramref name="property"/> not found on type of <paramref name="obj"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     public static object? CallPropertyGetter(object obj, string property)
     {
       if (obj is null)
@@ -487,6 +490,8 @@ namespace Csla.Reflection
     /// <param name="value">New value for property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     public static void CallPropertySetter(object obj, string property, object? value)
     {
       if (obj is null)
@@ -559,6 +564,7 @@ namespace Csla.Reflection
       return CallMethodIfImplemented(obj, method, true, parameters);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     private static object? CallMethodIfImplemented(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
@@ -647,6 +653,7 @@ namespace Csla.Reflection
       return CallMethod(obj, method, true, parameters);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     private static object? CallMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
@@ -908,7 +915,8 @@ namespace Csla.Reflection
       return result;
     }
 
-    private static System.Reflection.MethodInfo? FindMethodUsingFuzzyMatching(Type objectType, string method, object?[] parameters)
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BaseTypeWalkJustification)]
+    private static System.Reflection.MethodInfo? FindMethodUsingFuzzyMatching([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method, object?[] parameters)
     {
       System.Reflection.MethodInfo? result = null;
       Type? currentType = objectType;
@@ -986,7 +994,8 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="types"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static System.Reflection.MethodInfo? FindMethod(Type objectType, string method, Type[] types)
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BaseTypeWalkJustification)]
+    public static System.Reflection.MethodInfo? FindMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method, Type[] types)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -1028,9 +1037,9 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BaseTypeWalkJustification)]
     public static System.Reflection.MethodInfo? FindMethod(
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
-        [UnconditionalSuppressMessage("ReflectionAnalysis", "IL2075:UnrecognizedReflectionPattern", Justification = "We only walk BaseType chain in this method, so assumption will holds")]
         Type objectType, string method, int parameterCount)
     {
       if (objectType is null)
@@ -1160,7 +1169,7 @@ namespace Csla.Reflection
     /// <param name="propertyName">Name of the property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static PropertyInfo? GetProperty(Type objectType, string propertyName)
+    public static PropertyInfo? GetProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type objectType, string propertyName)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -1278,6 +1287,7 @@ namespace Csla.Reflection
       return CallMethodTryAsync(obj, method, false, null);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     private async static Task<object?> CallMethodTryAsync(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
@@ -1392,6 +1402,7 @@ namespace Csla.Reflection
       return isAsyncTask || isAsyncTaskObject;
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
@@ -1523,7 +1534,7 @@ namespace Csla.Reflection
     /// <returns>Result of the factory method invocation.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="parameters"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static object? CallFactoryMethod(Type objectType, string method, params object?[] parameters)
+    public static object? CallFactoryMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] Type objectType, string method, params object?[] parameters)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -1579,7 +1590,7 @@ namespace Csla.Reflection
     /// <param name="method">Name of the method.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static System.Reflection.MethodInfo? GetNonPublicMethod(Type objectType, string method)
+    public static System.Reflection.MethodInfo? GetNonPublicMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objectType, string method)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -1599,7 +1610,8 @@ namespace Csla.Reflection
     /// <param name="flags">Flag values.</param>
     /// <exception cref="ArgumentNullException"><paramref name="objType"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static System.Reflection.MethodInfo? FindMethod(Type objType, string method, BindingFlags flags)
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BaseTypeWalkJustification)]
+    public static System.Reflection.MethodInfo? FindMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type objType, string method, BindingFlags flags)
     {
       if (objType is null)
         throw new ArgumentNullException(nameof(objType));
@@ -1614,7 +1626,7 @@ namespace Csla.Reflection
         info = tmpType.GetMethod(method, flags);
         if (info != null)
           break; // match found
-        tmpType = objType.BaseType;
+        tmpType = tmpType.BaseType;
       } while (tmpType != null);
 
       return info;

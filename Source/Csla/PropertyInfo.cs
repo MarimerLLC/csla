@@ -80,7 +80,7 @@ namespace Csla
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type containingType, bool? isSerializable = null)
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type containingType, bool? isSerializable = null)
         : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
 
@@ -99,7 +99,7 @@ namespace Csla
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type containingType, T defaultValue, bool? isSerializable = null)
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type containingType, T defaultValue, bool? isSerializable = null)
         : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, isSerializable)
     { }
 
@@ -116,7 +116,7 @@ namespace Csla
     /// <param name="relationship">Relationship with referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type containingType, RelationshipTypes relationship, bool? isSerializable = null) 
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type containingType, RelationshipTypes relationship, bool? isSerializable = null) 
       : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), relationship, isSerializable)
     { }
 
@@ -137,7 +137,7 @@ namespace Csla
     /// referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type? containingType, T? defaultValue, RelationshipTypes relationship, bool? isSerializable = null)
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type? containingType, T? defaultValue, RelationshipTypes relationship, bool? isSerializable = null)
     {
       Name = name ?? throw new ArgumentNullException(nameof(name));
       _friendlyName = friendlyName;

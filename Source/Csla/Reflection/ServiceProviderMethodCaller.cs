@@ -49,6 +49,7 @@ namespace Csla.Reflection
     /// <param name="target">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     public ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
@@ -109,6 +110,9 @@ namespace Csla.Reflection
     /// <param name="throwOnError">Throw exceptions on error</param>
     /// <returns>The <see cref="ServiceProviderMethodInfo"/> of the data portal method if found. Does not return <see langword="null"/> if <paramref name="throwOnError"/> is <see langword="true"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BaseTypeWalkJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Csla.Core.TrimmingMessages.BaseTypeWalkJustification)]
     private ServiceProviderMethodInfo? FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, bool throwOnError)
       where T : DataPortalOperationAttribute
     {

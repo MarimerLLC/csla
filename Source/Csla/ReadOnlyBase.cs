@@ -36,6 +36,7 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of the business object.</typeparam>
   [Serializable]
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
   public abstract partial class ReadOnlyBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindableBase,
     IDataPortalTarget,
     IManageProperties,
@@ -543,7 +544,8 @@ namespace Csla
     /// The provided IPropertyInfo object.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, PropertyInfo<P> info)
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Type objectType, PropertyInfo<P> info)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -760,6 +762,7 @@ namespace Csla
     /// The provided IMemberInfo object.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     protected static IMemberInfo RegisterMethod(Type objectType, IMemberInfo info)
     {
       if (objectType is null)

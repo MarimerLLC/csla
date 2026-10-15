@@ -6,6 +6,7 @@
 // <summary>Serializes and deserializes objects</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Configuration;
 using Csla.Properties;
 using Csla.Reflection;
@@ -113,7 +114,7 @@ namespace Csla.Serialization.Mobile
       {
         if (obj is IMobileObject mobile)
         {
-          var typeName = AssemblyNameTranslator.GetSerializationName(obj.GetType(), options.UseStrongNamesCheck);
+          var typeName = AssemblyNameTranslator.GetSerializationName(GetMobileType(mobile), options.UseStrongNamesCheck);
           info = new SerializationInfo(_serializationReferences.Count + 1, typeName);
           _serializationReferences.Add(mobile, info);
 
@@ -148,6 +149,16 @@ namespace Csla.Serialization.Mobile
 
       return info;
     }
+
+    /// <summary>
+    /// Gets the runtime type of a mobile object. Calling GetType() on a value
+    /// statically typed as IMobileObject, and returning it through an annotated
+    /// return value, makes the trimmer apply the interface's
+    /// DynamicallyAccessedMembers annotation to every serialized type, so the
+    /// public constructor that deserialization uses is kept.
+    /// </summary>
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
+    private static Type GetMobileType(IMobileObject mobile) => mobile.GetType();
 
     private Dictionary<object, SerializationInfo> _serializationReferences =
       new(new ReferenceComparer<object>());
@@ -215,6 +226,7 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     ///<param name="deserialized">DTO group to deserialize</param>
     ///<exception cref="ArgumentNullException"><paramref name="deserialized"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Reflection.MethodCaller.TypeNameResolutionJustification)]
     public object? DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
       if (deserialized is null)

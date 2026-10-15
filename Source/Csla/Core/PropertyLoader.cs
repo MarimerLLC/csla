@@ -67,6 +67,7 @@ namespace Csla.Core
     }
 
     [RequiresDynamicCode("Creates a generic method instantiation for the property type at runtime.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = TrimmingMessages.BusinessTypeJustification)]
     [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The type argument is IPropertyInfo.Type, which PropertyInfo<T> preserves through DynamicallyAccessedMembers on T.")]
     private static object? InvokeGenericLoadMethodByReflection(IManageProperties target, string methodName, IPropertyInfo propertyInfo, object? newValue)
     {

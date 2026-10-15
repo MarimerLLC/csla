@@ -36,6 +36,7 @@ namespace Csla.Data
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static void Map(System.Collections.IDictionary source, object target)
     {
       Map(source, target, false);
@@ -55,6 +56,7 @@ namespace Csla.Data
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static void Map(System.Collections.IDictionary source, object target, params string[] ignoreList)
     {
       Map(source, target, false, ignoreList);
@@ -75,6 +77,7 @@ namespace Csla.Data
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static void Map(System.Collections.IDictionary source, object target, bool suppressExceptions, params string[] ignoreList)
     {
       if (source is null)
@@ -423,6 +426,7 @@ namespace Csla.Data
     /// <param name="value">Value to set into the property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static void SetPropertyValue(object target, string propertyName, object? value)
     {
       if (target is null)
@@ -469,6 +473,7 @@ namespace Csla.Data
     /// <param name="value">Value to set into the field.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="fieldName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static void SetFieldValue(object target, string fieldName, object? value)
     {
       if (target is null)
@@ -488,6 +493,7 @@ namespace Csla.Data
     /// <returns>The value of the field.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="fieldName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? GetFieldValue(object target, string fieldName)
     {
       if (target is null)

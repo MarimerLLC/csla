@@ -24,7 +24,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Type of business object.
   /// </typeparam>
-  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> 
+  public class DataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> 
     : IDataPortal<T>, IChildDataPortal<T>, IDataPortal, IChildDataPortal,
       IDataPortalOperationInvoker<T>, IChildDataPortalOperationInvoker<T> where T : notnull, ICslaObject
   {
@@ -273,6 +273,7 @@ namespace Csla
       return (T)await DoFetchAsync(typeof(T), Server.DataPortal.GetCriteriaFromArray(criteria), false);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     private async Task<T> DoUpdateAsync(T obj, bool isSync, CancellationToken ct = default)
     {
       var operation = DataPortalOperations.Update;

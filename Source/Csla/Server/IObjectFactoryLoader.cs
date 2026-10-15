@@ -6,6 +6,8 @@
 // <summary>Defines an interface to be implemented by</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -24,6 +26,7 @@ namespace Csla.Server
     /// an assembly qualified type name.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
     Type GetFactoryType(string factoryName);
     /// <summary>
     /// Returns an ObjectFactory object.

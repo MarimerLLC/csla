@@ -16,14 +16,10 @@
     <EnableTrimAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableTrimAnalyzer>
     <EnableSingleFileAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableSingleFileAnalyzer>
     <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer> 
-    <!-- This is first priority warnings which should be fixed. They are usually trimming friendly, in a sense that, develop annotate what parts of types should be preserved.  -->
-    <NoWarn>$(NoWarn);IL2070;IL2072;IL2075</NoWarn>
     <!--
-      IL2111: method with DynamicallyAccessedMembers accessed via reflection (mostly expression-based RegisterProperty).
-      The RequiresDynamicCode/RequiresUnreferencedCode group (IL2026, IL2055, IL2057, IL2060, IL2096, IL3050) is resolved
-      and must not be suppressed again; fix the code or annotate the API instead.
+      No trim or AOT warnings are suppressed project-wide. Fix the code or annotate the API instead;
+      use UnconditionalSuppressMessage with a justification only where the requirement provably holds.
     -->
-    <NoWarn>$(NoWarn);IL2111</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

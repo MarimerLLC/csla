@@ -6,6 +6,7 @@
 // <summary>Use this type to configure the settings for CSLA .NET</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.DataPortalClient;
 using Csla.Server;
 using Csla.Server.Interceptors.ServerSide;
@@ -106,7 +107,7 @@ namespace Csla.Configuration
       services.TryAddScoped(typeof(IAuthorizeDataPortal), config.DataPortalOptions.DataPortalServerOptions.AuthorizerProviderType);
       foreach (Type interceptorType in config.DataPortalOptions.DataPortalServerOptions.InterceptorProviders)
       {
-        services.AddScoped(typeof(IInterceptDataPortal), interceptorType);
+        AddInterceptor(services, interceptorType);
       }
       services.TryAddScoped(typeof(IObjectFactoryLoader), config.DataPortalOptions.DataPortalServerOptions.ObjectFactoryLoaderType);
       services.TryAddScoped(typeof(IDataPortalActivator), config.DataPortalOptions.DataPortalServerOptions.ActivatorType);
@@ -121,6 +122,13 @@ namespace Csla.Configuration
       services.TryAddTransient<FactoryDataPortal>();
       services.TryAddTransient<DataPortalBroker>();
       services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), config.DataPortalOptions.DataPortalServerOptions.DashboardType);
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2067",
+      Justification = "Interceptor types are only added through AddInterceptorProvider<T> and the default list in DataPortalServerOptions, both of which preserve public constructors.")]
+    private static void AddInterceptor(IServiceCollection services, Type interceptorType)
+    {
+      services.AddScoped(typeof(IInterceptDataPortal), interceptorType);
     }
   }
 }

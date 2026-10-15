@@ -98,7 +98,7 @@ namespace Csla
     /// </summary>
     /// <param name="listType">Type of the list.</param>
     /// <exception cref="ArgumentNullException"><paramref name="listType"/> is <see langword="null"/>.</exception>
-    public static Type? GetChildItemType(Type listType)
+    public static Type? GetChildItemType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)] Type listType)
     {
       if (listType is null)
         throw new ArgumentNullException(nameof(listType));
@@ -126,6 +126,10 @@ namespace Csla
     }
 
     #region  CoerceValue
+
+    private const string TypeConverterFallbackJustification =
+      "Last-resort conversion, only reached after Convert.ChangeType fails. If trimming removed a type's TypeConverter, " +
+      "no converter is found and the original conversion exception is rethrown.";
 
     /// <summary>
     /// Attempts to coerce a value of one type into
@@ -160,7 +164,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="desiredType"/> or <paramref name="valueType"/> is <see langword="null"/>.</exception>
-    public static object? CoerceValue([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type desiredType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
+    public static object? CoerceValue(Type desiredType, Type valueType, object? oldValue, object? value)
     {
       if (desiredType is null)
         throw new ArgumentNullException(nameof(desiredType));
@@ -235,10 +239,9 @@ namespace Csla
     /// Last-resort conversion using the TypeConverters of the
     /// source and target types.
     /// </summary>
-    [UnconditionalSuppressMessage("Trimming", "IL2026",
-      Justification = "Only reached after Convert.ChangeType fails. Both types are annotated with DynamicallyAccessedMembers.All, so a TypeConverterAttribute on them is preserved; " +
-                      "a generic TypeConverter whose own type arguments were trimmed fails to convert, and the original conversion exception is rethrown.")]
-    private static bool TryConvertWithTypeConverter([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type propertyType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object value, out object? result)
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = TypeConverterFallbackJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = TypeConverterFallbackJustification)]
+    private static bool TryConvertWithTypeConverter(Type propertyType, Type valueType, object value, out object? result)
     {
       TypeConverter cnv = TypeDescriptor.GetConverter(propertyType);
       TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
@@ -289,7 +292,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="valueType"/> is <see langword="null"/>.</exception>
-    public static D? CoerceValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] D>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
+    public static D? CoerceValue<D>(Type valueType, object? oldValue, object? value)
     {
       if (valueType is null)
         throw new ArgumentNullException(nameof(valueType));

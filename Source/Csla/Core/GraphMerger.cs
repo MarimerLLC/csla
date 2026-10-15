@@ -118,6 +118,7 @@ namespace Csla.Core
       }
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = TrimmingMessages.BusinessTypeJustification)]
     private static void CopyField(object? source, object? target, string fieldName)
     {
       if (source == null) return;
@@ -155,7 +156,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public void MergeBusinessListGraph<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public void MergeBusinessListGraph<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -195,7 +196,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public void MergeBusinessBindingListGraph<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public void MergeBusinessBindingListGraph<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -340,7 +341,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public async Task MergeBusinessListGraphAsync<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public async Task MergeBusinessListGraphAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -380,7 +381,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public async Task MergeBusinessBindingListGraphAsync<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public async Task MergeBusinessBindingListGraphAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {

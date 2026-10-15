@@ -21,7 +21,7 @@ namespace Csla.Core
   /// using SerializationFormatterFactory.GetFormatter().
   /// </summary>
   [Serializable]
-  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
   public abstract class ManagedObjectBase : MobileObject,
     INotifyPropertyChanged,
     IManageProperties,
@@ -68,7 +68,8 @@ namespace Csla.Core
     /// The provided IPropertyInfo object.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, PropertyInfo<P> info)
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Type objectType, PropertyInfo<P> info)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));

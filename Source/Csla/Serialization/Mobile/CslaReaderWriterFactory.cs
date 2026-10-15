@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Factory class that is used to create Reader/Writer pair of classes</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Serialization;
 
 namespace Csla.Serialization.Mobile
@@ -15,7 +16,9 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public static class CslaReaderWriterFactory
   {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     internal static Type ReaderType { get; set; } = typeof(CslaBinaryReader);
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     internal static Type WriterType { get; set; } = typeof(CslaBinaryWriter);
 
     /// <summary>

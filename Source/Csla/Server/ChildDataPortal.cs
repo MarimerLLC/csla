@@ -70,7 +70,7 @@ namespace Csla.Server
     /// <summary>
     /// Create a new business object.
     /// </summary>
-    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
+    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
     {
       return (T)await DoCreateAsync(typeof(T), null).ConfigureAwait(false);
     }
@@ -81,7 +81,7 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[]? parameters)
+    public async Task<T> CreateAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(params object?[]? parameters)
     {
       return (T)await DoCreateAsync(typeof(T), null, parameters).ConfigureAwait(false);
     }
@@ -117,7 +117,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="operationName"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="operationName"/> is <see cref="string.Empty"/> or only consists of white spaces.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public async Task<T> CreateByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string operationName, object?[]? parameters)
+    public async Task<T> CreateByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string operationName, object?[]? parameters)
     {
       if (operationName is null)
         throw new ArgumentNullException(nameof(operationName));
@@ -202,7 +202,7 @@ namespace Csla.Server
     /// <summary>
     /// Get an existing business object.
     /// </summary>
-    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>()
+    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>()
     {
       return (T)await DoFetchAsync(typeof(T), null).ConfigureAwait(false);
     }
@@ -213,7 +213,7 @@ namespace Csla.Server
     /// <param name="parameters">
     /// Criteria parameters passed from caller.
     /// </param>
-    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(params object?[]? parameters)
+    public async Task<T> FetchAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(params object?[]? parameters)
     {
       return (T)await DoFetchAsync(typeof(T), null, parameters).ConfigureAwait(false);
     }
@@ -249,7 +249,7 @@ namespace Csla.Server
     /// <exception cref="ArgumentNullException"><paramref name="operationName"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="operationName"/> is <see cref="string.Empty"/> or only consists of white spaces.</exception>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public async Task<T> FetchByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(string operationName, object?[]? parameters)
+    public async Task<T> FetchByOperationAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string operationName, object?[]? parameters)
     {
       if (operationName is null)
         throw new ArgumentNullException(nameof(operationName));

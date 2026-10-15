@@ -41,6 +41,8 @@ namespace Csla.Server
     /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
   /// <exception cref="InvalidOperationException"><see cref="Type"/> for <paramref name="factoryName"/> could not be loaded.</exception>
     [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = Reflection.MethodCaller.TypeNameResolutionJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2073", Justification = Reflection.MethodCaller.TypeNameResolutionJustification)]
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
     public Type GetFactoryType(string factoryName)
     {
       if (factoryName is null)

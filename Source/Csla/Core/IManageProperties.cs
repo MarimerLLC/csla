@@ -26,6 +26,7 @@ namespace Csla.Core
     void LoadProperty(IPropertyInfo propertyInfo, object? newValue);
     bool LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue);
     void LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue);
+    bool LoadPropertyMarkDirty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue);
     List<object> GetChildren();
   }
 }

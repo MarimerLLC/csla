@@ -28,6 +28,13 @@ namespace Csla.Core
     INotifyChildChanged,
     ISerializationNotification
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.BindingList)]
+    public ExtendedBindingList()
+    { }
+
     [NonSerialized]
     private EventHandler<RemovingItemEventArgs>? _nonSerializableHandlers;
     private EventHandler<RemovingItemEventArgs>? _serializableHandlers;

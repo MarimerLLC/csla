@@ -113,6 +113,7 @@ namespace Csla.Data
     /// <param name="target">A name/value dictionary containing the source values.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public static void Map(object source, Dictionary<string, object?> target)
     {
       Map(source, target, false);
@@ -127,6 +128,7 @@ namespace Csla.Data
     /// These properties will not be set on the target object.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public static void Map(object source, Dictionary<string, object?> target, params string[] ignoreList)
     {
       Map(source, target, false, ignoreList);
@@ -141,6 +143,7 @@ namespace Csla.Data
     /// These properties will not be set on the target object.</param>
     /// <param name="suppressExceptions">If true, any exceptions will be suppressed.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public static void Map(object source, Dictionary<string, object?> target, bool suppressExceptions, params string[] ignoreList)
     {
       if (source is null)
@@ -185,6 +188,7 @@ namespace Csla.Data
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="target"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public static void Map(object source, object target)
     {
       Map(source, target, false);
@@ -205,6 +209,7 @@ namespace Csla.Data
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public static void Map(object source, object target, params string[] ignoreList)
     {
       Map(source, target, false, ignoreList);
@@ -232,6 +237,7 @@ namespace Csla.Data
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="target"/> or <paramref name="ignoreList"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"></exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public static void Map(object source, object target, bool suppressExceptions, params string[] ignoreList)
     {
       if (source is null)
@@ -318,6 +324,7 @@ namespace Csla.Data
       }
     }
 
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     private static IList<string> GetPropertyNames([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type sourceType)
     {
       List<string> result = [];

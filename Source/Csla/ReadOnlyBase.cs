@@ -1433,6 +1433,12 @@ namespace Csla
       LoadProperty<P>(propertyInfo, newValue);
     }
 
+    bool IManageProperties.LoadPropertyMarkDirty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P : default
+    {
+      LoadProperty<P>(propertyInfo, newValue);
+      return false;
+    }
+
     bool IManageProperties.FieldExists(IPropertyInfo property)
     {
       return FieldManager.FieldExists(property);
@@ -1507,12 +1513,7 @@ namespace Csla
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
-      var t = GetType();
-      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).First(c => c.Name == "LoadProperty" && c.IsGenericMethod);
-      var gm = method.MakeGenericMethod(propertyInfo.Type);
-      var p = new object?[] { propertyInfo, newValue };
-      gm.Invoke(this, p);
+      PropertyLoader.LoadProperty(this, propertyInfo, newValue);
     }
 
     //private AsyncLoadManager

@@ -6,7 +6,6 @@
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Core
@@ -17,7 +16,6 @@ namespace Csla.Core
   /// </summary>
   public class GraphMerger : Server.ObjectFactory
   {
-    private static readonly ConcurrentDictionary<(Type, Type, bool), System.Reflection.MethodInfo> _methodCache = new();
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -142,17 +140,13 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     private void MergeGraph(IEditableCollection target, IEditableCollection source)
     {
-      var listType = target.GetType();
-      var childType = Utilities.GetChildItemType(listType) ?? throw new InvalidOperationException();
-      var genericTypeParams = new Type[] { listType, childType };
-      System.Reflection.MethodInfo? methodReference;
-      if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
-        methodReference = GetType().GetMethod("MergeBusinessBindingListGraph");
-      else
-        methodReference = GetType().GetMethod("MergeBusinessListGraph");
+      AsMergeable(target).MergeGraph(this, source);
+    }
 
-      var gr = methodReference!.MakeGenericMethod(genericTypeParams);
-      gr.Invoke(this, [target, source]);
+    private static IGraphMergeable AsMergeable(IEditableCollection target)
+    {
+      return target as IGraphMergeable
+        ?? throw new NotSupportedException($"{target.GetType().FullName} does not support graph merging; it must derive from BusinessListBase or BusinessBindingListBase.");
     }
 
     /// <summary>
@@ -336,26 +330,9 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    private async Task MergeGraphAsync(IEditableCollection target, IEditableCollection source)
+    private Task MergeGraphAsync(IEditableCollection target, IEditableCollection source)
     {
-      var cacheKey = GetCacheKey(target);
-
-      var methodReference = _methodCache.GetOrAdd(cacheKey, ((Type ListType, Type ChildType, bool IsExtendedBindingList) key) =>
-      {
-        var methodName = key.IsExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
-        return GetType().GetMethod(methodName)!.MakeGenericMethod(key.ListType, key.ChildType);
-      });
-
-      var task = (Task)methodReference.Invoke(this, [target, source])!;
-      await task;
-
-      static (Type ListType, Type ChildType, bool IsExtendedBindingList) GetCacheKey(IEditableCollection target)
-      {
-        var listType = target.GetType();
-        var childType = Utilities.GetChildItemType(listType) ?? throw new InvalidOperationException();
-        var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
-        return (listType, childType, isExtendedBindingList);
-      }
+      return AsMergeable(target).MergeGraphAsync(this, source);
     }
     /// <summary>
     /// Merges state from source graph into target graph.

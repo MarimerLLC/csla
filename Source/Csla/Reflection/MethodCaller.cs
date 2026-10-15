@@ -236,42 +236,40 @@ namespace Csla.Reflection
     #region GetType
 
     /// <summary>
+    /// Justification for resolving types by name. CSLA only resolves names
+    /// of types it serialized itself or that are named in
+    /// <see cref="Server.ObjectFactoryAttribute"/>, so they refer to types the
+    /// application uses. Trimmed applications must preserve those types.
+    /// </summary>
+    internal const string TypeNameResolutionJustification =
+      "Type names come from types CSLA serialized or from ObjectFactory attributes. " +
+      "Trimmed applications must preserve their business and factory types (for example with TrimmerRootAssembly).";
+
+    /// <summary>
     /// Gets a Type object based on the type name.
     /// </summary>
     /// <param name="typeName">Type name including assembly name.</param>
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
     /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
     /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode("A case-insensitive type lookup can't be analyzed for trimming. Use GetType(string, bool) instead.")]
     public static Type? GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
+      if (!ignoreCase)
+        return GetType(typeName, throwOnError);
+
       if (string.IsNullOrWhiteSpace(typeName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
 
       try
       {
-        return Type.GetType(typeName, throwOnError, ignoreCase);
+        return Type.GetType(typeName, throwOnError, true);
       }
       catch
       {
-#if NET8_0_OR_GREATER
-        string[] splitName = typeName.Split(',');
-
-        if (splitName.Length > 2)
-        {
-          var path = AppContext.BaseDirectory + splitName[1].Trim() + ".dll";
-          if (path.Contains("..") || path.Contains(':'))
-            throw new TypeLoadException(path);
-
-          var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
-          return asm.GetType(splitName[0].Trim());
-        }
-        else
-        {
-          throw;
-        }
-#else
+        if (TryGetTypeFromAssemblyFile(typeName, out var type))
+          return type;
         throw;
-#endif
       }
     }
 
@@ -281,9 +279,22 @@ namespace Csla.Reflection
     /// <param name="typeName">Type name including assembly name.</param>
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
     /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = TypeNameResolutionJustification)]
     public static Type? GetType(string typeName, bool throwOnError)
     {
-      return GetType(typeName, throwOnError, false);
+      if (string.IsNullOrWhiteSpace(typeName))
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
+
+      try
+      {
+        return Type.GetType(typeName, throwOnError);
+      }
+      catch
+      {
+        if (TryGetTypeFromAssemblyFile(typeName, out var type))
+          return type;
+        throw;
+      }
     }
 
     /// <summary>
@@ -293,7 +304,32 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     public static Type GetType(string typeName)
     {
-      return GetType(typeName, true, false)!;
+      return GetType(typeName, true)!;
+    }
+
+    /// <summary>
+    /// Fallback when the runtime can't resolve an assembly qualified type
+    /// name: loads the assembly file from the application base directory.
+    /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = TypeNameResolutionJustification)]
+    private static bool TryGetTypeFromAssemblyFile(string typeName, out Type? type)
+    {
+#if NET8_0_OR_GREATER
+      string[] splitName = typeName.Split(',');
+
+      if (splitName.Length > 2)
+      {
+        var path = AppContext.BaseDirectory + splitName[1].Trim() + ".dll";
+        if (path.Contains("..") || path.Contains(':'))
+          throw new TypeLoadException(path);
+
+        var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+        type = asm.GetType(splitName[0].Trim());
+        return true;
+      }
+#endif
+      type = null;
+      return false;
     }
 
 #endregion
@@ -776,7 +812,11 @@ namespace Csla.Reflection
       if (arrayType.GetElementType() is not Type elementType)
         throw new InvalidOperationException($"{arrayType}.{nameof(Type.GetElementType)}() != {nameof(Type)}.");
       
+#if NET9_0_OR_GREATER
+      return (object[])Array.CreateInstanceFromArrayType(arrayType, count);
+#else
       return (object[])(Array.CreateInstance(elementType, count));
+#endif
     }
     #endregion
 
@@ -1094,6 +1134,7 @@ namespace Csla.Reflection
     /// <param name="propertyName">Name of the property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="t"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public static PropertyDescriptor? GetPropertyDescriptor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type t, string propertyName)
     {
       if (t is null)
@@ -1253,8 +1294,7 @@ namespace Csla.Reflection
         }
         else if (isAsyncTaskObject)
         {
-          var taskObjectConversionMethodInfo = TaskConversionHelper.CreateTaskObjectConversionMethodInfo(info.ReturnType.GetGenericArguments()[0]);
-          return await ThrowIfNotTaskTReturn(CallMethod(obj, method, hasParameters, parameters), taskObjectConversionMethodInfo, obj, method).ConfigureAwait(false);
+          return await ThrowIfNotTaskTReturn(CallMethod(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
         }
         else
         {
@@ -1273,7 +1313,7 @@ namespace Csla.Reflection
         }
         else if (mh.IsAsyncTaskObject)
         {
-          return await ThrowIfNotTaskTReturn(CallMethod(obj, mh, hasParameters, parameters), mh.ConvertToTaskObjectMethod, obj, method).ConfigureAwait(false);
+          return await ThrowIfNotTaskTReturn(CallMethod(obj, mh, hasParameters, parameters), obj, method).ConfigureAwait(false);
         }
         else
         {
@@ -1291,15 +1331,14 @@ namespace Csla.Reflection
         await t.ConfigureAwait(false);
       }
 
-      static async Task<object?> ThrowIfNotTaskTReturn(object? returnValue, System.Reflection.MethodInfo taskObjectConversionMethod, object objectType, string calledMethodName)
+      static async Task<object?> ThrowIfNotTaskTReturn(object? returnValue, object objectType, string calledMethodName)
       {
         if (returnValue is not Task t || returnValue.GetType() is not { IsGenericType: true })
         {
           ThrowNotSupportedException(objectType, calledMethodName);
         }
 
-        var convertedTask = (Task<object?>)taskObjectConversionMethod.Invoke(null, [returnValue])!;
-        return await convertedTask.ConfigureAwait(false);
+        return await TaskConversionHelper.ConvertTask(t).ConfigureAwait(false);
       }
 
       [DoesNotReturn]
@@ -1380,6 +1419,8 @@ namespace Csla.Reflection
     /// <param name="parameters">Parameters for method</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="typeParams"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresDynamicCode("Creates a generic method instantiation from runtime types.")]
+    [RequiresUnreferencedCode("The generic method and its type arguments are resolved by name and may be trimmed.")]
     public static async Task<object?> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
       if (objectType is null)
@@ -1438,6 +1479,8 @@ namespace Csla.Reflection
     /// <param name="parameters">Parameters for method</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="typeParams"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresDynamicCode("Creates a generic method instantiation from runtime types.")]
+    [RequiresUnreferencedCode("The generic method and its type arguments are resolved by name and may be trimmed.")]
     public static object? CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
       if (target is null)

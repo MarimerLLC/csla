@@ -425,6 +425,12 @@ namespace Csla
       LoadProperty<P>(propertyInfo, newValue);
     }
 
+    bool IManageProperties.LoadPropertyMarkDirty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default
+    {
+      LoadProperty<P>(propertyInfo, newValue);
+      return false;
+    }
+
     bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue)
     {
       LoadProperty(propertyInfo, newValue);

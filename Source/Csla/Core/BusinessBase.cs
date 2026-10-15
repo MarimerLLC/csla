@@ -2852,6 +2852,11 @@ namespace Csla.Core
       LoadProperty<P>(propertyInfo, newValue);
     }
 
+    bool IManageProperties.LoadPropertyMarkDirty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P : default
+    {
+      return LoadPropertyMarkDirty<P>(propertyInfo, newValue);
+    }
+
     bool IManageProperties.FieldExists(IPropertyInfo property)
     {
       return FieldManager.FieldExists(property);
@@ -3088,63 +3093,7 @@ namespace Csla.Core
         return false;
       }
 
-#if IOS
-      //manually call LoadProperty<T> if the type is nullable otherwise JIT error will occur
-      if (propertyInfo.Type == typeof(int?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<int?>)propertyInfo, (int?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(bool?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<bool?>)propertyInfo, (bool?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(DateTime?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<DateTime?>)propertyInfo, (DateTime?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(decimal?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<decimal?>)propertyInfo, (decimal?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(double?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<double?>)propertyInfo, (double?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(long?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<long?>)propertyInfo, (long?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(byte?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<byte?>)propertyInfo, (byte?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(char?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<char?>)propertyInfo, (char?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(short?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<short?>)propertyInfo, (short?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(uint?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<uint?>)propertyInfo, (uint?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ulong?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<ulong?>)propertyInfo, (ulong?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ushort?))
-      {
-        return LoadPropertyMarkDirty((PropertyInfo<ushort?>)propertyInfo, (ushort?)newValue);
-      }
-      else
-      {
-        return (bool)LoadPropertyByReflection("LoadPropertyMarkDirty", propertyInfo, newValue);
-      }
-#else
-      return (bool)LoadPropertyByReflection("LoadPropertyMarkDirty", propertyInfo, newValue)!;
-#endif
+      return PropertyLoader.LoadPropertyMarkDirty(this, propertyInfo, newValue);
     }
 
 
@@ -3168,82 +3117,7 @@ namespace Csla.Core
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
-#if IOS
-      //manually call LoadProperty<T> if the type is nullable otherwise JIT error will occur
-      if (propertyInfo.Type == typeof(int?))
-      {
-        LoadProperty((PropertyInfo<int?>)propertyInfo, (int?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(bool?))
-      {
-        LoadProperty((PropertyInfo<bool?>)propertyInfo, (bool?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(DateTime?))
-      {
-        LoadProperty((PropertyInfo<DateTime?>)propertyInfo, (DateTime?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(decimal?))
-      {
-        LoadProperty((PropertyInfo<decimal?>)propertyInfo, (decimal?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(double?))
-      {
-        LoadProperty((PropertyInfo<double?>)propertyInfo, (double?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(long?))
-      {
-        LoadProperty((PropertyInfo<long?>)propertyInfo, (long?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(byte?))
-      {
-        LoadProperty((PropertyInfo<byte?>)propertyInfo, (byte?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(char?))
-      {
-        LoadProperty((PropertyInfo<char?>)propertyInfo, (char?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(short?))
-      {
-        LoadProperty((PropertyInfo<short?>)propertyInfo, (short?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(uint?))
-      {
-        LoadProperty((PropertyInfo<uint?>)propertyInfo, (uint?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ulong?))
-      {
-        LoadProperty((PropertyInfo<ulong?>)propertyInfo, (ulong?)newValue);
-      }
-      else if (propertyInfo.Type == typeof(ushort?))
-      {
-        LoadProperty((PropertyInfo<ushort?>)propertyInfo, (ushort?)newValue);
-      }
-      else
-      {
-        LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
-      }
-#else
-      LoadPropertyByReflection("LoadProperty", propertyInfo, newValue);
-#endif
-    }
-
-    /// <summary>
-    /// Calls the generic LoadProperty method via reflection.
-    /// </summary>
-    /// <param name="loadPropertyMethodName">
-    /// The LoadProperty method name to call via reflection.</param>
-    /// <param name="propertyInfo">
-    /// PropertyInfo object containing property metadata.</param>
-    /// <param name="newValue">
-    /// The new value for the property.</param>
-    private object? LoadPropertyByReflection(string loadPropertyMethodName, IPropertyInfo propertyInfo, object? newValue)
-    {
-      var t = GetType();
-      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).First(c => c.Name == loadPropertyMethodName && c.IsGenericMethod);
-      var gm = method.MakeGenericMethod(propertyInfo.Type);
-      var p = new object?[] { propertyInfo, newValue };
-      return gm.Invoke(this, p);
+      PropertyLoader.LoadProperty(this, propertyInfo, newValue);
     }
 
     /// <summary>

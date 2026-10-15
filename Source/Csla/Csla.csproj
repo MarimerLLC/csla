@@ -18,11 +18,12 @@
     <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer> 
     <!-- This is first priority warnings which should be fixed. They are usually trimming friendly, in a sense that, develop annotate what parts of types should be preserved.  -->
     <NoWarn>$(NoWarn);IL2070;IL2072;IL2075</NoWarn>
-    <!-- 
-      This is problematic for NativeAOT pieces of code, which require analysis of API and what can be done to improve situation. 
-      Slapping "Here we require dynamic code" means, that we opt-out of supporting NativeAOT for these methods which is undesirable.
+    <!--
+      IL2111: method with DynamicallyAccessedMembers accessed via reflection (mostly expression-based RegisterProperty).
+      The RequiresDynamicCode/RequiresUnreferencedCode group (IL2026, IL2055, IL2057, IL2060, IL2096, IL3050) is resolved
+      and must not be suppressed again; fix the code or annotate the API instead.
     -->
-    <NoWarn>$(NoWarn);IL2026;IL2055;IL2057;IL2060;IL2096;IL2111;IL3050</NoWarn>
+    <NoWarn>$(NoWarn);IL2111</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

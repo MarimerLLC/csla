@@ -28,6 +28,13 @@ namespace Csla.Core
   [Serializable]
   public class MobileBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindingList<T>, IMobileList, IMobileObjectMetastate
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.BindingList)]
+    public MobileBindingList()
+    { }
+
     #region LoadListMode
 
     [NonSerialized]

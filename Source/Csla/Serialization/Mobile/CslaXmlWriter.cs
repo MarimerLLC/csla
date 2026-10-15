@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml;
 
 namespace Csla.Serialization.Mobile
@@ -8,6 +9,8 @@ namespace Csla.Serialization.Mobile
   /// to write the data to a stream
   /// </summary>
   [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
+  [RequiresDynamicCode("DataContractSerializer is not compatible with NativeAOT.")]
+  [RequiresUnreferencedCode("DataContractSerializer is not trim compatible.")]
   public class CslaXmlWriter : ICslaWriter
   {
     /// <summary>

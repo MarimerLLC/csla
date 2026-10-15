@@ -225,15 +225,35 @@ namespace Csla
       }
       catch when (value is not null)
       {
-        TypeConverter cnv = TypeDescriptor.GetConverter(propertyType);
-        TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
-        if (cnv != null && cnv.CanConvertFrom(valueType))
-          return cnv.ConvertFrom(value);
-        else if (cnv1 != null && cnv1.CanConvertTo(propertyType))
-          return cnv1.ConvertTo(value, propertyType);
-        else
-          throw;
+        if (TryConvertWithTypeConverter(propertyType, valueType, value, out var result))
+          return result;
+        throw;
       }
+    }
+
+    /// <summary>
+    /// Last-resort conversion using the TypeConverters of the
+    /// source and target types.
+    /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2026",
+      Justification = "Only reached after Convert.ChangeType fails. Both types are annotated with DynamicallyAccessedMembers.All, so a TypeConverterAttribute on them is preserved; " +
+                      "a generic TypeConverter whose own type arguments were trimmed fails to convert, and the original conversion exception is rethrown.")]
+    private static bool TryConvertWithTypeConverter([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type propertyType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object value, out object? result)
+    {
+      TypeConverter cnv = TypeDescriptor.GetConverter(propertyType);
+      TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
+      if (cnv != null && cnv.CanConvertFrom(valueType))
+      {
+        result = cnv.ConvertFrom(value);
+        return true;
+      }
+      if (cnv1 != null && cnv1.CanConvertTo(propertyType))
+      {
+        result = cnv1.ConvertTo(value, propertyType);
+        return true;
+      }
+      result = null;
+      return false;
     }
 
     /// <summary>

@@ -397,11 +397,7 @@ namespace Csla.Core
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
-      var t = GetType();
-      var method = t.GetRuntimeMethods().First(c => c.Name == "LoadProperty" && c.IsGenericMethod);
-      var gm = method.MakeGenericMethod(propertyInfo.Type);
-      var p = new object?[] { propertyInfo, newValue };
-      gm.Invoke(this, p);
+      PropertyLoader.LoadProperty(this, propertyInfo, newValue);
     }
 
     /// <summary>
@@ -421,12 +417,7 @@ namespace Csla.Core
         LoadProperty(propertyInfo, newValue);
         return false;
       }
-      var t = GetType();
-      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = t.GetMethods(flags).First(c => c.Name == "LoadPropertyMarkDirty" && c.IsGenericMethod);
-      var gm = method.MakeGenericMethod(propertyInfo.Type);
-      var p = new object?[] { propertyInfo, newValue };
-      return (bool)gm.Invoke(this, p)!;
+      return PropertyLoader.LoadPropertyMarkDirty(this, propertyInfo, newValue);
     }
 
     #endregion
@@ -530,6 +521,7 @@ namespace Csla.Core
     [DoesNotReturn]
     bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue) => throw new NotImplementedException();
     void IManageProperties.LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default => LoadProperty(propertyInfo, newValue);
+    bool IManageProperties.LoadPropertyMarkDirty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default => LoadPropertyMarkDirty(propertyInfo, newValue);
     List<object> IManageProperties.GetChildren() => FieldManager.GetChildren();
     bool IManageProperties.HasManagedProperties => true;
   }

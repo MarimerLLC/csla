@@ -597,9 +597,8 @@ namespace Csla.Reflection
         {
           // The method returns Task<T>; Task<T> is invariant so it cannot be cast to
           // Task<object>. Use the conversion helper to await it and extract the result.
-          var returnValue = method.DynamicMethod!(obj, plist);
-          var convertedTask = (Task<object?>)method.ConvertToTaskObjectMethod!.Invoke(null, [returnValue])!;
-          return await convertedTask.ConfigureAwait(false);
+          var returnValue = (Task)method.DynamicMethod!(obj, plist);
+          return await TaskConversionHelper.ConvertTask(returnValue).ConfigureAwait(false);
         }
         else
         {

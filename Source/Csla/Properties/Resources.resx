@@ -557,4 +557,16 @@
   <data name="VersionRoutingTagInvalidCharacters" xml:space="preserve">
     <value>Version routing tag value cannot contain '-' or '/' characters</value>
   </data>
+  <data name="GraphMergeNotSupportedException" xml:space="preserve">
+    <value>{0} does not support graph merging; it must derive from BusinessListBase or BusinessBindingListBase.</value>
+  </data>
+  <data name="LoadPropertyRequiresDynamicCodeException" xml:space="preserve">
+    <value>Loading property '{0}' with a value of type '{1}' requires dynamic code, which is not available in this runtime. Use a PropertyInfo&lt;{2}&gt; and a value of that type.</value>
+  </data>
+  <data name="TaskOfTRequiredException" xml:space="preserve">
+    <value>{0} is not a Task&lt;T&gt;.</value>
+  </data>
+  <data name="TaskResultNotAvailableException" xml:space="preserve">
+    <value>{0}.Result is not available; it may have been removed by trimming.</value>
+  </data>
 </root>

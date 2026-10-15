@@ -71,9 +71,7 @@ namespace Csla.Rules.CommonRules
     /// Rule implementation.
     /// </summary>
     /// <param name="context">Rule context.</param>
-    [UnconditionalSuppressMessage("Trimming", "IL2026",
-      Justification = "The validated instance is a CSLA business object. The business base classes annotate the business type with DynamicallyAccessedMembers.All, " +
-                      "so the members and attributes ValidationContext reads are preserved.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.DataAnnotationJustification)]
     protected override void Execute(IRuleContext context)
     {
       var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(context.Target!, context.ApplicationContext.CurrentServiceProvider, null);

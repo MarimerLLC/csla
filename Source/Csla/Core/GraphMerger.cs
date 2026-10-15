@@ -147,7 +147,7 @@ namespace Csla.Core
     private static IGraphMergeable AsMergeable(IEditableCollection target)
     {
       return target as IGraphMergeable
-        ?? throw new NotSupportedException($"{target.GetType().FullName} does not support graph merging; it must derive from BusinessListBase or BusinessBindingListBase.");
+        ?? throw new NotSupportedException(string.Format(Properties.Resources.GraphMergeNotSupportedException, target.GetType().FullName));
     }
 
     /// <summary>

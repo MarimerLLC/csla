@@ -124,8 +124,7 @@ namespace Csla.Configuration
       services.TryAddSingleton(typeof(Server.Dashboard.IDashboard), config.DataPortalOptions.DataPortalServerOptions.DashboardType);
     }
 
-    [UnconditionalSuppressMessage("Trimming", "IL2067",
-      Justification = "Interceptor types are only added through the AddInterceptorProvider<T> overloads and the default list in DataPortalServerOptions, both of which preserve public constructors.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Core.TrimmingMessages.InterceptorTypeJustification)]
     private static void AddInterceptor(IServiceCollection services, Type interceptorType)
     {
       services.AddScoped(typeof(IInterceptDataPortal), interceptorType);

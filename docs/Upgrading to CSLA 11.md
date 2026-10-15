@@ -223,3 +223,15 @@ The factory receives a `TransactionScopeFactoryContext` describing the operation
 These let a factory adjust the transaction to the data involved. For example, it can use a longer timeout for a large batch. `BusinessObject` is the server-side instance before the operation runs. Treat it as read-only.
 
 The `TransactionalDataPortal` constructor now takes `(DataPortalBroker, ITransactionScopeFactory, TransactionScopeFactoryContext)` instead of `(DataPortalBroker, TransactionalAttribute)`.
+
+## Obsolete XML serialization readers and writers removed
+
+The `DataContractSerializer` based MobileFormatter readers and writers have been removed ([#3347](https://github.com/MarimerLLC/csla/issues/3347)):
+
+* `CslaXmlReader` and `CslaXmlWriter`
+* `CslaXmlBinaryReader` and `CslaXmlBinaryWriter`
+* `CslaReaderWriterFactory.GetDataContractSerializer()`
+
+They were marked `[Obsolete]` in CSLA 9 ([#4336](https://github.com/MarimerLLC/csla/pull/4336)), and `DataContractSerializer` isn't compatible with trimming or NativeAOT.
+
+If your configuration selects one of these types through the `MobileReader<T>()` or `MobileWriter<T>()` options, remove those calls to use the default `CslaBinaryReader` and `CslaBinaryWriter`. The serialized format changes, so the client and the server must be updated together.

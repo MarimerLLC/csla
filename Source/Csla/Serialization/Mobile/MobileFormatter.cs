@@ -226,7 +226,7 @@ namespace Csla.Serialization.Mobile
     /// </summary>
     ///<param name="deserialized">DTO group to deserialize</param>
     ///<exception cref="ArgumentNullException"><paramref name="deserialized"/> is <see langword="null"/>.</exception>
-    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Reflection.MethodCaller.TypeNameResolutionJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.TypeNameResolutionJustification)]
     public object? DeserializeAsDTO(List<SerializationInfo> deserialized)
     {
       if (deserialized is null)

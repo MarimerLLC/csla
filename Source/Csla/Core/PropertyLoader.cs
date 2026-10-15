@@ -57,9 +57,8 @@ namespace Csla.Core
       if (RuntimeFeature.IsDynamicCodeSupported)
         return InvokeGenericLoadMethodByReflection(target, methodName, propertyInfo, newValue);
 
-      throw new NotSupportedException(
-        $"Loading property '{propertyInfo.Name}' with a value of type '{newValue?.GetType().FullName}' requires dynamic code, " +
-        $"which is not available in this runtime. Use a PropertyInfo<{propertyInfo.Type.Name}> and a value of that type.");
+      throw new NotSupportedException(string.Format(
+        Properties.Resources.LoadPropertyRequiresDynamicCodeException, propertyInfo.Name, newValue?.GetType().FullName, propertyInfo.Type.Name));
 #else
       return InvokeGenericLoadMethodByReflection(target, methodName, propertyInfo, newValue);
 #endif
@@ -70,8 +69,8 @@ namespace Csla.Core
     /// each base class's implementation (including private or explicitly
     /// implemented ones) and reflection applies its argument conversions.
     /// </summary>
-    [RequiresDynamicCode("Creates a generic method instantiation for the property type at runtime.")]
-    [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The IManageProperties generic methods place no DynamicallyAccessedMembers requirements on the property type.")]
+    [RequiresDynamicCode(TrimmingMessages.PropertyTypeGenericInstantiation)]
+    [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = TrimmingMessages.PropertyLoaderGenericMethodJustification)]
     private static object? InvokeGenericLoadMethodByReflection(IManageProperties target, string methodName, IPropertyInfo propertyInfo, object? newValue)
     {
       var method = typeof(IManageProperties).GetMethods().First(c => c.Name == methodName && c.IsGenericMethodDefinition);

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Csla.Properties;
 
 namespace Csla.Reflection;
 
@@ -20,17 +21,16 @@ internal static class TaskConversionHelper
     return GetResult(task);
   }
 
-  [UnconditionalSuppressMessage("Trimming", "IL2075",
-    Justification = "Result is a public property of Task<T>, preserved by the DynamicDependency on ConvertTask.")]
+  [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.TaskResultJustification)]
   private static object? GetResult(Task task)
   {
     // the runtime type is often a derived async state machine box; find the Task<T> base
     var type = task.GetType();
     while (!(type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Task<>)))
-      type = type.BaseType ?? throw new NotSupportedException($"{task.GetType()} is not a Task<T>.");
+      type = type.BaseType ?? throw new NotSupportedException(string.Format(Resources.TaskOfTRequiredException, task.GetType()));
 
     var result = type.GetProperty(nameof(Task<object>.Result))
-      ?? throw new NotSupportedException($"{type}.Result is not available; it may have been removed by trimming.");
+      ?? throw new NotSupportedException(string.Format(Resources.TaskResultNotAvailableException, type));
     return result.GetValue(task);
   }
 }

@@ -784,7 +784,7 @@ namespace Csla.Core.FieldManager
     /// <param name="mode">
     /// The StateMode indicating why this method was invoked.
     /// </param>
-    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Reflection.MethodCaller.TypeNameResolutionJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.TypeNameResolutionJustification)]
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       string type = (string)info.Values["_businessObjectType"].Value!;

@@ -237,23 +237,13 @@ namespace Csla.Reflection
     #region GetType
 
     /// <summary>
-    /// Justification for resolving types by name. CSLA only resolves names
-    /// of types it serialized itself or that are named in
-    /// <see cref="Server.ObjectFactoryAttribute"/>, so they refer to types the
-    /// application uses. Trimmed applications must preserve those types.
-    /// </summary>
-    internal const string TypeNameResolutionJustification =
-      "Type names come from types CSLA serialized or from ObjectFactory attributes. " +
-      "Trimmed applications must preserve their business and factory types (for example with TrimmerRootAssembly).";
-
-    /// <summary>
     /// Gets a Type object based on the type name.
     /// </summary>
     /// <param name="typeName">Type name including assembly name.</param>
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
     /// <param name="ignoreCase">true for a case-insensitive comparison of the type name.</param>
     /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    [RequiresUnreferencedCode("A case-insensitive type lookup can't be analyzed for trimming. Use GetType(string, bool) instead.")]
+    [RequiresUnreferencedCode(Core.TrimmingMessages.CaseInsensitiveTypeLookup)]
     public static Type? GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
       if (!ignoreCase)
@@ -280,7 +270,7 @@ namespace Csla.Reflection
     /// <param name="typeName">Type name including assembly name.</param>
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
     /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = TypeNameResolutionJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = Core.TrimmingMessages.TypeNameResolutionJustification)]
     public static Type? GetType(string typeName, bool throwOnError)
     {
       if (string.IsNullOrWhiteSpace(typeName))
@@ -312,7 +302,7 @@ namespace Csla.Reflection
     /// Fallback when the runtime can't resolve an assembly qualified type
     /// name: loads the assembly file from the application base directory.
     /// </summary>
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = TypeNameResolutionJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.TypeNameResolutionJustification)]
     private static bool TryGetTypeFromAssemblyFile(string typeName, out Type? type)
     {
 #if NET8_0_OR_GREATER
@@ -1430,8 +1420,8 @@ namespace Csla.Reflection
     /// <param name="parameters">Parameters for method</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="typeParams"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    [RequiresDynamicCode("Creates a generic method instantiation from runtime types.")]
-    [RequiresUnreferencedCode("The generic method and its type arguments are resolved by name and may be trimmed.")]
+    [RequiresDynamicCode(Core.TrimmingMessages.GenericMethodInstantiation)]
+    [RequiresUnreferencedCode(Core.TrimmingMessages.GenericMethodByName)]
     public static async Task<object?> CallGenericStaticMethodAsync(Type objectType, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
       if (objectType is null)
@@ -1490,8 +1480,8 @@ namespace Csla.Reflection
     /// <param name="parameters">Parameters for method</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="typeParams"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    [RequiresDynamicCode("Creates a generic method instantiation from runtime types.")]
-    [RequiresUnreferencedCode("The generic method and its type arguments are resolved by name and may be trimmed.")]
+    [RequiresDynamicCode(Core.TrimmingMessages.GenericMethodInstantiation)]
+    [RequiresUnreferencedCode(Core.TrimmingMessages.GenericMethodByName)]
     public static object? CallGenericMethod(object target, string method, Type[] typeParams, bool hasParameters, params object?[]? parameters)
     {
       if (target is null)

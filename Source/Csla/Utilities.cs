@@ -127,10 +127,6 @@ namespace Csla
 
     #region  CoerceValue
 
-    private const string TypeConverterFallbackJustification =
-      "Last-resort conversion, only reached after Convert.ChangeType fails. If trimming removed a type's TypeConverter, " +
-      "no converter is found and the original conversion exception is rethrown.";
-
     /// <summary>
     /// Attempts to coerce a value of one type into
     /// a value of a different type.
@@ -239,8 +235,8 @@ namespace Csla
     /// Last-resort conversion using the TypeConverters of the
     /// source and target types.
     /// </summary>
-    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = TypeConverterFallbackJustification)]
-    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = TypeConverterFallbackJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.TypeConverterFallbackJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Core.TrimmingMessages.TypeConverterFallbackJustification)]
     private static bool TryConvertWithTypeConverter(Type propertyType, Type valueType, object value, out object? result)
     {
       TypeConverter cnv = TypeDescriptor.GetConverter(propertyType);

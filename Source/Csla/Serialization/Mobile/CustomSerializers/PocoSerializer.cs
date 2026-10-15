@@ -16,8 +16,8 @@ namespace Csla.Serialization.Mobile.CustomSerializers;
 /// A formatter that can serialize and deserialize a POCO
 /// by using System.Text.Json.
 /// </summary>
-[RequiresDynamicCode("Uses reflection-based System.Text.Json serialization; implement an IMobileSerializer that uses a source-generated JsonSerializerContext for NativeAOT.")]
-[RequiresUnreferencedCode("Uses reflection-based System.Text.Json serialization; implement an IMobileSerializer that uses a source-generated JsonSerializerContext for trimmed apps.")]
+[RequiresDynamicCode(Core.TrimmingMessages.ReflectionJsonSerializationDynamicCode)]
+[RequiresUnreferencedCode(Core.TrimmingMessages.ReflectionJsonSerializationUnreferencedCode)]
 public class PocoSerializer<T> : IMobileSerializer
 {
   /// <inheritdoc />

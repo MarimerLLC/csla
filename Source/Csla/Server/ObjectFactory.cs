@@ -207,7 +207,7 @@ namespace Csla.Server
     /// invoked.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected void LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(object obj, PropertyInfo<P> propertyInfo, P? newValue)
+    protected void LoadProperty<P>(object obj, PropertyInfo<P> propertyInfo, P? newValue)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -259,7 +259,7 @@ namespace Csla.Server
     /// No authorization checks occur when this method is called.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> or <paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
-    protected P? ReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(object obj, PropertyInfo<P> propertyInfo)
+    protected P? ReadProperty<P>(object obj, PropertyInfo<P> propertyInfo)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));

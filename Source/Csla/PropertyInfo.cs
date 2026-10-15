@@ -19,7 +19,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Data type of the property.
   /// </typeparam>
-  public class PropertyInfo<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : Core.IPropertyInfo, Core.ITypedPropertyLoader, IComparable
+  public class PropertyInfo<T> : Core.IPropertyInfo, Core.ITypedPropertyLoader, IComparable
   {
     /// <summary>
     /// Creates a new instance of this class.

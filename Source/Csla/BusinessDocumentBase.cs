@@ -951,7 +951,7 @@ namespace Csla
     /// <typeparam name="P">Type of property.</typeparam>
     /// <param name="propertyName">Property name from nameof().</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName)
+    protected static new PropertyInfo<P> RegisterProperty<P>(string propertyName)
     {
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
@@ -966,7 +966,7 @@ namespace Csla
     /// <typeparam name="P">Type of property.</typeparam>
     /// <param name="propertyLambdaExpression">Property expression.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression)
+    protected new static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -983,7 +983,7 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property expression.</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
+    protected new static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -1000,7 +1000,7 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property expression.</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
+    protected new static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -1018,7 +1018,7 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding.</param>
     /// <param name="defaultValue">Default value for the property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue)
+    protected new static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -1037,7 +1037,7 @@ namespace Csla
     /// <param name="defaultValue">Default value for the property.</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected new static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
+    protected new static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -1054,7 +1054,7 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof().</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, RelationshipTypes relationship)
+    protected static new PropertyInfo<P> RegisterProperty<P>(string propertyName, RelationshipTypes relationship)
     {
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
@@ -1070,7 +1070,7 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof().</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName)
+    protected static new PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName)
     {
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
@@ -1087,7 +1087,7 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding.</param>
     /// <param name="defaultValue">Default value for the property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName, P? defaultValue)
+    protected static new PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P? defaultValue)
     {
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
@@ -1105,7 +1105,7 @@ namespace Csla
     /// <param name="defaultValue">Default value for the property.</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static new PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
+    protected static new PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P? defaultValue, RelationshipTypes relationship)
     {
       if (string.IsNullOrWhiteSpace(propertyName))
         throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));

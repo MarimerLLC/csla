@@ -207,7 +207,7 @@ namespace Csla
     /// The provided IPropertyInfo object.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> info)
+    protected static PropertyInfo<P> RegisterProperty<P>(PropertyInfo<P> info)
     {
       if (info is null)
         throw new ArgumentNullException(nameof(info));
@@ -222,7 +222,7 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string? propertyName)
+    protected static PropertyInfo<P> RegisterProperty<P>(string? propertyName)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -237,7 +237,7 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression)
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -254,7 +254,7 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string? propertyName, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<P>(string? propertyName, RelationshipTypes relationship)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -270,7 +270,7 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, RelationshipTypes relationship)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -287,7 +287,7 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string? propertyName, string? friendlyName)
+    protected static PropertyInfo<P> RegisterProperty<P>(string? propertyName, string? friendlyName)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -303,7 +303,7 @@ namespace Csla
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -321,7 +321,7 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName, P defaultValue)
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P defaultValue)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -338,7 +338,7 @@ namespace Csla
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue)
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -357,7 +357,7 @@ namespace Csla
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(string propertyName, string? friendlyName, P defaultValue, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<P>(string propertyName, string? friendlyName, P defaultValue, RelationshipTypes relationship)
     {
       if (propertyName is null)
         throw new ArgumentNullException(nameof(propertyName));
@@ -375,7 +375,7 @@ namespace Csla
     /// <param name="defaultValue">Default Value for the property</param>
     /// <param name="relationship">Relationship with property value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
-    protected static PropertyInfo<P> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue, RelationshipTypes relationship)
+    protected static PropertyInfo<P> RegisterProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue, RelationshipTypes relationship)
     {
       if (propertyLambdaExpression is null)
         throw new ArgumentNullException(nameof(propertyLambdaExpression));
@@ -405,7 +405,7 @@ namespace Csla
       return ReadProperty(propertyInfo);
     }
 
-    P? IManageProperties.ReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo) where P: default
+    P? IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) where P: default
     {
       return ReadProperty<P>(propertyInfo);
     }
@@ -420,12 +420,12 @@ namespace Csla
       LoadProperty(propertyInfo, newValue);
     }
 
-    void IManageProperties.LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default
+    void IManageProperties.LoadProperty<P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default
     {
       LoadProperty<P>(propertyInfo, newValue);
     }
 
-    bool IManageProperties.LoadPropertyMarkDirty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default
+    bool IManageProperties.LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default
     {
       LoadProperty<P>(propertyInfo, newValue);
       return false;
@@ -447,22 +447,22 @@ namespace Csla
       return FieldManager.FieldExists(property);
     }
 
-    object IManageProperties.LazyGetProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    object IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       throw new NotImplementedException();
     }
 
-    object IManageProperties.LazyGetPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       throw new NotImplementedException();
     }
 
-    P IManageProperties.LazyReadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
+    P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       throw new NotImplementedException();
     }
 
-    P IManageProperties.LazyReadPropertyAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, Task<P> factory)
+    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       throw new NotImplementedException();
     }

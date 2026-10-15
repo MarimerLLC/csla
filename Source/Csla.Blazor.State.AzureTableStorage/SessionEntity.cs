@@ -20,7 +20,7 @@ namespace Csla.Blazor.State.AzureTableStorage;
 /// <see cref="RowKey"/> holds the application discriminator, so that
 /// multiple applications can safely share a single storage table.
 /// </remarks>
-public class SessionEntity : ITableEntity
+internal sealed class SessionEntity : ITableEntity
 {
   /// <summary>
   /// Gets or sets the partition key (the session key).

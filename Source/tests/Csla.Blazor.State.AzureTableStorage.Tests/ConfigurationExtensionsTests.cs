@@ -11,6 +11,7 @@ using FluentAssertions;
 using Csla.Configuration;
 using Csla.State;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Time.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Blazor.State.AzureTableStorage.Tests;
@@ -38,7 +39,7 @@ public class ConfigurationExtensionsTests
   }
 
   [TestMethod]
-  public void UseAzureTableStorageSessionStore_AfterAddServerSideBlazor_ReplacesInMemoryStore()
+  public void UseAzureTableStorageSessionStore_AfterAddServerSideBlazor_IsLastISessionStoreRegistration()
   {
     var services = new ServiceCollection();
 
@@ -46,9 +47,37 @@ public class ConfigurationExtensionsTests
       .AddServerSideBlazor(b => b.UseInMemoryApplicationContextManager = false)
       .UseAzureTableStorageSessionStore(s => s.ConnectionString = DevelopmentConnectionString));
 
-    var descriptor = services.Single(d => d.ServiceType == typeof(ISessionStore));
+    var descriptor = services.Last(d => d.ServiceType == typeof(ISessionStore));
     descriptor.ImplementationType.Should().BeNull();
     descriptor.ImplementationFactory.Should().NotBeNull();
+  }
+
+  [TestMethod]
+  public void UseAzureTableStorageSessionStore_RegistersConfiguredOptionsAsSingleton()
+  {
+    var services = new ServiceCollection();
+
+    new CslaOptions(services).UseAzureTableStorageSessionStore(o =>
+    {
+      o.ConnectionString = DevelopmentConnectionString;
+      o.TableName = "CustomTable";
+    });
+
+    var descriptor = services.Single(d => d.ServiceType == typeof(AzureTableStorageOptions));
+    descriptor.Lifetime.Should().Be(ServiceLifetime.Singleton);
+    ((AzureTableStorageOptions)descriptor.ImplementationInstance!).TableName.Should().Be("CustomTable");
+  }
+
+  [TestMethod]
+  public void UseAzureTableStorageSessionStore_KeepsRegisteredTimeProvider()
+  {
+    var services = new ServiceCollection();
+    var timeProvider = new FakeTimeProvider();
+    services.AddSingleton<TimeProvider>(timeProvider);
+
+    new CslaOptions(services).UseAzureTableStorageSessionStore(o => o.ConnectionString = DevelopmentConnectionString);
+
+    services.Single(d => d.ServiceType == typeof(TimeProvider)).ImplementationInstance.Should().BeSameAs(timeProvider);
   }
 
   [TestMethod]

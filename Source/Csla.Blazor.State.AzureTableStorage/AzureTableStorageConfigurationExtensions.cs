@@ -29,9 +29,11 @@ namespace Csla.Configuration
     /// <returns>The CslaOptions instance.</returns>
     /// <remarks>
     /// Call this after <c>AddServerSideBlazor</c>, which registers the default
-    /// in-memory session store; this method replaces that registration. The
-    /// session store is only used when <c>UseInMemoryApplicationContextManager</c>
-    /// is <see langword="false"/>.
+    /// in-memory session store; the last registration wins. The session store
+    /// is only used when <c>UseInMemoryApplicationContextManager</c> is
+    /// <see langword="false"/>. Call <c>ISessionManager.PurgeSessions</c>
+    /// periodically: besides removing expired sessions, it saves changes made
+    /// to live sessions to the table.
     /// <para>
     /// The <see cref="TableServiceClient"/> comes from
     /// <see cref="AzureTableStorageOptions.ConnectionString"/> when it is set,
@@ -48,11 +50,15 @@ namespace Csla.Configuration
       var storeOptions = new AzureTableStorageOptions();
       options?.Invoke(storeOptions);
 
+      // Singletons, because the singleton SessionManager depends on ISessionStore.
+      config.Services.AddSingleton(storeOptions);
+      config.Services.TryAddSingleton(TimeProvider.System);
+
       // The client is resolved privately rather than registered, so the store
       // never changes which TableServiceClient the rest of the app receives.
-      config.Services.Replace(ServiceDescriptor.Singleton<ISessionStore>(sp =>
+      config.Services.AddSingleton<ISessionStore>(sp =>
         ActivatorUtilities.CreateInstance<AzureTableStorageSessionStore>(
-          sp, GetTableServiceClient(sp, storeOptions), storeOptions)));
+          sp, GetTableServiceClient(sp, sp.GetRequiredService<AzureTableStorageOptions>())));
       return config;
     }
 

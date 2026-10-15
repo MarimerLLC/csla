@@ -9,10 +9,10 @@
 using Azure.Data.Tables;
 using FluentAssertions;
 using Csla.Configuration;
-using Csla.Serialization;
 using Csla.State;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Blazor.State.AzureTableStorage.Tests;
@@ -23,6 +23,10 @@ namespace Csla.Blazor.State.AzureTableStorage.Tests;
 /// because they require the emulator (or a live storage account) to be running.
 /// Start Azurite locally (for example: <c>azurite</c>) before running them.
 /// </summary>
+/// <remarks>
+/// A second store instance over the same table stands in for a restarted or
+/// different server: it has no sessions in memory, so it reads the table.
+/// </remarks>
 [TestClass]
 [TestCategory("SkipOnCIServer")]
 public class AzureTableStorageSessionStoreTests
@@ -32,6 +36,7 @@ public class AzureTableStorageSessionStoreTests
 
   private ServiceProvider _provider = null!;
   private TableServiceClient _serviceClient = null!;
+  private FakeTimeProvider _timeProvider = null!;
   private string _tableName = null!;
 
   [TestInitialize]
@@ -41,6 +46,9 @@ public class AzureTableStorageSessionStoreTests
     services.AddLogging();
     services.AddCsla();
     _provider = services.BuildServiceProvider();
+
+    // Session.Touch uses the system clock, so the fake clock starts at the real time.
+    _timeProvider = new FakeTimeProvider(DateTimeOffset.UtcNow);
 
     // Unique table per test so runs do not collide. Table names must be alphanumeric.
     _tableName = "CslaTest" + Guid.NewGuid().ToString("N");
@@ -63,8 +71,9 @@ public class AzureTableStorageSessionStoreTests
     };
     return new AzureTableStorageSessionStore(
       _serviceClient,
-      _provider.GetRequiredService<ISerializationFormatter>(),
       options,
+      _provider.GetRequiredService<IServiceScopeFactory>(),
+      _timeProvider,
       _provider.GetRequiredService<ILogger<AzureTableStorageSessionStore>>());
   }
 
@@ -80,7 +89,7 @@ public class AzureTableStorageSessionStoreTests
     await _serviceClient.GetTableClient(_tableName).UpsertEntityAsync(entity);
   }
 
-  private async Task<bool> EntityExistsAsync(string key, string discriminator)
+  private async Task<bool> EntityExistsAsync(string key, string discriminator = Discriminator)
   {
     var response = await _serviceClient.GetTableClient(_tableName).GetEntityIfExistsAsync<SessionEntity>(key, discriminator);
     return response.HasValue;
@@ -97,47 +106,67 @@ public class AzureTableStorageSessionStoreTests
   }
 
   [TestMethod]
-  public async Task AddOrUpdateSessionAsync_ThenGet_RoundTripsValues()
+  public async Task GetSessionAsync_ReturnsTheStoredInstance()
   {
     var store = CreateStore();
-    var session = new Session { ["greeting"] = "hello" };
+    var session = new Session { ["v"] = 1 };
+    await store.AddOrUpdateSessionAsync("key", session);
 
-    await store.AddOrUpdateSessionAsync("key-1", session);
-    var loaded = await store.GetSessionAsync("key-1");
+    var loaded = await store.GetSessionAsync("key");
 
-    loaded.Should().NotBeNull();
-    loaded!["greeting"].Should().Be("hello");
-    loaded.LastTouched.Should().Be(session.LastTouched);
+    loaded.Should().BeSameAs(session);
   }
 
   [TestMethod]
-  public async Task AddOrUpdateSessionAsync_Twice_Upserts()
+  public async Task GetSessionAsync_ChangesMadeInPlace_AreVisibleToLaterReads()
+  {
+    var store = CreateStore();
+    await store.AddOrUpdateSessionAsync("key", new Session());
+
+    (await store.GetSessionAsync("key"))!["v"] = "changed";
+    var loaded = await store.GetSessionAsync("key");
+
+    loaded!["v"].Should().Be("changed");
+  }
+
+  [TestMethod]
+  public async Task GetSessionAsync_NotInMemory_LoadsFromTable()
+  {
+    await CreateStore().AddOrUpdateSessionAsync("key", new Session { ["greeting"] = "hello" });
+    var restarted = CreateStore();
+
+    var first = await restarted.GetSessionAsync("key");
+    var second = await restarted.GetSessionAsync("key");
+
+    first.Should().NotBeNull();
+    first!["greeting"].Should().Be("hello");
+    second.Should().BeSameAs(first);
+  }
+
+  [TestMethod]
+  public async Task AddOrUpdateSessionAsync_Twice_WritesLatestToTable()
   {
     var store = CreateStore();
 
-    await store.AddOrUpdateSessionAsync("key-2", new Session { ["v"] = 1 });
-    await store.AddOrUpdateSessionAsync("key-2", new Session { ["v"] = 2 });
-    var loaded = await store.GetSessionAsync("key-2");
+    await store.AddOrUpdateSessionAsync("key", new Session { ["v"] = 1 });
+    await store.AddOrUpdateSessionAsync("key", new Session { ["v"] = 2 });
+    var loaded = await CreateStore().GetSessionAsync("key");
 
-    loaded.Should().NotBeNull();
     loaded!["v"].Should().Be(2);
   }
 
   [TestMethod]
   public async Task SessionsWithSameKey_AreIsolatedByDiscriminator()
   {
-    var storeA = CreateStore("app-a");
-    var storeB = CreateStore("app-b");
+    await CreateStore("app-a").AddOrUpdateSessionAsync("shared-key", new Session { ["app"] = "a" });
+    await CreateStore("app-b").AddOrUpdateSessionAsync("shared-key", new Session { ["app"] = "b" });
 
-    await storeA.AddOrUpdateSessionAsync("shared-key", new Session { ["app"] = "a" });
-    await storeB.AddOrUpdateSessionAsync("shared-key", new Session { ["app"] = "b" });
-
-    (await storeA.GetSessionAsync("shared-key"))!["app"].Should().Be("a");
-    (await storeB.GetSessionAsync("shared-key"))!["app"].Should().Be("b");
+    (await CreateStore("app-a").GetSessionAsync("shared-key"))!["app"].Should().Be("a");
+    (await CreateStore("app-b").GetSessionAsync("shared-key"))!["app"].Should().Be("b");
   }
 
   [TestMethod]
-  public async Task PurgeExpiredSessionsAsync_RemovesOnlyThisApplicationsStaleSessions()
+  public async Task PurgeExpiredSessionsAsync_RemovesOnlyThisApplicationsStaleRows()
   {
     var store = CreateStore();
     await AddStaleEntityAsync("stale", Discriminator);
@@ -146,8 +175,55 @@ public class AzureTableStorageSessionStoreTests
 
     await store.PurgeExpiredSessionsAsync(TimeSpan.FromHours(1));
 
-    (await EntityExistsAsync("stale", Discriminator)).Should().BeFalse();
+    (await EntityExistsAsync("stale")).Should().BeFalse();
     (await EntityExistsAsync("stale-other-app", "other-app")).Should().BeTrue();
-    (await EntityExistsAsync("fresh", Discriminator)).Should().BeTrue();
+    (await EntityExistsAsync("fresh")).Should().BeTrue();
+  }
+
+  [TestMethod]
+  public async Task PurgeExpiredSessionsAsync_SavesChangesMadeInPlace()
+  {
+    var store = CreateStore();
+    await store.AddOrUpdateSessionAsync("key", new Session { ["v"] = 1 });
+    (await store.GetSessionAsync("key"))!["v"] = 2;
+
+    await store.PurgeExpiredSessionsAsync(TimeSpan.FromHours(1));
+
+    (await CreateStore().GetSessionAsync("key"))!["v"].Should().Be(2);
+  }
+
+  [TestMethod]
+  public async Task PurgeExpiredSessionsAsync_RemovesExpiredSessionsFromMemoryAndTable()
+  {
+    var store = CreateStore();
+    await store.AddOrUpdateSessionAsync("key", new Session { ["v"] = 1 });
+
+    _timeProvider.Advance(TimeSpan.FromHours(2));
+    await store.PurgeExpiredSessionsAsync(TimeSpan.FromHours(1));
+
+    (await EntityExistsAsync("key")).Should().BeFalse();
+    (await store.GetSessionAsync("key")).Should().BeNull();
+  }
+
+  [TestMethod]
+  public async Task Store_ResolvedWithScopeValidation_HandlesConcurrentOperations()
+  {
+    var services = new ServiceCollection();
+    services.AddLogging();
+    services.AddCsla(o => o.UseAzureTableStorageSessionStore(s =>
+    {
+      s.ConnectionString = DevelopmentConnectionString;
+      s.TableName = _tableName;
+      s.ApplicationDiscriminator = Discriminator;
+    }));
+    using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+    var store = provider.GetRequiredService<ISessionStore>();
+    var keys = Enumerable.Range(0, 20).Select(i => $"key-{i}").ToList();
+
+    await Task.WhenAll(keys.Select(k => store.AddOrUpdateSessionAsync(k, new Session { ["k"] = k }).AsTask()));
+    var restarted = CreateStore();
+    var loaded = await Task.WhenAll(keys.Select(k => restarted.GetSessionAsync(k).AsTask()));
+
+    loaded.Select(s => s!["k"]).Should().Equal(keys);
   }
 }

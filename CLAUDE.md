@@ -38,6 +38,16 @@ dotnet build Source/csla.maui.build.sln
 dotnet build Source\Csla.Analyzers.sln
 ```
 
+### NativeAOT / trimming smoke test
+`Source/tests/Csla.AotSmokeTest` is a console app that publishes CSLA with NativeAOT and runs data portal, rules, serialization and authorization scenarios (non-zero exit on failure). CI publishes it after the test step, fails on any `IL`/AOT warning, and runs the exe. NativeAOT needs the platform linker (on Windows, the Visual Studio C++ workload); without it, use the trimmed self-contained publish:
+```
+dotnet publish Source/tests/Csla.AotSmokeTest -c Release -r win-x64 -o aot-smoke                          # NativeAOT
+dotnet publish Source/tests/Csla.AotSmokeTest -c Release -r win-x64 -o aot-smoke -p:CslaSmokeTrimOnly=true  # trimmed only
+aot-smoke/Csla.AotSmokeTest.exe
+```
+`Source/Csla/Csla.csproj` builds with the trim/AOT analyzers and no suppressed IL warnings; fix or annotate new reflection rather than adding `NoWarn`.
+
+
 ## Solution Files
 
 | Solution | Purpose |
@@ -87,6 +97,7 @@ The main NuGet package. Key subsystems:
 - `Csla.Analyzers.Tests` — Analyzer unit tests
 - `Csla.Generator.*.Tests` — Generator unit tests
 - `GraphMergerTest` — Object graph merge testing
+- `Csla.AotSmokeTest` — NativeAOT/trimming smoke test (console app, not a unit test project)
 
 ## Coding Standards
 

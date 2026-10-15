@@ -113,6 +113,33 @@ namespace Csla.Test.PropertyInfo
       Assert.IsFalse(obj.LoadUntypedMarkDirty(LoadPropertyCommand.CountProperty, 2));
       Assert.AreEqual(2, obj.Count);
     }
+    [TestMethod]
+    public void CommandBase_LoadPropertyMarkDirty_WideningConversionUsesFallback()
+    {
+      var obj = _testHost.GetDataPortal<LoadPropertyCommand>().Create();
+
+      Assert.IsFalse(obj.LoadUntypedMarkDirty(LoadPropertyCommand.TotalProperty, 5));
+      Assert.AreEqual(5L, obj.Total);
+    }
+
+    [TestMethod]
+    public void CommandBase_LoadProperty_WideningConversionUsesFallback()
+    {
+      var obj = _testHost.GetDataPortal<LoadPropertyCommand>().Create();
+
+      obj.LoadUntyped(LoadPropertyCommand.TotalProperty, 5);
+
+      Assert.AreEqual(5L, obj.Total);
+    }
+
+    [TestMethod]
+    public void BusinessBase_LoadPropertyMarkDirty_WideningConversionUsesFallback()
+    {
+      var obj = _testHost.GetDataPortal<LoadPropertyRoot>().Create();
+
+      Assert.IsTrue(obj.LoadUntypedMarkDirty(LoadPropertyRoot.TotalProperty, 5));
+      Assert.AreEqual(5L, obj.Total);
+    }
   }
 
   public enum LoadPropertyColor
@@ -169,6 +196,9 @@ namespace Csla.Test.PropertyInfo
   {
     public static readonly PropertyInfo<int> CountProperty = RegisterProperty<int>(c => c.Count);
     public int Count => ReadProperty(CountProperty);
+
+    public static readonly PropertyInfo<long> TotalProperty = RegisterProperty<long>(c => c.Total);
+    public long Total => ReadProperty(TotalProperty);
 
     public void LoadUntyped(IPropertyInfo propertyInfo, object value) => LoadProperty(propertyInfo, value);
 

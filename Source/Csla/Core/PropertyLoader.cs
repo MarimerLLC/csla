@@ -7,7 +7,6 @@
 //-----------------------------------------------------------------------
 
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 #if NET8_0_OR_GREATER
 using System.Runtime.CompilerServices;
 #endif
@@ -66,13 +65,16 @@ namespace Csla.Core
 #endif
     }
 
+    /// <summary>
+    /// Invokes the generic IManageProperties method, so interface dispatch reaches
+    /// each base class's implementation (including private or explicitly
+    /// implemented ones) and reflection applies its argument conversions.
+    /// </summary>
     [RequiresDynamicCode("Creates a generic method instantiation for the property type at runtime.")]
-    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = TrimmingMessages.BusinessTypeJustification)]
-    [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The type argument is IPropertyInfo.Type, which PropertyInfo<T> preserves through DynamicallyAccessedMembers on T.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The IManageProperties generic methods place no DynamicallyAccessedMembers requirements on the property type.")]
     private static object? InvokeGenericLoadMethodByReflection(IManageProperties target, string methodName, IPropertyInfo propertyInfo, object? newValue)
     {
-      var flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-      var method = target.GetType().GetMethods(flags).First(c => c.Name == methodName && c.IsGenericMethod);
+      var method = typeof(IManageProperties).GetMethods().First(c => c.Name == methodName && c.IsGenericMethodDefinition);
       var gm = method.MakeGenericMethod(propertyInfo.Type);
       return gm.Invoke(target, [propertyInfo, newValue]);
     }

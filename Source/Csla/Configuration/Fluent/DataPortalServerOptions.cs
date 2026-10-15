@@ -100,7 +100,7 @@ namespace Csla.Configuration
     /// be executed by the server-side data portal.
     /// </summary>
     /// <param name="index">Index at which new item should be added.</param>
-    public DataPortalServerOptions AddInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(int index) where T : IInterceptDataPortal
     {
       InterceptorProviders.Insert(index, typeof(T));
       return this;

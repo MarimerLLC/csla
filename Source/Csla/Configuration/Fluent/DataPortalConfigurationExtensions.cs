@@ -125,7 +125,7 @@ namespace Csla.Configuration
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2067",
-      Justification = "Interceptor types are only added through AddInterceptorProvider<T> and the default list in DataPortalServerOptions, both of which preserve public constructors.")]
+      Justification = "Interceptor types are only added through the AddInterceptorProvider<T> overloads and the default list in DataPortalServerOptions, both of which preserve public constructors.")]
     private static void AddInterceptor(IServiceCollection services, Type interceptorType)
     {
       services.AddScoped(typeof(IInterceptDataPortal), interceptorType);

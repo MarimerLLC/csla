@@ -236,8 +236,11 @@ namespace Csla.AotSmokeTest
       : base(applicationContext)
     { }
 
-    public InventoryItem Fetch(string sku)
+    // Returns Task<T> after a real suspension, so the data portal must extract the
+    // result through its Task<T> conversion and the scenario verifies that value
+    public async Task<InventoryItem> Fetch(string sku)
     {
+      await Task.Delay(1);
       var item = (InventoryItem)ApplicationContext.CreateInstanceDI(typeof(InventoryItem));
       using (BypassPropertyChecks(item))
       {

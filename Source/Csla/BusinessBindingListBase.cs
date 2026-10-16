@@ -714,7 +714,8 @@ namespace Csla
         throw new ArgumentNullException(nameof(formatter));
 
       base.OnGetChildren(info, formatter);
-      if (_deletedList != null)
+      // an empty deleted list is not serialized; the DeletedList accessor recreates it on demand
+      if (_deletedList is { Count: > 0 })
       {
         var fieldManagerInfo = formatter.SerializeObject(_deletedList);
         info.AddChild("_deletedList", fieldManagerInfo.ReferenceId);
@@ -743,6 +744,10 @@ namespace Csla
       if (info.Children.TryGetValue("_deletedList", out var child))
       {
         _deletedList = (MobileList<C>?)formatter.GetObject(child.ReferenceId);
+      }
+      else
+      {
+        _deletedList = null;
       }
       _isDeserializing = true;
       try

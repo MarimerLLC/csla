@@ -175,7 +175,7 @@ namespace Csla.Serialization.Mobile
     {
       if (!_typeCache.TryGetValue(typeName, out var result))
       {
-        result = MethodCaller.GetType(typeName);
+        result = MethodCaller.GetTypeCore(typeName, true);
 
         if (result == null)
         {
@@ -299,7 +299,7 @@ namespace Csla.Serialization.Mobile
       {
         if (!string.IsNullOrEmpty(fieldData.EnumTypeName))
         {
-          Type enumType = MethodCaller.GetType(fieldData.EnumTypeName!);
+          Type enumType = MethodCaller.GetTypeCore(fieldData.EnumTypeName!, true)!;
           fieldData.Value = Enum.ToObject(enumType, fieldData.Value ?? throw new MobileFormatterException(string.Format(Resources.DeserializationFailedDueToWrongData, enumType)));
         }
       }

@@ -208,12 +208,21 @@ namespace Csla.Reflection
     /// Parameters to pass to method.
     /// </param>
     /// <exception cref="InvalidOperationException"><see cref="Csla.Core.IUseApplicationContext.ApplicationContext"/> is <see langword="null"/>.</exception>
-    public async Task CallMethodTryAsyncDI<T>(bool isSync, params object?[]? parameters)
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
+    public Task CallMethodTryAsyncDI<T>(bool isSync, params object?[]? parameters)
+      where T : DataPortalOperationAttribute
+      => CallMethodTryAsyncDICore<T>(isSync, parameters);
+
+    /// <summary>
+    /// Implements <see cref="CallMethodTryAsyncDI{T}(bool, object?[])"/> for the data portal,
+    /// whose <see cref="Instance"/> is a business object preserved for trimming.
+    /// </summary>
+    private protected async Task CallMethodTryAsyncDICore<T>(bool isSync, params object?[]? parameters)
       where T : DataPortalOperationAttribute
     {
       ThrowInvalidOperationExceptionWhenApplicationContextIsNull();
 
-      var method = ServiceProviderMethodCaller.FindDataPortalMethod<T>(Instance, parameters);
+      var method = ServiceProviderMethodCaller.FindDataPortalMethodCore<T>(Instance, parameters);
       try
       {
         Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext!, isSync, method.MethodInfo);

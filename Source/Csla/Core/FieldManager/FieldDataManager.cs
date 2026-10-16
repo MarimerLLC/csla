@@ -788,7 +788,7 @@ namespace Csla.Core.FieldManager
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
       string type = (string)info.Values["_businessObjectType"].Value!;
-      Type businessObjecType = Reflection.MethodCaller.GetType(type)!;
+      Type businessObjecType = Reflection.MethodCaller.GetTypeCore(type, true)!;
       SetPropertyList(businessObjecType);
 
       if (mode == StateMode.Serialization)

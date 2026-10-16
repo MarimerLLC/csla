@@ -206,7 +206,7 @@ namespace Csla.Server
       }
 
       object?[] parameters = criteriaArray!;
-      await CallMethodTryAsyncDI<T>(isSync, parameters).ConfigureAwait(false);
+      await CallMethodTryAsyncDICore<T>(isSync, parameters).ConfigureAwait(false);
     }
 
     private async Task InvokeChildOperationAsync<T>(object?[]? parameters, string? operationName = null)
@@ -244,7 +244,7 @@ namespace Csla.Server
           // Fall through to reflection path
         }
       }
-      await CallMethodTryAsyncDI<T>(false, parameters).ConfigureAwait(false);
+      await CallMethodTryAsyncDICore<T>(false, parameters).ConfigureAwait(false);
     }
 
     public Task CreateAsync(object criteria, bool isSync, string? operationName = null)

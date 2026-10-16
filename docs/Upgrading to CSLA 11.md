@@ -243,9 +243,11 @@ CSLA now declares what it needs from the trimmer ([#3347](https://github.com/Mar
 The late-bound reflection APIs, which accept any object and find its members by name, are marked `[RequiresUnreferencedCode]`:
 
 * `MethodCaller.CallPropertyGetter`, `CallPropertySetter`, `CallMethod(object, string, ...)`, `CallMethodIfImplemented`, `IsMethodImplemented`, `CallMethodTryAsync` and `IsAsyncMethod(object, string, ...)`
-* The `LateBoundObject` methods that call `MethodCaller`
+* `MethodCaller.GetType(string)` and `MethodCaller.GetType(string, bool)`, which resolve a type from its name
+* `ServiceProviderMethodCaller.FindDataPortalMethod<T>(object, object[])`
+* The `LateBoundObject` methods that call `MethodCaller` or `ServiceProviderMethodCaller`
 * `Utilities.CallByName`
 
-Their behavior is unchanged. The warning means the trimmer can't see which members these calls use. If you call them from a trimmed app, preserve the target types yourself, for example with `[DynamicallyAccessedMembers]` or `TrimmerRootAssembly`.
+Their behavior is unchanged. The warning means the trimmer can't see which types or members these calls use. If you call them from a trimmed app, preserve the target types yourself, for example with `[DynamicallyAccessedMembers]` or `TrimmerRootAssembly`.
 
 The trimmer preserves an object factory named in `[ObjectFactory("...")]` when the name is assembly qualified (`"MyApp.MyFactory, MyApp"`) or the factory is in the business object's assembly. `[ObjectFactory(typeof(MyFactory))]` always works. A custom `IObjectFactoryLoader` that maps other names to types must preserve those types itself.

@@ -28,6 +28,9 @@ namespace Csla.Core
     internal const string ArbitraryObjectReflection =
       "Reflects over the members of an object's runtime type, which may have been removed by trimming.";
 
+    internal const string TypeNameLookup =
+      "Resolves a type from its name, and the named type may have been removed by trimming.";
+
     internal const string CaseInsensitiveTypeLookup =
       $"A case-insensitive type lookup can't be analyzed for trimming. Use {nameof(MethodCaller)}.{nameof(MethodCaller.GetType)}(string, bool) instead.";
 

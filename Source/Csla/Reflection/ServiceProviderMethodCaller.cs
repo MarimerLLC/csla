@@ -49,8 +49,17 @@ namespace Csla.Reflection
     /// <param name="target">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> is <see langword="null"/>.</exception>
-    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.ArbitraryObjectReflection)]
     public ServiceProviderMethodInfo FindDataPortalMethod<T>(object target, object?[]? criteria)
+      where T : DataPortalOperationAttribute
+      => FindDataPortalMethodCore<T>(target, criteria);
+
+    /// <summary>
+    /// Implements <see cref="FindDataPortalMethod{T}(object, object?[])"/> for CSLA's own callers,
+    /// which only pass business objects, whose types are preserved for trimming.
+    /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    internal ServiceProviderMethodInfo FindDataPortalMethodCore<T>(object target, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
       if (target == null)

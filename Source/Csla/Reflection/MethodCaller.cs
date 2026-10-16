@@ -247,7 +247,7 @@ namespace Csla.Reflection
     public static Type? GetType(string typeName, bool throwOnError, bool ignoreCase)
     {
       if (!ignoreCase)
-        return GetType(typeName, throwOnError);
+        return GetTypeCore(typeName, throwOnError);
 
       if (string.IsNullOrWhiteSpace(typeName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
@@ -270,8 +270,23 @@ namespace Csla.Reflection
     /// <param name="typeName">Type name including assembly name.</param>
     /// <param name="throwOnError">true to throw an exception if the type can't be found.</param>
     /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeNameLookup)]
+    public static Type? GetType(string typeName, bool throwOnError) => GetTypeCore(typeName, throwOnError);
+
+    /// <summary>
+    /// Gets a Type object based on the type name.
+    /// </summary>
+    /// <param name="typeName">Type name including assembly name.</param>
+    /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeNameLookup)]
+    public static Type GetType(string typeName) => GetTypeCore(typeName, true)!;
+
+    /// <summary>
+    /// Implements <see cref="GetType(string, bool)"/> for CSLA's own callers,
+    /// which only resolve names of types CSLA serialized.
+    /// </summary>
     [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = Core.TrimmingMessages.TypeNameResolutionJustification)]
-    public static Type? GetType(string typeName, bool throwOnError)
+    internal static Type? GetTypeCore(string typeName, bool throwOnError)
     {
       if (string.IsNullOrWhiteSpace(typeName))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(typeName)), nameof(typeName));
@@ -286,16 +301,6 @@ namespace Csla.Reflection
           return type;
         throw;
       }
-    }
-
-    /// <summary>
-    /// Gets a Type object based on the type name.
-    /// </summary>
-    /// <param name="typeName">Type name including assembly name.</param>
-    /// <exception cref="ArgumentException"><paramref name="typeName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public static Type GetType(string typeName)
-    {
-      return GetType(typeName, true)!;
     }
 
     /// <summary>

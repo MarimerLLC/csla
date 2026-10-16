@@ -223,3 +223,37 @@ The factory receives a `TransactionScopeFactoryContext` describing the operation
 These let a factory adjust the transaction to the data involved. For example, it can use a longer timeout for a large batch. `BusinessObject` is the server-side instance before the operation runs. Treat it as read-only.
 
 The `TransactionalDataPortal` constructor now takes `(DataPortalBroker, ITransactionScopeFactory, TransactionScopeFactoryContext)` instead of `(DataPortalBroker, TransactionalAttribute)`.
+
+## Common `Csla.Mvvm.ViewModel<T>` base type
+
+The view model types for each UI framework now share one implementation, `Csla.Mvvm.ViewModel<T>`, in the core `Csla` package ([#1766](https://github.com/MarimerLLC/csla/issues/1766)). The existing types keep their names:
+
+* `Csla.Blazor.ViewModel<T>` inherits from `Csla.Mvvm.ViewModel<T>` and adds the Blazor-specific `GetPropertyInfo` methods.
+* On MAUI and Avalonia, `Csla.Xaml.ViewModelBase<T>` inherits from `Csla.Mvvm.ViewModel<T>`.
+* On WPF, `Csla.Xaml.ViewModelBase<T>` is still a `DependencyObject` with the `ModelProperty` and `ManageObjectLifetimeProperty` dependency properties. It delegates to a `Csla.Mvvm.ViewModel<T>` internally, so it has the same behavior.
+
+You can use `Csla.Mvvm.ViewModel<T>` directly in other UI frameworks, such as Windows Forms. Pass an `ApplicationContext` to its constructor, or use the protected parameterless constructor and override `ResolveApplicationContext`.
+
+Because every view model now has the same behavior, some of them behave differently than before.
+
+### All view models
+
+* `SaveAsync` returns `Task<T?>` (the saved `Model`) instead of `Task`. Code that awaits `SaveAsync()` is unaffected.
+* `SaveAsync` calls `ApplyEdit` on the `Model` before cloning it, when `ManageObjectLifetime` is `true`.
+* `OnModelChanging(oldValue, newValue)` moves event handlers from the old model to the new model. `OnModelChanged(oldValue, newValue)` runs after the model changes and raises `ModelChanged`.
+
+### XAML (WPF, MAUI and Avalonia)
+
+* `SaveAsync` and `RefreshAsync` no longer throw. Exceptions are captured in the `Exception` and `ViewModelErrorText` properties, and `SaveAsync` also raises the new `Error` event. Code that wrapped these calls in `try`/`catch` should check `Exception` or handle `Error` instead. If `RefreshAsync` fails, `Model` is set to `null`.
+* If the `Model` is invalid, `SaveAsync` doesn't save. It sets `ViewModelErrorText` to the model's error text.
+* `SaveAsync` waits up to `BusyTimeout` (30 seconds by default) for a busy `Model` to become idle. Use `SaveAsync(CancellationToken)` to control the wait yourself.
+* There are new `Saved`, `ModelChanging` and `ModelChanged` events.
+* `RefreshAsync<F>(factory)` is obsolete because the `F` type parameter was never used. Call `RefreshAsync(factory)`.
+* On MAUI and Avalonia, `ManageObjectLifetime` now defaults to `true`, the same as WPF. Set it to `false` to keep the previous behavior.
+* On MAUI, `BeginAddNew` is obsolete. Use `DoAddNew`.
+* On WPF, override `OnModelChanging` instead of `OnModelChanged` if you need to run code before the event handlers are moved to the new model.
+
+### Blazor
+
+* `ViewModel<T>` implements `INotifyPropertyChanged`. It has the `IsDirty`, `IsValid`, `CanSave`, `CanCancel`, `CanCreate`, `CanDelete`, `CanFetch`, `CanAddNew` and `CanRemove` properties from the XAML view model, and the `DoCancel`, `DoAddNew`, `DoRemove` and `DoDelete` methods. These properties are updated whenever the model changes, which means instance-level authorization rules are evaluated on each change.
+* The parameterless `OnModelChanged()` method is replaced by `OnModelChanged(T? oldValue, T? newValue)`. Update any override.

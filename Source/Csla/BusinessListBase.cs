@@ -28,13 +28,14 @@ namespace Csla
   [DebuggerStepThrough]
 #endif
   [Serializable]
-  public abstract partial class BusinessListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
+  public abstract partial class BusinessListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
       ObservableBindingList<C>,
       IContainsDeletedList,
       ISavable<T>,
       IDataPortalTarget,
       IBusinessListBase<C>,
-      IUseApplicationContext
+      IUseApplicationContext,
+      IGraphMergeable
     where T : BusinessListBase<T, C>
     where C : IEditableBusinessObject
   {
@@ -1417,5 +1418,18 @@ namespace Csla
 
     #endregion
 
+    #region IGraphMergeable
+
+    void IGraphMergeable.MergeGraph(GraphMerger merger, IEditableCollection source)
+    {
+      merger.MergeBusinessListGraph<T, C>((T)this, (T)source);
+    }
+
+    Task IGraphMergeable.MergeGraphAsync(GraphMerger merger, IEditableCollection source)
+    {
+      return merger.MergeBusinessListGraphAsync<T, C>((T)this, (T)source);
+    }
+
+    #endregion
   }
 }

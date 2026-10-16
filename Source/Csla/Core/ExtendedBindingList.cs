@@ -22,12 +22,21 @@ namespace Csla.Core
   /// </summary>
   /// <typeparam name="T">Type of item contained in list.</typeparam>
   [Serializable]
+  [UnconditionalSuppressMessage("Trimming", "IL2112", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
+  [UnconditionalSuppressMessage("Trimming", "IL2113", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
   public class ExtendedBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : MobileBindingList<T>,
     IExtendedBindingList,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.BindingList)]
+    public ExtendedBindingList()
+    { }
+
     [NonSerialized]
     private EventHandler<RemovingItemEventArgs>? _nonSerializableHandlers;
     private EventHandler<RemovingItemEventArgs>? _serializableHandlers;

@@ -46,6 +46,7 @@ namespace Csla
     /// <returns>The result of the property or method invocation.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="args"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? CallByName(object target, string methodName, CallType callType, params object?[] args)
     {
       if (target is null)
@@ -98,7 +99,7 @@ namespace Csla
     /// </summary>
     /// <param name="listType">Type of the list.</param>
     /// <exception cref="ArgumentNullException"><paramref name="listType"/> is <see langword="null"/>.</exception>
-    public static Type? GetChildItemType(Type listType)
+    public static Type? GetChildItemType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)] Type listType)
     {
       if (listType is null)
         throw new ArgumentNullException(nameof(listType));
@@ -160,7 +161,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="desiredType"/> or <paramref name="valueType"/> is <see langword="null"/>.</exception>
-    public static object? CoerceValue([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type desiredType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
+    public static object? CoerceValue(Type desiredType, Type valueType, object? oldValue, object? value)
     {
       if (desiredType is null)
         throw new ArgumentNullException(nameof(desiredType));
@@ -225,15 +226,34 @@ namespace Csla
       }
       catch when (value is not null)
       {
-        TypeConverter cnv = TypeDescriptor.GetConverter(propertyType);
-        TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
-        if (cnv != null && cnv.CanConvertFrom(valueType))
-          return cnv.ConvertFrom(value);
-        else if (cnv1 != null && cnv1.CanConvertTo(propertyType))
-          return cnv1.ConvertTo(value, propertyType);
-        else
-          throw;
+        if (TryConvertWithTypeConverter(propertyType, valueType, value, out var result))
+          return result;
+        throw;
       }
+    }
+
+    /// <summary>
+    /// Last-resort conversion using the TypeConverters of the
+    /// source and target types.
+    /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.TypeConverterFallbackJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Core.TrimmingMessages.TypeConverterFallbackJustification)]
+    private static bool TryConvertWithTypeConverter(Type propertyType, Type valueType, object value, out object? result)
+    {
+      TypeConverter cnv = TypeDescriptor.GetConverter(propertyType);
+      TypeConverter cnv1 = TypeDescriptor.GetConverter(valueType);
+      if (cnv != null && cnv.CanConvertFrom(valueType))
+      {
+        result = cnv.ConvertFrom(value);
+        return true;
+      }
+      if (cnv1 != null && cnv1.CanConvertTo(propertyType))
+      {
+        result = cnv1.ConvertTo(value, propertyType);
+        return true;
+      }
+      result = null;
+      return false;
     }
 
     /// <summary>
@@ -269,7 +289,7 @@ namespace Csla
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="valueType"/> is <see langword="null"/>.</exception>
-    public static D? CoerceValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] D>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type valueType, object? oldValue, object? value)
+    public static D? CoerceValue<D>(Type valueType, object? oldValue, object? value)
     {
       if (valueType is null)
         throw new ArgumentNullException(nameof(valueType));
@@ -300,7 +320,7 @@ namespace Csla
     {
       if (isSync
         && applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
-        && MethodCaller.IsAsyncMethod(obj, methodName))
+        && MethodCaller.IsAsyncMethodCore(obj, methodName, false))
       {
         throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
       }
@@ -320,7 +340,7 @@ namespace Csla
     {
       if (isSync
         && applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
-        && MethodCaller.IsAsyncMethod(obj, methodName, parameters))
+        && MethodCaller.IsAsyncMethodCore(obj, methodName, true, parameters))
       {
         throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
       }

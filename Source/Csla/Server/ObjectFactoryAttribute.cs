@@ -6,6 +6,7 @@
 // <summary>Specifies that the data portal</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Collections.Concurrent;
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
@@ -137,7 +138,7 @@ namespace Csla.Server
     /// Update and Delete.
     /// </remarks>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType) : this(factoryType, "Fetch")
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType) : this(factoryType, "Fetch")
     {
     }
 
@@ -151,7 +152,7 @@ namespace Csla.Server
     /// Name of the method to call for a fetch operation.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? fetchMethod) : this(factoryType, "Create", fetchMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? fetchMethod) : this(factoryType, "Create", fetchMethod)
     {
     }
 
@@ -167,7 +168,7 @@ namespace Csla.Server
     /// Name of the method to call for a fetch operation.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? createMethod, string? fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
     {
     }
 
@@ -187,7 +188,7 @@ namespace Csla.Server
     /// <param name="deleteMethod">
     /// Name of the method to call for a delete operation.</param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
     {
     }
 
@@ -213,7 +214,7 @@ namespace Csla.Server
     /// Name of the method to call for a Execute operation.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod, string? executeMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod, string? executeMethod)
     {
       if (string.IsNullOrEmpty(factoryType))
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(factoryType)), nameof(factoryType));
@@ -233,7 +234,7 @@ namespace Csla.Server
     /// The type of factory class or interface.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
-    public ObjectFactoryAttribute(Type factoryType)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type factoryType)
       : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))))
     {
     }
@@ -248,7 +249,7 @@ namespace Csla.Server
     /// Name of the method to call for a fetch operation.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
-    public ObjectFactoryAttribute(Type factoryType, string fetchMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type factoryType, string fetchMethod)
       : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), fetchMethod)
     { }
 
@@ -265,7 +266,7 @@ namespace Csla.Server
     /// Name of the method to call for a fetch operation.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
-    public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type factoryType, string createMethod, string fetchMethod)
       : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod)
     { }
 
@@ -288,7 +289,7 @@ namespace Csla.Server
     /// Name of the method to call for a delete operation.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
-    public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod)
       : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod, updateMethod, deleteMethod)
     { }
 
@@ -314,7 +315,7 @@ namespace Csla.Server
     /// Name of the method to call for a Execute operation.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="factoryType"/> is <see langword="null"/>.</exception>
-    public ObjectFactoryAttribute(Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type factoryType, string createMethod, string fetchMethod, string updateMethod, string deleteMethod, string executeMethod)
       : this(GetAssemblyQualifiedName(factoryType ?? throw new ArgumentNullException(nameof(factoryType))), createMethod, fetchMethod, updateMethod, deleteMethod, executeMethod)
     { }
 
@@ -322,7 +323,10 @@ namespace Csla.Server
     /// Gets the short version of assembly qualified name.
     /// </summary>
     /// <param name="type">The type.</param>
-    private static string GetAssemblyQualifiedName(Type type)
+    [UnconditionalSuppressMessage("Trimming", "IL2063", Justification = Csla.Core.TrimmingMessages.FactoryTypeToNameJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2073", Justification = Csla.Core.TrimmingMessages.FactoryTypeToNameJustification)]
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+    private static string GetAssemblyQualifiedName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       if (type.IsGenericType)
       {

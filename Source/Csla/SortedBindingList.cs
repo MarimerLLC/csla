@@ -279,6 +279,7 @@ namespace Csla
     /// </summary>
     /// <param name="propertyName">The text name of the property on which to sort.</param>
     /// <param name="direction">The direction to sort the data.</param>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public void ApplySort(string? propertyName, ListSortDirection direction)
     {
       PropertyDescriptor? newSortProperty = null;
@@ -311,6 +312,7 @@ namespace Csla
     /// <param name="key">Value to find</param>
     /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public int Find(string propertyName, object key)
     {
       if (key is null)
@@ -329,6 +331,7 @@ namespace Csla
       return Find(findProperty, key);
     }
 
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
         Type itemType = typeof(T);

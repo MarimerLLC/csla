@@ -6,6 +6,7 @@
 // <summary>A formatter that can serialize and deserialize a POCO</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Csla.Properties;
 
@@ -15,6 +16,8 @@ namespace Csla.Serialization.Mobile.CustomSerializers;
 /// A formatter that can serialize and deserialize a POCO
 /// by using System.Text.Json.
 /// </summary>
+[RequiresDynamicCode(Core.TrimmingMessages.ReflectionJsonSerializationDynamicCode)]
+[RequiresUnreferencedCode(Core.TrimmingMessages.ReflectionJsonSerializationUnreferencedCode)]
 public class PocoSerializer<T> : IMobileSerializer
 {
   /// <inheritdoc />

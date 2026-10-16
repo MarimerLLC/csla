@@ -138,7 +138,7 @@ namespace Csla.Server
     /// Update and Delete.
     /// </remarks>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType) : this(factoryType, "Fetch")
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType) : this(factoryType, "Fetch")
     {
     }
 
@@ -152,7 +152,7 @@ namespace Csla.Server
     /// Name of the method to call for a fetch operation.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? fetchMethod) : this(factoryType, "Create", fetchMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? fetchMethod) : this(factoryType, "Create", fetchMethod)
     {
     }
 
@@ -168,7 +168,7 @@ namespace Csla.Server
     /// Name of the method to call for a fetch operation.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? createMethod, string? fetchMethod) : this(factoryType, createMethod, fetchMethod, "Update", "Delete")
     {
     }
 
@@ -188,7 +188,7 @@ namespace Csla.Server
     /// <param name="deleteMethod">
     /// Name of the method to call for a delete operation.</param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod) : this(factoryType, createMethod, fetchMethod, updateMethod, deleteMethod, "Execute")
     {
     }
 
@@ -214,7 +214,7 @@ namespace Csla.Server
     /// Name of the method to call for a Execute operation.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryType"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
-    public ObjectFactoryAttribute(string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod, string? executeMethod)
+    public ObjectFactoryAttribute([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] string factoryType, string? createMethod, string? fetchMethod, string? updateMethod, string? deleteMethod, string? executeMethod)
     {
       if (string.IsNullOrEmpty(factoryType))
         throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(factoryType)), nameof(factoryType));
@@ -323,7 +323,10 @@ namespace Csla.Server
     /// Gets the short version of assembly qualified name.
     /// </summary>
     /// <param name="type">The type.</param>
-    private static string GetAssemblyQualifiedName(Type type)
+    [UnconditionalSuppressMessage("Trimming", "IL2063", Justification = Csla.Core.TrimmingMessages.FactoryTypeToNameJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2073", Justification = Csla.Core.TrimmingMessages.FactoryTypeToNameJustification)]
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+    private static string GetAssemblyQualifiedName([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       if (type.IsGenericType)
       {

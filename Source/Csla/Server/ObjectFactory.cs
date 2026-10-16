@@ -66,7 +66,7 @@ namespace Csla.Server
       if (obj is IDataPortalTarget target)
         target.CheckRules();
       else
-        MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
+        MethodCaller.CallMethodIfImplementedCore(obj, "CheckRules", true, null);
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ namespace Csla.Server
       if (obj is IDataPortalTarget target)
         await target.CheckRulesAsync().ConfigureAwait(false);
       else
-        MethodCaller.CallMethodIfImplemented(obj, "CheckRules", null);
+        MethodCaller.CallMethodIfImplementedCore(obj, "CheckRules", true, null);
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ namespace Csla.Server
       }
       else
       {
-        MethodCaller.CallMethodIfImplemented(obj, nameof(IDataPortalTarget.WaitForIdle), ct);
+        MethodCaller.CallMethodIfImplementedCore(obj, nameof(IDataPortalTarget.WaitForIdle), true, ct);
       }
     }
 
@@ -146,7 +146,7 @@ namespace Csla.Server
       if (obj is IDataPortalTarget target)
         target.MarkOld();
       else
-        MethodCaller.CallMethodIfImplemented(obj, "MarkOld", null);
+        MethodCaller.CallMethodIfImplementedCore(obj, "MarkOld", true, null);
     }
 
     /// <summary>
@@ -165,7 +165,7 @@ namespace Csla.Server
       if (obj is IDataPortalTarget target)
         target.MarkNew();
       else
-        MethodCaller.CallMethodIfImplemented(obj, "MarkNew", null);
+        MethodCaller.CallMethodIfImplementedCore(obj, "MarkNew", true, null);
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ namespace Csla.Server
       if (obj is IDataPortalTarget target)
         target.MarkAsChild();
       else
-        MethodCaller.CallMethodIfImplemented(obj, "MarkAsChild", null);
+        MethodCaller.CallMethodIfImplementedCore(obj, "MarkAsChild", true, null);
     }
 
     /// <summary>

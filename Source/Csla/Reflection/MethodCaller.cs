@@ -447,9 +447,16 @@ namespace Csla.Reflection
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     /// <exception cref="InvalidOperationException"><paramref name="property"/> not found on type of <paramref name="obj"/>.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
+    public static object? CallPropertyGetter(object obj, string property) => CallPropertyGetterCore(obj, property);
+
+    /// <summary>
+    /// Implements <see cref="CallPropertyGetter"/> for CSLA's own callers,
+    /// which only pass objects whose type is preserved for trimming.
+    /// </summary>
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
-    public static object? CallPropertyGetter(object obj, string property)
+    internal static object? CallPropertyGetterCore(object obj, string property)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -480,9 +487,16 @@ namespace Csla.Reflection
     /// <param name="value">New value for property.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="property"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
+    public static void CallPropertySetter(object obj, string property, object? value) => CallPropertySetterCore(obj, property, value);
+
+    /// <summary>
+    /// Implements <see cref="CallPropertySetter"/> for CSLA's own callers,
+    /// which only pass objects whose type is preserved for trimming.
+    /// </summary>
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
-    public static void CallPropertySetter(object obj, string property, object? value)
+    internal static void CallPropertySetterCore(object obj, string property, object? value)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
@@ -519,6 +533,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? CallMethodIfImplemented(object obj, string method)
     {
       if (obj is null)
@@ -526,7 +541,7 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return CallMethodIfImplemented(obj, method, false, null);
+      return CallMethodIfImplementedCore(obj, method, false, null);
     }
 
     /// <summary>
@@ -544,6 +559,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? CallMethodIfImplemented(object obj, string method, params object?[]? parameters)
     {
       if (obj is null)
@@ -551,17 +567,17 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return CallMethodIfImplemented(obj, method, true, parameters);
+      return CallMethodIfImplementedCore(obj, method, true, parameters);
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
-    private static object? CallMethodIfImplemented(object obj, string method, bool hasParameters, params object?[]? parameters)
+    internal static object? CallMethodIfImplementedCore(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
         var found = (FindMethod(obj.GetType(), method, GetParameterTypes(hasParameters, parameters)) != null);
         if (found)
-          return CallMethod(obj, method, parameters);
+          return CallMethodCore(obj, method, hasParameters, parameters);
         else
           return null;
       }
@@ -583,6 +599,7 @@ namespace Csla.Reflection
     /// <returns>True obj implements a matching method.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static bool IsMethodImplemented(object obj, string method, params object?[]? parameters)
     {
       if (obj is null)
@@ -607,6 +624,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? CallMethod(object obj, string method)
     {
       if (obj is null)
@@ -614,7 +632,7 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return CallMethod(obj, method, false, null);
+      return CallMethodCore(obj, method, false, null);
     }
 
     /// <summary>
@@ -633,6 +651,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? CallMethod(object obj, string method, params object?[]? parameters)
     {
       if (obj is null)
@@ -640,11 +659,11 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return CallMethod(obj, method, true, parameters);
+      return CallMethodCore(obj, method, true, parameters);
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
-    private static object? CallMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
+    internal static object? CallMethodCore(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
@@ -1247,6 +1266,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static Task<object?> CallMethodTryAsync(object obj, string method, params object?[]? parameters)
     {
       if (obj is null)
@@ -1254,7 +1274,7 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return CallMethodTryAsync(obj, method, true, parameters);
+      return CallMethodTryAsyncCore(obj, method, true, parameters);
     }
 
     /// <summary>
@@ -1267,6 +1287,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static Task<object?> CallMethodTryAsync(object obj, string method)
     {
       if (obj is null)
@@ -1274,11 +1295,11 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return CallMethodTryAsync(obj, method, false, null);
+      return CallMethodTryAsyncCore(obj, method, false, null);
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
-    private async static Task<object?> CallMethodTryAsync(object obj, string method, bool hasParameters, params object?[]? parameters)
+    internal async static Task<object?> CallMethodTryAsyncCore(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {
@@ -1289,16 +1310,16 @@ namespace Csla.Reflection
         var isAsyncTaskObject = (info.ReturnType.IsGenericType && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
         if (isAsyncTask)
         {
-          await ThrowIfNotTaskReturn(CallMethod(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
+          await ThrowIfNotTaskReturn(CallMethodCore(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
           return null;
         }
         else if (isAsyncTaskObject)
         {
-          return await ThrowIfNotTaskTReturn(CallMethod(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
+          return await ThrowIfNotTaskTReturn(CallMethodCore(obj, method, hasParameters, parameters), obj, method).ConfigureAwait(false);
         }
         else
         {
-          return CallMethod(obj, method, hasParameters, parameters);
+          return CallMethodCore(obj, method, hasParameters, parameters);
         }
       }
       else
@@ -1355,6 +1376,7 @@ namespace Csla.Reflection
     /// <param name="method">Name of the method.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static bool IsAsyncMethod(object obj, string method)
     {
       if (obj is null)
@@ -1362,7 +1384,7 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return IsAsyncMethod(obj, method, false, null);
+      return IsAsyncMethodCore(obj, method, false, null);
     }
 
     /// <summary>
@@ -1375,6 +1397,7 @@ namespace Csla.Reflection
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static bool IsAsyncMethod(object obj, string method, params object?[]? parameters)
     {
       if (obj is null)
@@ -1382,7 +1405,7 @@ namespace Csla.Reflection
       if (string.IsNullOrWhiteSpace(method))
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(method)), nameof(method));
 
-      return IsAsyncMethod(obj, method, true, parameters);
+      return IsAsyncMethodCore(obj, method, true, parameters);
     }
 
     internal static bool IsAsyncMethod(System.Reflection.MethodInfo info)
@@ -1393,7 +1416,7 @@ namespace Csla.Reflection
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
-    private static bool IsAsyncMethod(object obj, string method, bool hasParameters, params object?[]? parameters)
+    internal static bool IsAsyncMethodCore(object obj, string method, bool hasParameters, params object?[]? parameters)
     {
       if (ApplicationContext.UseReflectionFallback)
       {

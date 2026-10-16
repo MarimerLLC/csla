@@ -66,7 +66,7 @@ namespace Csla.Server
       if (_target != null)
         _target.DataPortal_OnDataPortalInvoke(eventArgs);
       else
-        CallMethodIfImplemented(_methodNames.OnDataPortalInvoke, eventArgs);
+        CallInstanceMethodIfImplemented(_methodNames.OnDataPortalInvoke, eventArgs);
     }
 
     public void Child_OnDataPortalInvoke(DataPortalEventArgs eventArgs)
@@ -74,7 +74,7 @@ namespace Csla.Server
       if (_target != null)
         _target.Child_OnDataPortalInvoke(eventArgs);
       else
-        CallMethodIfImplemented("Child_OnDataPortalInvoke", eventArgs);
+        CallInstanceMethodIfImplemented("Child_OnDataPortalInvoke", eventArgs);
     }
 
 
@@ -83,7 +83,7 @@ namespace Csla.Server
       if (_target != null)
         _target.DataPortal_OnDataPortalInvokeComplete(eventArgs);
       else
-        CallMethodIfImplemented(_methodNames.OnDataPortalInvokeComplete, eventArgs);
+        CallInstanceMethodIfImplemented(_methodNames.OnDataPortalInvokeComplete, eventArgs);
     }
 
     internal void Child_OnDataPortalInvokeComplete(DataPortalEventArgs eventArgs)
@@ -91,7 +91,7 @@ namespace Csla.Server
       if (_target != null)
         _target.Child_OnDataPortalInvokeComplete(eventArgs);
       else
-        CallMethodIfImplemented("Child_OnDataPortalInvokeComplete", eventArgs);
+        CallInstanceMethodIfImplemented("Child_OnDataPortalInvokeComplete", eventArgs);
     }
 
     internal void OnDataPortalException(DataPortalEventArgs eventArgs, Exception ex)
@@ -99,7 +99,7 @@ namespace Csla.Server
       if (_target != null)
         _target.DataPortal_OnDataPortalException(eventArgs, ex);
       else
-        CallMethodIfImplemented(_methodNames.OnDataPortalException, eventArgs, ex);
+        CallInstanceMethodIfImplemented(_methodNames.OnDataPortalException, eventArgs, ex);
     }
 
 
@@ -108,8 +108,17 @@ namespace Csla.Server
       if (_target != null)
         _target.Child_OnDataPortalException(eventArgs, ex);
       else
-        CallMethodIfImplemented("Child_OnDataPortalException", eventArgs, ex);
+        CallInstanceMethodIfImplemented("Child_OnDataPortalException", eventArgs, ex);
     }
+
+    // Instance is a business object, whose type the data portal preserves for trimming,
+    // so this calls MethodCaller directly rather than the LateBoundObject members
+    // that warn about arbitrary objects.
+    private void CallInstanceMethodIfImplemented(string method)
+      => MethodCaller.CallMethodIfImplementedCore(Instance, method, false);
+
+    private void CallInstanceMethodIfImplemented(string method, params object?[]? parameters)
+      => MethodCaller.CallMethodIfImplementedCore(Instance, method, true, parameters);
 
     public void ThrowIfBusy()
     {
@@ -129,7 +138,7 @@ namespace Csla.Server
       }
       else 
       {
-        CallMethodIfImplemented(nameof(IDataPortalTarget.WaitForIdle), _waitForIdleTimeout);
+        CallInstanceMethodIfImplemented(nameof(IDataPortalTarget.WaitForIdle), _waitForIdleTimeout);
       }
     }
 
@@ -138,7 +147,7 @@ namespace Csla.Server
       if (_target != null)
         _target.MarkNew();
       else
-        CallMethodIfImplemented("MarkNew");
+        CallInstanceMethodIfImplemented("MarkNew");
     }
 
     public void MarkAsChild()
@@ -146,7 +155,7 @@ namespace Csla.Server
       if (_target != null)
         _target.MarkAsChild();
       else
-        CallMethodIfImplemented("MarkAsChild");
+        CallInstanceMethodIfImplemented("MarkAsChild");
     }
 
     internal void MarkOld()
@@ -154,7 +163,7 @@ namespace Csla.Server
       if (_target != null)
         _target.MarkOld();
       else
-        CallMethodIfImplemented("MarkOld");
+        CallInstanceMethodIfImplemented("MarkOld");
     }
 
     private async Task InvokeOperationAsync<T>(object criteria, bool isSync, string? operationName = null)

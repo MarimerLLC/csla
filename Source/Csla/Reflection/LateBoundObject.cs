@@ -58,6 +58,7 @@ namespace Csla.Reflection
     /// Name of the method.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public object? CallMethodIfImplemented(string method)
     {
       if (string.IsNullOrWhiteSpace(method))
@@ -77,6 +78,7 @@ namespace Csla.Reflection
     /// Parameters to pass to method.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public object? CallMethodIfImplemented(string method, params object[] parameters)
     {
       if (string.IsNullOrWhiteSpace(method))
@@ -94,6 +96,7 @@ namespace Csla.Reflection
     /// Name of the method.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public object? CallMethod(string method)
     {
       if (string.IsNullOrWhiteSpace(method))
@@ -114,6 +117,7 @@ namespace Csla.Reflection
     /// Parameters to pass to method.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="method"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public object? CallMethod(string method, params object?[]? parameters)
     {
       if (string.IsNullOrWhiteSpace(method))
@@ -129,6 +133,7 @@ namespace Csla.Reflection
     /// </summary>
     /// <param name="methodName">Name of the method.</param>
     /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public async Task CallMethodTryAsync(string methodName)
     {
       if (string.IsNullOrWhiteSpace(methodName))
@@ -158,6 +163,7 @@ namespace Csla.Reflection
     /// Parameters to pass to method.
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public async Task CallMethodTryAsync(string methodName, params object?[]? parameters)
     {
       if (string.IsNullOrWhiteSpace(methodName))

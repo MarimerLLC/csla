@@ -53,6 +53,8 @@ Nerdbank.GitVersioning needs a real `.git` directory, so from a git worktree clo
 
 `Source/Csla/Csla.csproj` builds with the trim/AOT analyzers and no suppressed IL warnings; fix or annotate new reflection rather than adding `NoWarn`.
 
+Public APIs that reflect over an arbitrary object or type name get `[RequiresUnreferencedCode]`, so consumers are warned. Don't suppress there. When CSLA's own code calls such an API on a type it knows is preserved (a business object or object factory), call an internal `*Core` variant that carries the `UnconditionalSuppressMessage` instead (for example `MethodCaller.CallMethodIfImplementedCore`). Keep all messages and justifications in `Core/TrimmingMessages.cs`.
+
 
 ## Solution Files
 

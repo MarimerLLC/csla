@@ -67,7 +67,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceChild);
               else
                 LoadProperty(target, item, sourceChild);
             }
@@ -86,7 +86,7 @@ namespace Csla.Core
               else
               {
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                  Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
+                  Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceList);
                 else
                   LoadProperty(target, item, sourceList);
               }
@@ -94,7 +94,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceValue);
               else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
                 LoadProperty(target, item, sourceValue);
             }
@@ -275,7 +275,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceChild);
               else
                 LoadProperty(target, item, sourceChild);
             }
@@ -294,7 +294,7 @@ namespace Csla.Core
               else
               {
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                  Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
+                  Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceList);
                 else
                  LoadProperty(target, item, sourceList);
               }
@@ -302,7 +302,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceValue);
               else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
                 LoadProperty(target, item, sourceValue);
             }

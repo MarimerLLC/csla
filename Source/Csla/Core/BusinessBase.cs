@@ -2230,7 +2230,7 @@ namespace Csla.Core
       {
         using (BypassPropertyChecks)
         {
-          return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+          return MethodCaller.CallPropertyGetterCore(this, propertyInfo.Name);
         }
       }
 

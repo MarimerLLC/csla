@@ -228,7 +228,7 @@ namespace Csla.Core
 
       if ((propertyInfo.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
       {
-        return MethodCaller.CallPropertyGetter(this, propertyInfo.Name);
+        return MethodCaller.CallPropertyGetterCore(this, propertyInfo.Name);
       }
 
       object? result;

@@ -46,6 +46,7 @@ namespace Csla
     /// <returns>The result of the property or method invocation.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="args"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? CallByName(object target, string methodName, CallType callType, params object?[] args)
     {
       if (target is null)
@@ -319,7 +320,7 @@ namespace Csla
     {
       if (isSync
         && applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
-        && MethodCaller.IsAsyncMethod(obj, methodName))
+        && MethodCaller.IsAsyncMethodCore(obj, methodName, false))
       {
         throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
       }
@@ -339,7 +340,7 @@ namespace Csla
     {
       if (isSync
         && applicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Server
-        && MethodCaller.IsAsyncMethod(obj, methodName, parameters))
+        && MethodCaller.IsAsyncMethodCore(obj, methodName, true, parameters))
       {
         throw new NotSupportedException(string.Format(Resources.AsyncMethodOnSyncClientNotAllowed, methodName));
       }

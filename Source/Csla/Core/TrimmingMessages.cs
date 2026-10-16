@@ -56,6 +56,15 @@ namespace Csla.Core
       "and object factory types are annotated through IObjectFactoryLoader, so the members reflected over here are preserved. " +
       "Other types used this way must be preserved by the application.";
 
+    internal const string ObjectFactoryTypeNameJustification =
+      "Factory names come from ObjectFactoryAttribute. Its Type constructors and the DynamicallyAccessedMembers annotated " +
+      "factoryType string of its string constructors make the trimmer preserve the factory type, as long as the name is " +
+      "assembly qualified or the type is in the business object's assembly. " +
+      "Types resolved from names a custom IObjectFactoryLoader maps itself must be preserved by the application.";
+
+    internal const string FactoryTypeToNameJustification =
+      "The name is built from a factory Type annotated with DynamicallyAccessedMembers.All, so the type it names is already preserved.";
+
     internal const string BaseTypeWalkJustification =
       "Walks the base type chain looking for members. CSLA base classes are annotated with DynamicallyAccessedMembers.All, " +
       "which preserves the members of every type that derives from them.";

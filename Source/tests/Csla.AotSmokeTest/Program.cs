@@ -207,5 +207,11 @@ await Check("ObjectFactory fetch", async () =>
   Assert(item.Sku == "ABC-1" && !item.IsNew, "factory-fetched item");
 });
 
+await Check("ObjectFactory fetch by type name", async () =>
+{
+  var item = await provider.GetRequiredService<IDataPortal<CatalogItem>>().FetchAsync("CAT-7");
+  Assert(item.Code == "CAT-7", "factory-fetched item");
+});
+
 Console.WriteLine(failures == 0 ? "All scenarios passed" : $"{failures} scenario(s) failed");
 return failures == 0 ? 0 : 1;

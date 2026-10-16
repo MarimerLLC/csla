@@ -250,4 +250,29 @@ namespace Csla.AotSmokeTest
       return item;
     }
   }
+
+  /// <summary>
+  /// Read-only root whose factory is named only by a string, so nothing but the
+  /// ObjectFactoryAttribute type name keeps the factory type from being trimmed.
+  /// </summary>
+  [CslaImplementProperties]
+  [ObjectFactory("Csla.AotSmokeTest.CatalogFactory, Csla.AotSmokeTest")]
+  public partial class CatalogItem : ReadOnlyBase<CatalogItem>
+  {
+    public partial string Code { get; private set; }
+  }
+
+  public class CatalogFactory : ObjectFactory
+  {
+    public CatalogFactory(ApplicationContext applicationContext)
+      : base(applicationContext)
+    { }
+
+    public CatalogItem Fetch(string code)
+    {
+      var item = (CatalogItem)ApplicationContext.CreateInstanceDI(typeof(CatalogItem));
+      LoadProperty(item, CatalogItem.CodeProperty, code);
+      return item;
+    }
+  }
 }

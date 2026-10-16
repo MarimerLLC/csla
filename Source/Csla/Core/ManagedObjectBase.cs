@@ -45,6 +45,12 @@ namespace Csla.Core
     /// </summary>
     protected FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(ApplicationContext, GetType());
 
+    /// <summary>
+    /// Gets a value indicating whether the field manager
+    /// has been created, without creating it.
+    /// </summary>
+    private protected bool HasFieldManager => _fieldManager != null;
+
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
 
     #endregion
@@ -531,6 +537,6 @@ namespace Csla.Core
     bool IManageProperties.LoadPropertyMarkDirty(IPropertyInfo propertyInfo, object? newValue) => throw new NotImplementedException();
     void IManageProperties.LoadProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] P>(PropertyInfo<P> propertyInfo, P? newValue) where P: default => LoadProperty(propertyInfo, newValue);
     List<object> IManageProperties.GetChildren() => FieldManager.GetChildren();
-    bool IManageProperties.HasManagedProperties => true;
+    bool IManageProperties.HasManagedProperties => (_fieldManager != null && _fieldManager.HasFields);
   }
 }

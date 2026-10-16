@@ -46,7 +46,7 @@ namespace Csla.Server
 
     #region Method invokes
 
-    private async Task<DataPortalResult> InvokeMethod<T>(string factoryTypeName, DataPortalOperations operation, string methodName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object? e, DataPortalContext context, bool isSync)
+    private async Task<DataPortalResult> InvokeMethod<T>(string factoryTypeName, DataPortalOperations operation, string methodName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object? e, DataPortalContext context, bool isSync, bool checkRequiredProperties = true)
       where T : DataPortalOperationAttribute
     {
       object factory = _factoryLoader.GetFactory(factoryTypeName);
@@ -84,6 +84,9 @@ namespace Csla.Server
 
         if (result is Core.ITrackStatus busy && busy.IsBusy)
           throw new InvalidOperationException($"{objectType.Name}.IsBusy == true");
+
+        if (checkRequiredProperties && operation != DataPortalOperations.Delete)
+          RequiredPropertyValidator.ThrowIfNotSet(result);
 
         Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
       }
@@ -196,7 +199,10 @@ namespace Csla.Server
         else
         {
           methodName = context.FactoryInfo.UpdateMethodName;
-          result = await InvokeMethod<UpdateAttribute>(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context, isSync).ConfigureAwait(false);
+          // capture the delete state before the factory changes it;
+          // deletes don't check required properties
+          var isDelete = obj is Core.BusinessBase { IsDeleted: true };
+          result = await InvokeMethod<UpdateAttribute>(context.FactoryInfo.FactoryTypeName, DataPortalOperations.Update, methodName, obj.GetType(), obj, context, isSync, checkRequiredProperties: !isDelete).ConfigureAwait(false);
         }
         return result;
       }

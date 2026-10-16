@@ -117,6 +117,8 @@ namespace Csla.Server
         throw new InvalidOperationException($"{Instance.GetType().Name}.IsBusy == true");
     }
 
+    public void ThrowIfRequiredPropertiesNotSet() => RequiredPropertyValidator.ThrowIfNotSet(Instance);
+
     public async Task WaitForIdle()
     {
       if (_target is not null) 

@@ -66,12 +66,29 @@ The data portal extension generator and the CSLA0025 analyzer are adapted from [
 
 The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `Child_Update`, and so on). Only methods marked with an operation attribute are invoked. Matching by name could call an unrelated method that happened to have an operation name ([#4595](https://github.com/MarimerLLC/csla/issues/4595)). See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md) for migration guidance.
 
+**Required properties** ([#4351](https://github.com/MarimerLLC/csla/issues/4351))
+
+Register a property with the new `RelationshipTypes.Required` flag to require a non-null value when a data portal operation completes:
+
+```csharp
+public static readonly PropertyInfo<Address> AddressProperty =
+  RegisterProperty<Address>(nameof(Address), RelationshipTypes.Required);
+```
+
+* After a create, fetch, insert, update or execute operation (root, child or object factory), the data portal throws `RequiredPropertyNotSetException` if a required property is null. The exception names the type and the properties. Delete operations, including saving an object marked for deletion, are not checked.
+* A property can be null while the operation runs. Only the value at the end of the operation is checked.
+* `Required` can be combined with `LazyLoad` (checked only once loaded) and `PrivateField`.
+* `SetProperty` already converts a null `string` to `string.Empty`, so a required `string` is only null if it is loaded with `LoadProperty(..., null)`.
+* An object whose operation didn't read or write any managed property has no field manager yet, and is not checked.
+* Property setters never throw for a null value, so data binding is not affected. However, when a Windows Forms grid adds a row to an editable list, `AddNew` creates the item through the child data portal. A `[CreateChild]` method that leaves a required property null throws inside the grid's `AddNew`, so child classes used this way must set their required properties in `CreateChild`.
+
 ### Changes
 
 **Data Portal**
 
 * [#4359](https://github.com/MarimerLLC/csla/issues/4359) Call data portal operation methods explicitly instead of through reflection, using source generators bundled in the `Csla` package ([#4925](https://github.com/MarimerLLC/csla/pull/4925))
 * [#4828](https://github.com/MarimerLLC/csla/issues/4828) Remove the data portal's fallback of finding operation methods by name; only methods with an operation attribute are invoked ([#4943](https://github.com/MarimerLLC/csla/pull/4943))
+* [#4351](https://github.com/MarimerLLC/csla/issues/4351) Add `RelationshipTypes.Required`; the data portal throws `RequiredPropertyNotSetException` when a required property is null after an operation
 * [#4780](https://github.com/MarimerLLC/csla/issues/4780) Resolve transaction settings when the transaction is created, and add `ITransactionScopeFactory` to control how the data portal creates `TransactionScope` instances ([#4949](https://github.com/MarimerLLC/csla/pull/4949))
 
 **Authorization**

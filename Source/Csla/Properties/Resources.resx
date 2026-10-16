@@ -557,4 +557,7 @@
   <data name="VersionRoutingTagInvalidCharacters" xml:space="preserve">
     <value>Version routing tag value cannot contain '-' or '/' characters</value>
   </data>
+  <data name="RequiredPropertyNotSetException" xml:space="preserve">
+    <value>Required properties on {0} are null after the data portal operation completed: {1}</value>
+  </data>
 </root>

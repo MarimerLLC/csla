@@ -1006,6 +1006,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Required properties on {0} are null after the data portal operation completed: {1}.
+        /// </summary>
+        public static string RequiredPropertyNotSetException {
+            get {
+                return ResourceManager.GetString("RequiredPropertyNotSetException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Message for broken rule is required. Rule: {0}.
         /// </summary>
         public static string RuleMessageRequired {

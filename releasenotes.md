@@ -94,6 +94,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 **Collections**
 
 * [#4848](https://github.com/MarimerLLC/csla/issues/4848) Editable lists enforce `AllowNew` and `AllowRemove`: adding or removing items when the matching property is `false` throws `NotSupportedException` ([#4945](https://github.com/MarimerLLC/csla/pull/4945))
+* [#4266](https://github.com/MarimerLLC/csla/issues/4266) `BusinessListBase`, `BusinessBindingListBase` and `BusinessDocumentBase` no longer serialize an empty deleted list, which reduces MobileFormatter payloads by about 44 bytes per list (156 bytes for the first list of a type) ([#4963](https://github.com/MarimerLLC/csla/pull/4963))
 
 **Build and Release**
 

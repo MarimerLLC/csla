@@ -478,7 +478,9 @@ namespace Csla.Mvvm
       if (version != _setPropertiesVersion || !ReferenceEquals(model, Model))
         return;
 
-      var isObjectBusy = Model is INotifyBusy busyObject && busyObject.IsBusy;
+      // the viewmodel is busy while it saves a clone of the model,
+      // even though the model itself is idle
+      var isObjectBusy = IsBusy || (Model is INotifyBusy busyObject && busyObject.IsBusy);
 
       if (Model is ITrackStatus trackStatus)
       {
@@ -815,6 +817,9 @@ namespace Csla.Mvvm
         if (ManageObjectLifetime && Model is IUndoableObject udbl && udbl.EditLevel == 0 && Model is ISupportUndo undo)
           undo.BeginEdit();
 
+        // handlers may already be attached: the save may have returned
+        // before unhooking, or replaced Model (which hooks the new model)
+        UnhookChangedEvents(Model);
         HookChangedEvents(Model);
         IsBusy = false;
         OnSetProperties();

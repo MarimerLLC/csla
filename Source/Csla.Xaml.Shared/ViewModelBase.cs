@@ -493,11 +493,21 @@ namespace Csla.Xaml
       public bool BaseCanEditObject { get => base.CanEditObject; set => base.CanEditObject = value; }
       public bool BaseCanDeleteObject { get => base.CanDeleteObject; set => base.CanDeleteObject = value; }
 
-      // inputs to the status calculation honor owner overrides
-      public override bool CanCreateObject => _owner.CanCreateObject;
-      public override bool CanGetObject => _owner.CanGetObject;
-      public override bool CanEditObject => _owner.CanEditObject;
-      public override bool CanDeleteObject => _owner.CanDeleteObject;
+      // status and permission reads and writes go through the owner,
+      // so overrides of its getters and protected setters take effect
+      public override bool IsDirty { get => _owner.IsDirty; protected set => _owner.IsDirty = value; }
+      public override bool IsValid { get => _owner.IsValid; protected set => _owner.IsValid = value; }
+      public override bool CanSave { get => _owner.CanSave; protected set => _owner.CanSave = value; }
+      public override bool CanCancel { get => _owner.CanCancel; protected set => _owner.CanCancel = value; }
+      public override bool CanCreate { get => _owner.CanCreate; protected set => _owner.CanCreate = value; }
+      public override bool CanDelete { get => _owner.CanDelete; protected set => _owner.CanDelete = value; }
+      public override bool CanFetch { get => _owner.CanFetch; protected set => _owner.CanFetch = value; }
+      public override bool CanRemove { get => _owner.CanRemove; protected set => _owner.CanRemove = value; }
+      public override bool CanAddNew { get => _owner.CanAddNew; protected set => _owner.CanAddNew = value; }
+      public override bool CanCreateObject { get => _owner.CanCreateObject; protected set => _owner.CanCreateObject = value; }
+      public override bool CanGetObject { get => _owner.CanGetObject; protected set => _owner.CanGetObject = value; }
+      public override bool CanEditObject { get => _owner.CanEditObject; protected set => _owner.CanEditObject = value; }
+      public override bool CanDeleteObject { get => _owner.CanDeleteObject; protected set => _owner.CanDeleteObject = value; }
 
       public void SetIsBusy(bool value) => IsBusy = value;
       public void SetViewModelErrorText(string value) => ViewModelErrorText = value;

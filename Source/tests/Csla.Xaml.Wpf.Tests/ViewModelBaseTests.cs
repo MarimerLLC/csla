@@ -37,6 +37,21 @@ namespace Csla.Xaml.Wpf.Tests
       protected override Task<SavableRoot> DoSaveAsync(ISavable cloned) => Task.FromResult(Replacement);
     }
 
+    private class TrackingSetterViewModel : ViewModel<SavableRoot>
+    {
+      public List<bool> CanSaveValues { get; } = [];
+
+      public override bool CanSave
+      {
+        get => base.CanSave;
+        protected set
+        {
+          CanSaveValues.Add(value);
+          base.CanSave = value;
+        }
+      }
+    }
+
     private class DenyEditViewModel : ViewModel<SavableRoot>
     {
       public override bool CanEditObject => false;
@@ -109,6 +124,21 @@ namespace Csla.Xaml.Wpf.Tests
         Assert.IsNotNull(vm.Exception);
         Assert.AreNotEqual(string.Empty, vm.ViewModelErrorText);
         Assert.AreSame(vm, errorSender);
+      });
+    }
+
+    [TestMethod]
+    public void OverriddenStatusSetter_IsCalledByStatusCalculation()
+    {
+      DispatcherContext.Run(async () =>
+      {
+        var model = await _testHost.GetDataPortal<SavableRoot>().CreateAsync();
+        var vm = new TrackingSetterViewModel { Model = model };
+
+        model.Name = "Valid";
+
+        Assert.IsTrue(vm.CanSave);
+        CollectionAssert.Contains(vm.CanSaveValues, true);
       });
     }
 

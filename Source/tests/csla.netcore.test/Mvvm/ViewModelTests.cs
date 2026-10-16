@@ -6,6 +6,7 @@
 // <summary>Tests for Csla.Mvvm.ViewModel</summary>
 //-----------------------------------------------------------------------
 
+using System.ComponentModel;
 using Csla.Core;
 using Csla.Testing;
 using FluentAssertions;
@@ -146,6 +147,76 @@ namespace Csla.Test.Mvvm
       vm.Exception.Should().BeNull();
       vm.ViewModelErrorText.Should().NotBeEmpty();
       root.IsNew.Should().BeTrue();
+    }
+
+    private static int CountNameChanges<T>(TestViewModel<T> vm, Action change)
+    {
+      var count = 0;
+      PropertyChangedEventHandler handler = (_, e) =>
+      {
+        if (e.PropertyName == nameof(MvvmRoot.Name))
+          count++;
+      };
+      vm.ModelPropertyChanged += handler;
+      change();
+      vm.ModelPropertyChanged -= handler;
+      return count;
+    }
+
+    [TestMethod]
+    public async Task SaveAsync_InvalidModel_DoesNotDuplicateHandlers()
+    {
+      var root = await CreateRootAsync();
+      var vm = CreateViewModel<MvvmRoot>();
+      vm.Model = root;
+
+      await vm.SaveAsync();
+
+      CountNameChanges(vm, () => root.Name = "Changed").Should().Be(1);
+    }
+
+    [TestMethod]
+    public async Task SaveAsync_ReplacedModel_HooksNewModelOnce()
+    {
+      var root = await CreateRootAsync();
+      root.Name = "Valid";
+      var replacement = await CreateRootAsync();
+      var vm = CreateViewModel<MvvmRoot>();
+      vm.SaveOverride = _ => Task.FromResult(replacement);
+      vm.Model = root;
+
+      await vm.SaveAsync();
+
+      vm.Model.Should().BeSameAs(replacement);
+      CountNameChanges(vm, () => replacement.Name = "Changed").Should().Be(1);
+
+      vm.Model = await CreateRootAsync();
+
+      CountNameChanges(vm, () => replacement.Name = "Changed again").Should().Be(0);
+    }
+
+    [TestMethod]
+    public async Task SaveAsync_WhileSaving_CanSaveIsFalse()
+    {
+      var root = await CreateRootAsync();
+      root.Name = "Valid";
+      var vm = CreateViewModel<MvvmRoot>();
+      var pending = new TaskCompletionSource<MvvmRoot>();
+      vm.SaveOverride = _ => pending.Task;
+      vm.Model = root;
+      vm.CanSave.Should().BeTrue();
+
+      var save = vm.SaveAsync();
+
+      vm.IsBusy.Should().BeTrue();
+      vm.CanSave.Should().BeFalse();
+      vm.CanCancel.Should().BeFalse();
+
+      pending.SetResult(root);
+      await save;
+
+      vm.IsBusy.Should().BeFalse();
+      vm.CanSave.Should().BeTrue();
     }
 
     [TestMethod]

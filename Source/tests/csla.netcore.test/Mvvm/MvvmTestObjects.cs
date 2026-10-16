@@ -23,6 +23,11 @@ namespace Csla.Test.Mvvm
     public object AddNew() => DoAddNew();
     public void Remove(object item) => DoRemove(item);
     public void Delete() => DoDelete();
+
+    public Func<ISavable, Task<T>> SaveOverride { get; set; }
+
+    protected override Task<T> DoSaveAsync(ISavable cloned)
+      => SaveOverride is null ? base.DoSaveAsync(cloned) : SaveOverride(cloned);
   }
 
   public class NoContextViewModel<T> : Csla.Mvvm.ViewModel<T>

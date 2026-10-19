@@ -253,6 +253,24 @@ namespace Csla.Test.Mvvm
     }
 
     [TestMethod]
+    public async Task ManageObjectLifetime_SaveFails_CancelRestoresOriginal()
+    {
+      var root = await CreateRootAsync();
+      root.Name = "Original";
+      var vm = CreateViewModel<MvvmRoot>();
+      vm.ManageObjectLifetime = true;
+      vm.Model = root;                  // BeginEdit: snapshot has "Original"
+      root.Name = MvvmRoot.FailOnSave;  // the edit the server rejects
+
+      await vm.SaveAsync();
+      vm.Exception.Should().NotBeNull();
+
+      vm.Cancel();
+
+      vm.Model.Name.Should().Be("Original");
+    }
+
+    [TestMethod]
     public async Task RefreshAsync_Success_SetsModel()
     {
       var vm = CreateViewModel<MvvmRoot>();

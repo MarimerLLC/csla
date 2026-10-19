@@ -239,17 +239,44 @@ Because every view model now has the same behavior, some of them behave differen
 ### All view models
 
 * `SaveAsync` returns `Task<T?>` (the saved `Model`) instead of `Task`. Code that awaits `SaveAsync()` is unaffected.
-* `SaveAsync` calls `ApplyEdit` on the `Model` before cloning it, when `ManageObjectLifetime` is `true`.
+* When `ManageObjectLifetime` is `true`, `SaveAsync` saves a clone with its changes committed, and calls `ApplyEdit` on the `Model` only after the save succeeds. If the save fails, the `Model` keeps its undo snapshot, so `DoCancel` still restores the values from before the edit.
+* The `Error` event is raised when `SaveAsync` or `RefreshAsync` fails. It's also raised when an authorization rule throws while the status properties (`CanSave`, `CanEditObject` and so on) are calculated. That exception is captured in `Exception` and `ViewModelErrorText`, and the status properties keep their previous values. Before, the XAML view model posted it to the `SynchronizationContext`, which crashes a desktop app that has no global exception handler.
+* If loading the object-level permissions (`CanCreateObject`, `CanGetObject`, `CanEditObject`, `CanDeleteObject`) fails, the next `RefreshAsync` evaluates the rules again.
+* If the `Model` is still busy after `BusyTimeout`, `SaveAsync` captures a `TimeoutException`.
+* `SaveAsync` does nothing if `Model` is `null`, and doesn't raise `Saved`. If the `Model` doesn't implement `ISavable`, the default `DoSaveAsync` throws an `InvalidOperationException`, which `SaveAsync` captures.
 * `OnModelChanging(oldValue, newValue)` moves event handlers from the old model to the new model. `OnModelChanged(oldValue, newValue)` runs after the model changes and raises `ModelChanged`.
 
 ### XAML (WPF, MAUI and Avalonia)
 
-* `SaveAsync` and `RefreshAsync` no longer throw. Exceptions are captured in the `Exception` and `ViewModelErrorText` properties, and `SaveAsync` also raises the new `Error` event. Code that wrapped these calls in `try`/`catch` should check `Exception` or handle `Error` instead. If `RefreshAsync` fails, `Model` is set to `null`.
-* If the `Model` is invalid, `SaveAsync` doesn't save. It sets `ViewModelErrorText` to the model's error text.
+* `SaveAsync` and `RefreshAsync` no longer throw. Exceptions are captured in the `Exception` and `ViewModelErrorText` properties, and both methods raise the new `Error` event. Code that wrapped these calls in `try`/`catch` should check `Exception` or handle `Error` instead. If `RefreshAsync` fails, `Model` is set to `null`.
+* If the `Model` is invalid, `SaveAsync` doesn't save. It sets `ViewModelErrorText` to the model's error text, without setting `Exception` or raising `Error`.
+
+  Code that navigates away after a save must now check for errors itself. Check both properties, because an invalid model sets only `ViewModelErrorText`:
+
+  ```csharp
+  // CSLA 10
+  try
+  {
+    await vm.SaveAsync();
+    await NavigateBack();
+  }
+  catch (Exception ex)
+  {
+    ShowError(ex);
+  }
+
+  // CSLA 11
+  await vm.SaveAsync();
+  if (vm.Exception is null && string.IsNullOrEmpty(vm.ViewModelErrorText))
+    await NavigateBack();
+  else
+    ShowError(vm.ViewModelErrorText);
+  ```
 * `SaveAsync` waits up to `BusyTimeout` (30 seconds by default) for a busy `Model` to become idle. Use `SaveAsync(CancellationToken)` to control the wait yourself.
 * There are new `Saved`, `ModelChanging` and `ModelChanged` events.
 * `RefreshAsync<F>(factory)` is obsolete because the `F` type parameter was never used. Call `RefreshAsync(factory)`.
 * On MAUI and Avalonia, `ManageObjectLifetime` now defaults to `true`, the same as WPF. Set it to `false` to keep the previous behavior.
+* On MAUI and Avalonia, the public `ManageObjectLifetimeProperty` field is removed. Use the `ManageObjectLifetime` property.
 * On MAUI, `BeginAddNew` is obsolete. Use `DoAddNew`.
 * On WPF, override `OnModelChanging` instead of `OnModelChanged` if you need to run code before the event handlers are moved to the new model.
 

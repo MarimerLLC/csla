@@ -203,7 +203,7 @@ namespace Csla.Xaml.Wpf.Tests
 
     [Insert]
     [Update]
-    private void Save()
+    private void InsertOrUpdate()
     {
       if (Name == FailOnSave)
         throw new InvalidOperationException("Save failed");

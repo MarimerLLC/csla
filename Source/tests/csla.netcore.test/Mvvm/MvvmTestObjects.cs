@@ -70,7 +70,7 @@ namespace Csla.Test.Mvvm
 
     [Insert]
     [Update]
-    private void Save()
+    private void InsertOrUpdate()
     {
       if (Name == FailOnSave)
         throw new InvalidOperationException("Save failed");
@@ -160,6 +160,32 @@ namespace Csla.Test.Mvvm
 
     [Fetch]
     private void Fetch(int id)
+    { }
+  }
+
+  public class ThrowingAuthRule : AuthorizationRule
+  {
+    public ThrowingAuthRule(AuthorizationActions action)
+      : base(action)
+    { }
+
+    protected override void Execute(IAuthorizationContext context)
+    {
+      throw new InvalidOperationException("failure in an authorization rule");
+    }
+  }
+
+  [Serializable]
+  public class ThrowingAuthRoot : BusinessBase<ThrowingAuthRoot>
+  {
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      BusinessRules.AddRule(typeof(ThrowingAuthRoot), new ThrowingAuthRule(AuthorizationActions.EditObject));
+    }
+
+    [Create]
+    private void Create()
     { }
   }
 

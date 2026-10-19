@@ -6,13 +6,10 @@
 // </copyright>
 // <summary>Base class used to create ViewModel objects,</summary>
 //-----------------------------------------------------------------------
-#if ANDROID
-namespace Csla.Axml
-#elif IOS
-namespace Csla.Iosui
-#else
+
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Xaml
-#endif
 {
   /// <summary>
   /// Base class used to create ViewModel objects,
@@ -20,7 +17,7 @@ namespace Csla.Xaml
   /// InvokeMethod or Invoke.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-  public class ViewModel<T> : ViewModelBase<T>
+  public class ViewModel<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : ViewModelBase<T>
   {
     /// <summary>
     /// Saves the Model, first committing changes if ManagedObjectLifetime is true.
@@ -48,11 +45,7 @@ namespace Csla.Xaml
     /// </summary>
     public virtual void AddNew(object sender, ExecuteEventArgs e)
     {
-#if ANDROID || IOS
-      BeginAddNew();
-#else
       DoAddNew();
-#endif
     }
 
     /// <summary>

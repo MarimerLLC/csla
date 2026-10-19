@@ -9,6 +9,7 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 #if !MAUI && !AVALONIA
 using System.Windows;
 #endif
@@ -22,7 +23,7 @@ namespace Csla.Xaml
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-  public abstract class ViewModelBase<T> : Csla.Mvvm.ViewModel<T>, IViewModel
+  public abstract class ViewModelBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Csla.Mvvm.ViewModel<T>, IViewModel
   {
     /// <summary>
     /// Creates an instance of the type that resolves
@@ -30,9 +31,8 @@ namespace Csla.Xaml
     /// <see cref="ApplicationContextManager"/>.
     /// </summary>
     protected ViewModelBase()
-    {
-      ManageObjectLifetime = true;
-    }
+      : base(manageObjectLifetime: true)
+    { }
 
     /// <summary>
     /// Creates an instance of the type.
@@ -40,10 +40,8 @@ namespace Csla.Xaml
     /// <param name="applicationContext">The current ApplicationContext.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     protected ViewModelBase(ApplicationContext applicationContext)
-      : base(applicationContext)
-    {
-      ManageObjectLifetime = true;
-    }
+      : base(applicationContext, manageObjectLifetime: true)
+    { }
 
     /// <inheritdoc />
     protected override ApplicationContext ResolveApplicationContext() => ApplicationContextManager.GetApplicationContext();
@@ -82,7 +80,7 @@ namespace Csla.Xaml
   /// delegates its behavior to a <see cref="Csla.Mvvm.ViewModel{T}"/>
   /// instance rather than inheriting from it.
   /// </remarks>
-  public abstract class ViewModelBase<T> : DependencyObject,
+  public abstract class ViewModelBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : DependencyObject,
     INotifyPropertyChanged, IViewModel
   {
     private readonly InnerViewModel _inner;
@@ -94,7 +92,7 @@ namespace Csla.Xaml
     /// </summary>
     protected ViewModelBase()
     {
-      _inner = new InnerViewModel(this);
+      _inner = new InnerViewModel(this, ManageObjectLifetime);
       Initialize();
     }
 
@@ -105,13 +103,12 @@ namespace Csla.Xaml
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     protected ViewModelBase(ApplicationContext applicationContext)
     {
-      _inner = new InnerViewModel(this, applicationContext);
+      _inner = new InnerViewModel(this, applicationContext, ManageObjectLifetime);
       Initialize();
     }
 
     private void Initialize()
     {
-      _inner.ManageObjectLifetime = ManageObjectLifetime;
       _inner.Error += (_, e) => Error?.Invoke(this, new Core.ErrorEventArgs(this, e.Error));
     }
 
@@ -399,9 +396,7 @@ namespace Csla.Xaml
       remove => _inner.Saved -= value;
     }
 
-    /// <summary>
-    /// Event raised when a save operation fails.
-    /// </summary>
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.Error"/>
     public event EventHandler<Core.ErrorEventArgs>? Error;
 
     /// <summary>
@@ -462,13 +457,16 @@ namespace Csla.Xaml
     {
       private readonly ViewModelBase<T> _owner;
 
-      public InnerViewModel(ViewModelBase<T> owner)
+      // the initial ManageObjectLifetime is passed to the base constructor,
+      // so no PropertyChanged reaches the owner before its constructor runs
+      public InnerViewModel(ViewModelBase<T> owner, bool manageObjectLifetime)
+        : base(manageObjectLifetime)
       {
         _owner = owner;
       }
 
-      public InnerViewModel(ViewModelBase<T> owner, ApplicationContext applicationContext)
-        : base(applicationContext)
+      public InnerViewModel(ViewModelBase<T> owner, ApplicationContext applicationContext, bool manageObjectLifetime)
+        : base(applicationContext, manageObjectLifetime)
       {
         _owner = owner;
       }

@@ -36,8 +36,21 @@ namespace Csla.Mvvm
     /// <param name="applicationContext">The current ApplicationContext.</param>
     /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public ViewModel(ApplicationContext applicationContext)
+      : this(applicationContext, false)
+    { }
+
+    /// <summary>
+    /// Creates an instance of the type with an initial
+    /// <see cref="ManageObjectLifetime"/> value. No
+    /// PropertyChanged event is raised for that value.
+    /// </summary>
+    /// <param name="applicationContext">The current ApplicationContext.</param>
+    /// <param name="manageObjectLifetime">Initial value of <see cref="ManageObjectLifetime"/>.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    protected ViewModel(ApplicationContext applicationContext, bool manageObjectLifetime)
     {
       _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
+      _manageObjectLifetime = manageObjectLifetime;
     }
 
     /// <summary>
@@ -47,6 +60,19 @@ namespace Csla.Mvvm
     /// </summary>
     protected ViewModel()
     { }
+
+    /// <summary>
+    /// Creates an instance of the type with an initial
+    /// <see cref="ManageObjectLifetime"/> value, resolving its
+    /// ApplicationContext on first use by calling
+    /// <see cref="ResolveApplicationContext"/>. No
+    /// PropertyChanged event is raised for that value.
+    /// </summary>
+    /// <param name="manageObjectLifetime">Initial value of <see cref="ManageObjectLifetime"/>.</param>
+    protected ViewModel(bool manageObjectLifetime)
+    {
+      _manageObjectLifetime = manageObjectLifetime;
+    }
 
     /// <summary>
     /// Gets the current ApplicationContext instance.
@@ -77,7 +103,9 @@ namespace Csla.Mvvm
     public event Action? Saved;
 
     /// <summary>
-    /// Event raised when a save operation fails.
+    /// Event raised when a refresh or save operation fails,
+    /// or when an authorization rule used to calculate the
+    /// status properties throws an exception.
     /// </summary>
     public event EventHandler<Core.ErrorEventArgs>? Error;
 
@@ -202,7 +230,7 @@ namespace Csla.Mvvm
       // only set busy state for entire object. Ignore busy state based
       // on async rules being active
       if (string.IsNullOrEmpty(e.PropertyName))
-        IsBusy = e.Busy;
+        SetBusy(ref _isModelBusy, e.Busy);
       else
         OnSetProperties();
     }
@@ -263,7 +291,9 @@ namespace Csla.Mvvm
           _model = value;
           OnModelChanged(oldValue, value);
           OnPropertyChanged(nameof(Model));
-          OnSetProperties();
+          // the busy state reported by the old model no longer applies
+          if (!SetBusy(ref _isModelBusy, false))
+            OnSetProperties();
         }
       }
     }
@@ -298,22 +328,32 @@ namespace Csla.Mvvm
     public TimeSpan BusyTimeout { get; set; } = TimeSpan.FromSeconds(30);
 
     private bool _isBusy;
+    private bool _isModelBusy;
     /// <summary>
     /// Gets a value indicating whether this object is
-    /// executing an asynchronous process.
+    /// executing an asynchronous process, or the Model
+    /// reports that it is busy.
     /// </summary>
     public bool IsBusy
     {
-      get => _isBusy;
-      protected set
-      {
-        if (value != _isBusy)
-        {
-          _isBusy = value;
-          OnPropertyChanged(nameof(IsBusy));
-          OnSetProperties();
-        }
-      }
+      get => _isBusy || _isModelBusy;
+      protected set => SetBusy(ref _isBusy, value);
+    }
+
+    // the viewmodel's own operations and the Model's BusyChanged event
+    // have separate flags, so the Model becoming idle part way through
+    // a save does not clear the viewmodel's busy state
+    private bool SetBusy(ref bool field, bool value)
+    {
+      if (field == value)
+        return false;
+      var wasBusy = IsBusy;
+      field = value;
+      if (wasBusy == IsBusy)
+        return false;
+      OnPropertyChanged(nameof(IsBusy));
+      OnSetProperties();
+      return true;
     }
 
     private bool _isDirty;
@@ -440,6 +480,10 @@ namespace Csla.Mvvm
     /// When a rule is asynchronous, the permission-based properties
     /// (such as CanDelete or CanAddNew) may be updated after this
     /// method returns; PropertyChanged is raised when they change.
+    /// If a rule throws, the exception is reported through
+    /// <see cref="Exception"/>, <see cref="ViewModelErrorText"/> and
+    /// <see cref="Error"/>, and the status properties keep their
+    /// previous values.
     /// </remarks>
     protected virtual void OnSetProperties()
     {
@@ -466,7 +510,7 @@ namespace Csla.Mvvm
         canDeleteInstance = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, targetObject, CancellationToken.None);
       if (model is ICollection)
       {
-        itemType = Utilities.GetChildItemType(model.GetType());
+        itemType = GetChildItemType(model.GetType());
         if (itemType != null)
         {
           canRemoveItem = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, itemType, CancellationToken.None);
@@ -509,6 +553,21 @@ namespace Csla.Mvvm
         CanRemove = false;
         CanAddNew = false;
       }
+    }
+
+    private Type? _childItemTypeSource;
+    private Type? _childItemType;
+
+    // the status calculation runs on every model change, so cache
+    // the reflection-based lookup for the current Model type
+    private Type? GetChildItemType(Type modelType)
+    {
+      if (modelType != _childItemTypeSource)
+      {
+        _childItemType = Utilities.GetChildItemType(modelType);
+        _childItemTypeSource = modelType;
+      }
+      return _childItemType;
     }
 
     private void SetListProperties(Type? itemType, bool canRemoveItem, bool canAddNewItem, bool isObjectBusy)
@@ -609,49 +668,51 @@ namespace Csla.Mvvm
     {
       if (_objectLevelPermissionsRequested)
         return;
-      var task = EnsureObjectLevelPermissionsAsync();
-      if (task.IsCompleted)
-        task.GetAwaiter().GetResult(); // surface exceptions from synchronous rules
-      else
-        ObserveTask(task);
+      ObserveTask(EnsureObjectLevelPermissionsAsync(retryFailed: false));
     }
 
-    private static async void ObserveTask(Task task)
+    private async void ObserveTask(Task task)
     {
-      // async void so exceptions surface on the SynchronizationContext
-      // (such as a UI thread), just as a synchronous exception would.
-      // Without a context an async void exception would crash the
-      // process, so it is not rethrown; the status properties are
-      // simply left unchanged.
-      var context = SynchronizationContext.Current;
+      // a failure is reported through Exception and Error rather than
+      // posted to the SynchronizationContext, so it behaves the same on
+      // every host. When the task has already completed (all rules are
+      // synchronous) this runs before the caller continues.
       try
       {
         await task;
       }
-      catch (Exception) when (context is null)
-      { }
+      catch (Exception ex)
+      {
+        ReportError(ex);
+      }
     }
 
-    private Task EnsureObjectLevelPermissionsAsync()
+    // retryFailed starts a new evaluation if the previous one failed. Only
+    // explicit operations retry: property reads do not, so a rule that keeps
+    // failing is not re-evaluated (and reported) on every read.
+    private Task EnsureObjectLevelPermissionsAsync(bool retryFailed)
     {
-      if (!_objectLevelPermissionsRequested)
+      if (!_objectLevelPermissionsRequested || (retryFailed && _objectLevelPermissionsTask is { IsFaulted: true }))
       {
+        // resolve the context first, so a missing ApplicationContext
+        // throws to the caller instead of being reported as a rule failure
+        var applicationContext = ApplicationContext;
         // set the flag first: the property setters raise PropertyChanged,
         // and handlers may read the permission properties re-entrantly
         _objectLevelPermissionsRequested = true;
-        _objectLevelPermissionsTask = LoadObjectLevelPermissionsAsync();
+        _objectLevelPermissionsTask = LoadObjectLevelPermissionsAsync(applicationContext);
       }
       return _objectLevelPermissionsTask ?? Task.CompletedTask;
     }
 
-    private async Task LoadObjectLevelPermissionsAsync()
+    private async Task LoadObjectLevelPermissionsAsync(ApplicationContext applicationContext)
     {
       var sourceType = typeof(T);
 
-      CanCreateObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.CreateObject, sourceType, CancellationToken.None);
-      CanGetObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.GetObject, sourceType, CancellationToken.None);
-      CanEditObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.EditObject, sourceType, CancellationToken.None);
-      CanDeleteObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, sourceType, CancellationToken.None);
+      CanCreateObject = await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.CreateObject, sourceType, CancellationToken.None);
+      CanGetObject = await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.GetObject, sourceType, CancellationToken.None);
+      CanEditObject = await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, sourceType, CancellationToken.None);
+      CanDeleteObject = await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.DeleteObject, sourceType, CancellationToken.None);
 
       // set "instance" values now that object-level values are known
       OnSetProperties();
@@ -662,7 +723,9 @@ namespace Csla.Mvvm
     #region Errors
 
     /// <summary>
-    /// Gets any error text generated by refresh or save operations.
+    /// Gets any error text generated by refresh or save operations,
+    /// or by the authorization rules used to calculate the status
+    /// properties.
     /// </summary>
     public string ViewModelErrorText { get; protected set; } = string.Empty;
 
@@ -683,7 +746,9 @@ namespace Csla.Mvvm
     /// <summary>
     /// Gets the last exception caught by
     /// the viewmodel during refresh or save
-    /// operations.
+    /// operations, or while evaluating the
+    /// authorization rules used to calculate
+    /// the status properties.
     /// </summary>
     public Exception? Exception { get; private set; }
 
@@ -695,6 +760,18 @@ namespace Csla.Mvvm
       OnPropertyChanged(nameof(ViewModelErrorText));
     }
 
+    private void ReportError(Exception exception)
+    {
+      // a failed permission load can be observed by both a property
+      // read and RefreshAsync; report it once
+      if (ReferenceEquals(Exception, exception))
+        return;
+
+      var errorText = exception is DataPortalException dpe ? dpe.BusinessExceptionMessage : exception.Message;
+      SetError(exception, errorText);
+      Error?.Invoke(this, new Core.ErrorEventArgs(this, exception));
+    }
+
     #endregion
 
     #region Operations
@@ -702,7 +779,8 @@ namespace Csla.Mvvm
     /// <summary>
     /// Creates or retrieves an instance of the Model by
     /// invoking a factory. Exceptions are captured in
-    /// <see cref="Exception"/> and <see cref="ViewModelErrorText"/>.
+    /// <see cref="Exception"/> and <see cref="ViewModelErrorText"/>,
+    /// and the <see cref="Error"/> event is raised.
     /// </summary>
     /// <param name="factory">Async data portal or factory method.</param>
     /// <exception cref="ArgumentNullException"><paramref name="factory"/> is <see langword="null"/>.</exception>
@@ -714,19 +792,17 @@ namespace Csla.Mvvm
       SetError(null, string.Empty);
       try
       {
+        // start (or retry) the permission load before IsBusy triggers
+        // the status calculation, which reads the permissions
+        var permissions = EnsureObjectLevelPermissionsAsync(retryFailed: true);
         IsBusy = true;
-        await EnsureObjectLevelPermissionsAsync();
+        await permissions;
         Model = await factory();
-      }
-      catch (DataPortalException ex)
-      {
-        Model = default;
-        SetError(ex, ex.BusinessExceptionMessage);
       }
       catch (Exception ex)
       {
         Model = default;
-        SetError(ex, ex.Message);
+        ReportError(ex);
       }
       finally
       {
@@ -736,30 +812,38 @@ namespace Csla.Mvvm
       return Model;
     }
 
+    private CancellationToken _busyTimeoutToken;
+
     /// <summary>
     /// Saves the Model, waiting up to <see cref="BusyTimeout"/>
     /// for the Model to become idle. Exceptions are captured in
     /// <see cref="Exception"/> and <see cref="ViewModelErrorText"/>,
-    /// and the <see cref="Error"/> event is raised.
+    /// and the <see cref="Error"/> event is raised. If the Model
+    /// is still busy after <see cref="BusyTimeout"/>, the exception
+    /// is a <see cref="TimeoutException"/>.
     /// </summary>
     public virtual async Task<T?> SaveAsync()
     {
+      using var cts = BusyTimeout.ToCancellationTokenSource();
+      // lets SaveAsync(CancellationToken) tell the timeout apart from
+      // a caller's cancellation, without bypassing an override
+      _busyTimeoutToken = cts.Token;
       try
       {
-        using var cts = BusyTimeout.ToCancellationTokenSource();
-        await SaveAsync(cts.Token);
+        return await SaveAsync(cts.Token);
       }
-      catch (TaskCanceledException tcex)
+      finally
       {
-        var timeout = new TimeoutException(nameof(SaveAsync), tcex);
-        SetError(timeout, timeout.Message);
+        _busyTimeoutToken = default;
       }
-      return Model;
     }
 
     /// <summary>
-    /// Saves the Model, first committing changes
-    /// if ManageObjectLifetime is true. Exceptions are captured in
+    /// Saves the Model. If ManageObjectLifetime is true, a clone
+    /// of the Model with its changes committed is saved, and the
+    /// Model's changes are committed only if the save succeeds, so
+    /// <see cref="DoCancel"/> can still restore the original values
+    /// after a failed save. Exceptions are captured in
     /// <see cref="Exception"/> and <see cref="ViewModelErrorText"/>,
     /// and the <see cref="Error"/> event is raised.
     /// </summary>
@@ -767,15 +851,16 @@ namespace Csla.Mvvm
     public virtual async Task<T?> SaveAsync(CancellationToken ct)
     {
       SetError(null, string.Empty);
+      var model = Model;
+      if (model is null)
+        return model;
+
+      Exception? error = null;
       try
       {
-        if (Model is ITrackStatus obj && !obj.IsSavable)
+        if (model is ITrackStatus obj && !obj.IsSavable)
         {
-          while (obj.IsBusy)
-          {
-            ct.ThrowIfCancellationRequested();
-            await Task.Delay(1, ct);
-          }
+          await WaitForIdleAsync(obj, ct);
           if (!obj.IsValid)
           {
             SetError(null, ModelErrorText);
@@ -786,34 +871,44 @@ namespace Csla.Mvvm
                 $"{obj.GetType().Name} IsBusy: {obj.IsBusy}, IsValid: {obj.IsValid}, IsSavable: {obj.IsSavable}");
         }
 
-        UnhookChangedEvents(Model);
+        UnhookChangedEvents(model);
 
-        var savable = Model as ISavable;
+        var savable = model as ISavable;
         if (ManageObjectLifetime)
         {
-          // apply changes - must apply edit to Model not clone
-          if (Model is ISupportUndo undoable)
-            undoable.ApplyEdit();
-
-          // clone the object if possible
           if (savable is ICloneable clonable)
+          {
+            // save a clone with its changes committed; the Model keeps
+            // its snapshot until the save succeeds
             savable = (ISavable)clonable.Clone();
+            if (savable is ISupportUndo clonedUndo)
+            {
+              clonedUndo.ApplyEdit();
+              _pendingApplyEdit = model as ISupportUndo;
+            }
+          }
+          else if (model is ISupportUndo undoable)
+          {
+            undoable.ApplyEdit();
+          }
         }
 
         IsBusy = true;
         Model = await DoSaveAsync(savable);
+        // an override may have kept the Model without committing it
+        if (ReferenceEquals(Model, model))
+          CommitPendingEdit();
         Saved?.Invoke();
-      }
-      catch (DataPortalException ex)
-      {
-        SetError(ex, ex.BusinessExceptionMessage);
       }
       catch (Exception ex)
       {
-        SetError(ex, ex.Message);
+        error = ex;
       }
       finally
       {
+        // after a failed save the Model keeps its snapshot, so Cancel
+        // restores the values from before the edit
+        _pendingApplyEdit = null;
         if (ManageObjectLifetime && Model is IUndoableObject udbl && udbl.EditLevel == 0 && Model is ISupportUndo undo)
           undo.BeginEdit();
 
@@ -823,26 +918,60 @@ namespace Csla.Mvvm
         HookChangedEvents(Model);
         IsBusy = false;
         OnSetProperties();
-        if (Exception != null)
-          Error?.Invoke(this, new Core.ErrorEventArgs(this, Exception));
+        if (error != null)
+          ReportError(error);
       }
       return Model;
+    }
+
+    private async Task WaitForIdleAsync(ITrackStatus obj, CancellationToken ct)
+    {
+      try
+      {
+        if (obj is INotifyBusy notifyBusy)
+        {
+          await BusyHelper.WaitForIdle(notifyBusy, ct);
+        }
+        else
+        {
+          while (obj.IsBusy)
+            await Task.Delay(1, ct);
+        }
+      }
+      catch (OperationCanceledException ex) when (ct.IsCancellationRequested && ct == _busyTimeoutToken)
+      {
+        throw new TimeoutException($"{obj.GetType().FullName}.{nameof(SaveAsync)} - {BusyTimeout}.", ex);
+      }
+    }
+
+    private ISupportUndo? _pendingApplyEdit;
+
+    // commits the Model's changes once the save of its clone has succeeded
+    private void CommitPendingEdit()
+    {
+      var pending = _pendingApplyEdit;
+      _pendingApplyEdit = null;
+      pending?.ApplyEdit();
     }
 
     /// <summary>
     /// Override to provide custom Model save behavior.
     /// </summary>
     /// <param name="cloned">The object to save (a clone of Model if ManageObjectLifetime is true).</param>
+    /// <exception cref="InvalidOperationException"><paramref name="cloned"/> is <see langword="null"/> because the Model does not implement <see cref="ISavable"/>.</exception>
     protected virtual async Task<T?> DoSaveAsync(ISavable? cloned)
     {
-      if (cloned != null)
-      {
-        var saved = (T)await cloned.SaveAsync();
-        if (Model is IEditableBusinessObject editable)
-          await new GraphMerger(ApplicationContext).MergeGraphAsync(editable, (IEditableBusinessObject)saved);
-        else
-          Model = saved;
-      }
+      if (cloned is null)
+        throw new InvalidOperationException($"{typeof(T).Name} does not implement {nameof(ISavable)}.");
+
+      var saved = (T)await cloned.SaveAsync();
+      // the save succeeded: commit the Model's changes before merging
+      // so it doesn't keep the pre-save snapshot
+      CommitPendingEdit();
+      if (Model is IEditableBusinessObject editable)
+        await new GraphMerger(ApplicationContext).MergeGraphAsync(editable, (IEditableBusinessObject)saved);
+      else
+        Model = saved;
       return Model;
     }
 

@@ -220,6 +220,36 @@ namespace Csla.Test.Mvvm
     }
 
     [TestMethod]
+    public async Task SaveAsync_WithoutManagedLifetime_StaysBusyUntilSaved()
+    {
+      var root = await CreateRootAsync();
+      root.Name = "Valid";
+      var vm = CreateViewModel<MvvmRoot>();
+      vm.Model = root;
+      bool? busyWhenSaved = null;
+      vm.Saved += () => busyWhenSaved = vm.IsBusy;
+
+      await vm.SaveAsync();
+
+      vm.Exception.Should().BeNull();
+      busyWhenSaved.Should().BeTrue();
+      vm.IsBusy.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task SaveAsync_NullModel_DoesNotRaiseSaved()
+    {
+      var vm = CreateViewModel<MvvmRoot>();
+      var saved = false;
+      vm.Saved += () => saved = true;
+
+      await vm.SaveAsync();
+
+      saved.Should().BeFalse();
+      vm.Exception.Should().BeNull();
+    }
+
+    [TestMethod]
     public async Task SaveAsync_BusyPastTimeout_ReportsTimeoutException()
     {
       var root = await _testHost.GetDataPortal<BusyRoot>().CreateAsync();
@@ -264,6 +294,25 @@ namespace Csla.Test.Mvvm
 
       root.Name.Should().Be("Original");
       ((IUndoableObject)root).EditLevel.Should().Be(1);
+    }
+
+    [TestMethod]
+    public async Task ManageObjectLifetime_SaveSucceeds_CancelKeepsSavedValues()
+    {
+      var root = await CreateRootAsync();
+      root.Name = "Original";
+      var vm = CreateViewModel<MvvmRoot>();
+      vm.ManageObjectLifetime = true;
+      vm.Model = root;
+      root.Name = "Saved";
+
+      await vm.SaveAsync();
+      vm.Exception.Should().BeNull();
+
+      vm.Cancel();
+
+      vm.Model.Name.Should().Be("Saved");
+      ((IUndoableObject)vm.Model).EditLevel.Should().Be(1);
     }
 
     [TestMethod]
@@ -358,6 +407,22 @@ namespace Csla.Test.Mvvm
       vm.CanDeleteObject.Should().BeTrue();
       vm.CanSave.Should().BeFalse();
       vm.CanDelete.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task PermissionRuleFailure_IsReportedThroughError()
+    {
+      var root = await _testHost.GetDataPortal<ThrowingAuthRoot>().CreateAsync();
+      var vm = CreateViewModel<ThrowingAuthRoot>();
+      Exception reported = null;
+      vm.Error += (_, e) => reported = e.Error;
+
+      vm.Model = root;
+
+      vm.Exception.Should().NotBeNull();
+      vm.ViewModelErrorText.Should().NotBeEmpty();
+      reported.Should().BeSameAs(vm.Exception);
+      vm.CanSave.Should().BeFalse();
     }
 
     [TestMethod]

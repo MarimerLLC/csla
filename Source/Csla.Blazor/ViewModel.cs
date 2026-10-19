@@ -6,6 +6,7 @@
 // <summary>Base type for creating your own view model</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using Csla.Core;
 using Csla.Reflection;
@@ -15,7 +16,7 @@ namespace Csla.Blazor
   /// <summary>
   /// Base type for creating your own view model.
   /// </summary>
-  public class ViewModel<T> : Csla.Mvvm.ViewModel<T>
+  public class ViewModel<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Csla.Mvvm.ViewModel<T>
   {
     /// <summary>
     /// Creates an instance of the type.

@@ -1167,6 +1167,7 @@ namespace Csla.Rules
     /// data annotation attributes.
     /// </summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     public void AddDataAnnotations()
     {
       var options = _applicationContext.GetRequiredService<Configuration.CslaOptions>();
@@ -1193,7 +1194,7 @@ namespace Csla.Rules
     /// Adds data annotation validation rules from the given type.
     /// </summary>
     /// <param name="metadataType">Type of the metadata.</param>
-    private void AddDataAnnotationsFromType(Type metadataType)
+    private void AddDataAnnotationsFromType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type metadataType)
     {
       var attList = metadataType.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
       foreach (var att in attList)

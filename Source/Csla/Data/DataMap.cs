@@ -6,6 +6,7 @@
 // <summary>Defines a mapping between two sets of</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 using Csla.Reflection;
 
@@ -34,7 +35,9 @@ namespace Csla.Data
 
     #endregion
 
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
     private readonly Type _sourceType;
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)]
     private readonly Type _targetType;
     private readonly List<MemberMapping> _map = [];
 
@@ -48,7 +51,7 @@ namespace Csla.Data
     /// Type of target object.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="sourceType"/> or <paramref name="targetType"/> is <see langword="null"/>.</exception>
-    public DataMap(Type sourceType, Type targetType)
+    public DataMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type sourceType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type targetType)
     {
       _sourceType = sourceType ?? throw new ArgumentNullException(nameof(sourceType));
       _targetType = targetType ?? throw new ArgumentNullException(nameof(targetType));
@@ -65,7 +68,7 @@ namespace Csla.Data
     /// </param>
     /// <param name="includedPropertyNames">List of property names to map 1:1.</param>
     /// <exception cref="ArgumentNullException"><paramref name="sourceType"/>, <paramref name="targetType"/> or <paramref name="includedPropertyNames"/> is <see langword="null"/>.</exception>
-    public DataMap(Type sourceType, Type targetType, IEnumerable<string> includedPropertyNames) : this(sourceType, targetType)
+    public DataMap([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type sourceType, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type targetType, IEnumerable<string> includedPropertyNames) : this(sourceType, targetType)
     {
       if (includedPropertyNames is null)
         throw new ArgumentNullException(nameof(includedPropertyNames));

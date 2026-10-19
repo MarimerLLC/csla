@@ -26,8 +26,17 @@ namespace Csla.Core
   [DebuggerStepThrough]
 #endif
   [Serializable]
+  [UnconditionalSuppressMessage("Trimming", "IL2112", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
+  [UnconditionalSuppressMessage("Trimming", "IL2113", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
   public class MobileBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : BindingList<T>, IMobileList, IMobileObjectMetastate
   {
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.BindingList)]
+    public MobileBindingList()
+    { }
+
     #region LoadListMode
 
     [NonSerialized]

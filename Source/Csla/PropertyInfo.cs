@@ -19,7 +19,7 @@ namespace Csla
   /// <typeparam name="T">
   /// Data type of the property.
   /// </typeparam>
-  public class PropertyInfo<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : Core.IPropertyInfo, IComparable
+  public class PropertyInfo<T> : Core.IPropertyInfo, Core.ITypedPropertyLoader, IComparable
   {
     /// <summary>
     /// Creates a new instance of this class.
@@ -80,7 +80,7 @@ namespace Csla
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type containingType, bool? isSerializable = null)
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type containingType, bool? isSerializable = null)
         : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), RelationshipTypes.None, isSerializable)
     { }
 
@@ -99,7 +99,7 @@ namespace Csla
     /// </param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type containingType, T defaultValue, bool? isSerializable = null)
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type containingType, T defaultValue, bool? isSerializable = null)
         : this(name, friendlyName, containingType, defaultValue, RelationshipTypes.None, isSerializable)
     { }
 
@@ -116,7 +116,7 @@ namespace Csla
     /// <param name="relationship">Relationship with referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type containingType, RelationshipTypes relationship, bool? isSerializable = null) 
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type containingType, RelationshipTypes relationship, bool? isSerializable = null) 
       : this(name, friendlyName, containingType, DataBindingFriendlyDefault(), relationship, isSerializable)
     { }
 
@@ -137,7 +137,7 @@ namespace Csla
     /// referenced object.</param>
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="name"/> is <see langword="null"/>.</exception>
-    public PropertyInfo(string name, string? friendlyName, Type? containingType, T? defaultValue, RelationshipTypes relationship, bool? isSerializable = null)
+    public PropertyInfo(string name, string? friendlyName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type? containingType, T? defaultValue, RelationshipTypes relationship, bool? isSerializable = null)
     {
       Name = name ?? throw new ArgumentNullException(nameof(name));
       _friendlyName = friendlyName;
@@ -260,6 +260,46 @@ namespace Csla
         throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(name)));
 
       return new Core.FieldManager.FieldData<T>(name, IsSerializable);
+    }
+
+    bool Core.ITypedPropertyLoader.TryLoadProperty(Core.IManageProperties target, object? newValue)
+    {
+      if (!TryGetTypedValue(newValue, out var value))
+        return false;
+
+      target.LoadProperty(this, value);
+      return true;
+    }
+
+    bool Core.ITypedPropertyLoader.TryLoadPropertyMarkDirty(Core.IManageProperties target, object? newValue, out bool valuesDiffer)
+    {
+      if (!TryGetTypedValue(newValue, out var value))
+      {
+        valuesDiffer = false;
+        return false;
+      }
+
+      valuesDiffer = target.LoadPropertyMarkDirty(this, value);
+      return true;
+    }
+
+    private static bool TryGetTypedValue(object? newValue, out T? value)
+    {
+      // null maps to default(T), matching reflection invocation semantics
+      if (newValue is null)
+      {
+        value = default;
+        return true;
+      }
+
+      if (newValue is T typedValue)
+      {
+        value = typedValue;
+        return true;
+      }
+
+      value = default;
+      return false;
     }
 
 

@@ -6,6 +6,7 @@
 // <summary>Class containing the default implementation for</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 
 namespace Csla.Server
@@ -39,6 +40,9 @@ namespace Csla.Server
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="factoryName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
   /// <exception cref="InvalidOperationException"><see cref="Type"/> for <paramref name="factoryName"/> could not be loaded.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = Csla.Core.TrimmingMessages.ObjectFactoryTypeNameJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2073", Justification = Csla.Core.TrimmingMessages.ObjectFactoryTypeNameJustification)]
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
     public Type GetFactoryType(string factoryName)
     {
       if (factoryName is null)

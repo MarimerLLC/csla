@@ -38,6 +38,24 @@ dotnet build Source/csla.maui.build.sln
 dotnet build Source\Csla.Analyzers.sln
 ```
 
+### NativeAOT / trimming smoke test
+`Source/tests/Csla.AotSmokeTest` is a console app that publishes CSLA with NativeAOT and runs data portal, rules, serialization and authorization scenarios (non-zero exit on failure). CI publishes it after the test step, fails on any `IL`/AOT warning, and runs the exe. NativeAOT needs the platform linker (on Windows, the Visual Studio C++ workload); without it, use the trimmed self-contained publish:
+```
+dotnet publish Source/tests/Csla.AotSmokeTest -c Release -r win-x64 -o aot-smoke                          # NativeAOT
+dotnet publish Source/tests/Csla.AotSmokeTest -c Release -r win-x64 -o aot-smoke -p:CslaSmokeTrimOnly=true  # trimmed only
+aot-smoke/Csla.AotSmokeTest.exe
+```
+The trimmed publish doesn't catch NativeAOT-only failures. Without the native toolchain, a real NativeAOT run also works in a Linux container (Docker), from the repo root:
+```
+docker run --rm -v "$PWD:/src" -w /src mcr.microsoft.com/dotnet/sdk:11.0 bash -c "apt-get update -qq && apt-get install -y -qq clang zlib1g-dev > /dev/null && dotnet publish Source/tests/Csla.AotSmokeTest -c Release -r linux-x64 -o /tmp/aot && /tmp/aot/Csla.AotSmokeTest"
+```
+Nerdbank.GitVersioning needs a real `.git` directory, so from a git worktree clone the branch inside the container first.
+
+`Source/Csla/Csla.csproj` builds with the trim/AOT analyzers and no suppressed IL warnings; fix or annotate new reflection rather than adding `NoWarn`.
+
+Public APIs that reflect over an arbitrary object or type name get `[RequiresUnreferencedCode]`, so consumers are warned. Don't suppress there. When CSLA's own code calls such an API on a type it knows is preserved (a business object or object factory), call an internal `*Core` variant that carries the `UnconditionalSuppressMessage` instead (for example `MethodCaller.CallMethodIfImplementedCore`). Keep all messages and justifications in `Core/TrimmingMessages.cs`.
+
+
 ## Solution Files
 
 | Solution | Purpose |
@@ -87,6 +105,7 @@ The main NuGet package. Key subsystems:
 - `Csla.Analyzers.Tests` — Analyzer unit tests
 - `Csla.Generator.*.Tests` — Generator unit tests
 - `GraphMergerTest` — Object graph merge testing
+- `Csla.AotSmokeTest` — NativeAOT/trimming smoke test (console app, not a unit test project)
 
 ## Coding Standards
 

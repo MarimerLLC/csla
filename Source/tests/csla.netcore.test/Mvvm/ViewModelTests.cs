@@ -312,6 +312,19 @@ namespace Csla.Test.Mvvm
     }
 
     [TestMethod]
+    public async Task RefreshFailure_RaisesError()
+    {
+      var vm = CreateViewModel<MvvmRoot>();
+      var raised = false;
+      vm.Error += (_, _) => raised = true;
+
+      await vm.RefreshAsync(() => _testHost.GetDataPortal<MvvmRoot>().FetchAsync(-1));
+
+      vm.Exception.Should().NotBeNull();
+      raised.Should().BeTrue();
+    }
+
+    [TestMethod]
     public async Task ListModel_AddNewAndRemove()
     {
       var list = await _testHost.GetDataPortal<MvvmList>().CreateAsync();

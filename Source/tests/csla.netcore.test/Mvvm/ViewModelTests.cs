@@ -220,6 +220,20 @@ namespace Csla.Test.Mvvm
     }
 
     [TestMethod]
+    public async Task SaveAsync_BusyPastTimeout_ReportsTimeoutException()
+    {
+      var root = await _testHost.GetDataPortal<BusyRoot>().CreateAsync();
+      root.StayBusy();
+      var vm = CreateViewModel<BusyRoot>();
+      vm.Model = root;
+      vm.BusyTimeout = TimeSpan.FromMilliseconds(200);
+
+      await vm.SaveAsync();
+
+      vm.Exception.Should().BeOfType<TimeoutException>();
+    }
+
+    [TestMethod]
     public async Task ManageObjectLifetime_SaveKeepsEditLevel()
     {
       var root = await CreateRootAsync();

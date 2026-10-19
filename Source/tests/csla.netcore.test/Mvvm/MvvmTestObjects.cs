@@ -82,6 +82,16 @@ namespace Csla.Test.Mvvm
   }
 
   [Serializable]
+  public class BusyRoot : BusinessBase<BusyRoot>
+  {
+    public void StayBusy() => MarkBusy();
+
+    [Create]
+    private void Create()
+    { }
+  }
+
+  [Serializable]
   public class MvvmChild : BusinessBase<MvvmChild>
   {
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));

@@ -348,6 +348,19 @@ namespace Csla.Test.Mvvm
     }
 
     [TestMethod]
+    public async Task TransientPermissionFailure_LaterRefreshSucceeds()
+    {
+      FlakyAuthRule.Calls = 0;
+      var portal = _testHost.GetDataPortal<FlakyAuthRoot>();
+      var vm = CreateViewModel<FlakyAuthRoot>();
+
+      await vm.RefreshAsync(() => portal.FetchAsync(1));   // fails: transient
+      await vm.RefreshAsync(() => portal.FetchAsync(1));   // should succeed
+
+      vm.Exception.Should().BeNull();
+    }
+
+    [TestMethod]
     public async Task Delete_MarksModelDeleted()
     {
       var root = await CreateRootAsync();

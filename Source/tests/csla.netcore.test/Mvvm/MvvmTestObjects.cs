@@ -130,6 +130,39 @@ namespace Csla.Test.Mvvm
     }
   }
 
+  /// <summary>
+  /// Throws on its first evaluation only, to simulate a transient failure.
+  /// </summary>
+  public class FlakyAuthRule : AuthorizationRule
+  {
+    public static int Calls;
+
+    public FlakyAuthRule(AuthorizationActions action)
+      : base(action)
+    { }
+
+    protected override void Execute(IAuthorizationContext context)
+    {
+      if (Interlocked.Increment(ref Calls) == 1)
+        throw new InvalidOperationException("transient failure in an authorization rule");
+      context.HasPermission = true;
+    }
+  }
+
+  [Serializable]
+  public class FlakyAuthRoot : BusinessBase<FlakyAuthRoot>
+  {
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      BusinessRules.AddRule(typeof(FlakyAuthRoot), new FlakyAuthRule(AuthorizationActions.CreateObject));
+    }
+
+    [Fetch]
+    private void Fetch(int id)
+    { }
+  }
+
   [Serializable]
   public class MvvmDenyEditRoot : BusinessBase<MvvmDenyEditRoot>
   {

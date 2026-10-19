@@ -57,6 +57,23 @@ namespace Csla.Xaml.Wpf.Tests
       public override bool CanEditObject => false;
     }
 
+    // a common MVVM shape: state created in the constructor, used from OnPropertyChanged
+    private class CommandRefreshingViewModel : ViewModel<SavableRoot>
+    {
+      private readonly List<string> _refreshed;
+
+      public CommandRefreshingViewModel()
+      {
+        _refreshed = [];
+      }
+
+      protected override void OnPropertyChanged(string propertyName)
+      {
+        base.OnPropertyChanged(propertyName);
+        _refreshed.Add(propertyName);   // null during base construction
+      }
+    }
+
     [TestMethod]
     public void DefaultsToManagingObjectLifetime()
     {
@@ -154,6 +171,16 @@ namespace Csla.Xaml.Wpf.Tests
 
         Assert.IsTrue(model.IsSavable);
         Assert.IsFalse(vm.CanSave);
+      });
+    }
+
+    [TestMethod]
+    public void Construction_DoesNotCallOnPropertyChangedEarly()
+    {
+      DispatcherContext.Run(async () =>
+      {
+        await Task.Yield();
+        _ = new CommandRefreshingViewModel();   // throws NullReferenceException today
       });
     }
   }

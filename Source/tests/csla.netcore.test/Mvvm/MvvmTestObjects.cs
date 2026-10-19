@@ -189,6 +189,47 @@ namespace Csla.Test.Mvvm
     { }
   }
 
+  /// <summary>
+  /// Throws for instance checks only, so the object-level
+  /// permission load succeeds.
+  /// </summary>
+  public class InstanceOnlyFailRule : AuthorizationRule
+  {
+    public static bool Failing = true;
+
+    public InstanceOnlyFailRule(AuthorizationActions action)
+      : base(action)
+    { }
+
+    protected override void Execute(IAuthorizationContext context)
+    {
+      if (Failing && context.Target != null)
+        throw new InvalidOperationException("instance rule keeps failing");
+      context.HasPermission = true;
+    }
+  }
+
+  [Serializable]
+  public class InstanceFailRoot : BusinessBase<InstanceFailRoot>
+  {
+    public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+    public string Name
+    {
+      get => GetProperty(NameProperty);
+      set => SetProperty(NameProperty, value);
+    }
+
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public static void AddObjectAuthorizationRules()
+    {
+      BusinessRules.AddRule(typeof(InstanceFailRoot), new InstanceOnlyFailRule(AuthorizationActions.DeleteObject));
+    }
+
+    [Create]
+    private void Create()
+    { }
+  }
+
   [Serializable]
   public class MvvmDenyEditRoot : BusinessBase<MvvmDenyEditRoot>
   {

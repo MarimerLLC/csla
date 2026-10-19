@@ -46,6 +46,17 @@ namespace Csla.Test.Mvvm
     }
 
     [TestMethod]
+    public async Task ParameterlessConstructor_WithoutContext_SettingModelThrows()
+    {
+      var root = await CreateRootAsync();
+      var vm = new NoContextViewModel<MvvmRoot>();
+
+      var act = () => vm.Model = root;
+
+      act.Should().Throw<InvalidOperationException>();
+    }
+
+    [TestMethod]
     public async Task SettingModel_SetsStatusAndRaisesPropertyChanged()
     {
       var root = await CreateRootAsync();
@@ -423,6 +434,49 @@ namespace Csla.Test.Mvvm
       vm.ViewModelErrorText.Should().NotBeEmpty();
       reported.Should().BeSameAs(vm.Exception);
       vm.CanSave.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task PersistentStatusRuleFailure_IsReportedOnce()
+    {
+      InstanceOnlyFailRule.Failing = true;
+      var root = await _testHost.GetDataPortal<InstanceFailRoot>().CreateAsync();
+      var vm = CreateViewModel<InstanceFailRoot>();
+      var errors = 0;
+      vm.Error += (_, _) => errors++;
+
+      vm.Model = root;
+      root.Name = "a";
+      root.Name = "ab";
+      root.Name = "abc";
+
+      errors.Should().Be(1);
+    }
+
+    [TestMethod]
+    public async Task StatusRuleFailure_IsReportedAgainAfterRecovery()
+    {
+      InstanceOnlyFailRule.Failing = true;
+      var root = await _testHost.GetDataPortal<InstanceFailRoot>().CreateAsync();
+      var vm = CreateViewModel<InstanceFailRoot>();
+      var errors = 0;
+      vm.Error += (_, _) => errors++;
+
+      try
+      {
+        vm.Model = root;
+        InstanceOnlyFailRule.Failing = false;
+        root.Name = "a";
+        vm.CanDelete.Should().BeTrue();
+        InstanceOnlyFailRule.Failing = true;
+        root.Name = "ab";
+      }
+      finally
+      {
+        InstanceOnlyFailRule.Failing = true;
+      }
+
+      errors.Should().Be(2);
     }
 
     [TestMethod]

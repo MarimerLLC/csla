@@ -492,10 +492,35 @@ namespace Csla.Mvvm
 
     private void SetProperties()
     {
+      // resolve the context first, so a missing ApplicationContext
+      // throws to the caller instead of being reported as a rule failure
+      _ = ApplicationContext;
       ObserveTask(SetPropertiesAsync());
     }
 
+    private bool _statusCalculationFailed;
+
     private async Task SetPropertiesAsync()
+    {
+      try
+      {
+        if (await CalculateStatusAsync())
+          _statusCalculationFailed = false;
+      }
+      catch (Exception ex)
+      {
+        // the calculation runs on every model change, so a rule that keeps
+        // failing is reported when it starts failing, not on every change
+        if (!_statusCalculationFailed)
+        {
+          _statusCalculationFailed = true;
+          ReportError(ex);
+        }
+      }
+    }
+
+    // returns false if a newer calculation superseded this one
+    private async Task<bool> CalculateStatusAsync()
     {
       var version = ++_setPropertiesVersion;
       var model = Model;
@@ -520,7 +545,7 @@ namespace Csla.Mvvm
 
       // a newer call has started (or the model changed) while awaiting
       if (version != _setPropertiesVersion || !ReferenceEquals(model, Model))
-        return;
+        return false;
 
       // the viewmodel is busy while it saves a clone of the model,
       // even though the model itself is idle
@@ -553,6 +578,7 @@ namespace Csla.Mvvm
         CanRemove = false;
         CanAddNew = false;
       }
+      return true;
     }
 
     private Type? _childItemTypeSource;

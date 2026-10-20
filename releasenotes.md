@@ -66,6 +66,10 @@ The data portal extension generator and the CSLA0025 analyzer are adapted from [
 
 The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `Child_Update`, and so on). Only methods marked with an operation attribute are invoked. Matching by name could call an unrelated method that happened to have an operation name ([#4595](https://github.com/MarimerLLC/csla/issues/4595)). See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md) for migration guidance.
 
+**Common view model base type** ([#1766](https://github.com/MarimerLLC/csla/issues/1766))
+
+The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavior that was implemented separately for Blazor, WPF, MAUI and Avalonia. The existing `Csla.Blazor.ViewModel<T>` and `Csla.Xaml.ViewModelBase<T>` types build on it, so all view models handle errors, object lifetime and authorization the same way. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#common-cslamvvmviewmodelt-base-type).
+
 ### Changes
 
 **Data Portal**
@@ -78,6 +82,10 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
 
 * [#4707](https://github.com/MarimerLLC/csla/issues/4707) XAML and Blazor view models support async authorization rules, and `HasPermission` reports a still-running async rule with an `InvalidOperationException` that points to `HasPermissionAsync` ([#4948](https://github.com/MarimerLLC/csla/pull/4948))
 * [#4947](https://github.com/MarimerLLC/csla/issues/4947) `IsSavable` supports async per-type authorization rules: the object is busy while the rule runs, and the result is cached per action and user ([#4948](https://github.com/MarimerLLC/csla/pull/4948))
+
+**View Models**
+
+* [#1766](https://github.com/MarimerLLC/csla/issues/1766) Add `Csla.Mvvm.ViewModel<T>` as the common base for the Blazor and XAML view models
 
 **Bug Fixes**
 
@@ -105,6 +113,7 @@ The data portal no longer finds operation methods by name (`DataPortal_Fetch`, `
 * `BusinessListBase`, `BusinessBindingListBase`, `DynamicListBase` and `DynamicBindingListBase` throw `NotSupportedException` when items are added while `AllowNew` is `false`, or removed while `AllowRemove` is `false`. `AllowRemove` now defaults to `true` for `BusinessListBase` and `DynamicListBase`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#allownew-and-allowremove-are-enforced).
 * With async authorization rules, view model permission properties (such as `CanCreateObject`) start out `false` and update when the rules complete. Reading `IsSavable` while an async `CreateObject`, `EditObject` or `DeleteObject` rule is running marks the object busy and returns `false`, and calling `Save` before the rule completes throws. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-authorization-rules-in-view-models-and-issavable) ([#4707](https://github.com/MarimerLLC/csla/issues/4707), [#4947](https://github.com/MarimerLLC/csla/issues/4947)).
 * `TransactionalAttribute` no longer copies defaults from `DataOptions`: `TimeoutInSeconds` is now `int?` and `AsyncFlowOption` is now `TransactionScopeAsyncFlowOption?`, and the `TransactionalDataPortal` constructor takes an `ITransactionScopeFactory` and `TransactionScopeFactoryContext`. The `DataOptions` transaction defaults are now per-instance instead of static. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#transaction-settings-resolved-at-runtime-and-itransactionscopefactory) ([#4780](https://github.com/MarimerLLC/csla/issues/4780)).
+* The XAML view model's `SaveAsync` and `RefreshAsync` capture exceptions in `Exception` and `ViewModelErrorText`, and raise `Error`, instead of throwing. An exception from an authorization rule during the status calculation is reported the same way on every view model. `SaveAsync` returns `Task<T?>` on all view models. On MAUI and Avalonia, `ManageObjectLifetime` defaults to `true` and the public `ManageObjectLifetimeProperty` field is removed. The Blazor `OnModelChanged()` override is replaced by `OnModelChanged(T? oldValue, T? newValue)`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#common-cslamvvmviewmodelt-base-type) ([#1766](https://github.com/MarimerLLC/csla/issues/1766)).
 
 ### Supported Platforms
 

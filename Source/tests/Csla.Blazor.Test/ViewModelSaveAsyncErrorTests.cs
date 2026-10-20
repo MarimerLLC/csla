@@ -218,7 +218,7 @@ namespace Csla.Blazor.Test
 
       await vm.SaveAsync();
       Assert.IsNotNull(vm.Exception);
-      Assert.AreEqual(vm.Exception.Message, "The operation was canceled.");
+      Assert.IsInstanceOfType<TimeoutException>(vm.Exception);
     }
 
     #region Helper Methods

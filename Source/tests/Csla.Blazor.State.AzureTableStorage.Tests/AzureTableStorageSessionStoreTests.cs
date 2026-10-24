@@ -77,23 +77,29 @@ public class AzureTableStorageSessionStoreTests
       _provider.GetRequiredService<ILogger<AzureTableStorageSessionStore>>());
   }
 
+  private static long OneDayAgo => DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds();
+
   private async Task AddStaleEntityAsync(string key, string discriminator)
   {
-    var entity = new SessionEntity
+    var entity = new TableEntity(key, discriminator)
     {
-      PartitionKey = key,
-      RowKey = discriminator,
-      Value = [0],
-      LastTouched = DateTimeOffset.UtcNow.AddDays(-1).ToUnixTimeSeconds(),
+      ["Value"] = new byte[] { 0 },
+      ["LastTouched"] = OneDayAgo,
     };
     await _serviceClient.GetTableClient(_tableName).UpsertEntityAsync(entity);
   }
 
-  private async Task<bool> EntityExistsAsync(string key, string discriminator = Discriminator)
+  private async Task<TableEntity?> GetEntityAsync(string key, string discriminator = Discriminator)
   {
-    var response = await _serviceClient.GetTableClient(_tableName).GetEntityIfExistsAsync<SessionEntity>(key, discriminator);
-    return response.HasValue;
+    var response = await _serviceClient.GetTableClient(_tableName).GetEntityIfExistsAsync<TableEntity>(key, discriminator);
+    return response.HasValue ? response.Value : null;
   }
+
+  private async Task<bool> EntityExistsAsync(string key, string discriminator = Discriminator) =>
+    await GetEntityAsync(key, discriminator) is not null;
+
+  private static Session CreateSessionOfSize(int approximateBytes) =>
+    new() { ["payload"] = new string('x', approximateBytes) };
 
   [TestMethod]
   public async Task GetSessionAsync_MissingKey_ReturnsNull()
@@ -181,15 +187,79 @@ public class AzureTableStorageSessionStoreTests
   }
 
   [TestMethod]
-  public async Task PurgeExpiredSessionsAsync_SavesChangesMadeInPlace()
+  public async Task PurgeExpiredSessionsAsync_RefreshesLastTouchedWithoutWritingData()
   {
     var store = CreateStore();
-    await store.AddOrUpdateSessionAsync("key", new Session { ["v"] = 1 });
-    (await store.GetSessionAsync("key"))!["v"] = 2;
+    var session = new Session { ["v"] = 1 };
+    await store.AddOrUpdateSessionAsync("key", session);
+    await _serviceClient.GetTableClient(_tableName).UpdateEntityAsync(
+      new TableEntity("key", Discriminator) { ["LastTouched"] = OneDayAgo }, Azure.ETag.All, TableUpdateMode.Merge);
+    session["v"] = 2;
 
     await store.PurgeExpiredSessionsAsync(TimeSpan.FromHours(1));
 
-    (await CreateStore().GetSessionAsync("key"))!["v"].Should().Be(2);
+    (await GetEntityAsync("key"))!.GetInt64("LastTouched").Should().Be(session.LastTouched);
+    (await CreateStore().GetSessionAsync("key"))!["v"].Should().Be(1);
+  }
+
+  [TestMethod]
+  public async Task AddOrUpdateSessionAsync_ConcurrentSameKey_CacheAndTableAgree()
+  {
+    var store = CreateStore();
+
+    await Task.WhenAll(Enumerable.Range(0, 20).Select(i =>
+      store.AddOrUpdateSessionAsync("key", new Session { ["v"] = i }).AsTask()));
+
+    var cached = await store.GetSessionAsync("key");
+    var stored = await CreateStore().GetSessionAsync("key");
+    stored!["v"].Should().Be(cached!["v"]);
+  }
+
+  [TestMethod]
+  public async Task AddOrUpdateSessionAsync_LargerThanOneColumn_RoundTrips()
+  {
+    var session = CreateSessionOfSize(200 * 1024);
+
+    await CreateStore().AddOrUpdateSessionAsync("key", session);
+    var loaded = await CreateStore().GetSessionAsync("key");
+
+    (await GetEntityAsync("key"))!.ContainsKey("Value3").Should().BeTrue();
+    loaded!["payload"].Should().Be(session["payload"]);
+  }
+
+  [TestMethod]
+  public async Task AddOrUpdateSessionAsync_NearSizeLimit_RoundTrips()
+  {
+    var session = CreateSessionOfSize(AzureTableStorageSessionStore.MaxChunks * AzureTableStorageSessionStore.ChunkSize - 4096);
+
+    await CreateStore().AddOrUpdateSessionAsync("key", session);
+    var loaded = await CreateStore().GetSessionAsync("key");
+
+    loaded!["payload"].Should().Be(session["payload"]);
+  }
+
+  [TestMethod]
+  public async Task AddOrUpdateSessionAsync_OverSizeLimit_ThrowsAndDoesNotCache()
+  {
+    var store = CreateStore();
+    var session = CreateSessionOfSize(AzureTableStorageSessionStore.MaxChunks * AzureTableStorageSessionStore.ChunkSize + 1024);
+
+    var act = async () => await store.AddOrUpdateSessionAsync("key", session);
+
+    await act.Should().ThrowAsync<InvalidOperationException>();
+    (await store.GetSessionAsync("key")).Should().BeNull();
+  }
+
+  [TestMethod]
+  public async Task AddOrUpdateSessionAsync_SmallerSession_RemovesLeftoverColumns()
+  {
+    var store = CreateStore();
+    await store.AddOrUpdateSessionAsync("key", CreateSessionOfSize(200 * 1024));
+
+    await store.AddOrUpdateSessionAsync("key", new Session { ["v"] = 1 });
+
+    (await GetEntityAsync("key"))!.ContainsKey("Value1").Should().BeFalse();
+    (await CreateStore().GetSessionAsync("key"))!["v"].Should().Be(1);
   }
 
   [TestMethod]

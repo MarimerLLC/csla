@@ -32,8 +32,15 @@ namespace Csla.Configuration
     /// in-memory session store; the last registration wins. The session store
     /// is only used when <c>UseInMemoryApplicationContextManager</c> is
     /// <see langword="false"/>. Call <c>ISessionManager.PurgeSessions</c>
-    /// periodically: besides removing expired sessions, it saves changes made
-    /// to live sessions to the table.
+    /// periodically: besides removing expired sessions, it refreshes the stored
+    /// last-touched time of live sessions, so other servers do not purge them.
+    /// <para>
+    /// Live sessions are kept in memory. Session data is written to the table
+    /// when a session is saved through <c>ISessionManager.UpdateSession</c>,
+    /// such as when the WebAssembly client sends its state; changes made in
+    /// place are written with the next save. A session can serialize to at
+    /// most 704 KiB.
+    /// </para>
     /// <para>
     /// The <see cref="TableServiceClient"/> comes from
     /// <see cref="AzureTableStorageOptions.ConnectionString"/> when it is set,

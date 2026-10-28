@@ -109,8 +109,8 @@ namespace Csla.Core
       "The object is the Lazy<T> held in a CSLA rule manager field. The DynamicDependency on the method preserves the public properties of Lazy<T>.";
 
     internal const string PermissionPolicyJustification =
-      "Permission policy names are created by CslaPolicy.GetPolicy, whose objectType parameter preserves the public constructors " +
-      "of the business type, so the type a policy names is preserved.";
+      "Policy names built by CslaPolicy.GetPolicy or HasPermissionAttribute come from a type whose public constructors are preserved " +
+      "by their objectType parameter. A policy name written by hand must name a type the application preserves.";
 
     internal const string MvcJustification =
       "ASP.NET Core MVC and Razor Pages don't support trimming or NativeAOT, and the SDK warns when an app that uses them is trimmed, " +

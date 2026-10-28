@@ -77,7 +77,7 @@ namespace Csla.Reflection
     /// <param name="targetType">Object with methods</param>
     /// <param name="criteria">Data portal criteria values</param>
     /// <exception cref="ArgumentNullException"><paramref name="targetType"/> is <see langword="null"/>.</exception>
-    public ServiceProviderMethodInfo FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria)
+    public ServiceProviderMethodInfo FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type targetType, object?[]? criteria)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)
@@ -96,7 +96,7 @@ namespace Csla.Reflection
     /// <param name="criteria">Data portal criteria values</param>
     /// <param name="dataPortalMethod">The maybe found method.</param>
     /// <returns><see langword="true"/> if a method with the provided attribute was found. Otherwise <see langword="false"/>.</returns>
-    public bool TryFindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type? targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
+    public bool TryFindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type? targetType, object?[]? criteria, [NotNullWhen(true)] out ServiceProviderMethodInfo? dataPortalMethod)
       where T : DataPortalOperationAttribute
     {
       if (targetType is null)
@@ -122,7 +122,7 @@ namespace Csla.Reflection
     [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BaseTypeWalkJustification)]
     [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Csla.Core.TrimmingMessages.BaseTypeWalkJustification)]
-    private ServiceProviderMethodInfo? FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type targetType, object?[]? criteria, bool throwOnError)
+    private ServiceProviderMethodInfo? FindDataPortalMethod<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type targetType, object?[]? criteria, bool throwOnError)
       where T : DataPortalOperationAttribute
     {
       if (targetType == null)

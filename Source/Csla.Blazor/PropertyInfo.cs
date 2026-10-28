@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Csla.Rules;
 
@@ -15,6 +16,7 @@ namespace Csla.Blazor
   /// <summary>
   /// Exposes metastate for a property.
   /// </summary>
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
   public class PropertyInfo : IPropertyInfo, INotifyPropertyChanged
   {
     /// <summary>
@@ -67,8 +69,8 @@ namespace Csla.Blazor
     /// </summary>
     public object? Value
     {
-      get => Utilities.CallByName(Model, PropertyName, CallType.Get);
-      set => Utilities.CallByName(Model, PropertyName, CallType.Set, value);
+      get => Utilities.CallByNameCore(Model, PropertyName, CallType.Get);
+      set => Utilities.CallByNameCore(Model, PropertyName, CallType.Set, value);
     }
 
     /// <summary>
@@ -76,6 +78,7 @@ namespace Csla.Blazor
     /// </summary>
     public string FriendlyName
     {
+      [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
       get
       {
         var pi = Core.FieldManager.PropertyInfoManager.GetRegisteredProperty(Model.GetType(), PropertyName) ?? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.PropertyNameDoesNotExist, PropertyName));
@@ -207,6 +210,7 @@ namespace Csla.Blazor
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     public System.Reflection.PropertyInfo? GetPropertyInfo()
       => Model.GetType().GetProperty(PropertyName);
   }

@@ -304,6 +304,16 @@ namespace Csla.Reflection
     }
 
     /// <summary>
+    /// Resolves the name of a business type sent to a data portal host by a
+    /// client. The client serialized the name from the type itself, so the
+    /// name is resolved under the same contract as <see cref="GetTypeCore"/>.
+    /// </summary>
+    /// <param name="typeName">Assembly qualified type name.</param>
+    [UnconditionalSuppressMessage("Trimming", "IL2073", Justification = Core.TrimmingMessages.TypeNameResolutionJustification)]
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+    internal static Type GetBusinessTypeCore(string typeName) => GetTypeCore(typeName, true)!;
+
+    /// <summary>
     /// Fallback when the runtime can't resolve an assembly qualified type
     /// name: loads the assembly file from the application base directory.
     /// </summary>

@@ -6,6 +6,7 @@
 // <summary>Self-contained CSLA .NET container for use in a unit test</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using Csla.Configuration;
 using Csla.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -108,7 +109,7 @@ namespace Csla.Testing
     /// Gets a data portal for the specified business type.
     /// </summary>
     /// <typeparam name="T">The type the data portal serves.</typeparam>
-    public IDataPortal<T> GetDataPortal<T>() where T : ICslaObject
+    public IDataPortal<T> GetDataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>() where T : ICslaObject
     {
       return _provider.GetRequiredService<IDataPortal<T>>();
     }
@@ -117,7 +118,7 @@ namespace Csla.Testing
     /// Gets a child data portal for the specified business type.
     /// </summary>
     /// <typeparam name="T">The type the child data portal serves.</typeparam>
-    public IChildDataPortal<T> GetChildDataPortal<T>() where T : ICslaObject
+    public IChildDataPortal<T> GetChildDataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>() where T : ICslaObject
     {
       return _provider.GetRequiredService<IChildDataPortal<T>>();
     }

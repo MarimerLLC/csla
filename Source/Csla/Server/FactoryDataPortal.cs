@@ -46,6 +46,7 @@ namespace Csla.Server
 
     #region Method invokes
 
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     private async Task<DataPortalResult> InvokeMethod<T>(string factoryTypeName, DataPortalOperations operation, string methodName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object? e, DataPortalContext context, bool isSync)
       where T : DataPortalOperationAttribute
     {

@@ -49,6 +49,10 @@ namespace Csla.Core
     internal const string ReflectionJsonSerializationUnreferencedCode =
       "Uses reflection-based System.Text.Json serialization; implement an IMobileSerializer that uses a source-generated JsonSerializerContext for trimmed apps.";
 
+    internal const string BindingPathReflection =
+      "Walks a binding path by reflecting over the properties of the binding source, which can be any object and may have been trimmed. " +
+      "Preserve the types reached through binding paths in trimmed applications.";
+
     #endregion
 
     #region UnconditionalSuppressMessage justifications
@@ -100,6 +104,17 @@ namespace Csla.Core
     internal const string InterceptorTypeJustification =
       "Interceptor types are only added through the AddInterceptorProvider<T> overloads and the default list in DataPortalServerOptions, " +
       "both of which preserve public constructors.";
+
+    internal const string LazyPropertiesJustification =
+      "The object is the Lazy<T> held in a CSLA rule manager field. The DynamicDependency on the method preserves the public properties of Lazy<T>.";
+
+    internal const string PermissionPolicyJustification =
+      "Permission policy names are created by CslaPolicy.GetPolicy, whose objectType parameter preserves the public constructors " +
+      "of the business type, so the type a policy names is preserved.";
+
+    internal const string MvcJustification =
+      "ASP.NET Core MVC and Razor Pages don't support trimming or NativeAOT, and the SDK warns when an app that uses them is trimmed, " +
+      "so this code doesn't run in a trimmed application.";
 
     #endregion
   }

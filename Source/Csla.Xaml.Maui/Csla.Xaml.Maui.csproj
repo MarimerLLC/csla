@@ -23,6 +23,16 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <EnableTrimAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableSingleFileAnalyzer>
+    <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer>
+    <!--
+      No trim or AOT warnings are suppressed project-wide. Fix the code or annotate the API instead;
+      use UnconditionalSuppressMessage with a justification only where the requirement provably holds.
+    -->
+  </PropertyGroup>
+
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net11&quot;))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-rc.1.26451.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-rc.1.26425.128" />

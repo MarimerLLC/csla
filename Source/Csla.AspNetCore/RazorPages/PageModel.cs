@@ -17,7 +17,7 @@ namespace Csla.AspNetCore.RazorPages
   /// <summary>
   /// Custom PageModel for CSLA .NET
   /// </summary>
-  public class PageModel<T> : PageModel
+  public class PageModel<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : PageModel
     where T : ISavable
   {
     private ApplicationContext _applicationContext;

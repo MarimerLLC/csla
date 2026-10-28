@@ -6,6 +6,8 @@
 // <summary>Authorizes user if they have permission</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 using Microsoft.AspNetCore.Authorization;
 
 namespace Csla.Blazor
@@ -21,7 +23,7 @@ namespace Csla.Blazor
     /// <param name="action">Authorization action</param>
     /// <param name="objectType">Business domain type</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public HasPermissionAttribute(Rules.AuthorizationActions action, Type objectType)
+    public HasPermissionAttribute(Rules.AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
       : base(CslaPolicy.GetPolicy(action, objectType ?? throw new ArgumentNullException(nameof(objectType))))
     { }
   }

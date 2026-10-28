@@ -252,6 +252,23 @@ Their behavior is unchanged. The warning means the trimmer can't see which types
 
 The trimmer preserves an object factory named in `[ObjectFactory("...")]` when the name is assembly qualified (`"MyApp.MyFactory, MyApp"`) or the factory is in the business object's assembly. `[ObjectFactory(typeof(MyFactory))]` always works. A custom `IObjectFactoryLoader` that maps other names to types must preserve those types itself.
 
+### Other CSLA packages
+
+Csla.Blazor, Csla.Blazor.WebAssembly, Csla.AspNetCore, Csla.Xaml (MAUI), Csla.Channels.Grpc, Csla.Channels.RabbitMq, Csla.Channels.Wcf and Csla.Testing are now analyzed for trimming and NativeAOT too ([#4962](https://github.com/MarimerLLC/csla/issues/4962)).
+
+* **Data portal hosts** (`HttpPortal`, `GrpcPortal`, `RabbitMqPortal`, `WcfPortal`) resolve the business type names that clients send. The trimmer can't see those names, so a trimmed data portal server must preserve its business types, for example with `TrimmerRootAssembly` on the assemblies that contain them. Deserializing the objects and criteria already required this.
+* **`Csla.Xaml.PropertyInfo`** walks a string binding path over its binding source, which can be any object, so it is marked `[RequiresUnreferencedCode]`. A trimmed MAUI or Avalonia app gets the warning where it uses the control, as it does for string-path bindings in MAUI itself.
+* **The MAUI build of `Csla.Xaml`** is now strong-named with the same key as the other CSLA assemblies, so its assembly identity matches the WPF and Avalonia builds. .NET doesn't validate strong names at runtime, so MAUI apps are unaffected.
+* **Blazor `SessionManager`** (WebAssembly) now uses source-generated JSON for the state controller messages. The JSON on the wire is unchanged.
+* **Blazor `PropertyInfo`** (from `ViewModel<T>.GetPropertyInfo` or created directly) reads and writes the model's properties by name, and assumes the model is a CSLA business object, whose members the CSLA base classes preserve. If you use it with a model of another type, preserve that type's public properties yourself.
+* **CSLA permission policies** built by `HasPermissionAttribute` or `CslaPolicy.GetPolicy` preserve the business type they name. If you write a `Csla:` policy name by hand, for example in `[Authorize(Policy = "...")]` or configuration, the type in that string must be preserved by your app.
+* ASP.NET Core MVC and Razor Pages don't support trimming, so the tag helpers and `CslaModelBinder` aren't annotated.
+
+Some `Type` parameters and generic type parameters now carry `[DynamicallyAccessedMembers]`. Source and binary compatibility are unaffected, but a generic wrapper of your own may need the same annotation to stay warning-free in a trimmed app:
+
+* `PublicConstructors`: `PageModel<T>`, `CslaPolicy.GetPolicy`, `HasPermissionAttribute`, both `CslaPermissionRequirement` types, the `HtmlExtensions` permission helpers, `BlazorServerConfigurationOptions` and `BlazorWebAssemblyConfigurationOptions` session types, and `RabbitMqPortalOptions.SetPortalFactoryType<T>`
+* `All`: the `Type` overloads of `ServiceProviderMethodCaller.FindDataPortalMethod<T>` and `TryFindDataPortalMethod<T>`, which reflect over the type's methods, and `CslaTestHost.GetDataPortal<T>` and `GetChildDataPortal<T>`
+
 ## Common `Csla.Mvvm.ViewModel<T>` base type
 
 The view model types for each UI framework now share one implementation, `Csla.Mvvm.ViewModel<T>`, in the core `Csla` package ([#1766](https://github.com/MarimerLLC/csla/issues/1766)). The existing types keep their names:

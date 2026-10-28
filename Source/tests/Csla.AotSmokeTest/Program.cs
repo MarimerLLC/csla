@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 using Csla;
 using Csla.AotSmokeTest;
 using Csla.Configuration;
+using Csla.DataPortalClient;
 using Csla.Core;
 using Csla.Rules;
 using Csla.Serialization;
@@ -211,6 +212,35 @@ await Check("ObjectFactory fetch by type name", async () =>
 {
   var item = await provider.GetRequiredService<IDataPortal<CatalogItem>>().FetchAsync("CAT-7");
   Assert(item.Code == "CAT-7", "factory-fetched item");
+});
+
+// Data portal host round trip: the client's HttpProxy sends business type names
+// to an HttpPortal in the same process, which resolves them on the server side.
+var serverServices = new ServiceCollection();
+serverServices.AddCsla();
+using var serverProvider = serverServices.BuildServiceProvider();
+var clientServices = new ServiceCollection();
+clientServices.AddCsla(o => o.DataPortal(dp => dp.AddClientSideDataPortal(c => c.UseHttpProxy(p =>
+{
+  p.DataPortalUrl = "http://localhost/api/dataportal";
+  p.HttpClientFactory = _ => new HttpClient(new HttpPortalHandler(serverProvider));
+}))));
+using var clientProvider = clientServices.BuildServiceProvider();
+
+await Check("HttpPortal host create, fetch, update and delete", async () =>
+{
+  var notePortal = clientProvider.GetRequiredService<IDataPortal<HostedNote>>();
+  var note = await notePortal.CreateAsync();
+  Assert(note.IsNew && note.Text == "New", "created through the host");
+  note = await note.SaveAsync();
+  Assert(!note.IsNew && note.Id == 42, "inserted through the host");
+  note = await notePortal.FetchAsync(5);
+  Assert(note.Id == 5 && note.Text == "Fetched", "fetched through the host");
+  note.Text = "Changed";
+  note = await note.SaveAsync();
+  Assert(!note.IsDirty && note.Text == "Changed", "updated through the host");
+  await notePortal.DeleteAsync(5);
+  Assert(HostedNote.LastDeletedId == 5, "deleted through the host");
 });
 
 Console.WriteLine(failures == 0 ? "All scenarios passed" : $"{failures} scenario(s) failed");

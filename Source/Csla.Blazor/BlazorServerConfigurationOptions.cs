@@ -6,6 +6,8 @@
 // <summary>Implement extension methods for .NET Core configuration</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Configuration
 {
   /// <summary>
@@ -30,16 +32,19 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets or sets the type of the ISessionManager service.
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type SessionManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionManager, Csla.AspNetCore", true)!;
 
     /// <summary>
     /// Gets or sets the type of the ISessionIdManager service.
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type SessionIdManagerType { get; set; } = Type.GetType("Csla.Blazor.State.SessionIdManager, Csla.AspNetCore", true)!;
 
     /// <summary>
     /// Gets or sets the type of the ISessionStore service.
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type SessionStoreType { get; set; } = Type.GetType("Csla.Blazor.State.InMemorySessionStore, Csla.AspNetCore", true)!;
   }
 }

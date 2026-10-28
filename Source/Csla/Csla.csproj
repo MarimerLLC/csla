@@ -20,6 +20,8 @@
       No trim or AOT warnings are suppressed project-wide. Fix the code or annotate the API instead;
       use UnconditionalSuppressMessage with a justification only where the requirement provably holds.
     -->
+    <!-- Hides the internal polyfills from InternalsVisibleTo assemblies that reference Polyfill themselves. -->
+    <PolyUseEmbeddedAttribute>true</PolyUseEmbeddedAttribute>
   </PropertyGroup>
 
   <ItemGroup>

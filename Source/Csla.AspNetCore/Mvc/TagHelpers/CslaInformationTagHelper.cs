@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Razor tag helper</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using Csla.Properties;
 using Csla.Rules;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -29,6 +30,7 @@ namespace Csla.AspNetCore.Mvc.TagHelpers
     /// </summary>
     /// <param name="context"></param>
     /// <param name="output"></param>
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
       if (CslaInformationFor == null)

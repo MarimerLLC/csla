@@ -48,6 +48,13 @@ namespace Csla
     /// <exception cref="ArgumentException"><paramref name="methodName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
     public static object? CallByName(object target, string methodName, CallType callType, params object?[] args)
+      => CallByNameCore(target, methodName, callType, args);
+
+    /// <summary>
+    /// Implements <see cref="CallByName"/> for CSLA's own callers,
+    /// which only invoke members of business objects.
+    /// </summary>
+    internal static object? CallByNameCore(object target, string methodName, CallType callType, params object?[] args)
     {
       if (target is null)
         throw new ArgumentNullException(nameof(target));
@@ -58,17 +65,17 @@ namespace Csla
       {
         case CallType.Get:
           {
-            return MethodCaller.CallPropertyGetter(target, methodName);
+            return MethodCaller.CallPropertyGetterCore(target, methodName);
           }
         case CallType.Let:
         case CallType.Set:
           {
-            MethodCaller.CallPropertySetter(target, methodName, args[0]);
+            MethodCaller.CallPropertySetterCore(target, methodName, args[0]);
             return null;
           }
         case CallType.Method:
           {
-            return MethodCaller.CallMethod(target, methodName, args);
+            return MethodCaller.CallMethodCore(target, methodName, true, args);
           }
       }
       return null;

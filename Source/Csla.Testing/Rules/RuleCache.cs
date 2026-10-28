@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Csla.Rules;
@@ -151,7 +152,9 @@ namespace Csla.Testing.Rules
     /// while nothing else is using the cache.
     /// </para>
     /// </remarks>
-    private static void ClearAll(Type managerType)
+    [DynamicDependency(DynamicallyAccessedMemberTypes.PublicProperties, typeof(Lazy<>))]
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.LazyPropertiesJustification)]
+    private static void ClearAll([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.NonPublicFields)] Type managerType)
     {
       System.Reflection.FieldInfo field = managerType.GetField(PerTypeRulesField, BindingFlags.Static | BindingFlags.NonPublic)
         ?? throw NotFound(PerTypeRulesField, managerType);

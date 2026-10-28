@@ -6,6 +6,8 @@
 // <summary>Options for RabbitMqProxy</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Channels.RabbitMq;
 
 /// <summary>
@@ -18,13 +20,14 @@ public class RabbitMqPortalOptions
   /// <summary>
   /// Gets the type of the portal factory
   /// </summary>
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
   public Type PortalFactoryType { get; private set; } = typeof(RabbitMqPortalFactory);
 
   /// <summary>
   /// Sets the type of the portal factory
   /// </summary>
   /// <typeparam name="T">Type of portal</typeparam>
-  public void SetPortalFactoryType<T>() where T : IRabbitMqPortalFactory
+  public void SetPortalFactoryType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : IRabbitMqPortalFactory
   {
     PortalFactoryType = typeof(T);
   }

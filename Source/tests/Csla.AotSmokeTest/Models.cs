@@ -275,4 +275,37 @@ namespace Csla.AotSmokeTest
       return item;
     }
   }
+
+  /// <summary>
+  /// Editable root used by the HttpPortal host scenario. Unlike PersonEdit its
+  /// delete is allowed, so create, fetch, update and delete all reach the host.
+  /// </summary>
+  [CslaImplementProperties]
+  public partial class HostedNote : BusinessBase<HostedNote>
+  {
+    public static int LastDeletedId { get; private set; }
+
+    public partial int Id { get; private set; }
+    public partial string Text { get; set; }
+
+    [Create]
+    private void Create() => LoadProperty(TextProperty, "New");
+
+    [Fetch]
+    private void Fetch(int id)
+    {
+      LoadProperty(IdProperty, id);
+      LoadProperty(TextProperty, "Fetched");
+    }
+
+    [Insert]
+    private void Insert() => LoadProperty(IdProperty, 42);
+
+    [Update]
+    private void Update()
+    { }
+
+    [Delete]
+    private void Delete(int id) => LastDeletedId = id;
+  }
 }

@@ -8,6 +8,7 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.Reflection;
 using Csla.Rules;
@@ -31,6 +32,7 @@ namespace Csla.Xaml
   /// <summary>
   /// Expose metastate information about a property.
   /// </summary>
+  [RequiresUnreferencedCode(TrimmingMessages.BindingPathReflection)]
 #if MAUI 
   public class PropertyInfo : ContentView, INotifyPropertyChanged
   {

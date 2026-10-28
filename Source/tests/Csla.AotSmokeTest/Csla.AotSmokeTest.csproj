@@ -33,10 +33,12 @@
   </PropertyGroup>
   <ItemGroup Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*Undefined*'">
     <ProjectReference Include="..\..\Csla\Csla.csproj" AdditionalProperties="SolutionDir=$(CslaSourceDir)" />
+    <ProjectReference Include="..\..\Csla.AspNetCore\Csla.AspNetCore.csproj" AdditionalProperties="SolutionDir=$(CslaSourceDir)" />
     <ProjectReference Include="..\..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" AdditionalProperties="SolutionDir=$(CslaSourceDir)" />
   </ItemGroup>
   <ItemGroup Condition="'$(SolutionDir)' != '' and '$(SolutionDir)' != '*Undefined*'">
     <ProjectReference Include="..\..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\Csla.AspNetCore\Csla.AspNetCore.csproj" />
     <ProjectReference Include="..\..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 

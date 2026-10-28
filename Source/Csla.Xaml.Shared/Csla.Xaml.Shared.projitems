@@ -9,8 +9,6 @@
     <Import_RootNamespace>Csla.Xaml.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <!-- The trimming messages live in Csla.dll; Csla.Xaml.Maui isn't strong-named, so it can't use InternalsVisibleTo. -->
-    <Compile Include="$(MSBuildThisFileDirectory)..\Csla\Core\TrimmingMessages.cs" Link="TrimmingMessages.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ApplicationContextManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BrokenRulesSeverityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BusyAnimation.cs" />

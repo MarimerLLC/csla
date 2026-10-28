@@ -258,6 +258,7 @@ Csla.Blazor, Csla.Blazor.WebAssembly, Csla.AspNetCore, Csla.Xaml (MAUI), Csla.Ch
 
 * **Data portal hosts** (`HttpPortal`, `GrpcPortal`, `RabbitMqPortal`, `WcfPortal`) resolve the business type names that clients send. The trimmer can't see those names, so a trimmed data portal server must preserve its business types, for example with `TrimmerRootAssembly` on the assemblies that contain them. Deserializing the objects and criteria already required this.
 * **`Csla.Xaml.PropertyInfo`** walks a string binding path over its binding source, which can be any object, so it is marked `[RequiresUnreferencedCode]`. A trimmed MAUI or Avalonia app gets the warning where it uses the control, as it does for string-path bindings in MAUI itself.
+* **The MAUI build of `Csla.Xaml`** is now strong-named with the same key as the other CSLA assemblies, so its assembly identity matches the WPF and Avalonia builds. .NET doesn't validate strong names at runtime, so MAUI apps are unaffected.
 * **Blazor `SessionManager`** (WebAssembly) now uses source-generated JSON for the state controller messages. The JSON on the wire is unchanged.
 * ASP.NET Core MVC and Razor Pages don't support trimming, so the tag helpers and `CslaModelBinder` aren't annotated.
 

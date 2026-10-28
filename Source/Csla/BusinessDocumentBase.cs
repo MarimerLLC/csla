@@ -825,7 +825,8 @@ namespace Csla
       var itemsInfo = formatter.SerializeObject(_items);
       info.AddChild("_bdb_items", itemsInfo.ReferenceId);
 
-      if (_deletedList != null)
+      // an empty deleted list is not serialized; the DeletedList accessor recreates it on demand
+      if (_deletedList is { Count: > 0 })
       {
         var deletedInfo = formatter.SerializeObject(_deletedList);
         info.AddChild("_bdb_deletedList", deletedInfo.ReferenceId);
@@ -853,6 +854,10 @@ namespace Csla
       if (info.Children.TryGetValue("_bdb_deletedList", out var deletedChild))
       {
         _deletedList = (MobileList<C>?)formatter.GetObject(deletedChild.ReferenceId);
+      }
+      else
+      {
+        _deletedList = null;
       }
 
       base.OnSetChildren(info, formatter);

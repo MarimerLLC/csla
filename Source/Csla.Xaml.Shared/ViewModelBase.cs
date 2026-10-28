@@ -6,818 +6,415 @@
 // <summary>Base class used to create ViewModel objects that</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-#if !ANDROID && !IOS && !XAMARIN && !MAUI && !AVALONIA
+#if !MAUI && !AVALONIA
 using System.Windows;
 #endif
 using Csla.Core;
-using Csla.Rules;
-#if WINDOWS_UWP
-using Windows.UI.Xaml;
-#endif
 
-#if ANDROID && !MAUI
-namespace Csla.Axml
-#elif IOS && !MAUI
-namespace Csla.Iosui
-#else
 namespace Csla.Xaml
-#endif
 {
+#if MAUI || AVALONIA
   /// <summary>
   /// Base class used to create ViewModel objects that
   /// implement their own commands/verbs/actions.
   /// </summary>
   /// <typeparam name="T">Type of the Model object.</typeparam>
-#if ANDROID || IOS || XAMARIN || MAUI || AVALONIA
-  public abstract class ViewModelBase<T> : INotifyPropertyChanged, IViewModel
-#else
-  public abstract class ViewModelBase<T> : DependencyObject,
-    INotifyPropertyChanged, IViewModel
-#endif
+  public abstract class ViewModelBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : Csla.Mvvm.ViewModel<T>, IViewModel
   {
-    private ApplicationContext ApplicationContext => ApplicationContextManager.GetApplicationContext();
-
-#if ANDROID || IOS || XAMARIN || WINDOWS_UWP || MAUI || AVALONIA
-    private T? _model;
     /// <summary>
-    /// Gets or sets the Model object.
+    /// Creates an instance of the type that resolves
+    /// its ApplicationContext through
+    /// <see cref="ApplicationContextManager"/>.
     /// </summary>
-    public T? Model
+    protected ViewModelBase()
+      : base(manageObjectLifetime: true)
+    { }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext">The current ApplicationContext.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    protected ViewModelBase(ApplicationContext applicationContext)
+      : base(applicationContext, manageObjectLifetime: true)
+    { }
+
+    /// <inheritdoc />
+    protected override ApplicationContext ResolveApplicationContext() => ApplicationContextManager.GetApplicationContext();
+
+    /// <summary>
+    /// Creates or retrieves a new instance of the
+    /// Model by invoking an action.
+    /// </summary>
+    /// <param name="factory">Factory method to invoke</param>
+    [Obsolete("Use RefreshAsync(Func<Task<T?>>)")]
+    public virtual Task<T?> RefreshAsync<F>(Func<Task<T?>> factory) => RefreshAsync(factory);
+
+#if MAUI
+    /// <summary>
+    /// Adds a new item to the Model (if it
+    /// is a collection).
+    /// </summary>
+    [Obsolete("Use DoAddNew")]
+    protected virtual void BeginAddNew() => DoAddNew();
+#endif
+
+    object? IViewModel.Model
     {
-      get => _model;
-      set
-      {
-        if (!ReferenceEquals(value, _model))
-        {
-          var oldValue = _model;
-          _model = value;
-          this.OnModelChanged((T?)oldValue, _model);
-          OnPropertyChanged(nameof(Model));
-        }
-      }
+      get => Model;
+      set => Model = (T?)value;
     }
+  }
 #else
+  /// <summary>
+  /// Base class used to create ViewModel objects that
+  /// implement their own commands/verbs/actions.
+  /// </summary>
+  /// <typeparam name="T">Type of the Model object.</typeparam>
+  /// <remarks>
+  /// This type is a <see cref="DependencyObject"/>, so it
+  /// delegates its behavior to a <see cref="Csla.Mvvm.ViewModel{T}"/>
+  /// instance rather than inheriting from it.
+  /// </remarks>
+  public abstract class ViewModelBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> : DependencyObject,
+    INotifyPropertyChanged, IViewModel
+  {
+    private readonly InnerViewModel _inner;
+
+    /// <summary>
+    /// Creates an instance of the type that resolves
+    /// its ApplicationContext through
+    /// <see cref="ApplicationContextManager"/>.
+    /// </summary>
+    protected ViewModelBase()
+    {
+      _inner = new InnerViewModel(this, ManageObjectLifetime);
+      Initialize();
+    }
+
+    /// <summary>
+    /// Creates an instance of the type.
+    /// </summary>
+    /// <param name="applicationContext">The current ApplicationContext.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    protected ViewModelBase(ApplicationContext applicationContext)
+    {
+      _inner = new InnerViewModel(this, applicationContext, ManageObjectLifetime);
+      Initialize();
+    }
+
+    private void Initialize()
+    {
+      _inner.Error += (_, e) => Error?.Invoke(this, new Core.ErrorEventArgs(this, e.Error));
+    }
+
+    /// <summary>
+    /// Gets the current ApplicationContext instance.
+    /// </summary>
+    protected ApplicationContext ApplicationContext => _inner.Context;
+
+    #region Model and ManageObjectLifetime
+
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
     public static readonly DependencyProperty ModelProperty =
         DependencyProperty.Register(nameof(Model), typeof(T), typeof(ViewModelBase<T>),
-        new PropertyMetadata((o, e) =>
-        {
-          var viewmodel = (ViewModelBase<T>)o;
-          viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);
-        }));
+        new PropertyMetadata((o, e) => ((ViewModelBase<T>)o)._inner.Model = (T?)e.NewValue));
 
     /// <summary>
     /// Gets or sets the Model object.
     /// </summary>
     public T? Model
     {
-      get { return (T?)GetValue(ModelProperty); }
-      set { SetValue(ModelProperty, value); }
+      get => (T?)GetValue(ModelProperty);
+      set => SetValue(ModelProperty, value);
     }
-#endif
 
     /// <summary>
     /// Gets or sets a value indicating whether the
     /// ViewModel should automatically managed the
     /// lifetime of the Model.
     /// </summary>
-#if ANDROID || IOS || XAMARIN || MAUI || AVALONIA
-    public bool ManageObjectLifetimeProperty;
-#else
     public static readonly DependencyProperty ManageObjectLifetimeProperty =
         DependencyProperty.Register(nameof(ManageObjectLifetime), typeof(bool),
-        typeof(ViewModelBase<T>), new PropertyMetadata(true));
-#endif
+        typeof(ViewModelBase<T>), new PropertyMetadata(true,
+          (o, e) => ((ViewModelBase<T>)o)._inner.ManageObjectLifetime = (bool)e.NewValue));
+
     /// <summary>
     /// Gets or sets a value indicating whether the
-    /// ViewManageObjectLifetime should automatically managed the
-    /// lifetime of the ManageObjectLifetime.
+    /// ViewModel should automatically manage the
+    /// lifetime of the Model.
     /// </summary>
     [Display(AutoGenerateField = false)]
     [ScaffoldColumn(false)]
     public bool ManageObjectLifetime
     {
-#if ANDROID || IOS || XAMARIN || MAUI || AVALONIA
-      get { return (bool)ManageObjectLifetimeProperty; }
-      set { ManageObjectLifetimeProperty = value; }
-#else
-      get { return (bool)GetValue(ManageObjectLifetimeProperty); }
-      set { SetValue(ManageObjectLifetimeProperty, value); }
-#endif
-    }
-
-    private bool _isBusy;
-
-    /// <summary>
-    /// Gets a value indicating whether this object is
-    /// executing an asynchronous process.
-    /// </summary>
-    public bool IsBusy
-    {
-      get => _isBusy;
-      protected set
-      {
-        if (value != _isBusy)
-        {
-          _isBusy = value;
-          OnPropertyChanged(nameof(IsBusy));
-          OnSetProperties();
-        }
-      }
-    }
-
-    private bool _isDirty;
-
-    /// <summary>
-    /// Gets a value indicating whether the Model
-    /// has been changed.
-    /// </summary>
-    public virtual bool IsDirty
-    {
-      get => _isDirty;
-      protected set
-      {
-        if (_isDirty != value)
-        {
-          _isDirty = value;
-          OnPropertyChanged(nameof(IsDirty));
-        }
-      }
-    }
-
-    private bool _isValid;
-
-    /// <summary>
-    /// Gets a value indicating whether the Model
-    /// is currently valid (has no broken rules).
-    /// </summary>
-    public virtual bool IsValid
-    {
-      get => _isValid;
-      protected set
-      {
-        if (_isValid != value)
-        {
-          _isValid = value;
-          OnPropertyChanged(nameof(IsValid));
-        }
-      }
-    }
-
-    private bool _canSave = false;
-
-    /// <summary>
-    /// Gets a value indicating whether the Model
-    /// can currently be saved.
-    /// </summary>
-    public virtual bool CanSave
-    {
-      get => _canSave;
-      protected set
-      {
-        if (_canSave != value)
-        {
-          _canSave = value;
-          OnPropertyChanged(nameof(CanSave));
-        }
-      }
-    }
-
-    private bool _canCancel = false;
-
-    /// <summary>
-    /// Gets a value indicating whether the Model
-    /// can currently be canceled.
-    /// </summary>
-    public virtual bool CanCancel
-    {
-      get => _canCancel;
-      protected set
-      {
-        if (_canCancel != value)
-        {
-          _canCancel = value;
-          OnPropertyChanged(nameof(CanCancel));
-        }
-      }
-    }
-
-    private bool _canCreate = false;
-
-    /// <summary>
-    /// Gets a value indicating whether an instance
-    /// of the Model
-    /// can currently be created.
-    /// </summary>
-    public virtual bool CanCreate
-    {
-      get => _canCreate;
-      protected set
-      {
-        if (_canCreate != value)
-        {
-          _canCreate = value;
-          OnPropertyChanged(nameof(CanCreate));
-        }
-      }
-    }
-
-    private bool _canDelete = false;
-
-    /// <summary>
-    /// Gets a value indicating whether the Model
-    /// can currently be deleted.
-    /// </summary>
-    public virtual bool CanDelete
-    {
-      get => _canDelete;
-      protected set
-      {
-        if (_canDelete != value)
-        {
-          _canDelete = value;
-          OnPropertyChanged(nameof(CanDelete));
-        }
-      }
-    }
-
-    private bool _canFetch = false;
-
-    /// <summary>
-    /// Gets a value indicating whether an instance
-    /// of the Model
-    /// can currently be retrieved.
-    /// </summary>
-    public virtual bool CanFetch
-    {
-      get => _canFetch;
-      protected set
-      {
-        if (_canFetch != value)
-        {
-          _canFetch = value;
-          OnPropertyChanged(nameof(CanFetch));
-        }
-      }
-    }
-
-    private bool _canRemove = false;
-
-    /// <summary>
-    /// Gets a value indicating whether the Model
-    /// can currently be removed.
-    /// </summary>
-    public virtual bool CanRemove
-    {
-      get => _canRemove;
-      protected set
-      {
-        if (_canRemove != value)
-        {
-          _canRemove = value;
-          OnPropertyChanged(nameof(CanRemove));
-        }
-      }
-    }
-
-    private bool _canAddNew = false;
-
-    /// <summary>
-    /// Gets a value indicating whether the Model
-    /// can currently be added.
-    /// </summary>
-    public virtual bool CanAddNew
-    {
-      get => _canAddNew;
-      protected set
-      {
-        if (_canAddNew != value)
-        {
-          _canAddNew = value;
-          OnPropertyChanged(nameof(CanAddNew));
-        }
-      }
-    }
-
-    private int _setPropertiesVersion;
-
-    private async void SetProperties()
-    {
-      // async void so exceptions surface on the SynchronizationContext,
-      // just as a synchronous exception would
-      await SetPropertiesAsync();
-    }
-
-    private async Task SetPropertiesAsync()
-    {
-      var version = ++_setPropertiesVersion;
-      var model = Model;
-
-      // evaluate authorization rules first; when all rules are synchronous
-      // these tasks are already complete and no thread switch occurs
-      var canDeleteInstance = false;
-      var canRemoveItem = false;
-      var canAddNewItem = false;
-      Type? itemType = null;
-      if (model is ITrackStatus targetObject)
-        canDeleteInstance = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, targetObject, CancellationToken.None);
-      if (model is ICollection)
-      {
-        itemType = Utilities.GetChildItemType(model.GetType());
-        if (itemType != null)
-        {
-          canRemoveItem = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, itemType, CancellationToken.None);
-          canAddNewItem = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.CreateObject, itemType, CancellationToken.None);
-        }
-      }
-
-      // a newer call has started (or the model changed) while awaiting
-      if (version != _setPropertiesVersion || !ReferenceEquals(model, Model))
-        return;
-
-      bool isObjectBusy = false;
-      if (Model is INotifyBusy busyObject && busyObject.IsBusy)
-        isObjectBusy = true;
-
-      // Does Model instance implement ITrackStatus 
-      if (Model is ITrackStatus trackStatus)
-      {
-        IsDirty = trackStatus.IsDirty;
-        IsValid = trackStatus.IsValid;
-        CanSave = CanEditObject && trackStatus.IsSavable && !isObjectBusy;
-        CanCancel = CanEditObject && trackStatus.IsDirty && !isObjectBusy;
-        CanCreate = CanCreateObject && !trackStatus.IsDirty && !isObjectBusy;
-        CanDelete = CanDeleteObject && !isObjectBusy && canDeleteInstance;
-        CanFetch = CanGetObject && !trackStatus.IsDirty && !isObjectBusy;
-
-        // Set properties for List 
-        if (Model is ICollection list)
-        {
-          if (itemType == null)
-          {
-            CanAddNew = false;
-            CanRemove = false;
-          }
-          else
-          {
-            CanRemove = canRemoveItem && list.Count > 0 && !isObjectBusy;
-            CanAddNew = canAddNewItem && !isObjectBusy;
-          }
-        }
-        else
-        {
-          CanRemove = false;
-          CanAddNew = false;
-        }
-      }
-
-      // Else if Model instance implement ICollection
-      else if (Model is ICollection list)
-      {
-        if (itemType == null)
-        {
-          CanAddNew = false;
-          CanRemove = false;
-        }
-        else
-        {
-          CanRemove = canRemoveItem && list.Count > 0 && !isObjectBusy;
-          CanAddNew = canAddNewItem && !isObjectBusy;
-        }
-      }
-      else
-      {
-        IsDirty = false;
-        IsValid = false;
-        CanCancel = false;
-        CanCreate = CanCreateObject;
-        CanDelete = false;
-        CanFetch = CanGetObject && !IsBusy;
-        CanSave = false;
-        CanRemove = false;
-        CanAddNew = false;
-      }
-    }
-
-    private bool _canCreateObject;
-
-    /// <summary>
-    /// Gets a value indicating whether the current
-    /// user is authorized to create a Model.
-    /// </summary>
-    public virtual bool CanCreateObject
-    {
-      get
-      {
-        SetPropertiesAtObjectLevel();
-        return _canCreateObject;
-      }
-      protected set
-      {
-        if (_canCreateObject != value)
-        {
-          _canCreateObject = value;
-          OnPropertyChanged(nameof(CanCreateObject));
-        }
-      }
-    }
-
-    private bool _canGetObject;
-
-    /// <summary>
-    /// Gets a value indicating whether the current
-    /// user is authorized to retrieve a Model.
-    /// </summary>
-    public virtual bool CanGetObject
-    {
-      get
-      {
-        SetPropertiesAtObjectLevel();
-        return _canGetObject;
-      }
-      protected set
-      {
-        if (_canGetObject != value)
-        {
-          _canGetObject = value;
-          OnPropertyChanged(nameof(CanGetObject));
-        }
-      }
-    }
-
-    private bool _canEditObject;
-
-    /// <summary>
-    /// Gets a value indicating whether the current
-    /// user is authorized to save (insert or update
-    /// a Model.
-    /// </summary>
-    public virtual bool CanEditObject
-    {
-      get
-      {
-        SetPropertiesAtObjectLevel();
-        return _canEditObject;
-      }
-      protected set
-      {
-        if (_canEditObject != value)
-        {
-          _canEditObject = value;
-          OnPropertyChanged(nameof(CanEditObject));
-        }
-      }
-    }
-
-    private bool _canDeleteObject;
-
-    /// <summary>
-    /// Gets a value indicating whether the current
-    /// user is authorized to delete
-    /// a Model.
-    /// </summary>
-    public virtual bool CanDeleteObject
-    {
-      get
-      {
-        SetPropertiesAtObjectLevel();
-        return _canDeleteObject;
-      }
-      protected set
-      {
-        if (_canDeleteObject != value)
-        {
-          _canDeleteObject = value;
-          OnPropertyChanged(nameof(CanDeleteObject));
-        }
-      }
-    }
-
-    private bool ObjectPropertiesSet;
-
-    /// <summary>
-    /// Sets the properties at object level.
-    /// </summary>
-    private async void SetPropertiesAtObjectLevel()
-    {
-      if (ObjectPropertiesSet)
-        return;
-      ObjectPropertiesSet = true;
-
-      // async void so exceptions surface on the SynchronizationContext,
-      // just as a synchronous exception would
-      await SetPropertiesAtObjectLevelAsync();
-    }
-
-    private async Task SetPropertiesAtObjectLevelAsync()
-    {
-      Type sourceType = typeof(T);
-
-      // when all rules are synchronous these tasks are already complete,
-      // so the values are set before the property getter returns
-      CanCreateObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.CreateObject, sourceType, CancellationToken.None);
-      CanGetObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.GetObject, sourceType, CancellationToken.None);
-      CanEditObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.EditObject, sourceType, CancellationToken.None);
-      CanDeleteObject = await BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.DeleteObject, sourceType, CancellationToken.None);
-
-      // call SetProperties to set "instance" values 
-      OnSetProperties();
-    }
-
-    /// <summary>
-    /// Creates or retrieves a new instance of the 
-    /// Model by invoking an action.
-    /// </summary>
-    /// <param name="factory">Factory method to invoke</param>
-    public virtual async Task<T?> RefreshAsync<F>(Func<Task<T?>> factory)
-    {
-      T? result;
-      try
-      {
-        IsBusy = true;
-        result = await factory.Invoke();
-        Model = result;
-      }
-      finally
-      {
-        IsBusy = false;
-      }
-      return result;
-    }
-
-    /// <summary>
-    /// Saves the Model, first committing changes
-    /// if ManagedObjectLifetime is true.
-    /// </summary>
-    public virtual async Task<T?> SaveAsync()
-    {
-      try
-      {
-        UnhookChangedEvents(Model);
-        var savable = Model as ISavable;
-        if (ManageObjectLifetime)
-        {
-          // clone the object if possible
-          if (Model is ICloneable clonable)
-            savable = (ISavable)clonable.Clone();
-
-          //apply changes
-          if (savable is ISupportUndo undoable)
-            undoable.ApplyEdit();
-        }
-
-        IsBusy = true;
-        Model = await DoSaveAsync(savable);
-      }
-      finally
-      {
-        HookChangedEvents(Model);
-        IsBusy = false;
-      }
-      return Model;
-    }
-
-    /// <summary>
-    /// Override to provide custom Model save behavior.
-    /// </summary>
-    protected virtual async Task<T?> DoSaveAsync(ISavable? cloned)
-    {
-      if (cloned != null)
-      {
-        var saved = (T)await cloned.SaveAsync();
-        if (Model is IEditableBusinessObject editable)
-          await new GraphMerger(ApplicationContext).MergeGraphAsync(editable, (IEditableBusinessObject)saved);
-        else
-          Model = saved;
-      }
-      return Model;
-    }
-
-    /// <summary>
-    /// Cancels changes made to the model 
-    /// if ManagedObjectLifetime is true.
-    /// </summary>
-    protected virtual void DoCancel()
-    {
-      if (ManageObjectLifetime)
-      {
-        if (Model is ISupportUndo undo)
-        {
-          UnhookChangedEvents(Model);
-          try
-          {
-            undo.CancelEdit();
-            undo.BeginEdit();
-          }
-          finally
-          {
-            HookChangedEvents(Model);
-            OnSetProperties();
-          }
-        }
-      }
-    }
-
-#if (ANDROID || IOS) || XAMARIN || MAUI
-    /// <summary>
-    /// Adds a new item to the Model (if it
-    /// is a collection).
-    /// </summary>
-    protected virtual void BeginAddNew()
-    {
-#if ANDROID || IOS
-      var ibl = (Model as System.ComponentModel.IBindingList);
-#else
-      var ibl = (Model as IBindingList);
-#endif
-      if (ibl != null)
-      {
-        ibl.AddNew();
-      }
-      else if (Model is IObservableBindingList iobl)
-      {
-        iobl.AddNew();
-      }
-      else
-      {
-        throw CreateInvalidOperationExceptionForUnsupportedListType();
-      }
-
-      OnSetProperties();
-    }
-#else
-    /// <summary>
-    /// Adds a new item to the Model (if it
-    /// is a collection).
-    /// </summary>
-    protected virtual object DoAddNew()
-    {
-      object result;
-      // typically use ObserableCollection 
-      if (Model is IObservableBindingList iobl)
-      {
-        result = iobl.AddNew();
-      }
-      else if (Model is IBindingList ibl)
-      {
-        result = ibl.AddNew()!;
-      }
-      else
-      {
-        throw CreateInvalidOperationExceptionForUnsupportedListType();
-      }
-
-      OnSetProperties();
-      return result;
-    }
-#endif
-
-    /// <summary>
-    /// Removes an item from the Model (if it
-    /// is a collection).
-    /// </summary>
-    protected virtual void DoRemove(object? item)
-    {
-      ThrowIoeWhenModelIsNull();
-      ((IList)Model).Remove(item);
-      OnSetProperties();
-    }
-
-    /// <summary>
-    /// Marks the Model for deletion (if it is an
-    /// editable root object).
-    /// </summary>
-    protected virtual void DoDelete()
-    {
-      ThrowIoeWhenModelIsNull();
-      ((IEditableBusinessObject)Model).Delete();
-    }
-
-    /// <summary>
-    /// Invoked when the Model changes, allowing
-    /// event handlers to be unhooked from the old
-    /// object and hooked on the new object.
-    /// </summary>
-    /// <param name="oldValue">Previous Model reference.</param>
-    /// <param name="newValue">New Model reference.</param>
-    protected virtual void OnModelChanged(T? oldValue, T? newValue)
-    {
-      if (ReferenceEquals(oldValue, newValue))
-        return;
-
-      if (ManageObjectLifetime && newValue is ISupportUndo undo)
-        undo.BeginEdit();
-
-      // unhook events from old value
-      if (oldValue != null)
-      {
-        UnhookChangedEvents(oldValue);
-
-        if (oldValue is INotifyBusy nb)
-          nb.BusyChanged -= Model_BusyChanged;
-      }
-
-      // hook events on new value
-      if (newValue != null)
-      {
-        HookChangedEvents(newValue);
-
-        if (newValue is INotifyBusy nb)
-          nb.BusyChanged += Model_BusyChanged;
-      }
-
-      OnSetProperties();
-    }
-
-    /// <summary>
-    /// Unhooks changed event handlers from the model.
-    /// </summary>
-    /// <param name="model"></param>
-    protected void UnhookChangedEvents(T? model)
-    {
-      if (model is INotifyPropertyChanged npc)
-        npc.PropertyChanged -= Model_PropertyChanged;
-
-      if (model is INotifyChildChanged ncc)
-        ncc.ChildChanged -= Model_ChildChanged;
-
-      if (model is INotifyCollectionChanged cc)
-        cc.CollectionChanged -= Model_CollectionChanged;
-    }
-
-    /// <summary>
-    /// Hooks changed events on the model.
-    /// </summary>
-    /// <param name="model"></param>
-    private void HookChangedEvents(T? model)
-    {
-      if (model is INotifyPropertyChanged npc)
-        npc.PropertyChanged += Model_PropertyChanged;
-
-      if (model is INotifyChildChanged ncc)
-        ncc.ChildChanged += Model_ChildChanged;
-
-      if (model is INotifyCollectionChanged cc)
-        cc.CollectionChanged += Model_CollectionChanged;
-    }
-
-    /// <summary>
-    /// Override this method to hook into to logic of setting 
-    /// properties when model is changed or edited. 
-    /// </summary>
-    /// <remarks>
-    /// Authorization rules are evaluated with
-    /// <see cref="BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions, object, CancellationToken)"/>.
-    /// When a rule is asynchronous, the permission-based properties
-    /// (such as CanDelete or CanAddNew) may be updated after this
-    /// method returns; PropertyChanged is raised when they change.
-    /// </remarks>
-    protected virtual void OnSetProperties()
-    {
-      SetProperties();
-    }
-
-    private void Model_BusyChanged(object sender, BusyChangedEventArgs e)
-    {
-      // only set busy state for entire object.  Ignore busy state based
-      // on asynch rules being active
-      if (string.IsNullOrEmpty(e.PropertyName))
-        IsBusy = e.Busy;
-      else
-        OnSetProperties();
-    }
-
-    private void Model_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-      OnSetProperties();
-      ModelPropertyChanged?.Invoke(this, e);
-    }
-
-    private void Model_ChildChanged(object? sender, ChildChangedEventArgs e)
-    {
-      OnSetProperties();
-      ModelChildChanged?.Invoke(this, e);
-    }
-
-    private void Model_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-      OnSetProperties();
-      ModelCollectionChanged?.Invoke(this, e);
+      get => (bool)GetValue(ManageObjectLifetimeProperty);
+      set => SetValue(ManageObjectLifetimeProperty, value);
     }
 
     object? IViewModel.Model
     {
       get => Model;
       set => Model = (T?)value;
+    }
+
+    #endregion
+
+    #region Status properties
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.BusyTimeout"/>
+    public TimeSpan BusyTimeout
+    {
+      get => _inner.BusyTimeout;
+      set => _inner.BusyTimeout = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.IsBusy"/>
+    public bool IsBusy
+    {
+      get => _inner.IsBusy;
+      protected set => _inner.SetIsBusy(value);
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.IsDirty"/>
+    public virtual bool IsDirty
+    {
+      get => _inner.BaseIsDirty;
+      protected set => _inner.BaseIsDirty = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.IsValid"/>
+    public virtual bool IsValid
+    {
+      get => _inner.BaseIsValid;
+      protected set => _inner.BaseIsValid = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanSave"/>
+    public virtual bool CanSave
+    {
+      get => _inner.BaseCanSave;
+      protected set => _inner.BaseCanSave = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanCancel"/>
+    public virtual bool CanCancel
+    {
+      get => _inner.BaseCanCancel;
+      protected set => _inner.BaseCanCancel = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanCreate"/>
+    public virtual bool CanCreate
+    {
+      get => _inner.BaseCanCreate;
+      protected set => _inner.BaseCanCreate = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanDelete"/>
+    public virtual bool CanDelete
+    {
+      get => _inner.BaseCanDelete;
+      protected set => _inner.BaseCanDelete = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanFetch"/>
+    public virtual bool CanFetch
+    {
+      get => _inner.BaseCanFetch;
+      protected set => _inner.BaseCanFetch = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanRemove"/>
+    public virtual bool CanRemove
+    {
+      get => _inner.BaseCanRemove;
+      protected set => _inner.BaseCanRemove = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanAddNew"/>
+    public virtual bool CanAddNew
+    {
+      get => _inner.BaseCanAddNew;
+      protected set => _inner.BaseCanAddNew = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanCreateObject"/>
+    public virtual bool CanCreateObject
+    {
+      get => _inner.BaseCanCreateObject;
+      protected set => _inner.BaseCanCreateObject = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanGetObject"/>
+    public virtual bool CanGetObject
+    {
+      get => _inner.BaseCanGetObject;
+      protected set => _inner.BaseCanGetObject = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanEditObject"/>
+    public virtual bool CanEditObject
+    {
+      get => _inner.BaseCanEditObject;
+      protected set => _inner.BaseCanEditObject = value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.CanDeleteObject"/>
+    public virtual bool CanDeleteObject
+    {
+      get => _inner.BaseCanDeleteObject;
+      protected set => _inner.BaseCanDeleteObject = value;
+    }
+
+    #endregion
+
+    #region Errors
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.ViewModelErrorText"/>
+    public string ViewModelErrorText
+    {
+      get => _inner.ViewModelErrorText;
+      protected set => _inner.SetViewModelErrorText(value);
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.Exception"/>
+    public Exception? Exception => _inner.Exception;
+
+    /// <summary>
+    /// Gets the first validation error
+    /// message from the Model.
+    /// </summary>
+    protected virtual string ModelErrorText => _inner.BaseModelErrorText;
+
+    #endregion
+
+    #region Operations
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.RefreshAsync(Func{Task{T}})"/>
+    public virtual Task<T?> RefreshAsync(Func<Task<T?>> factory) => _inner.RefreshAsync(factory);
+
+    /// <summary>
+    /// Creates or retrieves a new instance of the
+    /// Model by invoking an action.
+    /// </summary>
+    /// <param name="factory">Factory method to invoke</param>
+    [Obsolete("Use RefreshAsync(Func<Task<T?>>)")]
+    public virtual Task<T?> RefreshAsync<F>(Func<Task<T?>> factory) => RefreshAsync(factory);
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.SaveAsync()"/>
+    public virtual Task<T?> SaveAsync() => _inner.SaveAsync();
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.SaveAsync(CancellationToken)"/>
+    public virtual Task<T?> SaveAsync(CancellationToken ct) => _inner.BaseSaveAsync(ct);
+
+    /// <summary>
+    /// Override to provide custom Model save behavior.
+    /// </summary>
+    /// <param name="cloned">The object to save (a clone of Model if ManageObjectLifetime is true).</param>
+    protected virtual Task<T?> DoSaveAsync(ISavable? cloned) => _inner.BaseDoSaveAsync(cloned);
+
+    /// <summary>
+    /// Cancels changes made to the model
+    /// if ManagedObjectLifetime is true.
+    /// </summary>
+    protected virtual void DoCancel() => _inner.BaseDoCancel();
+
+    /// <summary>
+    /// Adds a new item to the Model (if it
+    /// is a collection).
+    /// </summary>
+    protected virtual object DoAddNew() => _inner.BaseDoAddNew();
+
+    /// <summary>
+    /// Removes an item from the Model (if it
+    /// is a collection).
+    /// </summary>
+    protected virtual void DoRemove(object? item) => _inner.BaseDoRemove(item);
+
+    /// <summary>
+    /// Marks the Model for deletion (if it is an
+    /// editable root object).
+    /// </summary>
+    protected virtual void DoDelete() => _inner.BaseDoDelete();
+
+    #endregion
+
+    #region Events and hooks
+
+    /// <summary>
+    /// Invoked before the Model changes. The default implementation
+    /// moves event handlers from the old object to the new object.
+    /// </summary>
+    /// <param name="oldValue">Previous Model reference.</param>
+    /// <param name="newValue">New Model reference.</param>
+    protected virtual void OnModelChanging(T? oldValue, T? newValue) => _inner.BaseOnModelChanging(oldValue, newValue);
+
+    /// <summary>
+    /// Invoked after the Model has changed.
+    /// </summary>
+    /// <param name="oldValue">Previous Model reference.</param>
+    /// <param name="newValue">New Model reference.</param>
+    protected virtual void OnModelChanged(T? oldValue, T? newValue) => _inner.BaseOnModelChanged(oldValue, newValue);
+
+    /// <summary>
+    /// Unhooks changed event handlers from the model.
+    /// </summary>
+    /// <param name="model">Model object.</param>
+    protected void UnhookChangedEvents(T? model) => _inner.Unhook(model);
+
+    /// <summary>
+    /// Hooks changed event handlers on the model.
+    /// </summary>
+    /// <param name="model">Model object.</param>
+    protected void HookChangedEvents(T? model) => _inner.Hook(model);
+
+    /// <summary>
+    /// Override this method to hook into to logic of setting
+    /// properties when model is changed or edited.
+    /// </summary>
+    /// <remarks>
+    /// Authorization rules are evaluated asynchronously. When a rule
+    /// is asynchronous, the permission-based properties
+    /// (such as CanDelete or CanAddNew) may be updated after this
+    /// method returns; PropertyChanged is raised when they change.
+    /// </remarks>
+    protected virtual void OnSetProperties() => _inner.BaseOnSetProperties();
+
+    /// <summary>
+    /// Event raised after Model has been saved.
+    /// </summary>
+    public event Action? Saved
+    {
+      add => _inner.Saved += value;
+      remove => _inner.Saved -= value;
+    }
+
+    /// <inheritdoc cref="Csla.Mvvm.ViewModel{T}.Error"/>
+    public event EventHandler<Core.ErrorEventArgs>? Error;
+
+    /// <summary>
+    /// Event raised when Model is changing.
+    /// </summary>
+    public event Action<T?, T?>? ModelChanging
+    {
+      add => _inner.ModelChanging += value;
+      remove => _inner.ModelChanging -= value;
+    }
+
+    /// <summary>
+    /// Event raised when Model has changed.
+    /// </summary>
+    public event Action? ModelChanged
+    {
+      add => _inner.ModelChanged += value;
+      remove => _inner.ModelChanged -= value;
     }
 
     /// <summary>
@@ -849,16 +446,126 @@ namespace Csla.Xaml
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    [StackTraceHidden]
-    private InvalidOperationException CreateInvalidOperationExceptionForUnsupportedListType()
-    {
-      return new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.UnsupportedXamlListTypeForModel, nameof(IObservableBindingList), "IBindingList"));
-    }
+    #endregion
 
-    [StackTraceHidden, MemberNotNull(nameof(Model))]
-    private void ThrowIoeWhenModelIsNull()
+    /// <summary>
+    /// The <see cref="Csla.Mvvm.ViewModel{T}"/> that implements
+    /// the behavior, routing its virtual members back to the
+    /// owning viewmodel so overrides there take effect.
+    /// </summary>
+    private sealed class InnerViewModel : Csla.Mvvm.ViewModel<T>
     {
-      _ = Model ?? throw new InvalidOperationException($"{nameof(Model)} == null");
+      private readonly ViewModelBase<T> _owner;
+
+      // the initial ManageObjectLifetime is passed to the base constructor,
+      // so no PropertyChanged reaches the owner before its constructor runs
+      public InnerViewModel(ViewModelBase<T> owner, bool manageObjectLifetime)
+        : base(manageObjectLifetime)
+      {
+        _owner = owner;
+      }
+
+      public InnerViewModel(ViewModelBase<T> owner, ApplicationContext applicationContext, bool manageObjectLifetime)
+        : base(applicationContext, manageObjectLifetime)
+      {
+        _owner = owner;
+      }
+
+      public ApplicationContext Context => ApplicationContext;
+
+      protected override ApplicationContext ResolveApplicationContext() => ApplicationContextManager.GetApplicationContext();
+
+      // status properties: the owner reads and writes through these
+
+      public bool BaseIsDirty { get => base.IsDirty; set => base.IsDirty = value; }
+      public bool BaseIsValid { get => base.IsValid; set => base.IsValid = value; }
+      public bool BaseCanSave { get => base.CanSave; set => base.CanSave = value; }
+      public bool BaseCanCancel { get => base.CanCancel; set => base.CanCancel = value; }
+      public bool BaseCanCreate { get => base.CanCreate; set => base.CanCreate = value; }
+      public bool BaseCanDelete { get => base.CanDelete; set => base.CanDelete = value; }
+      public bool BaseCanFetch { get => base.CanFetch; set => base.CanFetch = value; }
+      public bool BaseCanRemove { get => base.CanRemove; set => base.CanRemove = value; }
+      public bool BaseCanAddNew { get => base.CanAddNew; set => base.CanAddNew = value; }
+      public bool BaseCanCreateObject { get => base.CanCreateObject; set => base.CanCreateObject = value; }
+      public bool BaseCanGetObject { get => base.CanGetObject; set => base.CanGetObject = value; }
+      public bool BaseCanEditObject { get => base.CanEditObject; set => base.CanEditObject = value; }
+      public bool BaseCanDeleteObject { get => base.CanDeleteObject; set => base.CanDeleteObject = value; }
+
+      // status and permission reads and writes go through the owner,
+      // so overrides of its getters and protected setters take effect
+      public override bool IsDirty { get => _owner.IsDirty; protected set => _owner.IsDirty = value; }
+      public override bool IsValid { get => _owner.IsValid; protected set => _owner.IsValid = value; }
+      public override bool CanSave { get => _owner.CanSave; protected set => _owner.CanSave = value; }
+      public override bool CanCancel { get => _owner.CanCancel; protected set => _owner.CanCancel = value; }
+      public override bool CanCreate { get => _owner.CanCreate; protected set => _owner.CanCreate = value; }
+      public override bool CanDelete { get => _owner.CanDelete; protected set => _owner.CanDelete = value; }
+      public override bool CanFetch { get => _owner.CanFetch; protected set => _owner.CanFetch = value; }
+      public override bool CanRemove { get => _owner.CanRemove; protected set => _owner.CanRemove = value; }
+      public override bool CanAddNew { get => _owner.CanAddNew; protected set => _owner.CanAddNew = value; }
+      public override bool CanCreateObject { get => _owner.CanCreateObject; protected set => _owner.CanCreateObject = value; }
+      public override bool CanGetObject { get => _owner.CanGetObject; protected set => _owner.CanGetObject = value; }
+      public override bool CanEditObject { get => _owner.CanEditObject; protected set => _owner.CanEditObject = value; }
+      public override bool CanDeleteObject { get => _owner.CanDeleteObject; protected set => _owner.CanDeleteObject = value; }
+
+      public void SetIsBusy(bool value) => IsBusy = value;
+      public void SetViewModelErrorText(string value) => ViewModelErrorText = value;
+      public string BaseModelErrorText => base.ModelErrorText;
+      protected override string ModelErrorText => _owner.ModelErrorText;
+
+      public void Hook(T? model) => HookChangedEvents(model);
+      public void Unhook(T? model) => UnhookChangedEvents(model);
+
+      protected override void OnPropertyChanged(string propertyName)
+      {
+        base.OnPropertyChanged(propertyName);
+        _owner.OnPropertyChanged(propertyName);
+      }
+
+      protected override void OnModelChanging(T? oldValue, T? newValue) => _owner.OnModelChanging(oldValue, newValue);
+      public void BaseOnModelChanging(T? oldValue, T? newValue) => base.OnModelChanging(oldValue, newValue);
+
+      protected override void OnModelChanged(T? oldValue, T? newValue)
+      {
+        // keep the dependency property in sync when the model
+        // is replaced by a refresh or save operation
+        if (!ReferenceEquals(_owner.GetValue(ModelProperty), newValue))
+          _owner.SetValue(ModelProperty, newValue);
+        _owner.OnModelChanged(oldValue, newValue);
+      }
+      public void BaseOnModelChanged(T? oldValue, T? newValue) => base.OnModelChanged(oldValue, newValue);
+
+      protected override void OnSetProperties() => _owner.OnSetProperties();
+      public void BaseOnSetProperties() => base.OnSetProperties();
+
+      protected override void OnModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+      {
+        OnSetProperties();
+        _owner.ModelPropertyChanged?.Invoke(_owner, e);
+      }
+
+      protected override void OnModelChildChanged(object? sender, ChildChangedEventArgs e)
+      {
+        OnSetProperties();
+        _owner.ModelChildChanged?.Invoke(_owner, e);
+      }
+
+      protected override void OnModelCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+      {
+        OnSetProperties();
+        _owner.ModelCollectionChanged?.Invoke(_owner, e);
+      }
+
+      public override Task<T?> SaveAsync(CancellationToken ct) => _owner.SaveAsync(ct);
+      public Task<T?> BaseSaveAsync(CancellationToken ct) => base.SaveAsync(ct);
+
+      protected override Task<T?> DoSaveAsync(ISavable? cloned) => _owner.DoSaveAsync(cloned);
+      public Task<T?> BaseDoSaveAsync(ISavable? cloned) => base.DoSaveAsync(cloned);
+
+      public void BaseDoCancel() => base.DoCancel();
+      public object BaseDoAddNew() => base.DoAddNew();
+      public void BaseDoRemove(object? item) => base.DoRemove(item);
+      public void BaseDoDelete() => base.DoDelete();
     }
   }
+#endif
 }

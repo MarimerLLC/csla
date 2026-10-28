@@ -44,7 +44,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.*" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <PackageReference Include="Csla" Version="10.0.0" />
+    <PackageReference Include="Csla" Version="11.0.0-alpha.1" />
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)'!='Release'">
     <ProjectReference Include="..\Csla\Csla.csproj" />

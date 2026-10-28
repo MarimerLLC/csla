@@ -582,10 +582,14 @@ namespace Csla.Mvvm
     }
 
     private Type? _childItemTypeSource;
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     private Type? _childItemType;
 
     // the status calculation runs on every model change, so cache
     // the reflection-based lookup for the current Model type
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = TrimmingMessages.BusinessTypeJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2074", Justification = TrimmingMessages.BusinessTypeJustification)]
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     private Type? GetChildItemType(Type modelType)
     {
       if (modelType != _childItemTypeSource)

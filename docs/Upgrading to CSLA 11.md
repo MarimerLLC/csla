@@ -224,6 +224,34 @@ These let a factory adjust the transaction to the data involved. For example, it
 
 The `TransactionalDataPortal` constructor now takes `(DataPortalBroker, ITransactionScopeFactory, TransactionScopeFactoryContext)` instead of `(DataPortalBroker, TransactionalAttribute)`.
 
+## Obsolete XML serialization readers and writers removed
+
+The `DataContractSerializer` based MobileFormatter readers and writers have been removed ([#3347](https://github.com/MarimerLLC/csla/issues/3347)):
+
+* `CslaXmlReader` and `CslaXmlWriter`
+* `CslaXmlBinaryReader` and `CslaXmlBinaryWriter`
+* `CslaReaderWriterFactory.GetDataContractSerializer()`
+
+They were marked `[Obsolete]` in CSLA 9 ([#4336](https://github.com/MarimerLLC/csla/pull/4336)), and `DataContractSerializer` isn't compatible with trimming or NativeAOT.
+
+If your configuration selects one of these types through the `MobileReader<T>()` or `MobileWriter<T>()` options, remove those calls to use the default `CslaBinaryReader` and `CslaBinaryWriter`. The serialized format changes, so the client and the server must be updated together.
+
+## Trimming and NativeAOT annotations
+
+CSLA now declares what it needs from the trimmer ([#3347](https://github.com/MarimerLLC/csla/issues/3347)). In a trimmed or NativeAOT app this can surface new `IL2026` warnings in your code.
+
+The late-bound reflection APIs, which accept any object and find its members by name, are marked `[RequiresUnreferencedCode]`:
+
+* `MethodCaller.CallPropertyGetter`, `CallPropertySetter`, `CallMethod(object, string, ...)`, `CallMethodIfImplemented`, `IsMethodImplemented`, `CallMethodTryAsync` and `IsAsyncMethod(object, string, ...)`
+* `MethodCaller.GetType(string)` and `MethodCaller.GetType(string, bool)`, which resolve a type from its name
+* `ServiceProviderMethodCaller.FindDataPortalMethod<T>(object, object[])`
+* The `LateBoundObject` methods that call `MethodCaller` or `ServiceProviderMethodCaller`
+* `Utilities.CallByName`
+
+Their behavior is unchanged. The warning means the trimmer can't see which types or members these calls use. If you call them from a trimmed app, preserve the target types yourself, for example with `[DynamicallyAccessedMembers]` or `TrimmerRootAssembly`.
+
+The trimmer preserves an object factory named in `[ObjectFactory("...")]` when the name is assembly qualified (`"MyApp.MyFactory, MyApp"`) or the factory is in the business object's assembly. `[ObjectFactory(typeof(MyFactory))]` always works. A custom `IObjectFactoryLoader` that maps other names to types must preserve those types itself.
+
 ## Common `Csla.Mvvm.ViewModel<T>` base type
 
 The view model types for each UI framework now share one implementation, `Csla.Mvvm.ViewModel<T>`, in the core `Csla` package ([#1766](https://github.com/MarimerLLC/csla/issues/1766)). The existing types keep their names:

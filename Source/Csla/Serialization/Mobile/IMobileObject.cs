@@ -5,6 +5,8 @@
 // </copyright>
 // <summary>Interface to be implemented by any object</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Serialization.Mobile
 {
   /// <summary>
@@ -12,6 +14,7 @@ namespace Csla.Serialization.Mobile
   /// that supports serialization by the
   /// SerializationFormatterFactory.GetFormatter().
   /// </summary>
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
   public interface IMobileObject
   {
     /// <summary>

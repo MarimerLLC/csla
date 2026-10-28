@@ -511,6 +511,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} does not support graph merging; it must derive from BusinessListBase or BusinessBindingListBase..
+        /// </summary>
+        public static string GraphMergeNotSupportedException {
+            get {
+                return ResourceManager.GetString("GraphMergeNotSupportedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Target object must implement IEditableCollection.
         /// </summary>
         public static string IEditableCollectionRequiredException {
@@ -588,6 +597,15 @@ namespace Csla.Properties {
         public static string ListItemNotAChildException {
             get {
                 return ResourceManager.GetString("ListItemNotAChildException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading property '{0}' with a value of type '{1}' requires dynamic code, which is not available in this runtime. Use a PropertyInfo&lt;{2}&gt; and a value of that type..
+        /// </summary>
+        public static string LoadPropertyRequiresDynamicCodeException {
+            get {
+                return ResourceManager.GetString("LoadPropertyRequiresDynamicCodeException", resourceCulture);
             }
         }
         
@@ -1218,6 +1236,24 @@ namespace Csla.Properties {
         public static string TaskOfObjectException {
             get {
                 return ResourceManager.GetString("TaskOfObjectException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not a Task&lt;T&gt;..
+        /// </summary>
+        public static string TaskOfTRequiredException {
+            get {
+                return ResourceManager.GetString("TaskOfTRequiredException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.Result is not available; it may have been removed by trimming..
+        /// </summary>
+        public static string TaskResultNotAvailableException {
+            get {
+                return ResourceManager.GetString("TaskResultNotAvailableException", resourceCulture);
             }
         }
         

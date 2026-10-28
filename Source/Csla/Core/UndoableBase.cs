@@ -6,6 +6,7 @@
 // <summary>Implements n-level undo capabilities as</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.ComponentModel;
 using System.IO;
 using Csla.Properties;
@@ -122,6 +123,7 @@ namespace Csla.Core
     /// onto the state stack.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = TrimmingMessages.BaseTypeWalkJustification)]
     protected internal void CopyState(int parentEditLevel)
     {
       CopyingState();
@@ -212,6 +214,7 @@ namespace Csla.Core
     /// of the object.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = TrimmingMessages.BaseTypeWalkJustification)]
     protected internal void UndoChanges(int parentEditLevel)
     {
       UndoingChanges();
@@ -317,6 +320,7 @@ namespace Csla.Core
     /// to the object's state.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = TrimmingMessages.BaseTypeWalkJustification)]
     protected internal void AcceptChanges(int parentEditLevel)
     {
       AcceptingChanges();

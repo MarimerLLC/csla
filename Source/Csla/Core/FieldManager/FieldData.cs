@@ -18,7 +18,7 @@ namespace Csla.Core.FieldManager
   /// </summary>
   /// <typeparam name="T">Type of field value contained.</typeparam>
   [Serializable]
-  public class FieldData<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> : IFieldData<T>
+  public class FieldData<T> : IFieldData<T>
   {
     private T? _data;
     private bool _isDirty;

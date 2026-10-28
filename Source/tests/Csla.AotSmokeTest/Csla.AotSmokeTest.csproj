@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Smoke test that publishes a CSLA app with NativeAOT and runs it.
+
+    NativeAOT (needs the platform linker; on Windows the Visual Studio C++ workload):
+      dotnet publish Source/tests/Csla.AotSmokeTest -c Release -r win-x64 -o aot-smoke
+      aot-smoke/Csla.AotSmokeTest.exe
+
+    Trimmed, self-contained publish for machines without the native toolchain:
+      dotnet publish Source/tests/Csla.AotSmokeTest -c Release -r win-x64 -o aot-smoke -p:CslaSmokeTrimOnly=true
+
+    The process exits with a non-zero code if any scenario fails.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <PublishAot Condition="'$(CslaSmokeTrimOnly)' != 'true'">true</PublishAot>
+    <PublishTrimmed Condition="'$(CslaSmokeTrimOnly)' == 'true'">true</PublishTrimmed>
+    <SelfContained Condition="'$(CslaSmokeTrimOnly)' == 'true'">true</SelfContained>
+  </PropertyGroup>
+
+  <!--
+    Csla.csproj locates its signing key through $(SolutionDir). Building inside the
+    solution provides it; publishing this project directly supplies it here.
+  -->
+  <PropertyGroup>
+    <CslaSourceDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../'))</CslaSourceDir>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(SolutionDir)' == '' or '$(SolutionDir)' == '*Undefined*'">
+    <ProjectReference Include="..\..\Csla\Csla.csproj" AdditionalProperties="SolutionDir=$(CslaSourceDir)" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" AdditionalProperties="SolutionDir=$(CslaSourceDir)" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(SolutionDir)' != '' and '$(SolutionDir)' != '*Undefined*'">
+    <ProjectReference Include="..\..\Csla\Csla.csproj" />
+    <ProjectReference Include="..\..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+</Project>

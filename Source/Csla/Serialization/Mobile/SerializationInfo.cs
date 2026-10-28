@@ -299,7 +299,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">
     /// Name of the field.
     /// </param>
-    public T? GetValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string name)
+    public T? GetValue<T>(string name)
     {
       try
       {
@@ -319,7 +319,7 @@ namespace Csla.Serialization.Mobile
     /// <param name="name">Name of the field.</param>
     /// <returns>The value.</returns>
     /// <exception cref="InvalidOperationException">Something went wrong or the returned value of <paramref name="name"/> would be <see langword="null"/>.</exception>
-    public T GetRequiredValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(string name)
+    public T GetRequiredValue<T>(string name)
     {
       return GetValue<T>(name) ?? throw new InvalidOperationException($"SerializationInfo.GetValue: {name} => null");
     }

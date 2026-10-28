@@ -76,13 +76,20 @@ namespace Csla.Configuration
     /// that should be executed by the server-side data portal.
     /// injection.
     /// </summary>
-    internal List<Type> InterceptorProviders { get; } = [typeof(Server.Interceptors.ServerSide.RevalidatingInterceptor)];
+    internal List<Type> InterceptorProviders { get; } = [PreserveConstructors(typeof(Server.Interceptors.ServerSide.RevalidatingInterceptor))];
+
+    /// <summary>
+    /// Passing a type through this annotated parameter keeps its public
+    /// constructors when the application is trimmed; InterceptorProviders
+    /// is a List of Type, which can't carry the annotation itself.
+    /// </summary>
+    private static Type PreserveConstructors([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type) => type;
 
     /// <summary>
     /// Adds the type of an IInterceptDataPortal that will
     /// be executed by the server-side data portal.
     /// </summary>
-    public DataPortalServerOptions AddInterceptorProvider<T>() where T: IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T: IInterceptDataPortal
     {
       InterceptorProviders.Add(typeof(T));
       return this;
@@ -93,7 +100,7 @@ namespace Csla.Configuration
     /// be executed by the server-side data portal.
     /// </summary>
     /// <param name="index">Index at which new item should be added.</param>
-    public DataPortalServerOptions AddInterceptorProvider<T>(int index) where T : IInterceptDataPortal
+    public DataPortalServerOptions AddInterceptorProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>(int index) where T : IInterceptDataPortal
     {
       InterceptorProviders.Insert(index, typeof(T));
       return this;

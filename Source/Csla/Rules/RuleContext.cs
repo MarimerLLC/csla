@@ -325,7 +325,7 @@ namespace Csla.Rules
     }
 
     /// <inheritdoc />
-    public  T? GetInputValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(PropertyInfo<T> propertyInfo)
+    public  T? GetInputValue<T>(PropertyInfo<T> propertyInfo)
     {
       return GetInputValue<T>((IPropertyInfo)propertyInfo);
     }
@@ -340,7 +340,7 @@ namespace Csla.Rules
     }
 
     /// <inheritdoc />
-    public bool TryGetInputValue<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>(PropertyInfo<T> propertyInfo, ref T? value)
+    public bool TryGetInputValue<T>(PropertyInfo<T> propertyInfo, ref T? value)
     {
       return TryGetInputValue<T>((IPropertyInfo)propertyInfo, ref value);
     }

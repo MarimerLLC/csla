@@ -6,6 +6,8 @@
 // <summary>Object containing information about the</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Server
 {
   /// <summary>
@@ -18,6 +20,7 @@ namespace Csla.Server
     /// Gets the type of business object affected by
     /// the client request.
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type ObjectType { get; }
     /// <summary>
     /// Gets a reference to the criteria or 
@@ -31,7 +34,7 @@ namespace Csla.Server
     /// </summary>
     public DataPortalOperations Operation { get; }
 
-    internal AuthorizeRequest(Type objectType, object? requestObject, DataPortalOperations operation)
+    internal AuthorizeRequest([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object? requestObject, DataPortalOperations operation)
     {
       ObjectType = objectType;
       RequestObject = requestObject;

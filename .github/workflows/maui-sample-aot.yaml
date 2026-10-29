@@ -82,7 +82,8 @@ jobs:
 
     - name: Fail on IL warnings
       run: |
-        if grep -hE "warning IL[0-9]+" "$RUNNER_TEMP/ios.log" "$RUNNER_TEMP/maccatalyst.log" | sort -u; then
+        if grep -qE "warning IL[0-9]+" "$RUNNER_TEMP/ios.log" "$RUNNER_TEMP/maccatalyst.log"; then
+          grep -hE "warning IL[0-9]+" "$RUNNER_TEMP/ios.log" "$RUNNER_TEMP/maccatalyst.log" | sort -u
           echo "::error::IL warnings found"
           exit 1
         fi

@@ -32,7 +32,10 @@ namespace BusinessLibrary
     {
       var data = dal.Get(id);
       using (BypassPropertyChecks)
-        Csla.Data.DataMapper.Map(data, this);
+      {
+        Id = data.Id;
+        Name = data.Name;
+      }
       BusinessRules.CheckRules();
     }
 

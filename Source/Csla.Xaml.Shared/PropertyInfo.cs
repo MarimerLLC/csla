@@ -94,6 +94,9 @@ namespace Csla.Xaml
     /// Gets the broken rules collection from the
     /// business object.
     /// </summary>
+#if MAUI
+    [UnconditionalSuppressMessage("Trimming", "IL2112", Justification = TrimmingMessages.BindablePropertyFieldJustification)]
+#endif
     public static readonly BindableProperty BrokenRulesProperty =
       BindableProperty.Create(nameof(BrokenRules), typeof(ObservableCollection<BrokenRule>), typeof(PropertyInfo), new ObservableCollection<BrokenRule>());
     /// <summary>

@@ -28,11 +28,12 @@ jobs:
         (cd Source && dotnet workload install maui)
         (cd Samples/MauiExample && dotnet --version && dotnet workload install maui)
 
-    # The net10.0 iOS/Mac Catalyst SDKs (26.0.x) require Xcode 26.0 to build an app
+    # The net10.0 iOS SDK (26.0.x) expects Xcode 26.0, but this image only has simulator runtimes for newer
+    # Xcodes, so use 26.5 and skip the exact version check (ValidateXcodeVersion=false below)
     - name: Select a specific version of Xcode
       run: |
         ls -d /Applications/Xcode*.app
-        sudo xcode-select -s /Applications/Xcode_26.0.1.app
+        sudo xcode-select -s /Applications/Xcode_26.5.app
         xcodebuild -version
         xcodebuild -showsdks
 
@@ -61,11 +62,11 @@ jobs:
     - name: Publish iOS simulator (NativeAOT)
       working-directory: Samples/MauiExample
       # dotnet publish rejects simulator RIDs; _IsPublishing=true is what turns PublishAot on for a build
-      run: dotnet build MauiExample/MauiExample.csproj -f net10.0-ios -c Release -r iossimulator-arm64 -p:_IsPublishing=true 2>&1 | tee "$RUNNER_TEMP/ios.log"; exit ${PIPESTATUS[0]}
+      run: dotnet build MauiExample/MauiExample.csproj -f net10.0-ios -c Release -r iossimulator-arm64 -p:_IsPublishing=true -p:ValidateXcodeVersion=false 2>&1 | tee "$RUNNER_TEMP/ios.log"; exit ${PIPESTATUS[0]}
 
     - name: Publish Mac Catalyst (NativeAOT)
       working-directory: Samples/MauiExample
-      run: dotnet publish MauiExample/MauiExample.csproj -f net10.0-maccatalyst -c Release -r maccatalyst-arm64 2>&1 | tee "$RUNNER_TEMP/maccatalyst.log"; exit ${PIPESTATUS[0]}
+      run: dotnet publish MauiExample/MauiExample.csproj -f net10.0-maccatalyst -c Release -r maccatalyst-arm64 -p:ValidateXcodeVersion=false 2>&1 | tee "$RUNNER_TEMP/maccatalyst.log"; exit ${PIPESTATUS[0]}
 
     - name: Check the apps were compiled with NativeAOT
       working-directory: Samples/MauiExample/MauiExample/bin/Release

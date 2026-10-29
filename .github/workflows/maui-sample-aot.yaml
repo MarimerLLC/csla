@@ -55,11 +55,24 @@ jobs:
 
     - name: Publish iOS simulator (NativeAOT)
       working-directory: Samples/MauiExample
-      run: dotnet publish MauiExample/MauiExample.csproj -f net10.0-ios -c Release -r iossimulator-arm64 2>&1 | tee "$RUNNER_TEMP/ios.log"; exit ${PIPESTATUS[0]}
+      # dotnet publish rejects simulator RIDs; _IsPublishing=true is what turns PublishAot on for a build
+      run: dotnet build MauiExample/MauiExample.csproj -f net10.0-ios -c Release -r iossimulator-arm64 -p:_IsPublishing=true 2>&1 | tee "$RUNNER_TEMP/ios.log"; exit ${PIPESTATUS[0]}
 
     - name: Publish Mac Catalyst (NativeAOT)
       working-directory: Samples/MauiExample
       run: dotnet publish MauiExample/MauiExample.csproj -f net10.0-maccatalyst -c Release -r maccatalyst-arm64 2>&1 | tee "$RUNNER_TEMP/maccatalyst.log"; exit ${PIPESTATUS[0]}
+
+    - name: Check the apps were compiled with NativeAOT
+      working-directory: Samples/MauiExample/MauiExample/bin/Release
+      run: |
+        # A NativeAOT app bundle has no managed assemblies; a Mono build ships .dll files
+        apps=$(find . -name "MauiExample.app" -type d -not -path "*/MauiExample.app/*")
+        if [ -z "$apps" ]; then echo "::error::No app bundles found"; exit 1; fi
+        for app in $apps; do
+          dlls=$(find "$app" -name "*.dll" | wc -l | tr -d ' ')
+          echo "$app: $dlls managed assemblies"
+          if [ "$dlls" != "0" ]; then echo "::error::$app isn't NativeAOT"; exit 1; fi
+        done
 
     - name: Fail on IL warnings
       run: |

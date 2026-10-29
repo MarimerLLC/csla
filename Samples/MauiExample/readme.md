@@ -1,6 +1,6 @@
 # CSLA MAUI Example
 
-This sample is a small .NET MAUI app that uses the `Csla.Maui` package with CSLA business objects. It's set up to publish with full trimming on Android and iOS, and with NativeAOT on iOS and Mac Catalyst, with no trim or AOT warnings.
+This sample is a small .NET MAUI app that uses the `Csla.Maui` package with CSLA business objects. It's set up to publish with full trimming on Android and with NativeAOT on iOS and Mac Catalyst, with no trim or AOT warnings.
 
 ## Projects
 
@@ -27,8 +27,8 @@ dotnet build MauiExample/MauiExample.csproj -t:Run -f net10.0-android
 | Setting | Platforms | Why |
 |---|---|---|
 | `TrimmerSingleWarn=false` | All | Report each trim warning at its location instead of one warning per assembly |
-| `TrimMode=full` | Android, iOS | Trim all assemblies, not only the framework. Release builds on these platforms trim by default |
-| `PublishAot=true` | iOS, Mac Catalyst | Compile with NativeAOT on publish. These are the platforms MAUI supports NativeAOT on |
+| `TrimMode=full` | Android | Trim all assemblies, not only the framework. Android Release builds trim by default |
+| `PublishAot=true` | iOS, Mac Catalyst | Compile with NativeAOT on publish. These are the platforms MAUI supports NativeAOT on. NativeAOT always trims every assembly, so `TrimMode` isn't set for them |
 
 `BusinessLibrary.csproj` and `DataAccess.csproj` set `IsAotCompatible=true`, so the trim and AOT analyzers run when the libraries build, not only when the app is published.
 
@@ -54,11 +54,17 @@ From `Samples/MauiExample`:
 # Android, fully trimmed
 dotnet publish MauiExample/MauiExample.csproj -f net10.0-android -c Release
 
-# iOS simulator, NativeAOT (on a Mac)
-dotnet publish MauiExample/MauiExample.csproj -f net10.0-ios -c Release -r iossimulator-arm64
+# iOS device, NativeAOT (on a Mac, with a signing identity and provisioning profile)
+dotnet publish MauiExample/MauiExample.csproj -f net10.0-ios -c Release
 
 # Mac Catalyst, NativeAOT (on a Mac)
 dotnet publish MauiExample/MauiExample.csproj -f net10.0-maccatalyst -c Release -r maccatalyst-arm64
+```
+
+`dotnet publish` for iOS only accepts device runtime identifiers. To check the NativeAOT build for the iOS simulator without signing, build with the property `dotnet publish` sets:
+
+```bash
+dotnet build MauiExample/MauiExample.csproj -f net10.0-ios -c Release -r iossimulator-arm64 -p:_IsPublishing=true
 ```
 
 Treat any `warning IL` line in the publish output as a bug to fix.

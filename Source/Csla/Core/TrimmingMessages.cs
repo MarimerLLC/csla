@@ -116,6 +116,10 @@ namespace Csla.Core
       "ASP.NET Core MVC and Razor Pages don't support trimming or NativeAOT, and the SDK warns when an app that uses them is trimmed, " +
       "so this code doesn't run in a trimmed application.";
 
+    internal const string BindablePropertyFieldJustification =
+      "MAUI's VisualElement keeps the fields of derived types with DynamicallyAccessedMembers so BindableProperty fields can be found by name. " +
+      "Accessing the field only runs the static initializer, which creates the BindableProperty and doesn't walk a binding path.";
+
     #endregion
   }
 }

@@ -32,8 +32,9 @@ jobs:
     - name: Select a specific version of Xcode
       run: |
         ls -d /Applications/Xcode*.app
-        sudo xcode-select -s /Applications/Xcode_26.0.app
+        sudo xcode-select -s /Applications/Xcode_26.0.1.app
         xcodebuild -version
+        xcodebuild -showsdks
 
     - name: Pack Csla and Csla.Maui from this branch
       run: dotnet pack Source/csla.maui.build.sln -c Debug -o "$RUNNER_TEMP/feed"

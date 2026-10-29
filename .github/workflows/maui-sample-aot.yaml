@@ -1,0 +1,90 @@
+# TEMPORARY (#4970): publishes the MAUI sample with NativeAOT on macOS against Csla/Csla.Maui
+# packed from this branch, and fails on any IL warning. Remove before merging.
+name: maui-sample-aot
+
+on:
+  push:
+    branches:
+      - '4970-maui-sample-csla11-trim-aot'
+
+jobs:
+  publish:
+    runs-on: macos-26
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        global-json-file: Source/global.json
+
+    - name: Install MAUI workload
+      run: |
+        dotnet --list-sdks
+        (cd Source && dotnet workload install maui)
+        (cd Samples/MauiExample && dotnet --version && dotnet workload install maui)
+
+    # The net10.0 iOS SDK (26.0.x) expects Xcode 26.0, but this image only has simulator runtimes for newer
+    # Xcodes, so use 26.5 and skip the exact version check (ValidateXcodeVersion=false below)
+    - name: Select a specific version of Xcode
+      run: |
+        ls -d /Applications/Xcode*.app
+        sudo xcode-select -s /Applications/Xcode_26.5.app
+        xcodebuild -version
+        xcodebuild -showsdks
+
+    - name: Pack Csla and Csla.Maui from this branch
+      run: dotnet pack Source/csla.maui.build.sln -c Debug -o "$RUNNER_TEMP/feed"
+
+    - name: Point the sample at the local packages
+      working-directory: Samples/MauiExample
+      run: |
+        ver=$(ls "$RUNNER_TEMP/feed" | sed -n 's/^Csla\.Maui\.\(.*\)\.nupkg$/\1/p')
+        echo "Using Csla $ver"
+        sed -i '' "s/Include=\"Csla\" Version=\"[^\"]*\"/Include=\"Csla\" Version=\"$ver\"/" BusinessLibrary/BusinessLibrary.csproj
+        sed -i '' "s/Include=\"Csla.Maui\" Version=\"[^\"]*\"/Include=\"Csla.Maui\" Version=\"$ver\"/" MauiExample/MauiExample.csproj
+        cat > nuget.config <<EOF
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <packageSources>
+            <clear />
+            <add key="local" value="$RUNNER_TEMP/feed" />
+            <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+          </packageSources>
+        </configuration>
+        EOF
+        grep -h 'Include="Csla' */*.csproj
+
+    - name: Publish iOS simulator (NativeAOT)
+      working-directory: Samples/MauiExample
+      # dotnet publish rejects simulator RIDs; _IsPublishing=true is what turns PublishAot on for a build
+      run: dotnet build MauiExample/MauiExample.csproj -f net10.0-ios -c Release -r iossimulator-arm64 -p:_IsPublishing=true -p:ValidateXcodeVersion=false 2>&1 | tee "$RUNNER_TEMP/ios.log"; exit ${PIPESTATUS[0]}
+
+    - name: Publish Mac Catalyst (NativeAOT)
+      working-directory: Samples/MauiExample
+      run: dotnet publish MauiExample/MauiExample.csproj -f net10.0-maccatalyst -c Release -r maccatalyst-arm64 -p:ValidateXcodeVersion=false 2>&1 | tee "$RUNNER_TEMP/maccatalyst.log"; exit ${PIPESTATUS[0]}
+
+    - name: Check the apps were compiled with NativeAOT
+      working-directory: Samples/MauiExample/MauiExample/bin/Release
+      run: |
+        # A NativeAOT app bundle has no managed assemblies; a Mono build ships .dll files
+        apps=$(find . -name "MauiExample.app" -type d -not -path "*/MauiExample.app/*")
+        if [ -z "$apps" ]; then echo "::error::No app bundles found"; exit 1; fi
+        for app in $apps; do
+          dlls=$(find "$app" -name "*.dll" | wc -l | tr -d ' ')
+          echo "$app: $dlls managed assemblies"
+          if [ "$dlls" != "0" ]; then echo "::error::$app isn't NativeAOT"; exit 1; fi
+        done
+
+    - name: Fail on IL warnings
+      run: |
+        if grep -qE "warning IL[0-9]+" "$RUNNER_TEMP/ios.log" "$RUNNER_TEMP/maccatalyst.log"; then
+          grep -hE "warning IL[0-9]+" "$RUNNER_TEMP/ios.log" "$RUNNER_TEMP/maccatalyst.log" | sort -u
+          echo "::error::IL warnings found"
+          exit 1
+        fi
+        echo "No IL warnings"

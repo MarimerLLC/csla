@@ -28,8 +28,12 @@ jobs:
         (cd Source && dotnet workload install maui)
         (cd Samples/MauiExample && dotnet --version && dotnet workload install maui)
 
+    # The net10.0 iOS/Mac Catalyst SDKs (26.0.x) require Xcode 26.0 to build an app
     - name: Select a specific version of Xcode
-      run: sudo xcode-select -s /Applications/Xcode_26.5.app
+      run: |
+        ls -d /Applications/Xcode*.app
+        sudo xcode-select -s /Applications/Xcode_26.0.app
+        xcodebuild -version
 
     - name: Pack Csla and Csla.Maui from this branch
       run: dotnet pack Source/csla.maui.build.sln -c Debug -o "$RUNNER_TEMP/feed"

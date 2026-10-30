@@ -236,6 +236,14 @@ They were marked `[Obsolete]` in CSLA 9 ([#4336](https://github.com/MarimerLLC/c
 
 If your configuration selects one of these types through the `MobileReader<T>()` or `MobileWriter<T>()` options, remove those calls to use the default `CslaBinaryReader` and `CslaBinaryWriter`. The serialized format changes, so the client and the server must be updated together.
 
+## `StateMode.Undo` removed
+
+The `StateMode` enum no longer has an `Undo` value ([#4582](https://github.com/MarimerLLC/csla/issues/4582)). Older versions of n-level undo took snapshots by calling `OnGetState` and `OnSetState` with `StateMode.Undo`. Undo now takes its snapshots through the configured `ISerializationFormatter`, so those methods are only called with `StateMode.Serialization`, for cloning and data portal calls.
+
+If an `OnGetState` or `OnSetState` override checks `mode == StateMode.Undo`, delete that branch. The code in it hasn't run for several versions.
+
+The layout of an undo snapshot has also changed. An object serialized by an earlier version of CSLA while its edit level was above zero can't have those edits undone by CSLA 11, so update the client and the server together.
+
 ## Trimming and NativeAOT annotations
 
 CSLA now declares what it needs from the trimmer ([#3347](https://github.com/MarimerLLC/csla/issues/3347)). In a trimmed or NativeAOT app this can surface new `IL2026` warnings in your code.

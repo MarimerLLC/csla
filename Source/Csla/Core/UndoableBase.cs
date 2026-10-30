@@ -24,6 +24,9 @@ namespace Csla.Core
   public abstract class UndoableBase : BindableBase,
     IUndoableObject, IUseApplicationContext
   {
+    // suffix for state keys that hold a serialized object graph
+    private const string SerializedValueSuffix = "!serialized";
+
     // keep a stack of object state values.
     [NotUndoable]
     private readonly Stack<byte[]> _stateStack = new();
@@ -159,11 +162,10 @@ namespace Csla.Core
           }
           else if (value is IMobileObject)
           {
-            // this is a mobile object, store the serialized value
-            using MemoryStream buffer = new MemoryStream();
+            // this is an object graph, store the serialized value
+            // under its own key so undo knows to deserialize it
             var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
-            formatter.Serialize(buffer, value);
-            state.Add(fieldName, buffer.ToArray());
+            state.Add(fieldName + SerializedValueSuffix, formatter.Serialize(value));
           }
           else
           {
@@ -266,23 +268,16 @@ namespace Csla.Core
                 ((IUndoableObject?) value)?.UndoChanges(EditLevel, BindingEdit);
               }
             }
+            else if (state.TryGetValue(fieldName + SerializedValueSuffix, out var serializedValue))
+            {
+              // this is an object graph, deserialize the value
+              var formatter = _applicationContext.GetRequiredService<ISerializationFormatter>();
+              h.MemberSetOrNotSupportedException(this, formatter.Deserialize((byte[])serializedValue!));
+            }
             else
             {
-              var stateValue = state[fieldName];
-              if (value is IMobileObject && stateValue != null)
-              {
-                // this is a mobile object, deserialize the value
-                using MemoryStream buffer = new MemoryStream((byte[])stateValue);
-                buffer.Position = 0;
-                var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
-                var obj = formatter.Deserialize(buffer);
-                h.MemberSetOrNotSupportedException(this, obj);
-              }
-              else
-              {
-                // this is a regular field, restore its value
-                h.MemberSetOrNotSupportedException(this, stateValue);
-              }
+              // this is a regular field, restore its value
+              h.MemberSetOrNotSupportedException(this, state[fieldName]);
             }
           }
 
@@ -393,14 +388,11 @@ namespace Csla.Core
     /// </param>
     protected override void OnGetState(SerializationInfo info, StateMode mode)
     {
-      if (mode != StateMode.Undo)
+      info.AddValue("_bindingEdit", _bindingEdit);
+      if (_stateStack.Count > 0)
       {
-        info.AddValue("_bindingEdit", _bindingEdit);
-        if (_stateStack.Count > 0)
-        {
-          var stackArray = _stateStack.ToArray();
-          info.AddValue("_stateStack", stackArray);
-        }
+        var stackArray = _stateStack.ToArray();
+        info.AddValue("_stateStack", stackArray);
       }
       base.OnGetState(info, mode);
     }
@@ -417,16 +409,13 @@ namespace Csla.Core
     /// </param>
     protected override void OnSetState(SerializationInfo info, StateMode mode)
     {
-      if (mode != StateMode.Undo)
+      _bindingEdit = info.GetValue<bool>("_bindingEdit");
+      if (info.Values.TryGetValue("_stateStack", out var stateStackField))
       {
-        _bindingEdit = info.GetValue<bool>("_bindingEdit");
-        if (info.Values.TryGetValue("_stateStack", out var stateStackField))
-        {
-          var stackArray = (IEnumerable<byte[]>)stateStackField.Value!;
-          _stateStack.Clear();
-          foreach (var item in stackArray.Reverse())
-            _stateStack.Push(item);
-        }
+        var stackArray = (IEnumerable<byte[]>)stateStackField.Value!;
+        _stateStack.Clear();
+        foreach (var item in stackArray.Reverse())
+          _stateStack.Push(item);
       }
       base.OnSetState(info, mode);
     }

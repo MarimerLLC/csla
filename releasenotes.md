@@ -78,6 +78,10 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 * [#4828](https://github.com/MarimerLLC/csla/issues/4828) Remove the data portal's fallback of finding operation methods by name; only methods with an operation attribute are invoked ([#4943](https://github.com/MarimerLLC/csla/pull/4943))
 * [#4780](https://github.com/MarimerLLC/csla/issues/4780) Resolve transaction settings when the transaction is created, and add `ITransactionScopeFactory` to control how the data portal creates `TransactionScope` instances ([#4949](https://github.com/MarimerLLC/csla/pull/4949))
 
+**Data Access**
+
+* [#4975](https://github.com/MarimerLLC/csla/issues/4975) `SafeDataReader` has async members: `ReadAsync`, `NextResultAsync`, `CloseAsync`, `IsDBNullAsync`, `GetFieldValueAsync<T>`, null-safe getters such as `GetStringAsync` and `GetInt32Async`, and `DisposeAsync`
+
 **Authorization**
 
 * [#4707](https://github.com/MarimerLLC/csla/issues/4707) XAML and Blazor view models support async authorization rules, and `HasPermission` reports a still-running async rule with an `InvalidOperationException` that points to `HasPermissionAsync` ([#4948](https://github.com/MarimerLLC/csla/pull/4948))
@@ -114,6 +118,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 * With async authorization rules, view model permission properties (such as `CanCreateObject`) start out `false` and update when the rules complete. Reading `IsSavable` while an async `CreateObject`, `EditObject` or `DeleteObject` rule is running marks the object busy and returns `false`, and calling `Save` before the rule completes throws. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-authorization-rules-in-view-models-and-issavable) ([#4707](https://github.com/MarimerLLC/csla/issues/4707), [#4947](https://github.com/MarimerLLC/csla/issues/4947)).
 * `TransactionalAttribute` no longer copies defaults from `DataOptions`: `TimeoutInSeconds` is now `int?` and `AsyncFlowOption` is now `TransactionScopeAsyncFlowOption?`, and the `TransactionalDataPortal` constructor takes an `ITransactionScopeFactory` and `TransactionScopeFactoryContext`. The `DataOptions` transaction defaults are now per-instance instead of static. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#transaction-settings-resolved-at-runtime-and-itransactionscopefactory) ([#4780](https://github.com/MarimerLLC/csla/issues/4780)).
 * The XAML view model's `SaveAsync` and `RefreshAsync` capture exceptions in `Exception` and `ViewModelErrorText`, and raise `Error`, instead of throwing. An exception from an authorization rule during the status calculation is reported the same way on every view model. `SaveAsync` returns `Task<T?>` on all view models. On MAUI and Avalonia, `ManageObjectLifetime` defaults to `true` and the public `ManageObjectLifetimeProperty` field is removed. The Blazor `OnModelChanged()` override is replaced by `OnModelChanged(T? oldValue, T? newValue)`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#common-cslamvvmviewmodelt-base-type) ([#1766](https://github.com/MarimerLLC/csla/issues/1766)).
+* `SafeSqlDataReader` gets `ReadAsync`, `NextResultAsync` and `GetFieldValueAsync<T>` from `SafeDataReader` instead of declaring them, so code compiled against an earlier version must be recompiled. They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`. `IsDbNullAsync` is obsolete; use `IsDBNullAsync`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-safedatareader) ([#4975](https://github.com/MarimerLLC/csla/issues/4975)).
 
 ### Supported Platforms
 

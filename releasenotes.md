@@ -80,7 +80,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 **Data Access**
 
-* [#4975](https://github.com/MarimerLLC/csla/issues/4975) `SafeDataReader` has async members: `ReadAsync`, `NextResultAsync`, `CloseAsync`, `IsDBNullAsync`, `GetFieldValueAsync<T>`, null-safe getters such as `GetStringAsync` and `GetInt32Async`, and `DisposeAsync`
+* [#4975](https://github.com/MarimerLLC/csla/issues/4975) `SafeDataReader` has async members: `ReadAsync`, `NextResultAsync`, `CloseAsync`, `IsDBNullAsync`, `GetFieldValueAsync<T>`, null-safe getters such as `GetStringAsync` and `GetInt32Async`, and `DisposeAsync` ([#4976](https://github.com/MarimerLLC/csla/pull/4976))
 
 **Authorization**
 

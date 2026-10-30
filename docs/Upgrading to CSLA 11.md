@@ -236,6 +236,32 @@ They were marked `[Obsolete]` in CSLA 9 ([#4336](https://github.com/MarimerLLC/c
 
 If your configuration selects one of these types through the `MobileReader<T>()` or `MobileWriter<T>()` options, remove those calls to use the default `CslaBinaryReader` and `CslaBinaryWriter`. The serialized format changes, so the client and the server must be updated together.
 
+## Async `SafeDataReader`
+
+`SafeDataReader` has async members ([#4975](https://github.com/MarimerLLC/csla/issues/4975)):
+
+* `ReadAsync`, `NextResultAsync` and `CloseAsync`
+* `IsDBNullAsync` and `GetFieldValueAsync<T>`, by ordinal or by column name
+* Null-safe getters that return the same defaults as the sync getters, such as `GetStringAsync`, `GetInt32Async`, `GetDateTimeAsync` and `GetSmartDateAsync`
+* `DisposeAsync`, so the reader works with `await using`
+
+```csharp
+await using var dr = new SafeDataReader(await cm.ExecuteReaderAsync());
+while (await dr.ReadAsync())
+{
+  var name = await dr.GetStringAsync("Name");
+  var age = await dr.GetInt32Async("Age");
+}
+```
+
+These members use the underlying `DbDataReader`, which every ADO.NET provider returns. If the wrapped reader isn't a `DbDataReader`, they run synchronously. The null-safe getters check for null asynchronously and then read the value with the provider's typed getter, so they convert values the same way the sync getters do.
+
+`SafeSqlDataReader` used to declare its own `ReadAsync`, `NextResultAsync` and `GetFieldValueAsync<T>`. It now inherits them from `SafeDataReader`:
+
+* The signatures are the same, including the `ordinal` and `cancellationToken` parameter names and the overloads with and without a `CancellationToken`, so calls, named arguments and method group conversions still compile. Code compiled against an earlier version must be recompiled.
+* They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
+* `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
+
 ## Trimming and NativeAOT annotations
 
 CSLA now declares what it needs from the trimmer ([#3347](https://github.com/MarimerLLC/csla/issues/3347)). In a trimmed or NativeAOT app this can surface new `IL2026` warnings in your code.

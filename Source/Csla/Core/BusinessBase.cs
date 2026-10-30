@@ -3712,8 +3712,7 @@ namespace Csla.Core
       _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
       _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
       _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
-      if (mode != StateMode.Undo)
-        _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
+      _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
     }
 

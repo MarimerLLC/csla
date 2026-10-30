@@ -735,17 +735,15 @@ namespace Csla.Core.FieldManager
     {
       info.AddValue("_businessObjectType", _businessObjectType);
 
-      if (mode == StateMode.Serialization && _stateStack.Count > 0)
+      if (_stateStack.Count > 0)
         info.AddValue("_stateStack", _stateStack.ToArray());
 
       foreach (IFieldData? data in _fieldData)
       {
-        if (data != null && (data.IsSerializable || mode != StateMode.Serialization))
+        if (data != null && data.IsSerializable)
         {
           if (data.Value is IUndoableObject)
             info.AddValue("child_" + data.Name, true, false);
-          else if (mode == StateMode.Undo && data.Value is IMobileObject)
-            info.AddValue(data.Name, _applicationContext.GetRequiredService<ISerializationFormatter>().Serialize(data.Value), data.IsDirty);
           else if (data.Value == null || SerializationInfo.IsNativeType(data.Value.GetType()))
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
@@ -791,49 +789,25 @@ namespace Csla.Core.FieldManager
       Type businessObjecType = Reflection.MethodCaller.GetTypeCore(type, true)!;
       SetPropertyList(businessObjecType);
 
-      if (mode == StateMode.Serialization)
+      _stateStack.Clear();
+      if (info.Values.TryGetValue("_stateStack", out var stateStackField))
       {
-        _stateStack.Clear();
-        if (info.Values.TryGetValue("_stateStack", out var stateStackField))
-        {
-          var stackArray = (IEnumerable<byte[]>)stateStackField.Value!;
-          foreach (var item in stackArray.Reverse())
-            _stateStack.Push(item);
-        }
-
-        _fieldData = new IFieldData[_propertyList.Count];
+        var stackArray = (IEnumerable<byte[]>)stateStackField.Value!;
+        foreach (var item in stackArray.Reverse())
+          _stateStack.Push(item);
       }
+
+      _fieldData = new IFieldData[_propertyList.Count];
 
       foreach (IPropertyInfo property in _propertyList)
       {
         if (info.Values.TryGetValue(property.Name, out var value))
         {
           IFieldData data = GetOrCreateFieldData(property);
-          if (value.Value != null &&
-            mode == StateMode.Undo &&
-            typeof(IMobileObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type) &&
-            !typeof(IUndoableObject).IsAssignableFrom(Nullable.GetUnderlyingType(property.Type) ?? property.Type))
-          {
-            data.Value = _applicationContext.GetRequiredService<ISerializationFormatter>().Deserialize((byte[])value.Value);
-          }
-          else data.Value = value.Value;
+          data.Value = value.Value;
 
           if (!value.IsDirty)
             data.MarkClean();
-        }
-        else if (mode == StateMode.Undo && !((property.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField))
-        {
-          IFieldData? data = GetFieldData(property);
-          if (data != null)
-          {
-            var childKey = "child_" + property.Name;
-            if (!info.Values.TryGetValue(childKey, out var childField) || childField.Value is not true)
-              _fieldData[property.Index] = null;
-
-            // We don't want to reset children during an undo.
-            else if (!typeof(IMobileObject).IsAssignableFrom(data.Value?.GetType()))
-              data.Value = property.DefaultValue;
-          }
         }
       }
       base.OnSetState(info, mode);

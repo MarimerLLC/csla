@@ -96,6 +96,10 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 * [#4848](https://github.com/MarimerLLC/csla/issues/4848) Editable lists enforce `AllowNew` and `AllowRemove`: adding or removing items when the matching property is `false` throws `NotSupportedException` ([#4945](https://github.com/MarimerLLC/csla/pull/4945))
 * [#4266](https://github.com/MarimerLLC/csla/issues/4266) `BusinessListBase`, `BusinessBindingListBase` and `BusinessDocumentBase` no longer serialize an empty deleted list, which reduces MobileFormatter payloads by about 44 bytes per list (156 bytes for the first list of a type) ([#4963](https://github.com/MarimerLLC/csla/pull/4963))
 
+**N-level Undo**
+
+* [#4582](https://github.com/MarimerLLC/csla/issues/4582) Remove the unused `StateMode.Undo` value and its MobileFormatter-specific code paths. `CancelEdit` restores a field that held a serializable object (such as a `MobileList<T>`) even when the field was set to `null` during the edit; this used to throw
+
 **Build and Release**
 
 * [#4917](https://github.com/MarimerLLC/csla/issues/4917) Set the `main` version to 11.0.0 and start the CSLA 11 release notes ([#4918](https://github.com/MarimerLLC/csla/pull/4918))
@@ -114,6 +118,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 * With async authorization rules, view model permission properties (such as `CanCreateObject`) start out `false` and update when the rules complete. Reading `IsSavable` while an async `CreateObject`, `EditObject` or `DeleteObject` rule is running marks the object busy and returns `false`, and calling `Save` before the rule completes throws. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-authorization-rules-in-view-models-and-issavable) ([#4707](https://github.com/MarimerLLC/csla/issues/4707), [#4947](https://github.com/MarimerLLC/csla/issues/4947)).
 * `TransactionalAttribute` no longer copies defaults from `DataOptions`: `TimeoutInSeconds` is now `int?` and `AsyncFlowOption` is now `TransactionScopeAsyncFlowOption?`, and the `TransactionalDataPortal` constructor takes an `ITransactionScopeFactory` and `TransactionScopeFactoryContext`. The `DataOptions` transaction defaults are now per-instance instead of static. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#transaction-settings-resolved-at-runtime-and-itransactionscopefactory) ([#4780](https://github.com/MarimerLLC/csla/issues/4780)).
 * The XAML view model's `SaveAsync` and `RefreshAsync` capture exceptions in `Exception` and `ViewModelErrorText`, and raise `Error`, instead of throwing. An exception from an authorization rule during the status calculation is reported the same way on every view model. `SaveAsync` returns `Task<T?>` on all view models. On MAUI and Avalonia, `ManageObjectLifetime` defaults to `true` and the public `ManageObjectLifetimeProperty` field is removed. The Blazor `OnModelChanged()` override is replaced by `OnModelChanged(T? oldValue, T? newValue)`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#common-cslamvvmviewmodelt-base-type) ([#1766](https://github.com/MarimerLLC/csla/issues/1766)).
+* `StateMode.Undo` is removed. N-level undo hasn't called `OnGetState`/`OnSetState` with that value for many versions, so delete any `mode == StateMode.Undo` branches from your overrides. Undo state serialized by an earlier CSLA version (an object sent at an edit level above zero) can't be restored by CSLA 11. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#statemodeundo-removed) ([#4582](https://github.com/MarimerLLC/csla/issues/4582)).
 
 ### Supported Platforms
 

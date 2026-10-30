@@ -146,6 +146,51 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod]
+    public async Task DisposeAsyncCallsDisposeForSubclassCleanup()
+    {
+      var inner = ExecuteReader("SELECT Name FROM Table1");
+      var dr = new DisposeTrackingReader(inner);
+
+      await dr.DisposeAsync();
+
+      inner.IsClosed.Should().BeTrue();
+      dr.DisposeCalled.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public async Task CallShapesFromSafeSqlDataReaderStillCompile()
+    {
+      // SafeSqlDataReader used to declare these members; callers that used
+      // method groups or named arguments must still compile against the base
+      await using var dr = new Csla.Data.SafeDataReader(ExecuteReader(DataTypesQuery));
+      Func<Task<bool>> read = dr.ReadAsync;
+      Func<CancellationToken, Task<bool>> readWithToken = dr.ReadAsync;
+      Func<Task<bool>> nextResult = dr.NextResultAsync;
+
+      (await read()).Should().BeTrue();
+      (await dr.GetFieldValueAsync<long>(ordinal: 6)).Should().Be(92233720368547111);
+      (await dr.GetFieldValueAsync<string>(ordinal: 1, cancellationToken: CancellationToken.None)).Should().Be("z");
+      (await dr.IsDBNullAsync(ordinal: 8)).Should().BeTrue();
+      (await readWithToken(CancellationToken.None)).Should().BeFalse();
+      (await nextResult()).Should().BeFalse();
+    }
+
+    private class DisposeTrackingReader : Csla.Data.SafeDataReader
+    {
+      public DisposeTrackingReader(IDataReader dataReader)
+        : base(dataReader)
+      { }
+
+      public bool DisposeCalled { get; private set; }
+
+      protected override void Dispose(bool disposing)
+      {
+        DisposeCalled = true;
+        base.Dispose(disposing);
+      }
+    }
+
+    [TestMethod]
     public async Task AsyncMembersFallBackWhenReaderIsNotDbDataReader()
     {
       // SafeDataReader is an IDataReader but not a DbDataReader, so

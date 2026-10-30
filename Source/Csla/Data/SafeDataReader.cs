@@ -852,8 +852,16 @@ namespace Csla.Data
     /// <summary>
     /// Asynchronously reads the next row of data from the datareader.
     /// </summary>
+    public Task<bool> ReadAsync()
+    {
+      return ReadAsync(CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously reads the next row of data from the datareader.
+    /// </summary>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public Task<bool> ReadAsync(CancellationToken cancellationToken = default)
+    public Task<bool> ReadAsync(CancellationToken cancellationToken)
     {
       if (_dbDataReader != null)
         return _dbDataReader.ReadAsync(cancellationToken);
@@ -865,8 +873,16 @@ namespace Csla.Data
     /// <summary>
     /// Asynchronously moves to the next result set in the datareader.
     /// </summary>
+    public Task<bool> NextResultAsync()
+    {
+      return NextResultAsync(CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously moves to the next result set in the datareader.
+    /// </summary>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public Task<bool> NextResultAsync(CancellationToken cancellationToken = default)
+    public Task<bool> NextResultAsync(CancellationToken cancellationToken)
     {
       if (_dbDataReader != null)
         return _dbDataReader.NextResultAsync(cancellationToken);
@@ -892,15 +908,25 @@ namespace Csla.Data
     /// Asynchronously gets a value indicating whether the column
     /// contains a null value.
     /// </summary>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    public Task<bool> IsDBNullAsync(int ordinal)
+    {
+      return IsDBNullAsync(ordinal, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a value indicating whether the column
+    /// contains a null value.
+    /// </summary>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual Task<bool> IsDBNullAsync(int i, CancellationToken cancellationToken = default)
+    public virtual Task<bool> IsDBNullAsync(int ordinal, CancellationToken cancellationToken)
     {
       if (_dbDataReader != null)
-        return _dbDataReader.IsDBNullAsync(i, cancellationToken);
+        return _dbDataReader.IsDBNullAsync(ordinal, cancellationToken);
       if (cancellationToken.IsCancellationRequested)
         return Task.FromCanceled<bool>(cancellationToken);
-      return Task.FromResult(DataReader.IsDBNull(i));
+      return Task.FromResult(DataReader.IsDBNull(ordinal));
     }
 
     /// <summary>
@@ -925,15 +951,28 @@ namespace Csla.Data
     /// Null values are not 'fixed' by this method.
     /// </remarks>
     /// <typeparam name="T">Type of the value.</typeparam>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    public Task<T> GetFieldValueAsync<T>(int ordinal)
+    {
+      return GetFieldValueAsync<T>(ordinal, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously gets the value of the column as the requested type.
+    /// </summary>
+    /// <remarks>
+    /// Null values are not 'fixed' by this method.
+    /// </remarks>
+    /// <typeparam name="T">Type of the value.</typeparam>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual Task<T> GetFieldValueAsync<T>(int i, CancellationToken cancellationToken = default)
+    public virtual Task<T> GetFieldValueAsync<T>(int ordinal, CancellationToken cancellationToken)
     {
       if (_dbDataReader != null)
-        return _dbDataReader.GetFieldValueAsync<T>(i, cancellationToken);
+        return _dbDataReader.GetFieldValueAsync<T>(ordinal, cancellationToken);
       if (cancellationToken.IsCancellationRequested)
         return Task.FromCanceled<T>(cancellationToken);
-      return Task.FromResult((T)DataReader.GetValue(i));
+      return Task.FromResult((T)DataReader.GetValue(ordinal));
     }
 
     /// <summary>
@@ -977,14 +1016,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns empty string for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<string> GetStringAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<string> GetStringAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return string.Empty;
       else
-        return DataReader.GetString(i);
+        return DataReader.GetString(ordinal);
     }
 
     /// <summary>
@@ -1010,14 +1049,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns null for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<object?> GetValueAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<object?> GetValueAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return null;
       else
-        return DataReader.GetValue(i);
+        return DataReader.GetValue(ordinal);
     }
 
     /// <summary>
@@ -1043,14 +1082,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<int> GetInt32Async(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<int> GetInt32Async(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return 0;
       else
-        return DataReader.GetInt32(i);
+        return DataReader.GetInt32(ordinal);
     }
 
     /// <summary>
@@ -1076,14 +1115,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<double> GetDoubleAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<double> GetDoubleAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return 0;
       else
-        return DataReader.GetDouble(i);
+        return DataReader.GetDouble(ordinal);
     }
 
     /// <summary>
@@ -1106,11 +1145,11 @@ namespace Csla.Data
     /// <remarks>
     /// A null is converted into the min possible date.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual Task<SmartDate> GetSmartDateAsync(int i, CancellationToken cancellationToken = default)
+    public virtual Task<SmartDate> GetSmartDateAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      return GetSmartDateAsync(i, true, cancellationToken);
+      return GetSmartDateAsync(ordinal, true, cancellationToken);
     }
 
     /// <summary>
@@ -1137,18 +1176,18 @@ namespace Csla.Data
     /// <summary>
     /// Asynchronously gets a <see cref="SmartDate" /> from the datareader.
     /// </summary>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="minIsEmpty">
     /// A flag indicating whether the min or max
     /// value of a data means an empty date.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<SmartDate> GetSmartDateAsync(int i, bool minIsEmpty, CancellationToken cancellationToken = default)
+    public virtual async Task<SmartDate> GetSmartDateAsync(int ordinal, bool minIsEmpty, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return new SmartDate(minIsEmpty);
       else
         return new SmartDate(
-          DataReader.GetDateTime(i), minIsEmpty);
+          DataReader.GetDateTime(ordinal), minIsEmpty);
     }
 
     /// <summary>
@@ -1174,14 +1213,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns Guid.Empty for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<Guid> GetGuidAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<Guid> GetGuidAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return Guid.Empty;
       else
-        return DataReader.GetGuid(i);
+        return DataReader.GetGuid(ordinal);
     }
 
     /// <summary>
@@ -1207,14 +1246,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns false for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<bool> GetBooleanAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<bool> GetBooleanAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return false;
       else
-        return DataReader.GetBoolean(i);
+        return DataReader.GetBoolean(ordinal);
     }
 
     /// <summary>
@@ -1240,14 +1279,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<byte> GetByteAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<byte> GetByteAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return 0;
       else
-        return DataReader.GetByte(i);
+        return DataReader.GetByte(ordinal);
     }
 
     /// <summary>
@@ -1273,14 +1312,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns DateTime.MinValue for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<DateTime> GetDateTimeAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<DateTime> GetDateTimeAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return DateTime.MinValue;
       else
-        return DataReader.GetDateTime(i);
+        return DataReader.GetDateTime(ordinal);
     }
 
     /// <summary>
@@ -1306,14 +1345,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns DateTimeOffset.MinValue for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<DateTimeOffset> GetDateTimeOffsetAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<DateTimeOffset> GetDateTimeOffsetAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return DateTimeOffset.MinValue;
       else
-        return (DateTimeOffset)DataReader.GetValue(i);
+        return (DateTimeOffset)DataReader.GetValue(ordinal);
     }
 
     /// <summary>
@@ -1339,14 +1378,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<decimal> GetDecimalAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<decimal> GetDecimalAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return 0;
       else
-        return DataReader.GetDecimal(i);
+        return DataReader.GetDecimal(ordinal);
     }
 
     /// <summary>
@@ -1372,14 +1411,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<float> GetFloatAsync(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<float> GetFloatAsync(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return 0;
       else
-        return DataReader.GetFloat(i);
+        return DataReader.GetFloat(ordinal);
     }
 
     /// <summary>
@@ -1405,14 +1444,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<short> GetInt16Async(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<short> GetInt16Async(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return 0;
       else
-        return DataReader.GetInt16(i);
+        return DataReader.GetInt16(ordinal);
     }
 
     /// <summary>
@@ -1438,14 +1477,14 @@ namespace Csla.Data
     /// <remarks>
     /// Returns 0 for null.
     /// </remarks>
-    /// <param name="i">Ordinal column position of the value.</param>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
     /// <param name="cancellationToken">Async cancellation token.</param>
-    public virtual async Task<long> GetInt64Async(int i, CancellationToken cancellationToken = default)
+    public virtual async Task<long> GetInt64Async(int ordinal, CancellationToken cancellationToken = default)
     {
-      if (await IsDBNullAsync(i, cancellationToken).ConfigureAwait(false))
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
         return 0;
       else
-        return DataReader.GetInt64(i);
+        return DataReader.GetInt64(ordinal);
     }
 
     #endregion
@@ -1490,6 +1529,7 @@ namespace Csla.Data
     public async ValueTask DisposeAsync()
     {
       await DisposeAsyncCore().ConfigureAwait(false);
+      Dispose(false);
       GC.SuppressFinalize(this);
     }
 

@@ -258,7 +258,7 @@ These members use the underlying `DbDataReader`, which every ADO.NET provider re
 
 `SafeSqlDataReader` used to declare its own `ReadAsync`, `NextResultAsync` and `GetFieldValueAsync<T>`. It now inherits them from `SafeDataReader`:
 
-* Your source code doesn't change, but code compiled against an earlier version must be recompiled.
+* The signatures are the same, including the `ordinal` and `cancellationToken` parameter names and the overloads with and without a `CancellationToken`, so calls, named arguments and method group conversions still compile. Code compiled against an earlier version must be recompiled.
 * They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
 * `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
 

@@ -1167,6 +1167,7 @@ namespace Csla.Rules
     /// data annotation attributes.
     /// </summary>
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     public void AddDataAnnotations()
     {
       var options = _applicationContext.GetRequiredService<Configuration.CslaOptions>();
@@ -1193,7 +1194,7 @@ namespace Csla.Rules
     /// Adds data annotation validation rules from the given type.
     /// </summary>
     /// <param name="metadataType">Type of the metadata.</param>
-    private void AddDataAnnotationsFromType(Type metadataType)
+    private void AddDataAnnotationsFromType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type metadataType)
     {
       var attList = metadataType.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.ValidationAttribute), true);
       foreach (var att in attList)
@@ -1224,15 +1225,12 @@ namespace Csla.Rules
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("_processThroughPriority", _processThroughPriority);
       info.AddValue("_ruleSet", _ruleSet);
       info.AddValue("_cascadeWhenChanged", _cascadeOnDirtyProperties);
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
     }
 
     /// <summary>
@@ -1242,15 +1240,12 @@ namespace Csla.Rules
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
       _ruleSet = info.GetValue<string>("_ruleSet");
       _cascadeOnDirtyProperties = info.GetValue<bool>("_cascadeWhenChanged");
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
     }
 
     /// <summary>

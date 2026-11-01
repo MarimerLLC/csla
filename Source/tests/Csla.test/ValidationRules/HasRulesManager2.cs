@@ -42,16 +42,16 @@ namespace Csla.Test.ValidationRules
         _name = name;
       }
 
-      protected override void OnGetState(SerializationInfo info, StateMode mode)
+      protected override void OnGetState(SerializationInfo info)
       {
         info.AddValue("_name", _name);
-        base.OnGetState(info, mode);
+        base.OnGetState(info);
       }
 
-      protected override void OnSetState(SerializationInfo info, StateMode mode)
+      protected override void OnSetState(SerializationInfo info)
       {
         _name = info.GetValue<string>("_name");
-        base.OnSetState(info, mode);
+        base.OnSetState(info);
       }
     }
   }

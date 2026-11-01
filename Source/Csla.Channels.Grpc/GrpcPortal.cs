@@ -161,7 +161,7 @@ namespace Csla.Channels.Grpc
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
+        var objectType = Reflection.MethodCaller.GetBusinessTypeCore(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
@@ -205,7 +205,7 @@ namespace Csla.Channels.Grpc
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
+        var objectType = Reflection.MethodCaller.GetBusinessTypeCore(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,
@@ -287,7 +287,7 @@ namespace Csla.Channels.Grpc
           criteria = primitiveCriteria.Value;
         }
 
-        var objectType = Reflection.MethodCaller.GetType(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
+        var objectType = Reflection.MethodCaller.GetBusinessTypeCore(AssemblyNameTranslator.GetAssemblyQualifiedName(request.TypeName));
         var context = new DataPortalContext(
           _applicationContext, Deserialize<IPrincipal>(request.Principal),
           true,

@@ -5,6 +5,7 @@
 // </copyright>
 // <summary>Options for MobileFormatter configuration</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using Csla.Serialization.Mobile;
 
 namespace Csla.Configuration;
@@ -28,7 +29,7 @@ public class MobileFormatterOptions
   /// Sets type of the writer that is used to write data to 
   /// serialization stream in SerializationFormatterFactory.GetFormatter().
   /// </summary>
-  public MobileFormatterOptions MobileWriter<T>() where T : ICslaWriter
+  public MobileFormatterOptions MobileWriter<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : ICslaWriter
   {
     CslaReaderWriterFactory.WriterType = typeof(T);
     return this;
@@ -38,7 +39,7 @@ public class MobileFormatterOptions
   /// Sets type of the writer that is used to read data to 
   /// serialization stream in SerializationFormatterFactory.GetFormatter().
   /// </summary>
-  public MobileFormatterOptions MobileReader<T>() where T : ICslaReader
+  public MobileFormatterOptions MobileReader<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : ICslaReader
   {
     CslaReaderWriterFactory.ReaderType = typeof(T);
     return this;

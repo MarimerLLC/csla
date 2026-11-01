@@ -22,6 +22,7 @@ namespace Csla.Reflection
       return GetDataPortalMethodInfoFor<TAttribute>(source, objectType, EmptyCriteria.Instance);
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     public static DataPortalMethodInfo GetDataPortalMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria)
       where TAttribute : DataPortalOperationAttribute
     {
@@ -30,6 +31,7 @@ namespace Csla.Reflection
       return dataPortalMethod.DataPortalMethodInfo!;
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Core.TrimmingMessages.BusinessTypeJustification)]
     public static bool TryGetProviderMethodInfoFor<TAttribute>(this ServiceProviderMethodCaller source, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, out ServiceProviderMethodInfo? providerMethodInfo)
       where TAttribute : DataPortalOperationAttribute
     {

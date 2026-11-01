@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Csla.Rules;
 
 namespace Csla.AspNetCore
@@ -14,6 +15,7 @@ namespace Csla.AspNetCore
   /// <summary>
   /// Exposes metastate for a property.
   /// </summary>
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
   public class PropertyInfo : INotifyPropertyChanged
   {
     private object? Model { get; }

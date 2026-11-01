@@ -126,7 +126,7 @@ namespace Csla.Core.FieldManager
     /// <returns>
     /// The provided IPropertyInfo object.
     /// </returns>
-    internal static PropertyInfo<T> RegisterProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, PropertyInfo<T> info)
+    internal static PropertyInfo<T> RegisterProperty<T>([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type objectType, PropertyInfo<T> info)
     {
       var list = GetPropertyListCache(objectType);
       lock (list)

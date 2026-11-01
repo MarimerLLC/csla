@@ -20,6 +20,7 @@ namespace Csla.Data
   /// An ObjectAdapter is used to convert data in an object 
   /// or collection into a DataTable.
   /// </summary>
+  [RequiresUnreferencedCode(Core.TrimmingMessages.ArbitraryObjectReflection)]
   public class ObjectAdapter
   {
     /// <summary>

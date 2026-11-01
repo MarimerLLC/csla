@@ -405,19 +405,6 @@ namespace Csla
     }
 
     /// <summary>
-    /// Creates an instance of a generic type
-    /// using its default constructor.
-    /// </summary>
-    /// <param name="type">Generic type to create</param>
-    /// <param name="paramTypes">Type parameters</param>
-    internal object CreateGenericInstanceDI(Type type, params Type[] paramTypes)
-    {
-      var genericType = type.GetGenericTypeDefinition();
-      var gt = genericType.MakeGenericType(paramTypes);
-      return CreateInstanceDI(gt);
-    }
-
-    /// <summary>
     /// Creates an object using Activator.
     /// </summary>
     /// <typeparam name="T">Type of object to create.</typeparam>
@@ -442,18 +429,6 @@ namespace Csla
         tmp.ApplicationContext = this;
       }
       return result;
-    }
-
-    /// <summary>
-    /// Creates an instance of a generic type using Activator.
-    /// </summary>
-    /// <param name="type">Generic type to create</param>
-    /// <param name="paramTypes">Type parameters</param>
-    internal object CreateGenericInstance(Type type, params Type[] paramTypes)
-    {
-      var genericType = type.GetGenericTypeDefinition();
-      var gt = genericType.MakeGenericType(paramTypes);
-      return CreateInstance(gt);
     }
   }
 }

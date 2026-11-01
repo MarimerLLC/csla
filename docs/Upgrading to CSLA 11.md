@@ -224,6 +224,101 @@ These let a factory adjust the transaction to the data involved. For example, it
 
 The `TransactionalDataPortal` constructor now takes `(DataPortalBroker, ITransactionScopeFactory, TransactionScopeFactoryContext)` instead of `(DataPortalBroker, TransactionalAttribute)`.
 
+## Obsolete XML serialization readers and writers removed
+
+The `DataContractSerializer` based MobileFormatter readers and writers have been removed ([#3347](https://github.com/MarimerLLC/csla/issues/3347)):
+
+* `CslaXmlReader` and `CslaXmlWriter`
+* `CslaXmlBinaryReader` and `CslaXmlBinaryWriter`
+* `CslaReaderWriterFactory.GetDataContractSerializer()`
+
+They were marked `[Obsolete]` in CSLA 9 ([#4336](https://github.com/MarimerLLC/csla/pull/4336)), and `DataContractSerializer` isn't compatible with trimming or NativeAOT.
+
+If your configuration selects one of these types through the `MobileReader<T>()` or `MobileWriter<T>()` options, remove those calls to use the default `CslaBinaryReader` and `CslaBinaryWriter`. The serialized format changes, so the client and the server must be updated together.
+
+## `StateMode` is obsolete
+
+`StateMode` and the `OnGetState(SerializationInfo, StateMode)` and `OnSetState(SerializationInfo, StateMode)` overloads are marked `[Obsolete]` ([#4582](https://github.com/MarimerLLC/csla/issues/4582)). Older versions of n-level undo took snapshots by calling these methods with `StateMode.Undo`. Undo now takes its snapshots through the configured `ISerializationFormatter`, so the methods are only ever called with `StateMode.Serialization`, and the parameter carries no information.
+
+Override the new overloads that take only the `SerializationInfo`:
+
+```csharp
+protected override void OnGetState(SerializationInfo info)
+{
+  base.OnGetState(info);
+  info.AddValue("_custom", _custom);
+}
+
+protected override void OnSetState(SerializationInfo info)
+{
+  base.OnSetState(info);
+  _custom = info.GetValue<string>("_custom");
+}
+```
+
+Existing overrides of the obsolete overloads keep working: they still run, and `base.OnSetState(info, mode)` still restores the base class state before your code runs. The compiler reports warnings `CS0672` and `CS0618` until you move them. If an override checks `mode == StateMode.Undo`, delete that branch, because that code hasn't run for several versions. The obsolete members will be removed in a future major version.
+
+The layout of an undo snapshot has also changed. An object serialized by an earlier version of CSLA while its edit level was above zero can't have those edits undone by CSLA 11, so update the client and the server together.
+
+## Async `SafeDataReader`
+
+`SafeDataReader` has async members ([#4975](https://github.com/MarimerLLC/csla/issues/4975)):
+
+* `ReadAsync`, `NextResultAsync` and `CloseAsync`
+* `IsDBNullAsync` and `GetFieldValueAsync<T>`, by ordinal or by column name
+* Null-safe getters that return the same defaults as the sync getters, such as `GetStringAsync`, `GetInt32Async`, `GetDateTimeAsync` and `GetSmartDateAsync`
+* `DisposeAsync`, so the reader works with `await using`
+
+```csharp
+await using var dr = new SafeDataReader(await cm.ExecuteReaderAsync());
+while (await dr.ReadAsync())
+{
+  var name = await dr.GetStringAsync("Name");
+  var age = await dr.GetInt32Async("Age");
+}
+```
+
+These members use the underlying `DbDataReader`, which every ADO.NET provider returns. If the wrapped reader isn't a `DbDataReader`, they run synchronously. The null-safe getters check for null asynchronously and then read the value with the provider's typed getter, so they convert values the same way the sync getters do.
+
+`SafeSqlDataReader` used to declare its own `ReadAsync`, `NextResultAsync` and `GetFieldValueAsync<T>`. It now inherits them from `SafeDataReader`:
+
+* The signatures are the same, including the `ordinal` and `cancellationToken` parameter names and the overloads with and without a `CancellationToken`, so calls, named arguments and method group conversions still compile. Code compiled against an earlier version must be recompiled.
+* They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
+* `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
+
+## Trimming and NativeAOT annotations
+
+CSLA now declares what it needs from the trimmer ([#3347](https://github.com/MarimerLLC/csla/issues/3347)). In a trimmed or NativeAOT app this can surface new `IL2026` warnings in your code.
+
+The late-bound reflection APIs, which accept any object and find its members by name, are marked `[RequiresUnreferencedCode]`:
+
+* `MethodCaller.CallPropertyGetter`, `CallPropertySetter`, `CallMethod(object, string, ...)`, `CallMethodIfImplemented`, `IsMethodImplemented`, `CallMethodTryAsync` and `IsAsyncMethod(object, string, ...)`
+* `MethodCaller.GetType(string)` and `MethodCaller.GetType(string, bool)`, which resolve a type from its name
+* `ServiceProviderMethodCaller.FindDataPortalMethod<T>(object, object[])`
+* The `LateBoundObject` methods that call `MethodCaller` or `ServiceProviderMethodCaller`
+* `Utilities.CallByName`
+
+Their behavior is unchanged. The warning means the trimmer can't see which types or members these calls use. If you call them from a trimmed app, preserve the target types yourself, for example with `[DynamicallyAccessedMembers]` or `TrimmerRootAssembly`.
+
+The trimmer preserves an object factory named in `[ObjectFactory("...")]` when the name is assembly qualified (`"MyApp.MyFactory, MyApp"`) or the factory is in the business object's assembly. `[ObjectFactory(typeof(MyFactory))]` always works. A custom `IObjectFactoryLoader` that maps other names to types must preserve those types itself.
+
+### Other CSLA packages
+
+Csla.Blazor, Csla.Blazor.WebAssembly, Csla.AspNetCore, Csla.Xaml (MAUI), Csla.Channels.Grpc, Csla.Channels.RabbitMq, Csla.Channels.Wcf and Csla.Testing are now analyzed for trimming and NativeAOT too ([#4962](https://github.com/MarimerLLC/csla/issues/4962)).
+
+* **Data portal hosts** (`HttpPortal`, `GrpcPortal`, `RabbitMqPortal`, `WcfPortal`) resolve the business type names that clients send. The trimmer can't see those names, so a trimmed data portal server must preserve its business types, for example with `TrimmerRootAssembly` on the assemblies that contain them. Deserializing the objects and criteria already required this.
+* **`Csla.Xaml.PropertyInfo`** walks a string binding path over its binding source, which can be any object, so it is marked `[RequiresUnreferencedCode]`. A trimmed MAUI or Avalonia app gets the warning where it uses the control, as it does for string-path bindings in MAUI itself.
+* **The MAUI build of `Csla.Xaml`** is now strong-named with the same key as the other CSLA assemblies, so its assembly identity matches the WPF and Avalonia builds. .NET doesn't validate strong names at runtime, so MAUI apps are unaffected.
+* **Blazor `SessionManager`** (WebAssembly) now uses source-generated JSON for the state controller messages. The JSON on the wire is unchanged.
+* **Blazor `PropertyInfo`** (from `ViewModel<T>.GetPropertyInfo` or created directly) reads and writes the model's properties by name, and assumes the model is a CSLA business object, whose members the CSLA base classes preserve. If you use it with a model of another type, preserve that type's public properties yourself.
+* **CSLA permission policies** built by `HasPermissionAttribute` or `CslaPolicy.GetPolicy` preserve the business type they name. If you write a `Csla:` policy name by hand, for example in `[Authorize(Policy = "...")]` or configuration, the type in that string must be preserved by your app.
+* ASP.NET Core MVC and Razor Pages don't support trimming, so the tag helpers and `CslaModelBinder` aren't annotated.
+
+Some `Type` parameters and generic type parameters now carry `[DynamicallyAccessedMembers]`. Source and binary compatibility are unaffected, but a generic wrapper of your own may need the same annotation to stay warning-free in a trimmed app:
+
+* `PublicConstructors`: `PageModel<T>`, `CslaPolicy.GetPolicy`, `HasPermissionAttribute`, both `CslaPermissionRequirement` types, the `HtmlExtensions` permission helpers, `BlazorServerConfigurationOptions` and `BlazorWebAssemblyConfigurationOptions` session types, and `RabbitMqPortalOptions.SetPortalFactoryType<T>`
+* `All`: the `Type` overloads of `ServiceProviderMethodCaller.FindDataPortalMethod<T>` and `TryFindDataPortalMethod<T>`, which reflect over the type's methods, and `CslaTestHost.GetDataPortal<T>` and `GetChildDataPortal<T>`
+
 ## Common `Csla.Mvvm.ViewModel<T>` base type
 
 The view model types for each UI framework now share one implementation, `Csla.Mvvm.ViewModel<T>`, in the core `Csla` package ([#1766](https://github.com/MarimerLLC/csla/issues/1766)). The existing types keep their names:

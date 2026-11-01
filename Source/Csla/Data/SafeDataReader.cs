@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
@@ -19,11 +20,17 @@ namespace Csla.Data
   /// This is an IDataReader that 'fixes' any null values before
   /// they are returned to our business code.
   /// </summary>
-  public class SafeDataReader : IDataReader
+  /// <remarks>
+  /// The async members use the underlying <see cref="DbDataReader"/>
+  /// when there is one. If the underlying reader is not a
+  /// <see cref="DbDataReader"/> they run synchronously instead.
+  /// </remarks>
+  public class SafeDataReader : IDataReader, IAsyncDisposable
   {
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
     private SqlDataReader? _sqlDataReader;
 #endif
+    private readonly DbDataReader? _dbDataReader;
 
     /// <summary>
     /// Get a reference to the underlying data reader
@@ -44,6 +51,7 @@ namespace Csla.Data
 #if !NETSTANDARD2_0 && !NET8_0_OR_GREATER
       _sqlDataReader = DataReader as SqlDataReader;
 #endif
+      _dbDataReader = DataReader as DbDataReader;
     }
 
     /// <summary>
@@ -839,6 +847,648 @@ namespace Csla.Data
     /// </summary>
     public int RecordsAffected => DataReader.RecordsAffected;
 
+    #region Async Support
+
+    /// <summary>
+    /// Asynchronously reads the next row of data from the datareader.
+    /// </summary>
+    public Task<bool> ReadAsync()
+    {
+      return ReadAsync(CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously reads the next row of data from the datareader.
+    /// </summary>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public Task<bool> ReadAsync(CancellationToken cancellationToken)
+    {
+      if (_dbDataReader != null)
+        return _dbDataReader.ReadAsync(cancellationToken);
+      if (cancellationToken.IsCancellationRequested)
+        return Task.FromCanceled<bool>(cancellationToken);
+      return Task.FromResult(DataReader.Read());
+    }
+
+    /// <summary>
+    /// Asynchronously moves to the next result set in the datareader.
+    /// </summary>
+    public Task<bool> NextResultAsync()
+    {
+      return NextResultAsync(CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously moves to the next result set in the datareader.
+    /// </summary>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public Task<bool> NextResultAsync(CancellationToken cancellationToken)
+    {
+      if (_dbDataReader != null)
+        return _dbDataReader.NextResultAsync(cancellationToken);
+      if (cancellationToken.IsCancellationRequested)
+        return Task.FromCanceled<bool>(cancellationToken);
+      return Task.FromResult(DataReader.NextResult());
+    }
+
+    /// <summary>
+    /// Asynchronously closes the datareader.
+    /// </summary>
+    public Task CloseAsync()
+    {
+#if NET8_0_OR_GREATER
+      if (_dbDataReader != null)
+        return _dbDataReader.CloseAsync();
+#endif
+      DataReader.Close();
+      return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Asynchronously gets a value indicating whether the column
+    /// contains a null value.
+    /// </summary>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    public Task<bool> IsDBNullAsync(int ordinal)
+    {
+      return IsDBNullAsync(ordinal, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a value indicating whether the column
+    /// contains a null value.
+    /// </summary>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual Task<bool> IsDBNullAsync(int ordinal, CancellationToken cancellationToken)
+    {
+      if (_dbDataReader != null)
+        return _dbDataReader.IsDBNullAsync(ordinal, cancellationToken);
+      if (cancellationToken.IsCancellationRequested)
+        return Task.FromCanceled<bool>(cancellationToken);
+      return Task.FromResult(DataReader.IsDBNull(ordinal));
+    }
+
+    /// <summary>
+    /// Asynchronously gets a value indicating whether the column
+    /// contains a null value.
+    /// </summary>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<bool> IsDBNullAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return IsDBNullAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets the value of the column as the requested type.
+    /// </summary>
+    /// <remarks>
+    /// Null values are not 'fixed' by this method.
+    /// </remarks>
+    /// <typeparam name="T">Type of the value.</typeparam>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    public Task<T> GetFieldValueAsync<T>(int ordinal)
+    {
+      return GetFieldValueAsync<T>(ordinal, CancellationToken.None);
+    }
+
+    /// <summary>
+    /// Asynchronously gets the value of the column as the requested type.
+    /// </summary>
+    /// <remarks>
+    /// Null values are not 'fixed' by this method.
+    /// </remarks>
+    /// <typeparam name="T">Type of the value.</typeparam>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual Task<T> GetFieldValueAsync<T>(int ordinal, CancellationToken cancellationToken)
+    {
+      if (_dbDataReader != null)
+        return _dbDataReader.GetFieldValueAsync<T>(ordinal, cancellationToken);
+      if (cancellationToken.IsCancellationRequested)
+        return Task.FromCanceled<T>(cancellationToken);
+      return Task.FromResult((T)DataReader.GetValue(ordinal));
+    }
+
+    /// <summary>
+    /// Asynchronously gets the value of the column as the requested type.
+    /// </summary>
+    /// <remarks>
+    /// Null values are not 'fixed' by this method.
+    /// </remarks>
+    /// <typeparam name="T">Type of the value.</typeparam>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<T> GetFieldValueAsync<T>(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetFieldValueAsync<T>(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a string value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns empty string for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<string> GetStringAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetStringAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a string value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns empty string for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<string> GetStringAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return string.Empty;
+      else
+        return DataReader.GetString(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a value of type <see cref="System.Object" /> from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns null for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<object?> GetValueAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetValueAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a value of type <see cref="System.Object" /> from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns null for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<object?> GetValueAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return null;
+      else
+        return DataReader.GetValue(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets an integer from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<int> GetInt32Async(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetInt32Async(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets an integer from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<int> GetInt32Async(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return 0;
+      else
+        return DataReader.GetInt32(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a double from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<double> GetDoubleAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetDoubleAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a double from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<double> GetDoubleAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return 0;
+      else
+        return DataReader.GetDouble(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a <see cref="SmartDate" /> from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// A null is converted into the min possible date.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<SmartDate> GetSmartDateAsync(string name, CancellationToken cancellationToken = default)
+    {
+      return GetSmartDateAsync(name, true, cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a <see cref="SmartDate" /> from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// A null is converted into the min possible date.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual Task<SmartDate> GetSmartDateAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      return GetSmartDateAsync(ordinal, true, cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a <see cref="SmartDate" /> from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// A null is converted into either the min or max possible date
+    /// depending on the minIsEmpty parameter.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="minIsEmpty">
+    /// A flag indicating whether the min or max
+    /// value of a data means an empty date.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<SmartDate> GetSmartDateAsync(string name, bool minIsEmpty, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetSmartDateAsync(DataReader.GetOrdinal(name), minIsEmpty, cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a <see cref="SmartDate" /> from the datareader.
+    /// </summary>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="minIsEmpty">
+    /// A flag indicating whether the min or max
+    /// value of a data means an empty date.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<SmartDate> GetSmartDateAsync(int ordinal, bool minIsEmpty, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return new SmartDate(minIsEmpty);
+      else
+        return new SmartDate(
+          DataReader.GetDateTime(ordinal), minIsEmpty);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Guid value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns Guid.Empty for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<Guid> GetGuidAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetGuidAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Guid value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns Guid.Empty for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<Guid> GetGuidAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return Guid.Empty;
+      else
+        return DataReader.GetGuid(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a boolean value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns false for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<bool> GetBooleanAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetBooleanAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a boolean value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns false for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<bool> GetBooleanAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return false;
+      else
+        return DataReader.GetBoolean(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a byte value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<byte> GetByteAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetByteAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a byte value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<byte> GetByteAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return 0;
+      else
+        return DataReader.GetByte(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a date value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns DateTime.MinValue for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<DateTime> GetDateTimeAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetDateTimeAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a date value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns DateTime.MinValue for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<DateTime> GetDateTimeAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return DateTime.MinValue;
+      else
+        return DataReader.GetDateTime(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets an UTC date value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns DateTimeOffset.MinValue for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<DateTimeOffset> GetDateTimeOffsetAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetDateTimeOffsetAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets an UTC date value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns DateTimeOffset.MinValue for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<DateTimeOffset> GetDateTimeOffsetAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return DateTimeOffset.MinValue;
+      else
+        return (DateTimeOffset)DataReader.GetValue(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a decimal value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<decimal> GetDecimalAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetDecimalAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a decimal value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<decimal> GetDecimalAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return 0;
+      else
+        return DataReader.GetDecimal(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Single value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<float> GetFloatAsync(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetFloatAsync(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Single value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<float> GetFloatAsync(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return 0;
+      else
+        return DataReader.GetFloat(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Short value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<short> GetInt16Async(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetInt16Async(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Short value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<short> GetInt16Async(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return 0;
+      else
+        return DataReader.GetInt16(ordinal);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Long value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="name">Name of the column containing the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    public Task<long> GetInt64Async(string name, CancellationToken cancellationToken = default)
+    {
+      if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(name)), nameof(name));
+
+      return GetInt64Async(DataReader.GetOrdinal(name), cancellationToken);
+    }
+
+    /// <summary>
+    /// Asynchronously gets a Long value from the datareader.
+    /// </summary>
+    /// <remarks>
+    /// Returns 0 for null.
+    /// </remarks>
+    /// <param name="ordinal">Ordinal column position of the value.</param>
+    /// <param name="cancellationToken">Async cancellation token.</param>
+    public virtual async Task<long> GetInt64Async(int ordinal, CancellationToken cancellationToken = default)
+    {
+      if (await IsDBNullAsync(ordinal, cancellationToken).ConfigureAwait(false))
+        return 0;
+      else
+        return DataReader.GetInt64(ordinal);
+    }
+
+    #endregion
+
     #region IDisposable Support
 
     private bool _disposedValue; // To detect redundant calls
@@ -871,6 +1521,32 @@ namespace Csla.Data
       // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
       Dispose(true);
       GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Asynchronously disposes the object.
+    /// </summary>
+    public async ValueTask DisposeAsync()
+    {
+      await DisposeAsyncCore().ConfigureAwait(false);
+      Dispose(false);
+      GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Asynchronously disposes the underlying datareader.
+    /// </summary>
+    protected virtual ValueTask DisposeAsyncCore()
+    {
+#if NET8_0_OR_GREATER
+      if (!_disposedValue && _dbDataReader != null)
+      {
+        _disposedValue = true;
+        return _dbDataReader.DisposeAsync();
+      }
+#endif
+      Dispose(true);
+      return default;
     }
 
     /// <summary>

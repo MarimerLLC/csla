@@ -6,6 +6,7 @@
 // <summary>Manages the list of authorization </summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
@@ -97,6 +98,7 @@ namespace Csla.Rules
           }
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     private static System.Reflection.MethodInfo? FindObjectAuthorizationRulesMethod(Type type)
     {
       var method = type.GetMethods().FirstOrDefault(

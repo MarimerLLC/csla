@@ -11,6 +11,16 @@
     <PackageTags>CSLA;RabbitMQ</PackageTags>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <EnableTrimAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableTrimAnalyzer>
+    <EnableSingleFileAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableSingleFileAnalyzer>
+    <EnableAotAnalyzer Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</EnableAotAnalyzer>
+    <!--
+      No trim or AOT warnings are suppressed project-wide. Fix the code or annotate the API instead;
+      use UnconditionalSuppressMessage with a justification only where the requirement provably holds.
+    -->
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="RabbitMQ.Client" Version="7.0.0" />
     <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />

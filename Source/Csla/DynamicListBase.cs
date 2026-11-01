@@ -43,7 +43,7 @@ namespace Csla
   /// </para>
   /// </remarks>
   [Serializable]
-  public abstract partial class DynamicListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T> :
+  public abstract partial class DynamicListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> :
 #if ANDROID || IOS
     ExtendedBindingList<T>,
 #else
@@ -178,7 +178,7 @@ namespace Csla
         if (savable is ICloneable cloneable)
         {
           savable = (T)cloneable.Clone();
-          MethodCaller.CallMethodIfImplemented(item, "MarkBusy");
+          MethodCaller.CallMethodIfImplementedCore(item, "MarkBusy", false);
           handleBusy = true;
         }
 
@@ -211,7 +211,7 @@ namespace Csla
         finally
         {
           if (handleBusy)
-            MethodCaller.CallMethodIfImplemented(item, "MarkIdle");
+            MethodCaller.CallMethodIfImplementedCore(item, "MarkIdle", false);
         }
         // update index - this may have changed under the duration of async call 
         index = IndexOf(item);

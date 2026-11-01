@@ -15,7 +15,7 @@ namespace Csla
   /// Interface defining the members of the data portal type.
   /// </summary>
   /// <typeparam name="T"></typeparam>
-  public interface IDataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>
+  public interface IDataPortal<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>
     where T : ICslaObject
   {
     /// <summary>

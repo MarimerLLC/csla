@@ -56,7 +56,7 @@ namespace Csla.Configuration
     /// </summary>
     /// <typeparam name="T">The type to register for <see cref="IUnhandledAsyncRuleExceptionHandler"/>.</typeparam>
     /// <returns>This instance.</returns>
-    public CslaOptions UseUnhandledAsyncRuleExceptionHandler<T>() where T : IUnhandledAsyncRuleExceptionHandler
+    public CslaOptions UseUnhandledAsyncRuleExceptionHandler<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>() where T : IUnhandledAsyncRuleExceptionHandler
     {
       UnhandledAsyncRuleExceptionHandlerType = typeof(T);
       return this;
@@ -65,6 +65,7 @@ namespace Csla.Configuration
     /// <summary>
     /// Gets the type used for the <see cref="IUnhandledAsyncRuleExceptionHandler"/>.
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type UnhandledAsyncRuleExceptionHandlerType { get; private set; } = typeof(DontObserveUnhandledAsyncRuleExceptionHandler);
 
     /// <summary>

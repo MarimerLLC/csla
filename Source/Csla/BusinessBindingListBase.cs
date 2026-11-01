@@ -23,17 +23,20 @@ namespace Csla
   /// <typeparam name="C">Type of the child objects contained in the list.</typeparam>
   [SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
-  public abstract partial class BusinessBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
+  [UnconditionalSuppressMessage("Trimming", "IL2112", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
+  [UnconditionalSuppressMessage("Trimming", "IL2113", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
+  public abstract partial class BusinessBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
       ExtendedBindingList<C>, IContainsDeletedList,
       IEditableCollection, IUndoableObject, ICloneable,
       ISavable, ISavable<T>, IParent, IDataPortalTarget,
-      IUseApplicationContext
+      IUseApplicationContext, IGraphMergeable
     where T : BusinessBindingListBase<T, C>
     where C : IEditableBusinessObject
   {
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.BindingList)]
     protected BusinessBindingListBase()
     {
       ApplicationContext = default!;
@@ -1465,6 +1468,7 @@ namespace Csla
 
     private static PropertyDescriptorCollection? _propertyDescriptors;
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.InstanceOfBindingListJustification)]
     private static PropertyDescriptor? GetPropertyDescriptor(string? propertyName)
     {
       _propertyDescriptors ??= TypeDescriptor.GetProperties(typeof(C));
@@ -1477,6 +1481,20 @@ namespace Csla
           break;
         }
       return result;
+    }
+
+    #endregion
+
+    #region IGraphMergeable
+
+    void IGraphMergeable.MergeGraph(GraphMerger merger, IEditableCollection source)
+    {
+      merger.MergeBusinessBindingListGraph<T, C>((T)this, (T)source);
+    }
+
+    Task IGraphMergeable.MergeGraphAsync(GraphMerger merger, IEditableCollection source)
+    {
+      return merger.MergeBusinessBindingListGraphAsync<T, C>((T)this, (T)source);
     }
 
     #endregion

@@ -251,6 +251,7 @@ namespace Csla
     /// <param name="propertyName">PropertyName on which to sort.</param>
     /// <param name="direction">Direction of the sort.</param>
     /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public void ApplySort(string propertyName, ListSortDirection direction)
     {
       if (!SupportsSorting)
@@ -268,6 +269,7 @@ namespace Csla
     /// </summary>
     /// <param name="propertyName">Name of the property.</param>
     /// <returns>PropertyDescriptor</returns>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     private static PropertyDescriptor GetPropertyDescriptor(string propertyName)
     {
       Type itemType = typeof(T);
@@ -286,6 +288,7 @@ namespace Csla
     /// </summary>
     /// <param name="propertyName">Name of the property to search</param>
     /// <param name="key">Value to find</param>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public int Find(string propertyName, object key)
     {
       if (string.IsNullOrWhiteSpace(propertyName))
@@ -784,6 +787,7 @@ namespace Csla
     /// <param name="propertyName">The text name of the property on which to filter.</param>
     /// <param name="filter">The filter criteria.</param>
     /// <exception cref="ArgumentNullException"><paramref name="filter"/> is <see langword="null"/>.</exception>
+    [RequiresUnreferencedCode(Core.TrimmingMessages.TypeDescriptor)]
     public void ApplyFilter(string? propertyName, object filter)
     {
       FilterProperty = null;

@@ -6,6 +6,8 @@
 // <summary>Restricts callers to an action method.</summary>
 //-----------------------------------------------------------------------
 #if NETSTANDARD2_0 || NET8_0_OR_GREATER 
+using System.Diagnostics.CodeAnalysis;
+
 using Csla.Rules;
 using Microsoft.AspNetCore.Authorization;
 
@@ -23,6 +25,7 @@ namespace Csla.Web.Mvc
     /// <summary>
     /// Business domain object type
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type ObjectType { get; }
 
     /// <summary>
@@ -30,7 +33,7 @@ namespace Csla.Web.Mvc
     /// </summary>
     /// <param name="action">Per-type authorization action</param>
     /// <param name="objectType">Business domain object type</param>
-    public CslaPermissionRequirement(AuthorizationActions action, Type objectType)
+    public CslaPermissionRequirement(AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
     {
       Action = action;
       ObjectType = objectType;

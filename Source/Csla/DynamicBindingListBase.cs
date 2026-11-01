@@ -42,6 +42,8 @@ namespace Csla
   /// </remarks>
   [Serializable]
   [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
+  [UnconditionalSuppressMessage("Trimming", "IL2112", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
+  [UnconditionalSuppressMessage("Trimming", "IL2113", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
   public abstract partial class DynamicBindingListBase<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T> :
     ExtendedBindingList<T>,
     IParent,
@@ -54,6 +56,7 @@ namespace Csla
     /// Creates an instance of the type.
     /// </summary>
 #pragma warning disable CS8618 // It must be available for derived classes to be de-/serialized
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.BindingList)]
     protected DynamicBindingListBase()
 #pragma warning restore CS8618
     {
@@ -480,6 +483,7 @@ namespace Csla
 
     private static PropertyDescriptorCollection? _propertyDescriptors;
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.InstanceOfBindingListJustification)]
     private PropertyDescriptor? GetPropertyDescriptor(string propertyName)
     {
       _propertyDescriptors ??= TypeDescriptor.GetProperties(GetType());

@@ -23,7 +23,7 @@ namespace Csla.Blazor
     /// <param name="action">Authorization action</param>
     /// <param name="objectType">Business object type</param>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> is <see langword="null"/>.</exception>
-    public static string GetPolicy(Rules.AuthorizationActions action, Type objectType)
+    public static string GetPolicy(Rules.AuthorizationActions action, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType)
     {
       ArgumentNullException.ThrowIfNull(objectType);
 
@@ -40,6 +40,8 @@ namespace Csla.Blazor
     /// <param name="requirement">Permission requirement object</param>
     /// <returns>True if a requirement object was created</returns>
     /// <exception cref="ArgumentNullException"><paramref name="policy"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2057", Justification = Core.TrimmingMessages.PermissionPolicyJustification)]
+    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.PermissionPolicyJustification)]
     public static bool TryGetPermissionRequirement(string policy, [NotNullWhen(true)] out CslaPermissionRequirement? requirement)
     {
       ArgumentNullException.ThrowIfNull(policy);

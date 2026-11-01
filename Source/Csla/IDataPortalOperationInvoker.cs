@@ -25,7 +25,7 @@ namespace Csla
   /// </remarks>
   /// <typeparam name="T">Type of business object.</typeparam>
   [EditorBrowsable(EditorBrowsableState.Never)]
-  public interface IDataPortalOperationInvoker<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>
+  public interface IDataPortalOperationInvoker<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>
     where T : ICslaObject
   {
     /// <summary>
@@ -100,7 +100,7 @@ namespace Csla
   /// </summary>
   /// <typeparam name="T">Type of business object.</typeparam>
   [EditorBrowsable(EditorBrowsableState.Never)]
-  public interface IChildDataPortalOperationInvoker<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] T>
+  public interface IChildDataPortalOperationInvoker<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T>
     where T : ICslaObject
   {
     /// <summary>

@@ -80,7 +80,7 @@ namespace Csla.Blazor.WebAssembly.State
         if (_session != null)
           lastTouched = _session.LastTouched;
         var url = $"{_options.StateControllerName}?lastTouched={lastTouched}";
-        var stateResult = (await client.GetFromJsonAsync<StateResult>(url, ct).ConfigureAwait(false)) ?? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.SessionManagerSessionStateCouldNotBeRetrieved, _options.StateControllerName, nameof(StateResult)));
+        var stateResult = (await client.GetFromJsonAsync(url, SessionManagerJsonContext.Default.StateResult, ct).ConfigureAwait(false)) ?? throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.SessionManagerSessionStateCouldNotBeRetrieved, _options.StateControllerName, nameof(StateResult)));
         if (stateResult.IsSuccess)
         {
           var formatter = ApplicationContext.GetRequiredService<ISerializationFormatter>();
@@ -142,7 +142,7 @@ namespace Csla.Blazor.WebAssembly.State
         var buffer = new MemoryStream();
         formatter.Serialize(buffer, _session);
         buffer.Position = 0;
-        await client.PutAsJsonAsync<byte[]>(_options.StateControllerName, buffer.ToArray(), ct).ConfigureAwait(false);
+        await client.PutAsJsonAsync(_options.StateControllerName, buffer.ToArray(), SessionManagerJsonContext.Default.ByteArray, ct).ConfigureAwait(false);
       }
     }
 

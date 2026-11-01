@@ -6,6 +6,8 @@
 // <summary>Maps a type to a serializer type.</summary>
 //-----------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Csla.Serialization.Mobile;
 
 /// <summary>
@@ -16,6 +18,7 @@ public interface ITypeMap
   /// <summary>
   /// Gets the serializer type.
   /// </summary>
+  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
   Type SerializerType { get; }
   /// <summary>
   /// Gets a function that determines 

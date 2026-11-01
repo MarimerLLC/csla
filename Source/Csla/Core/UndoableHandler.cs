@@ -7,6 +7,7 @@
 // </copyright>
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
@@ -25,7 +26,7 @@ namespace Csla.Core
     private static readonly Dictionary<Type, List<DynamicMemberHandle>> _undoableFieldCache = [];
 #endif
 
-    public static List<DynamicMemberHandle> GetCachedFieldHandlers(Type type)
+    public static List<DynamicMemberHandle> GetCachedFieldHandlers([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type type)
     {
 #if NET8_0_OR_GREATER
 
@@ -65,7 +66,7 @@ namespace Csla.Core
 #endif
     }
 
-    private static List<DynamicMemberHandle> BuildHandlers(Type type)
+    private static List<DynamicMemberHandle> BuildHandlers([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type type)
     {
       var handlers = new List<DynamicMemberHandle>();
       // get the list of fields in this type

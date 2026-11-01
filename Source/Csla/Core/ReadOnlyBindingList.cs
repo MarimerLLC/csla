@@ -25,6 +25,8 @@ namespace Csla.Core
   [SuppressMessage("Microsoft.Naming", 
     "CA1710:IdentifiersShouldHaveCorrectSuffix")]
   [Serializable]
+  [UnconditionalSuppressMessage("Trimming", "IL2112", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
+  [UnconditionalSuppressMessage("Trimming", "IL2113", Justification = Csla.Core.TrimmingMessages.BindingListMembersJustification)]
   public abstract class ReadOnlyBindingList<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C> :
     ExtendedBindingList<C>, IBusinessObject, IReadOnlyBindingList
   {
@@ -79,6 +81,7 @@ namespace Csla.Core
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
+    [RequiresUnreferencedCode(Csla.Core.TrimmingMessages.BindingList)]
     protected ReadOnlyBindingList()
     {
       RaiseListChangedEvents = false;

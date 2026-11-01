@@ -6,7 +6,6 @@
 // <summary>Defines members required for smart</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Core
@@ -17,7 +16,6 @@ namespace Csla.Core
   /// </summary>
   public class GraphMerger : Server.ObjectFactory
   {
-    private static readonly ConcurrentDictionary<(Type, Type, bool), System.Reflection.MethodInfo> _methodCache = new();
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -69,7 +67,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceChild);
               else
                 LoadProperty(target, item, sourceChild);
             }
@@ -88,7 +86,7 @@ namespace Csla.Core
               else
               {
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                  Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
+                  Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceList);
                 else
                   LoadProperty(target, item, sourceList);
               }
@@ -96,7 +94,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceValue);
               else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
                 LoadProperty(target, item, sourceValue);
             }
@@ -120,6 +118,7 @@ namespace Csla.Core
       }
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = TrimmingMessages.BusinessTypeJustification)]
     private static void CopyField(object? source, object? target, string fieldName)
     {
       if (source == null) return;
@@ -142,17 +141,13 @@ namespace Csla.Core
     /// <param name="source">Source for merge.</param>
     private void MergeGraph(IEditableCollection target, IEditableCollection source)
     {
-      var listType = target.GetType();
-      var childType = Utilities.GetChildItemType(listType) ?? throw new InvalidOperationException();
-      var genericTypeParams = new Type[] { listType, childType };
-      System.Reflection.MethodInfo? methodReference;
-      if (typeof(IExtendedBindingList).IsAssignableFrom(listType))
-        methodReference = GetType().GetMethod("MergeBusinessBindingListGraph");
-      else
-        methodReference = GetType().GetMethod("MergeBusinessListGraph");
+      AsMergeable(target).MergeGraph(this, source);
+    }
 
-      var gr = methodReference!.MakeGenericMethod(genericTypeParams);
-      gr.Invoke(this, [target, source]);
+    private static IGraphMergeable AsMergeable(IEditableCollection target)
+    {
+      return target as IGraphMergeable
+        ?? throw new NotSupportedException(string.Format(Properties.Resources.GraphMergeNotSupportedException, target.GetType().FullName));
     }
 
     /// <summary>
@@ -161,7 +156,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public void MergeBusinessListGraph<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public void MergeBusinessListGraph<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -201,7 +196,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public void MergeBusinessBindingListGraph<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public void MergeBusinessBindingListGraph<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -280,7 +275,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceChild);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceChild);
               else
                 LoadProperty(target, item, sourceChild);
             }
@@ -299,7 +294,7 @@ namespace Csla.Core
               else
               {
                 if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                  Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceList);
+                  Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceList);
                 else
                  LoadProperty(target, item, sourceList);
               }
@@ -307,7 +302,7 @@ namespace Csla.Core
             else
             {
               if ((item.RelationshipType & RelationshipTypes.PrivateField) == RelationshipTypes.PrivateField)
-                Reflection.MethodCaller.CallPropertySetter(target, item.Name, sourceValue);
+                Reflection.MethodCaller.CallPropertySetterCore(target, item.Name, sourceValue);
               else if (sourceValue != null || (item.RelationshipType & RelationshipTypes.LazyLoad) != RelationshipTypes.LazyLoad)
                 LoadProperty(target, item, sourceValue);
             }
@@ -336,26 +331,9 @@ namespace Csla.Core
     /// </summary>
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
-    private async Task MergeGraphAsync(IEditableCollection target, IEditableCollection source)
+    private Task MergeGraphAsync(IEditableCollection target, IEditableCollection source)
     {
-      var cacheKey = GetCacheKey(target);
-
-      var methodReference = _methodCache.GetOrAdd(cacheKey, ((Type ListType, Type ChildType, bool IsExtendedBindingList) key) =>
-      {
-        var methodName = key.IsExtendedBindingList ? "MergeBusinessBindingListGraphAsync" : "MergeBusinessListGraphAsync";
-        return GetType().GetMethod(methodName)!.MakeGenericMethod(key.ListType, key.ChildType);
-      });
-
-      var task = (Task)methodReference.Invoke(this, [target, source])!;
-      await task;
-
-      static (Type ListType, Type ChildType, bool IsExtendedBindingList) GetCacheKey(IEditableCollection target)
-      {
-        var listType = target.GetType();
-        var childType = Utilities.GetChildItemType(listType) ?? throw new InvalidOperationException();
-        var isExtendedBindingList = typeof(IExtendedBindingList).IsAssignableFrom(listType);
-        return (listType, childType, isExtendedBindingList);
-      }
+      return AsMergeable(target).MergeGraphAsync(this, source);
     }
     /// <summary>
     /// Merges state from source graph into target graph.
@@ -363,7 +341,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public async Task MergeBusinessListGraphAsync<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public async Task MergeBusinessListGraphAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessListBase<T, C>
       where C : IEditableBusinessObject
     {
@@ -403,7 +381,7 @@ namespace Csla.Core
     /// <param name="target">Target of merge.</param>
     /// <param name="source">Source for merge.</param>
     /// <exception cref="ArgumentNullException"><paramref name="target"/> or <paramref name="source"/> is <see langword="null"/>.</exception>
-    public async Task MergeBusinessBindingListGraphAsync<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
+    public async Task MergeBusinessBindingListGraphAsync<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] C>(T target, T source)
       where T : BusinessBindingListBase<T, C>
       where C : IEditableBusinessObject
     {

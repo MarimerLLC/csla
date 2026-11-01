@@ -12,6 +12,7 @@ namespace Csla.Core
   /// Indicates the reason the MobileFormatter
   /// functionality has been invoked.
   /// </summary>
+  [Obsolete(MobileObject.StateModeObsoleteMessage)]
   public enum StateMode
   {
     /// <summary>
@@ -20,8 +21,8 @@ namespace Csla.Core
     /// </summary>
     Serialization,
     /// <summary>
-    /// The object is being serialized for
-    /// an n-level undo operation.
+    /// No longer used. N-level undo doesn't
+    /// call OnGetState or OnSetState.
     /// </summary>
     Undo
   }

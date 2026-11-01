@@ -31,6 +31,21 @@ jobs:
     - name: Test
       run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
 
+    - name: NativeAOT smoke test
+      shell: pwsh
+      run: |
+        $log = dotnet publish Source/tests/Csla.AotSmokeTest/Csla.AotSmokeTest.csproj -c Release -r win-x64 -o aot-smoke 2>&1
+        $log
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+        $warnings = $log | Select-String -Pattern 'warning (IL|AOT)\d+'
+        if ($warnings) {
+          Write-Host "::error::The NativeAOT publish produced trim/AOT warnings"
+          $warnings
+          exit 1
+        }
+        ./aot-smoke/Csla.AotSmokeTest.exe
+        exit $LASTEXITCODE
+
     - name: check for MAUI modified files
       id: check_files
       shell: bash

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-#if !IOS
+﻿#if !IOS
 //-----------------------------------------------------------------------
 // <copyright file="DynamicMethodHandle.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
@@ -18,9 +16,7 @@ namespace Csla.Reflection
     public int MethodParamsLength { get; }
     public Type? FinalArrayElementType { get; }
     public bool IsAsyncTask { get; }
-    [MemberNotNullWhen(true, nameof(ConvertToTaskObjectMethod))]
     public bool IsAsyncTaskObject { get; }
-    public System.Reflection.MethodInfo? ConvertToTaskObjectMethod { get; }
 
     public DynamicMethodHandle(System.Reflection.MethodInfo? info, params object?[]? parameters)
     {
@@ -54,10 +50,6 @@ namespace Csla.Reflection
         IsAsyncTask = (info.ReturnType == typeof(Task));
         IsAsyncTaskObject = (isgeneric && (info.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)));
         DynamicMethod = DynamicMethodHandlerFactory.CreateMethod(info);
-        if (IsAsyncTaskObject)
-        {
-          ConvertToTaskObjectMethod = TaskConversionHelper.CreateTaskObjectConversionMethodInfo(info.ReturnType.GetGenericArguments()[0]);
-        }
       }
     }
   }

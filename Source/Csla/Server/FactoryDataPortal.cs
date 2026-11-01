@@ -46,6 +46,7 @@ namespace Csla.Server
 
     #region Method invokes
 
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
     private async Task<DataPortalResult> InvokeMethod<T>(string factoryTypeName, DataPortalOperations operation, string methodName, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object? e, DataPortalContext context, bool isSync)
       where T : DataPortalOperationAttribute
     {
@@ -55,7 +56,7 @@ namespace Csla.Server
       var eventArg = e is EmptyCriteria ? null : e;
       var eventArgs = new DataPortalEventArgs(context, objectType, eventArg, operation);
 
-      Reflection.MethodCaller.CallMethodIfImplemented(factory, "Invoke", eventArgs);
+      Reflection.MethodCaller.CallMethodIfImplementedCore(factory, "Invoke", true, eventArgs);
       object? result;
       try
       {
@@ -70,13 +71,13 @@ namespace Csla.Server
         {
           // legacy fallback: parameterless factory method
           Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName);
-          result = await Reflection.MethodCaller.CallMethodTryAsync(factory, methodName).ConfigureAwait(false);
+          result = await Reflection.MethodCaller.CallMethodTryAsyncCore(factory, methodName, false).ConfigureAwait(false);
         }
         else
         {
           // legacy fallback: single criteria object
           Utilities.ThrowIfAsyncMethodOnSyncClient(_applicationContext, isSync, factory, methodName, e);
-          result = await Reflection.MethodCaller.CallMethodTryAsync(factory, methodName, e).ConfigureAwait(false);
+          result = await Reflection.MethodCaller.CallMethodTryAsyncCore(factory, methodName, true, e).ConfigureAwait(false);
         }
 
         if (result is Exception error)
@@ -85,12 +86,12 @@ namespace Csla.Server
         if (result is Core.ITrackStatus busy && busy.IsBusy)
           throw new InvalidOperationException($"{objectType.Name}.IsBusy == true");
 
-        Reflection.MethodCaller.CallMethodIfImplemented(factory, "InvokeComplete", eventArgs);
+        Reflection.MethodCaller.CallMethodIfImplementedCore(factory, "InvokeComplete", true, eventArgs);
       }
       catch (Exception ex)
       {
-        Reflection.MethodCaller.CallMethodIfImplemented(
-          factory, "InvokeError", new DataPortalEventArgs(context, objectType, eventArg, operation, ex));
+        Reflection.MethodCaller.CallMethodIfImplementedCore(
+          factory, "InvokeError", true, new DataPortalEventArgs(context, objectType, eventArg, operation, ex));
         throw;
       }
       return new DataPortalResult(_applicationContext, result, null);

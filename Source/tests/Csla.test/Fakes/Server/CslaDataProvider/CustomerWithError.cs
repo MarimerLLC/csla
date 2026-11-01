@@ -104,14 +104,14 @@ namespace cslalighttest.CslaDataProvider
         }
       }
 
-      protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
+      protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)
       {
-        base.OnGetState(info, mode);
+        base.OnGetState(info);
         info.AddValue("_CustomerWithErrorId", _CustomerWithErrorId);
       }
-      protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info, StateMode mode)
+      protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)
       {
-        base.OnSetState(info, mode);
+        base.OnSetState(info);
         _CustomerWithErrorId = info.GetValue<int>("_CustomerWithErrorId");
       }
     }

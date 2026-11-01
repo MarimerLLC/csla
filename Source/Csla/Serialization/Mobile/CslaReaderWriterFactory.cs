@@ -5,7 +5,7 @@
 // </copyright>
 // <summary>Factory class that is used to create Reader/Writer pair of classes</summary>
 //-----------------------------------------------------------------------
-using System.Runtime.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Serialization.Mobile
 {
@@ -15,21 +15,10 @@ namespace Csla.Serialization.Mobile
   /// </summary>
   public static class CslaReaderWriterFactory
   {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     internal static Type ReaderType { get; set; } = typeof(CslaBinaryReader);
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     internal static Type WriterType { get; set; } = typeof(CslaBinaryWriter);
-
-    /// <summary>
-    /// Get an instance of <see cref="DataContractSerializer"/>
-    /// and setup known types for that class
-    /// </summary>
-    /// <returns>instance of <see cref="DataContractSerializer"/></returns>
-    [Obsolete("This type of serialization is unsupported. It will be removed with one of the next major versions of CSLA.NET.")]
-    public static DataContractSerializer GetDataContractSerializer()
-    {
-      return new DataContractSerializer(
-        typeof(List<SerializationInfo>),
-        new Type[] { typeof(List<int>), typeof(byte[]), typeof(DateTimeOffset), typeof(char[]) });
-    }
 
     /// <summary>
     /// Get an instance of the writer that is used to write data to serialization stream

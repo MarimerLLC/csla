@@ -254,7 +254,7 @@ namespace Csla.Test.PropertyGetSet
 
     #region MobileObject
 
-    protected override void OnGetState(SerializationInfo info, Core.StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       if(_fieldBackedString!=null)
         info.AddValue("_fieldBackedString", _fieldBackedString);
@@ -267,10 +267,10 @@ namespace Csla.Test.PropertyGetSet
       if (_f05 == true)
         info.AddValue("_f05", _f05);
 
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
     }
 
-    protected override void OnSetState(SerializationInfo info, Core.StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       if (info.Values.ContainsKey("_fieldBackedString"))
         _fieldBackedString = info.GetValue<string>("_fieldBackedString");
@@ -283,7 +283,7 @@ namespace Csla.Test.PropertyGetSet
       if (info.Values.ContainsKey("_f05"))
         _f05 = info.GetValue<bool>("_f05");
 
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
     }
 
     #endregion

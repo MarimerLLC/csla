@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 #if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,8 @@ namespace Csla.Web.Mvc
   /// Model binder for use with CSLA .NET editable business
   /// objects.
   /// </summary>
+  [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
+  [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>

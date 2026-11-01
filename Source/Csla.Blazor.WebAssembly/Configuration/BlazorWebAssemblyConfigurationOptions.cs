@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Blazor.WebAssembly.State;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Csla.Blazor.WebAssembly.Configuration
 {
@@ -18,6 +19,7 @@ namespace Csla.Blazor.WebAssembly.Configuration
     /// <summary>
     /// Gets or sets the type of the ISessionManager service.
     /// </summary>
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)]
     public Type SessionManagerType { get; set; } = typeof(SessionManager);
 
     /// <summary>

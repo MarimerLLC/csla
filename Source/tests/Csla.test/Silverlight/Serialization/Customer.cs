@@ -83,12 +83,12 @@ namespace cslalighttest.Serialization
       this.AccountsPayableContact = (CustomerContact)formatter.GetObject(info.Children["AccountsPayableContact"].ReferenceId);
     }
 
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("Name", Name);
     }
 
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       this.Name = info.GetValue<string>("Name");
     }

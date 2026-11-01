@@ -1225,15 +1225,12 @@ namespace Csla.Rules
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("_processThroughPriority", _processThroughPriority);
       info.AddValue("_ruleSet", _ruleSet);
       info.AddValue("_cascadeWhenChanged", _cascadeOnDirtyProperties);
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
     }
 
     /// <summary>
@@ -1243,15 +1240,12 @@ namespace Csla.Rules
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       _processThroughPriority = info.GetValue<int>("_processThroughPriority");
       _ruleSet = info.GetValue<string>("_ruleSet");
       _cascadeOnDirtyProperties = info.GetValue<bool>("_cascadeWhenChanged");
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
     }
 
     /// <summary>

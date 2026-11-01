@@ -60,16 +60,16 @@ namespace Csla.Test.DataPortal
         Data = data;
       }
 
-      protected override void OnGetState(SerializationInfo info, StateMode mode)
+      protected override void OnGetState(SerializationInfo info)
       {
         info.AddValue(nameof(Data), Data);
-        base.OnGetState(info, mode);
+        base.OnGetState(info);
       }
 
-      protected override void OnSetState(SerializationInfo info, StateMode mode)
+      protected override void OnSetState(SerializationInfo info)
       {
         Data = info.GetRequiredValue<string>(nameof(Data));
-        base.OnSetState(info, mode);
+        base.OnSetState(info);
       }
     }
 

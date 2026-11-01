@@ -236,6 +236,30 @@ They were marked `[Obsolete]` in CSLA 9 ([#4336](https://github.com/MarimerLLC/c
 
 If your configuration selects one of these types through the `MobileReader<T>()` or `MobileWriter<T>()` options, remove those calls to use the default `CslaBinaryReader` and `CslaBinaryWriter`. The serialized format changes, so the client and the server must be updated together.
 
+## `StateMode` is obsolete
+
+`StateMode` and the `OnGetState(SerializationInfo, StateMode)` and `OnSetState(SerializationInfo, StateMode)` overloads are marked `[Obsolete]` ([#4582](https://github.com/MarimerLLC/csla/issues/4582)). Older versions of n-level undo took snapshots by calling these methods with `StateMode.Undo`. Undo now takes its snapshots through the configured `ISerializationFormatter`, so the methods are only ever called with `StateMode.Serialization`, and the parameter carries no information.
+
+Override the new overloads that take only the `SerializationInfo`:
+
+```csharp
+protected override void OnGetState(SerializationInfo info)
+{
+  base.OnGetState(info);
+  info.AddValue("_custom", _custom);
+}
+
+protected override void OnSetState(SerializationInfo info)
+{
+  base.OnSetState(info);
+  _custom = info.GetValue<string>("_custom");
+}
+```
+
+Existing overrides of the obsolete overloads keep working: they still run, and `base.OnSetState(info, mode)` still restores the base class state before your code runs. The compiler reports warnings `CS0672` and `CS0618` until you move them. If an override checks `mode == StateMode.Undo`, delete that branch, because that code hasn't run for several versions. The obsolete members will be removed in a future major version.
+
+The layout of an undo snapshot has also changed. An object serialized by an earlier version of CSLA while its edit level was above zero can't have those edits undone by CSLA 11, so update the client and the server together.
+
 ## Async `SafeDataReader`
 
 `SafeDataReader` has async members ([#4975](https://github.com/MarimerLLC/csla/issues/4975)):

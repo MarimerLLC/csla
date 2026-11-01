@@ -19,6 +19,9 @@ namespace Csla.Core
   [Serializable]
   public abstract class MobileObject : IMobileObject, IMobileObjectMetastate
   {
+    internal const string StateModeObsoleteMessage =
+      "StateMode is no longer used. Override OnGetState(SerializationInfo) and OnSetState(SerializationInfo) instead. This member will be removed in a future major version of CSLA .NET.";
+
     #region Serialize
 
     void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
@@ -28,7 +31,11 @@ namespace Csla.Core
 
     void IMobileObject.GetState(SerializationInfo info)
     {
+      // call the obsolete overload so existing overrides still run;
+      // its default implementation calls OnGetState(info)
+#pragma warning disable CS0618 // Type or member is obsolete
       OnGetState(info, StateMode.Serialization);
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     /// <summary>
@@ -41,8 +48,22 @@ namespace Csla.Core
     /// <param name="mode">
     /// The StateMode indicating why this method was invoked.
     /// </param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Obsolete(StateModeObsoleteMessage)]
     protected virtual void OnGetState(SerializationInfo info, StateMode mode)
+    {
+      OnGetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to insert your field values
+    /// into the MobileFormatter serialization stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnGetState(SerializationInfo info)
     { }
 
     /// <summary>
@@ -66,7 +87,11 @@ namespace Csla.Core
 
     void IMobileObject.SetState(SerializationInfo info)
     {
+      // call the obsolete overload so existing overrides still run;
+      // its default implementation calls OnSetState(info)
+#pragma warning disable CS0618 // Type or member is obsolete
       OnSetState(info, StateMode.Serialization);
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 
     void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)
@@ -84,8 +109,22 @@ namespace Csla.Core
     /// <param name="mode">
     /// The StateMode indicating why this method was invoked.
     /// </param>
-    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Obsolete(StateModeObsoleteMessage)]
     protected virtual void OnSetState(SerializationInfo info, StateMode mode)
+    {
+      OnSetState(info);
+    }
+
+    /// <summary>
+    /// Override this method to retrieve your field values
+    /// from the MobileFormatter serialization stream.
+    /// </summary>
+    /// <param name="info">
+    /// Object containing the data to serialize.
+    /// </param>
+    [EditorBrowsable(EditorBrowsableState.Advanced)]
+    protected virtual void OnSetState(SerializationInfo info)
     { }
 
     /// <summary>

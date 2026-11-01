@@ -3675,13 +3675,10 @@ namespace Csla.Core
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
       info.AddValue("Csla.Core.BusinessBase._isNew", IsNew);
       info.AddValue("Csla.Core.BusinessBase._isDeleted", IsDeleted);
       info.AddValue("Csla.Core.BusinessBase._isDirty", _isDirty);
@@ -3699,21 +3696,17 @@ namespace Csla.Core
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
     [EditorBrowsable(EditorBrowsableState.Advanced)]
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
       IsNew = info.GetValue<bool>("Csla.Core.BusinessBase._isNew");
       IsDeleted = info.GetValue<bool>("Csla.Core.BusinessBase._isDeleted");
       _isDirty = info.GetValue<bool>("Csla.Core.BusinessBase._isDirty");
       _neverCommitted = info.GetValue<bool>("Csla.Core.BusinessBase._neverCommitted");
       _disableIEditableObject = info.GetValue<bool>("Csla.Core.BusinessBase._disableIEditableObject");
       _isChild = info.GetValue<bool>("Csla.Core.BusinessBase._isChild");
-      if (mode != StateMode.Undo)
-        _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
+      _editLevelAdded = info.GetValue<int>("Csla.Core.BusinessBase._editLevelAdded");
       _identity = info.GetValue<int>("Csla.Core.BusinessBase._identity");
     }
 

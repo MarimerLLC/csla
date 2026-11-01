@@ -39,40 +39,14 @@ namespace Csla.Data.SqlClient
     }
 
     /// <summary>
-    /// Asynchronously gets the data value as a type.
-    /// </summary>
-    /// <typeparam name="T">Type of value</typeparam>
-    /// <param name="ordinal">Ordinal position of value</param>
-    public Task<T> GetFieldValueAsync<T>(int ordinal)
-    {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("GetFieldValueAsync");
-      return SqlDataReader.GetFieldValueAsync<T>(ordinal);
-    }
-
-    /// <summary>
-    /// Asynchronously gets the data value as a type.
-    /// </summary>
-    /// <typeparam name="T">Type of value</typeparam>
-    /// <param name="ordinal">Ordinal position of value</param>
-    /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<T> GetFieldValueAsync<T>(int ordinal, CancellationToken cancellationToken)
-    {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("GetFieldValueAsync");
-      return SqlDataReader.GetFieldValueAsync<T>(ordinal, cancellationToken);
-    }
-
-    /// <summary>
     /// Gets a value indicating whether the column has a null
     /// or missing value.
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
+    [Obsolete("Use IsDBNullAsync")]
     public Task<bool> IsDbNullAsync(int ordinal)
     {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("IsDbNullAsync");
-      return SqlDataReader.IsDBNullAsync(ordinal);
+      return IsDBNullAsync(ordinal);
     }
 
     /// <summary>
@@ -81,53 +55,10 @@ namespace Csla.Data.SqlClient
     /// </summary>
     /// <param name="ordinal">Ordinal position of value</param>
     /// <param name="cancellationToken">Async cancellation token</param>
+    [Obsolete("Use IsDBNullAsync")]
     public Task<bool> IsDbNullAsync(int ordinal, CancellationToken cancellationToken)
     {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("IsDbNullAsync");
-      return SqlDataReader.IsDBNullAsync(ordinal, cancellationToken);
-    }
-
-    /// <summary>
-    /// Advances the reader to the next result.
-    /// </summary>
-    public Task<bool> NextResultAsync()
-    {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return SqlDataReader.NextResultAsync();
-    }
-
-    /// <summary>
-    /// Advances the reader to the next result.
-    /// </summary>
-    /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> NextResultAsync(CancellationToken cancellationToken)
-    {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return SqlDataReader.NextResultAsync(cancellationToken);
-    }
-
-    /// <summary>
-    /// Advances to the next record in a recordset.
-    /// </summary>
-    public Task<bool> ReadAsync()
-    {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return SqlDataReader.ReadAsync();
-    }
-
-    /// <summary>
-    /// Advances to the next record in a recordset.
-    /// </summary>
-    /// <param name="cancellationToken">Async cancellation token</param>
-    public Task<bool> ReadAsync(CancellationToken cancellationToken)
-    {
-      if (SqlDataReader == null)
-        throw new NotSupportedException("NextResultAsync");
-      return SqlDataReader.ReadAsync(cancellationToken);
+      return IsDBNullAsync(ordinal, cancellationToken);
     }
   }
 }

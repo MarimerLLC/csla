@@ -114,7 +114,7 @@ public class ConfigurationExtensionsTests
   public void GetTableServiceClient_ConnectionString_IgnoresRegisteredClient()
   {
     var registered = new TableServiceClient(new Uri("https://registered.table.core.windows.net"), new TableSharedKeyCredential("registered", Convert.ToBase64String(new byte[32])));
-    var provider = new ServiceCollection()
+    using var provider = new ServiceCollection()
       .AddSingleton(registered)
       .BuildServiceProvider();
     var options = new AzureTableStorageOptions { ConnectionString = DevelopmentConnectionString };
@@ -129,7 +129,7 @@ public class ConfigurationExtensionsTests
   public void GetTableServiceClient_ServiceKey_ResolvesKeyedClient()
   {
     var keyed = new TableServiceClient(DevelopmentConnectionString);
-    var provider = new ServiceCollection()
+    using var provider = new ServiceCollection()
       .AddKeyedSingleton("state", keyed)
       .AddSingleton(new TableServiceClient(DevelopmentConnectionString))
       .BuildServiceProvider();
@@ -144,7 +144,7 @@ public class ConfigurationExtensionsTests
   public void GetTableServiceClient_NoConnectionStringOrKey_ResolvesDefaultClient()
   {
     var registered = new TableServiceClient(DevelopmentConnectionString);
-    var provider = new ServiceCollection()
+    using var provider = new ServiceCollection()
       .AddSingleton(registered)
       .BuildServiceProvider();
 

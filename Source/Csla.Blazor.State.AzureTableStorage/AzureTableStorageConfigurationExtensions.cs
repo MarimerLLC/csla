@@ -24,19 +24,19 @@ namespace Csla.Configuration
     /// Configures CSLA to use the Azure Table Storage
     /// <see cref="ISessionStore"/> implementation.
     /// </summary>
-    /// <param name="config">The CslaOptions instance.</param>
+    /// <param name="config">The <see cref="CslaOptions"/> instance.</param>
     /// <param name="options">An optional delegate to configure the store.</param>
-    /// <returns>The CslaOptions instance.</returns>
+    /// <returns>The <see cref="CslaOptions"/> instance.</returns>
     /// <remarks>
     /// Call this after <c>AddServerSideBlazor</c>, which registers the default
     /// in-memory session store; the last registration wins. The session store
     /// is only used when <c>UseInMemoryApplicationContextManager</c> is
-    /// <see langword="false"/>. Call <c>ISessionManager.PurgeSessions</c>
+    /// <see langword="false"/>. Call <see cref="ISessionManager.PurgeSessions"/>
     /// periodically: besides removing expired sessions, it refreshes the stored
     /// last-touched time of live sessions, so other servers do not purge them.
     /// <para>
     /// Live sessions are kept in memory. Session data is written to the table
-    /// when a session is saved through <c>ISessionManager.UpdateSession</c>,
+    /// when a session is saved through <see cref="ISessionManager.UpdateSession"/>,
     /// such as when the WebAssembly client sends its state; changes made in
     /// place are written with the next save. A session can serialize to at
     /// most 704 KiB.

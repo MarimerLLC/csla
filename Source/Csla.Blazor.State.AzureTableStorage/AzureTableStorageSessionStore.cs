@@ -7,8 +7,10 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Concurrent;
+using System.Net;
 using Azure;
 using Azure.Data.Tables;
+using Csla.Properties;
 using Csla.Serialization;
 using Csla.State;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,40 +23,32 @@ namespace Csla.Blazor.State.AzureTableStorage;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Live sessions are kept in memory and returned by reference, as
-/// <c>InMemorySessionStore</c> does, because the session manager and the
-/// Blazor context manager change the returned session in place. The table
-/// is read only when a session is not in memory, such as after a restart.
+/// Live sessions are kept in memory and returned by reference, so callers
+/// can change a session in place. The table is read only when a session is
+/// not in memory, such as after a restart.
 /// </para>
 /// <para>
 /// Session data is written to the table only by
-/// <see cref="AddOrUpdateSessionAsync"/>, which serializes the session before
-/// publishing it to the cache. <see cref="PurgeExpiredSessionsAsync"/> refreshes
-/// only the stored last-touched time of live sessions and never serializes
-/// them, because a change a request makes during serialization can produce
-/// data that cannot be deserialized.
+/// <see cref="AddOrUpdateSessionAsync"/>. <see cref="PurgeExpiredSessionsAsync"/>
+/// refreshes only the stored last-touched time of live sessions, so it never
+/// serializes a session that a request may be changing.
 /// </para>
 /// <para>
-/// Each row holds one session in the <c>LastTouched</c> column and up to
-/// <see cref="MaxChunks"/> binary columns of <see cref="ChunkSize"/> bytes,
-/// because Azure Tables limits a binary property to 64 KiB and an entity
-/// to 1 MiB.
-/// </para>
-/// <para>
-/// Read and write failures propagate to the caller. A failed read must not
-/// look like a missing session, because the session manager would then
-/// replace the stored session with a new, empty one.
+/// Read and write failures propagate to the caller, so a failed read is never
+/// mistaken for a missing session.
 /// </para>
 /// </remarks>
-internal sealed partial class AzureTableStorageSessionStore : ISessionStore
+internal sealed partial class AzureTableStorageSessionStore : ISessionStore, IDisposable
 {
+  // Azure Tables limits a binary property to 64 KiB, so session data is split
+  // across several columns of this size.
   internal const int ChunkSize = 64 * 1024;
   // The 1 MiB entity limit can be measured on the request, where binary
   // values are base64 encoded (Azurite measures it that way), so 11 chunks
   // (704 KiB) is the most that fits however it is measured.
   internal const int MaxChunks = 11;
   private const string ValueColumn = "Value";
-  private const string LastTouchedColumn = "LastTouched";
+  private const string LastTouchedColumn = nameof(Session.LastTouched);
 
   private readonly ConcurrentDictionary<string, Session> _sessions = [];
   private readonly SemaphoreSlim[] _keyLocks = [.. Enumerable.Range(0, 32).Select(_ => new SemaphoreSlim(1, 1))];
@@ -102,14 +96,15 @@ internal sealed partial class AzureTableStorageSessionStore : ISessionStore
     if (_sessions.TryGetValue(key, out var session))
       return session;
 
-    LogLoadingSession(_logger, key, _tableClient.Name);
+    LogLoadingSession(key, _tableClient.Name);
     var response = await _tableClient.GetEntityIfExistsAsync<TableEntity>(key, _applicationDiscriminator).ConfigureAwait(false);
     if (!response.HasValue || response.Value is null)
       return null;
 
-    // Concurrent first reads of one key must share a single instance,
-    // or changes made to the losing copy would be lost.
-    return _sessions.GetOrAdd(key, Deserialize(ReadData(response.Value)));
+    // Callers that load the same key at the same time all get the instance
+    // that is cached first, so they all change the same session in place.
+    var entity = response.Value;
+    return _sessions.GetOrAdd(key, _ => Deserialize(ReadData(entity)));
   }
 
   /// <inheritdoc/>
@@ -124,7 +119,7 @@ internal sealed partial class AzureTableStorageSessionStore : ISessionStore
     await keyLock.WaitAsync().ConfigureAwait(false);
     try
     {
-      LogSavingSession(_logger, key, _tableClient.Name);
+      LogSavingSession(key, _tableClient.Name);
       await _tableClient.UpsertEntityAsync(CreateEntity(key, session), TableUpdateMode.Replace).ConfigureAwait(false);
       _sessions[key] = session;
     }
@@ -155,7 +150,7 @@ internal sealed partial class AzureTableStorageSessionStore : ISessionStore
       }
       catch (RequestFailedException ex)
       {
-        LogRefreshFailed(_logger, ex, item.Key, _tableClient.Name);
+        LogRefreshFailed(ex, item.Key, _tableClient.Name);
       }
     }
 
@@ -171,11 +166,25 @@ internal sealed partial class AzureTableStorageSessionStore : ISessionStore
         // The ETag makes the delete fail if the session was saved after the query.
         await _tableClient.DeleteEntityAsync(entity.PartitionKey, entity.RowKey, entity.ETag).ConfigureAwait(false);
       }
+      catch (RequestFailedException ex) when (ex.Status == (int)HttpStatusCode.PreconditionFailed)
+      {
+        // Expected: the session was saved after the query, so it is still in use.
+        LogPurgeSkipped(entity.PartitionKey, _tableClient.Name);
+      }
       catch (RequestFailedException ex)
       {
-        LogPurgeFailed(_logger, ex, entity.PartitionKey, _tableClient.Name);
+        LogPurgeFailed(ex, entity.PartitionKey, _tableClient.Name);
       }
     }
+  }
+
+  /// <summary>
+  /// Releases the locks used to coordinate writes.
+  /// </summary>
+  public void Dispose()
+  {
+    foreach (var keyLock in _keyLocks)
+      keyLock.Dispose();
   }
 
   // Writes only the timestamp, so the stored session data is never replaced
@@ -186,6 +195,8 @@ internal sealed partial class AzureTableStorageSessionStore : ISessionStore
     await keyLock.WaitAsync().ConfigureAwait(false);
     try
     {
+      // Read the session under the lock, so the timestamp written is that of
+      // the session the last AddOrUpdateSessionAsync stored.
       if (!_sessions.TryGetValue(key, out var session))
         return;
       var entity = new TableEntity(key, _applicationDiscriminator) { [LastTouchedColumn] = session.LastTouched };
@@ -205,7 +216,7 @@ internal sealed partial class AzureTableStorageSessionStore : ISessionStore
     var data = Serialize(session);
     if (data.Length > MaxChunks * ChunkSize)
       throw new InvalidOperationException(
-        $"Session {key} serializes to {data.Length} bytes, more than the {MaxChunks * ChunkSize} bytes the Azure Table Storage session store can hold.");
+        string.Format(Resources.SessionStoreSessionTooLarge, key, data.Length, MaxChunks * ChunkSize));
 
     var entity = new TableEntity(key, _applicationDiscriminator) { [LastTouchedColumn] = session.LastTouched };
     var chunkCount = Math.Max(1, (data.Length + ChunkSize - 1) / ChunkSize);
@@ -243,14 +254,17 @@ internal sealed partial class AzureTableStorageSessionStore : ISessionStore
   }
 
   [LoggerMessage(Level = LogLevel.Debug, Message = "Loading session {Key} from table {Table}")]
-  private static partial void LogLoadingSession(ILogger logger, string key, string table);
+  private partial void LogLoadingSession(string key, string table);
 
   [LoggerMessage(Level = LogLevel.Debug, Message = "Saving session {Key} to table {Table}")]
-  private static partial void LogSavingSession(ILogger logger, string key, string table);
+  private partial void LogSavingSession(string key, string table);
 
   [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to refresh the last-touched time of session {Key} in table {Table}")]
-  private static partial void LogRefreshFailed(ILogger logger, Exception exception, string key, string table);
+  private partial void LogRefreshFailed(Exception exception, string key, string table);
+
+  [LoggerMessage(Level = LogLevel.Debug, Message = "Kept expired session {Key} in table {Table}, because it was saved after the purge query")]
+  private partial void LogPurgeSkipped(string key, string table);
 
   [LoggerMessage(Level = LogLevel.Warning, Message = "Failed to purge expired session {Key} from table {Table}")]
-  private static partial void LogPurgeFailed(ILogger logger, Exception exception, string key, string table);
+  private partial void LogPurgeFailed(Exception exception, string key, string table);
 }

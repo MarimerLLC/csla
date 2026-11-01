@@ -569,4 +569,8 @@
   <data name="TaskResultNotAvailableException" xml:space="preserve">
     <value>{0}.Result is not available; it may have been removed by trimming.</value>
   </data>
+  <data name="SessionStoreSessionTooLarge" xml:space="preserve">
+    <value>Session {0} serializes to {1} bytes, more than the {2} bytes the session store can hold.</value>
+    <comment>0 - session key, 1 - serialized size, 2 - maximum size</comment>
+  </data>
 </root>

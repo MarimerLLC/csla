@@ -383,10 +383,7 @@ namespace Csla.Core
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("_bindingEdit", _bindingEdit);
       if (_stateStack.Count > 0)
@@ -394,7 +391,7 @@ namespace Csla.Core
         var stackArray = _stateStack.ToArray();
         info.AddValue("_stateStack", stackArray);
       }
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
     }
 
     /// <summary>
@@ -404,10 +401,7 @@ namespace Csla.Core
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       _bindingEdit = info.GetValue<bool>("_bindingEdit");
       if (info.Values.TryGetValue("_stateStack", out var stateStackField))
@@ -417,7 +411,7 @@ namespace Csla.Core
         foreach (var item in stackArray.Reverse())
           _stateStack.Push(item);
       }
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
     }
 
     /// <inheritdoc />

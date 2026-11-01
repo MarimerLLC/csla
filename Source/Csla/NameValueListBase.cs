@@ -244,10 +244,9 @@ namespace Csla
       /// values from the serialization stream.
       /// </summary>
       /// <param name="info">Serialization info.</param>
-      /// <param name="mode">Serialization mode.</param>
-      protected override void OnGetState(SerializationInfo info, StateMode mode)
+      protected override void OnGetState(SerializationInfo info)
       {
-        base.OnGetState(info, mode);
+        base.OnGetState(info);
         info.AddValue("NameValuePair._key", Key);
         info.AddValue("NameValuePair._value", _value);
       }
@@ -257,10 +256,9 @@ namespace Csla
       /// values into the serialization stream.
       /// </summary>
       /// <param name="info">Serialization info.</param>
-      /// <param name="mode">Serialization mode.</param>
-      protected override void OnSetState(SerializationInfo info, StateMode mode)
+      protected override void OnSetState(SerializationInfo info)
       {
-        base.OnSetState(info, mode);
+        base.OnSetState(info);
         Key = info.GetValue<K>("NameValuePair._key")!;
         _value = info.GetValue<V>("NameValuePair._value")!;
       }

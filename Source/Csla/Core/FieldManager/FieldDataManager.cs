@@ -728,10 +728,7 @@ namespace Csla.Core.FieldManager
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("_businessObjectType", _businessObjectType);
 
@@ -748,7 +745,7 @@ namespace Csla.Core.FieldManager
             info.AddValue(data.Name, data.Value, data.IsDirty);
         }
       }
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
     }
 
     /// <summary>
@@ -779,11 +776,8 @@ namespace Csla.Core.FieldManager
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.TypeNameResolutionJustification)]
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       string type = (string)info.Values["_businessObjectType"].Value!;
       Type businessObjecType = Reflection.MethodCaller.GetTypeCore(type, true)!;
@@ -810,7 +804,7 @@ namespace Csla.Core.FieldManager
             data.MarkClean();
         }
       }
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
     }
 
     /// <summary>

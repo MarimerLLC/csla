@@ -78,20 +78,20 @@ namespace cslalighttest.Serialization
       base.OnSetChildren(info, formatter);
     }
 
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("FirstName", FirstName);
       info.AddValue("LastName", LastName);
 
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
     }
 
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       this.FirstName = info.GetValue<string>("FirstName");
       this.LastName = info.GetValue<string>("LastName");
 
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
     }
 
     #endregion

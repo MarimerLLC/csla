@@ -104,10 +104,7 @@ namespace Csla.Rules
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnGetState(SerializationInfo info, StateMode mode)
+    protected override void OnGetState(SerializationInfo info)
     {
       info.AddValue("_ruleName", _ruleName);
       info.AddValue("_description", _description);
@@ -117,7 +114,7 @@ namespace Csla.Rules
       info.AddValue("_priority", _priority);
       info.AddValue("_displayIndex", (int)_displayIndex);
 
-      base.OnGetState(info, mode);
+      base.OnGetState(info);
     }
 
     /// <summary>
@@ -127,10 +124,7 @@ namespace Csla.Rules
     /// <param name="info">
     /// Object containing the data to serialize.
     /// </param>
-    /// <param name="mode">
-    /// The StateMode indicating why this method was invoked.
-    /// </param>
-    protected override void OnSetState(SerializationInfo info, StateMode mode)
+    protected override void OnSetState(SerializationInfo info)
     {
       _ruleName = info.GetValue<string>("_ruleName")!;
       _description = info.GetValue<string>("_description")!;
@@ -140,7 +134,7 @@ namespace Csla.Rules
       _priority = info.GetValue<int>("_priority");
       _displayIndex = info.GetValue<int>("_displayIndex");
 
-      base.OnSetState(info, mode);
+      base.OnSetState(info);
     }
 
     #endregion

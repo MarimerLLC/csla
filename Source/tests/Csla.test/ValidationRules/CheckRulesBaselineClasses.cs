@@ -524,6 +524,95 @@ namespace Csla.Test.ValidationRules
   }
 
   /// <summary>
+  /// A dependency cycle that settles: Total = Base + Fraction and
+  /// Fraction = round(Total * 0.25, 2). Each rule's output is an input of the other.
+  /// </summary>
+  [Serializable]
+  public class ConvergingCycleRoot : RuleLogRoot<ConvergingCycleRoot>
+  {
+    public static readonly PropertyInfo<decimal> BaseProperty = RegisterProperty<decimal>(nameof(Base));
+    public decimal Base
+    {
+      get => GetProperty(BaseProperty);
+      set => SetProperty(BaseProperty, value);
+    }
+
+    public static readonly PropertyInfo<decimal> TotalProperty = RegisterProperty<decimal>(nameof(Total));
+    public decimal Total
+    {
+      get => GetProperty(TotalProperty);
+      set => SetProperty(TotalProperty, value);
+    }
+
+    public static readonly PropertyInfo<decimal> FractionProperty = RegisterProperty<decimal>(nameof(Fraction));
+    public decimal Fraction
+    {
+      get => GetProperty(FractionProperty);
+      set => SetProperty(FractionProperty, value);
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new LoggingRule(
+        TotalProperty, "Total",
+        inputs: [BaseProperty, FractionProperty],
+        action: c => c.AddOutValue(TotalProperty,
+          (decimal)c.InputPropertyValues[BaseProperty] + (decimal)c.InputPropertyValues[FractionProperty])));
+      BusinessRules.AddRule(new LoggingRule(
+        FractionProperty, "Fraction",
+        inputs: [TotalProperty],
+        action: c => c.AddOutValue(FractionProperty,
+          Math.Round((decimal)c.InputPropertyValues[TotalProperty] * 0.25m, 2, MidpointRounding.AwayFromZero))));
+    }
+
+    [Create]
+    private void Create()
+    {
+      LoadProperty(BaseProperty, 5m);
+    }
+  }
+
+  /// <summary>
+  /// A dependency cycle that never settles: Ping = Pong + 1 and Pong = Ping + 1.
+  /// </summary>
+  [Serializable]
+  public class OscillatingCycleRoot : RuleLogRoot<OscillatingCycleRoot>
+  {
+    public static readonly PropertyInfo<int> PingProperty = RegisterProperty<int>(nameof(Ping));
+    public int Ping
+    {
+      get => GetProperty(PingProperty);
+      set => SetProperty(PingProperty, value);
+    }
+
+    public static readonly PropertyInfo<int> PongProperty = RegisterProperty<int>(nameof(Pong));
+    public int Pong
+    {
+      get => GetProperty(PongProperty);
+      set => SetProperty(PongProperty, value);
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new LoggingRule(
+        PingProperty, "Ping",
+        inputs: [PongProperty],
+        action: c => c.AddOutValue(PingProperty, (int)c.InputPropertyValues[PongProperty] + 1)));
+      BusinessRules.AddRule(new LoggingRule(
+        PongProperty, "Pong",
+        inputs: [PingProperty],
+        action: c => c.AddOutValue(PongProperty, (int)c.InputPropertyValues[PingProperty] + 1)));
+    }
+
+    [Create]
+    private void Create()
+    {
+    }
+  }
+
+  /// <summary>
   /// Async rule on A whose output and affected property is B.
   /// </summary>
   [Serializable]

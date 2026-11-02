@@ -209,6 +209,73 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    public void CheckRules_ConvergingCycle_WithCascadeOnDirtyProperties_RecursesUntilSettled()
+    {
+      var root = Create<ConvergingCycleRoot>();
+      root.CascadeOnDirtyProperties = true;
+
+      root.RunCheckRules();
+
+      root.RuleLog.Should().Equal(
+        // Total: each rule makes the other's input dirty, recursing one level per change
+        "Total",               // 5
+        "Fraction",            // 1.25
+        "Total",               // 6.25
+        "Fraction",            // 1.56
+        "Total",               // 6.56
+        "Fraction",            // 1.64
+        "Total",               // 6.64
+        "Fraction",            // 1.66
+        "Total",               // 6.66
+        "Fraction",            // 1.67
+        "Total",               // 6.67
+        "Fraction",            // 1.67, unchanged, so the recursion stops
+        // Fraction
+        "Fraction",
+        "Total");              // cascade: Fraction is an input of Total
+      root.Total.Should().Be(6.67m);
+      root.Fraction.Should().Be(1.67m);
+    }
+
+    [TestMethod]
+    public void CheckRules_ConvergingCycle_WithoutCascadeOnDirtyProperties_StopsBeforeSettling()
+    {
+      var root = Create<ConvergingCycleRoot>();
+      root.CascadeOnDirtyProperties = false;
+
+      root.RunCheckRules();
+
+      root.RuleLog.Should().Equal(
+        "Total",               // 5
+        "Fraction",            // cascade: Total is an input of Fraction -> 1.25
+        "Fraction",            // unchanged
+        "Total");              // cascade: Fraction is an input of Total -> 6.25
+      // Not settled: Fraction should be round(6.25 * 0.25, 2) = 1.56
+      root.Total.Should().Be(6.25m);
+      root.Fraction.Should().Be(1.25m);
+    }
+
+    [TestMethod]
+    public void CheckRules_OscillatingCycle_WithoutCascadeOnDirtyProperties_Terminates()
+    {
+      // With CascadeOnDirtyProperties = true this cycle recurses until the
+      // process dies with a StackOverflowException, which can't be caught or
+      // tested in-process. Only the bounded, cascade-off behavior is pinned here.
+      var root = Create<OscillatingCycleRoot>();
+      root.CascadeOnDirtyProperties = false;
+
+      root.RunCheckRules();
+
+      root.RuleLog.Should().Equal(
+        "Ping",                // 1
+        "Pong",                // cascade: Ping is an input of Pong -> 2
+        "Pong",                // unchanged
+        "Ping");               // cascade: Pong is an input of Ping -> 3
+      root.Ping.Should().Be(3);
+      root.Pong.Should().Be(2);
+    }
+
+    [TestMethod]
     public void CheckRules_ShortCircuitsPerProperty()
     {
       var root = Create<ShortCircuitBaselineRoot>();

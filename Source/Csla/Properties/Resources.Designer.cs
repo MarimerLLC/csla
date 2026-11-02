@@ -1087,6 +1087,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Session {0} serializes to {1} bytes, more than the {2} bytes the session store can hold..
+        /// </summary>
+        public static string SessionStoreSessionTooLarge {
+            get {
+                return ResourceManager.GetString("SessionStoreSessionTooLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to t.
         /// </summary>
         public static string SmartDateT {

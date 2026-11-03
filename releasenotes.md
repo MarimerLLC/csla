@@ -4,6 +4,16 @@ CSLA 10 is a substantial update to CSLA .NET, adding support for .NET 10 and inc
 
 For detailed migration guidance, see [Upgrading to CSLA 10](docs/Upgrading%20to%20CSLA%2010.md).
 
+## CSLA .NET version 10.2.1 release
+
+A security patch release. The full list of changes in this release can be found in the [GitHub compare view](https://github.com/MarimerLLC/csla/compare/v10.2.0...v10.2.1).
+
+### Changes
+
+**Security and Dependencies**
+
+* [#4982](https://github.com/MarimerLLC/csla/issues/4982) Reference patched `System.Security.Cryptography.Xml` versions in `Csla.Channels.Wcf` (8.0.5, 9.0.22 and 10.0.14) for CVE-2026-96958, CVE-2026-96959 and CVE-2026-96960, high severity .NET denial of service vulnerabilities ([#4984](https://github.com/MarimerLLC/csla/pull/4984))
+
 ## CSLA .NET version 10.2.0 release
 
 The full list of changes in this release can be found in the [GitHub compare view](https://github.com/MarimerLLC/csla/compare/v10.1.0...v10.2.0).

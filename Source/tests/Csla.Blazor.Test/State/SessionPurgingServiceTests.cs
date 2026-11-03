@@ -40,7 +40,7 @@ public class SessionPurgingServiceTests
     _logger = new ListLogger();
     _service = new SessionPurgingService(
       _sessionManager,
-      new SessionPurgingOptions { Interval = Interval, Expiration = Expiration },
+      new SessionPurgingSettings(Interval, Expiration),
       _timeProvider,
       _logger);
   }
@@ -84,7 +84,7 @@ public class SessionPurgingServiceTests
 
     _sessionManager.Expirations.Should().HaveCount(2);
     _service.ExecuteTask.IsCompleted.Should().BeFalse();
-    _logger.Entries.Should().ContainSingle(e => e.Level == LogLevel.Error && e.Exception is InvalidOperationException);
+    _logger.Entries.Should().ContainSingle(e => e.Level == LogLevel.Warning && e.Exception is InvalidOperationException);
   }
 
   [TestMethod]
@@ -118,44 +118,66 @@ public class SessionPurgingServiceTests
   }
 
   [TestMethod]
-  public void AddSessionPurging_RegistersHostedServiceAndDefaultOptions()
+  public void AddServerSideBlazor_WithStateManagement_RegistersPurgingWithDefaults()
   {
     var services = new ServiceCollection();
 
-    new CslaOptions(services).AddSessionPurging();
+    new CslaOptions(services).AddServerSideBlazor(b => b.UseInMemoryApplicationContextManager = false);
 
     services.Should().ContainSingle(d => d.ServiceType == typeof(IHostedService) && d.ImplementationType == typeof(SessionPurgingService));
-    var options = (SessionPurgingOptions)services.Single(d => d.ServiceType == typeof(SessionPurgingOptions)).ImplementationInstance;
-    options.Interval.Should().Be(TimeSpan.FromMinutes(5));
-    options.Expiration.Should().Be(TimeSpan.FromHours(1));
+    GetSettings(services).Should().Be(new SessionPurgingSettings(TimeSpan.FromMinutes(5), TimeSpan.FromHours(1)));
     services.Should().Contain(d => d.ServiceType == typeof(TimeProvider));
   }
 
   [TestMethod]
-  public void AddSessionPurging_AppliesConfiguredOptions()
+  public void AddServerSideBlazor_AppliesConfiguredPurgeSchedule()
   {
     var services = new ServiceCollection();
 
-    new CslaOptions(services).AddSessionPurging(o =>
+    new CslaOptions(services).AddServerSideBlazor(b =>
     {
-      o.Interval = Interval;
-      o.Expiration = Expiration;
+      b.UseInMemoryApplicationContextManager = false;
+      b.SessionPurgeInterval = Interval;
+      b.SessionExpiration = Expiration;
     });
 
-    var options = (SessionPurgingOptions)services.Single(d => d.ServiceType == typeof(SessionPurgingOptions)).ImplementationInstance;
-    options.Interval.Should().Be(Interval);
-    options.Expiration.Should().Be(Expiration);
+    GetSettings(services).Should().Be(new SessionPurgingSettings(Interval, Expiration));
   }
 
   [TestMethod]
-  public void AddSessionPurging_ResolvesServiceWithServerSideBlazor()
+  public void AddServerSideBlazor_PurgeExpiredSessionsFalse_DoesNotRegisterPurging()
+  {
+    var services = new ServiceCollection();
+
+    new CslaOptions(services).AddServerSideBlazor(b =>
+    {
+      b.UseInMemoryApplicationContextManager = false;
+      b.PurgeExpiredSessions = false;
+      b.SessionPurgeInterval = TimeSpan.Zero;
+    });
+
+    services.Should().NotContain(d => d.ServiceType == typeof(IHostedService));
+    services.Should().NotContain(d => d.ServiceType == typeof(SessionPurgingSettings));
+  }
+
+  [TestMethod]
+  public void AddServerSideBlazor_InMemoryApplicationContextManager_DoesNotRegisterPurging()
+  {
+    var services = new ServiceCollection();
+
+    new CslaOptions(services).AddServerSideBlazor();
+
+    services.Should().NotContain(d => d.ServiceType == typeof(IHostedService));
+  }
+
+  [TestMethod]
+  public void AddServerSideBlazor_ResolvesPurgingService()
   {
     var services = new ServiceCollection();
     services.AddLogging();
     services.AddCsla(o => o
       .AddAspNetCore()
-      .AddServerSideBlazor(b => b.UseInMemoryApplicationContextManager = false)
-      .AddSessionPurging());
+      .AddServerSideBlazor(b => b.UseInMemoryApplicationContextManager = false));
 
     using var provider = services.BuildServiceProvider();
 
@@ -163,22 +185,59 @@ public class SessionPurgingServiceTests
   }
 
   [TestMethod]
-  [DataRow(0, 60)]
-  [DataRow(-1, 60)]
-  [DataRow(60, 0)]
-  [DataRow(60, -1)]
-  public void AddSessionPurging_NonPositiveTimes_Throw(int intervalSeconds, int expirationSeconds)
+  [DataRow(1L)]
+  [DataRow(4_294_967_294L)]
+  public void AddServerSideBlazor_IntervalAtTimerLimits_IsAccepted(long milliseconds)
   {
     var services = new ServiceCollection();
 
-    var act = () => new CslaOptions(services).AddSessionPurging(o =>
+    new CslaOptions(services).AddServerSideBlazor(b =>
     {
-      o.Interval = TimeSpan.FromSeconds(intervalSeconds);
-      o.Expiration = TimeSpan.FromSeconds(expirationSeconds);
+      b.UseInMemoryApplicationContextManager = false;
+      b.SessionPurgeInterval = TimeSpan.FromMilliseconds(milliseconds);
+    });
+
+    // The timer accepts the same values, so the service can start.
+    using var timer = new PeriodicTimer(GetSettings(services).Interval);
+  }
+
+  [TestMethod]
+  [DataRow(0L)]
+  [DataRow(-10_000L)]
+  [DataRow(9_999L)]
+  [DataRow(42_949_672_950_000L)]
+  [DataRow(500L * TimeSpan.TicksPerDay)]
+  public void AddServerSideBlazor_IntervalOutsideTimerRange_Throws(long ticks)
+  {
+    var services = new ServiceCollection();
+
+    var act = () => new CslaOptions(services).AddServerSideBlazor(b =>
+    {
+      b.UseInMemoryApplicationContextManager = false;
+      b.SessionPurgeInterval = TimeSpan.FromTicks(ticks);
     });
 
     act.Should().Throw<ArgumentOutOfRangeException>();
   }
+
+  [TestMethod]
+  [DataRow(0)]
+  [DataRow(-1)]
+  public void AddServerSideBlazor_NonPositiveExpiration_Throws(int seconds)
+  {
+    var services = new ServiceCollection();
+
+    var act = () => new CslaOptions(services).AddServerSideBlazor(b =>
+    {
+      b.UseInMemoryApplicationContextManager = false;
+      b.SessionExpiration = TimeSpan.FromSeconds(seconds);
+    });
+
+    act.Should().Throw<ArgumentOutOfRangeException>();
+  }
+
+  private static SessionPurgingSettings GetSettings(ServiceCollection services) =>
+    (SessionPurgingSettings)services.Single(d => d.ServiceType == typeof(SessionPurgingSettings)).ImplementationInstance;
 
   // ExecuteAsync runs on a background thread, so wait for the timer
   // before advancing the clock.

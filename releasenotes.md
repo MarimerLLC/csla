@@ -93,7 +93,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 **Blazor**
 
-* [#4977](https://github.com/MarimerLLC/csla/issues/4977) Add `AddSessionPurging`, an opt-in hosted background service in `Csla.AspNetCore` that periodically purges expired Blazor sessions from any `ISessionStore`
+* [#4977](https://github.com/MarimerLLC/csla/issues/4977) With Blazor state management on, `AddServerSideBlazor` registers a hosted background service that periodically purges expired sessions from any `ISessionStore`, configured with `PurgeExpiredSessions`, `SessionPurgeInterval` and `SessionExpiration`
 
 **Bug Fixes**
 
@@ -127,6 +127,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 * `TransactionalAttribute` no longer copies defaults from `DataOptions`: `TimeoutInSeconds` is now `int?` and `AsyncFlowOption` is now `TransactionScopeAsyncFlowOption?`, and the `TransactionalDataPortal` constructor takes an `ITransactionScopeFactory` and `TransactionScopeFactoryContext`. The `DataOptions` transaction defaults are now per-instance instead of static. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#transaction-settings-resolved-at-runtime-and-itransactionscopefactory) ([#4780](https://github.com/MarimerLLC/csla/issues/4780)).
 * The XAML view model's `SaveAsync` and `RefreshAsync` capture exceptions in `Exception` and `ViewModelErrorText`, and raise `Error`, instead of throwing. An exception from an authorization rule during the status calculation is reported the same way on every view model. `SaveAsync` returns `Task<T?>` on all view models. On MAUI and Avalonia, `ManageObjectLifetime` defaults to `true` and the public `ManageObjectLifetimeProperty` field is removed. The Blazor `OnModelChanged()` override is replaced by `OnModelChanged(T? oldValue, T? newValue)`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#common-cslamvvmviewmodelt-base-type) ([#1766](https://github.com/MarimerLLC/csla/issues/1766)).
 * `SafeSqlDataReader` gets `ReadAsync`, `NextResultAsync` and `GetFieldValueAsync<T>` from `SafeDataReader` instead of declaring them, so code compiled against an earlier version must be recompiled. They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`. `IsDbNullAsync` is obsolete; use `IsDBNullAsync`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-safedatareader) ([#4975](https://github.com/MarimerLLC/csla/issues/4975)).
+* With Blazor state management on (`UseInMemoryApplicationContextManager = false`), sessions that haven't been touched for 1 hour are now removed by a background service. Raise `SessionExpiration`, or set `PurgeExpiredSessions = false`, to keep them longer. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#expired-blazor-sessions-are-purged-automatically) ([#4977](https://github.com/MarimerLLC/csla/issues/4977)).
 
 ### Supported Platforms
 

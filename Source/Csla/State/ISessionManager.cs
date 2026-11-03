@@ -58,8 +58,9 @@ namespace Csla.State
     /// <remarks>
     /// Remove all session data that has not been touched
     /// in the last "expiration" timeframe. On the server,
-    /// <c>AddSessionPurging</c> in Csla.AspNetCore registers
-    /// a background service that calls this periodically.
+    /// <c>AddServerSideBlazor</c> registers a background service
+    /// that calls this periodically when Blazor state management
+    /// is used (see <c>PurgeExpiredSessions</c>).
     /// </remarks>
     void PurgeSessions(TimeSpan expiration);
     #endregion

@@ -1,0 +1,35 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Mono Debug" />
+    <BuildType Name="Mono Release" />
+    <BuildType Name="Release" />
+    <BuildType Name="Testing" />
+  </Configurations>
+  <Folder Name="/Docs/">
+    <File Path="readme.md" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="AppServer/AppServer.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="BusinessLibrary/BusinessLibrary.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Release" />
+  </Project>
+  <Project Path="DataAccess/DataAccess.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Release" />
+  </Project>
+  <Project Path="WindowsUI/WindowsUI.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Release" />
+  </Project>
+</Solution>

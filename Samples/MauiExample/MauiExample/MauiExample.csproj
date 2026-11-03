@@ -50,12 +50,12 @@
     <TrimmerSingleWarn>false</TrimmerSingleWarn>
   </PropertyGroup>
 
-  <!-- Android and iOS trim on publish by default; trim everything, not just the framework -->
-  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+  <!-- Android trims on publish by default; trim everything, not just the framework -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <TrimMode>full</TrimMode>
   </PropertyGroup>
 
-  <!-- MAUI supports NativeAOT on iOS and Mac Catalyst -->
+  <!-- MAUI supports NativeAOT on iOS and Mac Catalyst. NativeAOT always trims every assembly, so don't set TrimMode here -->
   <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
     <PublishAot>true</PublishAot>
   </PropertyGroup>

@@ -6,6 +6,7 @@
 // <summary>IsSavable with async per-type authorization rules</summary>
 //-----------------------------------------------------------------------
 
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Security.Claims;
 using Csla.Core;
@@ -36,19 +37,21 @@ namespace Csla.Test.Authorization
     public async Task AsyncRule_IsSavableIsFalseAndBusyUntilRuleCompletes()
     {
       var root = await _testHost.GetDataPortal<SavableAsyncAllowRoot>().CreateAsync();
-      var busyChanges = new List<bool>();
-      var changed = new List<string>();
-      root.BusyChanged += (_, e) => busyChanges.Add(e.Busy);
-      root.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+      var busyChanges = new ConcurrentQueue<bool>();
+      var changed = new ConcurrentQueue<string>();
+      root.BusyChanged += (_, e) => busyChanges.Enqueue(e.Busy);
+      root.PropertyChanged += (_, e) => changed.Enqueue(e.PropertyName);
 
       Assert.IsFalse(root.IsSavable);
       Assert.IsTrue(root.IsBusy);
 
-      await WaitForIdleAsync(root);
+      // IsBusy turns false before the completion events are raised on the
+      // rule's thread, so wait for the last event rather than for idle
+      await WaitUntilAsync(() => changed.Contains(nameof(root.IsSavable)), "PropertyChanged(IsSavable) was not raised");
 
+      Assert.IsFalse(root.IsBusy);
       Assert.IsTrue(root.IsSavable);
-      CollectionAssert.AreEqual(new[] { true, false }, busyChanges);
-      CollectionAssert.Contains(changed, nameof(root.IsSavable));
+      CollectionAssert.AreEqual(new[] { true, false }, busyChanges.ToArray());
     }
 
     [TestMethod]
@@ -99,11 +102,11 @@ namespace Csla.Test.Authorization
       root.UnhandledAsyncException += (_, e) => error = e;
 
       _ = root.IsSavable;
-      await WaitForIdleAsync(root);
+      // UnhandledAsyncException is the last completion event, raised after IsBusy turns false
+      await WaitUntilAsync(() => Volatile.Read(ref error) != null, "UnhandledAsyncException was not raised");
 
       Assert.IsFalse(root.IsSavable);
       Assert.IsFalse(root.IsBusy);
-      Assert.IsNotNull(error);
       Assert.IsInstanceOfType(error.Error, typeof(InvalidOperationException));
     }
 
@@ -157,28 +160,33 @@ namespace Csla.Test.Authorization
     {
       var list = await _testHost.GetDataPortal<SavableAsyncList>().CreateAsync();
       list.AddNew();
-      var busyChanges = new List<bool>();
-      var changed = new List<string>();
-      list.BusyChanged += (_, e) => busyChanges.Add(e.Busy);
-      ((INotifyPropertyChanged)list).PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+      var busyChanges = new ConcurrentQueue<bool>();
+      var changed = new ConcurrentQueue<string>();
+      list.BusyChanged += (_, e) => busyChanges.Enqueue(e.Busy);
+      ((INotifyPropertyChanged)list).PropertyChanged += (_, e) => changed.Enqueue(e.PropertyName);
 
       Assert.IsFalse(list.IsSavable);
       Assert.IsTrue(list.IsBusy);
 
-      await WaitForIdleAsync(list);
+      // IsBusy turns false before the completion events are raised on the
+      // rule's thread, so wait for the last event rather than for idle
+      await WaitUntilAsync(() => changed.Contains(nameof(list.IsSavable)), "PropertyChanged(IsSavable) was not raised");
 
+      Assert.IsFalse(list.IsBusy);
       Assert.IsTrue(list.IsSavable);
-      CollectionAssert.AreEqual(new[] { true, false }, busyChanges);
-      CollectionAssert.Contains(changed, nameof(list.IsSavable));
+      CollectionAssert.AreEqual(new[] { true, false }, busyChanges.ToArray());
     }
 
-    private static async Task WaitForIdleAsync(INotifyBusy obj)
+    private static Task WaitForIdleAsync(INotifyBusy obj) =>
+      WaitUntilAsync(() => !obj.IsBusy, "Object did not become idle");
+
+    private static async Task WaitUntilAsync(Func<bool> condition, string timeoutMessage)
     {
       var start = Environment.TickCount64;
-      while (obj.IsBusy)
+      while (!condition())
       {
         if (Environment.TickCount64 - start > 5000)
-          throw new TimeoutException("Object did not become idle");
+          throw new TimeoutException(timeoutMessage);
         await Task.Delay(10);
       }
     }

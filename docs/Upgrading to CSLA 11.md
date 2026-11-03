@@ -284,6 +284,32 @@ These members use the underlying `DbDataReader`, which every ADO.NET provider re
 * They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
 * `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
 
+## Purging expired Blazor sessions
+
+When Blazor state management is on (`UseInMemoryApplicationContextManager = false`), the server keeps a session for each user in the `ISessionStore`. Expired sessions are only removed when something calls `ISessionManager.PurgeSessions`. Before CSLA 11 your app had to schedule that itself.
+
+`Csla.AspNetCore` now has an opt-in hosted background service that does it for you ([#4977](https://github.com/MarimerLLC/csla/issues/4977)):
+
+```csharp
+builder.Services.AddCsla(o => o
+  .AddAspNetCore()
+  .AddServerSideBlazor(b => b.UseInMemoryApplicationContextManager = false)
+  .AddSessionPurging(p =>
+  {
+    p.Interval = TimeSpan.FromMinutes(5);   // default: 5 minutes
+    p.Expiration = TimeSpan.FromHours(1);   // default: 1 hour
+  }));
+```
+
+* The service calls `PurgeSessions(Expiration)` once every `Interval`, starting one interval after the app starts. Both values must be greater than zero.
+* It works with every `ISessionStore`, including the in-memory default and the Azure Table Storage store (`Csla.Blazor.State.AzureTableStorage`). A shared store also refreshes the stored last-touched time of live sessions on each purge, so other servers don't remove them. Keep `Interval` well below `Expiration`.
+* A failed purge is logged, and the next purge runs on schedule.
+* If the session manager doesn't support purging (for example, the default `UseInMemoryApplicationContextManager = true` configuration), the service logs a warning and stops. The app keeps running.
+* To read the settings from configuration, bind them in the delegate: `.AddSessionPurging(p => builder.Configuration.GetSection("Csla:SessionPurging").Bind(p))`.
+* It's a server-side feature. Blazor WebAssembly has nothing to purge.
+
+If your app already calls `PurgeSessions` on its own schedule, you can replace that code with `AddSessionPurging`, or keep it.
+
 ## Trimming and NativeAOT annotations
 
 CSLA now declares what it needs from the trimmer ([#3347](https://github.com/MarimerLLC/csla/issues/3347)). In a trimmed or NativeAOT app this can surface new `IL2026` warnings in your code.

@@ -32,8 +32,9 @@ namespace Csla.Configuration
     /// in-memory session store; the last registration wins. The session store
     /// is only used when <c>UseInMemoryApplicationContextManager</c> is
     /// <see langword="false"/>. Call <see cref="ISessionManager.PurgeSessions"/>
-    /// periodically: besides removing expired sessions, it refreshes the stored
-    /// last-touched time of live sessions, so other servers do not purge them.
+    /// periodically, for example with <c>AddSessionPurging</c>: besides removing
+    /// expired sessions, it refreshes the stored last-touched time of live
+    /// sessions, so other servers do not purge them.
     /// <para>
     /// Live sessions are kept in memory. Session data is written to the table
     /// when a session is saved through <see cref="ISessionManager.UpdateSession"/>,

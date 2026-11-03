@@ -91,6 +91,10 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 * [#1766](https://github.com/MarimerLLC/csla/issues/1766) Add `Csla.Mvvm.ViewModel<T>` as the common base for the Blazor and XAML view models
 
+**Blazor**
+
+* [#4977](https://github.com/MarimerLLC/csla/issues/4977) Add `AddSessionPurging`, an opt-in hosted background service in `Csla.AspNetCore` that periodically purges expired Blazor sessions from any `ISessionStore`
+
 **Bug Fixes**
 
 * [#4891](https://github.com/MarimerLLC/csla/issues/4891) Remove the unusable parameterless constructor of `LazySingleton<T>` ([#4944](https://github.com/MarimerLLC/csla/pull/4944))

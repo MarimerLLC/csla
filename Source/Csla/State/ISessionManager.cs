@@ -57,7 +57,9 @@ namespace Csla.State
     /// <param name="expiration">Expiration duration</param>
     /// <remarks>
     /// Remove all session data that has not been touched
-    /// in the last "expiration" timeframe.
+    /// in the last "expiration" timeframe. On the server,
+    /// <c>AddSessionPurging</c> in Csla.AspNetCore registers
+    /// a background service that calls this periodically.
     /// </remarks>
     void PurgeSessions(TimeSpan expiration);
     #endregion

@@ -6,8 +6,8 @@ CSLA .NET packages are built and published to nuget.org by GitHub Actions. You s
 
 | Push a branch named | Workflow | Builds | Publishes |
 |---|---|---|---|
-| `release/vX.Y.Z` | `.github/workflows/release.yaml` | `Source/csla.build.sln` | Every core package (`Csla`, `Csla.AspNetCore`, `Csla.Blazor`, `Csla.Testing`, the channels, the generators, and so on) |
-| `release-maui/vX.Y.Z` | `.github/workflows/release-maui.yaml` | `Source/csla.maui.build.sln` | `Csla.Maui` only |
+| `release/vX.Y.Z` | `.github/workflows/release.yaml` | `Source/csla.build.slnx` | Every core package (`Csla`, `Csla.AspNetCore`, `Csla.Blazor`, `Csla.Testing`, the channels, the generators, and so on) |
+| `release-maui/vX.Y.Z` | `.github/workflows/release-maui.yaml` | `Source/csla.maui.build.slnx` | `Csla.Maui` only |
 
 Both workflows:
 

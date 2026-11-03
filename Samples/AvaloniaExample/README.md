@@ -14,7 +14,7 @@ This sample is a small Avalonia desktop application used to exercise the
 
 Package versions are managed centrally in `Directory.Packages.props`. The CSLA
 packages use the `CslaVersion` property, so to run the sample against a different
-CSLA build (for example, packages you packed locally from `Source/csla.build.sln`),
+CSLA build (for example, packages you packed locally from `Source/csla.build.slnx`),
 change that value and make sure the package source is available to NuGet.
 
 ## Run the sample

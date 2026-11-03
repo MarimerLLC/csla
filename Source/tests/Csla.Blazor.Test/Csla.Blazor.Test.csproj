@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <SignAssembly>true</SignAssembly>
     <ApplicationIcon />
     <OutputType>Library</OutputType>
   </PropertyGroup>
@@ -11,6 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(DotNetPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.11.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.9.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.9.1" />

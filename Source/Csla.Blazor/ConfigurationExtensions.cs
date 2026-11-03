@@ -69,6 +69,14 @@ namespace Csla.Configuration
         config.Services.AddSingleton(typeof(ISessionStore), blazorOptions.SessionStoreType);
         config.Services.AddSingleton(typeof(ISessionManager), blazorOptions.SessionManagerType);
         config.Services.AddTransient<StateManager>();
+
+        if (blazorOptions.PurgeExpiredSessions)
+        {
+          ValidateSessionPurging(blazorOptions);
+          config.Services.AddSingleton(new SessionPurgingSettings(blazorOptions.SessionPurgeInterval, blazorOptions.SessionExpiration));
+          config.Services.TryAddSingleton(TimeProvider.System);
+          config.Services.AddHostedService<SessionPurgingService>();
+        }
       }
 
       // use Blazor viewmodel
@@ -79,6 +87,23 @@ namespace Csla.Configuration
         config.Services.AddTransient<IAuthorizationHandler, CslaPermissionsHandler>();
       }
       return config;
+    }
+
+    // PeriodicTimer accepts 1 to 4,294,967,294 whole milliseconds.
+    private const long MaxPurgeIntervalMilliseconds = uint.MaxValue - 1L;
+
+    private static void ValidateSessionPurging(BlazorServerConfigurationOptions options)
+    {
+      var intervalMilliseconds = (long)options.SessionPurgeInterval.TotalMilliseconds;
+      if (intervalMilliseconds < 1 || intervalMilliseconds > MaxPurgeIntervalMilliseconds)
+        throw new ArgumentOutOfRangeException(
+          $"{nameof(BlazorServerConfigurationOptions)}.{nameof(BlazorServerConfigurationOptions.SessionPurgeInterval)}",
+          options.SessionPurgeInterval,
+          $"The interval must be from 1 to {MaxPurgeIntervalMilliseconds} milliseconds.");
+      ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(
+        options.SessionExpiration,
+        TimeSpan.Zero,
+        $"{nameof(BlazorServerConfigurationOptions)}.{nameof(BlazorServerConfigurationOptions.SessionExpiration)}");
     }
   }
 }

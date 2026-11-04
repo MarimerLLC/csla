@@ -8,7 +8,7 @@ When developing CSLA itself though, it is often nice to use local NuGet packages
 
 Here are the steps to create a local "prerelease" of CSLA NuGet packages you can use for local testing:
 
-1. Open the `csla.build.sln` solution
+1. Open the `csla.build.slnx` solution
 1. Rebuild All
 1. Open PowerShell
    1. Change directory to `csla/NuGet`

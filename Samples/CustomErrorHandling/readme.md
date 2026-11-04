@@ -7,7 +7,7 @@ This sample shows how to use a custom data portal exception inspector with CSLA.
 - Windows (for the WinForms client)
 
 ### Build
-- From the repo root: `dotnet build Samples/CustomErrorHandling/CustomErrorHandling.sln`
+- From the repo root: `dotnet build Samples/CustomErrorHandling/CustomErrorHandling.slnx`
 
 ### Run the data portal host (AppServer)
 - Start Kestrel with the project profile: `dotnet run --project Samples/CustomErrorHandling/AppServer/AppServer.csproj`

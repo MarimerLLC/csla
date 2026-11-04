@@ -1,0 +1,275 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Ad-Hoc" />
+    <BuildType Name="AppStore" />
+    <BuildType Name="CD_ROM" />
+    <BuildType Name="Debug" />
+    <BuildType Name="DVD-5" />
+    <BuildType Name="Mono Debug" />
+    <BuildType Name="Mono Release" />
+    <BuildType Name="Release" />
+    <BuildType Name="SingleImage" />
+    <BuildType Name="Testing" />
+    <Platform Name="Any CPU" />
+    <Platform Name="AnyOS" />
+    <Platform Name="ARM" />
+    <Platform Name="iPhone" />
+    <Platform Name="iPhoneSimulator" />
+    <Platform Name="Mixed Platforms" />
+    <Platform Name="Win32" />
+    <Platform Name="Win64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Channels/">
+    <Project Path="Csla.Channels.Grpc/Csla.Channels.Grpc.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Channels.RabbitMq/Csla.Channels.RabbitMq.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Channels.Wcf/Csla.Channels.Wcf.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Release" />
+      <BuildType Solution="AppStore|*" Project="Release" />
+      <BuildType Solution="CD_ROM|*" Project="Release" />
+      <BuildType Solution="DVD-5|*" Project="Release" />
+      <BuildType Solution="Mono Debug|*" Project="Release" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="Csla.Testing/Csla.Testing.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Debug" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla/Csla.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/Data/">
+    <Project Path="Csla.Data.SqlClient.Fx/Csla.Data.SqlClient.Fx.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Data.SqlClient/Csla.Data.SqlClient.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="../license.md" />
+    <File Path="../README.md" />
+    <File Path="../releasenotes.md" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Package.props" />
+    <File Path="global.json" />
+    <File Path="version.json" />
+  </Folder>
+  <Folder Name="/Support/">
+    <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|Any CPU" Project="Release" />
+      <BuildType Solution="CD_ROM|AnyOS" Project="Release" />
+      <BuildType Solution="CD_ROM|ARM" Project="Release" />
+      <BuildType Solution="CD_ROM|iPhone" Project="Debug" />
+      <BuildType Solution="CD_ROM|iPhoneSimulator" Project="Debug" />
+      <BuildType Solution="CD_ROM|Mixed Platforms" Project="Release" />
+      <BuildType Solution="CD_ROM|Win32" Project="Release" />
+      <BuildType Solution="CD_ROM|Win64" Project="Release" />
+      <BuildType Solution="CD_ROM|x64" Project="Release" />
+      <BuildType Solution="CD_ROM|x86" Project="Release" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|Any CPU" Project="Release" />
+      <BuildType Solution="SingleImage|AnyOS" Project="Release" />
+      <BuildType Solution="SingleImage|ARM" Project="Release" />
+      <BuildType Solution="SingleImage|iPhone" Project="Debug" />
+      <BuildType Solution="SingleImage|iPhoneSimulator" Project="Debug" />
+      <BuildType Solution="SingleImage|Mixed Platforms" Project="Release" />
+      <BuildType Solution="SingleImage|Win32" Project="Release" />
+      <BuildType Solution="SingleImage|Win64" Project="Release" />
+      <BuildType Solution="SingleImage|x64" Project="Release" />
+      <BuildType Solution="SingleImage|x86" Project="Release" />
+      <BuildType Solution="Testing|Any CPU" Project="Release" />
+      <BuildType Solution="Testing|AnyOS" Project="Release" />
+      <BuildType Solution="Testing|ARM" Project="Release" />
+      <BuildType Solution="Testing|iPhone" Project="Debug" />
+      <BuildType Solution="Testing|iPhoneSimulator" Project="Debug" />
+      <BuildType Solution="Testing|Mixed Platforms" Project="Release" />
+      <BuildType Solution="Testing|Win32" Project="Release" />
+      <BuildType Solution="Testing|Win64" Project="Release" />
+      <BuildType Solution="Testing|x64" Project="Release" />
+      <BuildType Solution="Testing|x86" Project="Release" />
+    </Project>
+    <Project Path="Csla.Generators/cs/AutoImplementProperties/Csla.Generator.AutoImplementProperties.CSharp/Csla.Generator.AutoImplementProperties.CSharp.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.Attributes.CSharp/Csla.Generator.AutoSerialization.Attributes.CSharp.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.CSharp/Csla.Generator.AutoSerialization.CSharp.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/UI/">
+    <Project Path="Csla.AspNetCore/Csla.AspNetCore.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Blazor.State.AzureTableStorage/Csla.Blazor.State.AzureTableStorage.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Debug" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Blazor.WebAssembly/Csla.Blazor.WebAssembly.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Blazor/Csla.Blazor.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Web/Csla.Web.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Windows/Csla.Windows.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Xaml.Avalonia/Csla.Xaml.Avalonia.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Debug" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Xaml.Shared/Csla.Xaml.Shared.shproj" />
+    <Project Path="Csla.Xaml.Wpf/Csla.Xaml.Wpf.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/UI/Web.Mvc/">
+    <Project Path="Csla.Web.Mvc.Shared/Csla.Web.Mvc.Shared.shproj" />
+    <Project Path="Csla.Web.Mvc5.Net4.6/Csla.Web.Mvc5-Net4.6.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <BuildType Solution="CD_ROM|*" Project="Debug" />
+      <BuildType Solution="DVD-5|*" Project="Debug" />
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="SingleImage|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+</Solution>

@@ -1,0 +1,227 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Mono Debug" />
+    <BuildType Name="Mono Release" />
+    <BuildType Name="Release" />
+    <BuildType Name="Testing" />
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Csla/">
+    <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Release" />
+    </Project>
+    <Project Path="Csla.AspNetCore/Csla.AspNetCore.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Blazor.State.AzureTableStorage/Csla.Blazor.State.AzureTableStorage.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Blazor.WebAssembly/Csla.Blazor.WebAssembly.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Blazor/Csla.Blazor.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Channels.Grpc/Csla.Channels.Grpc.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Channels.RabbitMq/Csla.Channels.RabbitMq.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Channels.Wcf/Csla.Channels.Wcf.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Release" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Data.SqlClient.Fx/Csla.Data.SqlClient.Fx.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Data.SqlClient/Csla.Data.SqlClient.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Testing/Csla.Testing.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Web.Mvc.Shared/Csla.Web.Mvc.Shared.shproj" />
+    <Project Path="Csla.Web.Mvc5.Net4.6/Csla.Web.Mvc5-Net4.6.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Web/Csla.Web.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Windows/Csla.Windows.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Xaml.Shared/Csla.Xaml.Shared.shproj" />
+    <Project Path="Csla.Xaml.Wpf/Csla.Xaml.Wpf.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla/Csla.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/Generators/">
+    <Project Path="Csla.Generators/cs/AutoImplementProperties/Csla.Generator.AutoImplementProperties.CSharp/Csla.Generator.AutoImplementProperties.CSharp.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.Attributes.CSharp/Csla.Generator.AutoSerialization.Attributes.CSharp.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.CSharp/Csla.Generator.AutoSerialization.CSharp.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/Csla.Generator.AutoImplementProperties.CSharp.TestObjects/Csla.Generator.AutoImplementProperties.TestObjects.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Release" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/Csla.Generator.AutoImplementProperties.CSharp.Tests/Csla.Generator.AutoImplementProperties.CSharp.Tests.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Release" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/Csla.Generator.AutoSerialization.CSharp.TestObjects/Csla.Generator.AutoSerialization.CSharp.TestObjects.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Release" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/Csla.Generator.AutoSerialization.CSharp.Tests/Csla.Generator.AutoSerialization.CSharp.Tests.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Release" />
+      <BuildType Solution="Mono Release|*" Project="Release" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="../.github/workflows/ci.yaml" />
+    <File Path="../releasenotes.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.package.props" />
+    <File Path="readme.md" />
+    <File Path="version.json" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Csla.AotSmokeTest/Csla.AotSmokeTest.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+    <Project Path="tests/Csla.Testing.Tests/Csla.Testing.Tests.csproj">
+      <BuildType Solution="Mono Debug|*" Project="Debug" />
+      <BuildType Solution="Mono Release|*" Project="Debug" />
+      <BuildType Solution="Testing|*" Project="Debug" />
+    </Project>
+  </Folder>
+  <Project Path="Csla.Xaml.Avalonia/Csla.Xaml.Avalonia.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Debug" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.Blazor.State.AzureTableStorage.Tests/Csla.Blazor.State.AzureTableStorage.Tests.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Debug" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.Blazor.Test/Csla.Blazor.Test.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.Blazor.WebAssembly.Tests/Csla.Blazor.WebAssembly.Tests.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/csla.netcore.test/csla.netcore.test.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.test/Csla.Tests.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.TestHelpers/Csla.TestHelpers.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.Windows.Tests/Csla.Windows.Tests.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Debug" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/Csla.Xaml.Wpf.Tests/Csla.Xaml.Wpf.Tests.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Debug" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.Business/GraphMergerTest.Business.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.BusinessTests/GraphMergerTest.BusinessTests.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.Dal/GraphMergerTest.Dal.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.DalMock/GraphMergerTest.DalMock.csproj">
+    <BuildType Solution="Mono Debug|*" Project="Debug" />
+    <BuildType Solution="Mono Release|*" Project="Release" />
+    <BuildType Solution="Testing|*" Project="Debug" />
+  </Project>
+  <Properties Name="TestCaseManagementSettings" Scope="PostLoad">
+    <Property Name="CategoryFile" Value="csla.test.vsmdi" />
+  </Properties>
+</Solution>

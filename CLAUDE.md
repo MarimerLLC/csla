@@ -10,32 +10,32 @@ CSLA .NET is a business object framework for .NET. `main` is version **11.0.0** 
 
 ### Build everything (framework + tests)
 ```
-dotnet build Source\csla.test.sln
+dotnet build Source\csla.test.slnx
 ```
 
 ### Run all tests
 ```
-dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
+dotnet test Source\csla.test.slnx --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
 ```
 
 ### Run a single test by name
 ```
-dotnet test Source\csla.test.sln --no-build --filter "FullyQualifiedName~Csla.Test.ClassName.MethodName"
+dotnet test Source\csla.test.slnx --no-build --filter "FullyQualifiedName~Csla.Test.ClassName.MethodName"
 ```
 
 ### Build only framework (no tests)
 ```
-dotnet build Source\csla.build.sln
+dotnet build Source\csla.build.slnx
 ```
 
 ### Build MAUI projects (requires `dotnet workload install maui`)
 ```
-dotnet build Source/csla.maui.build.sln
+dotnet build Source/csla.maui.build.slnx
 ```
 
 ### Build analyzers/generators
 ```
-dotnet build Source\Csla.Analyzers.sln
+dotnet build Source\Csla.Analyzers.slnx
 ```
 
 ### NativeAOT / trimming smoke test
@@ -60,11 +60,11 @@ Public APIs that reflect over an arbitrary object or type name get `[RequiresUnr
 
 | Solution | Purpose |
 |---|---|
-| `Source\csla.test.sln` | **Primary** — framework + all tests (used by CI) |
-| `Source\csla.build.sln` | Framework libraries only (no tests) |
-| `Source\csla.maui.test.sln` | MAUI-specific build + tests |
-| `Source\Csla.Analyzers.sln` | Roslyn analyzers |
-| `Source\csla.benchmarks.sln` | BenchmarkDotNet performance tests |
+| `Source\csla.test.slnx` | **Primary** — framework + all tests (used by CI) |
+| `Source\csla.build.slnx` | Framework libraries only (no tests) |
+| `Source\csla.maui.test.slnx` | MAUI-specific build + tests |
+| `Source\Csla.Analyzers.slnx` | Roslyn analyzers |
+| `Source\csla.benchmarks.slnx` | BenchmarkDotNet performance tests |
 
 ## Project Architecture
 
@@ -127,4 +127,4 @@ Include the GitHub issue number: `#999 Description of change`
 - CI runs on `windows-latest` with the .NET 11 SDK (pinned by `Source/global.json`) and the .NET 10 SDK
 - Tests use `--settings Source/test.runsettings` which limits `MaxCpuCount` to 1 (tests must not run in parallel)
 - Tests with `[TestCategory("SkipOnCIServer")]` are excluded from CI runs
-- MAUI build only triggers when `Source/Csla.Xaml.Maui/`, `Source/Csla.Xaml.Shared/`, or `Source/csla.maui.test.sln` are modified
+- MAUI build only triggers when `Source/Csla.Xaml.Maui/`, `Source/Csla.Xaml.Shared/`, or `Source/csla.maui.test.slnx` are modified

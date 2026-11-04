@@ -31,9 +31,11 @@ namespace Csla.Configuration
     /// Call this after <c>AddServerSideBlazor</c>, which registers the default
     /// in-memory session store; the last registration wins. The session store
     /// is only used when <c>UseInMemoryApplicationContextManager</c> is
-    /// <see langword="false"/>. Call <see cref="ISessionManager.PurgeSessions"/>
-    /// periodically: besides removing expired sessions, it refreshes the stored
-    /// last-touched time of live sessions, so other servers do not purge them.
+    /// <see langword="false"/>. <see cref="ISessionManager.PurgeSessions"/>
+    /// must run periodically, which <c>AddServerSideBlazor</c> arranges by default
+    /// (see <c>PurgeExpiredSessions</c>): besides removing expired sessions, it
+    /// refreshes the stored last-touched time of live sessions, so other servers
+    /// do not purge them.
     /// <para>
     /// Live sessions are kept in memory. Session data is written to the table
     /// when a session is saved through <see cref="ISessionManager.UpdateSession"/>,

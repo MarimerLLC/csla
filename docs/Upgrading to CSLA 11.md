@@ -284,6 +284,44 @@ These members use the underlying `DbDataReader`, which every ADO.NET provider re
 * They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
 * `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
 
+## Expired Blazor sessions are purged automatically
+
+When Blazor state management is on (`UseInMemoryApplicationContextManager = false`), the server keeps a session for each user in the `ISessionStore`. In CSLA 10, expired sessions were only removed if your app called `ISessionManager.PurgeSessions` on a schedule it set up.
+
+In CSLA 11, `AddServerSideBlazor` registers a hosted background service that does this for you ([#4977](https://github.com/MarimerLLC/csla/issues/4977)). It's on by default whenever Blazor state management is on, and **removes sessions that haven't been touched for 1 hour**. Configure it on the `AddServerSideBlazor` options:
+
+```csharp
+builder.Services.AddCsla(o => o
+  .AddAspNetCore()
+  .AddServerSideBlazor(b =>
+  {
+    b.UseInMemoryApplicationContextManager = false;
+    b.SessionPurgeInterval = TimeSpan.FromMinutes(5);  // default: 5 minutes
+    b.SessionExpiration = TimeSpan.FromHours(1);       // default: 1 hour
+  }));
+```
+
+| `BlazorServerConfigurationOptions` property | Default | Purpose |
+| --- | --- | --- |
+| `PurgeExpiredSessions` | `true` | Runs the purging service. Set it to `false` to turn it off. |
+| `SessionPurgeInterval` | 5 minutes | How often the service calls `PurgeSessions` |
+| `SessionExpiration` | 1 hour | How long a session can go untouched before it's removed |
+
+What to check when you upgrade:
+
+* If users can be idle for more than an hour and should keep their session, raise `SessionExpiration`.
+* If your app already calls `PurgeSessions` on its own schedule, either remove that code or set `PurgeExpiredSessions = false`. Running both is harmless, but the shorter expiration wins.
+* With the default `UseInMemoryApplicationContextManager = true`, there are no stored sessions and the service isn't registered.
+
+How the service behaves:
+
+* The first purge runs one interval after the app starts. `SessionPurgeInterval` must be from 1 millisecond to 4,294,967,294 milliseconds (about 49.7 days), which is the range `PeriodicTimer` supports, and `SessionExpiration` must be greater than zero. Otherwise `AddServerSideBlazor` throws `ArgumentOutOfRangeException`.
+* It works with every `ISessionStore`, including the in-memory default and the Azure Table Storage store (`Csla.Blazor.State.AzureTableStorage`). A shared store also refreshes the stored last-touched time of live sessions on each purge, so other servers don't remove them. Keep `SessionPurgeInterval` well below `SessionExpiration`.
+* A failed purge is logged as a warning, and the next purge runs on schedule.
+* If a custom session manager doesn't support purging (it throws `NotSupportedException` or `NotImplementedException`), the service logs a warning and stops. The app keeps running.
+* To read the settings from configuration, set them in the delegate, for example `b.SessionExpiration = builder.Configuration.GetValue("Csla:SessionExpiration", TimeSpan.FromHours(1))`.
+* It's a server-side feature. Blazor WebAssembly has nothing to purge.
+
 ## Trimming and NativeAOT annotations
 
 CSLA now declares what it needs from the trimmer ([#3347](https://github.com/MarimerLLC/csla/issues/3347)). In a trimmed or NativeAOT app this can surface new `IL2026` warnings in your code.

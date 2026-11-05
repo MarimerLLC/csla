@@ -19,7 +19,7 @@ namespace Csla.Rules
   /// Tracks the business rules for a business object.
   /// </summary>
   [Serializable]
-  public class BusinessRules : MobileObject, ISerializationNotification, IBusinessRules, IUseApplicationContext
+  public class BusinessRules : MobileObject, ISerializationNotification, IBusinessRules, IUseApplicationContext, IRuleRunnerHost
   {
     /// <summary>
     /// Creates an instance of the type.
@@ -988,67 +988,65 @@ namespace Csla.Rules
       var affectedProperties = new List<string>();
       var dirtyProperties = new List<string>();
       bool anyRuleBroken = false;
+      AsyncRuleCompletedHandler? onAsyncRuleCompleted = cascade ? CascadeAfterAsyncRule : null;
       foreach (var rule in rules)
       {
         // implicit short-circuiting
         if (anyRuleBroken && rule.Priority > ProcessThroughPriority)
           break;
-        bool complete = false;
 
-        object? ruleTarget = null;
-        if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
-          ruleTarget = _target;
-        // set up context
-        var context = new RuleContext(_applicationContext, rule, executionContext, ruleTarget, r =>
+        var outcome = ((IRuleRunnerHost)this).RunRule(rule, executionContext, onAsyncRuleCompleted);
+        affectedProperties.AddRange(outcome.AffectedProperties);
+        dirtyProperties.AddRange(outcome.DirtyProperties);
+        if (outcome.HasBrokenError)
+          anyRuleBroken = true;
+        // explicit short-circuiting
+        if (outcome.StopProcessing)
+          break;
+      }
+      // return any synchronous results
+      return new RunRulesResult(affectedProperties, dirtyProperties);
+    }
+
+    /// <summary>
+    /// Runs the rules for the affected properties of a completed async rule.
+    /// </summary>
+    private IEnumerable<string> CascadeAfterAsyncRule(IRuleContext r)
+    {
+      var affected = new List<string>();
+      foreach (var item in r.Rule.AffectedProperties.Distinct())
+        if (!ReferenceEquals(r.Rule.PrimaryProperty, item))
         {
-          if (r.Rule.IsAsync)
-          {
-            lock (_syncRoot)
-            {
-              // update output values
-              if (r.OutputPropertyValues != null)
-                foreach (var item in r.OutputPropertyValues)
-                {
-                  // value is changed add to dirtyValues
-                  if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
-                    r.AddDirtyProperty(item.Key);
-                }
-              // update broken rules list
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
+          var doCascade = false;
+          if (CascadeOnDirtyProperties && (r.DirtyProperties != null))
+            doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
+          affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedProperty));
+        }
+      return affected;
+    }
 
-              // run rules on affected properties for this async rule
-              var affected = new List<string>();
-              if (cascade)
-                foreach (var item in r.Rule.AffectedProperties.Distinct())
-                  if (!ReferenceEquals(r.Rule.PrimaryProperty, item))
-                  {
-                    var doCascade = false;
-                    if (CascadeOnDirtyProperties && (r.DirtyProperties != null))
-                      doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
-                    affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedProperty));
-                  }
+    #region IRuleRunnerHost
 
-              // mark each property as not busy
-              foreach (var item in r.Rule.AffectedProperties)
-              {
-                BusyProperties.Remove(item);
-                RunningAsyncRules = BusyProperties.Count > 0;
-                if (!BusyProperties.Contains(item))
-                  _target.RuleComplete(item);
-              }
+    ApplicationContext IRuleRunnerHost.ApplicationContext => _applicationContext;
 
-              foreach (var property in affected.Distinct())
-              {
-                // property is not in AffectedProperties (already signalled to UI)
-                if (!r.Rule.AffectedProperties.Any(p => p.Name == property))
-                  _target.RuleComplete(property);
-              }
+    IReadOnlyList<IBusinessRuleBase> IRuleRunnerHost.Rules => TypeRules.Rules;
 
-              if (!RunningRules && !RunningAsyncRules)
-                _target.AllRulesComplete();
-            }
-          }
-          else  // Rule is Sync 
+    void IRuleRunnerHost.ClearBrokenRules(IPropertyInfo? property) => BrokenRules.ClearRules(property);
+
+    RuleRunOutcome IRuleRunnerHost.RunRule(IBusinessRuleBase rule, RuleContextModes executionContext, AsyncRuleCompletedHandler? onAsyncRuleCompleted)
+    {
+      bool complete = false;
+      bool hasBrokenError = false;
+
+      object? ruleTarget = null;
+      if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
+        ruleTarget = _target;
+      // set up context
+      var context = new RuleContext(_applicationContext, rule, executionContext, ruleTarget, r =>
+      {
+        if (r.Rule.IsAsync)
+        {
+          lock (_syncRoot)
           {
             // update output values
             if (r.OutputPropertyValues != null)
@@ -1058,91 +1056,126 @@ namespace Csla.Rules
                 if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
                   r.AddDirtyProperty(item.Key);
               }
-
             // update broken rules list
-            if (r.Results != null)
-            {
-              BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
+            BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
-              // is any rules here broken with severity Error
-              if (r.Results.Any(p => !p.Success && p.Severity == RuleSeverity.Error))
-                anyRuleBroken = true;
+            // run rules on affected properties for this async rule
+            var affected = onAsyncRuleCompleted?.Invoke(r) ?? [];
+
+            // mark each property as not busy
+            foreach (var item in r.Rule.AffectedProperties)
+            {
+              BusyProperties.Remove(item);
+              RunningAsyncRules = BusyProperties.Count > 0;
+              if (!BusyProperties.Contains(item))
+                _target.RuleComplete(item);
             }
 
-            complete = true;
+            foreach (var property in affected.Distinct())
+            {
+              // property is not in AffectedProperties (already signalled to UI)
+              if (!r.Rule.AffectedProperties.Any(p => p.Name == property))
+                _target.RuleComplete(property);
+            }
+
+            if (!RunningRules && !RunningAsyncRules)
+              _target.AllRulesComplete();
           }
-        });
-
-        // get input properties
-        if (rule.InputProperties != null)
+        }
+        else  // Rule is Sync
         {
-          var target = (IManageProperties)_target;
-          foreach (var item in rule.InputProperties)
-          {
-            // do not add lazy loaded fields that have no field data.
-            if ((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+          // update output values
+          if (r.OutputPropertyValues != null)
+            foreach (var item in r.OutputPropertyValues)
             {
-              if (target.FieldExists(item))
-                context.InputPropertyValues.Add(item, target.ReadProperty(item));
+              // value is changed add to dirtyValues
+              if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
+                r.AddDirtyProperty(item.Key);
             }
-            else
+
+          // update broken rules list
+          if (r.Results != null)
+          {
+            BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
+
+            // is any rules here broken with severity Error
+            if (r.Results.Any(p => !p.Success && p.Severity == RuleSeverity.Error))
+              hasBrokenError = true;
+          }
+
+          complete = true;
+        }
+      });
+
+      // get input properties
+      if (rule.InputProperties != null)
+      {
+        var target = (IManageProperties)_target;
+        foreach (var item in rule.InputProperties)
+        {
+          // do not add lazy loaded fields that have no field data.
+          if ((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+          {
+            if (target.FieldExists(item))
               context.InputPropertyValues.Add(item, target.ReadProperty(item));
           }
-        }
-
-        // mark properties busy
-        if (rule.IsAsync)
-        {
-          lock (_syncRoot)
-          {
-            // mark each property as busy
-            foreach (var item in rule.AffectedProperties)
-            {
-              var alreadyBusy = BusyProperties.Contains(item);
-              BusyProperties.Add(item);
-              RunningAsyncRules = true;
-              if (!alreadyBusy)
-                _target.RuleStart(item);
-            }
-          }
-        }
-
-        // execute (or start executing) rule
-        try
-        {
-          if (rule is IBusinessRule syncRule)
-            syncRule.Execute(context);
-          else if (rule is IBusinessRuleAsync asyncRule)
-            RunAsyncRule(asyncRule, context, _unhandledAsyncRuleExceptionHandler);
           else
-            throw new ArgumentOutOfRangeException(rule.GetType().FullName);
-        }
-        catch (Exception ex)
-        {
-          context.AddErrorResult($"{rule.RuleName}:{ex.Message}");
-          if (rule.IsAsync)
-            context.Complete();
-        }
-
-        if (!rule.IsAsync)
-        {
-          // process results
-          if (!complete)
-            context.Complete();
-          // copy affected property names
-          affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
-          // copy output property names
-          affectedProperties.AddRange(context.OutputPropertyValues.Select(c => c.Key.Name));
-          // copy dirty properties 
-          dirtyProperties.AddRange(context.DirtyProperties.Select(c => c.Name));
-          // explicit short-circuiting
-          if (context.Results.Any(r => r.StopProcessing))
-            break;
+            context.InputPropertyValues.Add(item, target.ReadProperty(item));
         }
       }
-      // return any synchronous results
-      return new RunRulesResult(affectedProperties, dirtyProperties);
+
+      // mark properties busy
+      if (rule.IsAsync)
+      {
+        lock (_syncRoot)
+        {
+          // mark each property as busy
+          foreach (var item in rule.AffectedProperties)
+          {
+            var alreadyBusy = BusyProperties.Contains(item);
+            BusyProperties.Add(item);
+            RunningAsyncRules = true;
+            if (!alreadyBusy)
+              _target.RuleStart(item);
+          }
+        }
+      }
+
+      // execute (or start executing) rule
+      try
+      {
+        if (rule is IBusinessRule syncRule)
+          syncRule.Execute(context);
+        else if (rule is IBusinessRuleAsync asyncRule)
+          RunAsyncRule(asyncRule, context, _unhandledAsyncRuleExceptionHandler);
+        else
+          throw new ArgumentOutOfRangeException(rule.GetType().FullName);
+      }
+      catch (Exception ex)
+      {
+        context.AddErrorResult($"{rule.RuleName}:{ex.Message}");
+        if (rule.IsAsync)
+          context.Complete();
+      }
+
+      if (rule.IsAsync)
+        return RuleRunOutcome.Pending;
+
+      // process results
+      if (!complete)
+        context.Complete();
+      // copy affected property names and output property names
+      var affectedProperties = new List<string>(rule.AffectedProperties.Count + context.OutputPropertyValues.Count);
+      affectedProperties.AddRange(rule.AffectedProperties.Select(c => c.Name));
+      affectedProperties.AddRange(context.OutputPropertyValues.Select(c => c.Key.Name));
+      // copy dirty properties
+      var dirtyProperties = context.DirtyProperties.Select(c => c.Name).ToList();
+      // explicit short-circuiting
+      var stopProcessing = context.Results.Any(r => r.StopProcessing);
+      return new RuleRunOutcome(affectedProperties, dirtyProperties, hasBrokenError, stopProcessing);
     }
+
+    #endregion
 
     private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
     {

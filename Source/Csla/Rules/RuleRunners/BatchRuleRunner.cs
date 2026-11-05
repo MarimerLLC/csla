@@ -19,7 +19,10 @@ namespace Csla.Rules
   /// <remarks>
   /// <list type="number">
   /// <item>Object rules run first, with no cascade.</item>
-  /// <item>Pass 1: every property rule runs once, with no cascade.</item>
+  /// <item>
+  /// Pass 1: every property rule runs once, with no cascade, in priority
+  /// order across all properties.
+  /// </item>
   /// <item>
   /// Pass 2: for each property whose value a rule changed through output
   /// values (a dirty property), the rules for that property and the rules
@@ -178,16 +181,19 @@ namespace Csla.Rules
             }
         }
 
+        // Priority first, across all properties (#4235). Ties keep the
+        // CSLA 10 order: by property (first registration), then registration.
         Rules = keyed
-          .OrderBy(k => k.Property)
-          .ThenBy(k => k.Rule.Priority)
+          .OrderBy(k => k.Rule.Priority)
+          .ThenBy(k => k.Property)
           .ThenBy(k => k.Registration)
           .Select(k => k.Rule)
           .ToList();
       }
 
       /// <summary>
-      /// Property rules in run order.
+      /// Property rules in run order: by priority, then by property, then
+      /// by registration.
       /// </summary>
       public List<IBusinessRuleBase> Rules { get; }
 

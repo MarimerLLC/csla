@@ -200,7 +200,7 @@ The synchronous `BusinessRules.HasPermission` now accepts an async rule if its t
 `BusinessRules.CheckRules()` (and `CheckRulesAsync()`) now runs rules as a batch ([#3736](https://github.com/MarimerLLC/csla/issues/3736)). Previously each property's rules ran in turn and recursively reran the rules of its affected properties and of every rule using it as an input, so objects with many interdependent rules ran some rules dozens or hundreds of times. Now:
 
 1. Object-level rules run first, as before.
-2. Every property rule runs once.
+2. Every property rule runs once, in priority order across all properties ([#4235](https://github.com/MarimerLLC/csla/issues/4235)). Previously priority only ordered the rules within one property. Rules with the same priority run in the CSLA 10 order: by property, in the order the property's first rule was added, then in the order the rules were added.
 3. If rules changed property values through output values (`context.AddOutValue`), the rules for those properties, and the rules that use them as input properties, run again, once.
 4. With `CascadeOnDirtyProperties = true`, step 3 repeats until no rule changes a value.
 

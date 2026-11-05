@@ -56,13 +56,15 @@ namespace Csla.Test.ValidationRules
     private const string TaxSign = "SalesTax.SignAgreement";
 
     [TestMethod]
-    public void CheckRules_RunsEachPropertysRulesInPriorityOrder()
+    public void CheckRules_RunsRulesInPriorityOrderAcrossProperties()
     {
+      // #4235: priority applies across properties. Rules with the same
+      // priority run by property (first registration), then registration.
       var root = Create<CrossPropertyPriorityRoot>();
 
       var affected = root.RunCheckRules();
 
-      root.RuleLog.Should().Equal("A:p0", "A:p1", "B:p-1", "C:p0");
+      root.RuleLog.Should().Equal("B:p-1", "A:p0", "C:p0", "A:p1");
       affected.Should().BeEquivalentTo("A", "B", "C");
     }
 
@@ -239,9 +241,10 @@ namespace Csla.Test.ValidationRules
 
       root.RunCheckRules();
 
-      // X:p1 is skipped because X:p0 is broken (ProcessThroughPriority = 0),
-      // Y:p1 still runs, and Z:after-stop is skipped because Z:stop stops processing.
-      root.RuleLog.Should().Equal("X:p0-broken", "Y:p1", "Z:stop");
+      // Priority 0 rules run first, then priority 1. X:p1 is skipped because
+      // X:p0 is broken (ProcessThroughPriority = 0), Y:p1 still runs, and
+      // Z:after-stop is skipped because Z:stop stops processing.
+      root.RuleLog.Should().Equal("X:p0-broken", "Z:stop", "Y:p1");
       root.BrokenRulesCollection.Select(r => r.Property).Should().Equal("X");
     }
 
@@ -253,7 +256,7 @@ namespace Csla.Test.ValidationRules
 
       root.RunCheckRules();
 
-      root.RuleLog.Should().Equal("X:p0-broken", "X:p1", "Y:p1", "Z:stop");
+      root.RuleLog.Should().Equal("X:p0-broken", "Z:stop", "X:p1", "Y:p1");
     }
 
     [TestMethod]

@@ -44,36 +44,20 @@
     <ProvisioningType>automatic</ProvisioningType>
   </PropertyGroup>
   
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  <!-- Trimming and NativeAOT -->
+  <PropertyGroup>
+    <!-- Report each trim warning at its location instead of one warning per assembly -->
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  <!-- Android trims on publish by default; trim everything, not just the framework -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <TrimMode>full</TrimMode>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-maccatalyst|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-maccatalyst|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-windows10.0.19041.0|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-windows10.0.19041.0|AnyCPU'">
-    <DefineConstants>$(DefineConstants)TRACE;MAUI</DefineConstants>
+  <!-- MAUI supports NativeAOT on iOS and Mac Catalyst. NativeAOT always trims every assembly, so don't set TrimMode here -->
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
@@ -98,9 +82,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla.Maui" Version="10.0.0-beta-0010-g983ce0980c" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+    <PackageReference Include="Csla.Maui" Version="11.0.0-alpha.1" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.120" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.14" />
   </ItemGroup>
 
 	<ItemGroup>

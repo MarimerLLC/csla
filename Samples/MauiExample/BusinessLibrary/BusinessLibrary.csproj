@@ -4,11 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!-- Run the trim and AOT analyzers at build time, so warnings show up before publish -->
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla" Version="10.0.0-beta-0022-gbd53196668" />
-    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" Version="10.0.0-beta-0022-gbd53196668" />
+    <PackageReference Include="Csla" Version="11.0.0-alpha.1" />
   </ItemGroup>
 
   <ItemGroup>

@@ -762,12 +762,7 @@ namespace Csla.Rules
         return new List<string>();
 
       RunningRules = true;
-      var affectedProperties = CheckObjectRules(RuleContextModes.CheckRules, false);
-      var properties = TypeRules.Rules.Where(p => p.PrimaryProperty != null)
-                                          .Select(p => p.PrimaryProperty!)
-                                          .Distinct();
-      foreach (var property in properties)
-        affectedProperties.AddRange(CheckRules(property, RuleContextModes.CheckRules));
+      var affectedProperties = RuleRunner.CheckRules(this);
       RunningRules = false;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
@@ -785,59 +780,16 @@ namespace Csla.Rules
     /// </returns>
     public List<string> CheckObjectRules()
     {
-      return CheckObjectRules(RuleContextModes.CheckObjectRules, true);
-    }
-
-    /// <summary>
-    /// Invokes all rules attached at the class level
-    /// of the business type.
-    /// </summary>
-    /// <returns>
-    /// Returns a list of property names affected by the invoked rules.
-    /// The PropertyChanged event should be raised for each affected
-    /// property.
-    /// </returns>
-    private List<string> CheckObjectRules(RuleContextModes executionContext, bool cascade)
-    {
       if (_suppressRuleChecking)
         return new List<string>();
 
       var oldRR = RunningRules;
       RunningRules = true;
-      var rules = from r in TypeRules.Rules
-                  where r.PrimaryProperty == null
-                    && CanRunRule(_applicationContext, r, executionContext)
-                  orderby r.Priority
-                  select r;
-      BrokenRules.ClearRules(null);
-      // Changed to cascade propertyRule to make async ObjectLevel rules rerun PropertyLevel rules.
-      var firstResult = RunRules(rules, false, executionContext);
-
-      // rerun property level rules for affected properties 
-      if (cascade)
-      {
-        var propertiesToRun = new List<IPropertyInfo>();
-        foreach (var item in rules)
-          if (!item.IsAsync)
-          {
-            foreach (var p in item.AffectedProperties)
-              propertiesToRun.Add(p);
-          }
-        // run rules for affected properties
-        foreach (var item in propertiesToRun.Distinct())
-        {
-          var doCascade = false;
-          if (CascadeOnDirtyProperties)
-            doCascade = firstResult.DirtyProperties.Any(p => p == item.Name);
-          firstResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
-                                                            executionContext | RuleContextModes.AsAffectedProperty));
-        }
-      }
-
+      var affectedProperties = RuleRunner.CheckObjectRules(this);
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
-      return firstResult.AffectedProperties.Distinct().ToList();
+      return affectedProperties.Distinct().ToList();
     }
 
     /// <summary>
@@ -852,11 +804,6 @@ namespace Csla.Rules
     /// <exception cref="System.ArgumentNullException">If property is null</exception>
     public List<string> CheckRules(IPropertyInfo property)
     {
-      return CheckRules(property, RuleContextModes.PropertyChanged);
-    }
-
-    private List<string> CheckRules(IPropertyInfo property, RuleContextModes executionContext)
-    {
       if (property == null)
         throw new ArgumentNullException(nameof(property));
 
@@ -865,15 +812,20 @@ namespace Csla.Rules
 
       var oldRR = RunningRules;
       RunningRules = true;
-
-      var affectedProperties = new List<string>();
-      affectedProperties.AddRange(CheckRulesForProperty(property, true, executionContext));
-
+      var affectedProperties = RuleRunner.CheckRules(this, property);
       RunningRules = oldRR;
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
     }
+
+    [NonSerialized]
+    private IRuleRunner? _ruleRunner;
+
+    /// <summary>
+    /// Gets the rule runner that decides which rules run and in what order.
+    /// </summary>
+    private IRuleRunner RuleRunner => _ruleRunner ??= _applicationContext.GetRequiredService<IRuleRunner>();
 
     /// <summary>
     /// Determines whether this rule can run the specified context mode.
@@ -904,126 +856,12 @@ namespace Csla.Rules
       return canRun;
     }
 
-    /// <summary>
-    /// Invokes all rules for a specific property.
-    /// </summary>
-    /// <param name="property">The property.</param>
-    /// <param name="cascade">if set to <c>true</c> [cascade].</param>
-    /// <param name="executionMode">The execute mode.</param>
-    private List<string> CheckRulesForProperty(IPropertyInfo property, bool cascade, RuleContextModes executionMode)
-    {
-      // checking rules for the primary property
-      var primaryRules = from r in TypeRules.Rules
-                         where ReferenceEquals(r.PrimaryProperty, property)
-                           && CanRunRule(_applicationContext, r, executionMode)
-                         orderby r.Priority
-                         select r;
-
-      BrokenRules.ClearRules(property);
-      var primaryResult = RunRules(primaryRules, cascade, executionMode);
-      if (CascadeOnDirtyProperties)
-        cascade = cascade || primaryResult.DirtyProperties.Any();
-      if (cascade)
-      {
-        // get properties affected by all rules
-        var propertiesToRun = new List<IPropertyInfo>();
-        foreach (var item in primaryRules)
-          if (!item.IsAsync)
-          {
-            foreach (var p in item.AffectedProperties)
-              if (!ReferenceEquals(property, p))
-                propertiesToRun.Add(p);
-          }
-
-        // gets a list rules of of "affected" properties by adding
-        // PrimaryProperty where property is in InputProperties
-        var inputRules = from r in TypeRules.Rules
-                         where !ReferenceEquals(r.PrimaryProperty, property)
-                               && r.PrimaryProperty != null
-                               && r.InputProperties != null
-                               && r.InputProperties.Contains(property)
-                         select r;
-
-        var dirtyProperties = primaryResult.DirtyProperties;
-        var inputProperties = from r in inputRules
-                              where !r.CascadeIfDirty || dirtyProperties.Contains(r.PrimaryProperty!.Name)
-                              select r.PrimaryProperty;
-
-        foreach (var p in inputProperties)
-        {
-          if (!ReferenceEquals(property, p))
-            propertiesToRun.Add(p);
-        }
-        // run rules for affected properties
-        foreach (var item in propertiesToRun.Distinct())
-        {
-          var doCascade = false;
-          if (CascadeOnDirtyProperties)
-            doCascade = primaryResult.DirtyProperties.Any(p => p == item.Name);
-          primaryResult.AffectedProperties.AddRange(CheckRulesForProperty(item, doCascade,
-                                                               executionMode | RuleContextModes.AsAffectedProperty));
-        }
-      }
-
-      // always make sure to add PrimaryProperty
-      primaryResult.AffectedProperties.Add(property.Name);
-      return primaryResult.AffectedProperties.Distinct().ToList();
-    }
-
     [NonSerialized]
     private List<IPropertyInfo>? _busyProperties;
 
     private bool _cascadeOnDirtyProperties;
 
     private List<IPropertyInfo> BusyProperties => _busyProperties ??= [];
-
-    /// <summary>
-    /// Runs the enumerable list of rules.
-    /// </summary>
-    /// <param name="rules">The rules.</param>
-    /// <param name="cascade">if set to <c>true</c> cascade.</param>
-    /// <param name="executionContext">The execution context.</param>
-    private RunRulesResult RunRules(IEnumerable<IBusinessRuleBase> rules, bool cascade, RuleContextModes executionContext)
-    {
-      var affectedProperties = new List<string>();
-      var dirtyProperties = new List<string>();
-      bool anyRuleBroken = false;
-      AsyncRuleCompletedHandler? onAsyncRuleCompleted = cascade ? CascadeAfterAsyncRule : null;
-      foreach (var rule in rules)
-      {
-        // implicit short-circuiting
-        if (anyRuleBroken && rule.Priority > ProcessThroughPriority)
-          break;
-
-        var outcome = ((IRuleRunnerHost)this).RunRule(rule, executionContext, onAsyncRuleCompleted);
-        affectedProperties.AddRange(outcome.AffectedProperties);
-        dirtyProperties.AddRange(outcome.DirtyProperties);
-        if (outcome.HasBrokenError)
-          anyRuleBroken = true;
-        // explicit short-circuiting
-        if (outcome.StopProcessing)
-          break;
-      }
-      // return any synchronous results
-      return new RunRulesResult(affectedProperties, dirtyProperties);
-    }
-
-    /// <summary>
-    /// Runs the rules for the affected properties of a completed async rule.
-    /// </summary>
-    private IEnumerable<string> CascadeAfterAsyncRule(IRuleContext r)
-    {
-      var affected = new List<string>();
-      foreach (var item in r.Rule.AffectedProperties.Distinct())
-        if (!ReferenceEquals(r.Rule.PrimaryProperty, item))
-        {
-          var doCascade = false;
-          if (CascadeOnDirtyProperties && (r.DirtyProperties != null))
-            doCascade = r.DirtyProperties.Any(p => p.Name == item.Name);
-          affected.AddRange(CheckRulesForProperty(item, doCascade, r.ExecuteContext | RuleContextModes.AsAffectedProperty));
-        }
-      return affected;
-    }
 
     #region IRuleRunnerHost
 
@@ -1438,18 +1276,6 @@ namespace Csla.Rules
 
     #endregion
 
-
-    internal class RunRulesResult
-    {
-      public RunRulesResult(List<string> affectedProperties, List<string> dirtyProperties)
-      {
-        AffectedProperties = affectedProperties;
-        DirtyProperties = dirtyProperties;
-      }
-
-      public List<string> AffectedProperties { get; }
-      public List<string> DirtyProperties { get; }
-    }
 
     object IBusinessRules.Target => Target;
   }

@@ -195,6 +195,38 @@ Async authorization rules (`IAuthorizationRuleAsync`) are now supported in view 
 
 The synchronous `BusinessRules.HasPermission` now accepts an async rule if its task has already completed. If the rule is still running, `HasPermission` throws an `InvalidOperationException` that tells you to use `HasPermissionAsync`. Previously any async rule threw `ArgumentOutOfRangeException`.
 
+## `CheckRules()` runs each rule once, then reruns only what changed
+
+`BusinessRules.CheckRules()` (and `CheckRulesAsync()`) now runs rules as a batch ([#3736](https://github.com/MarimerLLC/csla/issues/3736)). Previously each property's rules ran in turn and recursively reran the rules of its affected properties and of every rule using it as an input, so objects with many interdependent rules ran some rules dozens or hundreds of times. Now:
+
+1. Object-level rules run first, as before.
+2. Every property rule runs once.
+3. If rules changed property values through output values (`context.AddOutValue`), the rules for those properties, and the rules that use them as input properties, run again, once.
+4. With `CascadeOnDirtyProperties = true`, step 3 repeats until no rule changes a value.
+
+`CheckRules(property)`, the rules that run when a property is set, and `CheckObjectRules()` are unchanged.
+
+Behavior changes to check for:
+
+* **Reruns depend on changed values.** Rules rerun only when a value changed through rule output values. A rule that changes a property some other way, such as writing to the business object directly, no longer causes the rules that depend on that property to rerun during `CheckRules()`.
+* **Affected properties don't rerun on their own.** A rule's `AffectedProperties` still get `PropertyChanged`, but their rules no longer rerun during `CheckRules()` unless a value changed. They already ran once in the batch.
+* **`CascadeIfDirty` has no effect in `CheckRules()`**, because every rerun already requires a changed value. It still applies to `CheckRules(property)`.
+* **Rules that never settle throw.** With `CascadeOnDirtyProperties = true`, rules whose output values keep changing each other used to recurse until the process crashed with a `StackOverflowException`. `CheckRules()` now throws an `InvalidOperationException` naming the properties that kept changing after `MaxCheckRulesPasses` rerun passes (default 100).
+* Execution order and the number of times each rule runs change, so any code that depends on either may need updating. Short-circuiting (`ProcessThroughPriority` and `StopProcessing`) still applies per property, as before.
+
+To configure this, or to go back to the CSLA 10 behavior while you update your rules:
+
+```csharp
+services.AddCsla(o => o
+  .Rules(r =>
+  {
+    r.MaxCheckRulesPasses = 200;      // default 100
+    r.UseLegacyCheckRules = true;     // CSLA 10 behavior; temporary
+  }));
+```
+
+`UseLegacyCheckRules` is a temporary option and will be removed in a future version.
+
 ## Transaction settings resolved at runtime and `ITransactionScopeFactory`
 
 Transaction settings from `TransactionalAttribute` are now resolved when the transaction is created, not when the attribute is constructed ([#4780](https://github.com/MarimerLLC/csla/issues/4780)). Previously the attribute copied the defaults from `DataOptions` into itself. Because CSLA caches the attribute, later configuration changes were ignored.

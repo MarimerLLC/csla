@@ -5,6 +5,8 @@
     <Product>CSLA .NET Analyzers</Product>
     <Description>Custom analyzers for CSLA .NET.</Description>
     <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!-- Shipped in the Csla package alongside Csla.Analyzers.CodeFixes (see CslaPackBundledAnalyzers in Csla.csproj) -->
+    <IsPackable>false</IsPackable>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <BaseOutputPath>..\..\..\Bin</BaseOutputPath>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
@@ -18,8 +20,6 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.10.0" PrivateAssets="all" />
     <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
     <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
-    <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
-    <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

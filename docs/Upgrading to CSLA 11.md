@@ -209,7 +209,7 @@ The synchronous `BusinessRules.HasPermission` now accepts an async rule if its t
 Behavior changes to check for:
 
 * **Reruns depend on changed values.** Rules rerun only when a value changed through rule output values. A rule that changes a property some other way, such as writing to the business object directly, no longer causes the rules that depend on that property to rerun during `CheckRules()`.
-* **Affected properties don't rerun on their own.** A rule's `AffectedProperties` still get `PropertyChanged`, but their rules no longer rerun during `CheckRules()` unless a value changed. They already ran once in the batch.
+* **Affected properties don't rerun on their own.** The rules of a rule's `AffectedProperties` no longer rerun during `CheckRules()` unless a value changed. They already ran once in the batch. The affected properties are still in the property names `CheckRules()` returns.
 * **`CascadeIfDirty` has no effect in `CheckRules()`**, because every rerun already requires a changed value. It still applies to `CheckRules(property)`.
 * **Rules that never settle throw.** With `CascadeOnDirtyProperties = true`, rules whose output values keep changing each other used to recurse until the process crashed with a `StackOverflowException`. `CheckRules()` now throws an `InvalidOperationException` naming the properties that kept changing after `MaxRerunPasses` rerun passes (default 100).
 * Execution order and the number of times each rule runs change, so any code that depends on either may need updating. Short-circuiting (`ProcessThroughPriority` and `StopProcessing`) still applies per property, as before.

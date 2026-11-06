@@ -62,6 +62,10 @@ namespace Csla.Test.ValidationRules
 
     public Task<List<string>> RunCheckRulesAsync() => BusinessRules.CheckRulesAsync();
 
+    public List<string> RunCheckRules(IPropertyInfo property) => BusinessRules.CheckRules(property);
+
+    public bool RunningRules => BusinessRules.RunningRules;
+
     public bool CascadeOnDirtyProperties
     {
       get => BusinessRules.CascadeOnDirtyProperties;
@@ -604,6 +608,73 @@ namespace Csla.Test.ValidationRules
         PongProperty, "Pong",
         inputs: [PingProperty],
         action: c => c.AddOutValue(PongProperty, (int)c.InputPropertyValues[PingProperty] + 1)));
+    }
+
+    [Create]
+    private void Create()
+    {
+    }
+  }
+
+  /// <summary>
+  /// A rule that changes its own property, plus a failing validator for
+  /// that property that must not run as an affected property.
+  /// </summary>
+  [Serializable]
+  public class DenyAsAffectedValidatorRoot : RuleLogRoot<DenyAsAffectedValidatorRoot>
+  {
+    public static readonly PropertyInfo<int> PProperty = RegisterProperty<int>(nameof(P));
+    public int P
+    {
+      get => GetProperty(PProperty);
+      set => SetProperty(PProperty, value);
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new LoggingRule(PProperty, "P:normalize", action: c => c.AddOutValue(PProperty, 10)));
+      BusinessRules.AddRule(new LoggingRule(PProperty, "P:validate", action: c => c.AddErrorResult("P is invalid"))
+      {
+        RunMode = RunModes.DenyAsAffectedProperty
+      });
+    }
+
+    [Create]
+    private void Create()
+    {
+      LoadProperty(PProperty, 5);
+    }
+  }
+
+  /// <summary>
+  /// Y:check (priority 0) requires Y = 0; Y:p1-broken (priority 1) always
+  /// fails; X:set-Y sets Y = 1 after Y:check has run.
+  /// </summary>
+  [Serializable]
+  public class ShortCircuitRerunRoot : RuleLogRoot<ShortCircuitRerunRoot>
+  {
+    public static readonly PropertyInfo<int> XProperty = RegisterProperty<int>(nameof(X));
+    public int X
+    {
+      get => GetProperty(XProperty);
+      set => SetProperty(XProperty, value);
+    }
+
+    public static readonly PropertyInfo<int> YProperty = RegisterProperty<int>(nameof(Y));
+    public int Y
+    {
+      get => GetProperty(YProperty);
+      set => SetProperty(YProperty, value);
+    }
+
+    protected override void AddBusinessRules()
+    {
+      base.AddBusinessRules();
+      BusinessRules.AddRule(new LoggingRule(YProperty, "Y:check", inputs: [YProperty],
+        action: c => { if ((int)c.InputPropertyValues[YProperty] != 0) c.AddErrorResult("Y must be 0"); }));
+      BusinessRules.AddRule(new LoggingRule(XProperty, "X:set-Y", affected: [YProperty], action: c => c.AddOutValue(YProperty, 1)));
+      BusinessRules.AddRule(new LoggingRule(YProperty, "Y:p1-broken", action: c => c.AddErrorResult("Y p1 broken")) { Priority = 1 });
     }
 
     [Create]

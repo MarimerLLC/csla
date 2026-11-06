@@ -293,7 +293,16 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("ChangeReadOnlyListInvalid", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to CheckRules stopped after {0} rerun passes because rule output values were still changing these properties: {1}. Look for rules whose output values feed each other, or raise MaxRerunPasses with RuleOptions.UseBatchCheckRules..
+        /// </summary>
+        public static string CheckRulesDidNotSettle {
+            get {
+                return ResourceManager.GetString("CheckRulesDidNotSettle", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Can not directly mark a child object for deletion - use its parent collection.
         /// </summary>

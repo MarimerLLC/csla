@@ -102,8 +102,14 @@ explicitly instead.
      `stopped` (`StopProcessing`). Skip a rule if its property group is short-circuited.
      Short-circuit behavior stays per property, as today. Only the interleaving changes.
    - Collect affected, output and dirty property names.
-3. **Pass 2: rerun only what dirty values invalidate.** With dirty set D, the groups to rerun are
-   `Q = D ∪ { r.PrimaryProperty | r.InputProperties ∩ D ≠ ∅ }`. Rerun each group in Q **in full**
+3. **Pass 2: rerun only what dirty values invalidate.** Let D be the set of properties whose values
+   rules changed in the previous pass. The property groups to rerun are:
+   - every property in D (that has rules), plus
+   - the primary property of every rule that has at least one input property in D.
+
+   In set notation, `Q = D ∪ P`, where `P = { r.PrimaryProperty : r.InputProperties ∩ D ≠ ∅ }`
+   is "the primary properties of the rules whose inputs overlap D". The `:` reads "such that"; it is
+   a filter on the rules, not an "or". Rerun each group in Q **in full**
    (clear its broken rules, then run all its rules) with the same interleaved runner, restricted to Q,
    in mode `CheckRules | AsAffectedProperty` so `DenyAsAffectedProperty` is honored as it is in
    today's cascade.
@@ -111,7 +117,7 @@ explicitly instead.
      short-circuit priority 1 rules, those rules never ran, so the whole group has to run again.
 4. **Loop.** If `CascadeOnDirtyProperties`, repeat pass 2 with the newly dirty set until it is empty.
    Otherwise stop after one pass 2 (this matches today's single cascade level). Stop after
-   `MaxCheckRulesPasses` rounds (see Decisions) so rules that keep changing each other's values fail
+   `MaxRerunPasses` rounds (see Decisions) so rules that keep changing each other's values fail
    clearly. Today that case recurses until a `StackOverflowException` kills the process; the
    baseline tests confirmed this.
 5. **Async rules.** They start in pass order. Their completion keeps today's behavior and reruns
@@ -131,7 +137,7 @@ explicitly instead.
   (Side note: the existing check at `BusinessRules.cs:949` tests the dependent rule's *primary*
   property, not the input that changed. That looks wrong, but it's a separate issue.)
 - A cycle that never settles now throws instead of overflowing the stack.
-- How to opt out (`RuleOptions.UseLegacyCheckRules`).
+- How to opt out (`RuleOptions.UseLegacyCheckRules()`).
 
 ### Note on the desk check in #3736
 
@@ -166,9 +172,9 @@ rule's input changed), but the test expectations should count it.
    `LegacyRuleRunner`, register it in `AddCsla()`, and have `BusinessRules` delegate to the resolved
    runner. Still no behavior change; the baseline tests prove it.
 4. **`BatchRuleRunner` (#3736).** Steps 1–6 above, using today's order key
-   `(firstAppearance, Priority, registration)`. Add `RuleOptions` (`UseLegacyCheckRules`,
-   `MaxCheckRulesPasses`) and make the batch runner the default. Run the baseline tests under both
-   runners through `UseLegacyCheckRules`, so the legacy runner is shown to still match today. Update
+   `(firstAppearance, Priority, registration)`. Add `RuleOptions` (`UseBatchCheckRules(...)`,
+   `UseLegacyCheckRules()`) and make the batch runner the default. Run the baseline tests under both
+   runners through `UseLegacyCheckRules()`, so the legacy runner is shown to still match today. Update
    run-count expectations for the batch runner. Add the never-settling-cycle test. Add a
    `csla.benchmarks` case (around 100 rules with dependencies) to compare before and after. Add the
    upgrade doc entry.
@@ -185,16 +191,27 @@ revertible.
 
 ## Decisions (settled)
 
-1. **Opt-out switch.** v11 uses the batch runner by default. Add a new `RuleOptions` group on
-   `CslaOptions`, following the existing `DataOptions` / `BindingOptions` pattern, with
-   `UseLegacyCheckRules` (default `false`). When it's `true`, `AddCsla()` registers
-   `LegacyRuleRunner` instead of `BatchRuleRunner`. Because the runner interfaces are internal,
-   this public option is the supported way to choose a runner. Mark it `[Obsolete]` in v12 and
-   remove it later. The option is global for now: a per-type or per-instance choice would need more
-   API, and a per-instance setting on `BusinessRules` would add a serialized field.
+1. **Opt-out switch, with options per behavior.** v11 uses the batch runner by default. Add a new
+   `RuleOptions` group on `CslaOptions` (`o.Rules(...)`, following the existing `DataOptions` /
+   `BindingOptions` pattern). The behavior is chosen with a method, and each method takes only the
+   settings that apply to that behavior, so there's no setting that the chosen runner silently
+   ignores:
+
+   ```csharp
+   o.Rules(r => r.UseBatchCheckRules(b => b.MaxRerunPasses = 200));   // default
+   o.Rules(r => r.UseLegacyCheckRules());                             // CSLA 10 behavior, temporary
+   ```
+
+   If both are called, the last call wins. `AddCsla()` registers `LegacyRuleRunner` or
+   `BatchRuleRunner` accordingly. Because the runner interfaces are internal, these methods are the
+   supported way to choose a runner. A future runner (such as priority-ordered async execution)
+   adds its own `Use…(…)` method with its own options. Mark `UseLegacyCheckRules()` `[Obsolete]` in
+   v12 and remove it later. The choice is global for now: a per-type or per-instance choice would
+   need more API, and a per-instance setting on `BusinessRules` would add a serialized field.
 2. **Object rules run first**, as today, and are not part of the priority interleave. Their dirty
    outputs feed pass 2.
-3. **Configurable cycle cap.** Add `RuleOptions.MaxCheckRulesPasses`, the number of pass-2 rounds
+3. **Configurable cycle cap.** Add `BatchCheckRulesOptions.MaxRerunPasses` (set through
+   `UseBatchCheckRules(...)`), the number of pass-2 rounds
    allowed when `CascadeOnDirtyProperties` is on (default 100). When the cap is reached, throw
    `InvalidOperationException` naming the properties that are still changing. Throwing rather than
    stopping quietly is proposed (feedback welcome): stopping quietly would leave the object in an

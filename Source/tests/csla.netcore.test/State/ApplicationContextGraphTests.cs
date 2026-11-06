@@ -94,6 +94,39 @@ namespace Csla.Test.State
     }
 
     [TestMethod]
+    public void ContainerInObjectTypedPropertyIsAttached()
+    {
+      using var provider = BuildProvider();
+      using var oldScope = provider.CreateScope();
+      using var newScope = provider.CreateScope();
+      var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+      var holder = oldScope.ServiceProvider.GetRequiredService<IDataPortal<ContainerHolder>>().Create();
+      var root = CreateGraph(oldScope.ServiceProvider);
+      holder.SetUntyped(new MobileDictionary<string, Root> { ["root"] = root });
+      var session = new Session { ["holder"] = holder };
+
+      ApplicationContextGraph.SetApplicationContext(session, newContext);
+
+      Assert.AreSame(newContext, ContextOf(root), "root");
+      Assert.AreSame(newContext, ContextOf(root.Children[0]), "child");
+    }
+
+    [TestMethod]
+    public void CriteriaWithPlaceholderContextIsAttached()
+    {
+      using var provider = BuildProvider();
+      using var scope = provider.CreateScope();
+      var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+      var criteria = new SessionCriteria();
+      var session = new Session { ["criteria"] = criteria };
+
+      ApplicationContextGraph.SetApplicationContext(session, context);
+
+      Assert.AreSame(context, ContextOf(criteria));
+    }
+
+    [TestMethod]
     public void DictionaryKeysAreAttached()
     {
       using var provider = BuildProvider();
@@ -163,6 +196,11 @@ namespace Csla.Test.State
       private set => LoadProperty(NestedListProperty, value);
     }
 
+    public static readonly PropertyInfo<object> UntypedProperty = RegisterProperty<object>(nameof(Untyped));
+    public object Untyped => GetProperty(UntypedProperty);
+
+    public void SetUntyped(object value) => LoadProperty(UntypedProperty, value);
+
     [Create]
     private void Create()
     {
@@ -170,4 +208,9 @@ namespace Csla.Test.State
       NestedList = [];
     }
   }
+
+#pragma warning disable CS0618 // CriteriaBase is obsolete, but still supported
+  [Serializable]
+  public class SessionCriteria : CriteriaBase<SessionCriteria>;
+#pragma warning restore CS0618
 }

@@ -106,11 +106,13 @@ namespace Csla.Core
             //only dig into property if its not a lazy loaded property
             //  or if it is, then only if its loaded
             if ((!isLazyLoadedProperty || target.FieldExists(managedProperty))
-              && (typeof(IUseApplicationContext).IsAssignableFrom(managedProperty.Type)
-                || typeof(IEnumerable).IsAssignableFrom(managedProperty.Type)))
+              && !managedProperty.Type.IsValueType
+              && managedProperty.Type != typeof(string))
             {
-              // child object, or a container (such as a Csla.Core.MobileList
-              // or MobileDictionary) that may hold child objects
+              // a child object, or a container (such as a Csla.Core.MobileList
+              // or MobileDictionary) that may hold child objects; the value's
+              // runtime type decides, because the property can be declared
+              // as object or an interface
               Attach(target.ReadProperty(managedProperty));
             }
           }
@@ -162,7 +164,9 @@ namespace Csla.Core
       /// </summary>
       private bool IsInActiveLocalScope(ApplicationContext? current)
       {
-        if (!skipActiveLocalScopes || current is null)
+        // a context without an accessor (such as the placeholder that
+        // CriteriaBase uses) has no scope, so it can't be in an operation
+        if (!skipActiveLocalScopes || current?.ApplicationContextAccessor is null)
           return false;
 
         _activeLocalScopes ??= new Dictionary<ApplicationContext, bool>(ReferenceComparer<ApplicationContext>.Instance);

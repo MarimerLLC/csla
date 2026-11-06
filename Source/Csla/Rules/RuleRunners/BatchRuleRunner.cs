@@ -39,18 +39,18 @@ namespace Csla.Rules
   /// </remarks>
   internal sealed class BatchRuleRunner : LegacyRuleRunner
   {
-    private readonly int _maxCheckRulesPasses;
+    private readonly int _maxRerunPasses;
 
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
-    /// <param name="maxCheckRulesPasses">Maximum number of pass-2 rounds when cascading.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxCheckRulesPasses"/> is less than 1.</exception>
-    public BatchRuleRunner(int maxCheckRulesPasses)
+    /// <param name="maxRerunPasses">Maximum number of pass-2 rounds when cascading.</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="maxRerunPasses"/> is less than 1.</exception>
+    public BatchRuleRunner(int maxRerunPasses)
     {
-      if (maxCheckRulesPasses < 1)
-        throw new ArgumentOutOfRangeException(nameof(maxCheckRulesPasses));
-      _maxCheckRulesPasses = maxCheckRulesPasses;
+      if (maxRerunPasses < 1)
+        throw new ArgumentOutOfRangeException(nameof(maxRerunPasses));
+      _maxRerunPasses = maxRerunPasses;
     }
 
     /// <inheritdoc />
@@ -71,9 +71,9 @@ namespace Csla.Rules
         var groups = plan.GroupsInvalidatedBy(dirtyProperties);
         if (groups.Count == 0)
           break;
-        if (passes == _maxCheckRulesPasses)
+        if (passes == _maxRerunPasses)
           throw new InvalidOperationException(string.Format(
-            Properties.Resources.CheckRulesDidNotSettle, _maxCheckRulesPasses, string.Join(", ", dirtyProperties)));
+            Properties.Resources.CheckRulesDidNotSettle, _maxRerunPasses, string.Join(", ", dirtyProperties)));
         passes++;
 
         var newlyDirty = new HashSet<string>();

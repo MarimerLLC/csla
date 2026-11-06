@@ -205,7 +205,7 @@ namespace Csla.Test.ValidationRules
       var act = () => root.RunCheckRules();
 
       act.Should().Throw<InvalidOperationException>()
-        .WithMessage("*100 cascade passes*Ping*");
+        .WithMessage("*100 rerun passes*Ping*");
       root.RuleLog.Should().HaveCount(202);  // pass 1 plus 100 rerun passes, 2 rules each
     }
 
@@ -257,28 +257,48 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
-    public void CheckRules_HonorsMaxCheckRulesPasses()
+    public void CheckRules_HonorsMaxRerunPasses()
     {
       // The converging cycle needs 6 rerun passes to settle.
-      using var host = CslaTestHost.Create(o => o.ConfigureCsla(c => c.Rules(r => r.MaxCheckRulesPasses = 3)));
+      using var host = CslaTestHost.Create(o => o.ConfigureCsla(c => c.Rules(r => r.UseBatchCheckRules(b => b.MaxRerunPasses = 3))));
       var root = Create<ConvergingCycleRoot>(host);
       root.CascadeOnDirtyProperties = true;
 
       var act = () => root.RunCheckRules();
 
       act.Should().Throw<InvalidOperationException>()
-        .WithMessage("*3 cascade passes*");
+        .WithMessage("*3 rerun passes*");
     }
 
     [TestMethod]
-    public void MaxCheckRulesPasses_MustBeAtLeastOne()
+    public void MaxRerunPasses_MustBeAtLeastOne()
     {
-      var options = new RuleOptions();
+      var options = new BatchCheckRulesOptions();
 
-      var act = () => options.MaxCheckRulesPasses = 0;
+      var act = () => options.MaxRerunPasses = 0;
 
       act.Should().Throw<ArgumentOutOfRangeException>();
-      options.MaxCheckRulesPasses.Should().Be(100);
+      options.MaxRerunPasses.Should().Be(100);
+    }
+
+    [TestMethod]
+    [DataRow(true, 24)]   // UseBatchCheckRules(...) then UseLegacyCheckRules()
+    [DataRow(false, 9)]   // UseLegacyCheckRules() then UseBatchCheckRules(...)
+    public void RuleOptions_LastRunnerChoiceWins(bool legacyLast, int expectedRuns)
+    {
+      using var host = CslaTestHost.Create(o => o.ConfigureCsla(c => c.Rules(r =>
+      {
+        if (legacyLast)
+          r.UseBatchCheckRules(b => b.MaxRerunPasses = 5).UseLegacyCheckRules();
+        else
+          r.UseLegacyCheckRules().UseBatchCheckRules(b => b.MaxRerunPasses = 5);
+      })));
+      var root = Create<CreditOrderRoot>(host);
+      root.CascadeOnDirtyProperties = true;
+
+      root.RunCheckRules();
+
+      root.RuleLog.Should().HaveCount(expectedRuns);
     }
 
     [TestMethod]

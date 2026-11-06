@@ -19,7 +19,7 @@ namespace Csla.Test.ValidationRules
   /// <remarks>
   /// These tests pin down the CSLA 10 execution order, rerun counts, final
   /// property values, broken rules and return values of CheckRules(). They
-  /// run with RuleOptions.UseLegacyCheckRules, to show that the legacy rule
+  /// run with RuleOptions.UseLegacyCheckRules(), to show that the legacy rule
   /// runner still matches CSLA 10. See CheckRulesBatchTests for the default
   /// behavior (#3736, #4235). Rule execution order is the order in which
   /// rules start.
@@ -32,7 +32,7 @@ namespace Csla.Test.ValidationRules
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
-      _testHost = CslaTestHost.Create(o => o.ConfigureCsla(c => c.Rules(r => r.UseLegacyCheckRules = true)));
+      _testHost = CslaTestHost.Create(o => o.ConfigureCsla(c => c.Rules(r => r.UseLegacyCheckRules())));
     }
 
     [ClassCleanup]

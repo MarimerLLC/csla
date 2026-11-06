@@ -211,21 +211,24 @@ Behavior changes to check for:
 * **Reruns depend on changed values.** Rules rerun only when a value changed through rule output values. A rule that changes a property some other way, such as writing to the business object directly, no longer causes the rules that depend on that property to rerun during `CheckRules()`.
 * **Affected properties don't rerun on their own.** A rule's `AffectedProperties` still get `PropertyChanged`, but their rules no longer rerun during `CheckRules()` unless a value changed. They already ran once in the batch.
 * **`CascadeIfDirty` has no effect in `CheckRules()`**, because every rerun already requires a changed value. It still applies to `CheckRules(property)`.
-* **Rules that never settle throw.** With `CascadeOnDirtyProperties = true`, rules whose output values keep changing each other used to recurse until the process crashed with a `StackOverflowException`. `CheckRules()` now throws an `InvalidOperationException` naming the properties that kept changing after `MaxCheckRulesPasses` rerun passes (default 100).
+* **Rules that never settle throw.** With `CascadeOnDirtyProperties = true`, rules whose output values keep changing each other used to recurse until the process crashed with a `StackOverflowException`. `CheckRules()` now throws an `InvalidOperationException` naming the properties that kept changing after `MaxRerunPasses` rerun passes (default 100).
 * Execution order and the number of times each rule runs change, so any code that depends on either may need updating. Short-circuiting (`ProcessThroughPriority` and `StopProcessing`) still applies per property, as before.
 
-To configure this, or to go back to the CSLA 10 behavior while you update your rules:
+To configure the new behavior:
 
 ```csharp
 services.AddCsla(o => o
-  .Rules(r =>
-  {
-    r.MaxCheckRulesPasses = 200;      // default 100
-    r.UseLegacyCheckRules = true;     // CSLA 10 behavior; temporary
-  }));
+  .Rules(r => r.UseBatchCheckRules(b => b.MaxRerunPasses = 200)));   // default 100
 ```
 
-`UseLegacyCheckRules` is a temporary option and will be removed in a future version.
+To go back to the CSLA 10 behavior while you update your rules:
+
+```csharp
+services.AddCsla(o => o
+  .Rules(r => r.UseLegacyCheckRules()));
+```
+
+`UseLegacyCheckRules()` is temporary and will be removed in a future version. Each method takes only the settings that apply to that behavior. If you call both, the last call wins.
 
 ## Transaction settings resolved at runtime and `ITransactionScopeFactory`
 

@@ -69,6 +69,48 @@ namespace Csla.Test.State
     }
 
     [TestMethod]
+    public void ObjectsInManagedContainersAreAttached()
+    {
+      using var provider = BuildProvider();
+      using var oldScope = provider.CreateScope();
+      using var newScope = provider.CreateScope();
+      var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+      var holder = oldScope.ServiceProvider.GetRequiredService<IDataPortal<ContainerHolder>>().Create();
+      var inDictionary = CreateGraph(oldScope.ServiceProvider);
+      var inNestedList = CreateGraph(oldScope.ServiceProvider);
+      holder.Dictionary.Add("root", inDictionary);
+      holder.NestedList.Add(new MobileList<Root> { inNestedList });
+      var session = new Session { ["holder"] = holder };
+
+      ApplicationContextGraph.SetApplicationContext(session, newContext);
+
+      Assert.AreSame(newContext, ContextOf(holder), "holder");
+      foreach (var root in new[] { inDictionary, inNestedList })
+      {
+        Assert.AreSame(newContext, ContextOf(root), "root");
+        Assert.AreSame(newContext, ContextOf(root.Children[0]), "child");
+      }
+    }
+
+    [TestMethod]
+    public void DictionaryKeysAreAttached()
+    {
+      using var provider = BuildProvider();
+      using var oldScope = provider.CreateScope();
+      using var newScope = provider.CreateScope();
+      var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
+
+      var key = CreateGraph(oldScope.ServiceProvider);
+      var session = new Session { ["keyed"] = new MobileDictionary<Root, string> { [key] = "value" } };
+
+      ApplicationContextGraph.SetApplicationContext(session, newContext);
+
+      Assert.AreSame(newContext, ContextOf(key), "root");
+      Assert.AreSame(newContext, ContextOf(key.Children[0]), "child");
+    }
+
+    [TestMethod]
     public void CyclicContainersTerminate()
     {
       using var provider = BuildProvider();
@@ -101,6 +143,31 @@ namespace Csla.Test.State
 
       Assert.AreSame(context, ContextOf(root));
       Assert.AreSame(context, ContextOf(root.Children[0]));
+    }
+  }
+
+  [Serializable]
+  public class ContainerHolder : BusinessBase<ContainerHolder>
+  {
+    public static readonly PropertyInfo<MobileDictionary<string, Root>> DictionaryProperty = RegisterProperty<MobileDictionary<string, Root>>(nameof(Dictionary));
+    public MobileDictionary<string, Root> Dictionary
+    {
+      get => GetProperty(DictionaryProperty);
+      private set => LoadProperty(DictionaryProperty, value);
+    }
+
+    public static readonly PropertyInfo<MobileList<MobileList<Root>>> NestedListProperty = RegisterProperty<MobileList<MobileList<Root>>>(nameof(NestedList));
+    public MobileList<MobileList<Root>> NestedList
+    {
+      get => GetProperty(NestedListProperty);
+      private set => LoadProperty(NestedListProperty, value);
+    }
+
+    [Create]
+    private void Create()
+    {
+      Dictionary = [];
+      NestedList = [];
     }
   }
 }

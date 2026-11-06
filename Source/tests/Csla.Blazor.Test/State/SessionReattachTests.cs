@@ -88,6 +88,25 @@ public class SessionReattachTests
     Assert.IsFalse(person.IsNew);
   }
 
+  [TestMethod]
+  public async Task NonCloningSaveOfSessionObjectRunsInDataPortalScope()
+  {
+    using var provider = BuildProvider(autoCloneOnUpdate: false);
+    using var scope = CreateCircuitScope(provider);
+    var applicationContext = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    var recorder = await scope.ServiceProvider.GetRequiredService<IDataPortal<ScopeRecorder>>().CreateAsync();
+    recorder.Name = "Recorder";
+    applicationContext.LocalContext[LocalKey] = recorder;
+
+    // LocalProxy reads LocalContext during the operation, which
+    // must not pull the object back out of the data portal's scope
+    recorder = await recorder.SaveAsync();
+
+    Assert.IsTrue(recorder.InsertUsedDataPortalScope);
+    var stored = (ScopeRecorder)applicationContext.LocalContext[LocalKey];
+    Assert.AreSame(applicationContext, ContextOf(stored));
+  }
+
   /// <summary>
   /// Puts business objects in the session (directly and in LocalContext),
   /// then replaces the session with a copy deserialized in a scope that
@@ -137,7 +156,7 @@ public class SessionReattachTests
     return scope;
   }
 
-  private static ServiceProvider BuildProvider()
+  private static ServiceProvider BuildProvider(bool autoCloneOnUpdate = true)
   {
     var httpContext = new DefaultHttpContext();
     httpContext.Request.Headers.Cookie = $"cslaSessionId={Guid.NewGuid()}";
@@ -148,7 +167,8 @@ public class SessionReattachTests
     services.AddScoped<AuthenticationStateProvider, AnonymousAuthenticationStateProvider>();
     services.AddCsla(o => o
       .AddAspNetCore()
-      .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false));
+      .AddServerSideBlazor(o => o.UseInMemoryApplicationContextManager = false)
+      .DataPortal(dpo => dpo.AddClientSideDataPortal(c => c.AutoCloneOnUpdate = autoCloneOnUpdate)));
     return services.BuildServiceProvider();
   }
 
@@ -161,5 +181,39 @@ public class SessionReattachTests
   {
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
       => Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
+  }
+}
+
+/// <summary>
+/// Records whether its insert ran with the data portal's
+/// ApplicationContext.
+/// </summary>
+[Serializable]
+public class ScopeRecorder : BusinessBase<ScopeRecorder>
+{
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set => SetProperty(NameProperty, value);
+  }
+
+  public static readonly PropertyInfo<bool> InsertUsedDataPortalScopeProperty = RegisterProperty<bool>(nameof(InsertUsedDataPortalScope));
+  public bool InsertUsedDataPortalScope
+  {
+    get => GetProperty(InsertUsedDataPortalScopeProperty);
+    private set => LoadProperty(InsertUsedDataPortalScopeProperty, value);
+  }
+
+  [Create]
+  private void Create()
+  {
+    BusinessRules.CheckRules();
+  }
+
+  [Insert]
+  private void Insert([Inject] ApplicationContext applicationContext)
+  {
+    InsertUsedDataPortalScope = ReferenceEquals(applicationContext, ApplicationContext);
   }
 }

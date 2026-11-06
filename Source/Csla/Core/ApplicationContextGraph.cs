@@ -8,6 +8,7 @@
 
 using System.Collections;
 using System.Runtime.CompilerServices;
+using Csla.Runtime;
 using Csla.State;
 
 namespace Csla.Core
@@ -31,56 +32,10 @@ namespace Csla.Core
     /// </remarks>
     public static void SetApplicationContext(IUseApplicationContext? obj, ApplicationContext applicationContext)
     {
-      if (obj != null && !ReferenceEquals(obj.ApplicationContext, applicationContext))
-      {
-        obj.ApplicationContext = applicationContext;
+      if (applicationContext is null)
+        throw new ArgumentNullException(nameof(applicationContext));
 
-        if (obj is IUseFieldManager useFieldManager)
-          SetApplicationContext(useFieldManager.FieldManager, applicationContext);
-
-        if (obj is IUseBusinessRules useBusinessRules)
-          SetApplicationContext(useBusinessRules.BusinessRules, applicationContext);
-
-        if (obj is IManageProperties target)
-        {
-          foreach (var managedProperty in target.GetManagedProperties())
-          {
-            var isLazyLoadedProperty = (managedProperty.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad;
-
-            //only dig into property if its not a lazy loaded property
-            //  or if it is, then only if its loaded
-            if (!isLazyLoadedProperty
-              || (isLazyLoadedProperty && target.FieldExists(managedProperty)))
-            {
-              if (typeof(IUseApplicationContext).IsAssignableFrom(managedProperty.Type))
-              {
-                //property is directly assignable to the IUseApplicationContext so set it
-                SetApplicationContext((IUseApplicationContext?)target.ReadProperty(managedProperty), applicationContext);
-              }
-              else if (typeof(IEnumerable).IsAssignableFrom(managedProperty.Type))
-              {
-                //property is a list and needs to be processed (could be a Csla.Core.MobileList or something like that)
-                var enumerable = (IEnumerable?)target.ReadProperty(managedProperty);
-                if (enumerable != null)
-                {
-                  foreach (var item in enumerable)
-                  {
-                    SetApplicationContext(item as IUseApplicationContext, applicationContext);
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        if (obj is IContainsDeletedList containsDeletedList)
-          foreach (var item in containsDeletedList.DeletedList)
-            SetApplicationContext(item as IUseApplicationContext, applicationContext);
-
-        if (obj is IEnumerable list)
-          foreach (var item in list)
-            SetApplicationContext(item as IUseApplicationContext, applicationContext);
-      }
+      new Walker(applicationContext, skipActiveLocalScopes: false).Attach(obj);
     }
 
     /// <summary>
@@ -91,6 +46,11 @@ namespace Csla.Core
     /// </summary>
     /// <param name="session">Session data.</param>
     /// <param name="applicationContext">Target ApplicationContext.</param>
+    /// <remarks>
+    /// Objects that are in a local data portal operation (their
+    /// ApplicationContext belongs to the operation's isolated scope)
+    /// are left alone until the operation completes.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="session"/> or <paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static void SetApplicationContext(Session session, ApplicationContext applicationContext)
     {
@@ -99,43 +59,140 @@ namespace Csla.Core
       if (applicationContext is null)
         throw new ArgumentNullException(nameof(applicationContext));
 
-      var visited = new HashSet<object>(ReferenceComparer.Instance) { session };
-      foreach (var value in session.Values.ToArray())
-        SetValueApplicationContext(value, applicationContext, visited);
+      new Walker(applicationContext, skipActiveLocalScopes: true).Attach(session);
     }
 
-    private static void SetValueApplicationContext(object? value, ApplicationContext applicationContext, HashSet<object> visited)
+    private sealed class Walker(ApplicationContext applicationContext, bool skipActiveLocalScopes)
     {
-      switch (value)
+      private HashSet<object>? _visitedContainers;
+      private Dictionary<ApplicationContext, bool>? _activeLocalScopes;
+
+      public void Attach(object? value)
       {
-        case null:
-        case string:
-          return;
-        case IUseApplicationContext useApplicationContext:
-          SetApplicationContext(useApplicationContext, applicationContext);
-          return;
+        switch (value)
+        {
+          case null:
+          case string:
+            return;
+          case IUseApplicationContext obj:
+            AttachObject(obj);
+            return;
+          case IEnumerable container:
+            AttachContainer(container);
+            return;
+        }
       }
 
-      if (value is not IEnumerable container || IsValueTypeArray(value) || !visited.Add(value))
-        return;
+      private void AttachObject(IUseApplicationContext obj)
+      {
+        var current = obj.ApplicationContext;
+        if (ReferenceEquals(current, applicationContext) || IsInActiveLocalScope(current))
+          return;
 
-      var items = value is IDictionary dictionary
-        ? dictionary.Values.Cast<object?>().ToArray()
-        : container.Cast<object?>().ToArray();
-      foreach (var item in items)
-        SetValueApplicationContext(item, applicationContext, visited);
+        obj.ApplicationContext = applicationContext;
+
+        if (obj is IUseFieldManager useFieldManager)
+          Attach(useFieldManager.FieldManager);
+
+        if (obj is IUseBusinessRules useBusinessRules)
+          Attach(useBusinessRules.BusinessRules);
+
+        if (obj is IManageProperties target)
+        {
+          foreach (var managedProperty in target.GetManagedProperties())
+          {
+            var isLazyLoadedProperty = (managedProperty.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad;
+
+            //only dig into property if its not a lazy loaded property
+            //  or if it is, then only if its loaded
+            if ((!isLazyLoadedProperty || target.FieldExists(managedProperty))
+              && (typeof(IUseApplicationContext).IsAssignableFrom(managedProperty.Type)
+                || typeof(IEnumerable).IsAssignableFrom(managedProperty.Type)))
+            {
+              // child object, or a container (such as a Csla.Core.MobileList
+              // or MobileDictionary) that may hold child objects
+              Attach(target.ReadProperty(managedProperty));
+            }
+          }
+        }
+
+        if (obj is IContainsDeletedList containsDeletedList)
+          foreach (var item in containsDeletedList.DeletedList)
+            Attach(item);
+
+        if (obj is IEnumerable list)
+          foreach (var item in list)
+            Attach(item);
+      }
+
+      private void AttachContainer(IEnumerable container)
+      {
+        if (IsValueTypeArray(container))
+          return;
+
+        _visitedContainers ??= new HashSet<object>(ReferenceComparer<object>.Instance);
+        if (!_visitedContainers.Add(container))
+          return;
+
+        if (container is IDictionary dictionary)
+        {
+          // keys can be serializable business objects too
+          var entries = new List<DictionaryEntry>(dictionary.Count);
+          var enumerator = dictionary.GetEnumerator();
+          while (enumerator.MoveNext())
+            entries.Add(enumerator.Entry);
+          foreach (var entry in entries)
+          {
+            Attach(entry.Key);
+            Attach(entry.Value);
+          }
+        }
+        else
+        {
+          foreach (var item in container.Cast<object?>().ToArray())
+            Attach(item);
+        }
+      }
+
+      /// <summary>
+      /// Gets whether the ApplicationContext belongs to the isolated
+      /// scope of a local data portal operation that is still running.
+      /// After the operation, LocalProxy points that ApplicationContext
+      /// at the caller's scope, so this is false again.
+      /// </summary>
+      private bool IsInActiveLocalScope(ApplicationContext? current)
+      {
+        if (!skipActiveLocalScopes || current is null)
+          return false;
+
+        _activeLocalScopes ??= new Dictionary<ApplicationContext, bool>(ReferenceComparer<ApplicationContext>.Instance);
+        if (!_activeLocalScopes.TryGetValue(current, out var result))
+        {
+          try
+          {
+            result = current.GetRequiredService<IRuntimeInfo>().LocalProxyNewScopeExists;
+          }
+          catch (ObjectDisposedException)
+          {
+            // the scope is gone, so the object must be re-attached
+            result = false;
+          }
+          _activeLocalScopes[current] = result;
+        }
+        return result;
+      }
+
+      private static bool IsValueTypeArray(object value)
+        => value is Array && value.GetType().GetElementType() is { IsValueType: true };
     }
 
-    private static bool IsValueTypeArray(object value)
-      => value is Array && value.GetType().GetElementType() is { IsValueType: true };
-
-    private sealed class ReferenceComparer : IEqualityComparer<object>
+    private sealed class ReferenceComparer<T> : IEqualityComparer<T> where T : class
     {
-      public static readonly ReferenceComparer Instance = new();
+      public static readonly ReferenceComparer<T> Instance = new();
 
-      public new bool Equals(object? x, object? y) => ReferenceEquals(x, y);
+      public bool Equals(T? x, T? y) => ReferenceEquals(x, y);
 
-      public int GetHashCode(object obj) => RuntimeHelpers.GetHashCode(obj);
+      public int GetHashCode(T obj) => RuntimeHelpers.GetHashCode(obj);
     }
   }
 }

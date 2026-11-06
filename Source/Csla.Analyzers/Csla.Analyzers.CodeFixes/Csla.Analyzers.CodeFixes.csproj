@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Product>CSLA .NET Analyzers Code Fixes</Product>
+    <Description>Code fixes for the CSLA .NET analyzers.</Description>
+    <RootNamespace>Csla.Analyzers</RootNamespace>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <!-- Shipped in the Csla package alongside Csla.Analyzers (see CslaPackBundledAnalyzers in Csla.csproj) -->
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <BaseOutputPath>..\..\..\Bin</BaseOutputPath>
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsRoslynComponent>true</IsRoslynComponent>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.10.0" PrivateAssets="all" />
+    <PackageReference Update="NETStandard.Library" PrivateAssets="all" />
+    <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers.csproj" />
+  </ItemGroup>
+
+</Project>

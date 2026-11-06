@@ -110,6 +110,7 @@
     <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
     <!-- Build order only; the analyzers are packed by CslaPackBundledAnalyzers -->
     <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" />
+    <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers.CodeFixes\Csla.Analyzers.CodeFixes.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" ReferenceOutputAssembly="true" OutputItemType="Analyzer" PrivateAssets="all" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoSerialization\Csla.Generator.AutoSerialization.CSharp\Csla.Generator.AutoSerialization.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
     <ProjectReference Include="..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
@@ -133,7 +134,7 @@
   </PropertyGroup>
 
   <Target Name="CslaPackBundledAnalyzers" Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <MSBuild Projects="..\Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj;..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
+    <MSBuild Projects="..\Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj;..\Csla.Analyzers\Csla.Analyzers.CodeFixes\Csla.Analyzers.CodeFixes.csproj;..\Csla.Generators\cs\AutoImplementProperties\Csla.Generator.AutoImplementProperties.CSharp\Csla.Generator.AutoImplementProperties.CSharp.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
       <Output TaskParameter="TargetOutputs" ItemName="_CslaBundledAnalyzerPath" />
     </MSBuild>
     <ItemGroup>

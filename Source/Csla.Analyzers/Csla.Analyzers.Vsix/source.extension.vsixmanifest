@@ -14,6 +14,8 @@
     <Assets>
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Csla.Analyzers" Path="|Csla.Analyzers|" />
         <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="Csla.Analyzers" Path="|Csla.Analyzers|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Csla.Analyzers.CodeFixes" Path="|Csla.Analyzers.CodeFixes|" />
+        <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="Csla.Analyzers.CodeFixes" Path="|Csla.Analyzers.CodeFixes|" />
     </Assets>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />

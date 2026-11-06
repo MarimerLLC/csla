@@ -62,7 +62,7 @@ namespace Csla.Rules
       var plan = new BatchPlan(host.Rules);
 
       // pass 1: every property rule once
-      RunGroups(host, plan, plan.Properties, RuleContextModes.CheckRules, affectedProperties, dirtyProperties);
+      RunGroups(host, plan, plan.Properties, RuleContextModes.CheckRules, isRerun: false, affectedProperties, dirtyProperties);
 
       // pass 2: rerun what changed values invalidate
       var passes = 0;
@@ -77,7 +77,7 @@ namespace Csla.Rules
         passes++;
 
         var newlyDirty = new HashSet<string>();
-        RunGroups(host, plan, groups, RuleContextModes.CheckRules | RuleContextModes.AsAffectedProperty, affectedProperties, newlyDirty);
+        RunGroups(host, plan, groups, RuleContextModes.CheckRules | RuleContextModes.AsAffectedProperty, isRerun: true, affectedProperties, newlyDirty);
         if (!host.CascadeOnDirtyProperties)
           break;
         dirtyProperties = newlyDirty;
@@ -89,18 +89,40 @@ namespace Csla.Rules
     /// <summary>
     /// Runs the rules of the given property groups, interleaved in plan order.
     /// </summary>
+    /// <param name="host">The rule runner host.</param>
+    /// <param name="plan">The run order and dependencies.</param>
+    /// <param name="groups">The properties whose rules run.</param>
+    /// <param name="executionContext">The execution context.</param>
+    /// <param name="isRerun">
+    /// True for a rerun pass. A rerun keeps the broken rules of rules that
+    /// can't run in <paramref name="executionContext"/> (such as rules that
+    /// deny running as an affected property), because they still describe
+    /// the current state. Pass 1 clears them, as the legacy runner does.
+    /// </param>
+    /// <param name="affectedProperties">Receives the affected property names.</param>
+    /// <param name="dirtyProperties">Receives the names of properties changed by output values.</param>
     private void RunGroups(
       IRuleRunnerHost host,
       BatchPlan plan,
       IReadOnlyCollection<IPropertyInfo> groups,
       RuleContextModes executionContext,
+      bool isRerun,
       List<string> affectedProperties,
       HashSet<string> dirtyProperties)
     {
       var states = new Dictionary<IPropertyInfo, GroupState>(groups.Count);
       foreach (var property in groups)
       {
-        host.ClearBrokenRules(property);
+        HashSet<string>? keepRuleNames = null;
+        if (isRerun)
+          foreach (var rule in plan.RulesFor(property))
+            if (!BusinessRules.CanRunRule(host.ApplicationContext, rule, executionContext))
+              (keepRuleNames ??= []).Add(rule.RuleName);
+
+        if (keepRuleNames == null)
+          host.ClearBrokenRules(property);
+        else
+          host.ClearBrokenRules(property, keepRuleNames);
         states[property] = new GroupState();
       }
 
@@ -149,6 +171,7 @@ namespace Csla.Rules
     {
       private readonly Dictionary<string, IPropertyInfo> _propertiesByName = [];
       private readonly Dictionary<string, List<IPropertyInfo>> _dependentsByInputName = [];
+      private readonly Dictionary<IPropertyInfo, List<IBusinessRuleBase>> _rulesByProperty = [];
 
       public BatchPlan(IReadOnlyList<IBusinessRuleBase> rules)
       {
@@ -170,6 +193,9 @@ namespace Csla.Rules
               _propertiesByName.Add(primary.Name, primary);
           }
           keyed.Add((rule, propertyIndex, i));
+          if (!_rulesByProperty.TryGetValue(primary, out var propertyRules))
+            _rulesByProperty.Add(primary, propertyRules = []);
+          propertyRules.Add(rule);
 
           if (rule.InputProperties != null)
             foreach (var input in rule.InputProperties)
@@ -201,6 +227,14 @@ namespace Csla.Rules
       /// Properties that have rules, in order of their first rule's registration.
       /// </summary>
       public List<IPropertyInfo> Properties { get; } = [];
+
+      /// <summary>
+      /// Gets the rules whose primary property is the given property.
+      /// </summary>
+      public IReadOnlyList<IBusinessRuleBase> RulesFor(IPropertyInfo property)
+      {
+        return _rulesByProperty.TryGetValue(property, out var rules) ? rules : [];
+      }
 
       /// <summary>
       /// Gets the property groups whose rules must rerun because these

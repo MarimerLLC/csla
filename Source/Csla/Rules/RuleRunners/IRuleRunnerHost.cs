@@ -47,6 +47,14 @@ namespace Csla.Rules
     void ClearBrokenRules(IPropertyInfo? property);
 
     /// <summary>
+    /// Removes the broken rules that originated from the rules for a property,
+    /// except those from the named rules.
+    /// </summary>
+    /// <param name="property">The property, or null for object-level rules.</param>
+    /// <param name="keepRuleNames">Names of rules whose broken rules to keep.</param>
+    void ClearBrokenRules(IPropertyInfo? property, ICollection<string> keepRuleNames);
+
+    /// <summary>
     /// Runs one rule: supplies its input values, executes it, applies its
     /// output values, records its broken rules and tracks busy state.
     /// </summary>

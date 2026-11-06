@@ -762,8 +762,15 @@ namespace Csla.Rules
         return new List<string>();
 
       RunningRules = true;
-      var affectedProperties = RuleRunner.CheckRules(this);
-      RunningRules = false;
+      List<string> affectedProperties;
+      try
+      {
+        affectedProperties = RuleRunner.CheckRules(this);
+      }
+      finally
+      {
+        RunningRules = false;
+      }
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
@@ -785,8 +792,15 @@ namespace Csla.Rules
 
       var oldRR = RunningRules;
       RunningRules = true;
-      var affectedProperties = RuleRunner.CheckObjectRules(this);
-      RunningRules = oldRR;
+      List<string> affectedProperties;
+      try
+      {
+        affectedProperties = RuleRunner.CheckObjectRules(this);
+      }
+      finally
+      {
+        RunningRules = oldRR;
+      }
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
@@ -812,8 +826,15 @@ namespace Csla.Rules
 
       var oldRR = RunningRules;
       RunningRules = true;
-      var affectedProperties = RuleRunner.CheckRules(this, property);
-      RunningRules = oldRR;
+      List<string> affectedProperties;
+      try
+      {
+        affectedProperties = RuleRunner.CheckRules(this, property);
+      }
+      finally
+      {
+        RunningRules = oldRR;
+      }
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
       return affectedProperties.Distinct().ToList();
@@ -870,6 +891,8 @@ namespace Csla.Rules
     IReadOnlyList<IBusinessRuleBase> IRuleRunnerHost.Rules => TypeRules.Rules;
 
     void IRuleRunnerHost.ClearBrokenRules(IPropertyInfo? property) => BrokenRules.ClearRules(property);
+
+    void IRuleRunnerHost.ClearBrokenRules(IPropertyInfo? property, ICollection<string> keepRuleNames) => BrokenRules.ClearRules(property, keepRuleNames);
 
     RuleRunOutcome IRuleRunnerHost.RunRule(IBusinessRuleBase rule, RuleContextModes executionContext, AsyncRuleCompletedHandler? onAsyncRuleCompleted)
     {

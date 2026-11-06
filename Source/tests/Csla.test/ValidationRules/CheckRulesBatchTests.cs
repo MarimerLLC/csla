@@ -210,6 +210,53 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
+    public void CheckRules_AfterCascadeLimitException_RuleEngineIsStillUsable()
+    {
+      var root = Create<OscillatingCycleRoot>();
+      root.CascadeOnDirtyProperties = true;
+      var act = () => root.RunCheckRules();
+      act.Should().Throw<InvalidOperationException>();
+
+      var validationCompleted = false;
+      root.ValidationComplete += (_, _) => validationCompleted = true;
+      root.CascadeOnDirtyProperties = false;
+      root.RunCheckRules(OscillatingCycleRoot.PingProperty);
+
+      root.RunningRules.Should().BeFalse();
+      validationCompleted.Should().BeTrue();
+    }
+
+    [TestMethod]
+    public void CheckRules_RerunKeepsResultsOfRulesThatDenyRunningAsAffectedProperty()
+    {
+      // P:normalize changes P, so P's rules rerun in pass 2, where P:validate
+      // can't run (DenyAsAffectedProperty). Its error from pass 1 must remain.
+      var root = Create<DenyAsAffectedValidatorRoot>();
+
+      root.RunCheckRules();
+
+      root.RuleLog.Should().Equal("P:normalize", "P:validate", "P:normalize");
+      root.P.Should().Be(10);
+      root.BrokenRulesCollection.Select(r => r.Description).Should().Equal("P is invalid");
+      root.IsValid.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void CheckRules_RerunClearsResultsOfShortCircuitedRules()
+    {
+      // Pass 1: Y:check (priority 0) passes, so Y:p1-broken (priority 1) runs
+      // and fails. X:set-Y then changes Y, so Y's rules rerun in pass 2:
+      // Y:check now fails and short-circuits Y:p1-broken, whose old error
+      // must be cleared.
+      var root = Create<ShortCircuitRerunRoot>();
+
+      root.RunCheckRules();
+
+      root.RuleLog.Should().Equal("Y:check", "X:set-Y", "Y:p1-broken", "Y:check");
+      root.BrokenRulesCollection.Select(r => r.Description).Should().Equal("Y must be 0");
+    }
+
+    [TestMethod]
     public void CheckRules_HonorsMaxCheckRulesPasses()
     {
       // The converging cycle needs 6 rerun passes to settle.

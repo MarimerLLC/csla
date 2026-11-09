@@ -9,7 +9,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Csla.Core;
 using Csla.State;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Csla.Blazor.State
 {
@@ -19,15 +21,39 @@ namespace Csla.Blazor.State
   public class StateManager
   {
     private readonly ISessionManager _sessionManager;
+    private readonly ApplicationContext? _applicationContext;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="StateManager"/> class.
     /// </summary>
     /// <param name="sessionManager">Session manager implementation used to persist page state.</param>
     /// <exception cref="ArgumentNullException"><paramref name="sessionManager"/> is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// Objects in the session are not re-attached to the caller's
+    /// <see cref="ApplicationContext"/>. Use
+    /// <see cref="StateManager(ISessionManager, ApplicationContext)"/>
+    /// to have that done.
+    /// </remarks>
     public StateManager(ISessionManager sessionManager)
     {
       _sessionManager = sessionManager ?? throw new ArgumentNullException(nameof(sessionManager));
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StateManager"/> class.
+    /// </summary>
+    /// <param name="sessionManager">Session manager implementation used to persist page state.</param>
+    /// <param name="applicationContext">
+    /// The caller's ApplicationContext. On the server, objects in the
+    /// session whose scope is gone are attached to it when state is
+    /// initialized.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="sessionManager"/> or <paramref name="applicationContext"/> is <see langword="null"/>.</exception>
+    [ActivatorUtilitiesConstructor]
+    public StateManager(ISessionManager sessionManager, ApplicationContext applicationContext)
+      : this(sessionManager)
+    {
+      _applicationContext = applicationContext ?? throw new ArgumentNullException(nameof(applicationContext));
     }
 
     /// <summary>
@@ -66,7 +92,7 @@ namespace Csla.Blazor.State
       if (isBrowser)
         _ = await _sessionManager.RetrieveSession(timeout);
       else
-        _ = _sessionManager.GetSession();
+        AttachSession(_sessionManager.GetSession());
     }
 
     /// <summary>
@@ -79,7 +105,24 @@ namespace Csla.Blazor.State
       if (isBrowser)
         _ = await _sessionManager.RetrieveSession(ct);
       else
-        _ = _sessionManager.GetSession();
+        AttachSession(_sessionManager.GetSession());
+    }
+
+    /// <summary>
+    /// Attaches the objects in the session that can no longer
+    /// resolve services to the caller's ApplicationContext.
+    /// </summary>
+    /// <remarks>
+    /// Session data outlives the scope that created or deserialized
+    /// its objects (a StateController request, a session store's own
+    /// scope, or an earlier circuit). Objects whose scope is still
+    /// alive are left alone, because every circuit with the same
+    /// session cookie shares the session.
+    /// </remarks>
+    private void AttachSession(Session session)
+    {
+      if (_applicationContext is not null)
+        ApplicationContextGraph.SetApplicationContext(session, _applicationContext);
     }
 
     /// <summary>

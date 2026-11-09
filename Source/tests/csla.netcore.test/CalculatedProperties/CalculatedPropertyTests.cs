@@ -167,6 +167,44 @@ namespace Csla.Test.CalculatedProperties
       Assert.IsNull(clone.Tags);
     }
 
+    [TestMethod]
+    public async Task CancelEditDoesNotMakeNonSerializedFieldsSerializable()
+    {
+      var obj = await FetchAsync(1, 2, runRules: true);
+      obj.SetLabel("abc");
+      obj.Tags = ["a", "b"];
+
+      // UndoChanges replaces the fields with copies deserialized from the undo snapshot
+      obj.BeginEdit();
+      obj.CancelEdit();
+      Assert.AreEqual("abc", obj.Label);
+      Assert.IsNotNull(obj.Tags);
+
+      var clone = obj.Clone();
+
+      Assert.AreEqual(string.Empty, clone.Label);
+      Assert.IsNull(clone.Tags);
+      Assert.AreEqual(3, clone.Total);
+    }
+
+    [TestMethod]
+    public async Task CloneRecalculatesChildCalculatedPropertiesBeforeParent()
+    {
+      var dataPortal = _testHost.GetDataPortal<CalculatedOrder>();
+      var order = await dataPortal.FetchAsync();
+      Assert.AreEqual(20m, order.Lines[0].Amount);
+      Assert.AreEqual(15m, order.Lines[1].Amount);
+      Assert.AreEqual(35m, order.Total);
+      Assert.IsFalse(order.IsDirty);
+
+      var clone = order.Clone();
+
+      Assert.AreEqual(20m, clone.Lines[0].Amount);
+      Assert.AreEqual(15m, clone.Lines[1].Amount);
+      Assert.AreEqual(35m, clone.Total);
+      Assert.IsFalse(clone.IsDirty);
+    }
+
     private static Task<CalculatedRoot> FetchAsync(int num1, int num2, bool runRules)
     {
       var dataPortal = _testHost.GetDataPortal<CalculatedRoot>();

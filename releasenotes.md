@@ -84,7 +84,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 **Properties**
 
-* [#4201](https://github.com/MarimerLLC/csla/issues/4201) Add `[CalculatedProperty]` for managed properties whose value is calculated by business rules: the value is not serialized, changing it never marks the object dirty, and its rules run again after deserialization. Analyzers **CSLA0026** (calculated properties should have no setter or a private setter) and **CSLA0027** (calculated properties are only supported in `BusinessBase` types) check its use. A `[DoNotSerialize]` property that holds an object value (such as a `MobileList<T>` or a child object) is no longer serialized; before, only values of native types were skipped
+* [#4201](https://github.com/MarimerLLC/csla/issues/4201) Add `[CalculatedProperty]` for managed properties whose value is calculated by business rules: the value is not serialized, changing it never marks the object dirty, and its rules run again after deserialization. Analyzers **CSLA0026** (calculated properties should have no setter or a private setter) and **CSLA0027** (calculated properties are only supported in `BusinessBase` types) check its use. A `[DoNotSerialize]` property that holds an object value (such as a `MobileList<T>` or a child object) is no longer serialized; before, only values of native types were skipped. `[DoNotSerialize]` values also stay excluded after `CancelEdit`, which used to make them serializable again
 
 **Authorization**
 

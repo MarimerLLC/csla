@@ -285,6 +285,14 @@ namespace Csla.Serialization.Mobile
         if (_deserializationReferences[info.ReferenceId] is ISerializationNotification notifiable)
           notifiable.Deserialized();
       }
+
+      // A child is always serialized after the object that first references it,
+      // so descending reference order notifies children before their parents.
+      foreach (SerializationInfo info in deserialized.OrderByDescending(i => i.ReferenceId))
+      {
+        if (_deserializationReferences[info.ReferenceId] is IGraphDeserializedNotification notifiable)
+          notifiable.GraphDeserialized();
+      }
       return (_deserializationReferences.Count > 0 ? _deserializationReferences[1] : null);
     }
 

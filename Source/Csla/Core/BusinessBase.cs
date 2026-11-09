@@ -47,6 +47,7 @@ namespace Csla.Core
     ICheckRules,
     INotifyChildChanged,
     ISerializationNotification,
+    IGraphDeserializedNotification,
     IDataErrorInfo,
     INotifyDataErrorInfo,
     IUseFieldManager,
@@ -1498,7 +1499,6 @@ namespace Csla.Core
         FieldManager.SetPropertyList(GetType());
       InitializeBusinessRules();
       FieldDataDeserialized();
-      RecalculateCalculatedProperties();
       Deserialized();
     }
 
@@ -1506,7 +1506,13 @@ namespace Csla.Core
     /// Runs the rules for each calculated property, because
     /// calculated property values are not serialized.
     /// </summary>
-    private void RecalculateCalculatedProperties()
+    /// <remarks>
+    /// This runs after every object in the graph has been deserialized,
+    /// so the business rules (including their synchronization) are fully
+    /// initialized, and child objects have already recalculated their own
+    /// calculated properties.
+    /// </remarks>
+    void IGraphDeserializedNotification.GraphDeserialized()
     {
       if (_fieldManager == null || !_fieldManager.HasFields)
         return;
@@ -1522,8 +1528,9 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>Override this method in a derived class to implement actions that should occur immediately
     /// after deserialization, such as initializing transient fields or validating object state. This method is called
-    /// automatically during the deserialization process, after the rules for calculated properties
-    /// (see <see cref="CalculatedPropertyAttribute"/>) have been run.</remarks>
+    /// automatically during the deserialization process. Calculated properties
+    /// (see <see cref="CalculatedPropertyAttribute"/>) have not been recalculated yet when this method
+    /// is called; their rules run after the whole object graph has been deserialized.</remarks>
     protected virtual void Deserialized()
     {
       // for override

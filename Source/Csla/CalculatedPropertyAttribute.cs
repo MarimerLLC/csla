@@ -21,8 +21,11 @@ namespace Csla
   /// <item><description>never affects the <c>IsSelfDirty</c> or <c>IsDirty</c> state of the
   /// business object, whether its value is changed by a rule, <c>SetProperty</c> or <c>LoadProperty</c>;
   /// property changed notifications and dependent rules still run as normal;</description></item>
-  /// <item><description>is recalculated after the business object is deserialized, by running
-  /// the rules whose primary property is the calculated property.</description></item>
+  /// <item><description>is recalculated after the business object is deserialized by the
+  /// <see cref="Serialization.Mobile.MobileFormatter"/>, by running the rules whose primary property
+  /// is the calculated property. This happens once the whole object graph has been deserialized
+  /// (after any <c>Deserialized()</c> overrides), and child objects are recalculated before the
+  /// objects that contain them, so a parent's calculation can use its children's calculated values.</description></item>
   /// </list>
   /// <para>
   /// The value should be set by business rules (for example through <c>context.AddOutValue</c>),

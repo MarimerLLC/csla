@@ -744,17 +744,29 @@ namespace Csla.Core.FieldManager
       if (_stateStack.Count > 0)
         info.AddValue("_stateStack", _stateStack.ToArray());
 
-      foreach (IFieldData? data in _fieldData)
+      foreach (var data in GetSerializableFieldData())
       {
-        if (data != null && data.IsSerializable)
-        {
-          if (data.Value is IUndoableObject)
-            info.AddValue("child_" + data.Name, true, false);
-          else if (data.Value == null || SerializationInfo.IsNativeType(data.Value.GetType()))
-            info.AddValue(data.Name, data.Value, data.IsDirty);
-        }
+        if (data.Value is IUndoableObject)
+          info.AddValue("child_" + data.Name, true, false);
+        else if (data.Value == null || SerializationInfo.IsNativeType(data.Value.GetType()))
+          info.AddValue(data.Name, data.Value, data.IsDirty);
       }
       base.OnGetState(info);
+    }
+
+    /// <summary>
+    /// Gets the fields to serialize. The registered property metadata
+    /// decides, because field data restored by n-level undo is created
+    /// by deserialization and does not keep its own serializable flag.
+    /// </summary>
+    private IEnumerable<IFieldData> GetSerializableFieldData()
+    {
+      foreach (var property in _propertyList)
+      {
+        var data = _fieldData[property.Index];
+        if (data != null && property.IsSerializable && data.IsSerializable)
+          yield return data;
+      }
     }
 
     /// <summary>
@@ -764,9 +776,9 @@ namespace Csla.Core.FieldManager
     /// <param name="formatter">Serializer instance</param>
     protected override void OnGetChildren(SerializationInfo info, MobileFormatter formatter)
     {
-      foreach (IFieldData? data in _fieldData)
+      foreach (var data in GetSerializableFieldData())
       {
-        if (data?.Value is null || !data.IsSerializable)
+        if (data.Value is null)
           continue;
 
         if (formatter.IsTypeSerializable(data.Value.GetType()))

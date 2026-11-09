@@ -328,7 +328,7 @@ CSLA 11 adds `[CalculatedProperty]` for managed properties of `BusinessBase` typ
 
 * isn't serialized, as if it had `[DoNotSerialize]`;
 * never changes `IsSelfDirty` or `IsDirty`, whether a rule, `SetProperty` or `LoadProperty` changes its value. `PropertyChanged` is still raised and dependent rules still run;
-* is recalculated after the object is deserialized (for example after a data portal call or `Clone()`), by running the rules whose primary property is the calculated property. This happens before the `Deserialized()` override is called. Async rules are started but not awaited.
+* is recalculated after the object is deserialized (for example after a data portal call or `Clone()`), by running the rules whose primary property is the calculated property. This happens once the whole object graph has been deserialized, after any `Deserialized()` overrides, and child objects are recalculated before the objects that contain them, so a parent's calculation can use its children's calculated values. Async rules are started but not awaited.
 
 ```csharp
 public static readonly PropertyInfo<decimal> TotalProperty = RegisterProperty<decimal>(nameof(Total));
@@ -350,7 +350,7 @@ This replaces calling `MarkOld()` or `MarkClean()` again after `CheckRules` just
 What to check when you upgrade:
 
 * `IPropertyInfo` has a new `IsCalculated` member. If you implement `IPropertyInfo` yourself (rather than deriving from `PropertyInfo<T>`), add it. Return `false` to keep the CSLA 10 behavior.
-* A managed property marked `[DoNotSerialize]` (or registered with `isSerializable: false`) that holds an object value, such as a `MobileList<T>` or a child object, is no longer serialized. In CSLA 10 only values of native types such as `int` and `string` were skipped, and object values were still sent. If you relied on that, remove `[DoNotSerialize]` from the property.
+* A managed property marked `[DoNotSerialize]` (or registered with `isSerializable: false`) that holds an object value, such as a `MobileList<T>` or a child object, is no longer serialized. In CSLA 10 only values of native types such as `int` and `string` were skipped, and object values were still sent. Values also stay excluded after `BeginEdit` and `CancelEdit`; in CSLA 10, cancelling an edit made every `[DoNotSerialize]` value serializable again. If you relied on either behavior, remove `[DoNotSerialize]` from the property.
 
 ## Trimming and NativeAOT annotations
 

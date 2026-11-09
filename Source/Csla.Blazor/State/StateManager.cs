@@ -45,7 +45,8 @@ namespace Csla.Blazor.State
     /// <param name="sessionManager">Session manager implementation used to persist page state.</param>
     /// <param name="applicationContext">
     /// The caller's ApplicationContext. On the server, objects in the
-    /// session are attached to it when state is initialized.
+    /// session whose scope is gone are attached to it when state is
+    /// initialized.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="sessionManager"/> or <paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     [ActivatorUtilitiesConstructor]
@@ -108,13 +109,15 @@ namespace Csla.Blazor.State
     }
 
     /// <summary>
-    /// Attaches the objects in the session to the caller's
-    /// ApplicationContext.
+    /// Attaches the objects in the session that can no longer
+    /// resolve services to the caller's ApplicationContext.
     /// </summary>
     /// <remarks>
     /// Session data outlives the scope that created or deserialized
     /// its objects (a StateController request, a session store's own
-    /// scope, or an earlier circuit).
+    /// scope, or an earlier circuit). Objects whose scope is still
+    /// alive are left alone, because every circuit with the same
+    /// session cookie shares the session.
     /// </remarks>
     private void AttachSession(Session session)
     {

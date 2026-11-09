@@ -35,7 +35,7 @@ namespace Csla.Core
       if (applicationContext is null)
         throw new ArgumentNullException(nameof(applicationContext));
 
-      new Walker(applicationContext, skipActiveLocalScopes: false).Attach(obj);
+      new Walker(applicationContext, keepUsableContexts: false).Attach(obj);
     }
 
     /// <summary>
@@ -47,9 +47,11 @@ namespace Csla.Core
     /// <param name="session">Session data.</param>
     /// <param name="applicationContext">Target ApplicationContext.</param>
     /// <remarks>
-    /// Objects that are in a local data portal operation (their
-    /// ApplicationContext belongs to the operation's isolated scope)
-    /// are left alone until the operation completes.
+    /// Only objects whose ApplicationContext can't resolve services
+    /// (it has no accessor, or its scope is disposed) are attached.
+    /// Every circuit with the same session cookie shares the session,
+    /// so an object whose scope is alive may belong to another circuit,
+    /// or to a local data portal operation that is still running.
     /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="session"/> or <paramref name="applicationContext"/> is <see langword="null"/>.</exception>
     public static void SetApplicationContext(Session session, ApplicationContext applicationContext)
@@ -59,13 +61,13 @@ namespace Csla.Core
       if (applicationContext is null)
         throw new ArgumentNullException(nameof(applicationContext));
 
-      new Walker(applicationContext, skipActiveLocalScopes: true).Attach(session);
+      new Walker(applicationContext, keepUsableContexts: true).Attach(session);
     }
 
-    private sealed class Walker(ApplicationContext applicationContext, bool skipActiveLocalScopes)
+    private sealed class Walker(ApplicationContext applicationContext, bool keepUsableContexts)
     {
       private HashSet<object>? _visitedContainers;
-      private Dictionary<ApplicationContext, bool>? _activeLocalScopes;
+      private Dictionary<ApplicationContext, bool>? _usableContexts;
 
       public void Attach(object? value)
       {
@@ -86,7 +88,7 @@ namespace Csla.Core
       private void AttachObject(IUseApplicationContext obj)
       {
         var current = obj.ApplicationContext;
-        if (ReferenceEquals(current, applicationContext) || IsInActiveLocalScope(current))
+        if (ReferenceEquals(current, applicationContext) || (keepUsableContexts && IsUsable(current)))
           return;
 
         obj.ApplicationContext = applicationContext;
@@ -129,7 +131,7 @@ namespace Csla.Core
 
       private void AttachContainer(IEnumerable container)
       {
-        if (IsValueTypeArray(container))
+        if (HoldsOnlyPlainValues(container))
           return;
 
         _visitedContainers ??= new HashSet<object>(ReferenceComparer<object>.Instance);
@@ -157,37 +159,56 @@ namespace Csla.Core
       }
 
       /// <summary>
-      /// Gets whether the ApplicationContext belongs to the isolated
-      /// scope of a local data portal operation that is still running.
-      /// After the operation, LocalProxy points that ApplicationContext
-      /// at the caller's scope, so this is false again.
+      /// Gets whether the ApplicationContext can still resolve services:
+      /// it has an accessor, and the scope behind it isn't disposed.
       /// </summary>
-      private bool IsInActiveLocalScope(ApplicationContext? current)
+      private bool IsUsable(ApplicationContext? current)
       {
         // a context without an accessor (such as the placeholder that
-        // CriteriaBase uses) has no scope, so it can't be in an operation
-        if (!skipActiveLocalScopes || current?.ApplicationContextAccessor is null)
+        // CriteriaBase uses) has no scope to resolve services from
+        if (current?.ApplicationContextAccessor is null)
           return false;
 
-        _activeLocalScopes ??= new Dictionary<ApplicationContext, bool>(ReferenceComparer<ApplicationContext>.Instance);
-        if (!_activeLocalScopes.TryGetValue(current, out var result))
+        _usableContexts ??= new Dictionary<ApplicationContext, bool>(ReferenceComparer<ApplicationContext>.Instance);
+        if (!_usableContexts.TryGetValue(current, out var result))
         {
           try
           {
-            result = current.GetRequiredService<IRuntimeInfo>().LocalProxyNewScopeExists;
+            _ = current.GetRequiredService<IRuntimeInfo>();
+            result = true;
           }
           catch (ObjectDisposedException)
           {
-            // the scope is gone, so the object must be re-attached
             result = false;
           }
-          _activeLocalScopes[current] = result;
+          _usableContexts[current] = result;
         }
         return result;
       }
 
-      private static bool IsValueTypeArray(object value)
-        => value is Array && value.GetType().GetElementType() is { IsValueType: true };
+      /// <summary>
+      /// Gets whether a container can only hold values that can't be
+      /// business objects: an array of value types or strings, or a
+      /// generic collection (such as MobileList&lt;int&gt; or
+      /// MobileDictionary&lt;string, int&gt;) whose type arguments are
+      /// all value types or strings. Skipping these avoids enumerating
+      /// and boxing every element on each session read.
+      /// </summary>
+      private static bool HoldsOnlyPlainValues(object container)
+      {
+        var type = container.GetType();
+        if (type.IsArray)
+          return IsPlainValueType(type.GetElementType());
+        if (!type.IsGenericType)
+          return false;
+        foreach (var argument in type.GetGenericArguments())
+          if (!IsPlainValueType(argument))
+            return false;
+        return true;
+      }
+
+      private static bool IsPlainValueType(Type? type)
+        => type is not null && (type.IsValueType || type == typeof(string));
     }
 
     private sealed class ReferenceComparer<T> : IEqualityComparer<T> where T : class

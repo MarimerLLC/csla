@@ -89,6 +89,25 @@ public class SessionReattachTests
   }
 
   [TestMethod]
+  public async Task SessionObjectStaysUsableWhenAnotherCircuitCloses()
+  {
+    using var provider = BuildProvider();
+    using var firstCircuit = CreateCircuitScope(provider);
+    var person = await CreatePersonAsync(firstCircuit.ServiceProvider, "First");
+    firstCircuit.ServiceProvider.GetRequiredService<ApplicationContext>().LocalContext[LocalKey] = person;
+
+    // a second browser tab sends the same session cookie, so its
+    // data portal calls read the first circuit's session
+    using (var secondCircuit = CreateCircuitScope(provider))
+    {
+      _ = await secondCircuit.ServiceProvider.GetRequiredService<IDataPortal<FakePerson>>().CreateAsync();
+    }
+
+    person = await person.SaveAsync();
+    Assert.IsFalse(person.IsNew);
+  }
+
+  [TestMethod]
   public async Task NonCloningSaveOfSessionObjectRunsInDataPortalScope()
   {
     using var provider = BuildProvider(autoCloneOnUpdate: false);
@@ -104,7 +123,9 @@ public class SessionReattachTests
 
     Assert.IsTrue(recorder.InsertUsedDataPortalScope);
     var stored = (ScopeRecorder)applicationContext.LocalContext[LocalKey];
-    Assert.AreSame(applicationContext, ContextOf(stored));
+    Assert.AreSame(
+      scope.ServiceProvider.GetRequiredService<ActiveCircuitState>(),
+      ContextOf(stored).GetRequiredService<ActiveCircuitState>());
   }
 
   /// <summary>

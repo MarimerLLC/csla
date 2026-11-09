@@ -225,14 +225,16 @@ namespace Csla.AspNetCore.Blazor
     }
 
     /// <summary>
-    /// Gets the current user's session, with every object in it
-    /// attached to this scope's <see cref="ApplicationContext"/>.
+    /// Gets the current user's session, with every object in it that
+    /// can no longer resolve services attached to this scope's
+    /// <see cref="ApplicationContext"/>.
     /// </summary>
     /// <remarks>
     /// Session data outlives the scope that created or deserialized
     /// its objects (a StateController request, a session store's own
-    /// scope, or an earlier circuit), so objects read from it are
-    /// re-attached to the scope that uses them.
+    /// scope, or an earlier circuit). Objects whose scope is still
+    /// alive are left alone, because every circuit with the same
+    /// session cookie shares the session.
     /// </remarks>
     private Session GetAttachedSession()
     {

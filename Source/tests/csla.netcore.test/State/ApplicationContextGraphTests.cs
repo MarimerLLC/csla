@@ -39,7 +39,7 @@ namespace Csla.Test.State
     public void SessionValuesAreAttached()
     {
       using var provider = BuildProvider();
-      using var oldScope = provider.CreateScope();
+      var oldScope = provider.CreateScope();
       using var newScope = provider.CreateScope();
       var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
 
@@ -58,6 +58,7 @@ namespace Csla.Test.State
       };
       Assert.AreNotSame(newContext, ContextOf(direct));
 
+      oldScope.Dispose();
       ApplicationContextGraph.SetApplicationContext(session, newContext);
 
       foreach (var root in new[] { direct, inContextDictionary, inList })
@@ -72,7 +73,7 @@ namespace Csla.Test.State
     public void ObjectsInManagedContainersAreAttached()
     {
       using var provider = BuildProvider();
-      using var oldScope = provider.CreateScope();
+      var oldScope = provider.CreateScope();
       using var newScope = provider.CreateScope();
       var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
 
@@ -83,6 +84,7 @@ namespace Csla.Test.State
       holder.NestedList.Add(new MobileList<Root> { inNestedList });
       var session = new Session { ["holder"] = holder };
 
+      oldScope.Dispose();
       ApplicationContextGraph.SetApplicationContext(session, newContext);
 
       Assert.AreSame(newContext, ContextOf(holder), "holder");
@@ -97,7 +99,7 @@ namespace Csla.Test.State
     public void ContainerInObjectTypedPropertyIsAttached()
     {
       using var provider = BuildProvider();
-      using var oldScope = provider.CreateScope();
+      var oldScope = provider.CreateScope();
       using var newScope = provider.CreateScope();
       var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
 
@@ -106,6 +108,7 @@ namespace Csla.Test.State
       holder.SetUntyped(new MobileDictionary<string, Root> { ["root"] = root });
       var session = new Session { ["holder"] = holder };
 
+      oldScope.Dispose();
       ApplicationContextGraph.SetApplicationContext(session, newContext);
 
       Assert.AreSame(newContext, ContextOf(root), "root");
@@ -130,13 +133,14 @@ namespace Csla.Test.State
     public void DictionaryKeysAreAttached()
     {
       using var provider = BuildProvider();
-      using var oldScope = provider.CreateScope();
+      var oldScope = provider.CreateScope();
       using var newScope = provider.CreateScope();
       var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
 
       var key = CreateGraph(oldScope.ServiceProvider);
       var session = new Session { ["keyed"] = new MobileDictionary<Root, string> { [key] = "value" } };
 
+      oldScope.Dispose();
       ApplicationContextGraph.SetApplicationContext(session, newContext);
 
       Assert.AreSame(newContext, ContextOf(key), "root");
@@ -144,10 +148,28 @@ namespace Csla.Test.State
     }
 
     [TestMethod]
+    public void ContainersOfPlainValuesAreNotEnumerated()
+    {
+      using var provider = BuildProvider();
+      using var scope = provider.CreateScope();
+      var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+      var session = new Session
+      {
+        ["ints"] = new NonEnumerableList<int>(),
+        ["strings"] = new NonEnumerableList<string>(),
+        ["map"] = new MobileDictionary<string, int> { ["a"] = 1 },
+        ["guids"] = new[] { Guid.NewGuid() },
+        ["names"] = new[] { "a" }
+      };
+
+      ApplicationContextGraph.SetApplicationContext(session, context);
+    }
+
+    [TestMethod]
     public void CyclicContainersTerminate()
     {
       using var provider = BuildProvider();
-      using var oldScope = provider.CreateScope();
+      var oldScope = provider.CreateScope();
       using var newScope = provider.CreateScope();
       var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
 
@@ -158,6 +180,7 @@ namespace Csla.Test.State
       var session = new Session { ["outer"] = outer };
       session["self"] = session;
 
+      oldScope.Dispose();
       ApplicationContextGraph.SetApplicationContext(session, newContext);
 
       Assert.AreSame(newContext, ContextOf(root));
@@ -170,12 +193,36 @@ namespace Csla.Test.State
       using var scope = provider.CreateScope();
       var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
       var root = CreateGraph(scope.ServiceProvider);
+      var rootContext = ContextOf(root);
+      var childContext = ContextOf(root.Children[0]);
       var session = new Session { ["root"] = root };
 
       ApplicationContextGraph.SetApplicationContext(session, context);
 
-      Assert.AreSame(context, ContextOf(root));
-      Assert.AreSame(context, ContextOf(root.Children[0]));
+      // the data portal returns objects with its operation's context,
+      // pointed back at the caller's scope
+      Assert.AreSame(rootContext, ContextOf(root), "root");
+      Assert.AreSame(childContext, ContextOf(root.Children[0]), "child");
+      Assert.AreSame(context.ApplicationContextAccessor, ContextOf(root).ApplicationContextAccessor, "root accessor");
+      Assert.AreSame(context.ApplicationContextAccessor, ContextOf(root.Children[0]).ApplicationContextAccessor, "child accessor");
+    }
+
+    [TestMethod]
+    public void GraphFromAnotherLiveScopeIsLeftAlone()
+    {
+      using var provider = BuildProvider();
+      using var otherScope = provider.CreateScope();
+      using var newScope = provider.CreateScope();
+      var newContext = newScope.ServiceProvider.GetRequiredService<ApplicationContext>();
+      var root = CreateGraph(otherScope.ServiceProvider);
+      var rootContext = ContextOf(root);
+      var childContext = ContextOf(root.Children[0]);
+      var session = new Session { ["root"] = root };
+
+      ApplicationContextGraph.SetApplicationContext(session, newContext);
+
+      Assert.AreSame(rootContext, ContextOf(root), "root");
+      Assert.AreSame(childContext, ContextOf(root.Children[0]), "child");
     }
   }
 
@@ -213,4 +260,14 @@ namespace Csla.Test.State
   [Serializable]
   public class SessionCriteria : CriteriaBase<SessionCriteria>;
 #pragma warning restore CS0618
+
+  /// <summary>
+  /// A list that fails if anything enumerates it.
+  /// </summary>
+  public class NonEnumerableList<T> : IEnumerable<T>
+  {
+    public IEnumerator<T> GetEnumerator() => throw new InvalidOperationException("Enumerated");
+
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+  }
 }

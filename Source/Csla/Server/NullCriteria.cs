@@ -16,7 +16,14 @@ namespace Csla.Server
   [Serializable]
   public sealed class NullCriteria : Core.MobileObject
   {
-    private NullCriteria() { }
+    /// <summary>
+    /// Creates a new instance of the type.
+    /// </summary>
+    /// <remarks>
+    /// Must be public so the serializer can recreate the
+    /// object when it is sent through a remote data portal.
+    /// </remarks>
+    public NullCriteria() { }
 
     /// <summary>
     /// Gets an instance of NullCriteria

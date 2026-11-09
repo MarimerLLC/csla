@@ -126,6 +126,18 @@
   <data name="AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_UpdateToAsyncEquivalentsDescription" xml:space="preserve">
     <value>Update base type to asynchronous equivalents</value>
   </data>
+  <data name="CalculatedPropertyAnalyzer_MustBeReadOnlyTitle" xml:space="preserve">
+    <value>Calculated properties should be read-only</value>
+  </data>
+  <data name="CalculatedPropertyAnalyzer_MustBeReadOnlyMessage" xml:space="preserve">
+    <value>The calculated property '{0}' should have no setter or a private setter</value>
+  </data>
+  <data name="CalculatedPropertyAnalyzer_RequiresBusinessBaseTitle" xml:space="preserve">
+    <value>Calculated properties are only supported in BusinessBase types</value>
+  </data>
+  <data name="CalculatedPropertyAnalyzer_RequiresBusinessBaseMessage" xml:space="preserve">
+    <value>The calculated property '{0}' is not in a BusinessBase type, so it will not be serialized or recalculated</value>
+  </data>
   <data name="BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer_Title" xml:space="preserve">
     <value>Find Business Rules That Do Not Use Add() Methods on the Context</value>
   </data>

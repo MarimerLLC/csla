@@ -205,8 +205,10 @@ namespace Csla
     /// Gets or sets a value indicating whether this property is serializable.
     /// </summary>
     /// <remarks>
-    /// If the property is marked with the <see cref="DoNotSerializeAttribute"/>,
+    /// If the property is marked with the <see cref="DoNotSerializeAttribute"/>
+    /// or the <see cref="CalculatedPropertyAttribute"/>,
     /// it is considered not serializable. Otherwise, it is considered serializable.
+    /// A value passed to the constructor takes precedence over the attributes.
     /// </remarks>
     public virtual bool IsSerializable
     {
@@ -218,11 +220,32 @@ namespace Csla
         }
         else if (_propertyInfo != null)
         {
-          var nonSerialized = _propertyInfo.GetCustomAttributes(typeof(DoNotSerializeAttribute), true).OfType<DoNotSerializeAttribute>().Any();
+          var nonSerialized = _propertyInfo.GetCustomAttributes(typeof(DoNotSerializeAttribute), true).OfType<DoNotSerializeAttribute>().Any()
+            || IsCalculated;
           _isSerializable = !nonSerialized;
           return !nonSerialized;
         }
         return true;
+      }
+    }
+
+    private bool? _isCalculated;
+    /// <summary>
+    /// Gets a value indicating whether this property is a calculated property.
+    /// </summary>
+    /// <remarks>
+    /// A property is calculated if it is marked with the <see cref="CalculatedPropertyAttribute"/>.
+    /// Calculated properties are not serialized, do not affect the dirty state of the
+    /// business object, and are recalculated after the object is deserialized.
+    /// </remarks>
+    public virtual bool IsCalculated
+    {
+      get
+      {
+        if (!_isCalculated.HasValue)
+          _isCalculated = _propertyInfo != null &&
+            _propertyInfo.GetCustomAttributes(typeof(CalculatedPropertyAttribute), true).OfType<CalculatedPropertyAttribute>().Any();
+        return _isCalculated.Value;
       }
     }
 

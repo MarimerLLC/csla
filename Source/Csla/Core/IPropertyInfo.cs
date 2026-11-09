@@ -59,6 +59,14 @@ namespace Csla.Core
     /// </summary>
     bool IsSerializable { get; }
     /// <summary>
+    /// Gets a value indicating whether this property
+    /// is a calculated property (see <see cref="CalculatedPropertyAttribute"/>).
+    /// Calculated properties are not serialized, do not affect the
+    /// dirty state of the business object, and are recalculated
+    /// after the object is deserialized.
+    /// </summary>
+    bool IsCalculated { get; }
+    /// <summary>
     /// Gets the System.Reflection.PropertyInfo object
     /// representing the property.
     /// </summary>

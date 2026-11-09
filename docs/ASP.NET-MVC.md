@@ -59,6 +59,12 @@ When it binds into an existing object, the binder:
 * only sets values that were posted, leaving other properties and children untouched;
 * adds a new child item for a posted list index past the end of the list.
 
+In both approaches, the binder:
+* waits for async business rules anywhere in the graph to finish, so the object isn't busy when your action runs;
+* doesn't bind properties marked `[BindNever]`;
+* binds only the root properties you allow, when you pass an include list to `TryUpdateModelAsync` (for example `TryUpdateModelAsync(order, "", o => o.Name)`) or put `[Bind]` on the action parameter. An included child list or child object is bound as a whole;
+* applies `[Bind]` on a child's class to that child's properties.
+
 Limits:
 * New list items and child objects are created using the property's or list's declared type. Polymorphic children are bound correctly only when they already exist, as in the `TryUpdateModelAsync` approach.
 * Posting a list never removes items. Remove deleted items in your controller code.

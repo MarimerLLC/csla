@@ -6,11 +6,22 @@
 // <summary>Business types used by the model binder tests</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Rules;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace Csla.AspNetCore.Test.ModelBinding;
 
 [Serializable]
 public class Parent : BusinessBase<Parent>
 {
+  public static readonly PropertyInfo<string> SecretProperty = RegisterProperty<string>(nameof(Secret));
+  [BindNever]
+  public string Secret
+  {
+    get => GetProperty(SecretProperty);
+    set => SetProperty(SecretProperty, value);
+  }
+
   public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
   public int Id
   {
@@ -32,6 +43,13 @@ public class Parent : BusinessBase<Parent>
     private set => LoadProperty(AddressProperty, value);
   }
 
+  public static readonly PropertyInfo<StreetOnlyAddress> MailingAddressProperty = RegisterProperty<StreetOnlyAddress>(nameof(MailingAddress));
+  public StreetOnlyAddress MailingAddress
+  {
+    get => GetProperty(MailingAddressProperty);
+    private set => LoadProperty(MailingAddressProperty, value);
+  }
+
   public static readonly PropertyInfo<ChildList> ChildrenProperty = RegisterProperty<ChildList>(nameof(Children));
   public ChildList Children
   {
@@ -46,6 +64,7 @@ public class Parent : BusinessBase<Parent>
     {
       Id = id;
       Name = "parent";
+      Secret = "secret";
     }
     Address = addressPortal.FetchChild("street");
     Children = childPortal.FetchChild(2);
@@ -77,6 +96,25 @@ public class Address : BusinessBase<Address>
       Street = street;
       City = "city";
     }
+  }
+}
+
+[Serializable]
+[Microsoft.AspNetCore.Mvc.Bind(nameof(Street))]
+public class StreetOnlyAddress : BusinessBase<StreetOnlyAddress>
+{
+  public static readonly PropertyInfo<string> StreetProperty = RegisterProperty<string>(nameof(Street));
+  public string Street
+  {
+    get => GetProperty(StreetProperty);
+    set => SetProperty(StreetProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City));
+  public string City
+  {
+    get => GetProperty(CityProperty);
+    set => SetProperty(CityProperty, value);
   }
 }
 
@@ -168,10 +206,36 @@ public class GrandChild : BusinessBase<GrandChild>
     set => SetProperty(NameProperty, value);
   }
 
+  protected override void AddBusinessRules()
+  {
+    base.AddBusinessRules();
+    BusinessRules.AddRule(new NotBadAsyncRule(NameProperty));
+  }
+
   [FetchChild]
   private void FetchChild(string name)
   {
     using (BypassPropertyChecks)
       Name = name;
+  }
+
+  /// <summary>
+  /// Async rule that completes after a delay, so tests can check
+  /// that binding waits for the whole graph to be idle.
+  /// </summary>
+  private sealed class NotBadAsyncRule : BusinessRuleAsync
+  {
+    public NotBadAsyncRule(Core.IPropertyInfo primaryProperty)
+      : base(primaryProperty)
+    {
+      InputProperties.Add(primaryProperty);
+    }
+
+    protected override async Task ExecuteAsync(IRuleContext context)
+    {
+      await Task.Delay(TimeSpan.FromMilliseconds(100));
+      if ((string)context.InputPropertyValues[PrimaryProperty] == "bad")
+        context.AddErrorResult("Name can't be bad");
+    }
   }
 }

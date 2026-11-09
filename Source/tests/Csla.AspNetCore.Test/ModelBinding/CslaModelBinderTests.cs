@@ -250,12 +250,103 @@ public class CslaModelBinderTests
   [TestMethod]
   public async Task Bind_ListWithAllowNewFalse_IgnoresNewItems()
   {
+    // an invalid value shows the ignored item isn't created or bound
     var result = await BindAsync<NoNewItemsRootChildList>(new()
     {
       ["[0].Name"] = "child0",
+      ["[0].Quantity"] = "not a number",
     });
 
     result.Should().BeEmpty();
+  }
+
+  [TestMethod]
+  public async Task Bind_BindNeverProperty_IsNotBound()
+  {
+    var result = await BindAsync<Parent>(new()
+    {
+      ["Name"] = "root",
+      ["Secret"] = "posted",
+    });
+
+    result.Name.Should().Be("root");
+    result.Secret.Should().NotBe("posted");
+  }
+
+  [TestMethod]
+  public async Task Bind_ExistingGraph_BindNeverPropertyIsNotBound()
+  {
+    var existing = await FetchParentAsync();
+
+    await BindAsync(new()
+    {
+      ["Name"] = "updated root",
+      ["Secret"] = "posted",
+    }, model: existing);
+
+    existing.Name.Should().Be("updated root");
+    existing.Secret.Should().Be("secret");
+  }
+
+  [TestMethod]
+  public async Task Bind_ChildTypeWithBindAttribute_OnlyBindsIncludedProperties()
+  {
+    var result = await BindAsync<Parent>(new()
+    {
+      ["MailingAddress.Street"] = "Main St",
+      ["MailingAddress.City"] = "posted",
+    });
+
+    result.MailingAddress.Street.Should().Be("Main St");
+    result.MailingAddress.City.Should().NotBe("posted");
+  }
+
+  [TestMethod]
+  public async Task Bind_WaitsForAsyncRulesInWholeGraph()
+  {
+    var result = await BindAsync<Parent>(new()
+    {
+      ["Name"] = "root",
+      ["Children[0].Name"] = "child0",
+      ["Children[0].GrandChildren[0].Name"] = "bad",
+    });
+
+    result.IsBusy.Should().BeFalse();
+    result.Children[0].GrandChildren[0].IsValid.Should().BeFalse();
+    result.IsValid.Should().BeFalse();
+  }
+
+  [TestMethod]
+  public async Task Bind_RootList_WaitsForAsyncRules()
+  {
+    var result = await BindAsync<RootChildList>(new()
+    {
+      ["[0].Name"] = "child0",
+      ["[0].GrandChildren[0].Name"] = "bad",
+    });
+
+    result.IsBusy.Should().BeFalse();
+    result[0].GrandChildren[0].IsValid.Should().BeFalse();
+  }
+
+  [TestMethod]
+  public async Task TryUpdateModelAsync_WithIncludedProperties_OnlyBindsThoseProperties()
+  {
+    var existing = await FetchParentAsync();
+    SetForm(new()
+    {
+      ["Name"] = "updated root",
+      ["Id"] = "99",
+      ["Address.Street"] = "updated street",
+      ["Children[0].Name"] = "updated child0",
+    });
+
+    await CreateController().TryUpdateModelAsync(existing, string.Empty, p => p.Name);
+
+    existing.Name.Should().Be("updated root");
+    existing.Id.Should().Be(1);
+    existing.Address.Street.Should().Be("street");
+    existing.Children[0].Name.Should().Be("child0");
   }
 
   [TestMethod]
@@ -269,16 +360,7 @@ public class CslaModelBinderTests
       ["Children[1].Name"] = "updated child1",
       ["Children[1].GrandChildren[0].Name"] = "updated gc10",
     });
-    var actionContext = new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor());
-    var controller = new TestController
-    {
-      ControllerContext = new ControllerContext(actionContext)
-      {
-        ValueProviderFactories = [new FormValueProviderFactory()]
-      }
-    };
-
-    await controller.TryUpdateModelAsync(existing);
+    await CreateController().TryUpdateModelAsync(existing);
 
     existing.Name.Should().Be("updated root");
     existing.Children[1].Should().BeSameAs(child1);
@@ -310,7 +392,7 @@ public class CslaModelBinderTests
   {
     SetForm(form);
     var actionContext = new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor());
-    var metadata = new EmptyModelMetadataProvider().GetMetadataForType(typeof(T));
+    var metadata = _scope.ServiceProvider.GetRequiredService<IModelMetadataProvider>().GetMetadataForType(typeof(T));
     var valueProvider = new FormValueProvider(BindingSource.Form, _httpContext.Request.Form, CultureInfo.InvariantCulture);
     var bindingContext = DefaultModelBindingContext.CreateBindingContext(actionContext, valueProvider, metadata, bindingInfo: null, modelName);
     bindingContext.Model = model;
@@ -320,6 +402,18 @@ public class CslaModelBinderTests
 
     bindingContext.Result.IsModelSet.Should().BeTrue();
     return (T)bindingContext.Result.Model;
+  }
+
+  private TestController CreateController()
+  {
+    var actionContext = new ActionContext(_httpContext, new RouteData(), new ControllerActionDescriptor());
+    return new TestController
+    {
+      ControllerContext = new ControllerContext(actionContext)
+      {
+        ValueProviderFactories = [new FormValueProviderFactory()]
+      }
+    };
   }
 
   private sealed class TestController : ControllerBase

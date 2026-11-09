@@ -359,6 +359,8 @@ In ASP.NET Core MVC and Razor Pages, `CslaModelBinder` now binds editable child 
 Behavior changes:
 
 * `TryUpdateModelAsync(model)` now binds into the object you pass. Previously the binder created a separate object, so the posted values never reached your object. When binding into an existing object, only posted values are set; other properties and children are left alone.
+* The binder now honors `[BindNever]`, `[Bind]` and the include list passed to `TryUpdateModelAsync`. Previously it bound every registered property.
+* The binder now waits for async business rules anywhere in the graph to finish before it returns.
 * The binder no longer sets a child property to `null` when the form has no fields for it.
 * The binder now works out a posted list's items from the indexes in the field names. Previously it divided the number of posted fields by the number of properties, which gave the wrong count when items had child properties or fields weren't posted.
 * A request that isn't a form post binds to a new object with no values set, rather than throwing.

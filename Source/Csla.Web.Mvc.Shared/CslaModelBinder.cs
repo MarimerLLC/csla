@@ -69,34 +69,53 @@ namespace Csla.Web.Mvc
       if (result != null)
       {
         var request = bindingContext.ActionContext.HttpContext.Request;
-        var form = request.HasFormContentType ? request.Form : FormCollection.Empty;
+        var scope = new BindingScope(
+          request.HasFormContentType ? request.Form : FormCollection.Empty,
+          bindingContext.HttpContext.RequestServices.GetService<IModelMetadataProvider>());
         var prefix = bindingContext.ModelName ?? string.Empty;
         if (typeof(Core.IEditableCollection).IsAssignableFrom(modelType))
         {
-          BindList(form, (IList)result, prefix);
+          BindList(scope, (IList)result, prefix);
+          await WaitForIdle(result);
           bindingContext.Result = ModelBindingResult.Success(result);
         }
         else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(modelType))
         {
-          BindObject(form, result, prefix, isNew);
+          // the root honors the binding context's property filter, which
+          // comes from [Bind] or the include list of TryUpdateModelAsync
+          var metadata = bindingContext.ModelMetadata.ModelType == result.GetType()
+            ? bindingContext.ModelMetadata
+            : scope.GetMetadata(result.GetType());
+          BindObject(scope, result, prefix, isNew, metadata, bindingContext.PropertyFilter);
           await CheckRulesAsync(result);
+          await WaitForIdle(result);
           bindingContext.Result = ModelBindingResult.Success(result);
         }
       }
     }
 
-    private void BindObject(IFormCollection form, object obj, string prefix, bool isNew)
+    private void BindObject(BindingScope scope, object obj, string prefix, bool isNew)
     {
+      // nested objects honor the property filter of their own type ([Bind] on the class)
+      var metadata = scope.GetMetadata(obj.GetType());
+      BindObject(scope, obj, prefix, isNew, metadata, metadata?.PropertyFilterProvider?.PropertyFilter);
+    }
+
+    private void BindObject(BindingScope scope, object obj, string prefix, bool isNew, ModelMetadata? metadata, Func<ModelMetadata, bool>? propertyFilter)
+    {
+      var form = scope.Form;
       var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(obj.GetType());
       foreach (var item in properties)
       {
+        if (!IsBindingAllowed(metadata, propertyFilter, item.Name))
+          continue;
         var key = string.IsNullOrEmpty(prefix) ? item.Name : $"{prefix}.{item.Name}";
         if (typeof(Core.IEditableCollection).IsAssignableFrom(item.Type))
         {
           if (HasKeysWithPrefix(form, $"{key}["))
           {
             var childList = ReadProperty(obj, item) ?? CreateChild(obj, item);
-            BindList(form, (IList)childList, key);
+            BindList(scope, (IList)childList, key);
           }
         }
         else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(item.Type))
@@ -106,7 +125,7 @@ namespace Csla.Web.Mvc
             var child = ReadProperty(obj, item);
             var childIsNew = child == null;
             child ??= CreateChild(obj, item);
-            BindObject(form, child, key, childIsNew);
+            BindObject(scope, child, key, childIsNew);
             CheckRules(child);
           }
         }
@@ -121,34 +140,44 @@ namespace Csla.Web.Mvc
       }
     }
 
-    private void BindList(IFormCollection form, IList list, string prefix)
+    private void BindList(BindingScope scope, IList list, string prefix)
     {
       var childType = Utilities.GetChildItemType(list.GetType()) ?? throw new InvalidOperationException();
-      foreach (var index in GetIndexes(form, prefix))
+      var allowNew = AllowsNewItems(list);
+      foreach (var index in GetIndexes(scope.Form, prefix))
       {
         var key = $"{prefix}[{index}]";
         if (index < list.Count && list[index] is { } existing)
         {
-          BindObject(form, existing, key, false);
+          BindObject(scope, existing, key, false);
           CheckRules(existing);
         }
-        else
+        else if (allowNew)
         {
           var child = ApplicationContext.CreateInstanceDI(childType) ?? throw new InvalidOperationException($"Could not create instance of child type {childType}");
           MarkAsChild(child);
-          BindObject(form, child, key, true);
+          BindObject(scope, child, key, true);
           CheckRules(child);
-          try
-          {
-            list.Add(child);
-          }
-          catch (NotSupportedException)
-          {
-            // the list doesn't allow new items (AllowNew is false),
-            // so items posted beyond the existing ones are ignored
-          }
+          list.Add(child);
         }
+        // otherwise the list doesn't allow new items (AllowNew is false),
+        // so items posted beyond the existing ones are ignored
       }
+    }
+
+    private static bool AllowsNewItems(IList list) => list switch
+    {
+      Core.ISupportsAllowNew l => l.AllowNew,
+      System.ComponentModel.IBindingList l => l.AllowNew,
+      _ => true
+    };
+
+    private static bool IsBindingAllowed(ModelMetadata? metadata, Func<ModelMetadata, bool>? propertyFilter, string propertyName)
+    {
+      var propertyMetadata = metadata?.Properties[propertyName];
+      if (propertyMetadata == null)
+        return true;
+      return propertyMetadata.IsBindingAllowed && (propertyFilter == null || propertyFilter(propertyMetadata));
     }
 
     private object CreateChild(object parent, Core.IPropertyInfo item)
@@ -157,6 +186,20 @@ namespace Csla.Web.Mvc
       MarkAsChild(child);
       LoadProperty(parent, item, child);
       return child;
+    }
+
+    private sealed class BindingScope
+    {
+      public BindingScope(IFormCollection form, IModelMetadataProvider? metadataProvider)
+      {
+        Form = form;
+        MetadataProvider = metadataProvider;
+      }
+
+      public IFormCollection Form { get; }
+      public IModelMetadataProvider? MetadataProvider { get; }
+
+      public ModelMetadata? GetMetadata(Type type) => MetadataProvider?.GetMetadataForType(type);
     }
 
     private static bool HasKeysWithPrefix(IFormCollection form, string prefix)

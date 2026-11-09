@@ -374,10 +374,16 @@ namespace Csla.Core
     /// OnPropertyChanged(propertyName). MarkDirty is called such
     /// that no event is raised for IsDirty, so only the specific
     /// property changed event for the current property is raised.
+    /// MarkDirty is not called for a calculated property
+    /// (see <see cref="CalculatedPropertyAttribute"/>).
     /// </remarks>
     protected virtual void PropertyHasChanged(IPropertyInfo property)
     {
-      MarkDirty(true);
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
+      if (!property.IsCalculated)
+        MarkDirty(true);
       CheckPropertyRules(property);
     }
 
@@ -1492,7 +1498,22 @@ namespace Csla.Core
         FieldManager.SetPropertyList(GetType());
       InitializeBusinessRules();
       FieldDataDeserialized();
+      RecalculateCalculatedProperties();
       Deserialized();
+    }
+
+    /// <summary>
+    /// Runs the rules for each calculated property, because
+    /// calculated property values are not serialized.
+    /// </summary>
+    private void RecalculateCalculatedProperties()
+    {
+      if (_fieldManager == null || !_fieldManager.HasFields)
+        return;
+
+      foreach (var property in _fieldManager.GetRegisteredProperties())
+        if (property.IsCalculated)
+          BusinessRules.CheckRules(property);
     }
 
     /// <summary>
@@ -1501,7 +1522,8 @@ namespace Csla.Core
     /// </summary>
     /// <remarks>Override this method in a derived class to implement actions that should occur immediately
     /// after deserialization, such as initializing transient fields or validating object state. This method is called
-    /// automatically during the deserialization process.</remarks>
+    /// automatically during the deserialization process, after the rules for calculated properties
+    /// (see <see cref="CalculatedPropertyAttribute"/>) have been run.</remarks>
     protected virtual void Deserialized()
     {
       // for override

@@ -82,6 +82,10 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 * [#4975](https://github.com/MarimerLLC/csla/issues/4975) `SafeDataReader` has async members: `ReadAsync`, `NextResultAsync`, `CloseAsync`, `IsDBNullAsync`, `GetFieldValueAsync<T>`, null-safe getters such as `GetStringAsync` and `GetInt32Async`, and `DisposeAsync` ([#4976](https://github.com/MarimerLLC/csla/pull/4976))
 
+**Properties**
+
+* [#4201](https://github.com/MarimerLLC/csla/issues/4201) Add `[CalculatedProperty]` for managed properties whose value is calculated by business rules: the value is not serialized, changing it never marks the object dirty, and its rules run again after deserialization. Analyzers **CSLA0026** (calculated properties should have no setter or a private setter) and **CSLA0027** (calculated properties are only supported in `BusinessBase` types) check its use. A `[DoNotSerialize]` property that holds an object value (such as a `MobileList<T>` or a child object) is no longer serialized; before, only values of native types were skipped
+
 **Authorization**
 
 * [#4707](https://github.com/MarimerLLC/csla/issues/4707) XAML and Blazor view models support async authorization rules, and `HasPermission` reports a still-running async rule with an `InvalidOperationException` that points to `HasPermissionAsync` ([#4948](https://github.com/MarimerLLC/csla/pull/4948))
@@ -128,6 +132,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 * The XAML view model's `SaveAsync` and `RefreshAsync` capture exceptions in `Exception` and `ViewModelErrorText`, and raise `Error`, instead of throwing. An exception from an authorization rule during the status calculation is reported the same way on every view model. `SaveAsync` returns `Task<T?>` on all view models. On MAUI and Avalonia, `ManageObjectLifetime` defaults to `true` and the public `ManageObjectLifetimeProperty` field is removed. The Blazor `OnModelChanged()` override is replaced by `OnModelChanged(T? oldValue, T? newValue)`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#common-cslamvvmviewmodelt-base-type) ([#1766](https://github.com/MarimerLLC/csla/issues/1766)).
 * `SafeSqlDataReader` gets `ReadAsync`, `NextResultAsync` and `GetFieldValueAsync<T>` from `SafeDataReader` instead of declaring them, so code compiled against an earlier version must be recompiled. They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`. `IsDbNullAsync` is obsolete; use `IsDBNullAsync`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-safedatareader) ([#4975](https://github.com/MarimerLLC/csla/issues/4975)).
 * With Blazor state management on (`UseInMemoryApplicationContextManager = false`), sessions that haven't been touched for 1 hour are now removed by a background service. Raise `SessionExpiration`, or set `PurgeExpiredSessions = false`, to keep them longer. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#expired-blazor-sessions-are-purged-automatically) ([#4977](https://github.com/MarimerLLC/csla/issues/4977)).
+* `IPropertyInfo` has a new `IsCalculated` member, so custom `IPropertyInfo` implementations must add it. A `[DoNotSerialize]` property that holds an object value is no longer serialized. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#calculated-properties-and-donotserialize) ([#4201](https://github.com/MarimerLLC/csla/issues/4201)).
 
 ### Supported Platforms
 

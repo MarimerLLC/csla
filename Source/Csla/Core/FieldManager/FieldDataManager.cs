@@ -471,11 +471,20 @@ namespace Csla.Core.FieldManager
     /// Returns a value indicating whether any
     /// fields are dirty.
     /// </summary>
+    /// <remarks>
+    /// Fields of calculated properties (see <see cref="CalculatedPropertyAttribute"/>)
+    /// are ignored.
+    /// </remarks>
     public bool IsDirty()
     {
-      foreach (var item in _fieldData)
+      foreach (var property in _propertyList)
+      {
+        if (property.IsCalculated)
+          continue;
+        var item = _fieldData[property.Index];
         if (item != null && item.IsDirty)
           return true;
+      }
       return false;
     }
 
@@ -757,7 +766,7 @@ namespace Csla.Core.FieldManager
     {
       foreach (IFieldData? data in _fieldData)
       {
-        if (data?.Value is null)
+        if (data?.Value is null || !data.IsSerializable)
           continue;
 
         if (formatter.IsTypeSerializable(data.Value.GetType()))

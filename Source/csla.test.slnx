@@ -48,6 +48,7 @@
   </Folder>
   <Project Path="Csla.Xaml.Avalonia/Csla.Xaml.Avalonia.csproj" />
   <Project Path="tests/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj" />
+  <Project Path="tests/Csla.AspNetCore.Test/Csla.AspNetCore.Test.csproj" />
   <Project Path="tests/Csla.Blazor.State.AzureTableStorage.Tests/Csla.Blazor.State.AzureTableStorage.Tests.csproj" />
   <Project Path="tests/Csla.Blazor.Test/Csla.Blazor.Test.csproj" />
   <Project Path="tests/Csla.Blazor.WebAssembly.Tests/Csla.Blazor.WebAssembly.Tests.csproj" />

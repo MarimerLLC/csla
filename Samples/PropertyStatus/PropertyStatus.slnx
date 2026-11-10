@@ -2,12 +2,9 @@
   <Configurations>
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
-    <BuildType Name="Testing" />
   </Configurations>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Project Path="PropertyStatus/PropertyStatus.csproj">
-    <BuildType Solution="Testing|*" Project="Release" />
-  </Project>
+  <Project Path="PropertyStatus/PropertyStatus.csproj" />
 </Solution>

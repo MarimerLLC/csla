@@ -1,27 +1,16 @@
 <Solution>
   <Configurations>
     <BuildType Name="Debug" />
-    <BuildType Name="Mono Debug" />
-    <BuildType Name="Mono Release" />
     <BuildType Name="Release" />
-    <BuildType Name="Testing" />
     <Platform Name="Any CPU" />
     <Platform Name="ARM" />
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Csla/">
-    <Project Path="Csla.Xaml.Maui/Csla.Xaml.Maui.csproj">
-      <BuildType Solution="Mono Debug|*" Project="Release" />
-      <BuildType Solution="Mono Release|*" Project="Release" />
-      <BuildType Solution="Testing|*" Project="Debug" />
-    </Project>
+    <Project Path="Csla.Xaml.Maui/Csla.Xaml.Maui.csproj" />
     <Project Path="Csla.Xaml.Shared/Csla.Xaml.Shared.shproj" />
-    <Project Path="Csla/Csla.csproj">
-      <BuildType Solution="Mono Debug|*" Project="Release" />
-      <BuildType Solution="Mono Release|*" Project="Release" />
-      <BuildType Solution="Testing|*" Project="Debug" />
-    </Project>
+    <Project Path="Csla/Csla.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="../.github/workflows/ci.yaml" />

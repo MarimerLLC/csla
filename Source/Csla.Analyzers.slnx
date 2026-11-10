@@ -1,29 +1,10 @@
 <Solution>
   <Configurations>
     <BuildType Name="Debug" />
-    <BuildType Name="Mono Debug" />
-    <BuildType Name="Mono Release" />
     <BuildType Name="Release" />
-    <BuildType Name="Testing" />
   </Configurations>
-  <Project Path="Csla.Analyzers/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj">
-    <BuildType Solution="Mono Debug|*" Project="Debug" />
-    <BuildType Solution="Mono Release|*" Project="Release" />
-    <BuildType Solution="Testing|*" Project="Release" />
-  </Project>
-  <Project Path="Csla.Analyzers/Csla.Analyzers.Vsix/Csla.Analyzers.Vsix.csproj">
-    <BuildType Solution="Mono Debug|*" Project="Debug" />
-    <BuildType Solution="Mono Release|*" Project="Release" />
-    <BuildType Solution="Testing|*" Project="Release" />
-  </Project>
-  <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj">
-    <BuildType Solution="Mono Debug|*" Project="Debug" />
-    <BuildType Solution="Mono Release|*" Project="Release" />
-    <BuildType Solution="Testing|*" Project="Release" />
-  </Project>
-  <Project Path="Csla/Csla.csproj">
-    <BuildType Solution="Mono Debug|*" Project="Debug" />
-    <BuildType Solution="Mono Release|*" Project="Release" />
-    <BuildType Solution="Testing|*" Project="Debug" />
-  </Project>
+  <Project Path="Csla.Analyzers/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj" />
+  <Project Path="Csla.Analyzers/Csla.Analyzers.Vsix/Csla.Analyzers.Vsix.csproj" />
+  <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />
+  <Project Path="Csla/Csla.csproj" />
 </Solution>

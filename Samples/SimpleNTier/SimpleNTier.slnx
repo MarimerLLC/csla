@@ -1,7 +1,5 @@
 <Solution>
   <Configurations>
-    <BuildType Name="Ad-Hoc" />
-    <BuildType Name="AppStore" />
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
     <Platform Name="Any CPU" />
@@ -16,49 +14,22 @@
     <File Path="How to run WPF.txt" />
   </Folder>
   <Folder Name="/AppServer/">
-    <Project Path="DataPortalServer/DataPortalServer.csproj">
-      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
-      <BuildType Solution="AppStore|*" Project="Debug" />
-    </Project>
+    <Project Path="DataPortalServer/DataPortalServer.csproj" />
   </Folder>
   <Folder Name="/BusinessLibrary/">
-    <Project Path="BusinessLibrary/BusinessLibrary.csproj">
-      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
-      <BuildType Solution="AppStore|*" Project="Debug" />
-    </Project>
+    <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
   </Folder>
   <Folder Name="/DataAccess/">
-    <Project Path="DataAccess/DataAccess.csproj">
-      <BuildType Solution="Ad-Hoc|*" Project="Release" />
-      <BuildType Solution="AppStore|*" Project="Release" />
-    </Project>
+    <Project Path="DataAccess/DataAccess.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="Directory.Packages.props" />
   </Folder>
   <Folder Name="/UI/">
-    <Project Path="ConsoleUI/ConsoleUI.csproj">
-      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
-      <BuildType Solution="AppStore|*" Project="Debug" />
-    </Project>
-    <Project Path="WindowsUI/WindowsUI.csproj">
-      <BuildType Solution="Ad-Hoc|*" Project="Release" />
-      <BuildType Solution="AppStore|*" Project="Release" />
-    </Project>
+    <Project Path="ConsoleUI/ConsoleUI.csproj" />
+    <Project Path="WindowsUI/WindowsUI.csproj" />
     <Project Path="WpfUI/WpfUI.csproj">
-      <BuildType Solution="Ad-Hoc|*" Project="Release" />
-      <BuildType Solution="AppStore|*" Project="Release" />
       <Platform Solution="*|x86" Project="x86" />
-      <Platform Solution="Ad-Hoc|Any CPU" Project="x86" />
-      <Platform Solution="Ad-Hoc|ARM" Project="x86" />
-      <Platform Solution="Ad-Hoc|iPhone" Project="x86" />
-      <Platform Solution="Ad-Hoc|iPhoneSimulator" Project="x86" />
-      <Platform Solution="Ad-Hoc|x64" Project="x86" />
-      <Platform Solution="AppStore|Any CPU" Project="x86" />
-      <Platform Solution="AppStore|ARM" Project="x86" />
-      <Platform Solution="AppStore|iPhone" Project="x86" />
-      <Platform Solution="AppStore|iPhoneSimulator" Project="x86" />
-      <Platform Solution="AppStore|x64" Project="x86" />
     </Project>
   </Folder>
 </Solution>

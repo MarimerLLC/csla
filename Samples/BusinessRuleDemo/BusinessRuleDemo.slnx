@@ -2,9 +2,6 @@
   <Configurations>
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
-    <BuildType Name="Testing" />
   </Configurations>
-  <Project Path="BusinessRuleDemo/BusinessRuleDemo.csproj">
-    <BuildType Solution="Testing|*" Project="Release" />
-  </Project>
+  <Project Path="BusinessRuleDemo/BusinessRuleDemo.csproj" />
 </Solution>

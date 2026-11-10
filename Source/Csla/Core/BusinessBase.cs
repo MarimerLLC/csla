@@ -47,6 +47,7 @@ namespace Csla.Core
     ICheckRules,
     INotifyChildChanged,
     ISerializationNotification,
+    IGraphDeserializedNotification,
     IDataErrorInfo,
     INotifyDataErrorInfo,
     IUseFieldManager,
@@ -374,10 +375,16 @@ namespace Csla.Core
     /// OnPropertyChanged(propertyName). MarkDirty is called such
     /// that no event is raised for IsDirty, so only the specific
     /// property changed event for the current property is raised.
+    /// MarkDirty is not called for a calculated property
+    /// (see <see cref="CalculatedPropertyAttribute"/>).
     /// </remarks>
     protected virtual void PropertyHasChanged(IPropertyInfo property)
     {
-      MarkDirty(true);
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
+      if (!property.IsCalculated)
+        MarkDirty(true);
       CheckPropertyRules(property);
     }
 
@@ -1496,12 +1503,34 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// Runs the rules for each calculated property, because
+    /// calculated property values are not serialized.
+    /// </summary>
+    /// <remarks>
+    /// This runs after every object in the graph has been deserialized,
+    /// so the business rules (including their synchronization) are fully
+    /// initialized, and child objects have already recalculated their own
+    /// calculated properties.
+    /// </remarks>
+    void IGraphDeserializedNotification.GraphDeserialized()
+    {
+      if (_fieldManager == null || !_fieldManager.HasFields)
+        return;
+
+      foreach (var property in _fieldManager.GetRegisteredProperties())
+        if (property.IsCalculated)
+          BusinessRules.CheckRules(property);
+    }
+
+    /// <summary>
     /// Invoked after the object has been deserialized to allow derived classes to perform custom post-deserialization
     /// processing.
     /// </summary>
     /// <remarks>Override this method in a derived class to implement actions that should occur immediately
     /// after deserialization, such as initializing transient fields or validating object state. This method is called
-    /// automatically during the deserialization process.</remarks>
+    /// automatically during the deserialization process. Calculated properties
+    /// (see <see cref="CalculatedPropertyAttribute"/>) have not been recalculated yet when this method
+    /// is called; their rules run after the whole object graph has been deserialized.</remarks>
     protected virtual void Deserialized()
     {
       // for override

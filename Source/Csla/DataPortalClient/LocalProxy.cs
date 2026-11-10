@@ -6,7 +6,6 @@
 // <summary>Implements a data portal proxy to relay data portal</summary>
 //-----------------------------------------------------------------------
 
-using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using Csla.Core;
 using Csla.DataPortalClient;
@@ -77,66 +76,7 @@ namespace Csla.Channels.Local
         return;
 
       if (obj is IUseApplicationContext useApplicationContext)
-        SetApplicationContext(useApplicationContext, applicationContext);
-    }
-
-    private void SetApplicationContext(IUseApplicationContext? obj, ApplicationContext applicationContext)
-    {
-      // if there's no isolated scope, there's no reason to 
-      // change the object graph's ApplicationContext
-      if (!_options.UseLocalScope)
-        return;
-
-      if (obj != null && !ReferenceEquals(obj.ApplicationContext, applicationContext))
-      {
-        obj.ApplicationContext = applicationContext;
-
-        if (obj is IUseFieldManager useFieldManager)
-          SetApplicationContext(useFieldManager.FieldManager, applicationContext);
-
-        if (obj is IUseBusinessRules useBusinessRules)
-          SetApplicationContext(useBusinessRules.BusinessRules, applicationContext);
-
-        if (obj is IManageProperties target)
-        {
-          foreach (var managedProperty in target.GetManagedProperties())
-          {
-            var isLazyLoadedProperty = (managedProperty.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad;
-
-            //only dig into property if its not a lazy loaded property 
-            //  or if it is, then only if its loaded
-            if (!isLazyLoadedProperty
-              || (isLazyLoadedProperty && target.FieldExists(managedProperty)))
-            {
-              if (typeof(IUseApplicationContext).IsAssignableFrom(managedProperty.Type))
-              {
-                //property is directly assignable to the IUseApplicationContext so set it
-                SetApplicationContext((IUseApplicationContext?)target.ReadProperty(managedProperty), applicationContext);
-              }
-              else if (typeof(IEnumerable).IsAssignableFrom(managedProperty.Type))
-              {
-                //property is a list and needs to be processed (could be a Csla.Core.MobileList or something like that)
-                var enumerable = (IEnumerable?)target.ReadProperty(managedProperty);
-                if (enumerable != null)
-                {
-                  foreach (var item in enumerable)
-                  {
-                    SetApplicationContext(item, applicationContext);
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        if (obj is IContainsDeletedList containsDeletedList)
-          foreach (var item in containsDeletedList.DeletedList)
-            SetApplicationContext(item, applicationContext);
-
-        if (obj is IEnumerable list)
-          foreach (var item in list)
-            SetApplicationContext(item, applicationContext);
-      }
+        ApplicationContextGraph.SetApplicationContext(useApplicationContext, applicationContext);
     }
 
     /// <summary>

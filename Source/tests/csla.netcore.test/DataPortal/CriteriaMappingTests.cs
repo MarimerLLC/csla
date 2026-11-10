@@ -6,6 +6,9 @@
 // <summary>no summary</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Serialization;
+using Csla.Testing;
+
 #if !NUNIT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #else
@@ -57,11 +60,36 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
+    public void NullCriteriaSurvivesSerialization()
+    {
+      var result = SerializationRoundTrip(GetCriteriaObject((object)null));
+      Assert.IsInstanceOfType(result, typeof(Csla.Server.NullCriteria));
+      var array = GetCriteriaArray(result);
+      Assert.AreEqual(1, array.Length);
+      Assert.IsNull(array[0]);
+    }
+
+    [TestMethod]
+    public void EmptyCriteriaSurvivesSerialization()
+    {
+      var result = SerializationRoundTrip(GetCriteriaObject());
+      Assert.IsInstanceOfType(result, typeof(Csla.Server.EmptyCriteria));
+      Assert.AreEqual(0, GetCriteriaArray(result).Length);
+    }
+
+    [TestMethod]
     public void IntToInt()
     {
       object start = 123;
       Assert.AreEqual(start, GetCriteriaArray(start)[0]);
       Assert.AreEqual(start, GetCriteriaObject(start));
+    }
+
+    private static object SerializationRoundTrip(object graph)
+    {
+      using var testHost = CslaTestHost.Create();
+      var formatter = testHost.ApplicationContext.GetRequiredService<ISerializationFormatter>();
+      return formatter.Deserialize(formatter.Serialize(graph));
     }
 
     private object GetCriteriaObject(params object[] parameters)

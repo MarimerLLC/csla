@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="../license.txt" />
+    <File Path="../README.md" />
+    <File Path="../releasenotes.md" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Package.props" />
+    <File Path="global.json" />
+    <File Path="version.json" />
+  </Folder>
+  <Folder Name="/Support/">
+    <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />
+    <Project Path="Csla.Analyzers/Csla.Analyzers.CodeFixes/Csla.Analyzers.CodeFixes.csproj" />
+    <Project Path="Csla.Generators/cs/AutoImplementProperties/Csla.Generator.AutoImplementProperties.CSharp/Csla.Generator.AutoImplementProperties.CSharp.csproj" />
+    <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.CSharp/Csla.Generator.AutoSerialization.CSharp.csproj" />
+    <Project Path="Csla/Csla.csproj" />
+  </Folder>
+  <Folder Name="/UI/">
+    <Project Path="Csla.Xaml.Maui/Csla.Xaml.Maui.csproj" />
+    <Project Path="Csla.Xaml.Shared/Csla.Xaml.Shared.shproj" />
+  </Folder>
+</Solution>

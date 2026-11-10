@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="BlazorExample/BlazorExample.Client/BlazorExample.Client.csproj" />
+  <Project Path="BlazorExample/BlazorExample/BlazorExample.csproj" />
+  <Project Path="BlazorExample/BusinessLibrary/BusinessLibrary.csproj" />
+  <Project Path="BlazorExample/DataAccess.EF/DataAccess.EF.csproj" />
+  <Project Path="BlazorExample/DataAccess.Mock/DataAccess.Mock.csproj" />
+  <Project Path="BlazorExample/DataAccess/DataAccess.csproj" />
+</Solution>

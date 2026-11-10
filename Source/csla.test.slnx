@@ -1,0 +1,66 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+  </Configurations>
+  <Folder Name="/Csla/">
+    <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />
+    <Project Path="Csla.Analyzers/Csla.Analyzers.CodeFixes/Csla.Analyzers.CodeFixes.csproj" />
+    <Project Path="Csla.AspNetCore/Csla.AspNetCore.csproj" />
+    <Project Path="Csla.Blazor.State.AzureTableStorage/Csla.Blazor.State.AzureTableStorage.csproj" />
+    <Project Path="Csla.Blazor.WebAssembly/Csla.Blazor.WebAssembly.csproj" />
+    <Project Path="Csla.Blazor/Csla.Blazor.csproj" />
+    <Project Path="Csla.Channels.Grpc/Csla.Channels.Grpc.csproj" />
+    <Project Path="Csla.Channels.RabbitMq/Csla.Channels.RabbitMq.csproj" />
+    <Project Path="Csla.Channels.Wcf/Csla.Channels.Wcf.csproj" />
+    <Project Path="Csla.Data.SqlClient.Fx/Csla.Data.SqlClient.Fx.csproj" />
+    <Project Path="Csla.Data.SqlClient/Csla.Data.SqlClient.csproj" />
+    <Project Path="Csla.Testing/Csla.Testing.csproj" />
+    <Project Path="Csla.Web.Mvc.Shared/Csla.Web.Mvc.Shared.shproj" />
+    <Project Path="Csla.Web.Mvc5.Net4.6/Csla.Web.Mvc5-Net4.6.csproj" />
+    <Project Path="Csla.Web/Csla.Web.csproj" />
+    <Project Path="Csla.Windows/Csla.Windows.csproj" />
+    <Project Path="Csla.Xaml.Shared/Csla.Xaml.Shared.shproj" />
+    <Project Path="Csla.Xaml.Wpf/Csla.Xaml.Wpf.csproj" />
+    <Project Path="Csla/Csla.csproj" />
+  </Folder>
+  <Folder Name="/Generators/">
+    <Project Path="Csla.Generators/cs/AutoImplementProperties/Csla.Generator.AutoImplementProperties.CSharp/Csla.Generator.AutoImplementProperties.CSharp.csproj" />
+    <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.Attributes.CSharp/Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" />
+    <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.CSharp/Csla.Generator.AutoSerialization.CSharp.csproj" />
+    <Project Path="tests/Csla.Generator.AutoImplementProperties.CSharp.TestObjects/Csla.Generator.AutoImplementProperties.TestObjects.csproj" />
+    <Project Path="tests/Csla.Generator.AutoImplementProperties.CSharp.Tests/Csla.Generator.AutoImplementProperties.CSharp.Tests.csproj" />
+    <Project Path="tests/Csla.Generator.AutoSerialization.CSharp.TestObjects/Csla.Generator.AutoSerialization.CSharp.TestObjects.csproj" />
+    <Project Path="tests/Csla.Generator.AutoSerialization.CSharp.Tests/Csla.Generator.AutoSerialization.CSharp.Tests.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="../.github/workflows/ci.yaml" />
+    <File Path="../releasenotes.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.package.props" />
+    <File Path="readme.md" />
+    <File Path="version.json" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Csla.AotSmokeTest/Csla.AotSmokeTest.csproj" />
+    <Project Path="tests/Csla.Testing.Tests/Csla.Testing.Tests.csproj" />
+  </Folder>
+  <Project Path="Csla.Xaml.Avalonia/Csla.Xaml.Avalonia.csproj" />
+  <Project Path="tests/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj" />
+  <Project Path="tests/Csla.Blazor.State.AzureTableStorage.Tests/Csla.Blazor.State.AzureTableStorage.Tests.csproj" />
+  <Project Path="tests/Csla.Blazor.Test/Csla.Blazor.Test.csproj" />
+  <Project Path="tests/Csla.Blazor.WebAssembly.Tests/Csla.Blazor.WebAssembly.Tests.csproj" />
+  <Project Path="tests/csla.netcore.test/csla.netcore.test.csproj" />
+  <Project Path="tests/Csla.test/Csla.Tests.csproj" />
+  <Project Path="tests/Csla.TestHelpers/Csla.TestHelpers.csproj" />
+  <Project Path="tests/Csla.Windows.Tests/Csla.Windows.Tests.csproj" />
+  <Project Path="tests/Csla.Xaml.Wpf.Tests/Csla.Xaml.Wpf.Tests.csproj" />
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.Business/GraphMergerTest.Business.csproj" />
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.BusinessTests/GraphMergerTest.BusinessTests.csproj" />
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.Dal/GraphMergerTest.Dal.csproj" />
+  <Project Path="tests/GraphMergerTest/GraphMergerTest.DalMock/GraphMergerTest.DalMock.csproj" />
+  <Properties Name="TestCaseManagementSettings" Scope="PostLoad">
+    <Property Name="CategoryFile" Value="csla.test.vsmdi" />
+  </Properties>
+</Solution>

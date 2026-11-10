@@ -1,0 +1,10 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />
+  <Project Path="Csla.Analyzers/Csla.Analyzers.CodeFixes/Csla.Analyzers.CodeFixes.csproj" />
+  <Project Path="Csla/Csla.csproj" />
+  <Project Path="tests/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj" />
+</Solution>

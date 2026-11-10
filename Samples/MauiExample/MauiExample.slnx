@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
+  <Project Path="DataAccess/DataAccess.csproj" />
+  <Project Path="MauiExample/MauiExample.csproj">
+    <Deploy />
+  </Project>
+</Solution>

@@ -352,6 +352,19 @@ What to check when you upgrade:
 * `IPropertyInfo` has a new `IsCalculated` member. If you implement `IPropertyInfo` yourself (rather than deriving from `PropertyInfo<T>`), add it. Return `false` to keep the CSLA 10 behavior.
 * A managed property marked `[DoNotSerialize]` (or registered with `isSerializable: false`) that holds an object value, such as a `MobileList<T>` or a child object, is no longer serialized. In CSLA 10 only values of native types such as `int` and `string` were skipped, and object values were still sent. Values also stay excluded after `BeginEdit` and `CancelEdit`; in CSLA 10, cancelling an edit made every `[DoNotSerialize]` value serializable again. If you relied on either behavior, remove `[DoNotSerialize]` from the property.
 
+## ASP.NET Core `CslaModelBinder` binds whole object graphs
+
+In ASP.NET Core MVC and Razor Pages, `CslaModelBinder` now binds editable child objects and editable child lists at any depth, for example `Children[0].GrandChildren[1].Name` ([#4858](https://github.com/MarimerLLC/csla/issues/4858)). Previously it only bound the root object's properties, plus the items of a root list. See [Binding editable object graphs](ASP.NET-MVC.md#binding-editable-object-graphs).
+
+Behavior changes:
+
+* `TryUpdateModelAsync(model)` now binds into the object you pass. Previously the binder created a separate object, so the posted values never reached your object. When binding into an existing object, only posted values are set; other properties and children are left alone.
+* The binder now honors `[BindNever]`, `[Bind]` and the include list passed to `TryUpdateModelAsync`. Previously it bound every registered property.
+* The binder now waits for async business rules anywhere in the graph to finish before it returns.
+* The binder no longer sets a child property to `null` when the form has no fields for it.
+* The binder now works out a posted list's items from the indexes in the field names. Previously it divided the number of posted fields by the number of properties, which gave the wrong count when items had child properties or fields weren't posted.
+* A request that isn't a form post binds to a new object with no values set, rather than throwing.
+
 ## Trimming and NativeAOT annotations
 
 CSLA now declares what it needs from the trimmer ([#3347](https://github.com/MarimerLLC/csla/issues/3347)). In a trimmed or NativeAOT app this can surface new `IL2026` warnings in your code.

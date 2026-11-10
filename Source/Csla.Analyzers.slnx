@@ -3,8 +3,7 @@
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
   </Configurations>
-  <Project Path="Csla.Analyzers/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj" />
-  <Project Path="Csla.Analyzers/Csla.Analyzers.Vsix/Csla.Analyzers.Vsix.csproj" />
   <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />
   <Project Path="Csla/Csla.csproj" />
+  <Project Path="tests/Csla.Analyzers.Tests/Csla.Analyzers.Tests.csproj" />
 </Solution>

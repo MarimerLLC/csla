@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj" />
+    <ProjectReference Include="..\..\Csla.Analyzers\Csla.Analyzers.CodeFixes\Csla.Analyzers.CodeFixes.csproj" />
     <ProjectReference Include="..\..\Csla\Csla.csproj" />
   </ItemGroup>
 

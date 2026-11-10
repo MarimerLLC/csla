@@ -107,6 +107,42 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The calculated property &apos;{0}&apos; should have no setter or a private setter.
+        /// </summary>
+        internal static string CalculatedPropertyAnalyzer_MustBeReadOnlyMessage {
+            get {
+                return ResourceManager.GetString("CalculatedPropertyAnalyzer_MustBeReadOnlyMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Calculated properties should be read-only.
+        /// </summary>
+        internal static string CalculatedPropertyAnalyzer_MustBeReadOnlyTitle {
+            get {
+                return ResourceManager.GetString("CalculatedPropertyAnalyzer_MustBeReadOnlyTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The calculated property &apos;{0}&apos; is not in a BusinessBase type, so it will not be serialized or recalculated.
+        /// </summary>
+        internal static string CalculatedPropertyAnalyzer_RequiresBusinessBaseMessage {
+            get {
+                return ResourceManager.GetString("CalculatedPropertyAnalyzer_RequiresBusinessBaseMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Calculated properties are only supported in BusinessBase types.
+        /// </summary>
+        internal static string CalculatedPropertyAnalyzer_RequiresBusinessBaseTitle {
+            get {
+                return ResourceManager.GetString("CalculatedPropertyAnalyzer_RequiresBusinessBaseTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Add public constructor with no arguments.
         /// </summary>
         internal static string CheckConstructorsAnalyzerPublicConstructor_AddPublicConstructorDescription {

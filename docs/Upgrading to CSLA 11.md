@@ -258,8 +258,6 @@ protected override void OnSetState(SerializationInfo info)
 
 Existing overrides of the obsolete overloads keep working: they still run, and `base.OnSetState(info, mode)` still restores the base class state before your code runs. The compiler reports warnings `CS0672` and `CS0618` until you move them. If an override checks `mode == StateMode.Undo`, delete that branch, because that code hasn't run for several versions. The obsolete members will be removed in a future major version.
 
-The layout of an undo snapshot has also changed. An object serialized by an earlier version of CSLA while its edit level was above zero can't have those edits undone by CSLA 11, so update the client and the server together.
-
 ## Async `SafeDataReader`
 
 `SafeDataReader` has async members ([#4975](https://github.com/MarimerLLC/csla/issues/4975)):
@@ -285,6 +283,74 @@ These members use the underlying `DbDataReader`, which every ADO.NET provider re
 * The signatures are the same, including the `ordinal` and `cancellationToken` parameter names and the overloads with and without a `CancellationToken`, so calls, named arguments and method group conversions still compile. Code compiled against an earlier version must be recompiled.
 * They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
 * `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
+
+## Expired Blazor sessions are purged automatically
+
+When Blazor state management is on (`UseInMemoryApplicationContextManager = false`), the server keeps a session for each user in the `ISessionStore`. In CSLA 10, expired sessions were only removed if your app called `ISessionManager.PurgeSessions` on a schedule it set up.
+
+In CSLA 11, `AddServerSideBlazor` registers a hosted background service that does this for you ([#4977](https://github.com/MarimerLLC/csla/issues/4977)). It's on by default whenever Blazor state management is on, and **removes sessions that haven't been touched for 1 hour**. Configure it on the `AddServerSideBlazor` options:
+
+```csharp
+builder.Services.AddCsla(o => o
+  .AddAspNetCore()
+  .AddServerSideBlazor(b =>
+  {
+    b.UseInMemoryApplicationContextManager = false;
+    b.SessionPurgeInterval = TimeSpan.FromMinutes(5);  // default: 5 minutes
+    b.SessionExpiration = TimeSpan.FromHours(1);       // default: 1 hour
+  }));
+```
+
+| `BlazorServerConfigurationOptions` property | Default | Purpose |
+| --- | --- | --- |
+| `PurgeExpiredSessions` | `true` | Runs the purging service. Set it to `false` to turn it off. |
+| `SessionPurgeInterval` | 5 minutes | How often the service calls `PurgeSessions` |
+| `SessionExpiration` | 1 hour | How long a session can go untouched before it's removed |
+
+What to check when you upgrade:
+
+* If users can be idle for more than an hour and should keep their session, raise `SessionExpiration`.
+* If your app already calls `PurgeSessions` on its own schedule, either remove that code or set `PurgeExpiredSessions = false`. Running both is harmless, but the shorter expiration wins.
+* With the default `UseInMemoryApplicationContextManager = true`, there are no stored sessions and the service isn't registered.
+
+How the service behaves:
+
+* The first purge runs one interval after the app starts. `SessionPurgeInterval` must be from 1 millisecond to 4,294,967,294 milliseconds (about 49.7 days), which is the range `PeriodicTimer` supports, and `SessionExpiration` must be greater than zero. Otherwise `AddServerSideBlazor` throws `ArgumentOutOfRangeException`.
+* It works with every `ISessionStore`, including the in-memory default and the Azure Table Storage store (`Csla.Blazor.State.AzureTableStorage`). A shared store also refreshes the stored last-touched time of live sessions on each purge, so other servers don't remove them. Keep `SessionPurgeInterval` well below `SessionExpiration`.
+* A failed purge is logged as a warning, and the next purge runs on schedule.
+* If a custom session manager doesn't support purging (it throws `NotSupportedException` or `NotImplementedException`), the service logs a warning and stops. The app keeps running.
+* To read the settings from configuration, set them in the delegate, for example `b.SessionExpiration = builder.Configuration.GetValue("Csla:SessionExpiration", TimeSpan.FromHours(1))`.
+* It's a server-side feature. Blazor WebAssembly has nothing to purge.
+
+## Calculated properties and `[DoNotSerialize]`
+
+CSLA 11 adds `[CalculatedProperty]` for managed properties of `BusinessBase` types whose value is calculated by business rules from other properties ([#4201](https://github.com/MarimerLLC/csla/issues/4201)). A calculated property:
+
+* isn't serialized, as if it had `[DoNotSerialize]`;
+* never changes `IsSelfDirty` or `IsDirty`, whether a rule, `SetProperty` or `LoadProperty` changes its value. `PropertyChanged` is still raised and dependent rules still run;
+* is recalculated after the object is deserialized (for example after a data portal call or `Clone()`), by running the rules whose primary property is the calculated property. This happens once the whole object graph has been deserialized, after any `Deserialized()` overrides, and child objects are recalculated before the objects that contain them, so a parent's calculation can use its children's calculated values. Async rules are started but not awaited.
+
+```csharp
+public static readonly PropertyInfo<decimal> TotalProperty = RegisterProperty<decimal>(nameof(Total));
+[CalculatedProperty]
+public decimal Total => GetProperty(TotalProperty);
+
+protected override void AddBusinessRules()
+{
+  base.AddBusinessRules();
+  // CalcSum (from the BusinessRuleDemo sample) sets TotalProperty with context.AddOutValue
+  BusinessRules.AddRule(new CalcSum(TotalProperty, Line1Property, Line2Property));
+  BusinessRules.AddRule(new Dependency(Line1Property, TotalProperty));
+  BusinessRules.AddRule(new Dependency(Line2Property, TotalProperty));
+}
+```
+
+This replaces calling `MarkOld()` or `MarkClean()` again after `CheckRules` just to undo the dirty state caused by calculated values. Analyzer **CSLA0026** warns when a calculated property has a setter that isn't `private`, and **CSLA0027** warns when `[CalculatedProperty]` is used outside a `BusinessBase` type, where it would stop the value from being serialized without recalculating it. The attribute is intended for simple values, not child objects or collections.
+
+What to check when you upgrade:
+
+* `IPropertyInfo` has a new `IsCalculated` member. If you implement `IPropertyInfo` yourself (rather than deriving from `PropertyInfo<T>`), add it. Return `false` to keep the CSLA 10 behavior.
+* A managed property marked `[DoNotSerialize]` (or registered with `isSerializable: false`) that holds an object value, such as a `MobileList<T>` or a child object, is no longer serialized. In CSLA 10 only values of native types such as `int` and `string` were skipped, and object values were still sent. Values also stay excluded after `BeginEdit` and `CancelEdit`; in CSLA 10, cancelling an edit made every `[DoNotSerialize]` value serializable again. If you relied on either behavior, remove `[DoNotSerialize]` from the property.
 
 ## Trimming and NativeAOT annotations
 

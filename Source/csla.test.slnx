@@ -3,9 +3,6 @@
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
     <Platform Name="Any CPU" />
-    <Platform Name="ARM" />
-    <Platform Name="x64" />
-    <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Csla/">
     <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />

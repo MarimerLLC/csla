@@ -3,11 +3,6 @@
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
     <Platform Name="Any CPU" />
-    <Platform Name="ARM" />
-    <Platform Name="iPhone" />
-    <Platform Name="iPhoneSimulator" />
-    <Platform Name="x64" />
-    <Platform Name="x86" />
   </Configurations>
   <Folder Name="/- How to run/">
     <File Path="How to run WinForms.txt" />
@@ -28,8 +23,6 @@
   <Folder Name="/UI/">
     <Project Path="ConsoleUI/ConsoleUI.csproj" />
     <Project Path="WindowsUI/WindowsUI.csproj" />
-    <Project Path="WpfUI/WpfUI.csproj">
-      <Platform Solution="*|x86" Project="x86" />
-    </Project>
+    <Project Path="WpfUI/WpfUI.csproj" />
   </Folder>
 </Solution>

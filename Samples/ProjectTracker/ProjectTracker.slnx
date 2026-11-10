@@ -3,11 +3,6 @@
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
     <Platform Name="Any CPU" />
-    <Platform Name="ARM" />
-    <Platform Name="iPhone" />
-    <Platform Name="iPhoneSimulator" />
-    <Platform Name="x64" />
-    <Platform Name="x86" />
   </Configurations>
   <Folder Name="/AppServer/">
     <Project Path="ProjectTracker.AppServer/ProjectTracker.AppServer.csproj" />

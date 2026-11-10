@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+  </Configurations>
+  <Folder Name="/AppServer/">
+    <Project Path="ProjectTracker.AppServer/ProjectTracker.AppServer.csproj" />
+  </Folder>
+  <Folder Name="/BusinessLibrary/">
+    <Project Path="ProjectTracker.BusinessLibrary/ProjectTracker.BusinessLibrary.csproj" />
+  </Folder>
+  <Folder Name="/DataAccess/">
+    <Project Path="ProjectTracker.Dal/ProjectTracker.Dal.csproj" />
+    <Project Path="ProjectTracker.DalEfCore/ProjectTracker.DalEfCore.csproj" />
+    <Project Path="ProjectTracker.DalMock/ProjectTracker.DalMock.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/UI/">
+    <Project Path="ProjectTracker.Blazor/ProjectTracker.Blazor.Client/ProjectTracker.Blazor.Client.csproj" />
+    <Project Path="ProjectTracker.Blazor/ProjectTracker.Blazor/ProjectTracker.Blazor.csproj" />
+  </Folder>
+  <Folder Name="/_readme/">
+    <File Path="readme.md" />
+  </Folder>
+</Solution>

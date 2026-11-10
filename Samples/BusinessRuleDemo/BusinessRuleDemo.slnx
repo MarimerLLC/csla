@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Project Path="BusinessRuleDemo/BusinessRuleDemo.csproj" />
+</Solution>

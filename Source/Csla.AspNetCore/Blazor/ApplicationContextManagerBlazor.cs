@@ -158,8 +158,7 @@ namespace Csla.AspNetCore.Blazor
     {
       ThrowIfApplicationContextIsNull();
       IContextDictionary? localContext;
-      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-      var session = sessionManager.GetSession();
+      var session = GetAttachedSession();
       session.TryGetValue(_localContextName, out var result);
       if (result is IContextDictionary context)
       {
@@ -196,8 +195,7 @@ namespace Csla.AspNetCore.Blazor
     {
       ThrowIfApplicationContextIsNull();
       IContextDictionary clientContext;
-      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
-      var session = sessionManager.GetSession();
+      var session = GetAttachedSession();
       session.TryGetValue(_clientContextName, out var result);
       if (result is IContextDictionary context)
       {
@@ -224,6 +222,27 @@ namespace Csla.AspNetCore.Blazor
       var session = sessionManager.GetSession();
       session[_clientContextName] = clientContext;
       session.Touch();
+    }
+
+    /// <summary>
+    /// Gets the current user's session, with every object in it that
+    /// can no longer resolve services attached to this scope's
+    /// <see cref="ApplicationContext"/>.
+    /// </summary>
+    /// <remarks>
+    /// Session data outlives the scope that created or deserialized
+    /// its objects (a StateController request, a session store's own
+    /// scope, or an earlier circuit). Objects whose scope is still
+    /// alive are left alone, because every circuit with the same
+    /// session cookie shares the session.
+    /// </remarks>
+    private Session GetAttachedSession()
+    {
+      ThrowIfApplicationContextIsNull();
+      var sessionManager = ApplicationContext.GetRequiredService<ISessionManager>();
+      var session = sessionManager.GetSession();
+      ApplicationContextGraph.SetApplicationContext(session, ApplicationContext);
+      return session;
     }
 
     /// <summary>

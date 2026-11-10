@@ -1,0 +1,55 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+  </Configurations>
+  <Folder Name="/- How to run/">
+    <File Path="How to run.txt" />
+  </Folder>
+  <Folder Name="/1. Authz/">
+    <Project Path="AuthzFactoryMethods/1.01 AuthzFactoryMethods.csproj" />
+    <Project Path="AuthzMethod/1.02 AuthzMethod.csproj" />
+    <Project Path="AuthzReadWriteProperty/1.03 AuthzReadWriteProperty.csproj" />
+    <Project Path="CustomAuthzRules/1.04 CustomAuthzRules.csproj" />
+  </Folder>
+  <Folder Name="/2. Property BusinessRules/">
+    <Project Path="AddonPropertyRules/2.13 AddonPropertyRules.csproj" />
+    <Project Path="AsyncLookupRule/2.09 AsyncLookupRule.csproj" />
+    <Project Path="BuiltinPropertyRules/2.01 BuiltinPropertyRules.csproj" />
+    <Project Path="CompareFieldsRules/2.07 CompareFieldsRules.csproj" />
+    <Project Path="CustomMessage - Localizable/2.04 CustomMessage - Localizable.csproj" />
+    <Project Path="CustomMessage/2.03 CustomMessage.csproj" />
+    <Project Path="DataAnnotationRules/2.02 DataAnnotationRules.csproj" />
+    <Project Path="GatewayRules/2.05 GatewayRules - ChainedContext.csproj" />
+    <Project Path="LambdaRule Extension/2.11 LambdaRule Extension.csproj" />
+    <Project Path="LookupRule/2.08 LookupRule.csproj" />
+    <Project Path="RuleBaseClasses/2.14 RuleBaseClasses.csproj" />
+    <Project Path="RuleSubclass/2.12 RuleSubclass.csproj" />
+    <Project Path="ShortCircuitingRules/2.10 ShortCircuitingRules.csproj" />
+    <Project Path="TransformationRules/2.06 TransformationRules.csproj" />
+  </Folder>
+  <Folder Name="/3. Object Business Rules/">
+    <Project Path="ObjectRules/3.01 ObjectRules.csproj" />
+  </Folder>
+  <Folder Name="/4. Unit Tests/">
+    <Project Path="AsyncLookupRule.Test/4.3 AsyncLookupRule.Test.csproj" />
+    <Project Path="CustomAuthzRules.Test/4.1 CustomAuthzRules.Test.csproj" />
+    <Project Path="IntegrationRules.Test/4.5 IntegrationRules.Test.csproj" />
+    <Project Path="LookupRule.Test/4.2 LookupRule.Test.csproj" />
+    <Project Path="RuleTutorial.Testing.Common/RuleTutorial.Testing.Common.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+    <File Path="Local.testsettings" />
+    <File Path="RuleTutorial.rtf" />
+    <File Path="RuleTutorial.vsmdi" />
+    <File Path="TraceAndTestImpact.testsettings" />
+  </Folder>
+  <Folder Name="/_Decription/">
+    <File Path="Settings.StyleCop" />
+  </Folder>
+  <Properties Name="TestCaseManagementSettings" Scope="PostLoad">
+    <Property Name="CategoryFile" Value="RuleTutorial.vsmdi" />
+  </Properties>
+</Solution>

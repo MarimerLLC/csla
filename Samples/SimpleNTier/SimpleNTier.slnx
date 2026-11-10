@@ -1,0 +1,28 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+  </Configurations>
+  <Folder Name="/- How to run/">
+    <File Path="How to run WinForms.txt" />
+    <File Path="How to run WPF.txt" />
+  </Folder>
+  <Folder Name="/AppServer/">
+    <Project Path="DataPortalServer/DataPortalServer.csproj" />
+  </Folder>
+  <Folder Name="/BusinessLibrary/">
+    <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
+  </Folder>
+  <Folder Name="/DataAccess/">
+    <Project Path="DataAccess/DataAccess.csproj" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/UI/">
+    <Project Path="ConsoleUI/ConsoleUI.csproj" />
+    <Project Path="WindowsUI/WindowsUI.csproj" />
+    <Project Path="WpfUI/WpfUI.csproj" />
+  </Folder>
+</Solution>

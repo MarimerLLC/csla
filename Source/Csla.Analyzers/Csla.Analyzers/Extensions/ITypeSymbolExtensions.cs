@@ -158,5 +158,12 @@ namespace Csla.Analyzers.Extensions
           @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
           @this.BaseType.IsObjectAuthorizationRulesAttribute());
     }
+
+    internal static bool IsCalculatedPropertyAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        @this.Name == CslaMemberConstants.Types.CalculatedPropertyAttribute &&
+        @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName;
+    }
   }
 }

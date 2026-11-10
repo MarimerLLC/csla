@@ -23,6 +23,7 @@ namespace Csla.Core
   [Serializable]
   public class ObservableBindingList<T> : MobileObservableCollection<T>,
     IObservableBindingList,
+    ISupportsAllowNew,
     INotifyBusy,
     INotifyChildChanged,
     ISerializationNotification

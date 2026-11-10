@@ -8,6 +8,9 @@
 #if NETSTANDARD2_0 || NET8_0_OR_GREATER 
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,6 +20,18 @@ namespace Csla.Web.Mvc
   /// Model binder for use with CSLA .NET editable business
   /// objects.
   /// </summary>
+  /// <remarks>
+  /// The binder walks the posted form keys and binds the whole
+  /// editable object graph: properties of the root object, editable
+  /// child objects (<c>Address.Street</c>) and editable child lists
+  /// (<c>Children[0].GrandChildren[1].Name</c>) at any depth.
+  /// When the binding context already holds a model, for example
+  /// when the controller calls <c>TryUpdateModelAsync</c> on an object
+  /// it fetched, the binder updates that object graph in place and
+  /// only sets the values that were posted. Otherwise it creates a
+  /// new object graph. New list items are created using the list's
+  /// declared child type.
+  /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
   [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
@@ -29,7 +44,8 @@ namespace Csla.Web.Mvc
       : base(applicationContext) { }
 
     /// <summary>
-    /// Bind the form data to a new instance of an IBusinessBase object.
+    /// Bind the form data to an IBusinessBase or editable
+    /// collection object graph.
     /// </summary>
     /// <param name="bindingContext">Binding context</param>
     public async Task BindModelAsync(ModelBindingContext bindingContext)
@@ -42,68 +58,171 @@ namespace Csla.Web.Mvc
       ApplicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
 
       bindingContext.Result = ModelBindingResult.Failed();
-      var result = ApplicationContext.CreateInstanceDI(bindingContext.ModelType);
+      var modelType = bindingContext.ModelType;
+      var result = bindingContext.Model;
+      var isNew = false;
+      if (result == null || !modelType.IsInstanceOfType(result))
+      {
+        result = ApplicationContext.CreateInstanceDI(modelType);
+        isNew = true;
+      }
       if (result != null)
       {
-        if (typeof(Core.IEditableCollection).IsAssignableFrom(bindingContext.ModelType))
+        var request = bindingContext.ActionContext.HttpContext.Request;
+        var scope = new BindingScope(
+          request.HasFormContentType ? request.Form : FormCollection.Empty,
+          bindingContext.HttpContext.RequestServices.GetService<IModelMetadataProvider>());
+        var prefix = bindingContext.ModelName ?? string.Empty;
+        if (typeof(Core.IEditableCollection).IsAssignableFrom(modelType))
         {
-          BindBusinessListBase(bindingContext, result);
+          BindList(scope, (IList)result, prefix);
+          await WaitForIdle(result);
           bindingContext.Result = ModelBindingResult.Success(result);
         }
-        else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(bindingContext.ModelType))
+        else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(modelType))
         {
-          await BindBusinessBase(bindingContext, result);
+          // the root honors the binding context's property filter, which
+          // comes from [Bind] or the include list of TryUpdateModelAsync
+          var metadata = bindingContext.ModelMetadata.ModelType == result.GetType()
+            ? bindingContext.ModelMetadata
+            : scope.GetMetadata(result.GetType());
+          BindObject(scope, result, prefix, isNew, metadata, bindingContext.PropertyFilter);
+          await CheckRulesAsync(result);
+          await WaitForIdle(result);
           bindingContext.Result = ModelBindingResult.Success(result);
         }
       }
     }
 
-    private async Task BindBusinessBase(ModelBindingContext bindingContext, object result)
+    private void BindObject(BindingScope scope, object obj, string prefix, bool isNew)
     {
-      var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(bindingContext.ModelType);
+      // nested objects honor the property filter of their own type ([Bind] on the class)
+      var metadata = scope.GetMetadata(obj.GetType());
+      BindObject(scope, obj, prefix, isNew, metadata, metadata?.PropertyFilterProvider?.PropertyFilter);
+    }
+
+    private void BindObject(BindingScope scope, object obj, string prefix, bool isNew, ModelMetadata? metadata, Func<ModelMetadata, bool>? propertyFilter)
+    {
+      var form = scope.Form;
+      var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(obj.GetType());
       foreach (var item in properties)
       {
-        string index;
-        if (string.IsNullOrEmpty(bindingContext.ModelName))
-          index = $"{item.Name}";
-        else
-          index = $"{bindingContext.ModelName}.{item.Name}";
-        BindSingleProperty(bindingContext, result, item, index);
-      }
-      await CheckRulesAsync(result);
-    }
-
-    private void BindBusinessListBase(ModelBindingContext bindingContext, object result)
-    {
-      var applicationContext = bindingContext.HttpContext.RequestServices.GetRequiredService<ApplicationContext>();
-      var formKeys = bindingContext.ActionContext.HttpContext.Request.Form.Keys.Where(_ => _.StartsWith(bindingContext.ModelName));
-      var childType = Utilities.GetChildItemType(bindingContext.ModelType) ?? throw new InvalidOperationException();
-      var properties = Core.FieldManager.PropertyInfoManager.GetRegisteredProperties(childType);
-      var list = (IList)result;
-
-      var itemCount = formKeys.Count() / properties.Count;
-      for (int i = 0; i < itemCount; i++)
-      {
-        var child = applicationContext.CreateInstanceDI(childType);
-        MarkAsChild(child);
-        if (child == null)
-          throw new InvalidOperationException($"Could not create instance of child type {childType}");
-        foreach (var item in properties)
+        if (!IsBindingAllowed(metadata, propertyFilter, item.Name))
+          continue;
+        var key = string.IsNullOrEmpty(prefix) ? item.Name : $"{prefix}.{item.Name}";
+        if (typeof(Core.IEditableCollection).IsAssignableFrom(item.Type))
         {
-          var index = $"{bindingContext.ModelName}[{i}].{item.Name}";
-          BindSingleProperty(bindingContext, child, item, index);
+          if (HasKeysWithPrefix(form, $"{key}["))
+          {
+            var childList = ReadProperty(obj, item) ?? CreateChild(obj, item);
+            BindList(scope, (IList)childList, key);
+          }
         }
-        CheckRules(child);
-        if (!list.Contains(child))
-          list.Add(child);
+        else if (typeof(Core.IEditableBusinessObject).IsAssignableFrom(item.Type))
+        {
+          if (HasKeysWithPrefix(form, $"{key}."))
+          {
+            var child = ReadProperty(obj, item);
+            var childIsNew = child == null;
+            child ??= CreateChild(obj, item);
+            BindObject(scope, child, key, childIsNew);
+            CheckRules(child);
+          }
+        }
+        else if (typeof(Core.IBusinessObject).IsAssignableFrom(item.Type))
+        {
+          // read-only or other non-editable child objects aren't bound
+        }
+        else if (isNew || form.ContainsKey(key))
+        {
+          BindSingleProperty(form, obj, item, key);
+        }
       }
     }
 
-    private void BindSingleProperty(ModelBindingContext bindingContext, object result, Core.IPropertyInfo item, string index)
+    private void BindList(BindingScope scope, IList list, string prefix)
+    {
+      var childType = Utilities.GetChildItemType(list.GetType()) ?? throw new InvalidOperationException();
+      var allowNew = AllowsNewItems(list);
+      foreach (var index in GetIndexes(scope.Form, prefix))
+      {
+        var key = $"{prefix}[{index}]";
+        if (index < list.Count && list[index] is { } existing)
+        {
+          BindObject(scope, existing, key, false);
+          CheckRules(existing);
+        }
+        else if (allowNew)
+        {
+          var child = ApplicationContext.CreateInstanceDI(childType) ?? throw new InvalidOperationException($"Could not create instance of child type {childType}");
+          MarkAsChild(child);
+          BindObject(scope, child, key, true);
+          CheckRules(child);
+          list.Add(child);
+        }
+        // otherwise the list doesn't allow new items (AllowNew is false),
+        // so items posted beyond the existing ones are ignored
+      }
+    }
+
+    private static bool AllowsNewItems(IList list) => list switch
+    {
+      Core.ISupportsAllowNew l => l.AllowNew,
+      System.ComponentModel.IBindingList l => l.AllowNew,
+      _ => true
+    };
+
+    private static bool IsBindingAllowed(ModelMetadata? metadata, Func<ModelMetadata, bool>? propertyFilter, string propertyName)
+    {
+      var propertyMetadata = metadata?.Properties[propertyName];
+      if (propertyMetadata == null)
+        return true;
+      return propertyMetadata.IsBindingAllowed && (propertyFilter == null || propertyFilter(propertyMetadata));
+    }
+
+    private object CreateChild(object parent, Core.IPropertyInfo item)
+    {
+      var child = ApplicationContext.CreateInstanceDI(item.Type) ?? throw new InvalidOperationException($"Could not create instance of child type {item.Type}");
+      MarkAsChild(child);
+      LoadProperty(parent, item, child);
+      return child;
+    }
+
+    private sealed class BindingScope
+    {
+      public BindingScope(IFormCollection form, IModelMetadataProvider? metadataProvider)
+      {
+        Form = form;
+        MetadataProvider = metadataProvider;
+      }
+
+      public IFormCollection Form { get; }
+      public IModelMetadataProvider? MetadataProvider { get; }
+
+      public ModelMetadata? GetMetadata(Type type) => MetadataProvider?.GetMetadataForType(type);
+    }
+
+    private static bool HasKeysWithPrefix(IFormCollection form, string prefix)
+      => form.Keys.Any(k => k.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+
+    private static SortedSet<int> GetIndexes(IFormCollection form, string prefix)
+    {
+      var pattern = new Regex($"^{Regex.Escape(prefix)}\\[(\\d+)\\]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+      var result = new SortedSet<int>();
+      foreach (var key in form.Keys)
+      {
+        var match = pattern.Match(key);
+        if (match.Success && int.TryParse(match.Groups[1].Value, NumberStyles.None, CultureInfo.InvariantCulture, out var index))
+          result.Add(index);
+      }
+      return result;
+    }
+
+    private void BindSingleProperty(IFormCollection form, object result, Core.IPropertyInfo item, string index)
     {
       try
       {
-        var value = bindingContext.ActionContext.HttpContext.Request.Form[index].FirstOrDefault();
+        var value = form[index].FirstOrDefault();
         try
         {
           if (item.Type.Equals(typeof(string)))

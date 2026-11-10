@@ -29,6 +29,7 @@
   </Folder>
   <Folder Name="/Support/">
     <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />
+    <Project Path="Csla.Analyzers/Csla.Analyzers.CodeFixes/Csla.Analyzers.CodeFixes.csproj" />
     <Project Path="Csla.Generators/cs/AutoImplementProperties/Csla.Generator.AutoImplementProperties.CSharp/Csla.Generator.AutoImplementProperties.CSharp.csproj" />
     <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.Attributes.CSharp/Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" />
     <Project Path="Csla.Generators/cs/AutoSerialization/Csla.Generator.AutoSerialization.CSharp/Csla.Generator.AutoSerialization.CSharp.csproj" />

@@ -6,6 +6,7 @@
   </Configurations>
   <Folder Name="/Csla/">
     <Project Path="Csla.Analyzers/Csla.Analyzers/Csla.Analyzers.csproj" />
+    <Project Path="Csla.Analyzers/Csla.Analyzers.CodeFixes/Csla.Analyzers.CodeFixes.csproj" />
     <Project Path="Csla.AspNetCore/Csla.AspNetCore.csproj" />
     <Project Path="Csla.Blazor.State.AzureTableStorage/Csla.Blazor.State.AzureTableStorage.csproj" />
     <Project Path="Csla.Blazor.WebAssembly/Csla.Blazor.WebAssembly.csproj" />

@@ -12,7 +12,7 @@ The **List** tab fetches a `PersonList` through the data portal. **Edit** opens 
 
 ## Run the sample
 
-Open `MauiExample.sln` in Visual Studio and run the `MauiExample` project, or from `Samples/MauiExample`:
+Open `MauiExample.slnx` in Visual Studio and run the `MauiExample` project, or from `Samples/MauiExample`:
 
 ```bash
 dotnet build MauiExample/MauiExample.csproj -t:Run -f net10.0-android

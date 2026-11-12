@@ -47,6 +47,8 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 * [CSLA0022](CSLA0022-ObjectAuthorizationRulesStatic.md) - Object authorization rules configuration should be declared as static
 * [CSLA0024](CSLA0024-TypeWithOperationsShouldBePartialAnalyzer.md) - Types with data portal operation methods should be partial
 * [CSLA0025](CSLA0025-UseGeneratedDataPortalExtensionAnalyzer.md) - Use the generated data portal extension method
+* [CSLA0026](CSLA0026-CalculatedPropertyAnalyzer.md) - Calculated properties should be read-only
+* [CSLA0027](CSLA0027-CalculatedPropertyAnalyzer.md) - Calculated properties are only supported in `BusinessBase` types
 
 ## Data Portal Generator Diagnostics
 These diagnostics come from the data portal operations and data portal extensions source generators included in the `Csla` package. They report operation methods that the generated code handles differently from what you might expect, and data portal extension methods that are not generated. They are reported by analyzers, so you can suppress them in source or in an `.editorconfig` file.

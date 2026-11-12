@@ -132,6 +132,10 @@ namespace Csla.Configuration
     /// </summary>
     public BindingOptions BindingOptions { get; } = new();
     /// <summary>
+    /// Gets the RuleOptions instance.
+    /// </summary>
+    public RuleOptions RuleOptions { get; } = new();
+    /// <summary>
     /// Gets the CoreOptions instance.
     /// </summary>
     internal CoreOptions CoreOptions { get; } = new();

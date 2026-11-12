@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
+  <Project Path="DataAccess/DataAccess.csproj" />
+  <Project Path="MvcExample/MvcExample.csproj" />
+</Solution>

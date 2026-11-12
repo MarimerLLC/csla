@@ -106,6 +106,14 @@
       ///
       /// </summary>
       public const string UseGeneratedDataPortalExtension = "CSLA0025";
+      /// <summary>
+      ///
+      /// </summary>
+      public const string CalculatedPropertyMustBeReadOnly = "CSLA0026";
+      /// <summary>
+      ///
+      /// </summary>
+      public const string CalculatedPropertyRequiresBusinessBase = "CSLA0027";
 
     }
 

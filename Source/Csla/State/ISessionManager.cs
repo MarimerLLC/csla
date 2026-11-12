@@ -57,7 +57,10 @@ namespace Csla.State
     /// <param name="expiration">Expiration duration</param>
     /// <remarks>
     /// Remove all session data that has not been touched
-    /// in the last "expiration" timeframe.
+    /// in the last "expiration" timeframe. On the server,
+    /// <c>AddServerSideBlazor</c> registers a background service
+    /// that calls this periodically when Blazor state management
+    /// is used (see <c>PurgeExpiredSessions</c>).
     /// </remarks>
     void PurgeSessions(TimeSpan expiration);
     #endregion

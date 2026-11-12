@@ -57,6 +57,17 @@ namespace Csla.Rules
 
     internal void ClearRules(Core.IPropertyInfo? property)
     {
+      ClearRules(property, null);
+    }
+
+    /// <summary>
+    /// Removes the broken rules that originated from a property's rules,
+    /// except those from the named rules.
+    /// </summary>
+    /// <param name="property">The property, or null for object-level rules.</param>
+    /// <param name="keepRuleNames">Names of rules whose broken rules to keep, or null.</param>
+    internal void ClearRules(Core.IPropertyInfo? property, ICollection<string>? keepRuleNames)
+    {
       lock (_syncRoot)
       {
         IsReadOnly = false;
@@ -65,7 +76,8 @@ namespace Csla.Rules
         for (int i = 0, n = Count; i < n; i++)
         {
             var x = this[i];
-            if (x.OriginProperty == propertyName)
+            if (x.OriginProperty == propertyName
+              && (keepRuleNames == null || !keepRuleNames.Contains(x.RuleName)))
             {
                 RemoveAt(i);
                 i--;

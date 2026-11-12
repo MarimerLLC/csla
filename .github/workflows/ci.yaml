@@ -26,10 +26,10 @@ jobs:
         global-json-file: Source/global.json
 
     - name: Build
-      run: dotnet build Source\csla.test.sln
+      run: dotnet build Source\csla.test.slnx
 
     - name: Test
-      run: dotnet test Source\csla.test.sln --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
+      run: dotnet test Source\csla.test.slnx --no-build --verbosity normal --filter TestCategory!=SkipOnCIServer --settings Source/test.runsettings
 
     - name: NativeAOT smoke test
       shell: pwsh
@@ -58,7 +58,7 @@ jobs:
         while IFS= read -r file
         do
           echo $file
-          if [[ $file = Source/Csla.Xaml.Maui/* || $file = Source/Csla.Xaml.Shared/* || $file = Source/csla.maui.test.sln ]]; then
+          if [[ $file = Source/Csla.Xaml.Maui/* || $file = Source/Csla.Xaml.Shared/* || $file = Source/csla.maui.test.slnx ]]; then
             echo "found a MAUI modified file."
             echo "run_maui=true" >> $GITHUB_OUTPUT
             break
@@ -91,4 +91,4 @@ jobs:
       run: sudo xcode-select -s /Applications/Xcode_26.5.app
 
     - name: Build Solution
-      run: dotnet build Source/csla.maui.test.sln --configuration Debug
+      run: dotnet build Source/csla.maui.test.slnx --configuration Debug

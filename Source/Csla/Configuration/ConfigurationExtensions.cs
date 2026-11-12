@@ -60,6 +60,10 @@ namespace Csla.Configuration
       cslaOptions.AddRequiredDataPortalServices(services);
 
       services.AddScoped(typeof(IUnhandledAsyncRuleExceptionHandler), cslaOptions.UnhandledAsyncRuleExceptionHandlerType);
+      var ruleOptions = cslaOptions.RuleOptions;
+      services.TryAddSingleton<IRuleRunner>(_ => ruleOptions.LegacyCheckRules
+        ? new LegacyRuleRunner()
+        : new BatchRuleRunner(ruleOptions.BatchCheckRules.MaxRerunPasses));
 
       // Default to using LocalProxy and local data portal
       var proxyInit = services.Any(i => i.ServiceType == typeof(IDataPortalProxy));

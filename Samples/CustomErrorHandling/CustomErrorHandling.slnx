@@ -1,0 +1,16 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+  </Configurations>
+  <Folder Name="/Docs/">
+    <File Path="readme.md" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="AppServer/AppServer.csproj" />
+  <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
+  <Project Path="DataAccess/DataAccess.csproj" />
+  <Project Path="WindowsUI/WindowsUI.csproj" />
+</Solution>

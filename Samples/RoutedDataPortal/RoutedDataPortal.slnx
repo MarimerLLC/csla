@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Project Path="AppServer1/AppServer1.csproj" />
+  <Project Path="AppServer2/AppServer2.csproj" />
+  <Project Path="BusinessLibrary/BusinessLibrary.csproj" />
+  <Project Path="ClientApp/ClientApp.csproj" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
+  <Project Path="RoutedDataPortal/RoutedDataPortal.csproj" />
+</Solution>

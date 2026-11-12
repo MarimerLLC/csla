@@ -195,6 +195,41 @@ Async authorization rules (`IAuthorizationRuleAsync`) are now supported in view 
 
 The synchronous `BusinessRules.HasPermission` now accepts an async rule if its task has already completed. If the rule is still running, `HasPermission` throws an `InvalidOperationException` that tells you to use `HasPermissionAsync`. Previously any async rule threw `ArgumentOutOfRangeException`.
 
+## `CheckRules()` runs each rule once, then reruns only what changed
+
+`BusinessRules.CheckRules()` (and `CheckRulesAsync()`) now runs rules as a batch ([#3736](https://github.com/MarimerLLC/csla/issues/3736)). Previously each property's rules ran in turn and recursively reran the rules of its affected properties and of every rule using it as an input, so objects with many interdependent rules ran some rules dozens or hundreds of times. Now:
+
+1. Object-level rules run first, as before.
+2. Every property rule runs once, in priority order across all properties ([#4235](https://github.com/MarimerLLC/csla/issues/4235)). Previously priority only ordered the rules within one property. Rules with the same priority run in the CSLA 10 order: by property, in the order the property's first rule was added, then in the order the rules were added.
+3. If rules changed property values through output values (`context.AddOutValue`), the rules for those properties, and the rules that use them as input properties, run again, once.
+4. With `CascadeOnDirtyProperties = true`, step 3 repeats until no rule changes a value.
+
+`CheckRules(property)`, the rules that run when a property is set, and `CheckObjectRules()` are unchanged.
+
+Behavior changes to check for:
+
+* **Reruns depend on changed values.** Rules rerun only when a value changed through rule output values. A rule that changes a property some other way, such as writing to the business object directly, no longer causes the rules that depend on that property to rerun during `CheckRules()`.
+* **Affected properties don't rerun on their own.** The rules of a rule's `AffectedProperties` no longer rerun during `CheckRules()` unless a value changed. They already ran once in the batch. The affected properties are still in the property names `CheckRules()` returns.
+* **`CascadeIfDirty` has no effect in `CheckRules()`**, because every rerun already requires a changed value. It still applies to `CheckRules(property)`.
+* **Rules that never settle throw.** With `CascadeOnDirtyProperties = true`, rules whose output values keep changing each other used to recurse until the process crashed with a `StackOverflowException`. `CheckRules()` now throws an `InvalidOperationException` naming the properties that kept changing after `MaxRerunPasses` rerun passes (default 100).
+* Execution order and the number of times each rule runs change, so any code that depends on either may need updating. Short-circuiting (`ProcessThroughPriority` and `StopProcessing`) still applies per property, as before.
+
+To configure the new behavior:
+
+```csharp
+services.AddCsla(o => o
+  .Rules(r => r.UseBatchCheckRules(b => b.MaxRerunPasses = 200)));   // default 100
+```
+
+To go back to the CSLA 10 behavior while you update your rules:
+
+```csharp
+services.AddCsla(o => o
+  .Rules(r => r.UseLegacyCheckRules()));
+```
+
+`UseLegacyCheckRules()` is temporary and will be removed in a future version. Each method takes only the settings that apply to that behavior. If you call both, the last call wins.
+
 ## Transaction settings resolved at runtime and `ITransactionScopeFactory`
 
 Transaction settings from `TransactionalAttribute` are now resolved when the transaction is created, not when the attribute is constructed ([#4780](https://github.com/MarimerLLC/csla/issues/4780)). Previously the attribute copied the defaults from `DataOptions` into itself. Because CSLA caches the attribute, later configuration changes were ignored.
@@ -283,6 +318,87 @@ These members use the underlying `DbDataReader`, which every ADO.NET provider re
 * The signatures are the same, including the `ordinal` and `cancellationToken` parameter names and the overloads with and without a `CancellationToken`, so calls, named arguments and method group conversions still compile. Code compiled against an earlier version must be recompiled.
 * They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
 * `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
+
+## Expired Blazor sessions are purged automatically
+
+When Blazor state management is on (`UseInMemoryApplicationContextManager = false`), the server keeps a session for each user in the `ISessionStore`. In CSLA 10, expired sessions were only removed if your app called `ISessionManager.PurgeSessions` on a schedule it set up.
+
+In CSLA 11, `AddServerSideBlazor` registers a hosted background service that does this for you ([#4977](https://github.com/MarimerLLC/csla/issues/4977)). It's on by default whenever Blazor state management is on, and **removes sessions that haven't been touched for 1 hour**. Configure it on the `AddServerSideBlazor` options:
+
+```csharp
+builder.Services.AddCsla(o => o
+  .AddAspNetCore()
+  .AddServerSideBlazor(b =>
+  {
+    b.UseInMemoryApplicationContextManager = false;
+    b.SessionPurgeInterval = TimeSpan.FromMinutes(5);  // default: 5 minutes
+    b.SessionExpiration = TimeSpan.FromHours(1);       // default: 1 hour
+  }));
+```
+
+| `BlazorServerConfigurationOptions` property | Default | Purpose |
+| --- | --- | --- |
+| `PurgeExpiredSessions` | `true` | Runs the purging service. Set it to `false` to turn it off. |
+| `SessionPurgeInterval` | 5 minutes | How often the service calls `PurgeSessions` |
+| `SessionExpiration` | 1 hour | How long a session can go untouched before it's removed |
+
+What to check when you upgrade:
+
+* If users can be idle for more than an hour and should keep their session, raise `SessionExpiration`.
+* If your app already calls `PurgeSessions` on its own schedule, either remove that code or set `PurgeExpiredSessions = false`. Running both is harmless, but the shorter expiration wins.
+* With the default `UseInMemoryApplicationContextManager = true`, there are no stored sessions and the service isn't registered.
+
+How the service behaves:
+
+* The first purge runs one interval after the app starts. `SessionPurgeInterval` must be from 1 millisecond to 4,294,967,294 milliseconds (about 49.7 days), which is the range `PeriodicTimer` supports, and `SessionExpiration` must be greater than zero. Otherwise `AddServerSideBlazor` throws `ArgumentOutOfRangeException`.
+* It works with every `ISessionStore`, including the in-memory default and the Azure Table Storage store (`Csla.Blazor.State.AzureTableStorage`). A shared store also refreshes the stored last-touched time of live sessions on each purge, so other servers don't remove them. Keep `SessionPurgeInterval` well below `SessionExpiration`.
+* A failed purge is logged as a warning, and the next purge runs on schedule.
+* If a custom session manager doesn't support purging (it throws `NotSupportedException` or `NotImplementedException`), the service logs a warning and stops. The app keeps running.
+* To read the settings from configuration, set them in the delegate, for example `b.SessionExpiration = builder.Configuration.GetValue("Csla:SessionExpiration", TimeSpan.FromHours(1))`.
+* It's a server-side feature. Blazor WebAssembly has nothing to purge.
+
+## Calculated properties and `[DoNotSerialize]`
+
+CSLA 11 adds `[CalculatedProperty]` for managed properties of `BusinessBase` types whose value is calculated by business rules from other properties ([#4201](https://github.com/MarimerLLC/csla/issues/4201)). A calculated property:
+
+* isn't serialized, as if it had `[DoNotSerialize]`;
+* never changes `IsSelfDirty` or `IsDirty`, whether a rule, `SetProperty` or `LoadProperty` changes its value. `PropertyChanged` is still raised and dependent rules still run;
+* is recalculated after the object is deserialized (for example after a data portal call or `Clone()`), by running the rules whose primary property is the calculated property. This happens once the whole object graph has been deserialized, after any `Deserialized()` overrides, and child objects are recalculated before the objects that contain them, so a parent's calculation can use its children's calculated values. Async rules are started but not awaited.
+
+```csharp
+public static readonly PropertyInfo<decimal> TotalProperty = RegisterProperty<decimal>(nameof(Total));
+[CalculatedProperty]
+public decimal Total => GetProperty(TotalProperty);
+
+protected override void AddBusinessRules()
+{
+  base.AddBusinessRules();
+  // CalcSum (from the BusinessRuleDemo sample) sets TotalProperty with context.AddOutValue
+  BusinessRules.AddRule(new CalcSum(TotalProperty, Line1Property, Line2Property));
+  BusinessRules.AddRule(new Dependency(Line1Property, TotalProperty));
+  BusinessRules.AddRule(new Dependency(Line2Property, TotalProperty));
+}
+```
+
+This replaces calling `MarkOld()` or `MarkClean()` again after `CheckRules` just to undo the dirty state caused by calculated values. Analyzer **CSLA0026** warns when a calculated property has a setter that isn't `private`, and **CSLA0027** warns when `[CalculatedProperty]` is used outside a `BusinessBase` type, where it would stop the value from being serialized without recalculating it. The attribute is intended for simple values, not child objects or collections.
+
+What to check when you upgrade:
+
+* `IPropertyInfo` has a new `IsCalculated` member. If you implement `IPropertyInfo` yourself (rather than deriving from `PropertyInfo<T>`), add it. Return `false` to keep the CSLA 10 behavior.
+* A managed property marked `[DoNotSerialize]` (or registered with `isSerializable: false`) that holds an object value, such as a `MobileList<T>` or a child object, is no longer serialized. In CSLA 10 only values of native types such as `int` and `string` were skipped, and object values were still sent. Values also stay excluded after `BeginEdit` and `CancelEdit`; in CSLA 10, cancelling an edit made every `[DoNotSerialize]` value serializable again. If you relied on either behavior, remove `[DoNotSerialize]` from the property.
+
+## ASP.NET Core `CslaModelBinder` binds whole object graphs
+
+In ASP.NET Core MVC and Razor Pages, `CslaModelBinder` now binds editable child objects and editable child lists at any depth, for example `Children[0].GrandChildren[1].Name` ([#4858](https://github.com/MarimerLLC/csla/issues/4858)). Previously it only bound the root object's properties, plus the items of a root list. See [Binding editable object graphs](ASP.NET-MVC.md#binding-editable-object-graphs).
+
+Behavior changes:
+
+* `TryUpdateModelAsync(model)` now binds into the object you pass. Previously the binder created a separate object, so the posted values never reached your object. When binding into an existing object, only posted values are set; other properties and children are left alone.
+* The binder now honors `[BindNever]`, `[Bind]` and the include list passed to `TryUpdateModelAsync`. Previously it bound every registered property.
+* The binder now waits for async business rules anywhere in the graph to finish before it returns.
+* The binder no longer sets a child property to `null` when the form has no fields for it.
+* The binder now works out a posted list's items from the indexes in the field names. Previously it divided the number of posted fields by the number of properties, which gave the wrong count when items had child properties or fields weren't posted.
+* A request that isn't a form post binds to a new object with no values set, rather than throwing.
 
 ## Trimming and NativeAOT annotations
 

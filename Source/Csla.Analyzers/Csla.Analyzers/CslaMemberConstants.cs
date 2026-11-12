@@ -232,6 +232,10 @@
       /// </summary>
       public const string ObjectAuthorizationRulesAttribute = nameof(ObjectAuthorizationRulesAttribute);
       /// <summary>
+      ///
+      /// </summary>
+      public const string CalculatedPropertyAttribute = nameof(CalculatedPropertyAttribute);
+      /// <summary>
       /// 
       /// </summary>
       public const string DynamicListBase = nameof(DynamicListBase);

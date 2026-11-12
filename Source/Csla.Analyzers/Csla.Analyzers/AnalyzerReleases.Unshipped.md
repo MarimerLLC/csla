@@ -28,3 +28,5 @@ CSLA0022 | Usage | Warning | ObjectAuthorizationRulesStatic
 CSLA0023 | Refactoring | Info | EvaluateManagedBackingFieldsNameofAnalyzer
 CSLA0024 | Usage | Warning | TypeWithOperationsShouldBePartialAnalyzer
 CSLA0025 | Usage | Warning | UseGeneratedDataPortalExtensionAnalyzer
+CSLA0026 | Usage | Warning | CalculatedPropertyAnalyzer
+CSLA0027 | Usage | Warning | CalculatedPropertyAnalyzer

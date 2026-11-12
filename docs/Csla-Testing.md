@@ -217,8 +217,8 @@ CSLA business code.
 
 ## Contributing
 
-The project lives in `Source/Csla.Testing` and is part of both `Source/csla.build.sln`
-(the packaging solution) and `Source/csla.test.sln` (the CI solution). Its unit tests
+The project lives in `Source/Csla.Testing` and is part of both `Source/csla.build.slnx`
+(the packaging solution) and `Source/csla.test.slnx` (the CI solution). Its unit tests
 live in `Source/tests/Csla.Testing.Tests`. Please read the
 [contribution guidelines](https://github.com/MarimerLLC/csla/blob/main/.github/CONTRIBUTING.md)
 before submitting a pull request.

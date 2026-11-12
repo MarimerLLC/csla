@@ -35,7 +35,7 @@ jobs:
       run: dotnet workload install maui
 
     - name: Build and Pack
-      run: dotnet pack Source\csla.build.sln --configuration Release -p:PublicRelease=true
+      run: dotnet pack Source\csla.build.slnx --configuration Release -p:PublicRelease=true
 
     # Exchange the GitHub OIDC token for a short-lived (1 hour) nuget.org API key.
     # Requires a trusted publishing policy on nuget.org for this workflow file.

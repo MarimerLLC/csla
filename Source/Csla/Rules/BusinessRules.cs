@@ -1032,17 +1032,20 @@ namespace Csla.Rules
     /// <remarks>Called inside the lock on _syncRoot.</remarks>
     private void CompleteAsyncRule(IBusinessRuleBase rule, IEnumerable<string> affected)
     {
-      // work out which properties this rule leaves idle while they are still busy;
-      // BusyProperties holds one entry per running rule, so remove from a copy
-      var remaining = new List<IPropertyInfo>(BusyProperties);
-      foreach (var item in rule.AffectedProperties)
-        remaining.Remove(item);
+      // BusyProperties holds one entry per running rule for each of its affected
+      // properties. The handlers of the notifications below can start rules, or
+      // complete other rules, so each decision checks the live list, discounting
+      // this rule's own entries (they stay until the object reports idle).
 
       // raise the completion notifications while the object is still busy
+      var completed = new List<IPropertyInfo>();
       foreach (var item in rule.AffectedProperties.Distinct())
       {
-        if (!remaining.Contains(item))
+        if (!IsBusyForOtherRules(item, rule))
+        {
+          completed.Add(item);
           _target.RuleComplete(item);
+        }
       }
 
       foreach (var property in affected.Distinct())
@@ -1052,14 +1055,22 @@ namespace Csla.Rules
           _target.RuleComplete(property);
       }
 
-      if (!RunningRules && remaining.Count == 0)
+      if (!RunningRules && BusyProperties.Count == rule.AffectedProperties.Count)
         _target.AllRulesComplete();
 
-      // clear the busy state; the handlers above may have started more rules,
-      // so check the live list again
+      // clear the busy state
       foreach (var item in rule.AffectedProperties)
         BusyProperties.Remove(item);
       var idle = rule.AffectedProperties.Distinct().Where(p => !BusyProperties.Contains(p)).ToList();
+
+      // another rule for a property may have kept it busy when its notification
+      // was due, then completed in a handler above without notifying, because
+      // this rule's entry was still there
+      foreach (var item in idle)
+      {
+        if (!completed.Contains(item))
+          _target.RuleComplete(item);
+      }
 
       // report each property idle; the object becomes idle with the last one
       for (var i = 0; i < idle.Count; i++)
@@ -1075,6 +1086,13 @@ namespace Csla.Rules
       if (!_isBusy)
         BusyChanged.Set();
     }
+
+    /// <summary>
+    /// Gets a value indicating whether rules other than the specified
+    /// running rule keep a property busy.
+    /// </summary>
+    private bool IsBusyForOtherRules(IPropertyInfo property, IBusinessRuleBase rule) =>
+      BusyProperties.Count(p => Equals(p, property)) > rule.AffectedProperties.Count(p => Equals(p, property));
 
     private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
     {

@@ -1633,6 +1633,9 @@ namespace Csla.Core
 
     private void Child_BusyChanged(object? sender, BusyChangedEventArgs e)
     {
+      // IsSavable depends on IsBusy, which includes the children; a child's
+      // completion notifications reach this object while the child is still busy
+      MetaPropertyHasChanged("IsSavable");
       OnBusyChanged(e);
     }
 

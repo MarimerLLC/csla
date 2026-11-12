@@ -44,7 +44,7 @@ dotnet build MauiExample/MauiExample.csproj -t:Run -f net10.0-android
 
 `csla:PropertyInfo` walks its `Path` over the binding source by reflection, so CSLA marks it `[RequiresUnreferencedCode]`. Using it in XAML produces an IL2026 warning in the page's generated `InitializeComponent`. `PersonEditPage.xaml.cs` suppresses that warning for that one method. The suppression is justified because the binding source is the `PersonEdit` business object, whose members CSLA preserves. If you bind `PropertyInfo` to an object that isn't a CSLA business object, preserve that object's type yourself.
 
-`Csla.Maui` 11.0.0-alpha.1 also reports an IL2112 warning on `Csla.Xaml.PropertyInfo.BrokenRulesProperty`. That warning is fixed in CSLA and goes away with the next `Csla.Maui` prerelease.
+`Csla.Maui` 11.0.0-alpha.2 also reports an IL2112 warning on `Csla.Xaml.PropertyInfo.BrokenRulesProperty`. That warning is fixed in CSLA and goes away with the next `Csla.Maui` prerelease.
 
 ## Publish
 

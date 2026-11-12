@@ -51,7 +51,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net11.0'">
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0-rc.3.26522.148" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="11.0.0" />
   </ItemGroup>
 
 </Project>

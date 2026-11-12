@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net11.0'">
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="11.0.0-rc.3.26522.148" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="11.0.0" />
   </ItemGroup>
 
 </Project>

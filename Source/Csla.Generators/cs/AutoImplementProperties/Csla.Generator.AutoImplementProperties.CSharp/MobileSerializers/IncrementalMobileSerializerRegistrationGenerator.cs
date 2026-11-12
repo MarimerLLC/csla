@@ -43,7 +43,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.MobileSerializers
 
       var serializerSide = context.SyntaxProvider.ForAttributeWithMetadataName(
           MobileSerializerRules.MobileSerializerForAttributeMetadataName,
-          predicate: static (node, _) => node is ClassDeclarationSyntax,
+          predicate: static (node, _) => node is ClassDeclarationSyntax or RecordDeclarationSyntax,
           transform: static (ctx, ct) => ExtractSerializerSide(ctx, ct))
         .WithTrackingName(TrackingNames.ExtractSerializerSideRegistrations)
         .Collect();
@@ -67,12 +67,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.MobileSerializers
         return EquatableArray<SerializerRegistration>.Empty;
 
       var compilation = context.SemanticModel.Compilation;
+      var symbols = MobileSerializerSymbols.Create(compilation);
       var result = new List<SerializerRegistration>();
       foreach (var attribute in context.Attributes)
       {
         cancellationToken.ThrowIfCancellationRequested();
         var serializer = MobileSerializerRules.GetTypeSideSerializer(attribute);
-        if (TryCreate(type, serializer, compilation, out var registration))
+        if (TryCreate(type, serializer, compilation, symbols, out var registration))
           result.Add(registration);
       }
       return new EquatableArray<SerializerRegistration>(result);
@@ -84,26 +85,27 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.MobileSerializers
         return EquatableArray<SerializerRegistration>.Empty;
 
       var compilation = context.SemanticModel.Compilation;
+      var symbols = MobileSerializerSymbols.Create(compilation);
       var result = new List<SerializerRegistration>();
       foreach (var attribute in context.Attributes)
       {
         foreach (var type in MobileSerializerRules.GetSerializerSideTypes(attribute))
         {
           cancellationToken.ThrowIfCancellationRequested();
-          if (TryCreate(type, serializer, compilation, out var registration))
+          if (TryCreate(type, serializer, compilation, symbols, out var registration))
             result.Add(registration);
         }
       }
       return new EquatableArray<SerializerRegistration>(result);
     }
 
-    private static bool TryCreate(ITypeSymbol? type, ITypeSymbol? serializer, Compilation compilation, out SerializerRegistration registration)
+    private static bool TryCreate(ITypeSymbol? type, ITypeSymbol? serializer, Compilation compilation, MobileSerializerSymbols? symbols, out SerializerRegistration registration)
     {
       registration = null!;
-      if (type is null || serializer is null)
+      if (type is null || serializer is null || symbols is null)
         return false;
-      if (!MobileSerializerRules.IsValidTargetType(type, compilation, out _)
-        || !MobileSerializerRules.IsValidSerializer(serializer, compilation, out _))
+      if (!MobileSerializerRules.IsValidTargetType(type, compilation, symbols, out _)
+        || !MobileSerializerRules.IsValidSerializer(serializer, compilation, symbols, out _))
         return false;
 
       registration = new SerializerRegistration(

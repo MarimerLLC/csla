@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers
@@ -12,6 +13,10 @@ namespace Csla.Analyzers
   {
     private static readonly IReadOnlyList<ITypeSymbol> None = [];
 
+    // Shared by the analyzers that need it, so the referenced assemblies'
+    // attributes are read once per compilation.
+    private static readonly ConditionalWeakTable<Compilation, CustomSerializerRegistry> Cache = new();
+
     private readonly Dictionary<ITypeSymbol, List<ITypeSymbol>> _serializers;
 
     private CustomSerializerRegistry(Dictionary<ITypeSymbol, List<ITypeSymbol>> serializers)
@@ -20,12 +25,23 @@ namespace Csla.Analyzers
     }
 
     /// <summary>
-    /// Reads the registrations of a compilation and its referenced assemblies.
+    /// Gets the registrations of a compilation and its referenced assemblies,
+    /// reading them on first use.
     /// </summary>
-    public static CustomSerializerRegistry Create(Compilation compilation, CancellationToken cancellationToken = default)
+    public static CustomSerializerRegistry Get(Compilation compilation, MobileSerializerSymbols? symbols, CancellationToken cancellationToken)
+    {
+      if (Cache.TryGetValue(compilation, out var registry))
+        return registry;
+
+      // Not created inside GetValue so a cancelled read isn't cached; a
+      // registry built concurrently by another analyzer is simply discarded.
+      registry = Create(compilation, symbols?.RegistrationAttribute, cancellationToken);
+      return Cache.GetValue(compilation, _ => registry);
+    }
+
+    private static CustomSerializerRegistry Create(Compilation compilation, INamedTypeSymbol? registrationAttribute, CancellationToken cancellationToken)
     {
       var serializers = new Dictionary<ITypeSymbol, List<ITypeSymbol>>(SymbolEqualityComparer.Default);
-      var registrationAttribute = compilation.GetTypeByMetadataName(MobileSerializerRules.MobileSerializerRegistrationAttributeMetadataName);
       if (registrationAttribute is null)
         return new CustomSerializerRegistry(serializers);
 

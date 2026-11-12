@@ -128,6 +128,52 @@ namespace Csla.Analyzers.Tests
       await AssertInvalidAsync(code, "the type 'Money<T>' is generic, and custom serializers can be registered only for non-generic types");
     }
 
+    [DataTestMethod]
+    [DataRow("typeof(System.Guid)", "System.Guid")]
+    [DataRow("typeof(string)", "string")]
+    [DataRow("typeof(int)", "int")]
+    [DataRow("typeof(System.DateTimeOffset)", "System.DateTimeOffset")]
+    public async Task SerializerSideForNativelySerializedType(string typeOf, string display)
+    {
+      var code = Usings +
+        $$"""
+        [MobileSerializerFor({{typeOf}})]
+        public class NativeSerializer : S1 { }
+        """ + Serializers;
+
+      await AssertInvalidAsync(code, $"the type '{display}' is serialized natively by MobileFormatter, so a custom serializer is never used");
+    }
+
+    [TestMethod]
+    public async Task TypeSideOnMobileObject()
+    {
+      var code = Usings +
+        """
+        [MobileSerializer(typeof(S1))]
+        public class Person : Csla.BusinessBase<Person> { }
+        """ + Serializers;
+
+      await AssertInvalidAsync(code, "the type 'Person' implements IMobileObject, so MobileFormatter serializes it directly and never uses a custom serializer");
+    }
+
+    [TestMethod]
+    public async Task RecordSerializerIsValid()
+    {
+      var code = Usings +
+        """
+        public record Widget(string Name);
+
+        [MobileSerializerFor(typeof(Widget))]
+        public record WidgetSerializer : IMobileSerializer
+        {
+          public object Deserialize(SerializationInfo info) => null;
+          public void Serialize(object obj, SerializationInfo info) { }
+        }
+        """;
+
+      await TestHelpers.RunAnalysisAsync<MobileSerializerAttributeUsageAnalyzer>(code, []);
+    }
+
     [TestMethod]
     public async Task TypeSideOnPrivateNestedType()
     {

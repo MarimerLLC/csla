@@ -49,36 +49,35 @@ namespace Csla.Analyzers
       context.EnableConcurrentExecution();
       context.RegisterCompilationStartAction(startContext =>
       {
-        var compilation = startContext.Compilation;
-        var attributes = AttributeTypes.Create(compilation);
-        if (attributes is null)
+        var symbols = MobileSerializerSymbols.Create(startContext.Compilation);
+        if (symbols?.MobileSerializerAttribute is null || symbols.MobileSerializerForAttribute is null || symbols.RegistrationAttribute is null)
           return;
 
-        var registry = new Lazy<CustomSerializerRegistry>(() => CustomSerializerRegistry.Create(compilation));
-        startContext.RegisterSymbolAction(c => AnalyzeType(c, attributes, registry), SymbolKind.NamedType);
-        startContext.RegisterSyntaxNodeAction(c => AnalyzeAssemblyAttributes(c, attributes, registry), SyntaxKind.AttributeList);
+        startContext.RegisterSymbolAction(c => AnalyzeType(c, symbols), SymbolKind.NamedType);
+        startContext.RegisterSyntaxNodeAction(c => AnalyzeAssemblyAttributes(c, symbols), SyntaxKind.AttributeList);
       });
     }
 
-    private static void AnalyzeType(SymbolAnalysisContext context, AttributeTypes attributes, Lazy<CustomSerializerRegistry> registry)
+    private static void AnalyzeType(SymbolAnalysisContext context, MobileSerializerSymbols symbols)
     {
       var type = (INamedTypeSymbol)context.Symbol;
+      var compilation = context.Compilation;
       foreach (var attribute in type.GetAttributes())
       {
-        if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, attributes.MobileSerializer))
+        if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, symbols.MobileSerializerAttribute))
         {
           var location = GetLocation(attribute, context.CancellationToken) ?? type.Locations[0];
           var serializer = MobileSerializerRules.GetTypeSideSerializer(attribute);
-          var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, context.Compilation, out var typeProblem), typeProblem, type, location);
-          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, context.Compilation, out var serializerProblem), serializerProblem, serializer, location);
+          var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, compilation, symbols, out var typeProblem), typeProblem, type, location);
+          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, compilation, symbols, out var serializerProblem), serializerProblem, serializer, location);
           if (typeValid && serializerValid && serializer is not null)
-            ReportConflict(context.ReportDiagnostic, registry.Value, type, serializer, location);
+            ReportConflict(context.ReportDiagnostic, GetRegistry(compilation, symbols, context.CancellationToken), type, serializer, location);
         }
-        else if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, attributes.MobileSerializerFor))
+        else if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, symbols.MobileSerializerForAttribute))
         {
           var syntax = attribute.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken) as AttributeSyntax;
           var attributeLocation = syntax?.GetLocation() ?? type.Locations[0];
-          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(type, context.Compilation, out var serializerProblem), serializerProblem, type, attributeLocation);
+          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(type, compilation, symbols, out var serializerProblem), serializerProblem, type, attributeLocation);
 
           var arguments = syntax?.ArgumentList?.Arguments;
           var targets = MobileSerializerRules.GetSerializerSideTypes(attribute).ToList();
@@ -89,39 +88,47 @@ namespace Csla.Analyzers
             var location = arguments is { } list && list.Count == targets.Count
               ? list[i].GetLocation()
               : attributeLocation;
-            var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(target, context.Compilation, out var typeProblem), typeProblem, target, location);
+            var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(target, compilation, symbols, out var typeProblem), typeProblem, target, location);
             if (typeValid && serializerValid)
-              ReportConflict(context.ReportDiagnostic, registry.Value, target, type, location);
+              ReportConflict(context.ReportDiagnostic, GetRegistry(compilation, symbols, context.CancellationToken), target, type, location);
           }
         }
       }
     }
 
-    private static void AnalyzeAssemblyAttributes(SyntaxNodeAnalysisContext context, AttributeTypes attributes, Lazy<CustomSerializerRegistry> registry)
+    private static void AnalyzeAssemblyAttributes(SyntaxNodeAnalysisContext context, MobileSerializerSymbols symbols)
     {
       var list = (AttributeListSyntax)context.Node;
       if (list.Target is null || !list.Target.Identifier.IsKind(SyntaxKind.AssemblyKeyword))
         return;
 
-      var assemblyAttributes = context.Compilation.Assembly.GetAttributes();
+      ImmutableArray<AttributeData>? assemblyAttributes = null;
       foreach (var attributeSyntax in list.Attributes)
       {
-        var attribute = assemblyAttributes.FirstOrDefault(a =>
+        // Bind just the attribute name first, so the assembly's attributes are
+        // only searched for registrations.
+        var constructor = context.SemanticModel.GetSymbolInfo(attributeSyntax, context.CancellationToken).Symbol;
+        if (!SymbolEqualityComparer.Default.Equals(constructor?.ContainingType, symbols.RegistrationAttribute))
+          continue;
+
+        assemblyAttributes ??= context.Compilation.Assembly.GetAttributes();
+        var attribute = assemblyAttributes.Value.FirstOrDefault(a =>
           a.ApplicationSyntaxReference is { } reference
           && reference.SyntaxTree == attributeSyntax.SyntaxTree
           && reference.Span == attributeSyntax.Span);
-        if (attribute is null || !SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, attributes.MobileSerializerRegistration))
-          continue;
-        if (!MobileSerializerRules.TryGetRegistration(attribute, out var type, out var serializer))
+        if (attribute is null || !MobileSerializerRules.TryGetRegistration(attribute, out var type, out var serializer))
           continue;
 
         var location = attributeSyntax.GetLocation();
-        var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, context.Compilation, out var typeProblem), typeProblem, type, location);
-        var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, context.Compilation, out var serializerProblem), serializerProblem, serializer, location);
+        var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, context.Compilation, symbols, out var typeProblem), typeProblem, type, location);
+        var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, context.Compilation, symbols, out var serializerProblem), serializerProblem, serializer, location);
         if (typeValid && serializerValid)
-          ReportConflict(context.ReportDiagnostic, registry.Value, type, serializer, location);
+          ReportConflict(context.ReportDiagnostic, GetRegistry(context.Compilation, symbols, context.CancellationToken), type, serializer, location);
       }
     }
+
+    private static CustomSerializerRegistry GetRegistry(Compilation compilation, MobileSerializerSymbols symbols, CancellationToken cancellationToken)
+      => CustomSerializerRegistry.Get(compilation, symbols, cancellationToken);
 
     private static bool Validate(Action<Diagnostic> report, bool valid, MobileSerializerProblem problem, ITypeSymbol? type, Location location)
     {
@@ -148,6 +155,8 @@ namespace Csla.Analyzers
         MobileSerializerProblem.TypeNotClassOrStruct => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeNotClassOrStruct),
         MobileSerializerProblem.TypeGeneric => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeGeneric),
         MobileSerializerProblem.TypeInaccessible => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeInaccessible),
+        MobileSerializerProblem.TypeSerializedNatively => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeSerializedNatively),
+        MobileSerializerProblem.TypeIsMobileObject => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject),
         _ => throw new ArgumentOutOfRangeException(nameof(problem), problem, null)
       };
       return new LocalizableResourceString(name, Resources.ResourceManager, typeof(Resources), MobileSerializerRules.DisplayName(type));
@@ -171,27 +180,5 @@ namespace Csla.Analyzers
 
     private static Location? GetLocation(AttributeData attribute, CancellationToken cancellationToken)
       => attribute.ApplicationSyntaxReference?.GetSyntax(cancellationToken).GetLocation();
-
-    private sealed class AttributeTypes
-    {
-      public required INamedTypeSymbol MobileSerializer { get; init; }
-      public required INamedTypeSymbol MobileSerializerFor { get; init; }
-      public required INamedTypeSymbol MobileSerializerRegistration { get; init; }
-
-      public static AttributeTypes? Create(Compilation compilation)
-      {
-        var mobileSerializer = compilation.GetTypeByMetadataName(MobileSerializerRules.MobileSerializerAttributeMetadataName);
-        var mobileSerializerFor = compilation.GetTypeByMetadataName(MobileSerializerRules.MobileSerializerForAttributeMetadataName);
-        var registration = compilation.GetTypeByMetadataName(MobileSerializerRules.MobileSerializerRegistrationAttributeMetadataName);
-        if (mobileSerializer is null || mobileSerializerFor is null || registration is null)
-          return null;
-        return new AttributeTypes
-        {
-          MobileSerializer = mobileSerializer,
-          MobileSerializerFor = mobileSerializerFor,
-          MobileSerializerRegistration = registration
-        };
-      }
-    }
   }
 }

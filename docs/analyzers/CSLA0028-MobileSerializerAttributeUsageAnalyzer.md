@@ -17,6 +17,7 @@ The type that is serialized must be:
 
 * a class or struct
 * non-generic, and not nested in a generic type
+* a type `MobileFormatter` doesn't serialize itself: not a primitive, `string`, `decimal`, `DateTime`, `DateTimeOffset`, `TimeSpan`, `Guid`, `DateOnly` or `TimeOnly`, and not an `IMobileObject` such as a CSLA business type. `MobileFormatter` handles these before it looks for a custom serializer, so the serializer would never be used.
 * accessible to an assembly-level attribute (public or internal, not a private or protected nested type)
 
 For example:

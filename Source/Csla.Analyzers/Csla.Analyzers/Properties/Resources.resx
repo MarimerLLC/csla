@@ -351,4 +351,10 @@
   <data name="MobileSerializerAttributeUsageAnalyzer_TypeInaccessible" xml:space="preserve">
     <value>the type '{0}' is not accessible to an assembly-level attribute</value>
   </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_TypeSerializedNatively" xml:space="preserve">
+    <value>the type '{0}' is serialized natively by MobileFormatter, so a custom serializer is never used</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject" xml:space="preserve">
+    <value>the type '{0}' implements IMobileObject, so MobileFormatter serializes it directly and never uses a custom serializer</value>
+  </data>
 </root>

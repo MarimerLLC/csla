@@ -1,4 +1,4 @@
-﻿using Csla.Analyzers.Extensions;
+using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -40,13 +40,12 @@ namespace Csla.Analyzers
       context.EnableConcurrentExecution();
       context.RegisterCompilationStartAction(startContext =>
       {
-        var compilation = startContext.Compilation;
-        var registry = new Lazy<CustomSerializerRegistry>(() => CustomSerializerRegistry.Create(compilation));
-        startContext.RegisterSyntaxNodeAction(c => AnalyzeMethodDeclaration(c, registry), SyntaxKind.MethodDeclaration);
+        var symbols = MobileSerializerSymbols.Create(startContext.Compilation);
+        startContext.RegisterSyntaxNodeAction(c => AnalyzeMethodDeclaration(c, symbols), SyntaxKind.MethodDeclaration);
       });
     }
 
-    private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context, Lazy<CustomSerializerRegistry> registry)
+    private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context, MobileSerializerSymbols? symbols)
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
@@ -67,7 +66,7 @@ namespace Csla.Analyzers
               !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) &&
               argumentType is not { ContainingNamespace.Name: "System", Name: "Nullable" } &&
               argumentType is INamedTypeSymbol &&
-              !HasCustomSerializer(argumentType, registry))
+              !HasCustomSerializer(argumentType, context, symbols))
           {
             context.ReportDiagnostic(Diagnostic.Create(
               shouldUseSerializableTypesRule, argument.Locations[0]));
@@ -81,8 +80,9 @@ namespace Csla.Analyzers
     /// or has a registered custom serializer, matching the exact-type
     /// matching MobileFormatter does at run time.
     /// </summary>
-    private static bool HasCustomSerializer(ITypeSymbol type, Lazy<CustomSerializerRegistry> registry)
-      => type.GetAttributes().Any(a => MobileSerializerRules.IsCslaMobileType(a.AttributeClass, MobileSerializerRules.MobileSerializerAttributeName))
-        || registry.Value.IsRegistered(type);
+    private static bool HasCustomSerializer(ITypeSymbol type, SyntaxNodeAnalysisContext context, MobileSerializerSymbols? symbols)
+      => symbols is not null
+        && (type.GetAttributes().Any(a => SymbolEqualityComparer.Default.Equals(a.AttributeClass, symbols.MobileSerializerAttribute))
+          || CustomSerializerRegistry.Get(context.Compilation, symbols, context.CancellationToken).IsRegistered(type));
   }
 }

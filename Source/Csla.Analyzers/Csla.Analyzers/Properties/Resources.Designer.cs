@@ -764,5 +764,23 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeInaccessible", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is serialized natively by MobileFormatter, so a custom serializer is never used.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeSerializedNatively {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeSerializedNatively", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' implements IMobileObject, so MobileFormatter serializes it directly and never uses a custom serializer.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject", resourceCulture);
+            }
+        }
     }
 }

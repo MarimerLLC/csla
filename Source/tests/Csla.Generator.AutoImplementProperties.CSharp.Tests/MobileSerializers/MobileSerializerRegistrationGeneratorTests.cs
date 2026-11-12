@@ -78,6 +78,42 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       await Verify(source);
     }
 
+    [TestMethod("Records as serializers and serialized types")]
+    public async Task Records()
+    {
+      var source = """
+        using Csla.Serialization.Mobile;
+
+        namespace TestApp
+        {
+          [MobileSerializer(typeof(MoneySerializer))]
+          public record Money(decimal Amount);
+
+          public record class Widget(string Name);
+
+          public record struct Point(int X, int Y);
+
+          [MobileSerializerFor(typeof(Widget), typeof(Point))]
+          public record WidgetSerializer : IMobileSerializer
+          {
+            public object Deserialize(SerializationInfo info) => new Widget("");
+            public void Serialize(object obj, SerializationInfo info) { }
+          }
+
+          public record Price(decimal Amount);
+
+          [MobileSerializerFor(typeof(Price))]
+          public record class PriceSerializer : IMobileSerializer
+          {
+            public object Deserialize(SerializationInfo info) => new Price(0);
+            public void Serialize(object obj, SerializationInfo info) { }
+          }
+        }
+        """ + Serializers.Replace("new Money()", "new Money(0)");
+
+      await Verify(source);
+    }
+
     [TestMethod("Both attributes, with a pair declared twice")]
     public async Task Mixed()
     {
@@ -130,8 +166,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
 
           public class NotASerializer { }
 
-          [MobileSerializerFor(typeof(List<int>), typeof(int[]))]
+          [MobileSerializerFor(typeof(List<int>), typeof(int[]), typeof(System.Guid), typeof(string), typeof(MobileType))]
           public class SkippedTargets : MoneySerializer { }
+
+          public class MobileType : Csla.Core.MobileObject { }
 
           [MobileSerializerFor(typeof(Money))]
           public class SkippedOpen<T> : MoneySerializer { }

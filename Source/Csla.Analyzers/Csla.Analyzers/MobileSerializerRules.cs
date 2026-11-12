@@ -16,6 +16,25 @@ using Microsoft.CodeAnalysis;
 namespace Csla.Analyzers
 {
   /// <summary>
+  /// Why a custom serializer declaration cannot be registered. The analyzer
+  /// maps each value to a localized message.
+  /// </summary>
+  internal enum MobileSerializerProblem
+  {
+    None,
+    SerializerNotClass,
+    SerializerOpenGeneric,
+    SerializerStatic,
+    SerializerAbstract,
+    SerializerNotMobileSerializer,
+    SerializerNoPublicConstructor,
+    SerializerInaccessible,
+    TypeNotClassOrStruct,
+    TypeGeneric,
+    TypeInaccessible
+  }
+
+  /// <summary>
   /// Rules for the <c>[MobileSerializer]</c>, <c>[MobileSerializerFor]</c> and
   /// <c>[assembly: MobileSerializerRegistration]</c> attributes.
   /// </summary>
@@ -93,52 +112,34 @@ namespace Csla.Analyzers
     /// <param name="serializer">The serializer type.</param>
     /// <param name="compilation">The compilation the registration is generated in.</param>
     /// <param name="problem">
-    /// Why the type cannot be used, or <see langword="null"/> when it is valid
-    /// or when the compiler already reports an error for it.
+    /// Why the type cannot be used, or <see cref="MobileSerializerProblem.None"/>
+    /// when it is valid or when the compiler already reports an error for it.
     /// </param>
-    public static bool IsValidSerializer([NotNullWhen(true)] ITypeSymbol? serializer, Compilation compilation, out string? problem)
+    public static bool IsValidSerializer([NotNullWhen(true)] ITypeSymbol? serializer, Compilation compilation, out MobileSerializerProblem problem)
     {
-      problem = null;
-      if (serializer is null || serializer.TypeKind == TypeKind.Error)
-        return false;
+      problem = GetSerializerProblem(serializer, compilation);
+      return serializer is not null && serializer.TypeKind != TypeKind.Error && problem == MobileSerializerProblem.None;
+    }
 
-      var name = Display(serializer);
+    private static MobileSerializerProblem GetSerializerProblem(ITypeSymbol? serializer, Compilation compilation)
+    {
+      if (serializer is null || serializer.TypeKind == TypeKind.Error)
+        return MobileSerializerProblem.None;
       if (serializer is not INamedTypeSymbol named || named.TypeKind != TypeKind.Class)
-      {
-        problem = $"the serializer '{name}' is not a class";
-        return false;
-      }
+        return MobileSerializerProblem.SerializerNotClass;
       if (ContainsTypeParameters(named))
-      {
-        problem = $"the serializer '{name}' is an open generic type";
-        return false;
-      }
+        return MobileSerializerProblem.SerializerOpenGeneric;
       if (named.IsStatic)
-      {
-        problem = $"the serializer '{name}' is static";
-        return false;
-      }
+        return MobileSerializerProblem.SerializerStatic;
       if (named.IsAbstract)
-      {
-        problem = $"the serializer '{name}' is abstract";
-        return false;
-      }
+        return MobileSerializerProblem.SerializerAbstract;
       if (!named.AllInterfaces.Any(i => IsCslaMobileType(i, MobileSerializerInterfaceName)))
-      {
-        problem = $"the serializer '{name}' does not implement IMobileSerializer";
-        return false;
-      }
+        return MobileSerializerProblem.SerializerNotMobileSerializer;
       if (!named.InstanceConstructors.Any(c => c.DeclaredAccessibility == Accessibility.Public))
-      {
-        problem = $"the serializer '{name}' has no public constructor";
-        return false;
-      }
+        return MobileSerializerProblem.SerializerNoPublicConstructor;
       if (!compilation.IsSymbolAccessibleWithin(named, compilation.Assembly))
-      {
-        problem = $"the serializer '{name}' is not accessible to an assembly-level attribute";
-        return false;
-      }
-      return true;
+        return MobileSerializerProblem.SerializerInaccessible;
+      return MobileSerializerProblem.None;
     }
 
     /// <summary>
@@ -148,32 +149,26 @@ namespace Csla.Analyzers
     /// <param name="type">The type to serialize.</param>
     /// <param name="compilation">The compilation the registration is generated in.</param>
     /// <param name="problem">
-    /// Why the type cannot be used, or <see langword="null"/> when it is valid
-    /// or when the compiler already reports an error for it.
+    /// Why the type cannot be used, or <see cref="MobileSerializerProblem.None"/>
+    /// when it is valid or when the compiler already reports an error for it.
     /// </param>
-    public static bool IsValidTargetType([NotNullWhen(true)] ITypeSymbol? type, Compilation compilation, out string? problem)
+    public static bool IsValidTargetType([NotNullWhen(true)] ITypeSymbol? type, Compilation compilation, out MobileSerializerProblem problem)
     {
-      problem = null;
-      if (type is null || type.TypeKind == TypeKind.Error)
-        return false;
+      problem = GetTargetTypeProblem(type, compilation);
+      return type is not null && type.TypeKind != TypeKind.Error && problem == MobileSerializerProblem.None;
+    }
 
-      var name = Display(type);
+    private static MobileSerializerProblem GetTargetTypeProblem(ITypeSymbol? type, Compilation compilation)
+    {
+      if (type is null || type.TypeKind == TypeKind.Error)
+        return MobileSerializerProblem.None;
       if (type is not INamedTypeSymbol named || (named.TypeKind != TypeKind.Class && named.TypeKind != TypeKind.Struct))
-      {
-        problem = $"the type '{name}' is not a class or struct";
-        return false;
-      }
+        return MobileSerializerProblem.TypeNotClassOrStruct;
       if (IsGeneric(named))
-      {
-        problem = $"the type '{name}' is generic, and custom serializers can be registered only for non-generic types";
-        return false;
-      }
+        return MobileSerializerProblem.TypeGeneric;
       if (!compilation.IsSymbolAccessibleWithin(named, compilation.Assembly))
-      {
-        problem = $"the type '{name}' is not accessible to an assembly-level attribute";
-        return false;
-      }
-      return true;
+        return MobileSerializerProblem.TypeInaccessible;
+      return MobileSerializerProblem.None;
     }
 
     /// <summary>
@@ -182,7 +177,10 @@ namespace Csla.Analyzers
     public static string FullyQualifiedName(ITypeSymbol type)
       => type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-    private static string Display(ITypeSymbol type)
+    /// <summary>
+    /// Gets the name of a type for use in diagnostic messages.
+    /// </summary>
+    public static string DisplayName(ITypeSymbol type)
       => type.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
 
     private static bool IsGeneric(INamedTypeSymbol type)

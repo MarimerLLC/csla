@@ -1,3 +1,4 @@
+using Csla.Analyzers.Properties;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -68,8 +69,8 @@ namespace Csla.Analyzers
         {
           var location = GetLocation(attribute, context.CancellationToken) ?? type.Locations[0];
           var serializer = MobileSerializerRules.GetTypeSideSerializer(attribute);
-          var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, context.Compilation, out var typeProblem), typeProblem, location);
-          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, context.Compilation, out var serializerProblem), serializerProblem, location);
+          var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, context.Compilation, out var typeProblem), typeProblem, type, location);
+          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, context.Compilation, out var serializerProblem), serializerProblem, serializer, location);
           if (typeValid && serializerValid && serializer is not null)
             ReportConflict(context.ReportDiagnostic, registry.Value, type, serializer, location);
         }
@@ -77,7 +78,7 @@ namespace Csla.Analyzers
         {
           var syntax = attribute.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken) as AttributeSyntax;
           var attributeLocation = syntax?.GetLocation() ?? type.Locations[0];
-          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(type, context.Compilation, out var serializerProblem), serializerProblem, attributeLocation);
+          var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(type, context.Compilation, out var serializerProblem), serializerProblem, type, attributeLocation);
 
           var arguments = syntax?.ArgumentList?.Arguments;
           var targets = MobileSerializerRules.GetSerializerSideTypes(attribute).ToList();
@@ -88,7 +89,7 @@ namespace Csla.Analyzers
             var location = arguments is { } list && list.Count == targets.Count
               ? list[i].GetLocation()
               : attributeLocation;
-            var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(target, context.Compilation, out var typeProblem), typeProblem, location);
+            var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(target, context.Compilation, out var typeProblem), typeProblem, target, location);
             if (typeValid && serializerValid)
               ReportConflict(context.ReportDiagnostic, registry.Value, target, type, location);
           }
@@ -115,18 +116,41 @@ namespace Csla.Analyzers
           continue;
 
         var location = attributeSyntax.GetLocation();
-        var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, context.Compilation, out var typeProblem), typeProblem, location);
-        var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, context.Compilation, out var serializerProblem), serializerProblem, location);
+        var typeValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidTargetType(type, context.Compilation, out var typeProblem), typeProblem, type, location);
+        var serializerValid = Validate(context.ReportDiagnostic, MobileSerializerRules.IsValidSerializer(serializer, context.Compilation, out var serializerProblem), serializerProblem, serializer, location);
         if (typeValid && serializerValid)
           ReportConflict(context.ReportDiagnostic, registry.Value, type, serializer, location);
       }
     }
 
-    private static bool Validate(Action<Diagnostic> report, bool valid, string? problem, Location location)
+    private static bool Validate(Action<Diagnostic> report, bool valid, MobileSerializerProblem problem, ITypeSymbol? type, Location location)
     {
-      if (!valid && problem is not null)
-        report(Diagnostic.Create(invalidDeclarationRule, location, problem));
+      if (!valid && problem != MobileSerializerProblem.None && type is not null)
+        report(Diagnostic.Create(invalidDeclarationRule, location, GetProblemMessage(problem, type)));
       return valid;
+    }
+
+    /// <summary>
+    /// Gets the localized reason for the CSLA0028 message. It is formatted
+    /// in the culture the diagnostic message is requested in.
+    /// </summary>
+    private static LocalizableResourceString GetProblemMessage(MobileSerializerProblem problem, ITypeSymbol type)
+    {
+      var name = problem switch
+      {
+        MobileSerializerProblem.SerializerNotClass => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_SerializerNotClass),
+        MobileSerializerProblem.SerializerOpenGeneric => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_SerializerOpenGeneric),
+        MobileSerializerProblem.SerializerStatic => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_SerializerStatic),
+        MobileSerializerProblem.SerializerAbstract => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_SerializerAbstract),
+        MobileSerializerProblem.SerializerNotMobileSerializer => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_SerializerNotMobileSerializer),
+        MobileSerializerProblem.SerializerNoPublicConstructor => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_SerializerNoPublicConstructor),
+        MobileSerializerProblem.SerializerInaccessible => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_SerializerInaccessible),
+        MobileSerializerProblem.TypeNotClassOrStruct => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeNotClassOrStruct),
+        MobileSerializerProblem.TypeGeneric => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeGeneric),
+        MobileSerializerProblem.TypeInaccessible => nameof(Resources.MobileSerializerAttributeUsageAnalyzer_TypeInaccessible),
+        _ => throw new ArgumentOutOfRangeException(nameof(problem), problem, null)
+      };
+      return new LocalizableResourceString(name, Resources.ResourceManager, typeof(Resources), MobileSerializerRules.DisplayName(type));
     }
 
     private static void ReportConflict(Action<Diagnostic> report, CustomSerializerRegistry registry, ITypeSymbol type, ITypeSymbol serializer, Location location)

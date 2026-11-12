@@ -674,5 +674,95 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_ConflictMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is not a class.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerNotClass {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerNotClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is an open generic type.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerOpenGeneric {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerOpenGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is static.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerStatic {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is abstract.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerAbstract {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerAbstract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' does not implement IMobileSerializer.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerNotMobileSerializer {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerNotMobileSerializer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' has no public constructor.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerNoPublicConstructor {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerNoPublicConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is not accessible to an assembly-level attribute.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerInaccessible {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerInaccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is not a class or struct.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeNotClassOrStruct {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeNotClassOrStruct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is generic, and custom serializers can be registered only for non-generic types.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeGeneric {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is not accessible to an assembly-level attribute.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeInaccessible {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeInaccessible", resourceCulture);
+            }
+        }
     }
 }

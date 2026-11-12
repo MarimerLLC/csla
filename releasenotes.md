@@ -115,6 +115,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 **Build and Release**
 
 * [#4917](https://github.com/MarimerLLC/csla/issues/4917) Set the `main` version to 11.0.0 and start the CSLA 11 release notes ([#4918](https://github.com/MarimerLLC/csla/pull/4918))
+* [#5000](https://github.com/MarimerLLC/csla/issues/5000) Remove the unmaintained `dotnet new` templates (`Support/Templates`) and the Visual Studio template installer (`Support/TemplateInstaller`)
 
 ### Breaking Changes
 

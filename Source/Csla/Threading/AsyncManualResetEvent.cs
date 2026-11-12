@@ -14,9 +14,15 @@ namespace Csla.Threading
   /// <summary>
   /// Async/await implementation of a ManualResetEvent
   /// </summary>
+  /// <remarks>
+  /// Code awaiting the event always continues asynchronously, never
+  /// inline in the call to <see cref="Set"/>.
+  /// </remarks>
   public class AsyncManualResetEvent
   {
-    private volatile TaskCompletionSource<bool> _tcs = new();
+    private volatile TaskCompletionSource<bool> _tcs = CreateTaskCompletionSource();
+
+    private static TaskCompletionSource<bool> CreateTaskCompletionSource() => new(TaskCreationOptions.RunContinuationsAsynchronously);
 
     /// <summary>
     /// Get awaitable task for the event
@@ -45,7 +51,7 @@ namespace Csla.Threading
       while (true)
       {
         var tcs = _tcs;
-        if (!tcs.Task.IsCompleted || Interlocked.CompareExchange(ref _tcs, new TaskCompletionSource<bool>(), tcs) == tcs)
+        if (!tcs.Task.IsCompleted || Interlocked.CompareExchange(ref _tcs, CreateTaskCompletionSource(), tcs) == tcs)
           return;
       }
     }

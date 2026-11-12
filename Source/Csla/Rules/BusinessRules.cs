@@ -923,24 +923,7 @@ namespace Csla.Rules
             // run rules on affected properties for this async rule
             var affected = onAsyncRuleCompleted?.Invoke(r) ?? [];
 
-            // mark each property as not busy
-            foreach (var item in r.Rule.AffectedProperties)
-            {
-              BusyProperties.Remove(item);
-              RunningAsyncRules = BusyProperties.Count > 0;
-              if (!BusyProperties.Contains(item))
-                _target.RuleComplete(item);
-            }
-
-            foreach (var property in affected.Distinct())
-            {
-              // property is not in AffectedProperties (already signalled to UI)
-              if (!r.Rule.AffectedProperties.Any(p => p.Name == property))
-                _target.RuleComplete(property);
-            }
-
-            if (!RunningRules && !RunningAsyncRules)
-              _target.AllRulesComplete();
+            CompleteAsyncRule(r.Rule, affected);
           }
         }
         else  // Rule is Sync
@@ -1037,6 +1020,61 @@ namespace Csla.Rules
     }
 
     #endregion
+
+    /// <summary>
+    /// Raises the notifications for a completed async rule, then clears
+    /// its busy state. The object reports itself idle last, so once
+    /// IsBusy is false (and WaitForIdle or CheckRulesAsync returns), no
+    /// more completion work runs for the rule.
+    /// </summary>
+    /// <param name="rule">The completed rule.</param>
+    /// <param name="affected">Names of further properties whose rules ran on completion.</param>
+    /// <remarks>Called inside the lock on _syncRoot.</remarks>
+    private void CompleteAsyncRule(IBusinessRuleBase rule, IEnumerable<string> affected)
+    {
+      // work out which properties this rule leaves idle while they are still busy;
+      // BusyProperties holds one entry per running rule, so remove from a copy
+      var remaining = new List<IPropertyInfo>(BusyProperties);
+      foreach (var item in rule.AffectedProperties)
+        remaining.Remove(item);
+
+      // raise the completion notifications while the object is still busy
+      foreach (var item in rule.AffectedProperties.Distinct())
+      {
+        if (!remaining.Contains(item))
+          _target.RuleComplete(item);
+      }
+
+      foreach (var property in affected.Distinct())
+      {
+        // property is not in AffectedProperties (already signalled to UI)
+        if (!rule.AffectedProperties.Any(p => p.Name == property))
+          _target.RuleComplete(property);
+      }
+
+      if (!RunningRules && remaining.Count == 0)
+        _target.AllRulesComplete();
+
+      // clear the busy state; the handlers above may have started more rules,
+      // so check the live list again
+      foreach (var item in rule.AffectedProperties)
+        BusyProperties.Remove(item);
+      var idle = rule.AffectedProperties.Distinct().Where(p => !BusyProperties.Contains(p)).ToList();
+
+      // report each property idle; the object becomes idle with the last one
+      for (var i = 0; i < idle.Count; i++)
+      {
+        if (i == idle.Count - 1)
+          _isBusy = BusyProperties.Count > 0;
+        // a handler may have started a rule for this property again
+        if (!BusyProperties.Contains(idle[i]))
+          _target.PropertyIdle(idle[i]);
+      }
+
+      // release CheckRulesAsync last
+      if (!_isBusy)
+        BusyChanged.Set();
+    }
 
     private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
     {

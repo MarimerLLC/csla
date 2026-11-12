@@ -1190,10 +1190,20 @@ namespace Csla.Core
         throw new ArgumentNullException(nameof(property));
 
       OnPropertyChanged(property);
-      OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
       MetaPropertyHasChanged("IsSelfValid");
       MetaPropertyHasChanged("IsValid");
       MetaPropertyHasChanged("IsSavable");
+    }
+
+    /// <inheritdoc />
+    void IHostRules.PropertyIdle(IPropertyInfo property)
+    {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+
+      // IsSavable is false while the object is busy
+      MetaPropertyHasChanged("IsSavable");
+      OnBusyChanged(new BusyChangedEventArgs(property.Name, false));
     }
 
     /// <inheritdoc />
@@ -3304,11 +3314,16 @@ namespace Csla.Core
     /// Raise the BusyChanged event.
     /// </summary>
     /// <param name="args">Event args.</param>
+    /// <remarks>
+    /// The IsSelfBusy and IsBusy property changes are raised before the
+    /// BusyChanged event, so code waiting for BusyChanged (such as
+    /// WaitForIdle) runs after them.
+    /// </remarks>
     protected virtual void OnBusyChanged(BusyChangedEventArgs args)
     {
-      _busyChanged?.Invoke(this, args);
       MetaPropertyHasChanged("IsSelfBusy");
       MetaPropertyHasChanged("IsBusy");
+      _busyChanged?.Invoke(this, args);
     }
 
     /// <summary>

@@ -94,6 +94,13 @@ namespace Csla.Xaml
     /// Gets the broken rules collection from the
     /// business object.
     /// </summary>
+#if MAUI
+    // The justification is kept here rather than in Csla's TrimmingMessages so that Csla.Maui
+    // Release builds don't depend on a constant that only exists in a newer Csla package.
+    [UnconditionalSuppressMessage("Trimming", "IL2112", Justification =
+      "MAUI's VisualElement keeps the fields of derived types with DynamicallyAccessedMembers so BindableProperty fields can be found by name. " +
+      "Accessing the field only runs the static initializer, which creates the BindableProperty and doesn't walk a binding path.")]
+#endif
     public static readonly BindableProperty BrokenRulesProperty =
       BindableProperty.Create(nameof(BrokenRules), typeof(ObservableCollection<BrokenRule>), typeof(PropertyInfo), new ObservableCollection<BrokenRule>());
     /// <summary>

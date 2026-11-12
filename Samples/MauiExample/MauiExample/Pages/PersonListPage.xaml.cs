@@ -29,7 +29,7 @@ public partial class PersonListPage : ContentPage
   private async Task RefreshData()
   {
     var vm = (PersonListViewModel)BindingContext;
-    await vm.RefreshAsync<PersonList>(async () => await _PersonListDataPortal.FetchAsync());
+    await vm.RefreshAsync(async () => await _PersonListDataPortal.FetchAsync());
   }
 
   private async void EditPerson(object sender, EventArgs e)

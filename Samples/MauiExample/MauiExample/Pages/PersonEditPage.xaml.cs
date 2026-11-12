@@ -1,6 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
 using BusinessLibrary;
 using Csla;
 using MauiExample.ViewModels;
+
+// csla:PropertyInfo walks its Path over the binding source by reflection, so it's marked
+// RequiresUnreferencedCode. InitializeComponent is generated from the XAML, so the suppression
+// targets it from the assembly level.
+[assembly: UnconditionalSuppressMessage("Trimming", "IL2026",
+  Scope = "member", Target = "M:MauiExample.Pages.PersonEditPage.InitializeComponent",
+  Justification = "PropertyInfo's binding source is the PersonEdit business object. CSLA's base classes and IDataPortal<PersonEdit> preserve its members.")]
 
 namespace MauiExample.Pages;
 
@@ -32,9 +40,9 @@ public partial class PersonEditPage : ContentPage, IQueryAttributable
   {
     var vm = (PersonEditViewModel)BindingContext;
     if (id < 1)
-      await vm.RefreshAsync<PersonEdit>(async () => await _personDataPortal.CreateAsync());
+      await vm.RefreshAsync(async () => await _personDataPortal.CreateAsync());
     else
-      await vm.RefreshAsync<PersonEdit>(async () => await _personDataPortal.FetchAsync(id));
+      await vm.RefreshAsync(async () => await _personDataPortal.FetchAsync(id));
   }
 
   private async void SavePerson(object sender, EventArgs e)

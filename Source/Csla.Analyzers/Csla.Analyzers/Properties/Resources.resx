@@ -309,4 +309,16 @@
   <data name="UseGeneratedDataPortalExtension_UseExtensionDescription" xml:space="preserve">
     <value>Use '{0}'</value>
   </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationTitle" xml:space="preserve">
+    <value>Custom serializer declaration is not valid</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationMessage" xml:space="preserve">
+    <value>The custom serializer declaration is not valid because {0}</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_ConflictTitle" xml:space="preserve">
+    <value>Type has more than one custom serializer</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_ConflictMessage" xml:space="preserve">
+    <value>The type '{0}' is registered with more than one custom serializer ({1}); MobileFormatter uses whichever is registered first</value>
+  </data>
 </root>

@@ -107,7 +107,7 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The calculated property &apos;{0}&apos; should have no setter or a private setter.
+        ///   Looks up a localized string similar to The calculated property '{0}' should have no setter or a private setter.
         /// </summary>
         internal static string CalculatedPropertyAnalyzer_MustBeReadOnlyMessage {
             get {
@@ -125,7 +125,7 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The calculated property &apos;{0}&apos; is not in a BusinessBase type, so it will not be serialized or recalculated.
+        ///   Looks up a localized string similar to The calculated property '{0}' is not in a BusinessBase type, so it will not be serialized or recalculated.
         /// </summary>
         internal static string CalculatedPropertyAnalyzer_RequiresBusinessBaseMessage {
             get {
@@ -596,7 +596,7 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Type &apos;{0}&apos; has data portal operation methods and should be declared partial so the CSLA source generator can implement its operations interface.
+        ///   Looks up a localized string similar to Type '{0}' has data portal operation methods and should be declared partial so the CSLA source generator can implement its operations interface.
         /// </summary>
         internal static string TypeWithOperationsShouldBePartial_Message {
             get {
@@ -614,7 +614,7 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Use the generated data portal extension method for &apos;{0}&apos; instead of calling &apos;{1}&apos; with untyped criteria.
+        ///   Looks up a localized string similar to Use the generated data portal extension method for '{0}' instead of calling '{1}' with untyped criteria.
         /// </summary>
         internal static string UseGeneratedDataPortalExtension_Message {
             get {
@@ -632,11 +632,46 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Use '{0}'.
         /// </summary>
         internal static string UseGeneratedDataPortalExtension_UseExtensionDescription {
             get {
                 return ResourceManager.GetString("UseGeneratedDataPortalExtension_UseExtensionDescription", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Custom serializer declaration is not valid.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationTitle {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The custom serializer declaration is not valid because {0}.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationMessage {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type has more than one custom serializer.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_ConflictTitle {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_ConflictTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' is registered with more than one custom serializer ({1}); MobileFormatter uses whichever is registered first.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_ConflictMessage {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_ConflictMessage", resourceCulture);
             }
         }
     }

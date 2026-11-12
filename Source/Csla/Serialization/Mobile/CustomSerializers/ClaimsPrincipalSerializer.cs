@@ -16,6 +16,7 @@ namespace Csla.Serialization.Mobile.CustomSerializers;
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.
 /// </summary>
+[MobileSerializerFor(typeof(ClaimsPrincipal))]
 internal class ClaimsPrincipalSerializer : IMobileSerializer
 {
   /// <inheritdoc />
@@ -56,6 +57,7 @@ using System.Text.Json;
 /// <summary>
 /// A formatter that can serialize and deserialize a ClaimsPrincipal object.
 /// </summary>
+[MobileSerializerFor(typeof(ClaimsPrincipal))]
 internal class ClaimsPrincipalSerializer : IMobileSerializer
 {
   /// <inheritdoc />

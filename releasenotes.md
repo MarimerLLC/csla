@@ -113,6 +113,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 **Analyzers**
 
 * [#4638](https://github.com/MarimerLLC/csla/issues/4638) The code fixes move from `Csla.Analyzers.dll` into a new `Csla.Analyzers.CodeFixes.dll`, and both ship in the `Csla` package. Diagnostic IDs, severities and code fixes are unchanged ([#4992](https://github.com/MarimerLLC/csla/pull/4992))
+* [#4428](https://github.com/MarimerLLC/csla/issues/4428) Declare `MobileFormatter` custom serializers with `[MobileSerializer]` on a type, `[MobileSerializerFor]` on a serializer, or `[assembly: MobileSerializerRegistration]`, and register them with `MobileFormatterOptions.AddCustomSerializers(assemblies)`. CSLA0010 no longer reports operation arguments whose types have a declared custom serializer (including `ClaimsPrincipal`); new analyzers report invalid declarations (CSLA0028) and types with more than one serializer (CSLA0029)
 
 **Bug Fixes**
 

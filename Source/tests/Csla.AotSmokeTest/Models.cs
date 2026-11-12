@@ -10,6 +10,7 @@ using System.ComponentModel.DataAnnotations;
 using Csla.Core;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
+using Csla.Serialization.Mobile;
 using Csla.Server;
 
 namespace Csla.AotSmokeTest
@@ -307,5 +308,61 @@ namespace Csla.AotSmokeTest
 
     [Delete]
     private void Delete(int id) => LastDeletedId = id;
+  }
+
+  /// <summary>
+  /// A type with its custom serializer declared on the type itself.
+  /// </summary>
+  [MobileSerializer(typeof(MoneySerializer))]
+  public sealed class Money
+  {
+    public decimal Amount { get; init; }
+    public string Currency { get; init; } = string.Empty;
+  }
+
+  public sealed class MoneySerializer : IMobileSerializer
+  {
+    public object Deserialize(SerializationInfo info)
+      => new Money { Amount = info.GetValue<decimal>("a"), Currency = info.GetValue<string>("c") ?? string.Empty };
+
+    public void Serialize(object obj, SerializationInfo info)
+    {
+      var money = (Money)obj;
+      info.AddValue("a", money.Amount);
+      info.AddValue("c", money.Currency);
+    }
+  }
+
+  /// <summary>
+  /// Stands in for a third-party type, with the serializer declaring the type it handles.
+  /// </summary>
+  public sealed class Widget
+  {
+    public string Name { get; init; } = string.Empty;
+  }
+
+  [MobileSerializerFor(typeof(Widget))]
+  public sealed class WidgetSerializer : IMobileSerializer
+  {
+    public object Deserialize(SerializationInfo info) => new Widget { Name = info.GetValue<string>("n") ?? string.Empty };
+
+    public void Serialize(object obj, SerializationInfo info) => info.AddValue("n", ((Widget)obj).Name);
+  }
+
+  /// <summary>
+  /// Fetched through the data portal host with custom-serialized criteria.
+  /// </summary>
+  [CslaImplementProperties]
+  public partial class PricedItem : ReadOnlyBase<PricedItem>
+  {
+    public partial decimal Amount { get; private set; }
+    public partial string Currency { get; private set; }
+
+    [Fetch]
+    private void Fetch(Money price)
+    {
+      LoadProperty(AmountProperty, price.Amount);
+      LoadProperty(CurrencyProperty, price.Currency);
+    }
   }
 }

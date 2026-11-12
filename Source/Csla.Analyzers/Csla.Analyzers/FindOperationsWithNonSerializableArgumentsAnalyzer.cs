@@ -8,7 +8,11 @@ using System.Collections.Immutable;
 namespace Csla.Analyzers
 {
   /// <summary>
-  /// 
+  /// Reports root data portal operation arguments whose types MobileFormatter
+  /// cannot serialize. Types with a custom serializer, declared with
+  /// <c>[MobileSerializer]</c> or registered with
+  /// <c>[assembly: MobileSerializerRegistration]</c> in the compilation or a
+  /// referenced assembly, are serializable.
   /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class FindOperationsWithNonSerializableArgumentsAnalyzer
@@ -23,21 +27,26 @@ namespace Csla.Analyzers
           Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, nameof(FindOperationsWithNonSerializableArgumentsAnalyzer)));
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [shouldUseSerializableTypesRule];
 
     /// <summary>
-    /// 
+    ///
     /// </summary>
     public override void Initialize(AnalysisContext context)
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
       context.EnableConcurrentExecution();
-      context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+      context.RegisterCompilationStartAction(startContext =>
+      {
+        var compilation = startContext.Compilation;
+        var registry = new Lazy<CustomSerializerRegistry>(() => CustomSerializerRegistry.Create(compilation));
+        startContext.RegisterSyntaxNodeAction(c => AnalyzeMethodDeclaration(c, registry), SyntaxKind.MethodDeclaration);
+      });
     }
 
-    private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+    private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context, Lazy<CustomSerializerRegistry> registry)
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
       var methodSymbol = context.SemanticModel.GetDeclaredSymbol(methodNode);
@@ -55,9 +64,10 @@ namespace Csla.Analyzers
 
           if (!argumentType.IsMobileObject() && !argumentType.IsSpecialTypeSerializable() &&
               !argumentType.IsSerializableByMobileFormatter(context.Compilation) &&
-              !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) && 
+              !argument.GetAttributes().Any(_ => _.AttributeClass.IsInjectable()) &&
               argumentType is not { ContainingNamespace.Name: "System", Name: "Nullable" } &&
-              argumentType is INamedTypeSymbol)
+              argumentType is INamedTypeSymbol &&
+              !HasCustomSerializer(argumentType, registry))
           {
             context.ReportDiagnostic(Diagnostic.Create(
               shouldUseSerializableTypesRule, argument.Locations[0]));
@@ -65,5 +75,14 @@ namespace Csla.Analyzers
         }
       }
     }
+
+    /// <summary>
+    /// The type itself (not a base type) is marked with <c>[MobileSerializer]</c>
+    /// or has a registered custom serializer, matching the exact-type
+    /// matching MobileFormatter does at run time.
+    /// </summary>
+    private static bool HasCustomSerializer(ITypeSymbol type, Lazy<CustomSerializerRegistry> registry)
+      => type.GetAttributes().Any(a => MobileSerializerRules.IsCslaMobileType(a.AttributeClass, MobileSerializerRules.MobileSerializerAttributeName))
+        || registry.Value.IsRegistered(type);
   }
 }

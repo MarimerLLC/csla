@@ -84,7 +84,12 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 **Properties**
 
-* [#4201](https://github.com/MarimerLLC/csla/issues/4201) Add `[CalculatedProperty]` for managed properties whose value is calculated by business rules: the value is not serialized, changing it never marks the object dirty, and its rules run again after deserialization. Analyzers **CSLA0026** (calculated properties should have no setter or a private setter) and **CSLA0027** (calculated properties are only supported in `BusinessBase` types) check its use. A `[DoNotSerialize]` property that holds an object value (such as a `MobileList<T>` or a child object) is no longer serialized; before, only values of native types were skipped. `[DoNotSerialize]` values also stay excluded after `CancelEdit`, which used to make them serializable again
+* [#4201](https://github.com/MarimerLLC/csla/issues/4201) Add `[CalculatedProperty]` for managed properties whose value is calculated by business rules: the value is not serialized, changing it never marks the object dirty, and its rules run again after deserialization. Analyzers **CSLA0026** (calculated properties should have no setter or a private setter) and **CSLA0027** (calculated properties are only supported in `BusinessBase` types) check its use. A `[DoNotSerialize]` property that holds an object value (such as a `MobileList<T>` or a child object) is no longer serialized; before, only values of native types were skipped. `[DoNotSerialize]` values also stay excluded after `CancelEdit`, which used to make them serializable again ([#4994](https://github.com/MarimerLLC/csla/pull/4994))
+
+**Business Rules**
+
+* [#3736](https://github.com/MarimerLLC/csla/issues/3736) `CheckRules()` runs each rule once as a batch, then reruns only the rules whose input values changed through rule output values. With `CascadeOnDirtyProperties`, rules that never settle throw an `InvalidOperationException` after `MaxRerunPasses` passes (default 100) instead of crashing with a `StackOverflowException`. Configure it with `AddCsla(o => o.Rules(r => r.UseBatchCheckRules(...)))`, or use `UseLegacyCheckRules()` for the CSLA 10 behavior, which is temporary ([#4990](https://github.com/MarimerLLC/csla/pull/4990))
+* [#4235](https://github.com/MarimerLLC/csla/issues/4235) `CheckRules()` runs property rules in priority order across all properties, not only within each property ([#4990](https://github.com/MarimerLLC/csla/pull/4990))
 
 **Authorization**
 
@@ -97,11 +102,26 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 **Blazor**
 
-* [#4977](https://github.com/MarimerLLC/csla/issues/4977) With Blazor state management on, `AddServerSideBlazor` registers a hosted background service that periodically purges expired sessions from any `ISessionStore`, configured with `PurgeExpiredSessions`, `SessionPurgeInterval` and `SessionExpiration`
+* [#4977](https://github.com/MarimerLLC/csla/issues/4977) With Blazor state management on, `AddServerSideBlazor` registers a hosted background service that periodically purges expired sessions from any `ISessionStore`, configured with `PurgeExpiredSessions`, `SessionPurgeInterval` and `SessionExpiration` ([#4988](https://github.com/MarimerLLC/csla/pull/4988))
+* [#4867](https://github.com/MarimerLLC/csla/issues/4867) Add the `Csla.Blazor.State.AzureTableStorage` package, an `ISessionStore` that keeps Blazor session state in Azure Table Storage. Call `UseAzureTableStorageSessionStore` after `AddServerSideBlazor` ([#4957](https://github.com/MarimerLLC/csla/pull/4957))
+* [#4979](https://github.com/MarimerLLC/csla/issues/4979) Business objects restored from Blazor session state, directly in `Session` or inside `LocalContext` or `ClientContext`, are re-attached to the caller's `ApplicationContext` when their original scope is gone, so `SaveAsync` no longer throws `ObjectDisposedException` or runs in another scope ([#4993](https://github.com/MarimerLLC/csla/pull/4993))
+
+**ASP.NET Core**
+
+* [#4858](https://github.com/MarimerLLC/csla/issues/4858) `CslaModelBinder` binds whole editable object graphs (child objects and child lists at any depth), binds into the object passed to `TryUpdateModelAsync`, and honors `[BindNever]`, `[Bind]` and the `TryUpdateModelAsync` include list ([#4995](https://github.com/MarimerLLC/csla/pull/4995))
+
+**Analyzers**
+
+* [#4638](https://github.com/MarimerLLC/csla/issues/4638) The code fixes move from `Csla.Analyzers.dll` into a new `Csla.Analyzers.CodeFixes.dll`, and both ship in the `Csla` package. Diagnostic IDs, severities and code fixes are unchanged ([#4992](https://github.com/MarimerLLC/csla/pull/4992))
 
 **Bug Fixes**
 
 * [#4891](https://github.com/MarimerLLC/csla/issues/4891) Remove the unusable parameterless constructor of `LazySingleton<T>` ([#4944](https://github.com/MarimerLLC/csla/pull/4944))
+* [#4996](https://github.com/MarimerLLC/csla/issues/4996) A create or fetch with a single `null` criteria value works with a remote data portal; the `NullCriteria` constructor is now public so the server can deserialize it ([#4997](https://github.com/MarimerLLC/csla/pull/4997))
+
+**Security**
+
+* [#4982](https://github.com/MarimerLLC/csla/issues/4982) Update `System.Security.Cryptography.Xml` in `Csla.Channels.Wcf` to patched versions for CVE-2026-96958, CVE-2026-96959 and CVE-2026-96960 ([#4983](https://github.com/MarimerLLC/csla/pull/4983))
 
 **Collections**
 
@@ -115,7 +135,10 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 **Build and Release**
 
 * [#4917](https://github.com/MarimerLLC/csla/issues/4917) Set the `main` version to 11.0.0 and start the CSLA 11 release notes ([#4918](https://github.com/MarimerLLC/csla/pull/4918))
-* [#5000](https://github.com/MarimerLLC/csla/issues/5000) Remove the unmaintained `dotnet new` templates (`Support/Templates`) and the Visual Studio template installer (`Support/TemplateInstaller`)
+* [#5000](https://github.com/MarimerLLC/csla/issues/5000) Remove the unmaintained `dotnet new` templates (`Support/Templates`) and the Visual Studio template installer (`Support/TemplateInstaller`) ([#5001](https://github.com/MarimerLLC/csla/pull/5001))
+* [#4998](https://github.com/MarimerLLC/csla/issues/4998) [#4999](https://github.com/MarimerLLC/csla/issues/4999) Build with the released .NET 11 SDK (11.0.100) and reference the released .NET 11 and MAUI 11.0.0 packages ([#5004](https://github.com/MarimerLLC/csla/pull/5004))
+* Convert the solution files from `.sln` to `.slnx` ([#4989](https://github.com/MarimerLLC/csla/pull/4989))
+* [#5005](https://github.com/MarimerLLC/csla/issues/5005) Release 11.0.0-alpha.2
 
 ### Breaking Changes
 
@@ -134,6 +157,10 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 * `SafeSqlDataReader` gets `ReadAsync`, `NextResultAsync` and `GetFieldValueAsync<T>` from `SafeDataReader` instead of declaring them, so code compiled against an earlier version must be recompiled. They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`. `IsDbNullAsync` is obsolete; use `IsDBNullAsync`. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#async-safedatareader) ([#4975](https://github.com/MarimerLLC/csla/issues/4975)).
 * With Blazor state management on (`UseInMemoryApplicationContextManager = false`), sessions that haven't been touched for 1 hour are now removed by a background service. Raise `SessionExpiration`, or set `PurgeExpiredSessions = false`, to keep them longer. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#expired-blazor-sessions-are-purged-automatically) ([#4977](https://github.com/MarimerLLC/csla/issues/4977)).
 * `IPropertyInfo` has a new `IsCalculated` member, so custom `IPropertyInfo` implementations must add it. A `[DoNotSerialize]` property that holds an object value is no longer serialized. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#calculated-properties-and-donotserialize) ([#4201](https://github.com/MarimerLLC/csla/issues/4201)).
+* `CheckRules()` runs property rules in priority order across all properties, and the order and number of times each rule runs change. A rule that changes a property other than through output values no longer reruns the rules that depend on it, the rules of affected properties don't rerun unless a value changed, and `CascadeIfDirty` has no effect in `CheckRules()`. Call `UseLegacyCheckRules()` to keep the CSLA 10 behavior for now. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#checkrules-runs-each-rule-once-then-reruns-only-what-changed) ([#3736](https://github.com/MarimerLLC/csla/issues/3736), [#4235](https://github.com/MarimerLLC/csla/issues/4235)).
+* The ASP.NET Core `CslaModelBinder` binds into the object passed to `TryUpdateModelAsync`, honors `[BindNever]` and `[Bind]`, waits for async rules, no longer sets unposted child properties to `null`, and binds a request that isn't a form post to a new object instead of throwing. See [Upgrading to CSLA 11](docs/Upgrading%20to%20CSLA%2011.md#aspnet-core-cslamodelbinder-binds-whole-object-graphs) ([#4858](https://github.com/MarimerLLC/csla/issues/4858)).
+* The code fixes are in `Csla.Analyzers.CodeFixes.dll`. This only affects projects that reference `Csla.Analyzers.dll` directly by path, which need to add the new assembly to keep the code fixes ([#4638](https://github.com/MarimerLLC/csla/issues/4638)).
+* The `dotnet new` templates and the Visual Studio template installer are removed ([#5000](https://github.com/MarimerLLC/csla/issues/5000)).
 
 ### Supported Platforms
 
@@ -152,6 +179,7 @@ Also expected to work on:
 
 ### Contributors
 
+* [@joshhanson314](https://github.com/joshhanson314)
 * [@rockfordlhotka](https://github.com/rockfordlhotka)
 * [@StefanOssendorf](https://github.com/StefanOssendorf)
 

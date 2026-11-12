@@ -6,6 +6,7 @@
 // <summary>Characterization tests for BusinessRules.CheckRules()</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Configuration;
 using Csla.Testing;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,10 +17,12 @@ namespace Csla.Test.ValidationRules
   /// Baseline (characterization) tests for BusinessRules.CheckRules().
   /// </summary>
   /// <remarks>
-  /// These tests pin down the current execution order, rerun counts, final
-  /// property values, broken rules and return values of CheckRules(), so that
-  /// changes to the rule engine (see #3736 and #4235) show up as deliberate
-  /// test changes. Rule execution order is the order in which rules start.
+  /// These tests pin down the CSLA 10 execution order, rerun counts, final
+  /// property values, broken rules and return values of CheckRules(). They
+  /// run with RuleOptions.UseLegacyCheckRules(), to show that the legacy rule
+  /// runner still matches CSLA 10. See CheckRulesBatchTests for the default
+  /// behavior (#3736, #4235). Rule execution order is the order in which
+  /// rules start.
   /// </remarks>
   [TestClass]
   public class CheckRulesBaselineTests
@@ -29,7 +32,7 @@ namespace Csla.Test.ValidationRules
     [ClassInitialize]
     public static void ClassInitialize(TestContext testContext)
     {
-      _testHost = CslaTestHost.Create();
+      _testHost = CslaTestHost.Create(o => o.ConfigureCsla(c => c.Rules(r => r.UseLegacyCheckRules())));
     }
 
     [ClassCleanup]

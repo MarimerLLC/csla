@@ -217,10 +217,12 @@ await Check("ObjectFactory fetch by type name", async () =>
 // Data portal host round trip: the client's HttpProxy sends business type names
 // to an HttpPortal in the same process, which resolves them on the server side.
 var serverServices = new ServiceCollection();
-serverServices.AddCsla();
+serverServices.AddCsla(o => o.Serialization(s => s.UseMobileFormatter(m => m.AddCustomSerializers(typeof(Money).Assembly))));
 using var serverProvider = serverServices.BuildServiceProvider();
 var clientServices = new ServiceCollection();
-clientServices.AddCsla(o => o.DataPortal(dp => dp.AddClientSideDataPortal(c => c.UseHttpProxy(p =>
+clientServices.AddCsla(o => o
+  .Serialization(s => s.UseMobileFormatter(m => m.AddCustomSerializers(typeof(Money).Assembly)))
+  .DataPortal(dp => dp.AddClientSideDataPortal(c => c.UseHttpProxy(p =>
 {
   p.DataPortalUrl = "http://localhost/api/dataportal";
   p.HttpClientFactory = _ => new HttpClient(new HttpPortalHandler(serverProvider));
@@ -241,6 +243,32 @@ await Check("HttpPortal host create, fetch, update and delete", async () =>
   Assert(!note.IsDirty && note.Text == "Changed", "updated through the host");
   await notePortal.DeleteAsync(5);
   Assert(HostedNote.LastDeletedId == 5, "deleted through the host");
+});
+
+await Check("Custom serializers from AddCustomSerializers", async () =>
+{
+  await Task.Yield();
+  var formatter = clientProvider.GetRequiredService<ApplicationContext>().GetRequiredService<ISerializationFormatter>();
+  var money = (Money)formatter.Deserialize(formatter.Serialize(new Money { Amount = 12.5m, Currency = "EUR" }))!;
+  Assert(money.Amount == 12.5m && money.Currency == "EUR", "type-side serializer round trip");
+  var widget = (Widget)formatter.Deserialize(formatter.Serialize(new Widget { Name = "Sprocket" }))!;
+  Assert(widget.Name == "Sprocket", "serializer-side serializer round trip");
+});
+
+await Check("ClaimsPrincipal with the default configuration", async () =>
+{
+  await Task.Yield();
+  var formatter = applicationContext.GetRequiredService<ISerializationFormatter>();
+  var principal = new System.Security.Claims.ClaimsPrincipal(new System.Security.Claims.ClaimsIdentity(
+    [new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.Name, "Ada")], "smoke"));
+  var copy = (System.Security.Claims.ClaimsPrincipal)formatter.Deserialize(formatter.Serialize(principal))!;
+  Assert(copy.Identity?.Name == "Ada", "principal round trip");
+});
+
+await Check("HttpPortal host fetch with custom-serialized criteria", async () =>
+{
+  var item = await clientProvider.GetRequiredService<IDataPortal<PricedItem>>().FetchAsync(new Money { Amount = 9.99m, Currency = "USD" });
+  Assert(item.Amount == 9.99m && item.Currency == "USD", "criteria round trip through the host");
 });
 
 Console.WriteLine(failures == 0 ? "All scenarios passed" : $"{failures} scenario(s) failed");

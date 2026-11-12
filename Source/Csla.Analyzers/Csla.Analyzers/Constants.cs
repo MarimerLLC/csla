@@ -114,6 +114,15 @@
       ///
       /// </summary>
       public const string CalculatedPropertyRequiresBusinessBase = "CSLA0027";
+      /// <summary>
+      /// A <c>[MobileSerializer]</c>, <c>[MobileSerializerFor]</c> or
+      /// <c>[assembly: MobileSerializerRegistration]</c> declaration is not valid.
+      /// </summary>
+      public const string InvalidCustomSerializerDeclaration = "CSLA0028";
+      /// <summary>
+      /// A type is mapped to more than one custom serializer.
+      /// </summary>
+      public const string ConflictingCustomSerializers = "CSLA0029";
 
     }
 

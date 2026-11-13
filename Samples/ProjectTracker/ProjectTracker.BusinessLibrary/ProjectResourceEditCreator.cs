@@ -11,9 +11,9 @@ namespace ProjectTracker.Library
     public partial ProjectResourceEdit ProjectResource { get; private set; }
 
     [Execute]
-    private void Execute(int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
+    private async Task Execute(int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
     {
-      ProjectResource = portal.CreateChild(resourceId);
+      ProjectResource = await portal.CreateChildAsync(resourceId);
     }
 
     [Execute]

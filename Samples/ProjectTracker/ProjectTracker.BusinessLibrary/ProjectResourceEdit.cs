@@ -50,13 +50,15 @@ namespace ProjectTracker.Library
     {
       base.AddBusinessRules();
 
+      BusinessRules.AddRule(new ValidRole(RoleProperty));
+
       BusinessRules.AddRule(
         new Csla.Rules.CommonRules.IsInRole(
           Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, Security.Roles.ProjectManager));
     }
 
     [CreateChild]
-    private void Create(int resourceId, [Inject]IResourceDal dal, [Inject]IDataPortal<RoleList> rolePortal)
+    private async Task Create(int resourceId, [Inject]IResourceDal dal, [Inject]IDataPortal<RoleList> rolePortal)
     {
       using (BypassPropertyChecks)
       {
@@ -67,8 +69,10 @@ namespace ProjectTracker.Library
         LastName = person.LastName ?? string.Empty;
         var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         RoleList = roles;
+        Role = roles.DefaultRole;
       }
-      BusinessRules.CheckRules();
+      // wait for the async ValidRole rule, so its result travels with the object
+      await BusinessRules.CheckRulesAsync();
     }
 
 

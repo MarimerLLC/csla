@@ -4,7 +4,7 @@ using DataAccess;
 namespace BusinessLibrary;
 
 [Serializable]
-public sealed class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
+public sealed partial class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
 {
   [Fetch]
   private void Fetch(

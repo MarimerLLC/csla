@@ -4,7 +4,7 @@ using Csla;
 
 namespace WindowsApplication2
 {
-  public class Child : BusinessBase<Child>
+  public partial class Child : BusinessBase<Child>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id

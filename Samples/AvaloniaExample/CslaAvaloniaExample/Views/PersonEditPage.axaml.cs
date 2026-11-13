@@ -35,7 +35,7 @@ public partial class PersonEditPage : UserControl
 
   private async Task LoadNewAsync()
   {
-    await ViewModel.RefreshAsync<PersonEdit>(
+    await ViewModel.RefreshAsync(
       async () => await _dataPortal.CreateAsync());
   }
 

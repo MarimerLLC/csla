@@ -5,7 +5,7 @@ using DataAccess;
 namespace BusinessLibrary;
 
 [Serializable]
-public sealed class PersonEdit : BusinessBase<PersonEdit>
+public sealed partial class PersonEdit : BusinessBase<PersonEdit>
 {
   public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
   public int Id

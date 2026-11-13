@@ -5,7 +5,7 @@ using Csla;
 namespace WinSortFilter
 {
   [Serializable]
-  public class Data : BusinessBase<Data>
+  public partial class Data : BusinessBase<Data>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id

@@ -6,7 +6,7 @@ using Csla;
 
 namespace BusinessLibrary
 {
-  public class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
+  public partial class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
   {
     [Create, RunLocal]
     private void Create() { }

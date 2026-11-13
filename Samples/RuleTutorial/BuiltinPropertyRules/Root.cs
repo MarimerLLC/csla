@@ -19,7 +19,7 @@ namespace BuiltinPropertyRules
   /// The root.
   /// </summary>
   [Serializable]
-  public class Root : BusinessBase<Root>
+  public partial class Root : BusinessBase<Root>
   {
     #region Business Methods
 

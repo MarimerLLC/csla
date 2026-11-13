@@ -18,7 +18,7 @@ namespace LookupRule.Commands
   /// The lookup customer command.
   /// </summary>
   [Serializable]
-  public class LookupCustomerCommand : CommandBase<LookupCustomerCommand>
+  public partial class LookupCustomerCommand : CommandBase<LookupCustomerCommand>
   {
     /// <summary>
     /// The customer id property.

@@ -12,6 +12,14 @@
                  FontWeight="Bold" />
 
       <!--
+        SaveAsync and RefreshAsync don't throw. A failure is reported
+        through the view model's ViewModelErrorText property.
+      -->
+      <TextBlock Text="{Binding ViewModelErrorText}"
+                 Foreground="Red"
+                 TextWrapping="Wrap" />
+
+      <!--
         The view DataContext is PersonEditViewModel.
         This panel switches to the CSLA business object itself so PropertyInfo
         and the editor share the same DataContext.

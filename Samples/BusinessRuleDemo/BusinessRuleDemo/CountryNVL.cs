@@ -5,7 +5,7 @@ using Csla;
 namespace BusinessRuleDemo
 {
   [Serializable]
-  public class CountryNVL : NameValueListBase<string, string>
+  public partial class CountryNVL : NameValueListBase<string, string>
   {
     public const string UnitedStates = "US";
 

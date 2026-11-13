@@ -4,7 +4,7 @@ using Csla;
 namespace BusinessLibrary
 {
   [Serializable]
-  public class PersonInfo : ReadOnlyBase<PersonInfo>
+  public partial class PersonInfo : ReadOnlyBase<PersonInfo>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id

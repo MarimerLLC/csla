@@ -6,7 +6,7 @@ using Csla;
 namespace BusinessRuleDemo
 {
   [Serializable]
-  public class StatesNVL : NameValueListBase<string, string>
+  public partial class StatesNVL : NameValueListBase<string, string>
   {
     [Fetch]
     private void Fetch()

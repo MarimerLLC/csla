@@ -483,6 +483,76 @@ namespace Csla.Analyzers.Tests
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
     [TestMethod]
+    public async Task AnalyzeWhenGetterUsesNullForgivingOperator()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City));
+          public string City
+          {
+            get => GetProperty(CityProperty)!;
+            set => SetProperty(CityProperty, value);
+          }
+
+          public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State));
+          public string State
+          {
+            get { return GetProperty(StateProperty)!; }
+            set { SetProperty(StateProperty, value); }
+          }
+
+          public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(nameof(Country));
+          public string Country => ReadProperty(CountryProperty)!;
+
+          public static readonly PropertyInfo<string> RegionProperty = RegisterProperty<string>(nameof(Region), RelationshipTypes.LazyLoad);
+          public string Region => LazyGetProperty(RegionProperty, () => "North")!;
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenGetterUsesNullForgivingOperatorWithOtherLogic()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City));
+          public string City
+          {
+            get => ("x" + GetProperty(CityProperty))!;
+            set => SetProperty(CityProperty, value);
+          }
+
+          public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State));
+          public string State
+          {
+            get { return GetProperty(StateProperty)!.Trim(); }
+            set { SetProperty(StateProperty, value); }
+          }
+
+          public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(nameof(Country));
+          public string Country => "x" + GetProperty(CountryProperty)!;
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+      [
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+      ]);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenClassHasOnlySetMethodExpression()
     {
       var code =

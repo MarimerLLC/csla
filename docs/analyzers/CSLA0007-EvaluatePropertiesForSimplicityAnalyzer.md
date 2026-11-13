@@ -17,9 +17,18 @@ public class Customer
 ```
 
 Expression-bodied properties that call a property helper method inside another call are reported too:
+
 ```
 public string Data => GetProperty(DataProperty).ToUpper();
 ```
+
+The null-forgiving operator on the helper call doesn't count as extra logic, so this getter doesn't trip the analyzer:
+
+```
+public string Data => GetProperty(DataProperty)!;
+```
+
+See [Nullable reference types and CSLA properties](../Nullable-Reference-Types.md).
 
 ## Code Fix
 

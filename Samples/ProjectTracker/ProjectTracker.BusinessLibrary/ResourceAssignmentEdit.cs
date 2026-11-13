@@ -41,7 +41,7 @@ namespace ProjectTracker.Library
     }
 
     [CreateChild]
-    private void Create(int projectId, [Inject] IProjectDal dal)
+    private void Create(int projectId, [Inject] IProjectDal dal, [Inject] IDataPortal<RoleList> rolePortal)
     {
       using (BypassPropertyChecks)
       {
@@ -49,6 +49,9 @@ namespace ProjectTracker.Library
         Assigned = DateTime.Today;
         var project = dal.Fetch(projectId) ?? throw new DataNotFoundException("Project");
         ProjectName = project.Name ?? string.Empty;
+        var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        // default to the first role so a new assignment always has a valid role
+        Role = roles.FirstOrDefault()?.Key ?? 0;
       }
       BusinessRules.CheckRules();
     }

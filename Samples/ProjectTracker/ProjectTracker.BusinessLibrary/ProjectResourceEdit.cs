@@ -50,6 +50,8 @@ namespace ProjectTracker.Library
     {
       base.AddBusinessRules();
 
+      BusinessRules.AddRule(new ValidRole(RoleProperty));
+
       BusinessRules.AddRule(
         new Csla.Rules.CommonRules.IsInRole(
           Csla.Rules.AuthorizationActions.WriteProperty, RoleProperty, Security.Roles.ProjectManager));
@@ -67,6 +69,8 @@ namespace ProjectTracker.Library
         LastName = person.LastName ?? string.Empty;
         var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         RoleList = roles;
+        // default to the first role so a new assignment always has a valid role
+        Role = roles.FirstOrDefault()?.Key ?? 0;
       }
       BusinessRules.CheckRules();
     }

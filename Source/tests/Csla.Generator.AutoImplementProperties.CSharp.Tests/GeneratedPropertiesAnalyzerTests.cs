@@ -4,20 +4,23 @@ using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Csla.Generator.Tests
 {
   /// <summary>
   /// Runs CSLA0007 (EvaluatePropertiesForSimplicityAnalyzer) over the code that
-  /// [CslaImplementProperties] generates, which isn't wrapped in a pragma.
+  /// [CslaImplementProperties] and [CslaImplementPropertiesInterface] generate,
+  /// which isn't wrapped in a pragma.
   /// </summary>
   [TestClass]
   public class GeneratedPropertiesAnalyzerTests
   {
     private const string CSLA0007 = "CSLA0007";
 
-    private const string BusinessDocumentChild = """
+    private const string DocumentChild = """
+      namespace Test;
 
       public class DocumentChild : Csla.BusinessBase<DocumentChild>
       {
@@ -25,11 +28,11 @@ namespace Csla.Generator.Tests
       """;
 
     [TestMethod]
-    [DataRow("Csla.BusinessBase<TestClass>")]
-    [DataRow("Csla.ReadOnlyBase<TestClass>")]
-    [DataRow("Csla.CommandBase<TestClass>")]
-    [DataRow("Csla.BusinessDocumentBase<TestClass, DocumentChild>")]
-    public async Task GeneratedPropertiesHaveNoCsla0007(string baseClass)
+    [DataRow("Csla.BusinessBase<TestClass>", "")]
+    [DataRow("Csla.ReadOnlyBase<TestClass>", "")]
+    [DataRow("Csla.CommandBase<TestClass>", "")]
+    [DataRow("Csla.BusinessDocumentBase<TestClass, DocumentChild>", DocumentChild)]
+    public async Task GeneratedPropertiesHaveNoCsla0007(string baseClass, string additionalSource)
     {
       var source = $$"""
         namespace Test;
@@ -43,10 +46,43 @@ namespace Csla.Generator.Tests
           public partial int? Age { get; set; }
           public partial string Code { get; private set; }
         }
-        {{BusinessDocumentChild}}
         """;
 
-      var diagnostics = await RunCsla0007OnGeneratedCode(source);
+      var diagnostics = await RunCsla0007OnGeneratedCode(
+        new IncrementalAutoImplementPropertiesPartialsGenerator(), [source, additionalSource]);
+
+      diagnostics.Should().BeEmpty();
+    }
+
+    [TestMethod]
+    [DataRow("Csla.BusinessBase<TestClass>", "")]
+    [DataRow("Csla.ReadOnlyBase<TestClass>", "")]
+    [DataRow("Csla.CommandBase<TestClass>", "")]
+    [DataRow("Csla.BusinessDocumentBase<TestClass, DocumentChild>", DocumentChild)]
+    public async Task GeneratedInterfacePropertiesHaveNoCsla0007(string baseClass, string additionalSource)
+    {
+      var source = $$"""
+        using Csla;
+
+        namespace Test;
+
+        // The generator only recognizes the unqualified attribute name.
+        [CslaImplementPropertiesInterface<ITestClass>]
+        public partial class TestClass : {{baseClass}}
+        {
+          private interface ITestClass
+          {
+            string Name { get; set; }
+            string? Nickname { get; set; }
+            int Quantity { get; set; }
+            int? Age { get; set; }
+            string Code { get; }
+          }
+        }
+        """;
+
+      var diagnostics = await RunCsla0007OnGeneratedCode(
+        new IncrementalAutoImplementInterfacePartialsGenerator(), [source, additionalSource]);
 
       diagnostics.Should().BeEmpty();
     }
@@ -70,7 +106,8 @@ namespace Csla.Generator.Tests
         }
         """;
 
-      var diagnostics = await RunCsla0007OnGeneratedCode(source);
+      var diagnostics = await RunCsla0007OnGeneratedCode(
+        new IncrementalAutoImplementPropertiesPartialsGenerator(), [source]);
 
       diagnostics.Should().ContainSingle();
       var diagnostic = diagnostics[0];
@@ -79,38 +116,23 @@ namespace Csla.Generator.Tests
         .Should().Be("GetProperty(CodeProperty)!.ToUpper()");
     }
 
-    private static async Task<ImmutableArray<Diagnostic>> RunCsla0007OnGeneratedCode(string source)
+    private static async Task<ImmutableArray<Diagnostic>> RunCsla0007OnGeneratedCode(IIncrementalGenerator generator, string[] sources)
     {
-      var references = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
-        .Select(a => MetadataReference.CreateFromFile(a.Location))
-        .Concat([
-          MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
-          MetadataReference.CreateFromFile(typeof(CslaIgnorePropertyAttribute).Assembly.Location)
-        ]);
+      sources = [.. sources.Where(s => s.Length > 0)];
+      var compilation = TestCompilation.Create(sources);
 
-      var compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        .WithNullableContextOptions(NullableContextOptions.Enable)
-        .WithSpecificDiagnosticOptions(new Dictionary<string, ReportDiagnostic> { { "CS8019", ReportDiagnostic.Suppress } });
-
-      var compilation = CSharpCompilation.Create(
-        assemblyName: "Tests",
-        syntaxTrees: [CSharpSyntaxTree.ParseText(source)],
-        references: references,
-        options: compilationOptions);
-
-      GeneratorDriver driver = CSharpGeneratorDriver.Create(new IncrementalAutoImplementPropertiesPartialsGenerator().AsSourceGenerator());
+      var driver = CSharpGeneratorDriver.Create(generator.AsSourceGenerator());
       driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var generatorDiagnostics);
 
       generatorDiagnostics.Should().BeEmpty();
-      outputCompilation.SyntaxTrees.Should().HaveCount(2, "the generator should add one file");
+      outputCompilation.SyntaxTrees.Should().HaveCount(sources.Length + 1, "the generator should add one file");
+      outputCompilation.SyntaxTrees.Last().GetRoot().DescendantNodes().OfType<PropertyDeclarationSyntax>()
+        .Should().NotBeEmpty("the generator should implement the properties");
       outputCompilation.GetDiagnostics().Should().BeEmpty();
 
-      var analyzerDiagnostics = await outputCompilation
+      return await outputCompilation
         .WithAnalyzers([new EvaluatePropertiesForSimplicityAnalyzer()])
         .GetAnalyzerDiagnosticsAsync();
-
-      return analyzerDiagnostics;
     }
   }
 }

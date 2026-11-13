@@ -58,7 +58,7 @@ namespace ProjectTracker.Library
     }
 
     [CreateChild]
-    private void Create(int resourceId, [Inject]IResourceDal dal, [Inject]IDataPortal<RoleList> rolePortal)
+    private async Task Create(int resourceId, [Inject]IResourceDal dal, [Inject]IDataPortal<RoleList> rolePortal)
     {
       using (BypassPropertyChecks)
       {
@@ -69,10 +69,10 @@ namespace ProjectTracker.Library
         LastName = person.LastName ?? string.Empty;
         var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         RoleList = roles;
-        // default to the first role so a new assignment always has a valid role
-        Role = roles.FirstOrDefault()?.Key ?? 0;
+        Role = roles.DefaultRole;
       }
-      BusinessRules.CheckRules();
+      // wait for the async ValidRole rule, so its result travels with the object
+      await BusinessRules.CheckRulesAsync();
     }
 
 

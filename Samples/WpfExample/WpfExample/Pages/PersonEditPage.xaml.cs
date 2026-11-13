@@ -41,10 +41,11 @@ namespace WpfExample.Pages
 
     private async void SavePerson(object sender, RoutedEventArgs e)
     {
-      // SaveAsync doesn't throw. A failed save sets Exception, and an
-      // invalid model sets only ViewModelErrorText, so check both.
+      // SaveAsync doesn't throw. A failed save sets Exception. An invalid
+      // model isn't saved, and stays dirty. Only leave the page if the
+      // save worked, so the user doesn't lose their changes.
       await ViewModel.SaveAsync();
-      if (ViewModel.Exception is null && string.IsNullOrEmpty(ViewModel.ViewModelErrorText))
+      if (ViewModel.Exception is null && ViewModel.Model is { IsDirty: false })
         MainWindow.Instance.ShowPage(typeof(PersonListPage));
       else
         ShowError();
@@ -52,7 +53,10 @@ namespace WpfExample.Pages
 
     private void ShowError()
     {
-      MessageBox.Show(ViewModel.ViewModelErrorText, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+      var message = ViewModel.ViewModelErrorText;
+      if (string.IsNullOrEmpty(message))
+        message = "The person isn't valid, so it wasn't saved.";
+      MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     }
   }
 }

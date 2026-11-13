@@ -108,10 +108,21 @@ namespace CslaMvcExample.Controllers
         await PersonEditPortal.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
       }
-      catch
+      catch (Exception ex)
+      {
+        ModelState.AddModelError(string.Empty, $"Delete failed: {ex.Message}");
+      }
+
+      // show the delete page again with the error; if the person
+      // can't be loaded either (already deleted), go back to the list
+      try
       {
         var obj = await PersonInfoPortal.FetchAsync(id);
         return View(obj);
+      }
+      catch
+      {
+        return RedirectToAction(nameof(Index));
       }
     }
   }

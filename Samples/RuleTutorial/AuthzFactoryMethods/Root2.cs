@@ -20,7 +20,7 @@ namespace AuthzFactoryMethods
   /// The root 2.
   /// </summary>
   [Serializable]
-  public class Root2 : BusinessBase<Root2>
+  public partial class Root2 : BusinessBase<Root2>
   {
     #region Business Rules
 
@@ -53,6 +53,16 @@ namespace AuthzFactoryMethods
     /// </summary>
     public Root2()
     { /* Require use of factory methods */ }
+
+    #endregion
+
+    #region Data Access
+
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
 
     #endregion
   }

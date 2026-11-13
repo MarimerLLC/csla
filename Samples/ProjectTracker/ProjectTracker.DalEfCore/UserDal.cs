@@ -12,19 +12,23 @@ namespace ProjectTracker.DalEfCore
         new UserData { Username = "admin", Password = "admin", Roles = new string[] { "Administrator" }}
       };
 
-    public UserDto? Fetch(string username, string password)
+    public UserDto Fetch(string username, string password)
     {
       var result = (from r in Users
                     where r.Username == username && r.Password == password
                     select new UserDto { Username = r.Username, Roles = r.Roles }).FirstOrDefault();
+      if (result == null)
+        throw new DataNotFoundException("User");
       return result;
     }
 
-    public UserDto? Fetch(string username)
+    public UserDto Fetch(string username)
     {
       var result = (from r in Users
                     where r.Username == username
                     select new UserDto { Username = r.Username, Roles = r.Roles }).FirstOrDefault();
+      if (result == null)
+        throw new DataNotFoundException("User");
       return result;
     }
   }

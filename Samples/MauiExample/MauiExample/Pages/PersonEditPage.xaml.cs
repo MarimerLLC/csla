@@ -48,13 +48,21 @@ public partial class PersonEditPage : ContentPage, IQueryAttributable
   private async void SavePerson(object sender, EventArgs e)
   {
     var vm = (PersonEditViewModel)BindingContext;
-    // SaveAsync doesn't throw. A failed save sets Exception, and an
-    // invalid model sets only ViewModelErrorText, so check both.
+    // SaveAsync doesn't throw. A failed save sets Exception. An invalid
+    // model isn't saved, and stays dirty. Only leave the page if the
+    // save worked, so the user doesn't lose their changes.
     await vm.SaveAsync();
-    if (vm.Exception is null && string.IsNullOrEmpty(vm.ViewModelErrorText))
+    if (vm.Exception is null && vm.Model is { IsDirty: false })
+    {
       await Shell.Current.GoToAsync("..", true);
+    }
     else
-      await DisplayAlertAsync("Error", vm.ViewModelErrorText, "OK");
+    {
+      var message = vm.ViewModelErrorText;
+      if (string.IsNullOrEmpty(message))
+        message = "The person isn't valid, so it wasn't saved.";
+      await DisplayAlertAsync("Error", message, "OK");
+    }
   }
 
   private async void ClosePage(object sender, EventArgs e)

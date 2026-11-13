@@ -87,12 +87,17 @@ namespace Csla.Analyzers
         return false;
       }
 
-      // A fluent method returns the object it was called on: an instance
-      // method returns its own type, an extension method the type of its
-      // first parameter. Other static methods, such as factory methods, don't
-      // qualify, and neither does Save(), which returns T rather than its
-      // receiver type. Value types are excluded, because ignoring the result
-      // of a method on an immutable struct loses the change.
+      // A matching return type alone doesn't make a method fluent: Clone() and
+      // IRuleContext.GetChainedContext() return new objects of their own type.
+      // So only CSLA's configuration and builder APIs qualify, when they return
+      // the type they were called on:
+      // - extension methods (AddCsla, DataPortal, UseHttpProxy, ...), which in
+      //   CSLA are all configuration and registration methods;
+      // - instance methods of the builder types, named *Options (CslaOptions,
+      //   RuleOptions, ...) or *Tester (BusinessRuleTester, ...).
+      // Static factory methods and Save() (which returns T) don't qualify.
+      // Value types are excluded, because ignoring the result of a method on
+      // an immutable struct loses the change.
       ITypeSymbol? receiverType;
 
       if (method.MethodKind == MethodKind.ReducedExtension)
@@ -103,7 +108,7 @@ namespace Csla.Analyzers
       {
         receiverType = method.Parameters.FirstOrDefault()?.Type;
       }
-      else if (!method.IsStatic)
+      else if (!method.IsStatic && IsBuilderType(method.ContainingType))
       {
         receiverType = method.ContainingType;
       }
@@ -116,5 +121,9 @@ namespace Csla.Analyzers
         method.ReturnType.IsReferenceType &&
         SymbolEqualityComparer.Default.Equals(method.ReturnType, receiverType);
     }
+
+    private static bool IsBuilderType(INamedTypeSymbol type) =>
+      type.Name.EndsWith("Options", StringComparison.Ordinal) ||
+      type.Name.EndsWith("Tester", StringComparison.Ordinal);
   }
 }

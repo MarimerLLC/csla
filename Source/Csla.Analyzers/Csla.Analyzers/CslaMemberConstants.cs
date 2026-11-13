@@ -268,6 +268,10 @@
       /// </summary>
       public const string ObjectFactoryAttribute = nameof(ObjectFactoryAttribute);
       /// <summary>
+      ///
+      /// </summary>
+      public const string CreateChildAttribute = nameof(CreateChildAttribute);
+      /// <summary>
       /// 
       /// </summary>
       public const string ReadOnlyBase = nameof(ReadOnlyBase);

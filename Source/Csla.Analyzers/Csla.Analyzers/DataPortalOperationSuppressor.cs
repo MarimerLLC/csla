@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -100,11 +101,14 @@ namespace Csla.Analyzers
         : null;
     }
 
+    // Private operations in a base type stay candidates: when the derived type
+    // has no matching operation, the data portal looks again from the base type.
     private static bool IsCalledDataPortalOperation(IMethodSymbol method)
     {
       var type = method.ContainingType;
 
-      if (!type.IsStereotype())
+      // The data portal and the generated mappings only call instance methods.
+      if (method.IsStatic || !type.IsStereotype())
       {
         return false;
       }
@@ -117,16 +121,54 @@ namespace Csla.Analyzers
         return false;
       }
 
-      // The data portal ignores private operations declared in a base type,
-      // and an abstract type is only ever a base type.
-      if (type.IsAbstract && method.DeclaredAccessibility == Accessibility.Private)
+      if (!type.HasObjectFactoryAttribute())
+      {
+        return true;
+      }
+
+      // With [ObjectFactory], the factory handles root operations. Child
+      // operations run on the business type through its generated mapping;
+      // without one, reflection sends them to the factory too, except
+      // [CreateChild].
+      return isChild && (HasGeneratedOperationMapping(type) || HasCreateChildAttribute(method));
+    }
+
+    // The operations generator emits a mapping for a non-abstract type that is
+    // declared partial, along with every type that contains it.
+    private static bool HasGeneratedOperationMapping(INamedTypeSymbol type)
+    {
+      if (type.IsAbstract)
       {
         return false;
       }
 
-      // With [ObjectFactory], the factory handles root operations instead of
-      // the business type; child operations still run on the business type.
-      return isChild || !type.HasObjectFactoryAttribute();
+      for (var current = type; current is not null; current = current.ContainingType)
+      {
+        if (!current.DeclaringSyntaxReferences.Any(_ =>
+          _.GetSyntax() is TypeDeclarationSyntax declaration && declaration.Modifiers.Any(SyntaxKind.PartialKeyword)))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    // The data portal reads operation attributes with inherit: true, so an
+    // override inherits [CreateChild] from the method it overrides.
+    private static bool HasCreateChildAttribute(IMethodSymbol method)
+    {
+      for (var current = method; current is not null; current = current.OverriddenMethod)
+      {
+        if (current.GetAttributes().Any(_ =>
+          _.AttributeClass is { Name: CslaMemberConstants.Types.CreateChildAttribute } attribute &&
+          attribute.ContainingAssembly.Name == CslaMemberConstants.AssemblyName))
+        {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     // AuthorizationRuleManager calls the public static method marked with

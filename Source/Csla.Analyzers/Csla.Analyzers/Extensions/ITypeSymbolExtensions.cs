@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers.Extensions
@@ -160,21 +160,28 @@ namespace Csla.Analyzers.Extensions
     }
 
     /// <summary>
-    /// Gets whether the type or one of its base types has <c>[ObjectFactory]</c>,
-    /// matching how the data portal looks for the attribute (with inheritance).
+    /// Gets whether the type or one of its base types has <c>[ObjectFactory]</c>
+    /// or an attribute derived from it, matching how the data portal looks for
+    /// the attribute (<c>GetCustomAttributes(typeof(ObjectFactoryAttribute), true)</c>).
     /// </summary>
     internal static bool HasObjectFactoryAttribute(this ITypeSymbol? @this)
     {
       for (var type = @this; type is not null; type = type.BaseType)
       {
-        if (type.GetAttributes().Any(_ =>
-          _.AttributeClass is { Name: CslaMemberConstants.Types.ObjectFactoryAttribute } attribute &&
-          attribute.ContainingAssembly.Name == CslaMemberConstants.AssemblyName))
+        if (type.GetAttributes().Any(_ => _.AttributeClass.IsObjectFactoryAttribute()))
         {
           return true;
         }
       }
       return false;
+    }
+
+    internal static bool IsObjectFactoryAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.ObjectFactoryAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsObjectFactoryAttribute());
     }
 
     internal static bool IsCalculatedPropertyAttribute([NotNullWhen(true)] this ITypeSymbol? @this)

@@ -35,9 +35,11 @@ public static class MyExtensions
 
 public sealed class Customer : BusinessBase<Customer> { }
 
+public sealed class Lookup : NameValueListBase<int, string> { }
+
 public static class Startup
 {
-  public static async Task Configure(IServiceCollection services, Customer customer, IDataPortal<Customer> portal, HttpProxyOptions proxy, ApplicationContext context)
+  public static async Task Configure(IServiceCollection services, Customer customer, IDataPortal<Customer> portal, HttpProxyOptions proxy, ApplicationContext context, Lookup lookup, IRuleContext ruleContext, IBusinessRuleBase rule)
   {
     services.AddCsla();
     services.AddCsla(o => o.Rules(r => { r.UseBatchCheckRules(); }));
@@ -53,6 +55,8 @@ public static class Startup
     services?.AddCsla();
     Csla.Core.ObjectCloner.GetInstance(context);
     RuleUri.Parse(""csla://rule"");
+    lookup.Clone();
+    ruleContext.GetChainedContext(rule);
   }
 }";
       var diagnostics = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
@@ -74,6 +78,9 @@ public static class Startup
       Assert.IsTrue(diagnostics.IsSuppressedAt("services?.AddCsla()"), "conditional access");
       Assert.IsFalse(diagnostics.IsSuppressedAt("Csla.Core.ObjectCloner.GetInstance(context)"), "static factory method");
       Assert.IsFalse(diagnostics.IsSuppressedAt("RuleUri.Parse(\"csla://rule\")"), "static Parse method");
+      // Same return type as the receiver, but a new object rather than fluent chaining.
+      Assert.IsFalse(diagnostics.IsSuppressedAt("lookup.Clone()"), "Clone()");
+      Assert.IsFalse(diagnostics.IsSuppressedAt("ruleContext.GetChainedContext(rule)"), "GetChainedContext()");
     }
 
     [TestMethod]

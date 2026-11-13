@@ -61,6 +61,37 @@ public sealed class FactoryCustomer : BusinessBase<FactoryCustomer>
 
   [FetchChild]
   private void FactoryChildFetch(int id) { }
+
+  [CreateChild]
+  private void FactoryCreateChild() { }
+}
+
+[Csla.Server.ObjectFactory(""Factories.CustomerFactory, Factories"")]
+public sealed partial class PartialFactoryCustomer : BusinessBase<PartialFactoryCustomer>
+{
+  [Fetch]
+  private void PartialFactoryRootFetch(int id) { }
+
+  [FetchChild]
+  private void PartialFactoryChildFetch(int id) { }
+}
+
+public sealed class CustomFactoryAttribute : Csla.Server.ObjectFactoryAttribute
+{
+  public CustomFactoryAttribute() : base(""Factories.CustomerFactory, Factories"") { }
+}
+
+[CustomFactory]
+public sealed class CustomFactoryCustomer : BusinessBase<CustomFactoryCustomer>
+{
+  [Fetch]
+  private void CustomFactoryRootFetch(int id) { }
+}
+
+public sealed class StaticOperation : BusinessBase<StaticOperation>
+{
+  [Fetch]
+  private static void StaticFetch(int id) { }
 }
 
 public sealed class NotAStereotype
@@ -100,7 +131,7 @@ public sealed class NotAStereotype
         ? new MarkMembersAsStaticStubAnalyzer() : new UnusedPrivateMemberStubAnalyzer();
       var diagnostics = await RunAsync(OperationsCode, analyzer);
 
-      foreach (var method in new[] { "Create", "Fetch", "Insert", "DeleteSelf", "FetchChild", "Execute", "Child_Create", "ProtectedBaseFetch", "FactoryChildFetch" })
+      foreach (var method in new[] { "Create", "Fetch", "Insert", "DeleteSelf", "FetchChild", "Execute", "Child_Create", "ProtectedBaseFetch", "PrivateBaseFetch", "FactoryCreateChild", "PartialFactoryChildFetch" })
       {
         Assert.IsTrue(diagnostics.IsSuppressedAt(method), method);
       }
@@ -115,10 +146,11 @@ public sealed class NotAStereotype
         ? new MarkMembersAsStaticStubAnalyzer() : new UnusedPrivateMemberStubAnalyzer();
       var diagnostics = await RunAsync(OperationsCode, analyzer);
 
-      // Not an operation, a legacy name without an attribute, a private operation
-      // in an abstract base type, a root operation on an [ObjectFactory] type,
-      // and an operation outside a CSLA business type.
-      foreach (var method in new[] { "Helper", "DataPortal_Update", "PrivateBaseFetch", "FactoryRootFetch", "NotAStereotypeFetch" })
+      // Not an operation, a legacy name without an attribute, root operations on
+      // [ObjectFactory] types (including a derived factory attribute), a child
+      // operation on a factory type without a generated mapping, an operation
+      // outside a CSLA business type, and a static operation.
+      foreach (var method in new[] { "Helper", "DataPortal_Update", "FactoryRootFetch", "FactoryChildFetch", "PartialFactoryRootFetch", "CustomFactoryRootFetch", "NotAStereotypeFetch", "StaticFetch" })
       {
         Assert.IsFalse(diagnostics.IsSuppressedAt(method), method);
       }

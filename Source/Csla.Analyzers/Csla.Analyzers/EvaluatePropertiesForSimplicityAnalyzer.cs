@@ -94,7 +94,7 @@ namespace Csla.Analyzers
         return;
       }
 
-      var getterExpression = propertyNode.ExpressionBody.Expression;
+      var getterExpression = WithoutNullForgiving(propertyNode.ExpressionBody.Expression);
       var getterChildren = getterExpression.DescendantNodes(_ => true).ToArray();
 
       if (getterChildren.Length > 1)
@@ -151,8 +151,8 @@ namespace Csla.Analyzers
           else
           {
 
-            if (!(returnNode.ChildNodes().SingleOrDefault(
-                  _ => _.IsKind(SyntaxKind.InvocationExpression)) is InvocationExpressionSyntax invocation) || invocation != getterWalkerBody.Invocation)
+            if (returnNode.Expression is null ||
+              WithoutNullForgiving(returnNode.Expression) is not InvocationExpressionSyntax invocation || invocation != getterWalkerBody.Invocation)
             {
               context.ReportDiagnostic(Diagnostic.Create(
                 onlyUseCslaPropertyMethodsInGetSetRule,
@@ -163,7 +163,7 @@ namespace Csla.Analyzers
       }
       else if (getterWalkerExpression.Invocation != null)
       {
-        if (getterExpression is not null && (getterExpression.Expression is not InvocationExpressionSyntax invocation || invocation != getterWalkerExpression.Invocation))
+        if (getterExpression is not null && (WithoutNullForgiving(getterExpression.Expression) is not InvocationExpressionSyntax invocation || invocation != getterWalkerExpression.Invocation))
         {
           context.ReportDiagnostic(Diagnostic.Create(
             onlyUseCslaPropertyMethodsInGetSetRule,
@@ -176,6 +176,20 @@ namespace Csla.Analyzers
           onlyUseCslaPropertyMethodsInGetSetRule,
           accessor.GetLocation()));
       }
+    }
+
+    // GetProperty, ReadProperty and the lazy variants return P?, so a getter
+    // for a non-nullable property is written GetProperty(XProperty)!. The
+    // null-forgiving operator doesn't add any logic to the getter.
+    private static ExpressionSyntax WithoutNullForgiving(ExpressionSyntax expression)
+    {
+      while (expression is PostfixUnaryExpressionSyntax postfix &&
+        postfix.IsKind(SyntaxKind.SuppressNullableWarningExpression))
+      {
+        expression = postfix.Operand;
+      }
+
+      return expression;
     }
 
     private static void AnalyzePropertySetter(PropertyDeclarationSyntax propertyNode, SyntaxNodeAnalysisContext context)

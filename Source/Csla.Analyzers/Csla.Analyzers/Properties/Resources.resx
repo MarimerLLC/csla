@@ -357,4 +357,16 @@
   <data name="MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject" xml:space="preserve">
     <value>the type '{0}' implements IMobileObject, so MobileFormatter serializes it directly and never uses a custom serializer</value>
   </data>
+  <data name="DataPortalOperationSuppressor_UnusedOperationJustification" xml:space="preserve">
+    <value>CSLA calls data portal operations and object authorization rules methods through reflection, so they are used even when nothing in the code calls them</value>
+  </data>
+  <data name="DataPortalOperationSuppressor_OperationCanBeStaticJustification" xml:space="preserve">
+    <value>The data portal only calls instance methods, so a data portal operation must not be made static</value>
+  </data>
+  <data name="DataPortalOperationSuppressor_UnusedOperationParameterJustification" xml:space="preserve">
+    <value>CSLA chooses which operation to call by its parameter types, so removing a parameter changes which method is called</value>
+  </data>
+  <data name="FluentConfigurationSuppressor_ResultUnusedJustification" xml:space="preserve">
+    <value>CSLA configuration methods return their target only to allow chaining, so the return value does not need to be used</value>
+  </data>
 </root>

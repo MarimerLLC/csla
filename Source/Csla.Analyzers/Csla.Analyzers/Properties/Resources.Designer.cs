@@ -782,5 +782,41 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CSLA calls data portal operations and object authorization rules methods through reflection, so they are used even when nothing in the code calls them.
+        /// </summary>
+        internal static string DataPortalOperationSuppressor_UnusedOperationJustification {
+            get {
+                return ResourceManager.GetString("DataPortalOperationSuppressor_UnusedOperationJustification", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The data portal only calls instance methods, so a data portal operation must not be made static.
+        /// </summary>
+        internal static string DataPortalOperationSuppressor_OperationCanBeStaticJustification {
+            get {
+                return ResourceManager.GetString("DataPortalOperationSuppressor_OperationCanBeStaticJustification", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CSLA chooses which operation to call by its parameter types, so removing a parameter changes which method is called.
+        /// </summary>
+        internal static string DataPortalOperationSuppressor_UnusedOperationParameterJustification {
+            get {
+                return ResourceManager.GetString("DataPortalOperationSuppressor_UnusedOperationParameterJustification", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CSLA configuration methods return their target only to allow chaining, so the return value does not need to be used.
+        /// </summary>
+        internal static string FluentConfigurationSuppressor_ResultUnusedJustification {
+            get {
+                return ResourceManager.GetString("FluentConfigurationSuppressor_ResultUnusedJustification", resourceCulture);
+            }
+        }
     }
 }

@@ -52,6 +52,20 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 * [CSLA0028](CSLA0028-MobileSerializerAttributeUsageAnalyzer.md) - Custom serializer declaration is not valid
 * [CSLA0029](CSLA0029-MobileSerializerAttributeUsageAnalyzer.md) - Type has more than one custom serializer
 
+## Suppressors
+Some .NET code style and code quality rules report false positives on CSLA code, because CSLA calls data portal operations and other methods through reflection. The `Csla` package includes diagnostic suppressors that hide these diagnostics only where they don't apply. The diagnostics still appear everywhere else.
+
+| Suppression ID | Suppresses | Where |
+|---|---|---|
+| `CSLA1001` | `IDE0051` (remove unused private member) | Data portal operations (methods with `[Create]`, `[Fetch]`, `[FetchChild]` and the other operation attributes), and object authorization rules methods that CSLA calls: a public static method with `[ObjectAuthorizationRules]`, or a static method named `AddObjectAuthorizationRules` |
+| `CSLA1002` | `CA1822` (mark members as static) | Data portal operations. The data portal only calls instance methods, so making an operation static breaks it at runtime |
+| `CSLA1003` | `IDE0060` (remove unused parameter) | Parameters of the same methods as `CSLA1001`. The data portal chooses an operation by its parameter types, so removing a parameter changes which method is called. Parameters of lambdas and local functions inside an operation are not suppressed |
+| `CSLA1004` | `IDE0058` (expression value is never used) | Calls to CSLA fluent configuration methods, such as `services.AddCsla(...)`, `options.DataPortal(...)` or `proxy.WithDataPortalUrl(...)`. These are methods in a CSLA assembly that return the object they were called on. Never applies to `Save()` or `SaveAsync()`, where ignoring the result is a bug (see CSLA0005 and CSLA0006) |
+
+The suppressors don't apply to private operations named by the legacy convention (such as `DataPortal_Fetch`) that have no operation attribute, because the data portal doesn't call those.
+
+To turn a suppressor off, add its ID to `NoWarn` in your project file, for example `<NoWarn>$(NoWarn);CSLA1002</NoWarn>`. Setting `dotnet_diagnostic.CSLA1002.severity` in an `.editorconfig` file doesn't affect suppressors.
+
 ## Data Portal Generator Diagnostics
 These diagnostics come from the data portal operations and data portal extensions source generators included in the `Csla` package. They report operation methods that the generated code handles differently from what you might expect, and data portal extension methods that are not generated. They are reported by analyzers, so you can suppress them in source or in an `.editorconfig` file.
 

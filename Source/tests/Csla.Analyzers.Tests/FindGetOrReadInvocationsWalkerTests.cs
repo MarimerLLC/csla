@@ -165,5 +165,56 @@ namespace Csla.Analyzers.Tests
       var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
+
+    [TestMethod]
+    public async Task WalkWhenGetPropertyIsReceiverOfAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public string Go() => this.GetProperty(null).ToString();
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+      Assert.AreEqual("this.GetProperty(null)", walker.Invocation.ToString());
+    }
+
+    [TestMethod]
+    public async Task WalkWhenGetPropertyIsArgumentOfAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public string Go() => string.Concat("x", this.GetProperty(null));
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+      Assert.AreEqual("this.GetProperty(null)", walker.Invocation.ToString());
+    }
+
+    [TestMethod]
+    public async Task WalkWhenPropertyMethodHasAnotherPropertyMethodInItsArguments()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public object Go() => this.LazyGetProperty<object>(null, () => this.GetProperty(null));
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+      Assert.AreEqual("this.LazyGetProperty<object>(null, () => this.GetProperty(null))", walker.Invocation.ToString());
+    }
   }
 }

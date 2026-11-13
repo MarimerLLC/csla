@@ -134,5 +134,56 @@ namespace Csla.Analyzers.Tests
       var walker = await GetWalker(code);
       Assert.IsNotNull(walker.Invocation);
     }
+
+    [TestMethod]
+    public async Task WalkWhenLoadPropertyMarkDirtyIsReceiverOfAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public string Go() => this.LoadPropertyMarkDirty(null, null).ToString();
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+      Assert.AreEqual("this.LoadPropertyMarkDirty(null, null)", walker.Invocation.ToString());
+    }
+
+    [TestMethod]
+    public async Task WalkWhenLoadPropertyMarkDirtyIsArgumentOfAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public string Go() => string.Concat("x", this.LoadPropertyMarkDirty(null, null));
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+      Assert.AreEqual("this.LoadPropertyMarkDirty(null, null)", walker.Invocation.ToString());
+    }
+
+    [TestMethod]
+    public async Task WalkWhenPropertyMethodHasAnotherPropertyMethodInItsArguments()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public void Go() => this.SetProperty(null, this.LoadPropertyMarkDirty(null, null));
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+      Assert.AreEqual("this.SetProperty(null, this.LoadPropertyMarkDirty(null, null))", walker.Invocation.ToString());
+    }
   }
 }

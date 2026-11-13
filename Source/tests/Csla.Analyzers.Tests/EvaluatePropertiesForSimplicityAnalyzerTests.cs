@@ -553,6 +553,37 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenGetterUsesNullForgivingOperatorAndCallsAnotherMethod()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City));
+          public string City => GetProperty(CityProperty)!.ToUpper();
+
+          public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State));
+          public string State
+          {
+            get => GetProperty(StateProperty)!.ToUpper();
+            set => SetProperty(StateProperty, value);
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+        ],
+        diagnostics => AssertLocations(diagnostics,
+          "GetProperty(CityProperty)!.ToUpper()",
+          "=> GetProperty(StateProperty)!.ToUpper()"));
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenClassHasOnlySetMethodExpression()
     {
       var code =

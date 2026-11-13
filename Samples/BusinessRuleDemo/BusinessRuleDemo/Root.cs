@@ -9,7 +9,7 @@ using Csla.Rules.CommonRules;
 namespace BusinessRuleDemo
 {
   [Serializable]
-  public class Root : BusinessBase<Root>
+  public partial class Root : BusinessBase<Root>
   {
     public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
     [Required]

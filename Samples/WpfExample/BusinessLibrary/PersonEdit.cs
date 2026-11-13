@@ -8,7 +8,7 @@ using Csla.Rules;
 namespace BusinessLibrary
 {
   [Serializable]
-  public class PersonEdit : BusinessBase<PersonEdit>
+  public partial class PersonEdit : BusinessBase<PersonEdit>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id

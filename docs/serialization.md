@@ -24,6 +24,41 @@ Starting with CSLA 9 it is possible to create your own custom serializers for sp
 
 CSLA includes some pre-built serializers in the [/Source/Csla/Serialization](https://github.com/MarimerLLC/csla/tree/main/Source/Csla/Serialization/Mobile/CustomSerializers) folder. The `ClaimsPrincipalSerializer` is registered by default, and you can register the `PocoSerializer` to serialize POCO types if you choose.
 
+#### Declaring custom serializers with attributes (CSLA 11+)
+
+Starting with CSLA 11 you can declare which serializer handles a type with attributes, and register every declared serializer in an assembly with one call:
+
+```csharp
+using Csla.Serialization.Mobile;
+using Csla.Serialization.Mobile.CustomSerializers;
+
+// On a type you own
+[MobileSerializer(typeof(MoneySerializer))]
+public class Money { ... }
+
+[MobileSerializer(typeof(PocoSerializer<Customer>))]
+public class Customer { ... }
+
+// On a serializer, for types you don't own
+[MobileSerializerFor(typeof(ThirdParty.Widget), typeof(ThirdParty.Gizmo))]
+public class WidgetSerializer : IMobileSerializer { ... }
+
+// For a type and a serializer you don't own
+[assembly: MobileSerializerRegistration(typeof(ThirdParty.Gadget), typeof(PocoSerializer<ThirdParty.Gadget>))]
+```
+
+```csharp
+builder.Services.AddCsla(o => o
+  .Serialization(s => s
+    .UseMobileFormatter(m => m.AddCustomSerializers(typeof(Order).Assembly))));
+```
+
+* The CSLA source generator turns `[MobileSerializer]` and `[MobileSerializerFor]` into `[assembly: MobileSerializerRegistration]` attributes. `AddCustomSerializers` reads them without scanning the assembly's types, so it is safe for trimming and NativeAOT. (`PocoSerializer<T>` itself uses reflection-based JSON serialization and isn't trim-safe.)
+* Each registration maps exactly one type: derived types aren't covered. Generic types can't be registered this way; use `CustomSerializers.Add(new TypeMap<T, S>(...))` for them.
+* Calling `AddCustomSerializers` again for an assembly adds nothing. Serializers already in `CustomSerializers` come first and take precedence.
+* Assemblies aren't scanned automatically: an assembly with declared serializers must be passed to `AddCustomSerializers`.
+* The CSLA analyzers read the registrations, so [CSLA0010](analyzers/CSLA0010-FindOperationsWithNonSerializableArgumentsAnalyzer.md) doesn't report data portal operation arguments of these types. [CSLA0028](analyzers/CSLA0028-MobileSerializerAttributeUsageAnalyzer.md) reports invalid declarations, and [CSLA0029](analyzers/CSLA0029-MobileSerializerAttributeUsageAnalyzer.md) reports a type mapped to more than one serializer.
+
 ### Replacing MobileFormatter
 
 It is possible to create your own equivalent to `MobileFormatter`, but this is a complex and error-prone task.

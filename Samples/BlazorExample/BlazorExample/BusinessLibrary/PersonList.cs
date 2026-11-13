@@ -3,7 +3,7 @@
 namespace BusinessLibrary
 {
   [Serializable]
-  public class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
+  public partial class PersonList : ReadOnlyListBase<PersonList, PersonInfo>
   {
     [Fetch]
     private void Fetch([Inject]DataAccess.IPersonDal dal, [Inject]IChildDataPortal<PersonInfo> personInfoPortal)

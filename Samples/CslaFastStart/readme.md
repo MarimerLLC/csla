@@ -13,7 +13,7 @@ CSLA .NET is based on a five layer architecture:
 
 This fast start will walk you through the creation of all five layers in the simplest manner possible. The interface will be a console app, and the data storage will be a collection in memory.
 
-This sample demonstrates modern CSLA 10 features including:
+This sample demonstrates modern CSLA 11 features including:
 
 - **Source-generated properties** using `[CslaImplementProperties]` and C# partial properties
 - **Dependency injection** via `[Inject]` attributes on data portal method parameters
@@ -25,7 +25,7 @@ The fact that this code doesn't include a data access layer that interacts with 
 For more detailed information about using CSLA .NET please see the [Using CSLA .NET](http://store.lhotka.net/using-csla-4-all-books) book.
 
 ## Creating the solution and Interface project
-Open Visual Studio and create a new _Console Application_ using .NET 9 or later. Name it `CslaFastStart`.
+Open Visual Studio and create a new _Console Application_ using .NET 10 or later. Name it `CslaFastStart`.
 
 ![](readme-images/CreateConsoleApp.png)
 
@@ -39,10 +39,9 @@ Add a new _Class Library_ project to the existing solution. Name it `BusinessLay
 
 ![](readme-images/CreateBusinessLayer.png)
 
-Add NuGet references to the following packages in your class library project:
+Add a NuGet reference to the following package in your class library project:
 
-- `Csla`
-- `Csla.Generator.AutoImplementProperties.Attributes.CSharp` (for source-generated properties)
+- `Csla` (includes the source generator for properties)
 
 Return to your console app project and add a project reference to your new `BusinessLayer` project.
 
@@ -78,7 +77,7 @@ namespace BusinessLayer
 }
 ```
 
-This is a typical, albeit very simple, business class using CSLA 10's source-generated properties. The `[CslaImplementProperties]` attribute tells the CSLA source generator to automatically generate the `RegisterProperty` calls and `GetProperty`/`SetProperty` implementations for each partial property.
+This is a typical, albeit very simple, business class using CSLA 11's source-generated properties. The `[CslaImplementProperties]` attribute tells the CSLA source generator to automatically generate the `RegisterProperty` calls and `GetProperty`/`SetProperty` implementations for each partial property.
 
 Key points:
 - The class must be `partial` to allow the source generator to add the implementation
@@ -257,7 +256,7 @@ namespace BusinessLayer
 }
 ```
 
-CSLA 10 uses attribute-based data portal methods instead of the older `DataPortal_XYZ` naming convention:
+CSLA 11 uses attribute-based data portal methods instead of the older `DataPortal_XYZ` naming convention:
 
 | Attribute | Purpose |
 |-----------|---------|
@@ -275,7 +274,7 @@ At this point the business layer and data access layer are complete.
 ## Implementing the user interface
 Open the `CslaFastStart` console app project's `Program.cs` file.
 
-CSLA 10 uses dependency injection for the data portal. First, set up the DI container and register services:
+CSLA 11 uses dependency injection for the data portal. First, set up the DI container and register services:
 
 ```csharp
 using BusinessLayer;
@@ -409,7 +408,7 @@ One of the primary features of CSLA .NET is the rules engine that sits within th
 
 CSLA .NET supports the `System.ComponentModel.DataAnnotations` attributes. These provide a very simple and limited validation rule concept that works on any platform and behind any type of interface, because the attributes are automatically integrated into the broader CSLA .NET rules engine.
 
-With CSLA 10's source-generated properties, you simply add the validation attributes directly to the partial property declarations:
+With CSLA 11's source-generated properties, you simply add the validation attributes directly to the partial property declarations:
 
 ```csharp
     [Required]
@@ -421,7 +420,7 @@ With CSLA 10's source-generated properties, you simply add the validation attrib
 
 The `[Required]` attributes were already added to our `PersonEdit` class earlier. If you run the app and don't enter values for the first and last name properties during the first _create_ phase, you'll find that the object won't save because it is invalid, and you should see the broken rules listed as you'd expect.
 
-## Summary of CSLA 10 Features Used
+## Summary of CSLA 11 Features Used
 
 | Feature | Description |
 |---------|-------------|

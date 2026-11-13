@@ -5,7 +5,7 @@ using Csla;
 
 namespace WindowsApplication2
 {
-  public class Root : BusinessBase<Root>
+  public partial class Root : BusinessBase<Root>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id

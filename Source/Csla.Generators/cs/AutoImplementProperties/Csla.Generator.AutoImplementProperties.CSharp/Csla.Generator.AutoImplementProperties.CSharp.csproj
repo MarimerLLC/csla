@@ -29,4 +29,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.9.2" PrivateAssets="all" />
     <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Shared with Csla.Analyzers so the generator skips exactly the declarations CSLA0028 reports -->
+    <Compile Include="..\..\..\..\Csla.Analyzers\Csla.Analyzers\MobileSerializerRules.cs" Link="MobileSerializers\MobileSerializerRules.cs" />
+  </ItemGroup>
 </Project>

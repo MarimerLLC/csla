@@ -222,5 +222,139 @@ namespace Csla.Analyzers.Tests
 
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
+
+    private const string SerializerSource =
+      """
+      public class TestSerializer : IMobileSerializer
+      {
+        public object Deserialize(SerializationInfo info) => null;
+        public void Serialize(object obj, SerializationInfo info) { }
+      }
+      """;
+
+    [TestMethod]
+    public async Task AnalyzeWithArgumentMarkedWithMobileSerializer()
+    {
+      var code =
+        $$"""
+        using Csla;
+        using Csla.Serialization.Mobile;
+
+        {{SerializerSource}}
+
+        [MobileSerializer(typeof(TestSerializer))]
+        public class Money { }
+
+        public class B : BusinessBase<B>
+        {
+          [Fetch]
+          private void Fetch(Money x) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithArgumentRegisteredInAssemblyAttribute()
+    {
+      var code =
+        $$"""
+        using Csla;
+        using Csla.Serialization.Mobile;
+
+        [assembly: MobileSerializerRegistration(typeof(Widget), typeof(TestSerializer))]
+
+        {{SerializerSource}}
+
+        public class Widget { }
+
+        public class B : BusinessBase<B>
+        {
+          [Fetch]
+          private void Fetch(Widget x) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithClaimsPrincipalArgumentRegisteredByCsla()
+    {
+      var code =
+        """
+        using Csla;
+        using System.Security.Claims;
+
+        public class B : BusinessBase<B>
+        {
+          [Fetch]
+          private void Fetch(ClaimsPrincipal x) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithUnregisteredArgumentWhenOtherTypesAreRegistered()
+    {
+      var code =
+        $$"""
+        using Csla;
+        using Csla.Serialization.Mobile;
+
+        [assembly: MobileSerializerRegistration(typeof(Widget), typeof(TestSerializer))]
+
+        {{SerializerSource}}
+
+        public class Widget { }
+
+        [MobileSerializer(typeof(TestSerializer))]
+        public class Money { }
+
+        public class Gadget { }
+
+        public class B : BusinessBase<B>
+        {
+          [Fetch]
+          private void Fetch(Gadget x) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWithArgumentDerivedFromTypeWithCustomSerializer()
+    {
+      var code =
+        $$"""
+        using Csla;
+        using Csla.Serialization.Mobile;
+
+        [assembly: MobileSerializerRegistration(typeof(Widget), typeof(TestSerializer))]
+
+        {{SerializerSource}}
+
+        public class Widget { }
+
+        public class SpecialWidget : Widget { }
+
+        [MobileSerializer(typeof(TestSerializer))]
+        public class Money { }
+
+        public class SpecialMoney : Money { }
+
+        public class B : BusinessBase<B>
+        {
+          [Fetch]
+          private void Fetch(SpecialWidget x) { }
+
+          [Fetch]
+          private void Fetch(SpecialMoney x) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments, Constants.AnalyzerIdentifiers.FindOperationsWithNonSerializableArguments]);
+    }
   }
 }

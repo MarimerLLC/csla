@@ -4,7 +4,7 @@ using Csla;
 namespace WinSortFilter
 {
   [Serializable]
-  public class DataList : BusinessBindingListBase<DataList, Data>
+  public partial class DataList : BusinessBindingListBase<DataList, Data>
   {
     [Create]
     private void Create()

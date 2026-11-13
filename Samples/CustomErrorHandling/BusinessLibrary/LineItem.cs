@@ -5,7 +5,7 @@ namespace BusinessLibrary
 {
   [Serializable]
   [Csla.Server.ObjectFactory("DataAccess.LineItemFactory, DataAccess")]
-  public class LineItem : BusinessBase<LineItem>
+  public partial class LineItem : BusinessBase<LineItem>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty(new PropertyInfo<int>("Id", "Id"));
     public int Id

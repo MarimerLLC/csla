@@ -309,4 +309,64 @@
   <data name="UseGeneratedDataPortalExtension_UseExtensionDescription" xml:space="preserve">
     <value>Use '{0}'</value>
   </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationTitle" xml:space="preserve">
+    <value>Custom serializer declaration is not valid</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationMessage" xml:space="preserve">
+    <value>The custom serializer declaration is not valid because {0}</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_ConflictTitle" xml:space="preserve">
+    <value>Type has more than one custom serializer</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_ConflictMessage" xml:space="preserve">
+    <value>The type '{0}' is registered with more than one custom serializer ({1}); MobileFormatter uses whichever is registered first</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_SerializerNotClass" xml:space="preserve">
+    <value>the serializer '{0}' is not a class</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_SerializerOpenGeneric" xml:space="preserve">
+    <value>the serializer '{0}' is an open generic type</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_SerializerStatic" xml:space="preserve">
+    <value>the serializer '{0}' is static</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_SerializerAbstract" xml:space="preserve">
+    <value>the serializer '{0}' is abstract</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_SerializerNotMobileSerializer" xml:space="preserve">
+    <value>the serializer '{0}' does not implement IMobileSerializer</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_SerializerNoPublicConstructor" xml:space="preserve">
+    <value>the serializer '{0}' has no public constructor</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_SerializerInaccessible" xml:space="preserve">
+    <value>the serializer '{0}' is not accessible to an assembly-level attribute</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_TypeNotClassOrStruct" xml:space="preserve">
+    <value>the type '{0}' is not a class or struct</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_TypeGeneric" xml:space="preserve">
+    <value>the type '{0}' is generic, and custom serializers can be registered only for non-generic types</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_TypeInaccessible" xml:space="preserve">
+    <value>the type '{0}' is not accessible to an assembly-level attribute</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_TypeSerializedNatively" xml:space="preserve">
+    <value>the type '{0}' is serialized natively by MobileFormatter, so a custom serializer is never used</value>
+  </data>
+  <data name="MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject" xml:space="preserve">
+    <value>the type '{0}' implements IMobileObject, so MobileFormatter serializes it directly and never uses a custom serializer</value>
+  </data>
+  <data name="DataPortalOperationSuppressor_UnusedOperationJustification" xml:space="preserve">
+    <value>CSLA calls data portal operations and object authorization rules methods through reflection, so they are used even when nothing in the code calls them</value>
+  </data>
+  <data name="DataPortalOperationSuppressor_OperationCanBeStaticJustification" xml:space="preserve">
+    <value>The data portal only calls instance methods, so a data portal operation must not be made static</value>
+  </data>
+  <data name="DataPortalOperationSuppressor_UnusedOperationParameterJustification" xml:space="preserve">
+    <value>CSLA chooses which operation to call by its parameter types, so removing a parameter changes which method is called</value>
+  </data>
+  <data name="FluentConfigurationSuppressor_ResultUnusedJustification" xml:space="preserve">
+    <value>CSLA configuration methods return their target only to allow chaining, so the return value does not need to be used</value>
+  </data>
 </root>

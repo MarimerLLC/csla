@@ -4,8 +4,12 @@ using Csla;
 namespace CustomAuthzRules.Test
 {
   [Serializable]
-  public class TestRoot : BusinessBase<TestRoot>
+  public partial class TestRoot : BusinessBase<TestRoot>
   {
+    [Create]
+    private void Create()
+    { }
+
     public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(c => c.Country);
 #pragma warning disable CSLA0007
     public string Country

@@ -114,7 +114,62 @@
       ///
       /// </summary>
       public const string CalculatedPropertyRequiresBusinessBase = "CSLA0027";
+      /// <summary>
+      /// A <c>[MobileSerializer]</c>, <c>[MobileSerializerFor]</c> or
+      /// <c>[assembly: MobileSerializerRegistration]</c> declaration is not valid.
+      /// </summary>
+      public const string InvalidCustomSerializerDeclaration = "CSLA0028";
+      /// <summary>
+      /// A type is mapped to more than one custom serializer.
+      /// </summary>
+      public const string ConflictingCustomSerializers = "CSLA0029";
 
+    }
+
+    /// <summary>
+    /// Identifiers of the suppressions reported by CSLA diagnostic suppressors.
+    /// </summary>
+    public static class SuppressorIdentifiers
+    {
+      /// <summary>
+      /// Suppresses IDE0051 (unused private member) on methods CSLA calls through reflection.
+      /// </summary>
+      public const string UnusedOperation = "CSLA1001";
+      /// <summary>
+      /// Suppresses CA1822 (mark member as static) on data portal operations.
+      /// </summary>
+      public const string OperationCanBeStatic = "CSLA1002";
+      /// <summary>
+      /// Suppresses IDE0060 (unused parameter) on methods CSLA calls through reflection.
+      /// </summary>
+      public const string UnusedOperationParameter = "CSLA1003";
+      /// <summary>
+      /// Suppresses IDE0058 (expression value is never used) on CSLA fluent configuration methods.
+      /// </summary>
+      public const string FluentConfigurationResultUnused = "CSLA1004";
+    }
+
+    /// <summary>
+    /// Identifiers of diagnostics from other analyzers that CSLA suppresses.
+    /// </summary>
+    public static class SuppressedDiagnosticIdentifiers
+    {
+      /// <summary>
+      /// Remove unused private members.
+      /// </summary>
+      public const string UnusedPrivateMember = "IDE0051";
+      /// <summary>
+      /// Mark members as static.
+      /// </summary>
+      public const string MarkMembersAsStatic = "CA1822";
+      /// <summary>
+      /// Remove unused parameter.
+      /// </summary>
+      public const string UnusedParameter = "IDE0060";
+      /// <summary>
+      /// Expression value is never used.
+      /// </summary>
+      public const string ExpressionValueIsUnused = "IDE0058";
     }
 
     /// <summary>

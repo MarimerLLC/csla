@@ -3,7 +3,7 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  public class RoleList : NameValueListBase<int, string>
+  public partial class RoleList : NameValueListBase<int, string>
   {
     [Fetch]
     private void Fetch([Inject] IRoleDal dal)

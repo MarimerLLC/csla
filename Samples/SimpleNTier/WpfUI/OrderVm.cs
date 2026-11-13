@@ -10,51 +10,42 @@ namespace WpfUI
   {
     public OrderVm()
     {
-      var t = RefreshAsync<BusinessLibrary.Order>(async () =>
-      {
-        try
-        {
-          var portal = App.ApplicationContext.GetRequiredService<IDataPortal<BusinessLibrary.Order>>();
-          return await portal.FetchAsync(441);
-        }
-        catch (Exception ex)
-        {
-          var fullError = $"Error fetching order:\n{ex.Message}\n\nFull details:\n{ex}";
-          try
-          {
-            Bxf.Shell.Instance.ShowError(fullError, "Data Portal Error");
-          }
-          catch
-          {
-            System.Windows.MessageBox.Show(fullError, "Data Portal Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-          }
-          return null;
-        }
-      });
-    }
+      // RefreshAsync and SaveAsync don't throw. They capture the exception
+      // in the Exception property and raise the Error event. Error is also
+      // raised when an authorization rule fails.
+      Error += (o, e) => ShowError(ViewModelErrorText, e.Error.ToString());
 
-    public override System.Threading.Tasks.Task<Order> SaveAsync()
-    {
-      try
+      _ = RefreshAsync(async () =>
       {
-        return base.SaveAsync();
-      }
-      catch (Exception ex)
-      {
-        var x = ex;
-        throw;
-      }
+        var portal = App.ApplicationContext.GetRequiredService<IDataPortal<BusinessLibrary.Order>>();
+        return await portal.FetchAsync(441);
+      });
     }
 
     public override async Task SaveAsync(object sender, ExecuteEventArgs e)
     {
+      await base.SaveAsync(sender, e);
+      // An invalid order isn't saved. That sets ViewModelErrorText,
+      // but not Exception, and doesn't raise Error.
+      if (Exception is null && Model is { IsValid: false })
+      {
+        var message = ViewModelErrorText;
+        if (string.IsNullOrEmpty(message))
+          message = "The order isn't valid, so it wasn't saved.";
+        ShowError(message, null);
+      }
+    }
+
+    private static void ShowError(string message, string details)
+    {
+      var text = details is null ? message : $"{message}\n\nFull details:\n{details}";
       try
       {
-        await base.SaveAsync(sender, e);
+        Bxf.Shell.Instance.ShowError(text, "Error");
       }
-      catch (Exception ex)
+      catch
       {
-        var x = ex;
+        System.Windows.MessageBox.Show(text, "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
       }
     }
   }

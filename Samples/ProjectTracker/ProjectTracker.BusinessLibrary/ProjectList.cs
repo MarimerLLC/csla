@@ -5,7 +5,7 @@ using ProjectTracker.Dal;
 
 namespace ProjectTracker.Library
 {
-  public class ProjectList : ReadOnlyListBase<ProjectList, ProjectInfo>
+  public partial class ProjectList : ReadOnlyListBase<ProjectList, ProjectInfo>
   {
     public void RemoveChild(int projectId)
     {

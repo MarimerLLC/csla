@@ -3,7 +3,7 @@
 namespace DataPortalCacheExample
 {
   [Serializable]
-  public class ReferenceData : BusinessBase<ReferenceData>
+  public partial class ReferenceData : BusinessBase<ReferenceData>
   {
     public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
     public int Id

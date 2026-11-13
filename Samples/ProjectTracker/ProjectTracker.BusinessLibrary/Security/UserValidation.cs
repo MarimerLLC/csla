@@ -14,7 +14,16 @@ namespace ProjectTracker.Library.Security
     [Execute]
     private void Execute(string username, [Inject] IUserDal dal)
     {
-      var user = dal.Fetch(username);
+      UserDto? user;
+      try
+      {
+        user = dal.Fetch(username);
+      }
+      catch (DataNotFoundException)
+      {
+        // the DAL throws when there is no such user
+        user = null;
+      }
       if (user is null)
       {
         Roles = [];
@@ -29,7 +38,16 @@ namespace ProjectTracker.Library.Security
     [Execute]
     private void Execute(string username, string password, [Inject] IUserDal dal)
     {
-      var user = dal.Fetch(username, password);
+      UserDto? user;
+      try
+      {
+        user = dal.Fetch(username, password);
+      }
+      catch (DataNotFoundException)
+      {
+        // the DAL throws when the username or password is wrong
+        user = null;
+      }
       if (user is null)
       {
         IsValid = false;

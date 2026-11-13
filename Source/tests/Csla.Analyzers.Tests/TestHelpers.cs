@@ -48,6 +48,35 @@ namespace Csla.Analyzers.Tests
     }
 
     /// <summary>
+    /// Runs <paramref name="analyzer"/> and <paramref name="suppressor"/> together and
+    /// returns every diagnostic the analyzer reports, including suppressed ones
+    /// (check <see cref="Diagnostic.IsSuppressed"/>).
+    /// </summary>
+    internal static async Task<List<Diagnostic>> GetDiagnosticsWithSuppressorAsync(string code,
+      DiagnosticAnalyzer analyzer, DiagnosticSuppressor suppressor, string assemblyName = "Test")
+    {
+      var document = Create(code, assemblyName);
+      var options = new CompilationWithAnalyzersOptions(
+        new AnalyzerOptions([]), onAnalyzerException: null, concurrentAnalysis: true,
+        logAnalyzerExecutionTime: false, reportSuppressedDiagnostics: true);
+      var compilation = (await document.Project.GetCompilationAsync())
+        .WithAnalyzers([analyzer, suppressor], options);
+      return (await compilation.GetAnalyzerDiagnosticsAsync()).ToList();
+    }
+
+    /// <summary>
+    /// Gets whether the diagnostic reported on the text <paramref name="locationText"/> is suppressed.
+    /// </summary>
+    internal static bool IsSuppressedAt(this List<Diagnostic> diagnostics, string locationText)
+    {
+      var matches = diagnostics
+        .Where(_ => _.Location.SourceTree.ToString().Substring(_.Location.SourceSpan.Start, _.Location.SourceSpan.Length) == locationText)
+        .ToList();
+      Assert.AreEqual(1, matches.Count, $"Expected one diagnostic on '{locationText}'");
+      return matches[0].IsSuppressed;
+    }
+
+    /// <summary>
     /// Supplies global build properties, such as <c>build_property.*</c> values, to analyzers.
     /// </summary>
     private sealed class GlobalOptionsProvider(Dictionary<string, string> values) : AnalyzerConfigOptionsProvider
@@ -64,9 +93,9 @@ namespace Csla.Analyzers.Tests
       }
     }
 
-    internal static Document Create(string code)
+    internal static Document Create(string code, string assemblyName = "Test")
     {
-      var projectName = "Test";
+      var projectName = assemblyName;
       var projectId = ProjectId.CreateNewId(projectName);
 
       using var workspace = new AdhocWorkspace();

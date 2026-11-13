@@ -98,16 +98,31 @@ namespace CslaMvcExample.Controllers
     // POST: Person/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Delete(int id, PersonInfo person)
+    [ActionName(nameof(Delete))]
+    public async Task<ActionResult> DeleteConfirmed(int id)
     {
+      // Don't take a PersonInfo parameter here. The delete form posts no
+      // fields, and MVC can't create a read-only business object itself.
       try
       {
         await PersonEditPortal.DeleteAsync(id);
         return RedirectToAction(nameof(Index));
       }
+      catch (Exception ex)
+      {
+        ModelState.AddModelError(string.Empty, $"Delete failed: {ex.Message}");
+      }
+
+      // show the delete page again with the error; if the person
+      // can't be loaded either (already deleted), go back to the list
+      try
+      {
+        var obj = await PersonInfoPortal.FetchAsync(id);
+        return View(obj);
+      }
       catch
       {
-        return View(person);
+        return RedirectToAction(nameof(Index));
       }
     }
   }

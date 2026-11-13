@@ -30,3 +30,5 @@ CSLA0024 | Usage | Warning | TypeWithOperationsShouldBePartialAnalyzer
 CSLA0025 | Usage | Warning | UseGeneratedDataPortalExtensionAnalyzer
 CSLA0026 | Usage | Warning | CalculatedPropertyAnalyzer
 CSLA0027 | Usage | Warning | CalculatedPropertyAnalyzer
+CSLA0028 | Usage | Error | MobileSerializerAttributeUsageAnalyzer
+CSLA0029 | Usage | Warning | MobileSerializerAttributeUsageAnalyzer

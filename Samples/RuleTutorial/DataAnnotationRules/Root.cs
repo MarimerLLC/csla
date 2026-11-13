@@ -21,7 +21,7 @@ namespace DataAnnotationRules
   /// The root.
   /// </summary>
   [Serializable]
-  public class Root : BusinessBase<Root>
+  public partial class Root : BusinessBase<Root>
   {
     #region Business Methods
 
@@ -101,6 +101,16 @@ namespace DataAnnotationRules
       return portal.Create();
     }
 
+
+    #endregion
+
+    #region Data Access
+
+    [Create]
+    private void DataPortal_Create()
+    {
+      BusinessRules.CheckRules();
+    }
 
     #endregion
   }

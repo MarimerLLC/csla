@@ -5,7 +5,7 @@ using ProjectTracker.Dal;
 namespace ProjectTracker.Library
 {
   [Serializable]
-  public class ResourceExistsCommand : CommandBase<ResourceExistsCommand>
+  public partial class ResourceExistsCommand : CommandBase<ResourceExistsCommand>
   {
     public ResourceExistsCommand()
     { }

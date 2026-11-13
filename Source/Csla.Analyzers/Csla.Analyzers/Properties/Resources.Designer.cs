@@ -107,7 +107,7 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The calculated property &apos;{0}&apos; should have no setter or a private setter.
+        ///   Looks up a localized string similar to The calculated property '{0}' should have no setter or a private setter.
         /// </summary>
         internal static string CalculatedPropertyAnalyzer_MustBeReadOnlyMessage {
             get {
@@ -125,7 +125,7 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to The calculated property &apos;{0}&apos; is not in a BusinessBase type, so it will not be serialized or recalculated.
+        ///   Looks up a localized string similar to The calculated property '{0}' is not in a BusinessBase type, so it will not be serialized or recalculated.
         /// </summary>
         internal static string CalculatedPropertyAnalyzer_RequiresBusinessBaseMessage {
             get {
@@ -596,7 +596,7 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Type &apos;{0}&apos; has data portal operation methods and should be declared partial so the CSLA source generator can implement its operations interface.
+        ///   Looks up a localized string similar to Type '{0}' has data portal operation methods and should be declared partial so the CSLA source generator can implement its operations interface.
         /// </summary>
         internal static string TypeWithOperationsShouldBePartial_Message {
             get {
@@ -614,7 +614,7 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Use the generated data portal extension method for &apos;{0}&apos; instead of calling &apos;{1}&apos; with untyped criteria.
+        ///   Looks up a localized string similar to Use the generated data portal extension method for '{0}' instead of calling '{1}' with untyped criteria.
         /// </summary>
         internal static string UseGeneratedDataPortalExtension_Message {
             get {
@@ -632,11 +632,190 @@ namespace Csla.Analyzers.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Use '{0}'.
         /// </summary>
         internal static string UseGeneratedDataPortalExtension_UseExtensionDescription {
             get {
                 return ResourceManager.GetString("UseGeneratedDataPortalExtension_UseExtensionDescription", resourceCulture);
+            }
+        }
+        /// <summary>
+        ///   Looks up a localized string similar to Custom serializer declaration is not valid.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationTitle {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The custom serializer declaration is not valid because {0}.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationMessage {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_InvalidDeclarationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type has more than one custom serializer.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_ConflictTitle {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_ConflictTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type '{0}' is registered with more than one custom serializer ({1}); MobileFormatter uses whichever is registered first.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_ConflictMessage {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_ConflictMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is not a class.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerNotClass {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerNotClass", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is an open generic type.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerOpenGeneric {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerOpenGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is static.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerStatic {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerStatic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is abstract.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerAbstract {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerAbstract", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' does not implement IMobileSerializer.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerNotMobileSerializer {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerNotMobileSerializer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' has no public constructor.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerNoPublicConstructor {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerNoPublicConstructor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the serializer '{0}' is not accessible to an assembly-level attribute.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_SerializerInaccessible {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_SerializerInaccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is not a class or struct.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeNotClassOrStruct {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeNotClassOrStruct", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is generic, and custom serializers can be registered only for non-generic types.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeGeneric {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is not accessible to an assembly-level attribute.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeInaccessible {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeInaccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' is serialized natively by MobileFormatter, so a custom serializer is never used.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeSerializedNatively {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeSerializedNatively", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the type '{0}' implements IMobileObject, so MobileFormatter serializes it directly and never uses a custom serializer.
+        /// </summary>
+        internal static string MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject {
+            get {
+                return ResourceManager.GetString("MobileSerializerAttributeUsageAnalyzer_TypeIsMobileObject", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CSLA calls data portal operations and object authorization rules methods through reflection, so they are used even when nothing in the code calls them.
+        /// </summary>
+        internal static string DataPortalOperationSuppressor_UnusedOperationJustification {
+            get {
+                return ResourceManager.GetString("DataPortalOperationSuppressor_UnusedOperationJustification", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The data portal only calls instance methods, so a data portal operation must not be made static.
+        /// </summary>
+        internal static string DataPortalOperationSuppressor_OperationCanBeStaticJustification {
+            get {
+                return ResourceManager.GetString("DataPortalOperationSuppressor_OperationCanBeStaticJustification", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CSLA chooses which operation to call by its parameter types, so removing a parameter changes which method is called.
+        /// </summary>
+        internal static string DataPortalOperationSuppressor_UnusedOperationParameterJustification {
+            get {
+                return ResourceManager.GetString("DataPortalOperationSuppressor_UnusedOperationParameterJustification", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to CSLA configuration methods return their target only to allow chaining, so the return value does not need to be used.
+        /// </summary>
+        internal static string FluentConfigurationSuppressor_ResultUnusedJustification {
+            get {
+                return ResourceManager.GetString("FluentConfigurationSuppressor_ResultUnusedJustification", resourceCulture);
             }
         }
     }

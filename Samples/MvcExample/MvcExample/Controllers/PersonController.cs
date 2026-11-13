@@ -98,8 +98,11 @@ namespace CslaMvcExample.Controllers
     // POST: Person/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<ActionResult> Delete(int id, PersonInfo person)
+    [ActionName(nameof(Delete))]
+    public async Task<ActionResult> DeleteConfirmed(int id)
     {
+      // Don't take a PersonInfo parameter here. The delete form posts no
+      // fields, and MVC can't create a read-only business object itself.
       try
       {
         await PersonEditPortal.DeleteAsync(id);
@@ -107,7 +110,8 @@ namespace CslaMvcExample.Controllers
       }
       catch
       {
-        return View(person);
+        var obj = await PersonInfoPortal.FetchAsync(id);
+        return View(obj);
       }
     }
   }
